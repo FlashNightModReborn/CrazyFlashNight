@@ -1,8 +1,14 @@
 ﻿import org.flashNight.arki.item.*;
+
 /**
  * ShootInitCore.as
  * 
- * 新的武器初始化核心类，将原 _root.主角函数 中的初始化逻辑封装到此类中，
+ * 武器初始化核心类，将原 _root.主角函数 中的初始化逻辑封装到此类中
+ * 经过重构优化，降低了代码重复度，提高了可维护性
+ * 主要负责：
+ * 1. 单武器和双武器系统的初始化逻辑
+ * 2. 武器属性的设置与子弹属性的生成
+ * 3. 射击和换弹等功能函数的创建与绑定
  */
 class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
@@ -27,170 +33,293 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             return;
         }
         
-        // 保留原有时间轴函数绑定方式
-        self.开始射击       = _root.主角函数.开始射击;
-        self.主手持续射击   = _root.主角函数.主手持续射击;
-        self.副手持续射击   = _root.主角函数.副手持续射击;
-        self.开始换弹       = _root.主角函数.开始换弹;
-        self.换弹匣         = _root.主角函数.换弹匣;
-        self.结束换弹       = _root.主角函数.结束换弹;
-        self.刷新弹匣数显示 = _root.主角函数.刷新弹匣数显示;
+        // 绑定核心函数到目标对象
+        _bindCoreFunctions(self);
         
-        // -------------------- 双枪模式 --------------------
+        // 处理双枪/单枪模式
         if (config.isDualGun) {
-            var mainData:Array = config.mainWeaponData;
-            var subData:Array  = config.subWeaponData;
-            var mainExtra:Object = (config.extraParams && config.extraParams.main) ? config.extraParams.main : {};
-            var subExtra:Object  = (config.extraParams && config.extraParams.sub)  ? config.extraParams.sub  : {};
-            
-            // 初始化主手属性
-            self.主手射击速度     = mainData[5];
-            self.主手使用弹匣名称 = mainData[11];
-            self.主手是否单发     = mainData[3];
-            self.主手剩余弹匣数   = parentRef.检查弹匣数量(self.主手使用弹匣名称);
-            
-            // 初始化副手属性
-            self.副手射击速度     = subData[5];
-            self.副手使用弹匣名称 = subData[11];
-            self.副手是否单发     = subData[3];
-            self.副手剩余弹匣数   = parentRef.检查弹匣数量(self.副手使用弹匣名称);
-            
-            // 刷新界面显示
-            self.刷新弹匣数显示();
-            
-            // 分别生成主手与副手的子弹属性对象
-            self.子弹属性  = ShootInitCore.generateBulletProps(parentRef, "手枪",  mainData, mainExtra);
-            self.子弹属性2 = ShootInitCore.generateBulletProps(parentRef, "手枪2", subData,  subExtra);
-            
-            // 定义主手开始射击方法，使用闭包绑定 self
-            self.主手开始射击 = function():Void {
-                var that:MovieClip = self;
-                if (parentRef.主手射击中 || that.换弹标签) return;
-                if (parentRef.手枪射击次数[parentRef.手枪] >= parentRef.手枪弹匣容量) {
-                    // 关键修改：删除直接跳转到换弹匣的代码，使用原始判断逻辑
-                    if ((parentRef.手枪2射击次数[parentRef.手枪2] >= parentRef.手枪2弹匣容量 && that.主手剩余弹匣数 > 0) 
-                        || _root.控制目标 != parentRef._name) {
-                        that.开始换弹();
-                    }
-                    return;
-                }
-                if (!that.射击许可标签) return;
-                var continueShooting:Boolean = that.主手持续射击(parentRef, "手枪", that.主手射击速度, that);
-                if (continueShooting) {
-                    parentRef.keepshooting = _root.帧计时器.添加生命周期任务(
-                        parentRef,
-                        "主手开始射击",
-                        that.主手持续射击,
-                        that.主手射击速度,
-                        parentRef, "手枪", that.主手射击速度
-                    );
-                }
-            };
-            
-            // 定义副手开始射击方法
-            self.副手开始射击 = function():Void {
-                var that:MovieClip = self;
-                if (parentRef.副手射击中 || that.换弹标签) return;
-                if (parentRef.手枪2射击次数[parentRef.手枪2] >= parentRef.手枪2弹匣容量) {
-                    // 关键修改：保留原始判断逻辑
-                    if ((parentRef.手枪射击次数[parentRef.手枪] >= parentRef.手枪弹匣容量 && that.副手剩余弹匣数 > 0)
-                        || _root.控制目标 != parentRef._name) {
-                        that.开始换弹();
-                    }
-                    return;
-                }
-                if (!that.射击许可标签) return;
-                var continueShooting:Boolean = that.副手持续射击(parentRef, "手枪2", that.副手射击速度, that);
-                if (continueShooting) {
-                    parentRef.keepshooting2 = _root.帧计时器.添加生命周期任务(
-                        parentRef,
-                        "副手开始射击",
-                        that.副手持续射击,
-                        that.副手射击速度,
-                        parentRef, "手枪2", that.副手射击速度
-                    );
-                }
-            };
-            
-            // 定义主手换弹匣方法
-            self.主手换弹匣 = function():Void {
-                var that:MovieClip = self;
-                parentRef.手枪射击次数[parentRef.手枪] = 0;
-                if (_root.控制目标 === parentRef._name) {
-                    ItemUtil.singleSubmit(that.主手使用弹匣名称, 1);
-                    that.主手剩余弹匣数 = parentRef.检查弹匣数量(that.主手使用弹匣名称);
-                    that.副手剩余弹匣数 = parentRef.检查弹匣数量(that.副手使用弹匣名称);
-                    if (that.主手剩余弹匣数 === 0) {
-                        _root.发布消息("弹匣耗尽！");
-                    }
-                    _root.排列物品图标();
-                    that.刷新弹匣数显示();
-                    
-                    if (that.副手剩余弹匣数 == 0 || parentRef.手枪2射击次数[parentRef.手枪2] == 0) {
-                        that.gotoAndPlay("换弹结束");
-                    }
-                }
-            };
-            
-            // 定义副手换弹匣方法
-            self.副手换弹匣 = function():Void {
-                var that:MovieClip = self;
-                parentRef.手枪2射击次数[parentRef.手枪2] = 0;
-                if (_root.控制目标 === parentRef._name) {
-                    ItemUtil.singleSubmit(that.副手使用弹匣名称, 1);
-                    that.主手剩余弹匣数 = parentRef.检查弹匣数量(that.主手使用弹匣名称);
-                    that.副手剩余弹匣数 = parentRef.检查弹匣数量(that.副手使用弹匣名称);
-                    if (that.副手剩余弹匣数 === 0) {
-                        _root.发布消息("弹匣耗尽！");
-                    }
-                    _root.排列物品图标();
-                    that.刷新弹匣数显示();
-                }
-            };
-            
-            // 定义全局换弹方法
-            self.开始换弹 = function():Void {
-                var that:MovieClip = self;
-                if (that.换弹标签 || (parentRef.手枪射击次数[parentRef.手枪] == 0 && parentRef.手枪2射击次数[parentRef.手枪2] == 0)) {
-                    return;
-                }
-                if (_root.控制目标 === parentRef._name) {
-                    if (parentRef.手枪射击次数[parentRef.手枪] > 0) {
-                        if (ItemUtil.singleContain(that.主手使用弹匣名称, 1)) {
-                            that.gotoAndPlay("主手换弹匣");
-                            return;
-                        }
-                    } else if (parentRef.手枪2射击次数[parentRef.手枪2] > 0) {
-                        if (ItemUtil.singleContain(that.副手使用弹匣名称, 1)) {
-                            that.gotoAndPlay("副手换弹匣");
-                            return;
-                        }
-                    }
-                    that.gotoAndPlay("换弹结束");
-                } else {
-                    that.gotoAndPlay("主手换弹匣");
-                }
-            };
-            
-        }
-        // -------------------- 单武器模式 --------------------
-        else {
-            var weaponData:Array = config.weaponData;
-            var extraParams:Object = config.extraParams || {};
-            
-            self.射击速度      = weaponData[5];
-            self.使用弹匣名称  = weaponData[11];
-            self.是否单发      = weaponData[3];
-            self.剩余弹匣数    = parentRef.检查弹匣数量(self.使用弹匣名称);
-            self.刷新弹匣数显示();
-            
-            self.子弹属性 = ShootInitCore.generateBulletProps(parentRef, config.weaponType, weaponData, extraParams);
+            _initDualGunSystem(self, parentRef, config);
+        } else {
+            _initSingleGunSystem(self, parentRef, config);
         }
     }
 
     /**
-     * 生成子弹属性对象（原 _生成子弹属性 函数）
+     * 绑定核心函数到目标对象
+     * @param target 目标 MovieClip
+     */
+    private static function _bindCoreFunctions(target:MovieClip):Void {
+        target.开始射击       = _root.主角函数.开始射击;
+        target.主手持续射击   = _root.主角函数.主手持续射击;
+        target.副手持续射击   = _root.主角函数.副手持续射击;
+        target.开始换弹       = _root.主角函数.开始换弹;
+        target.换弹匣         = _root.主角函数.换弹匣;
+        target.结束换弹       = _root.主角函数.结束换弹;
+        target.刷新弹匣数显示 = _root.主角函数.刷新弹匣数显示;
+    }
+
+    /**
+     * 初始化双枪系统
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     * @param config    双枪配置对象
+     */
+    private static function _initDualGunSystem(target:MovieClip, parentRef:Object, config:Object):Void {
+        // 主手配置
+        var mainHandConfig:Object = {
+            handPrefix: "主手",
+            weaponType: "手枪",
+            otherHandPrefix: "副手", 
+            otherWeaponType: "手枪2",
+            weaponData: config.mainWeaponData,
+            extraParams: (config.extraParams && config.extraParams.main) ? config.extraParams.main : {},
+            timerProperty: "keepshooting",
+            bulletProperty: "子弹属性"
+        };
+        
+        // 副手配置
+        var subHandConfig:Object = {
+            handPrefix: "副手",
+            weaponType: "手枪2",
+            otherHandPrefix: "主手",
+            otherWeaponType: "手枪",
+            weaponData: config.subWeaponData,
+            extraParams: (config.extraParams && config.extraParams.sub) ? config.extraParams.sub : {},
+            timerProperty: "keepshooting2",
+            bulletProperty: "子弹属性2"
+        };
+        
+        // 初始化两把手枪
+        _initWeaponHand(target, parentRef, mainHandConfig);
+        _initWeaponHand(target, parentRef, subHandConfig);
+        
+        // 绑定射击和换弹函数
+        target.主手开始射击 = _createHandShootFunction(target, parentRef, mainHandConfig);
+        target.副手开始射击 = _createHandShootFunction(target, parentRef, subHandConfig);
+        target.主手换弹匣 = _createHandReloadFunction(target, parentRef, mainHandConfig);
+        target.副手换弹匣 = _createHandReloadFunction(target, parentRef, subHandConfig);
+        
+        // 绑定全局换弹函数
+        target.开始换弹 = _createDualGunReloadStartFunction(target, parentRef);
+        
+        // 刷新界面显示
+        target.刷新弹匣数显示();
+    }
+    
+    /**
+     * 初始化武器手的属性
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     * @param config    武器手配置对象
+     */
+    private static function _initWeaponHand(target:MovieClip, parentRef:Object, config:Object):Void {
+        var prefix:String = config.handPrefix;
+        var speedProp:String = prefix + "射击速度";
+        var magNameProp:String = prefix + "使用弹匣名称";
+        var singleShotProp:String = prefix + "是否单发";
+        var remainingMagProp:String = prefix + "剩余弹匣数";
+        
+        // 设置属性
+        target[speedProp] = config.weaponData[5];
+        target[magNameProp] = config.weaponData[11];
+        target[singleShotProp] = config.weaponData[3];
+        target[remainingMagProp] = parentRef.检查弹匣数量(target[magNameProp]);
+        
+        // 生成子弹属性
+        target[config.bulletProperty] = generateBulletProps(
+            parentRef, 
+            config.weaponType, 
+            config.weaponData, 
+            config.extraParams
+        );
+    }
+    
+    /**
+     * 创建手枪射击函数
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     * @param config    武器手配置对象
+     * @return 返回特定手的开始射击函数
+     */
+    private static function _createHandShootFunction(target:MovieClip, parentRef:Object, config:Object):Function {
+        var self:MovieClip = target;
+        var handPrefix:String = config.handPrefix;
+        var shootingFlagProp:String = handPrefix + "射击中";
+        var speedProp:String = handPrefix + "射击速度";
+        var remainingMagProp:String = handPrefix + "剩余弹匣数";
+        var weaponType:String = config.weaponType;
+        var otherWeaponType:String = config.otherWeaponType;
+        var timerProp:String = config.timerProperty;
+        var continueMethodName:String = handPrefix + "持续射击";
+        
+        return function():Void {
+            var that:MovieClip = self;
+            
+            // 检查是否可以射击
+            if (parentRef[shootingFlagProp] || that.换弹标签) return;
+            
+            // 检查弹匣状态
+            var weaponShotCountArray:String = weaponType + "射击次数";
+            var weaponShotCountIndex:String = weaponType;
+            var weaponMagCapacity:String = weaponType + "弹匣容量";
+            
+            if (parentRef[weaponShotCountArray][parentRef[weaponShotCountIndex]] >= parentRef[weaponMagCapacity]) {
+                // 其他手枪属性
+                var otherWeaponShotCountArray:String = otherWeaponType + "射击次数";
+                var otherWeaponShotCountIndex:String = otherWeaponType;
+                var otherWeaponMagCapacity:String = otherWeaponType + "弹匣容量";
+                
+                // 检查是否需要开始换弹
+                if ((parentRef[otherWeaponShotCountArray][parentRef[otherWeaponShotCountIndex]] >= 
+                    parentRef[otherWeaponMagCapacity] && that[remainingMagProp] > 0) 
+                    || _root.控制目标 != parentRef._name) {
+                    that.开始换弹();
+                }
+                return;
+            }
+            
+            // 检查射击许可
+            if (!that.射击许可标签) return;
+            
+            // 开始持续射击
+            var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, that[speedProp], that);
+            if (continueShooting) {
+                parentRef[timerProp] = _root.帧计时器.添加生命周期任务(
+                    parentRef,
+                    handPrefix + "开始射击",
+                    that[continueMethodName],
+                    that[speedProp],
+                    parentRef, weaponType, that[speedProp]
+                );
+            }
+        };
+    }
+    
+    /**
+     * 创建手枪换弹函数
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     * @param config    武器手配置对象
+     * @return 返回特定手的换弹匣函数
+     */
+    private static function _createHandReloadFunction(target:MovieClip, parentRef:Object, config:Object):Function {
+        var self:MovieClip = target;
+        var handPrefix:String = config.handPrefix;
+        var otherHandPrefix:String = config.otherHandPrefix;
+        var weaponType:String = config.weaponType;
+        var otherWeaponType:String = config.otherWeaponType;
+        var magNameProp:String = handPrefix + "使用弹匣名称";
+        
+        // 弹匣相关属性
+        var shotCountArray:String = weaponType + "射击次数";
+        var shotCountIndex:String = weaponType;
+        var otherShotCountArray:String = otherWeaponType + "射击次数";
+        var otherShotCountIndex:String = otherWeaponType;
+        
+        return function():Void {
+            var that:MovieClip = self;
+            
+            // 重置射击次数
+            parentRef[shotCountArray][parentRef[shotCountIndex]] = 0;
+            
+            if (_root.控制目标 === parentRef._name) {
+                // 使用弹匣
+                ItemUtil.singleSubmit(that[magNameProp], 1);
+                
+                // 更新弹匣数量（两把枪都需要更新）
+                that.主手剩余弹匣数 = parentRef.检查弹匣数量(that.主手使用弹匣名称);
+                that.副手剩余弹匣数 = parentRef.检查弹匣数量(that.副手使用弹匣名称);
+                
+                // 检查弹匣耗尽
+                if (that[handPrefix + "剩余弹匣数"] === 0) {
+                    _root.发布消息("弹匣耗尽！");
+                }
+                
+                // 更新物品与显示
+                _root.排列物品图标();
+                that.刷新弹匣数显示();
+                
+                // 主手特殊处理 - 检查是否可以结束换弹
+                if (handPrefix == "主手" && 
+                    (that.副手剩余弹匣数 == 0 || parentRef[otherShotCountArray][parentRef[otherShotCountIndex]] == 0)) {
+                    that.gotoAndPlay("换弹结束");
+                }
+            }
+        };
+    }
+    
+    /**
+     * 创建双枪模式的开始换弹函数
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     * @return 返回开始换弹函数
+     */
+    private static function _createDualGunReloadStartFunction(target:MovieClip, parentRef:Object):Function {
+        var self:MovieClip = target;
+        
+        return function():Void {
+            var that:MovieClip = self;
+            
+            // 检查换弹条件
+            if (that.换弹标签 || (parentRef.手枪射击次数[parentRef.手枪] == 0 && 
+                parentRef.手枪2射击次数[parentRef.手枪2] == 0)) {
+                return;
+            }
+            
+            if (_root.控制目标 === parentRef._name) {
+                // 检查主手是否需要换弹
+                if (parentRef.手枪射击次数[parentRef.手枪] > 0) {
+                    if (ItemUtil.singleContain(that.主手使用弹匣名称, 1)) {
+                        that.gotoAndPlay("主手换弹匣");
+                        return;
+                    }
+                } 
+                // 检查副手是否需要换弹
+                else if (parentRef.手枪2射击次数[parentRef.手枪2] > 0) {
+                    if (ItemUtil.singleContain(that.副手使用弹匣名称, 1)) {
+                        that.gotoAndPlay("副手换弹匣");
+                        return;
+                    }
+                }
+                that.gotoAndPlay("换弹结束");
+            } else {
+                that.gotoAndPlay("主手换弹匣");
+            }
+        };
+    }
+    
+    /**
+     * 初始化单武器系统
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     * @param config    单武器配置对象
+     */
+    private static function _initSingleGunSystem(target:MovieClip, parentRef:Object, config:Object):Void {
+        var weaponData:Array = config.weaponData;
+        var extraParams:Object = config.extraParams || {};
+        
+        // 设置基础属性
+        target.射击速度      = weaponData[5];
+        target.使用弹匣名称  = weaponData[11];
+        target.是否单发      = weaponData[3];
+        target.剩余弹匣数    = parentRef.检查弹匣数量(target.使用弹匣名称);
+        target.刷新弹匣数显示();
+        
+        // 生成子弹属性
+        target.子弹属性 = generateBulletProps(parentRef, config.weaponType, weaponData, extraParams);
+        
+        // 注意：此处不需要创建特殊函数，因为单武器使用标准的开始射击和换弹匣函数
+    }
+
+    /**
+     * 生成子弹属性对象
      * 保证功能不变的前提下对性能及代码结构进行了优化
+     * 
+     * @param parentRef  父级引用
+     * @param weaponType 武器类型
+     * @param weaponData 武器数据数组
+     * @param extraParams 额外参数对象
+     * @return 返回子弹属性对象
      */
     public static function generateBulletProps(parentRef:Object, weaponType:String, weaponData:Array, extraParams:Object):Object {
         var bulletProps:Object = {};
@@ -286,10 +415,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         return bulletProps;
     }
 
-    
     /**
      * 根据暴击参数生成暴击判断函数
      * @param critValue 数值（例如 20 表示 20% 暴击率）或字符串（例如 "满血暴击"）
+     * @return 返回暴击判断函数
      */
     public static function createCritLogic(critValue:Object):Function {
         if (!isNaN(Number(critValue))) {
@@ -314,9 +443,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     }
     
     // ======================================================
-    // 以下为各武器初始化包装方法，兼容原调用方式
+    // 各武器初始化包装方法，兼容原调用方式
     // ======================================================
     
+    /**
+     * 初始化长枪
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     */
     public static function initLongGun(target:MovieClip, parentRef:Object):Void {
         var config:Object = {
             weaponType: "长枪",
@@ -327,6 +461,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         ShootInitCore.initWeaponSystem(target, parentRef, config);
     }
     
+    /**
+     * 初始化手枪
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     */
     public static function initPistol(target:MovieClip, parentRef:Object):Void {
         var config:Object = {
             weaponType: "手枪",
@@ -337,6 +476,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         ShootInitCore.initWeaponSystem(target, parentRef, config);
     }
     
+    /**
+     * 初始化手枪2
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     */
     public static function initPistol2(target:MovieClip, parentRef:Object):Void {
         var config:Object = {
             weaponType: "手枪2",
@@ -347,7 +491,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         ShootInitCore.initWeaponSystem(target, parentRef, config);
     }
     
+    /**
+     * 初始化双枪
+     * @param target    目标 MovieClip
+     * @param parentRef 父级引用
+     */
     public static function initDualGun(target:MovieClip, parentRef:Object):Void {
+        // 创建主手额外参数对象
         var mainExtra:Object = {
             伤害类型        : parentRef.手枪伤害类型,
             魔法伤害属性    : parentRef.手枪魔法伤害属性,
@@ -357,6 +507,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             暴击            : parentRef.手枪暴击,
             斩杀            : parentRef.手枪斩杀
         };
+        
+        // 创建副手额外参数对象
         var subExtra:Object = {
             伤害类型        : parentRef.手枪2伤害类型,
             魔法伤害属性    : parentRef.手枪2魔法伤害属性,
@@ -366,6 +518,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             暴击            : parentRef.手枪2暴击,
             斩杀            : parentRef.手枪2斩杀
         };
+        
+        // 创建双枪配置
         var config:Object = {
             weaponType     : "双枪",
             isDualGun      : true,
@@ -373,6 +527,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             subWeaponData  : parentRef.手枪2属性数组[14],
             extraParams    : { main: mainExtra, sub: subExtra }
         };
+        
+        // 调用通用初始化函数
         ShootInitCore.initWeaponSystem(target, parentRef, config);
     }
 }
