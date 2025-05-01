@@ -67,13 +67,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 var that:MovieClip = self;
                 if (parentRef.主手射击中 || that.换弹标签) return;
                 if (parentRef.手枪射击次数[parentRef.手枪] >= parentRef.手枪弹匣容量) {
-                    if (ItemUtil.singleContain(that.主手使用弹匣名称, 1)) {
-                        that.gotoAndPlay("主手换弹匣");
-                    } else {
-                        if ((parentRef.手枪2射击次数[parentRef.手枪2] >= parentRef.手枪2弹匣容量 && that.主手剩余弹匣数 > 0)
-                            || _root.控制目标 != parentRef._name) {
-                            that.开始换弹();
-                        }
+                    // 关键修改：删除直接跳转到换弹匣的代码，使用原始判断逻辑
+                    if ((parentRef.手枪2射击次数[parentRef.手枪2] >= parentRef.手枪2弹匣容量 && that.主手剩余弹匣数 > 0) 
+                        || _root.控制目标 != parentRef._name) {
+                        that.开始换弹();
                     }
                     return;
                 }
@@ -95,13 +92,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 var that:MovieClip = self;
                 if (parentRef.副手射击中 || that.换弹标签) return;
                 if (parentRef.手枪2射击次数[parentRef.手枪2] >= parentRef.手枪2弹匣容量) {
-                    if (ItemUtil.singleContain(that.副手使用弹匣名称, 1)) {
-                        that.gotoAndPlay("副手换弹匣");
-                    } else {
-                        if ((parentRef.手枪射击次数[parentRef.手枪] >= parentRef.手枪弹匣容量 && that.副手剩余弹匣数 > 0)
-                            || _root.控制目标 != parentRef._name) {
-                            that.开始换弹();
-                        }
+                    // 关键修改：保留原始判断逻辑
+                    if ((parentRef.手枪射击次数[parentRef.手枪] >= parentRef.手枪弹匣容量 && that.副手剩余弹匣数 > 0)
+                        || _root.控制目标 != parentRef._name) {
+                        that.开始换弹();
                     }
                     return;
                 }
