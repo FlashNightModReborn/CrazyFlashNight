@@ -1,12 +1,42 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--已用ID：[4, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 143, 437, 438, 471, 517, 569, 579, 580, 581, 582, 583, 653, 833, 1553, 1702, 2517, 22011]
-预留ID区间： 18602-18700 -->
+预留ID区间： 18603-18700 -->
 <root>
+  <item>
+    <id>18602</id>
+    <name>高爆手雷</name>
+    <displayname>高爆手雷</displayname>
+    <icon>高爆手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <weight>1</weight>
+    <price>6000</price>
+    <description>高爆手雷，兼具威力与范围</description>
+    <level>25</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>高爆手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>高爆手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>6000</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>手雷-高爆手雷</dressup>
+    </equipped>
+  </item>
   <item>
     <id>18601</id>
     <name>砖</name>
     <displayname>砖</displayname>
-    <icon>砖头</icon>
+    <icon>砖</icon>
     <type>消耗品</type>
     <use>手雷</use>
     <weight>1</weight>
@@ -14,13 +44,22 @@
     <description>在随处可见的房屋废墟附近，突然遇见丧尸，这是末日下幸存者最无奈，也是最后的武器了。可以投掷。</description>
     <level>1</level>
     <data>
-      <power>100</power>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>22</velocity>
+      <bullet>砖</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>砖</clipname>
+      <bulletsize>50</bulletsize>
+      <power>70</power>
+      <impact>1</impact>
     </data>
     <equipped>
-      <dressup>刀-砖头</dressup>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
+      <dressup>手雷-砖</dressup>
     </equipped>
   </item>
   <item>

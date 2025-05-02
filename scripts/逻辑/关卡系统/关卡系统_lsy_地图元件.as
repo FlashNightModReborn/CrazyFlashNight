@@ -62,6 +62,17 @@ _root.拾取并装备 = function(itemName, value){
 				_root.gameworld[_root.控制目标].攻击模式切换(itemData.use);
 			}
 		}
+		// else if(!装备 && itemData.use){
+		// 	if(itemData.use == "手雷"){
+		// 		_root.物品栏.装备栏.add(itemData.use,{name:itemName, value:value});
+		// 	}else{
+		// 		_root.物品栏.装备栏.add(itemData.use,{name:itemName, value:{level:value}});
+		// 	}
+		// 	_root.刷新人物装扮(_root.控制目标);
+		// 	if(itemData.type == "武器" || itemData.use == "手雷"){
+		// 		_root.gameworld[_root.控制目标].攻击模式切换(itemData.use);
+		// 	}
+		// }
 		else{
 			return false
 		}
