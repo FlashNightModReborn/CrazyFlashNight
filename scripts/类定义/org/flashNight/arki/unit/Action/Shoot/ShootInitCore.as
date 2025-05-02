@@ -182,7 +182,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             var needReload:Boolean = (mainIsEmpty && otherIsEmpty);
             needReload = needReload || (mainIsEmpty && otherIsFull);
             needReload = needReload || (mainIsFull && otherIsEmpty);
-            // needReload = needReload || ((mainIsEmpty || otherIsEmpty) && !isSameWeapon);
+            needReload = needReload || ((mainIsEmpty || otherIsEmpty) && !isSameWeapon);
 
             if (needReload) {
   
@@ -231,10 +231,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var shotCountIndex:String = weaponType;
         var otherShotCountArray:String = otherWeaponType + "射击次数";
         var otherShotCountIndex:String = otherWeaponType;
+
+        var weaponMagCapacity:String = weaponType + "弹匣容量";
+        var otherWeaponMagCapacity:String = otherWeaponType + "弹匣容量";
+        var isSameWeapon:Boolean = (parentRef[weaponType] == parentRef[otherWeaponType])
         
         return function():Void {
             var that:MovieClip = self;
-            
             // 重置射击次数
             parentRef[shotCountArray][parentRef[shotCountIndex]] = 0;
             
@@ -254,11 +257,23 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 // 更新物品与显示
                 _root.排列物品图标();
                 that.刷新弹匣数显示();
+
                 
                 // 主手特殊处理 - 检查是否可以结束换弹
-                if (handPrefix == "主手" && 
-                    (that.副手剩余弹匣数 == 0 || parentRef[otherShotCountArray][parentRef[otherShotCountIndex]] == 0)) {
-                    that.gotoAndPlay("换弹结束");
+                if (handPrefix == "主手") {
+                    var otherNumber:Number = parentRef[otherShotCountArray][parentRef[otherShotCountIndex]];
+                    // _root.发布消息("主手", that.副手剩余弹匣数, isSameWeapon, otherNumber, parentRef[otherWeaponMagCapacity])
+                    if(that.副手剩余弹匣数 == 0 || (isSameWeapon ? (otherNumber == 0) :
+                                                                   otherNumber < parentRef[otherWeaponMagCapacity])) {
+                        that.gotoAndPlay("换弹结束");
+                    }
+                } else {
+                    var mainNumber:Number = parentRef[shotCountArray][parentRef[shotCountIndex]];
+                    // _root.发布消息("副手", that.主手剩余弹匣数, isSameWeapon, mainNumber, parentRef[weaponMagCapacity])
+                    if(that.主手剩余弹匣数 == 0 || (isSameWeapon ? (mainNumber == 0) :
+                                                                   mainNumber < parentRef[weaponMagCapacity])) {
+                        that.gotoAndPlay("换弹结束");
+                    }
                 }
             }
         };
@@ -276,22 +291,47 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         return function():Void {
             var that:MovieClip = self;
             
-            // 检查换弹条件
-            if (that.换弹标签 || (parentRef.手枪射击次数[parentRef.手枪] == 0 && 
-                parentRef.手枪2射击次数[parentRef.手枪2] == 0)) {
+            // 检查换弹标签
+            if (that.换弹标签) {
+                return;
+            }
+            
+            // 检查弹匣状态
+            var mainWeaponType:String = "手枪";
+            var subWeaponType:String = "手枪2";
+            
+            var mainShotCountArray:String = mainWeaponType + "射击次数";
+            var mainShotCountIndex:String = mainWeaponType;
+            var mainMagCapacity:String = mainWeaponType + "弹匣容量";
+            
+            var subShotCountArray:String = subWeaponType + "射击次数";
+            var subShotCountIndex:String = subWeaponType;
+            var subMagCapacity:String = subWeaponType + "弹匣容量";
+            
+            var mainNumber:Number = parentRef[mainShotCountArray][parentRef[mainShotCountIndex]];
+            var subNumber:Number = parentRef[subShotCountArray][parentRef[subShotCountIndex]];
+            
+            var mainIsEmpty:Boolean = mainNumber >= parentRef[mainMagCapacity];
+            var subIsEmpty:Boolean = subNumber >= parentRef[subMagCapacity];
+            
+            var mainIsFull:Boolean = mainNumber == 0;
+            var subIsFull:Boolean = subNumber == 0;
+
+            // 如果两把枪都是满的，则不需要换弹
+            if (mainIsFull && subIsFull) {
                 return;
             }
             
             if (_root.控制目标 === parentRef._name) {
                 // 检查主手是否需要换弹
-                if (parentRef.手枪射击次数[parentRef.手枪] > 0) {
+                if (mainIsEmpty || (!mainIsFull && !subIsEmpty)) {
                     if (ItemUtil.singleContain(that.主手使用弹匣名称, 1)) {
                         that.gotoAndPlay("主手换弹匣");
                         return;
                     }
                 } 
                 // 检查副手是否需要换弹
-                else if (parentRef.手枪2射击次数[parentRef.手枪2] > 0) {
+                else if (subIsEmpty || (!subIsFull && !mainIsEmpty)) {
                     if (ItemUtil.singleContain(that.副手使用弹匣名称, 1)) {
                         that.gotoAndPlay("副手换弹匣");
                         return;
