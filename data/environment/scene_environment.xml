@@ -432,4 +432,18 @@
         <MinIllumination>5</MinIllumination>
         <BGM>Drone</BGM>
     </Environment>
+	    <Environment>
+        <BackgroundURL>地图-堕落城商业街</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>30</Xmin>
+        <Xmax>1300</Xmax>
+        <Ymin>230</Ymin>
+        <Ymax>540</Ymax>
+        <Width>1300</Width>
+        <Height>540</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>5</MinIllumination>
+        <BGM>Dialtone</BGM>
+    </Environment>
 </EnvironmentSettings>
