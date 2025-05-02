@@ -3,6 +3,36 @@
 预留ID区间：17702-17900-->
 <root>
  <item>
+    <id>2004</id>
+    <name>SAI GRY 幽灵</name>
+    <displayname>SAI GRY 幽灵</displayname>
+    <icon>SAI GRY 幽灵</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>4</weight>
+    <price>260000</price>
+    <description>SAI GRY源自美国内华达州拉斯维加斯的SAI公司，这家专注于高端轻武器制作与销售的小型轻武器公司的产品深受军警部门、民间玩家和竞技射手的喜爱，凭借独特的外观设计、科技感十足的配置以及卓越的质量而独树一帜。此版本增加了各种战术套件及“越狱”枪口制退器和特殊涂装，使其性能更加强悍！ </description>
+    <level>40</level>
+    <data>
+      <capacity>40</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>100</interval>
+      <velocity>45</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>TR1.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>26</bulletsize>
+      <power>400</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-SAI GRY 幽灵</dressup>
+    </equipped>
+  </item> 
+<item>
     <id>8300</id>
     <name>G3SG1</name>
     <displayname>G3SG1</displayname>
