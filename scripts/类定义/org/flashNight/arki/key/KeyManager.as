@@ -580,15 +580,22 @@ class org.flashNight.arki.key.KeyManager {
         controlSettings:Array
     ):Void {
         // 如果提供的键位数组长度较短，则自动追加默认按键配置
-        if (keySettings.length < 30) {
-            var newKeys:Array = [
-                [translationFunction("互动键"), "互动键", 69],
-                [translationFunction("武器技能键"), "武器技能键", 70],
-                [translationFunction("飞行键"), "飞行键", 18],
-                [translationFunction("武器变形键"), "武器变形键", 81],
-                [translationFunction("奔跑键"), "奔跑键", 16]
-            ];
-            keySettings = keySettings.concat(newKeys);
+        // if (keySettings.length < 30) {
+        //     var newKeys:Array = [
+        //         [translationFunction("互动键"), "互动键", 69],
+        //         [translationFunction("武器技能键"), "武器技能键", 70],
+        //         [translationFunction("飞行键"), "飞行键", 18],
+        //         [translationFunction("武器变形键"), "武器变形键", 81],
+        //         [translationFunction("奔跑键"), "奔跑键", 16],
+        //         [translationFunction("组合键"), "组合键", 17]
+        //     ];
+        //     keySettings = keySettings.concat(newKeys);
+        //     _root.键值设定 = keySettings;
+        // }
+
+        //逻辑改为如果键位数组长度小于默认键位长度，则重置为默认按键
+        if (keySettings.length < _root.默认键值设定.length) {
+            keySettings = _root.默认键值设定;
             _root.键值设定 = keySettings;
         }
 
