@@ -1,23 +1,32 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
+import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
+import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 
 /**
  * ShootInitCore.as
  * 
- * 武器初始化核心类，将原 _root.主角函数 中的初始化逻辑封装到此类中
- * 经过重构优化，降低了代码重复度，提高了可维护性
- * 主要负责：
+ * 武器初始化核心类，将武器系统的初始化逻辑统一封装
+ * 完全重构后不再依赖_root.主角函数，直接使用各功能类
+ * 
+ * 主要职责：
  * 1. 单武器和双武器系统的初始化逻辑
  * 2. 武器属性的设置与子弹属性的生成
  * 3. 射击和换弹等功能函数的创建与绑定
  * 4. 使用武器状态管理器统一管理双枪状态逻辑
+ * 
+ * 设计原则：
+ * - 模块化：每个方法专注于单一职责
+ * - 低耦合：减少对全局对象的依赖
+ * - 高内聚：相关功能集中在一起
+ * - 可扩展：便于添加新武器类型和属性
  */
 class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
     /**
      * 通用武器系统初始化函数
      * @param target    目标 MovieClip（原先依赖时间轴的 clip）
-     * @param parentRef 父级引用（原 _parent 改为通过参数传入）
+     * @param parentRef 父级引用（原 _parent 引用）
      * @param config    配置对象：
      *    - weaponType      : 武器类型 ("长枪"、"手枪"、"手枪2"、"双枪")
      *    - isDualGun       : 是否为双枪模式（true/false）
@@ -35,38 +44,68 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             return;
         }
         
-        // 绑定核心函数到目标对象
-        _bindCoreFunctions(self);
+        // 绑定核心函数到目标对象，传入必要的引用
+        _bindCoreFunctions(self, parentRef, _root);
         
         // 处理双枪/单枪模式
         if (config.isDualGun) {
-            _initDualGunSystem(self, parentRef, config);
+            _initDualGunSystem(self, parentRef, _root, config);
         } else {
-            _initSingleGunSystem(self, parentRef, config);
+            _initSingleGunSystem(self, parentRef, _root, config);
         }
     }
 
     /**
      * 绑定核心函数到目标对象
-     * @param target 目标 MovieClip
+     * 直接使用各功能类的方法，不再依赖_root.主角函数
+     * 
+     * @param target     目标 MovieClip
+     * @param parentRef  父级引用
+     * @param rootRef    根引用（用于传递给功能类）
      */
-    private static function _bindCoreFunctions(target:MovieClip):Void {
-        target.开始射击       = _root.主角函数.开始射击;
-        target.主手持续射击   = _root.主角函数.主手持续射击;
-        target.副手持续射击   = _root.主角函数.副手持续射击;
-        target.开始换弹       = _root.主角函数.开始换弹;
-        target.换弹匣         = _root.主角函数.换弹匣;
-        target.结束换弹       = _root.主角函数.结束换弹;
-        target.刷新弹匣数显示 = _root.主角函数.刷新弹匣数显示;
+    private static function _bindCoreFunctions(target:MovieClip, parentRef:Object, rootRef:Object):Void {
+        // ShootCore 相关函数
+        target.开始射击 = function() {
+            ShootCore.startShooting(parentRef, target, ShootCore.primaryParams, rootRef);
+        };
+        
+        // 持续射击函数
+        target.主手持续射击 = function(core, attackMode, shootSpeed) {
+            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.primaryParams);
+        };
+        
+        target.副手持续射击 = function(core, attackMode, shootSpeed) {
+            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.secondaryParams);
+        };
+        
+        // ReloadManager 相关函数
+        target.开始换弹 = function() {
+            ReloadManager.startReload(target, parentRef, rootRef);
+        };
+        
+        target.换弹匣 = function() {
+            ReloadManager.reloadMagazine(target, parentRef, rootRef);
+        };
+        
+        target.结束换弹 = function() {
+            ReloadManager.finishReload(target);
+        };
+        
+        target.刷新弹匣数显示 = function() {
+            ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
+        };
     }
 
     /**
      * 初始化双枪系统
+     * 完整配置双枪模式下的武器属性、状态管理和函数绑定
+     * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
+     * @param rootRef   根引用
      * @param config    双枪配置对象
      */
-    private static function _initDualGunSystem(target:MovieClip, parentRef:Object, config:Object):Void {
+    private static function _initDualGunSystem(target:MovieClip, parentRef:Object, rootRef:Object, config:Object):Void {
         // 创建武器状态管理器
         var stateManager:WeaponStateManager = new WeaponStateManager(
             parentRef, 
@@ -105,14 +144,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         _initWeaponHand(target, parentRef, mainHandConfig);
         _initWeaponHand(target, parentRef, subHandConfig);
         
-        // 绑定射击和换弹函数，传入状态管理器
+        // 绑定射击函数
         target.主手开始射击 = _createHandShootFunction(target, parentRef, mainHandConfig, stateManager);
         target.副手开始射击 = _createHandShootFunction(target, parentRef, subHandConfig, stateManager);
-        target.主手换弹匣 = _createHandReloadFunction(target, parentRef, mainHandConfig, stateManager);
-        target.副手换弹匣 = _createHandReloadFunction(target, parentRef, subHandConfig, stateManager);
         
-        // 绑定全局换弹函数
-        target.开始换弹 = _createDualGunReloadStartFunction(target, parentRef, stateManager);
+        // 使用ReloadManager创建换弹函数
+        target.主手换弹匣 = ReloadManager.createHandReloadFunction(target, parentRef, rootRef, mainHandConfig, stateManager);
+        target.副手换弹匣 = ReloadManager.createHandReloadFunction(target, parentRef, rootRef, subHandConfig, stateManager);
+        
+        // 使用ReloadManager创建开始换弹函数
+        target.开始换弹 = ReloadManager.createDualGunReloadStartFunction(target, parentRef, rootRef, stateManager);
         
         // 刷新界面显示
         target.刷新弹匣数显示();
@@ -120,6 +161,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 初始化武器手的属性
+     * 设置特定手持武器的基本属性和子弹属性
+     * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
      * @param config    武器手配置对象
@@ -148,6 +191,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 创建手枪射击函数
+     * 封装了特定手枪的射击逻辑和状态判断
+     * 
      * @param target        目标 MovieClip
      * @param parentRef     父级引用
      * @param config        武器手配置对象
@@ -200,115 +245,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     }
     
     /**
-     * 创建手枪换弹函数
-     * @param target        目标 MovieClip
-     * @param parentRef     父级引用
-     * @param config        武器手配置对象
-     * @param stateManager  武器状态管理器
-     * @return 返回特定手的换弹匣函数
-     */
-    private static function _createHandReloadFunction(target:MovieClip, parentRef:Object, config:Object, stateManager:WeaponStateManager):Function {
-        var self:MovieClip = target;
-        var handPrefix:String = config.handPrefix;
-        var weaponType:String = config.weaponType;
-        var magNameProp:String = handPrefix + "使用弹匣名称";
-        
-        // 弹匣相关属性
-        var shotCountArray:String = weaponType + "射击次数";
-        var shotCountIndex:String = weaponType;
-        
-        return function():Void {
-            var that:MovieClip = self;
-            // 重置射击次数
-            parentRef[shotCountArray][parentRef[shotCountIndex]] = 0;
-            
-            if (_root.控制目标 === parentRef._name) {
-                // 使用弹匣
-                ItemUtil.singleSubmit(that[magNameProp], 1);
-                
-                // 更新弹匣数量（两把枪都需要更新）
-                that.主手剩余弹匣数 = parentRef.检查弹匣数量(that.主手使用弹匣名称);
-                that.副手剩余弹匣数 = parentRef.检查弹匣数量(that.副手使用弹匣名称);
-                
-                // 检查弹匣耗尽
-                if (that[handPrefix + "剩余弹匣数"] === 0) {
-                    _root.发布消息("弹匣耗尽！");
-                }
-                
-                // 更新物品与显示
-                _root.排列物品图标();
-                that.刷新弹匣数显示();
-                
-                // 更新武器状态
-                stateManager.updateState();
-                
-                // 使用状态管理器检查是否可以结束换弹
-                if (handPrefix == "主手") {
-                    if (stateManager.canFinishMainHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数)) {
-                        that.gotoAndPlay("换弹结束");
-                    }
-                } else {
-                    if (stateManager.canFinishSubHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数)) {
-                        that.gotoAndPlay("换弹结束");
-                    }
-                }
-            }
-        };
-    }
-    
-    /**
-     * 创建双枪模式的开始换弹函数
-     * @param target        目标 MovieClip
-     * @param parentRef     父级引用
-     * @param stateManager  武器状态管理器
-     * @return 返回开始换弹函数
-     */
-    private static function _createDualGunReloadStartFunction(target:MovieClip, parentRef:Object, stateManager:WeaponStateManager):Function {
-        var self:MovieClip = target;
-        
-        return function():Void {
-            var that:MovieClip = self;
-            
-            // 检查换弹标签
-            if (that.换弹标签) {
-                return;
-            }
-            
-            // 更新武器状态
-            stateManager.updateState();
-            
-            // 使用状态管理器检查是否需要任何换弹
-            if (!stateManager.needsAnyReload()) {
-                return;
-            }
-            
-            if (_root.控制目标 === parentRef._name) {
-                // 使用状态管理器检查应该优先换哪把枪
-                if (stateManager.shouldReloadMainFirst()) {
-                    if (ItemUtil.singleContain(that.主手使用弹匣名称, 1)) {
-                        that.gotoAndPlay("主手换弹匣");
-                        return;
-                    }
-                } else {
-                    if (ItemUtil.singleContain(that.副手使用弹匣名称, 1)) {
-                        that.gotoAndPlay("副手换弹匣");
-                        return;
-                    }
-                }
-                that.gotoAndPlay("换弹结束");
-            } else {
-                that.gotoAndPlay("主手换弹匣");
-            }
-        };
-    }
-    
-    /**
      * 初始化单武器系统
+     * 设置单武器的基本属性和子弹生成
+     * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
+     * @param rootRef   根引用
      * @param config    单武器配置对象
      */
-    private static function _initSingleGunSystem(target:MovieClip, parentRef:Object, config:Object):Void {
+    private static function _initSingleGunSystem(target:MovieClip, parentRef:Object, rootRef:Object, config:Object):Void {
         var weaponData:Array = config.weaponData;
         var extraParams:Object = config.extraParams || {};
         
@@ -317,21 +262,23 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         target.使用弹匣名称  = weaponData[11];
         target.是否单发      = weaponData[3];
         target.剩余弹匣数    = parentRef.检查弹匣数量(target.使用弹匣名称);
+        
+        // 更新弹药UI显示
         target.刷新弹匣数显示();
         
         // 生成子弹属性
         target.子弹属性 = generateBulletProps(parentRef, config.weaponType, weaponData, extraParams);
         
-        // 注意：此处不需要创建特殊函数，因为单武器使用标准的开始射击和换弹匣函数
+        // 单武器使用标准的开始射击和换弹匣函数，已在_bindCoreFunctions中绑定
     }
 
     /**
      * 生成子弹属性对象
-     * 保证功能不变的前提下对性能及代码结构进行了优化
+     * 根据武器类型、数据和额外参数生成完整的子弹属性配置
      * 
-     * @param parentRef  父级引用
-     * @param weaponType 武器类型
-     * @param weaponData 武器数据数组
+     * @param parentRef   父级引用
+     * @param weaponType  武器类型
+     * @param weaponData  武器数据数组
      * @param extraParams 额外参数对象
      * @return 返回子弹属性对象
      */
@@ -431,6 +378,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
     /**
      * 根据暴击参数生成暴击判断函数
+     * 支持数值暴击率和特殊条件暴击（如满血暴击）
+     * 
      * @param critValue 数值（例如 20 表示 20% 暴击率）或字符串（例如 "满血暴击"）
      * @return 返回暴击判断函数
      */
@@ -462,6 +411,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 初始化长枪
+     * 为长枪武器创建标准配置并调用通用初始化方法
+     * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
      */
@@ -477,6 +428,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 初始化手枪
+     * 为手枪武器创建标准配置并调用通用初始化方法
+     * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
      */
@@ -492,6 +445,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 初始化手枪2
+     * 为副手手枪创建标准配置并调用通用初始化方法
+     * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
      */
@@ -507,6 +462,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 初始化双枪
+     * 创建双枪系统的完整配置并调用通用初始化方法
+     * 包括主副手的所有特殊属性配置
+     * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
      */

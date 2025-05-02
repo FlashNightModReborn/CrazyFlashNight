@@ -49,7 +49,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      *   - playerBulletField: String, 玩家界面中需要更新的子弹数属性，如 "子弹数" 或 "子弹数_2"
      * @return Boolean       返回是否处于持续射击状态
      */
-    public static function continuousShoot(core:MovieClip, attackMode:String, shootSpeed:Number, params:Object):Boolean {
+    public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object):Boolean {
         // 缓存常用全局对象和属性引用
         var root:Object = _root;
         var man:Object  = core.man;
@@ -181,7 +181,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      */
     
     public static function startShooting(
-        core:MovieClip,           // 自机对象（原 parent）
+        core:Object,           // 自机对象（原 parent）
         protagonist:Object,       // 原主角函数对象（原 this）
         params:Object,            // 主副手参数（primaryParams/secondaryParams）
         root:Object               // 全局根引用
