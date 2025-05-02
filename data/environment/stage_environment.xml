@@ -113,6 +113,15 @@
         <Ymax>600</Ymax>
         <Width>1900</Width>
         <Height>600</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>右</Direction>
+            <x0>1220</x0>
+            <y0>330</y0>
+            <x1>1400</x1>
+            <y1>610</y1>
+            <Identifier>横向地图路障</Identifier>
+        </Door>
         <Collision>
             <Point>1225,320</Point>
             <Point>1450,320</Point>
