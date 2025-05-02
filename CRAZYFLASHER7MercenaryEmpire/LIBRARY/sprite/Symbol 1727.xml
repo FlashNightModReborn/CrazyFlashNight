@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1746206006" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1746206080" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="Symbol 1727" currentFrame="4">
       <layers>
@@ -859,7 +859,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#D56492">
+        <DOMLayer name="Layer 21" color="#D56492" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -920,7 +920,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1701" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1701" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="2.97979736328125" tx="190.3" ty="147.95"/>
                   </matrix>
@@ -929,7 +929,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   更改键设定(24);
+   更改键设定(34);
 }
 ]]></script>
                   </Actionscript>
@@ -1544,7 +1544,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#1FE5C1" current="true" isSelected="true">
+        <DOMLayer name="Layer 35" color="#1FE5C1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2384,7 +2384,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="154" height="15.55" isSelectable="false" variableName="键名24">
+                <DOMDynamicText fontRenderingMode="device" width="154" height="15.55" isSelectable="false" variableName="键名34">
                   <matrix>
                     <Matrix tx="6.5" ty="140"/>
                   </matrix>
