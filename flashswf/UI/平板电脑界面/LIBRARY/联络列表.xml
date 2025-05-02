@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1728791153" lastUniqueIdentifier="19">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1746208940" lastUniqueIdentifier="19">
   <timeline>
     <DOMTimeline name="联络列表">
       <layers>
@@ -33,11 +33,35 @@ function 刷新NPC列表()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC头像" name="NPC头像" selected="true" centerPoint3DX="325" centerPoint3DY="185">
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix a="1.21710205078125" d="1.29035949707031" tx="-94.3" ty="-75.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="342.1" y="163.1"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!8685 5225S2|5000 5225!5000 5225|5000 1300!5000 1300|8685 1364!8685 1364|8685 5225"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头像" color="#FF800A" parentLayerIndex="1" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC头像" name="NPC头像" centerPoint3DX="325" centerPoint3DY="185">
                   <matrix>
                     <Matrix tx="250" ty="90"/>
                   </matrix>

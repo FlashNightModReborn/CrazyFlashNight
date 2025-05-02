@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1743104269" lastUniqueIdentifier="275">
   <timeline>
-    <DOMTimeline name="平板背景" currentFrame="98">
+    <DOMTimeline name="平板背景" currentFrame="40">
       <layers>
         <DOMLayer name="标识" color="#808080" autoNamed="false">
           <frames>
@@ -280,7 +280,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="联络界面商店内容" color="#9933CC" autoNamed="false">
+        <DOMLayer name="联络界面商店内容" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements/>
@@ -347,7 +347,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="材料大全界面内容" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="材料大全界面内容" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
