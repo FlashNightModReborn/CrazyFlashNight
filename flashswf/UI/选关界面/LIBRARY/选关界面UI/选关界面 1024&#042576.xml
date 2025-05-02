@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1745166945" lastUniqueIdentifier="206">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1746165665" lastUniqueIdentifier="207">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576" currentFrame="25">
+    <DOMTimeline name="选关界面 1024*576" currentFrame="11">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -1486,7 +1486,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-联合大学" selected="true" centerPoint3DX="163.6" centerPoint3DY="207.45">
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-联合大学" centerPoint3DX="163.6" centerPoint3DY="207.45">
                   <matrix>
                     <Matrix tx="163.6" ty="68.75"/>
                   </matrix>
@@ -1527,6 +1527,21 @@ onClipEvent(load){
                     <script><![CDATA[onClipEvent(load){
    this.配置关卡属性 = _root.配置关卡属性;
    this.配置关卡属性("堕落城下水道入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="外交地图-堕落城商业街" selected="true" centerPoint3DX="626.45" centerPoint3DY="104.05">
+                  <matrix>
+                    <Matrix tx="613.95" ty="104.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-堕落城商业街");
 }
 ]]></script>
                   </Actionscript>
@@ -2064,7 +2079,7 @@ on(rollOver){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-同盟外交站" selected="true" centerPoint3DX="119.3" centerPoint3DY="349.95">
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-同盟外交站" centerPoint3DX="119.3" centerPoint3DY="349.95">
                   <matrix>
                     <Matrix tx="119.3" ty="220.65"/>
                   </matrix>
@@ -3916,7 +3931,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="25" duration="9" keyMode="9728">
               <elements>
-                <DOMBitmapInstance libraryItemName="背景-禁区-topaz-enhance-1024w.png"/>
+                <DOMBitmapInstance selected="true" libraryItemName="背景-禁区-topaz-enhance-1024w.png"/>
               </elements>
             </DOMFrame>
             <DOMFrame index="34" duration="12" keyMode="9728">
