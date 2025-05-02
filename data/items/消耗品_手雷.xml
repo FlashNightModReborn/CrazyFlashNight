@@ -1,7 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--已用ID：[4, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 143, 437, 438, 471, 517, 569, 579, 580, 581, 582, 583, 653, 833, 1553, 1702, 2517, 22011]
-预留ID区间：18601-18700-->
+预留ID区间： 18602-18700 -->
 <root>
+  <item>
+    <id>18601</id>
+    <name>砖</name>
+    <displayname>砖</displayname>
+    <icon>砖头</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <weight>1</weight>
+    <price>100</price>
+    <description>在随处可见的房屋废墟附近，突然遇见丧尸，这是末日下幸存者最无奈，也是最后的武器了。可以投掷。</description>
+    <level>1</level>
+    <data>
+      <power>100</power>
+    </data>
+    <equipped>
+      <dressup>刀-砖头</dressup>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+    </equipped>
+  </item>
   <item>
     <id>4</id>
     <name>普通手雷</name>

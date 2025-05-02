@@ -29,6 +29,8 @@ _root.pickupItemManager.pickup = function(target, 拾取者, 播放拾取动画)
 	}else if (itemName == "K点"){
 		_root.虚拟币 += value;
 		str += "K点" + value;
+	}else if (!拾取者 && Key.isDown(_root.组合键) &&_root.拾取并装备(itemName, value)){
+		str =  "已拾取并装备" + itemName;
 	}else if (_root.singleAcquire(itemName, value)){
 		str += itemName + value + "个。";
 	}else{
@@ -44,6 +46,29 @@ _root.pickupItemManager.pickup = function(target, 拾取者, 播放拾取动画)
 	if (!拾取者 && 播放拾取动画){
 		控制对象.拾取();
 	}
+}
+_root.拾取并装备 = function(itemName, value){
+	var itemData = _root.getItemData(itemName);
+	if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
+		装备 = _root.物品栏.装备栏.getNameString(itemData.use);
+		if(!装备 && itemData.use){
+			if(itemData.use == "手雷"){
+				_root.物品栏.装备栏.add(itemData.use,{name:itemName, value:value});
+			}else{
+				_root.物品栏.装备栏.add(itemData.use,{name:itemName, value:{level:value}});
+			}
+			_root.刷新人物装扮(_root.控制目标);
+			if(itemData.type == "武器" || itemData.use == "手雷"){
+				_root.gameworld[_root.控制目标].攻击模式切换(itemData.use);
+			}
+		}
+		else{
+			return false
+		}
+	}else{
+		return false
+	}
+	return true
 }
 
 _root.创建可拾取物 = function(物品名, 数量, X位置, Y位置, 是否飞出, parameterObject){
