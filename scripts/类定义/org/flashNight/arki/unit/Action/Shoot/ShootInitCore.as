@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.*;
+import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 
 /**
  * ShootInitCore.as
@@ -9,6 +10,7 @@
  * 1. 单武器和双武器系统的初始化逻辑
  * 2. 武器属性的设置与子弹属性的生成
  * 3. 射击和换弹等功能函数的创建与绑定
+ * 4. 使用武器状态管理器统一管理双枪状态逻辑
  */
 class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
@@ -65,6 +67,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * @param config    双枪配置对象
      */
     private static function _initDualGunSystem(target:MovieClip, parentRef:Object, config:Object):Void {
+        // 创建武器状态管理器
+        var stateManager:WeaponStateManager = new WeaponStateManager(
+            parentRef, 
+            "手枪",    // 主手武器类型
+            "手枪2"    // 副手武器类型
+        );
+        
+        // 将状态管理器保存到目标对象中，方便其他方法访问
+        target.weaponStateManager = stateManager;
+        
         // 主手配置
         var mainHandConfig:Object = {
             handPrefix: "主手",
@@ -93,14 +105,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         _initWeaponHand(target, parentRef, mainHandConfig);
         _initWeaponHand(target, parentRef, subHandConfig);
         
-        // 绑定射击和换弹函数
-        target.主手开始射击 = _createHandShootFunction(target, parentRef, mainHandConfig);
-        target.副手开始射击 = _createHandShootFunction(target, parentRef, subHandConfig);
-        target.主手换弹匣 = _createHandReloadFunction(target, parentRef, mainHandConfig);
-        target.副手换弹匣 = _createHandReloadFunction(target, parentRef, subHandConfig);
+        // 绑定射击和换弹函数，传入状态管理器
+        target.主手开始射击 = _createHandShootFunction(target, parentRef, mainHandConfig, stateManager);
+        target.副手开始射击 = _createHandShootFunction(target, parentRef, subHandConfig, stateManager);
+        target.主手换弹匣 = _createHandReloadFunction(target, parentRef, mainHandConfig, stateManager);
+        target.副手换弹匣 = _createHandReloadFunction(target, parentRef, subHandConfig, stateManager);
         
         // 绑定全局换弹函数
-        target.开始换弹 = _createDualGunReloadStartFunction(target, parentRef);
+        target.开始换弹 = _createDualGunReloadStartFunction(target, parentRef, stateManager);
         
         // 刷新界面显示
         target.刷新弹匣数显示();
@@ -136,19 +148,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 创建手枪射击函数
-     * @param target    目标 MovieClip
-     * @param parentRef 父级引用
-     * @param config    武器手配置对象
+     * @param target        目标 MovieClip
+     * @param parentRef     父级引用
+     * @param config        武器手配置对象
+     * @param stateManager  武器状态管理器
      * @return 返回特定手的开始射击函数
      */
-    private static function _createHandShootFunction(target:MovieClip, parentRef:Object, config:Object):Function {
+    private static function _createHandShootFunction(target:MovieClip, parentRef:Object, config:Object, stateManager:WeaponStateManager):Function {
         var self:MovieClip = target;
         var handPrefix:String = config.handPrefix;
         var shootingFlagProp:String = handPrefix + "射击中";
         var speedProp:String = handPrefix + "射击速度";
         var remainingMagProp:String = handPrefix + "剩余弹匣数";
         var weaponType:String = config.weaponType;
-        var otherWeaponType:String = config.otherWeaponType;
         var timerProp:String = config.timerProperty;
         var continueMethodName:String = handPrefix + "持续射击";
         
@@ -158,37 +170,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             // 检查是否可以射击
             if (parentRef[shootingFlagProp] || that.换弹标签) return;
             
-            // 检查弹匣状态
-            var weaponShotCountArray:String = weaponType + "射击次数";
-            var weaponShotCountIndex:String = weaponType;
-            var weaponMagCapacity:String = weaponType + "弹匣容量";
-
-            // 其他手枪属性
-            var otherWeaponShotCountArray:String = otherWeaponType + "射击次数";
-            var otherWeaponShotCountIndex:String = otherWeaponType;
-            var otherWeaponMagCapacity:String = otherWeaponType + "弹匣容量";
-
-            var mainNumber:Number = parentRef[weaponShotCountArray][parentRef[weaponShotCountIndex]];
-            var otherNumber:Number = parentRef[otherWeaponShotCountArray][parentRef[otherWeaponShotCountIndex]];
-
-            var mainIsEmpty:Boolean = mainNumber >= parentRef[weaponMagCapacity];
-            var otherIsEmpty:Boolean = otherNumber >= parentRef[otherWeaponMagCapacity];
-
-            var mainIsFull:Boolean = mainNumber == 0;
-            var otherIsFull:Boolean = otherNumber == 0;
-
-            var isSameWeapon:Boolean = (parentRef[weaponType] == parentRef[otherWeaponType])
-
-            var needReload:Boolean = (mainIsEmpty && otherIsEmpty);
-            needReload = needReload || (mainIsEmpty && otherIsFull);
-            needReload = needReload || (mainIsFull && otherIsEmpty);
-            needReload = needReload || ((mainIsEmpty || otherIsEmpty) && !isSameWeapon);
-
-            if (needReload) {
-  
+            // 更新武器状态
+            stateManager.updateState();
+            
+            // 使用状态管理器检查是否需要换弹
+            if (stateManager.needsReload()) {
                 // 检查是否需要开始换弹
-                if ((that[remainingMagProp] > 0) 
-                    || _root.控制目标 != parentRef._name) {
+                if ((that[remainingMagProp] > 0) || _root.控制目标 != parentRef._name) {
                     that.开始换弹();
                 }
                 return;
@@ -213,28 +201,21 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 创建手枪换弹函数
-     * @param target    目标 MovieClip
-     * @param parentRef 父级引用
-     * @param config    武器手配置对象
+     * @param target        目标 MovieClip
+     * @param parentRef     父级引用
+     * @param config        武器手配置对象
+     * @param stateManager  武器状态管理器
      * @return 返回特定手的换弹匣函数
      */
-    private static function _createHandReloadFunction(target:MovieClip, parentRef:Object, config:Object):Function {
+    private static function _createHandReloadFunction(target:MovieClip, parentRef:Object, config:Object, stateManager:WeaponStateManager):Function {
         var self:MovieClip = target;
         var handPrefix:String = config.handPrefix;
-        var otherHandPrefix:String = config.otherHandPrefix;
         var weaponType:String = config.weaponType;
-        var otherWeaponType:String = config.otherWeaponType;
         var magNameProp:String = handPrefix + "使用弹匣名称";
         
         // 弹匣相关属性
         var shotCountArray:String = weaponType + "射击次数";
         var shotCountIndex:String = weaponType;
-        var otherShotCountArray:String = otherWeaponType + "射击次数";
-        var otherShotCountIndex:String = otherWeaponType;
-
-        var weaponMagCapacity:String = weaponType + "弹匣容量";
-        var otherWeaponMagCapacity:String = otherWeaponType + "弹匣容量";
-        var isSameWeapon:Boolean = (parentRef[weaponType] == parentRef[otherWeaponType])
         
         return function():Void {
             var that:MovieClip = self;
@@ -257,21 +238,17 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 // 更新物品与显示
                 _root.排列物品图标();
                 that.刷新弹匣数显示();
-
                 
-                // 主手特殊处理 - 检查是否可以结束换弹
+                // 更新武器状态
+                stateManager.updateState();
+                
+                // 使用状态管理器检查是否可以结束换弹
                 if (handPrefix == "主手") {
-                    var otherNumber:Number = parentRef[otherShotCountArray][parentRef[otherShotCountIndex]];
-                    // _root.发布消息("主手", that.副手剩余弹匣数, isSameWeapon, otherNumber, parentRef[otherWeaponMagCapacity])
-                    if(that.副手剩余弹匣数 == 0 || (isSameWeapon ? (otherNumber == 0) :
-                                                                   otherNumber < parentRef[otherWeaponMagCapacity])) {
+                    if (stateManager.canFinishMainHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数)) {
                         that.gotoAndPlay("换弹结束");
                     }
                 } else {
-                    var mainNumber:Number = parentRef[shotCountArray][parentRef[shotCountIndex]];
-                    // _root.发布消息("副手", that.主手剩余弹匣数, isSameWeapon, mainNumber, parentRef[weaponMagCapacity])
-                    if(that.主手剩余弹匣数 == 0 || (isSameWeapon ? (mainNumber == 0) :
-                                                                   mainNumber < parentRef[weaponMagCapacity])) {
+                    if (stateManager.canFinishSubHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数)) {
                         that.gotoAndPlay("换弹结束");
                     }
                 }
@@ -281,11 +258,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     
     /**
      * 创建双枪模式的开始换弹函数
-     * @param target    目标 MovieClip
-     * @param parentRef 父级引用
+     * @param target        目标 MovieClip
+     * @param parentRef     父级引用
+     * @param stateManager  武器状态管理器
      * @return 返回开始换弹函数
      */
-    private static function _createDualGunReloadStartFunction(target:MovieClip, parentRef:Object):Function {
+    private static function _createDualGunReloadStartFunction(target:MovieClip, parentRef:Object, stateManager:WeaponStateManager):Function {
         var self:MovieClip = target;
         
         return function():Void {
@@ -296,42 +274,22 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 return;
             }
             
-            // 检查弹匣状态
-            var mainWeaponType:String = "手枪";
-            var subWeaponType:String = "手枪2";
+            // 更新武器状态
+            stateManager.updateState();
             
-            var mainShotCountArray:String = mainWeaponType + "射击次数";
-            var mainShotCountIndex:String = mainWeaponType;
-            var mainMagCapacity:String = mainWeaponType + "弹匣容量";
-            
-            var subShotCountArray:String = subWeaponType + "射击次数";
-            var subShotCountIndex:String = subWeaponType;
-            var subMagCapacity:String = subWeaponType + "弹匣容量";
-            
-            var mainNumber:Number = parentRef[mainShotCountArray][parentRef[mainShotCountIndex]];
-            var subNumber:Number = parentRef[subShotCountArray][parentRef[subShotCountIndex]];
-            
-            var mainIsEmpty:Boolean = mainNumber >= parentRef[mainMagCapacity];
-            var subIsEmpty:Boolean = subNumber >= parentRef[subMagCapacity];
-            
-            var mainIsFull:Boolean = mainNumber == 0;
-            var subIsFull:Boolean = subNumber == 0;
-
-            // 如果两把枪都是满的，则不需要换弹
-            if (mainIsFull && subIsFull) {
+            // 使用状态管理器检查是否需要任何换弹
+            if (!stateManager.needsAnyReload()) {
                 return;
             }
             
             if (_root.控制目标 === parentRef._name) {
-                // 检查主手是否需要换弹
-                if (mainIsEmpty || (!mainIsFull && !subIsEmpty)) {
+                // 使用状态管理器检查应该优先换哪把枪
+                if (stateManager.shouldReloadMainFirst()) {
                     if (ItemUtil.singleContain(that.主手使用弹匣名称, 1)) {
                         that.gotoAndPlay("主手换弹匣");
                         return;
                     }
-                } 
-                // 检查副手是否需要换弹
-                else if (subIsEmpty || (!subIsFull && !mainIsEmpty)) {
+                } else {
                     if (ItemUtil.singleContain(that.副手使用弹匣名称, 1)) {
                         that.gotoAndPlay("副手换弹匣");
                         return;
