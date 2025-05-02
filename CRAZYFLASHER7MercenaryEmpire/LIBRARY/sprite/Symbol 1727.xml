@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1746205717" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1746206006" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="Symbol 1727" currentFrame="4">
       <layers>
@@ -859,7 +859,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#D56492" current="true" isSelected="true">
+        <DOMLayer name="Layer 21" color="#D56492">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -918,7 +918,25 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="26" keyMode="9728">
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1701" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.97979736328125" tx="190.3" ty="147.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   更改键设定(24);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -966,7 +984,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1700" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1700" symbolType="button">
                   <matrix>
                     <Matrix a="2.97979736328125" tx="190.3" ty="121.2"/>
                   </matrix>
@@ -1526,7 +1544,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#1FE5C1">
+        <DOMLayer name="Layer 35" color="#1FE5C1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1553,7 +1571,7 @@ onClipEvent(mouseUp){
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="3" keyMode="9728">
+            <DOMFrame index="1" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 1672" centerPoint3DX="217.6" centerPoint3DY="147.5">
                   <matrix>
@@ -1565,7 +1583,7 @@ onClipEvent(mouseUp){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="5" keyMode="9728">
+            <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="21" keyMode="9728">
@@ -2364,7 +2382,24 @@ onClipEvent(mouseUp){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="5" keyMode="9728">
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="154" height="15.55" isSelectable="false" variableName="键名24">
+                  <matrix>
+                    <Matrix tx="6.5" ty="140"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>键名</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
