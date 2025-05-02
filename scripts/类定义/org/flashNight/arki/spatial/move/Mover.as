@@ -104,7 +104,7 @@ class org.flashNight.arki.spatial.move.Mover {
         var dir:Vector = Mover.directions2D[direction];
         if (!dir) return;
 
-
+        // _root.服务器.发布服务器消息("move2D: " + entity.起始Y);
         var vx:Number = dir.x * speed;
         var vy:Number = dir.y * speed;
         var gameworld:MovieClip = _root.gameworld;
@@ -155,6 +155,8 @@ class org.flashNight.arki.spatial.move.Mover {
         var gameworld:MovieClip = _root.gameworld;
         var gwx:Number = entity._x + gameworld._x;
         var gwy:Number = entity.Z轴坐标 + gameworld._y;
+
+        // _root.服务器.发布服务器消息("move25D: " + entity.起始Y);
 
         
         // 执行碰撞检测：若目标位置无碰撞，则更新实体坐标
