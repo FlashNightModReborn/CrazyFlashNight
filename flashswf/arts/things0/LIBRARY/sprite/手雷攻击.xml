@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1736866161" lastUniqueIdentifier="293">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1746218452" lastUniqueIdentifier="293">
   <timeline>
     <DOMTimeline name="手雷攻击" currentFrame="1">
       <layers>
@@ -41,7 +41,7 @@
 	子弹属性.发射效果 = 发射效果;
 	子弹属性.子弹种类 = 子弹种类;
 	子弹属性.子弹威力 = 子弹威力;
-	子弹属性.子弹速度 = 子弹速度;
+	子弹属性.子弹速度 = Math.floor(子弹速度 * 1.1);
 	子弹属性.击中地图效果 = 击中地图效果;
 	子弹属性.Z轴攻击范围 = Z轴攻击范围;
 	子弹属性.击倒率 = 击倒率;
@@ -223,7 +223,7 @@ function 换弹夹()
 	{
 		_parent.手雷射击次数 = 0;
 	}
-	gotoAndPlay("换弹夹");
+	gotoAndPlay("低抛换弹夹");
 }
 
 射击速度 = _parent.手雷属性数组[14][5];
@@ -312,7 +312,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" selected="true" centerPoint3DX="-162.1" centerPoint3DY="-244.65">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="-162.1" centerPoint3DY="-244.65">
                   <matrix>
                     <Matrix a="-0.324371337890625" b="-0.786575317382813" c="0.786575317382813" d="-0.324371337890625" tx="-139.9" ty="-215.6"/>
                   </matrix>
@@ -682,7 +682,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" selected="true" centerPoint3DX="-178.25" centerPoint3DY="-268.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="-178.25" centerPoint3DY="-268.3">
                   <matrix>
                     <Matrix a="-0.990081787109375" b="0.11846923828125" c="-0.11846923828125" d="-0.990081787109375" tx="-152.35" ty="-242.3"/>
                   </matrix>
@@ -1019,7 +1019,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" selected="true" centerPoint3DX="-129.8" centerPoint3DY="-202.95">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="-129.8" centerPoint3DY="-202.95">
                   <matrix>
                     <Matrix a="-0.830902099609375" b="0.171188354492188" c="-0.171188354492188" d="-0.830902099609375" tx="-128.8" ty="-143.7"/>
                   </matrix>
@@ -1389,7 +1389,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" selected="true" centerPoint3DX="-110.55" centerPoint3DY="-116.55">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="-110.55" centerPoint3DY="-116.55">
                   <matrix>
                     <Matrix a="0.0521392822265625" b="0.845993041992188" c="-0.845993041992188" d="0.0521392822265625" tx="-47.35" ty="-150.05"/>
                   </matrix>
@@ -1762,7 +1762,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪" selected="true" centerPoint3DX="23.55" centerPoint3DY="-43">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪" centerPoint3DX="23.55" centerPoint3DY="-43">
                   <matrix>
                     <Matrix a="-0.0009613037109375" b="0.999603271484375" c="-0.999603271484375" d="-0.0009613037109375" tx="-38.1" ty="-67.85"/>
                   </matrix>
@@ -2081,7 +2081,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" selected="true" centerPoint3DX="-38.1" centerPoint3DY="181.9">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" centerPoint3DX="-38.1" centerPoint3DY="181.9">
                   <matrix>
                     <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-59.7" ty="107.8"/>
                   </matrix>
@@ -2400,7 +2400,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" selected="true" centerPoint3DX="-64" centerPoint3DY="229.25">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" centerPoint3DX="-64" centerPoint3DY="229.25">
                   <matrix>
                     <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-103.15" ty="195.55"/>
                   </matrix>
@@ -2719,7 +2719,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 62" selected="true" centerPoint3DX="1.6" centerPoint3DY="81.2">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 62" centerPoint3DX="1.6" centerPoint3DY="81.2">
                   <matrix>
                     <Matrix a="0.79425048828125" b="0.30877685546875" c="-0.30877685546875" d="0.79425048828125" tx="-16.4" ty="0.8"/>
                   </matrix>
@@ -3038,7 +3038,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" selected="true" centerPoint3DX="99.15" centerPoint3DY="167.05">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" centerPoint3DX="99.15" centerPoint3DY="167.05">
                   <matrix>
                     <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="77.55" ty="92.95"/>
                   </matrix>
@@ -3357,7 +3357,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" selected="true" centerPoint3DX="108.95" centerPoint3DY="223.05">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" centerPoint3DX="108.95" centerPoint3DY="223.05">
                   <matrix>
                     <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="69.8" ty="189.35"/>
                   </matrix>
@@ -3676,7 +3676,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 50" selected="true" centerPoint3DX="59.45" centerPoint3DY="16.2">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 50" centerPoint3DX="59.45" centerPoint3DY="16.2">
                   <matrix>
                     <Matrix a="0.8536376953125" b="-0.04791259765625" c="0.04791259765625" d="0.8536376953125" tx="10" ty="-14.15"/>
                   </matrix>
@@ -3995,7 +3995,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" selected="true" centerPoint3DX="23.3" centerPoint3DY="-160.25">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" centerPoint3DX="23.3" centerPoint3DY="-160.25">
                   <matrix>
                     <Matrix a="0.962661743164063" b="0.100051879882813" c="-0.100051879882813" d="0.962661743164063" tx="-10.1" ty="-199.85"/>
                   </matrix>
@@ -4353,7 +4353,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 37" selected="true" centerPoint3DX="79.95" centerPoint3DY="38.4">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 37" centerPoint3DX="79.95" centerPoint3DY="38.4">
                   <matrix>
                     <Matrix a="0.846664428710938" b="-0.10040283203125" c="0.10040283203125" d="0.846664428710938" tx="7.5" ty="-61.05"/>
                   </matrix>
@@ -4711,7 +4711,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 33" selected="true" centerPoint3DX="50.4" centerPoint3DY="76.5">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 33" centerPoint3DX="50.4" centerPoint3DY="76.5">
                   <matrix>
                     <Matrix a="0.801681518554688" b="-0.285202026367188" c="0.285202026367188" d="0.801681518554688" tx="40.55" ty="-5.4"/>
                   </matrix>
@@ -5030,7 +5030,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪2" selected="true" centerPoint3DX="96.3" centerPoint3DY="-21">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪2" centerPoint3DX="96.3" centerPoint3DY="-21">
                   <matrix>
                     <Matrix a="0.0642547607421875" b="0.99774169921875" c="-0.99774169921875" d="0.0642547607421875" tx="34.45" ty="-45.85"/>
                   </matrix>
@@ -5349,7 +5349,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" selected="true" centerPoint3DX="145.05" centerPoint3DY="-152.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="145.05" centerPoint3DY="-152.15">
                   <matrix>
                     <Matrix a="0.645965576171875" b="-0.55303955078125" c="0.55303955078125" d="0.645965576171875" tx="130.75" ty="-118.9"/>
                   </matrix>
@@ -5680,7 +5680,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" selected="true" centerPoint3DX="114.35" centerPoint3DY="-122.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="114.35" centerPoint3DY="-122.85">
                   <matrix>
                     <Matrix a="-0.311248779296875" b="-0.789993286132813" c="0.789993286132813" d="-0.311248779296875" tx="65.5" ty="-93.95"/>
                   </matrix>
@@ -6011,7 +6011,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" selected="true" centerPoint3DX="84.25" centerPoint3DY="-116.95">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="84.25" centerPoint3DY="-116.95">
                   <matrix>
                     <Matrix a="0.739608764648438" b="-0.414596557617188" c="0.414596557617188" d="0.739608764648438" tx="26" ty="-160.85"/>
                   </matrix>
@@ -6330,7 +6330,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" selected="true" centerPoint3DX="145.15" centerPoint3DY="-87.45">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" centerPoint3DX="145.15" centerPoint3DY="-87.45">
                   <matrix>
                     <Matrix a="0.872146606445313" b="0.48089599609375" c="-0.48089599609375" d="0.872146606445313" tx="82" ty="-281.85"/>
                   </matrix>
@@ -6712,7 +6712,7 @@ else
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-86">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" selected="true" centerPoint3DX="93.4" centerPoint3DY="26.1">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" centerPoint3DX="93.4" centerPoint3DY="26.1">
                   <matrix>
                     <Matrix a="-0.122406005859375" b="-0.98529052734375" c="-0.98529052734375" d="0.122406005859375" tx="-52.55" ty="-8"/>
                   </matrix>
