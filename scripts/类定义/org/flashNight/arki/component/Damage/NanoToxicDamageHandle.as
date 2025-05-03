@@ -78,6 +78,9 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
         } else {
             nanoToxicAmount *= 0.3; // 非普通检测时，毒素伤害减少为 30%
         }
+        if(bullet.子弹种类.indexOf("纵向") != -1 && result.actualScatterUsed > 1){
+            nanoToxicAmount *= result.actualScatterUsed;
+        }
 
         // 将毒素伤害添加到子弹的额外效果伤害中
         bullet.additionalEffectDamage += nanoToxicAmount;

@@ -115,7 +115,11 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
                 bullet.nanoToxic = shooterToxic;
                 bullet.nanoToxicDecay = 1;
                 if (!bullet.近战检测 && shooter.淬毒 > 10) {
-                    shooter.淬毒 -= 1;
+                    if(bullet.子弹种类.indexOf("纵向") != -1 && bullet.霰弹值 > 1){
+                        shooter.淬毒 -= bullet.霰弹值;
+                    }else{
+                        shooter.淬毒 -= 1;
+                    }
                 }
             } else {
                 bullet.nanoToxic = Obj.毒;
