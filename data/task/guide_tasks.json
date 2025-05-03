@@ -284,6 +284,28 @@
             ],
             
             "chain":"引导#15"
+        },
+        {
+            "id": 120016,
+            "title": "$SIDE_TITLE_120016",
+            "description": "$SIDE_DESCRIPTION_120016",
+
+            "get_requirements": [120011],
+            "get_conversation": "$SIDE_GET_120016",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120016",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "技能点#20",
+                "二阶白色中山上装#1"
+            ],
+            
+            "chain":"引导#11"
         }
     ]
 }
