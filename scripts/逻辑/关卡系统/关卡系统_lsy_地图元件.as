@@ -51,6 +51,7 @@ _root.拾取并装备 = function(itemName, value){
 	var itemData = _root.getItemData(itemName);
 	if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
 		装备 = _root.物品栏.装备栏.getNameString(itemData.use);
+		if(itemData.level && itemData.level > _root.等级) return false;
 		if(!装备 && itemData.use){
 			if(itemData.use == "手雷"){
 				_root.物品栏.装备栏.add(itemData.use,{name:itemName, value:value});
