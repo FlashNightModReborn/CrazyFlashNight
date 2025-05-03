@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2119" itemID="6597607e-00000aa4" lastModified="1731954482" lastUniqueIdentifier="13">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2119" itemID="6597607e-00000aa4" lastModified="1746291867" lastUniqueIdentifier="13">
   <timeline>
-    <DOMTimeline name="Symbol 2119" currentFrame="7">
+    <DOMTimeline name="Symbol 2119" currentFrame="93">
       <layers>
         <DOMLayer name="Labels Layer" color="#DE6E89">
           <frames>
@@ -111,11 +111,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#93F46F" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#93F46F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText name="段落_帮助1" selected="true" fontRenderingMode="device" width="639.75" height="309.75" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="段落_帮助1" fontRenderingMode="device" width="639.75" height="309.75" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix a="0.901779174804688" d="0.901779174804688" tx="213.25" ty="120.8"/>
                   </matrix>
@@ -846,7 +846,7 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#D2EB77">
+        <DOMLayer name="Layer 11" color="#D2EB77" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1050,38 +1050,88 @@ _root.全部翻译(this);
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="2" edges="!9325 8376|9777 8376!9777 8376[9791 8451 9791 8535!9791 8535[9791 8788 9656 8967!9656 8967[9521 9147 9330 9147!9330 9147[9138 9147 9003 8967!9003 8967[8868 8788 8868 8535!8868 8535[8868 8451 8883 8376"/>
-                    <Edge fillStyle0="1" strokeStyle="2" edges="!8883 8376|9325 8376!9325 8376|9325 7922!9325 7922[9137 7924 9003 8101!9003 8101[8912 8222 8883 8376"/>
-                    <Edge strokeStyle="2" edges="!9325 7922[9327 7922 9330 7922!9330 7922[9521 7922 9656 8101!9656 8101[9746 8222 9777 8376"/>
-                    <Edge strokeStyle="1" edges="!8470 8078[8470 7968 8360 7968!8360 7968|7880 7968!7880 7968[7770 7968 7770 8078!7770 8078|7770 8558!7770 8558[7770 8668 7880 8668!7880 8668|8360 8668!8360 8668[8408 8668 8435 8647!8435 8647[8470 8620 8470 8558!8470 8558|8470 8078"/>
-                    <Edge cubics="!9325 8376(;9325,8376 9777,8376 9777,8376q9325 8376 9777 8376);"/>
-                    <Edge cubics="!9330 7922(;9457,7922 9566,7982 9656,8101q9330 7922Q9521 7922q9656 8101);"/>
-                    <Edge cubics="!9325 7922(;9325,7922 9325,8376 9325,8376q9325 7922 9325 8376);"/>
-                    <Edge cubics="!9325 7922(;9326,7922 9328,7922 9330,7922q9325 7922Q9327 7922q9330 7922);"/>
-                    <Edge cubics="!9656 8101(;9716,8182 9756,8273 9777,8376q9656 8101Q9746 8222q9777 8376);"/>
-                    <Edge cubics="!8883 8376(;8902,8273 8942,8182 9003,8101q8883 8376Q8912 8222q9003 8101);"/>
-                    <Edge cubics="!9003 8967(;8913,8848 8868,8704 8868,8535q9003 8967Q8868 8788q8868 8535);"/>
-                    <Edge cubics="!9656 8967(;9566,9087 9457,9147 9330,9147q9656 8967Q9521 9147q9330 9147);"/>
-                    <Edge cubics="!9791 8535(;9791,8704 9746,8848 9656,8967q9791 8535Q9791 8788q9656 8967);"/>
-                    <Edge cubics="!9777 8376(;9786,8426 9791,8479 9791,8535q9777 8376Q9791 8451q9791 8535);"/>
-                    <Edge cubics="!8868 8535(;8868,8479 8873,8426 8883,8376q8868 8535Q8868 8451q8883 8376);"/>
-                    <Edge cubics="!9330 9147(;9202,9147 9093,9087 9003,8967q9330 9147Q9138 9147q9003 8967);"/>
-                    <Edge cubics="!8883 8376(;8883,8376 9325,8376 9325,8376q8883 8376 9325 8376);"/>
-                    <Edge cubics="!9003 8101(;9092,7983 9200,7923 9325,7922q9003 8101Q9137 7924q9325 7922);"/>
-                    <Edge cubics="!8470 8078(;8470,8005 8433,7968 8360,7968q8470 8078Q8470 7968q8360 7968);"/>
-                    <Edge cubics="!8360 7968(;8360,7968 7880,7968 7880,7968q8360 7968 7880 7968);"/>
-                    <Edge cubics="!7880 7968(;7807,7968 7770,8005 7770,8078q7880 7968Q7770 7968q7770 8078);"/>
-                    <Edge cubics="!8360 8668(;8392,8668 8417,8661 8435,8647q8360 8668Q8408 8668q8435 8647);"/>
-                    <Edge cubics="!8435 8647(;8458,8629 8470,8599 8470,8558q8435 8647Q8470 8620q8470 8558);"/>
-                    <Edge cubics="!7770 8558(;7770,8631 7807,8668 7880,8668q7770 8558Q7770 8668q7880 8668);"/>
-                    <Edge cubics="!7880 8668(;7880,8668 8360,8668 8360,8668q7880 8668 8360 8668);"/>
-                    <Edge cubics="!7770 8078(;7770,8078 7770,8558 7770,8558q7770 8078 7770 8558);"/>
-                    <Edge cubics="!8470 8558(;8470,8558 8470,8078 8470,8078q8470 8558 8470 8078);"/>
+                    <Edge strokeStyle="2" edges="!13637 7989[13639 7989 13642 7989!13642 7989[13833 7989 13968 8168!13968 8168[14058 8289 14089 8443!14089 8443[14103 8518 14103 8602!14103 8602[14103 8855 13968 9034!13968 9034[13833 9214 13642 9214!13642 9214[13450 9214 13315 9034!13315
+ 9034[13180 8855 13180 8602!13180 8602[13180 8518 13195 8443"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="
+!13195 8443[13224 8289 13315 8168!13315 8168[13449 7991 13637 7989"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="
+!13195 8443|13637 8443!13637 8443|13637 7989"/>
+                    <Edge strokeStyle="2" edges="
+!13637 8443|14089 8443"/>
+                    <Edge strokeStyle="1" edges="
+!6045 8668|6525 8668!6525 8668[6573 8668 6600 8647!6600 8647[6635 8620 6635 8558!6635 8558|6635 8078!6635 8078[6635 7968 6525 7968!6525 7968|6045 7968!6045 7968[5935 7968 5935 8078!5935 8078|5935 8558!5935 8558[5935 8668 6045 8668!12672
+ 8735[12720 8735 12747 8714!12747 8714[12782 8687 12782 8625!12782 8625|12782 8145!12782 8145[12782 8035 12672 8035!12672 8035|12192 8035!12192 8035[12082 8035 12082 8145!12082 8145|12082 8625!12082 8625[12082 8735 12192 8735!12192 8735
+|12672 8735!11536 8625|11536 8145!11536 8145[11536 8035 11337 8035!11337 8035|10466 8035!10466 8035[10266 8035 10266 8145!10266 8145|10266 8625!10266 8625[10266 8735 10466 8735!10466 8735|11337 8735!11337 8735[11424 8735 11472 8714!11472
+ 8714[11536 8687 11536 8625"/>
+                    <Edge strokeStyle="2" edges="
+!7490 7922[7492 7922 7495 7922!7495 7922[7686 7922 7821 8101!7821 8101[7911 8222 7942 8376!7942 8376[7956 8451 7956 8535!7956 8535[7956 8788 7821 8967!7821 8967[7686 9147 7495 9147!7495 9147[7303 9147 7168 8967!7168 8967[7033 8788 7033
+ 8535!7033 8535[7033 8451 7048 8376"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="
+!7048 8376[7077 8222 7168 8101!7168 8101[7302 7924 7490 7922"/>
+                    <Edge strokeStyle="2" edges="
+!7490 8376|7942 8376"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="
+!7048 8376|7490 8376!7490 8376|7490 7922"/>
+                    <Edge cubics="!7490 8376(;7490,8376 7942,8376 7942,8376q7490 8376 7942 8376);"/>
+                    <Edge cubics="!7495 7922(;7622,7922 7731,7982 7821,8101q7495 7922Q7686 7922q7821 8101);"/>
+                    <Edge cubics="!7490 7922(;7490,7922 7490,8376 7490,8376q7490 7922 7490 8376);"/>
+                    <Edge cubics="!7490 7922(;7491,7922 7493,7922 7495,7922q7490 7922Q7492 7922q7495 7922);"/>
+                    <Edge cubics="!7821 8101(;7881,8182 7921,8273 7942,8376q7821 8101Q7911 8222q7942 8376);"/>
+                    <Edge cubics="!7048 8376(;7067,8273 7107,8182 7168,8101q7048 8376Q7077 8222q7168 8101);"/>
+                    <Edge cubics="!7168 8967(;7078,8848 7033,8704 7033,8535q7168 8967Q7033 8788q7033 8535);"/>
+                    <Edge cubics="!7821 8967(;7731,9087 7622,9147 7495,9147q7821 8967Q7686 9147q7495 9147);"/>
+                    <Edge cubics="!7956 8535(;7956,8704 7911,8848 7821,8967q7956 8535Q7956 8788q7821 8967);"/>
+                    <Edge cubics="!7942 8376(;7951,8426 7956,8479 7956,8535q7942 8376Q7956 8451q7956 8535);"/>
+                    <Edge cubics="!7033 8535(;7033,8479 7038,8426 7048,8376q7033 8535Q7033 8451q7048 8376);"/>
+                    <Edge cubics="!7495 9147(;7367,9147 7258,9087 7168,8967q7495 9147Q7303 9147q7168 8967);"/>
+                    <Edge cubics="!7048 8376(;7048,8376 7490,8376 7490,8376q7048 8376 7490 8376);"/>
+                    <Edge cubics="!7168 8101(;7257,7983 7365,7923 7490,7922q7168 8101Q7302 7924q7490 7922);"/>
+                    <Edge cubics="!6635 8078(;6635,8005 6598,7968 6525,7968q6635 8078Q6635 7968q6525 7968);"/>
+                    <Edge cubics="!6525 7968(;6525,7968 6045,7968 6045,7968q6525 7968 6045 7968);"/>
+                    <Edge cubics="!6045 7968(;5972,7968 5935,8005 5935,8078q6045 7968Q5935 7968q5935 8078);"/>
+                    <Edge cubics="!6525 8668(;6557,8668 6582,8661 6600,8647q6525 8668Q6573 8668q6600 8647);"/>
+                    <Edge cubics="!6600 8647(;6623,8629 6635,8599 6635,8558q6600 8647Q6635 8620q6635 8558);"/>
+                    <Edge cubics="!5935 8558(;5935,8631 5972,8668 6045,8668q5935 8558Q5935 8668q6045 8668);"/>
+                    <Edge cubics="!6045 8668(;6045,8668 6525,8668 6525,8668q6045 8668 6525 8668);"/>
+                    <Edge cubics="!5935 8078(;5935,8078 5935,8558 5935,8558q5935 8078 5935 8558);"/>
+                    <Edge cubics="!6635 8558(;6635,8558 6635,8078 6635,8078q6635 8558 6635 8078);"/>
+                    <Edge cubics="!13637 8443(;13637,8443 14089,8443 14089,8443q13637 8443 14089 8443);"/>
+                    <Edge cubics="!13642 7989(;13769,7989 13878,8049 13968,8168q13642 7989Q13833 7989q13968 8168);"/>
+                    <Edge cubics="!13637 7989(;13637,7989 13637,8443 13637,8443q13637 7989 13637 8443);"/>
+                    <Edge cubics="!13637 7989(;13638,7989 13640,7989 13642,7989q13637 7989Q13639 7989q13642 7989);"/>
+                    <Edge cubics="!13968 8168(;14028,8249 14068,8340 14089,8443q13968 8168Q14058 8289q14089 8443);"/>
+                    <Edge cubics="!13195 8443(;13214,8340 13254,8249 13315,8168q13195 8443Q13224 8289q13315 8168);"/>
+                    <Edge cubics="!13315 9034(;13225,8915 13180,8771 13180,8602q13315 9034Q13180 8855q13180 8602);"/>
+                    <Edge cubics="!13968 9034(;13878,9154 13769,9214 13642,9214q13968 9034Q13833 9214q13642 9214);"/>
+                    <Edge cubics="!14103 8602(;14103,8771 14058,8915 13968,9034q14103 8602Q14103 8855q13968 9034);"/>
+                    <Edge cubics="!14089 8443(;14098,8493 14103,8546 14103,8602q14089 8443Q14103 8518q14103 8602);"/>
+                    <Edge cubics="!13180 8602(;13180,8546 13185,8493 13195,8443q13180 8602Q13180 8518q13195 8443);"/>
+                    <Edge cubics="!13642 9214(;13514,9214 13405,9154 13315,9034q13642 9214Q13450 9214q13315 9034);"/>
+                    <Edge cubics="!13195 8443(;13195,8443 13637,8443 13637,8443q13195 8443 13637 8443);"/>
+                    <Edge cubics="!13315 8168(;13404,8050 13512,7990 13637,7989q13315 8168Q13449 7991q13637 7989);"/>
+                    <Edge cubics="!12782 8145(;12782,8072 12745,8035 12672,8035q12782 8145Q12782 8035q12672 8035);"/>
+                    <Edge cubics="!12672 8035(;12672,8035 12192,8035 12192,8035q12672 8035 12192 8035);"/>
+                    <Edge cubics="!12192 8035(;12119,8035 12082,8072 12082,8145q12192 8035Q12082 8035q12082 8145);"/>
+                    <Edge cubics="!12672 8735(;12704,8735 12729,8728 12747,8714q12672 8735Q12720 8735q12747 8714);"/>
+                    <Edge cubics="!12747 8714(;12770,8696 12782,8666 12782,8625q12747 8714Q12782 8687q12782 8625);"/>
+                    <Edge cubics="!12082 8625(;12082,8698 12119,8735 12192,8735q12082 8625Q12082 8735q12192 8735);"/>
+                    <Edge cubics="!12192 8735(;12192,8735 12672,8735 12672,8735q12192 8735 12672 8735);"/>
+                    <Edge cubics="!12082 8145(;12082,8145 12082,8625 12082,8625q12082 8145 12082 8625);"/>
+                    <Edge cubics="!12782 8625(;12782,8625 12782,8145 12782,8145q12782 8625 12782 8145);"/>
+                    <Edge cubics="!10266 8145(;10266,8145 10266,8625 10266,8625q10266 8145 10266 8625);"/>
+                    <Edge cubics="!10466 8735(;10466,8735 11337,8735 11337,8735q10466 8735 11337 8735);"/>
+                    <Edge cubics="!10266 8625(;10266,8698 10333,8735 10466,8735q10266 8625Q10266 8735q10466 8735);"/>
+                    <Edge cubics="!10466 8035(;10333,8035 10266,8072 10266,8145q10466 8035Q10266 8035q10266 8145);"/>
+                    <Edge cubics="!11472 8714(;11515,8696 11536,8666 11536,8625q11472 8714Q11536 8687q11536 8625);"/>
+                    <Edge cubics="!11536 8625(;11536,8625 11536,8145 11536,8145q11536 8625 11536 8145);"/>
+                    <Edge cubics="!11337 8735(;11395,8735 11440,8728 11472,8714q11337 8735Q11424 8735q11472 8714);"/>
+                    <Edge cubics="!11536 8145(;11536,8072 11469,8035 11337,8035q11536 8145Q11536 8035q11337 8035);"/>
+                    <Edge cubics="!11337 8035(;11337,8035 10466,8035 10466,8035q11337 8035 10466 8035);"/>
                   </edges>
                 </DOMShape>
                 <DOMStaticText fontRenderingMode="device" width="71.45" height="23.75" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="524" ty="402.95"/>
+                    <Matrix tx="406.85" ty="402.95"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1100,13 +1150,91 @@ _root.全部翻译(this);
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="23" height="23.75" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="394.75" ty="404.1"/>
+                    <Matrix tx="303" ty="404.1"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>E</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="101.75" height="23.75" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="715.45" ty="406.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>拾取并装备</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="23" height="23.75" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="610.35" ty="407.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>E</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="23" height="23.75" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="579.5" ty="406.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>+</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="81" height="23.75" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="504.15" ty="407.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>Ctrl</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="23" height="23.75" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="330.95" ty="404.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>/</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="23" height="23.75" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="638.55" ty="406.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>/</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -1126,7 +1254,8 @@ _root.全部翻译(this);
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!13043 9370[13043 9260 12732 9260!12732 9260|11374 9260!11374 9260[11063 9260 11063 9370!11063 9370|11063 9850!11063 9850[11063 9960 11374 9960!11374 9960|12732 9960!12732 9960[12868 9960 12944 9939!12944 9939[13043 9912 13043 9850!13043
+                    <Edge strokeStyle="1" edges="
+!13043 9370[13043 9260 12732 9260!12732 9260|11374 9260!11374 9260[11063 9260 11063 9370!11063 9370|11063 9850!11063 9850[11063 9960 11374 9960!11374 9960|12732 9960!12732 9960[12868 9960 12944 9939!12944 9939[13043 9912 13043 9850!13043
  9850|13043 9370"/>
                     <Edge cubics="!11063 9370(;11063,9370 11063,9850 11063,9850q11063 9370 11063 9850);"/>
                     <Edge cubics="!11374 9960(;11374,9960 12732,9960 12732,9960q11374 9960 12732 9960);"/>
