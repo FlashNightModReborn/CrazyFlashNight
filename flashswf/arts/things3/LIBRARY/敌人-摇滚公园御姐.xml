@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园御姐" itemID="67ac3e1e-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园御姐" lastModified="1739341342" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园御姐" itemID="67ac3e1e-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园御姐" lastModified="1746301893" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-摇滚公园御姐" currentFrame="126" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-摇滚公园御姐" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#E1FF16">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#41C2A9">
+        <DOMLayer name="Script Layer" color="#41C2A9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -104,9 +104,9 @@
 
 
 if(等级 > 35){
-	hp_min = -25000;
-	hp_max = 30000;
-	最大经验值 = 6000;
+	hp_min = -15000;
+	hp_max = 23000;
+	最大经验值 = 5500;
 	韧性系数 = 10;
 }
 
@@ -563,7 +563,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#82F515" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#82F515">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

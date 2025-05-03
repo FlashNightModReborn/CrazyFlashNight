@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园少女" itemID="67ac3e22-00000620" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园少女" lastModified="1742912310" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园少女" itemID="67ac3e22-00000620" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园少女" lastModified="1746301897" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="敌人-摇滚公园少女">
       <layers>
@@ -72,7 +72,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#5B80C5" locked="true">
+        <DOMLayer name="Script Layer" color="#5B80C5" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -85,9 +85,9 @@
 女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
 
 if(等级 > 35){
-	hp_min = -25000;
-	hp_max = 30000;
-	最大经验值 = 6000;
+	hp_min = -15000;
+	hp_max = 23000;
+	最大经验值 = 5500;
 	韧性系数 = 10;
 }
 
@@ -313,7 +313,7 @@ if(等级 > 35){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#FF02F6" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#FF02F6">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

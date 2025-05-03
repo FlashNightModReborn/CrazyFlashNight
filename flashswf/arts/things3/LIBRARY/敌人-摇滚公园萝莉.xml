@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园萝莉" itemID="67ac3e25-00000621" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园萝莉" lastModified="1739341349" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园萝莉" itemID="67ac3e25-00000621" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园萝莉" lastModified="1746301904" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="敌人-摇滚公园萝莉" currentFrame="42">
+    <DOMTimeline name="敌人-摇滚公园萝莉">
       <layers>
-        <DOMLayer name="Labels Layer" color="#9FC7E6" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#9FC7E6" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -84,7 +84,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8963AC" locked="true">
+        <DOMLayer name="Script Layer" color="#8963AC" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -99,9 +99,9 @@ x轴保持距离 = 150;
 女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
 
 if(等级 > 35){
-	hp_min = -25000;
-	hp_max = 30000;
-	最大经验值 = 6000;
+	hp_min = -15000;
+	hp_max = 23000;
+	最大经验值 = 5500;
 	韧性系数 = 10;
 }
 
