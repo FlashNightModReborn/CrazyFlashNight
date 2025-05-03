@@ -12,10 +12,6 @@ import org.flashNight.arki.item.*;
  * 4. ReloadManager - 管理换弹和弹药显示逻辑
  */
 
-// 刷新弹匣数显示函数 - 调用 ReloadManager 进行管理
-_root.主角函数.刷新弹匣数显示 = function() {
-    ReloadManager.updateAmmoDisplay(this, _parent, _root);
-};
 
 // 初始化长枪射击函数
 _root.主角函数.初始化长枪射击函数 = function():Void {
