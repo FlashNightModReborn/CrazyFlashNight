@@ -215,30 +215,248 @@ class org.flashNight.arki.spatial.move.MoverTestSuite {
     }
 
     /**
-     * 性能测试：循环多次调用 move2D 与 move25D
-     * 记录总耗时，用于后续做性能对比
+     * 增强版性能测试：对move2D与move25D进行全面的性能评估
+     * 
+     * 本方法解决了原有测试中的几个问题：
+     * 1. 消除了hitTest缓存初始化的影响（通过预热）
+     * 2. 分别测试不同移动场景（无碰撞区域和碰撞区域）
+     * 3. 交换测试顺序，避免固定顺序带来的偏差
+     * 4. 重置实体位置，确保每次测试的起始条件一致
+     * 5. 多次重复测试，计算平均值和标准差
      */
     private static function testPerformance():Void {
-        trace("== 测试性能 (move2D / move25D) ==");
-
-        var iterations:Number = 2000;
-        var i:Number;
-
-        // 先测试 move2D 性能
-        var startT:Number = getTimer();
-        for (i = 0; i < iterations; i++) {
-            Mover.move2D(entity, "右", 2);
+        trace("== 增强版性能测试 (move2D / move25D) ==");
+        
+        var iterations:Number = 10000;    // 每次测试的迭代次数
+        var repeats:Number = 50;          // 重复测试次数，用于计算平均值
+        var warmupIterations:Number = 200; // 预热迭代次数
+        
+        // 缓存外部引用，减少属性查找开销
+        var gameMap:MovieClip = _root.gameworld.地图;
+        var move2D:Function = Mover.move2D;
+        var move25D:Function = Mover.move25D;
+        
+        // 记录测试结果
+        var results:Object = {
+            move2D_无碰撞: new Array(repeats),
+            move25D_无碰撞: new Array(repeats),
+            move2D_边界碰撞: new Array(repeats),
+            move25D_边界碰撞: new Array(repeats),
+            move2D_先测: new Array(repeats),
+            move25D_先测: new Array(repeats)
+        };
+        
+        // 测试场景1：无碰撞区域移动
+        trace("-- 场景1: 无碰撞区域移动 --");
+        for (var r:Number = 0; r < repeats; r++) {
+            // 重置实体位置到安全区域中央
+            resetEntityPosition(300, 200);
+            
+            // 预热 - 两种方法都预热，丢弃结果
+            warmupBothMethods(warmupIterations);
+            
+            // 测试move2D - 无碰撞
+            resetEntityPosition(300, 200);
+            var startT:Number = getTimer();
+            for (var i:Number = 0; i < iterations; i++) {
+                move2D(entity, "右", 2);
+                // 每100次迭代重置位置，避免碰到边界
+                if (i % 100 == 0) resetEntityPosition(300, 200);
+            }
+            var endT:Number = getTimer();
+            results["move2D_无碰撞"][r] = endT - startT;
+            
+            // 测试move25D - 无碰撞
+            resetEntityPosition(300, 200);
+            startT = getTimer();
+            for (i = 0; i < iterations; i++) {
+                move25D(entity, "右", 2);
+                // 每100次迭代重置位置，避免碰到边界
+                if (i % 100 == 0) resetEntityPosition(300, 200);
+            }
+            endT = getTimer();
+            results["move25D_无碰撞"][r] = endT - startT;
         }
-        var endT:Number = getTimer();
-        trace("move2D - " + iterations + " 次调用总耗时: " + (endT - startT) + " ms");
-
-        // 再测试 move25D 性能
-        startT = getTimer();
-        for (i = 0; i < iterations; i++) {
-            Mover.move25D(entity, "上", 2);
+        
+        // 测试场景2：边界碰撞移动
+        trace("-- 场景2: 边界碰撞移动 --");
+        for (r = 0; r < repeats; r++) {
+            // 重置实体位置到边界附近
+            resetEntityPosition(60, 60);
+            
+            // 预热 - 两种方法都预热，丢弃结果
+            warmupBothMethods(warmupIterations);
+            
+            // 测试move2D - 边界碰撞
+            resetEntityPosition(60, 60);
+            startT = getTimer();
+            for (i = 0; i < iterations; i++) {
+                move2D(entity, "左", 2);
+                // 每20次迭代重置位置，保持在边界附近
+                if (i % 20 == 0) resetEntityPosition(60, 60);
+            }
+            endT = getTimer();
+            results["move2D_边界碰撞"][r] = endT - startT;
+            
+            // 测试move25D - 边界碰撞
+            resetEntityPosition(60, 60);
+            startT = getTimer();
+            for (i = 0; i < iterations; i++) {
+                move25D(entity, "左", 2);
+                // 每20次迭代重置位置，保持在边界附近
+                if (i % 20 == 0) resetEntityPosition(60, 60);
+            }
+            endT = getTimer();
+            results["move25D_边界碰撞"][r] = endT - startT;
         }
-        endT = getTimer();
-        trace("move25D - " + iterations + " 次调用总耗时: " + (endT - startT) + " ms");
+        
+        // 测试场景3：交替测试顺序（先测试25D，后测试2D）
+        trace("-- 场景3: 交替测试顺序 --");
+        for (r = 0; r < repeats; r++) {
+            // 重置环境，移除所有缓存
+            resetTestEnvironment();
+            
+            // 预热 - 只预热move25D
+            resetEntityPosition(300, 200);
+            for (i = 0; i < warmupIterations; i++) {
+                move25D(entity, "右", 2);
+                if (i % 50 == 0) resetEntityPosition(300, 200);
+            }
+            
+            // 先测试move25D
+            resetEntityPosition(300, 200);
+            startT = getTimer();
+            for (i = 0; i < iterations; i++) {
+                move25D(entity, "右", 2);
+                if (i % 100 == 0) resetEntityPosition(300, 200);
+            }
+            endT = getTimer();
+            results["move25D_先测"][r] = endT - startT;
+            
+            // 再测试move2D
+            resetEntityPosition(300, 200);
+            startT = getTimer();
+            for (i = 0; i < iterations; i++) {
+                move2D(entity, "右", 2);
+                if (i % 100 == 0) resetEntityPosition(300, 200);
+            }
+            endT = getTimer();
+            results["move2D_先测"][r] = endT - startT;
+        }
+        
+        // 计算并输出结果
+        outputResults(results, iterations, repeats);
+    }
+
+    /**
+     * 重置实体位置
+     */
+    private static function resetEntityPosition(x:Number, y:Number):Void {
+        entity._x = x;
+        entity._y = y;
+        entity.Z轴坐标 = y;
+        entity.起始Y = y;
+        
+        // 更新碰撞器
+        if (entity.aabbCollider) {
+            entity.aabbCollider.updateFromUnitArea(entity);
+        }
+    }
+
+    /**
+     * 预热两种移动方法
+     */
+    private static function warmupBothMethods(iterations:Number):Void {
+        // 预热move2D
+        for (var i:Number = 0; i < iterations; i++) {
+            Mover.move2D(entity, "右", 1);
+            if (i % 50 == 0) resetEntityPosition(300, 200);
+        }
+        
+        // 预热move25D
+        resetEntityPosition(300, 200);
+        for (i = 0; i < iterations; i++) {
+            Mover.move25D(entity, "右", 1);
+            if (i % 50 == 0) resetEntityPosition(300, 200);
+        }
+    }
+
+    /**
+     * 重置测试环境，清除缓存
+     */
+    private static function resetTestEnvironment():Void {
+        // 重新初始化环境
+        initEnvironment();
+        
+        // 强制重新渲染地图以清除hitTest缓存
+        map.clear();
+        drawCollisionBoundary();
+    }
+
+    /**
+     * 计算并输出测试结果
+     */
+    private static function outputResults(results:Object, iterations:Number, repeats:Number):Void {
+        var categories:Array = [
+            "move2D_无碰撞", "move25D_无碰撞", 
+            "move2D_边界碰撞", "move25D_边界碰撞",
+            "move2D_先测", "move25D_先测"
+        ];
+        
+        trace("\n== 性能测试结果汇总 ==");
+        trace("每项测试包含 " + iterations + " 次迭代，重复 " + repeats + " 次");
+        
+        // 计算每个类别的平均值和标准差
+        for (var c:Number = 0; c < categories.length; c++) {
+            var category:String = categories[c];
+            var data:Array = results[category];
+            
+            // 计算平均值
+            var sum:Number = 0;
+            for (var i:Number = 0; i < data.length; i++) {
+                sum += data[i];
+            }
+            var avg:Number = sum / data.length;
+            
+            // 计算标准差
+            var sumSq:Number = 0;
+            for (i = 0; i < data.length; i++) {
+                var diff:Number = data[i] - avg;
+                sumSq += diff * diff;
+            }
+            var stdDev:Number = Math.sqrt(sumSq / data.length);
+            
+            // 输出结果
+            trace(category + "：平均 " + Math.round(avg) + " ms，标准差 " + 
+                Math.round(stdDev) + " ms，详细数据：" + data.join(", "));
+        }
+        
+        // 计算并输出直接比较
+        var move2D_avg:Number = average(results["move2D_无碰撞"]);
+        var move25D_avg:Number = average(results["move25D_无碰撞"]);
+        trace("\n无碰撞场景比较：move25D 是 move2D 的 " + 
+            Math.round((move2D_avg / move25D_avg) * 100) / 100 + " 倍速度");
+        
+        var move2D_coll_avg:Number = average(results["move2D_边界碰撞"]);
+        var move25D_coll_avg:Number = average(results["move25D_边界碰撞"]);
+        trace("边界碰撞场景比较：move25D 是 move2D 的 " + 
+            Math.round((move2D_coll_avg / move25D_coll_avg) * 100) / 100 + " 倍速度");
+        
+        var move2D_after_avg:Number = average(results["move2D_先测"]);
+        var move25D_first_avg:Number = average(results["move25D_先测"]);
+        trace("交替顺序比较（25D先测）：move25D 是 move2D 的 " + 
+            Math.round((move2D_after_avg / move25D_first_avg) * 100) / 100 + " 倍速度");
+    }
+
+    /**
+     * 计算数组平均值
+     */
+    private static function average(arr:Array):Number {
+        var sum:Number = 0;
+        for (var i:Number = 0; i < arr.length; i++) {
+            sum += arr[i];
+        }
+        return sum / arr.length;
     }
 
     /**
