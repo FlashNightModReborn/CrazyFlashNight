@@ -195,6 +195,165 @@ class org.flashNight.arki.spatial.move.Mover {
     }
 
     /**
+     * 纯2D移动处理（严格碰撞检测版）
+     *
+     * 此方法为 move2D 的严格检测版本，针对高速移动的隧穿问题，通过增量步进机制确保碰撞检测的准确性。
+     * 主要特性：
+     *   - 当移动距离超过50像素时，将移动分解为多个小步骤；
+     *   - 每个步骤独立进行碰撞检测，确保不会跳过中间碰撞点；
+     *   - 如发现碰撞，则立即停在最后一个无碰撞的位置。
+     *
+     * 适用场景：高速移动或对碰撞精度要求极高的情况。
+     *
+     * @param entity 需要移动的 MovieClip 对象（必须包含 _x、_y、Z轴坐标等属性）
+     * @param direction 移动方向，支持 "上"、"下"、"左"、"右"
+     * @param speed 移动速度，用于计算实际位移
+     */
+    public static function move2DStrict(entity:MovieClip, direction:String, speed:Number):Void {
+        var dir:Vector = Mover.directions2D[direction];
+        if (!dir) return;
+
+        // 计算总位移
+        var vx:Number = dir.x * speed;
+        var vy:Number = dir.y * speed;
+        var totalDistance:Number = Math.sqrt(vx * vx + vy * vy);
+        
+        // 判断是否需要分步检测
+        var maxStepSize:Number = 50;
+        if (totalDistance <= maxStepSize) {
+            // 距离较小，使用标准移动方法
+            move2D(entity, direction, speed);
+            return;
+        }
+        
+        // 计算需要分步的次数
+        var stepCount:Number = Math.ceil(totalDistance / maxStepSize);
+        var stepX:Number = vx / stepCount;
+        var stepY:Number = vy / stepCount;
+        
+        var gameworld:MovieClip = _root.gameworld;
+        
+        // 保存实体的初始位置
+        var prevX:Number = entity._x;
+        var prevZ:Number = entity.Z轴坐标;
+        var prevY:Number = entity._y;
+        
+        // 增量步进检测
+        for (var i:Number = 1; i <= stepCount; i++) {
+            // 计算本步的目标位置
+            var targetX:Number = prevX + stepX * i;
+            var targetZ:Number = prevZ + stepY * i;
+            
+            // 计算全局坐标
+            var gwx:Number = targetX + gameworld._x;
+            var gwy:Number = targetZ + gameworld._y;
+            
+            // 检测碰撞
+            if (gameworld.地图.hitTest(gwx, gwy, true)) {
+                // 发现碰撞，回退到上一步位置
+                break;
+            }
+            
+            // 更新实体位置
+            if (stepY !== 0) {
+                // 垂直移动：更新 Z轴、_y 坐标以及显示层次
+                entity.Z轴坐标 = targetZ;
+                entity.swapDepths(entity._y = targetZ);
+            } else {
+                // 水平移动：仅更新 _x 坐标
+                entity._x = targetX;
+            }
+            
+            // 更新碰撞箱
+            entity.aabbCollider.updateFromUnitArea(entity);
+        }
+    }
+
+    /**
+     * 2.5D移动处理（严格碰撞检测版）
+     *
+     * 此方法为 move25D 的严格检测版本，针对高速移动的隧穿问题，通过增量步进机制确保碰撞检测的准确性。
+     * 主要特性：
+     *   - 当移动距离超过50像素时，将移动分解为多个小步骤；
+     *   - 每个步骤独立进行碰撞检测，同时处理高度变化（dz）的累积；
+     *   - 如发现碰撞，则立即停在最后一个无碰撞的位置，同时保留已移动的高度变化。
+     *
+     * 适用场景：需要精确碰撞检测的跳跃、冲刺等快速移动场景。
+     *
+     * @param entity 需要移动的 MovieClip 对象（必须包含 _x、_y、Z轴坐标属性）
+     * @param direction 移动方向，支持 "上"、"下"、"左"、"右"
+     * @param speed 移动速度，用于计算实际位移
+     */
+    public static function move25DStrict(entity:MovieClip, direction:String, speed:Number):Void {
+        var dir:Vertex3D = Mover.directions25D[direction];
+        if (!dir) return;
+        
+        // 计算总位移
+        var dx:Number = dir.x * speed;
+        var dy:Number = dir.y * speed;
+        var dz:Number = dir.z * speed;
+        
+        // 计算水平位移的总距离
+        var totalDistance:Number = Math.sqrt(dx * dx + dy * dy);
+        
+        // 判断是否需要分步检测
+        var maxStepSize:Number = 50;
+        if (totalDistance <= maxStepSize) {
+            // 距离较小，使用标准移动方法
+            move25D(entity, direction, speed);
+            return;
+        }
+        
+        // 计算需要分步的次数
+        var stepCount:Number = Math.ceil(totalDistance / maxStepSize);
+        var stepX:Number = dx / stepCount;
+        var stepY:Number = dy / stepCount;
+        var stepZ:Number = dz / stepCount;
+        
+        var gameworld:MovieClip = _root.gameworld;
+        
+        // 保存实体的初始位置
+        var prevX:Number = entity._x;
+        var prevZ:Number = entity.Z轴坐标;
+        var prevY:Number = entity._y;
+        var prev起始Y:Number = entity.起始Y;
+        
+        // 增量步进检测
+        for (var i:Number = 1; i <= stepCount; i++) {
+            // 计算本步的目标位置
+            var targetX:Number = prevX + stepX * i;
+            var targetZ:Number = prevZ + stepY * i;
+            
+            // 计算全局坐标
+            var gwx:Number = targetX + gameworld._x;
+            var gwy:Number = targetZ + gameworld._y;
+            
+            // 检测碰撞
+            if (gameworld.地图.hitTest(gwx, gwy, true)) {
+                // 发现碰撞，回退到上一步位置
+                break;
+            }
+            
+            // 更新实体位置
+            if (stepY !== 0 || stepZ !== 0) {
+                // 垂直移动（包含高度变化）：更新所有相关坐标
+                entity.Z轴坐标 = targetZ;
+                entity._y = targetZ;
+                entity.起始Y = prev起始Y + stepZ * i;
+                
+                // 调整显示层次，使用与原方法相同的逻辑
+                entity.swapDepths(entity._y);
+            } else {
+                // 水平移动：仅更新 _x 坐标
+                entity._x = targetX;
+            }
+            
+            // 更新碰撞箱
+            entity.aabbCollider.updateFromUnitArea(entity);
+        }
+    }
+
+    /**
      * 碰撞挤出处理
      *
      * 当检测到目标位置发生碰撞时，通过计算合适的挤出向量，
