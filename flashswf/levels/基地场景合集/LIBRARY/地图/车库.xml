@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746438527" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746441420" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -343,16 +343,34 @@ on(rollOut){
                     <Point x="271.4" y="119.25"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
-	confirm
+                    <script><![CDATA[on (release) {
+	if (!_root.基建系统.infrastructure.越野车)
+	{
+		_root.确认通用面板.名称 = "购买越野车";
+		_root.确认通用面板.说明 = "是否要购买越野车？总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能。";
+		_root.确认通用面板.成功说明 = "成功购买越野车！";
+		_root.确认通用面板.失败说明 = "购买失败！";
+		_root.确认通用面板.确认 = function()
+		{
+			if (_root.金钱 < 500000)
+			{
+				return false;
+			}
+			_root.金钱 -= 500000;
+			_root.基建系统.infrastructure.越野车 = 1;
+			return true;
+		};
+		_root.确认通用面板._visible = true;
+	}else{
+		_root.地图界面.gotoAndStop(4);
+	}
 }
-on(rollOver){
-   gotoAndStop("描边");
+on (rollOver) {
+	gotoAndStop("描边");
 }
-on(rollOut){
-   gotoAndPlay(1);
-}
-]]></script>
+on (rollOut) {
+	gotoAndPlay(1);
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

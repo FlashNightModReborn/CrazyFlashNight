@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/确认confirm" itemID="68188ac5-000011f2" lastModified="1746439851">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/确认confirm" itemID="68188ac5-000011f2" lastModified="1746441512">
   <timeline>
     <DOMTimeline name="确认confirm">
       <layers>
@@ -54,7 +54,7 @@ gotoAndStop(1);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F6B336" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#F6B336">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -93,11 +93,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C259CB">
+        <DOMLayer name="Layer 4" color="#C259CB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="确认按钮" centerPoint3DX="140.5" centerPoint3DY="150.15">
+                <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="确认按钮" selected="true" centerPoint3DX="140.5" centerPoint3DY="150.15">
                   <matrix>
                     <Matrix tx="101.5" ty="137.65"/>
                   </matrix>
@@ -110,7 +110,6 @@ on(rollOut){
 }
 on (release) {
 	gotoAndStop(1);
-	_parent.gotoAndStop("等待");
 	if(_parent.确认()){
 		_parent.gotoAndStop("成功");
 	}else{
