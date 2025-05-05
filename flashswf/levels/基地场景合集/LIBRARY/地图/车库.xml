@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746441420" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746442284" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -305,7 +305,28 @@ onClipEvent(load){
                     <Point x="151.75" y="92.45"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
+                    <script><![CDATA[on (release) {
+	if (!_root.基建系统.infrastructure.自行车)
+	{
+		_root.确认通用面板.名称 = "购买自行车";
+		_root.确认通用面板.说明 = "是否要购买自行车？总花费合计8000金币。\n购买后可解锁较近距离阵营与区域的地图快速传送功能，例如废城。";
+		_root.确认通用面板.成功说明 = "成功购买自行车！";
+		_root.确认通用面板.失败说明 = "购买失败！";
+		_root.确认通用面板.确认 = function()
+		{
+			if (_root.金钱 < 8000)
+			{
+				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+				return false;
+			}
+			_root.金钱 -= 8000;
+			_root.基建系统.infrastructure.自行车 = 1;
+			return true;
+		};
+		_root.确认通用面板._visible = true;
+	}else{
+		_root.地图界面.gotoAndStop(4);
+	}
 }
 on(rollOver){
    gotoAndStop("描边");
@@ -324,7 +345,28 @@ on(rollOut){
                     <Point x="453.6" y="368.45"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
+                    <script><![CDATA[on (release) {
+	if (!_root.基建系统.infrastructure.摩托车)
+	{
+		_root.确认通用面板.名称 = "购买摩托车";
+		_root.确认通用面板.说明 = "是否要购买摩托车？总花费合计35000金币。\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。";
+		_root.确认通用面板.成功说明 = "成功购买摩托车！";
+		_root.确认通用面板.失败说明 = "购买失败！";
+		_root.确认通用面板.确认 = function()
+		{
+			if (_root.金钱 < 35000)
+			{
+				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+				return false;
+			}
+			_root.金钱 -= 35000;
+			_root.基建系统.infrastructure.摩托车 = 1;
+			return true;
+		};
+		_root.确认通用面板._visible = true;
+	}else{
+		_root.地图界面.gotoAndStop(4);
+	}
 }
 on(rollOver){
    gotoAndStop("描边");
@@ -347,13 +389,14 @@ on(rollOut){
 	if (!_root.基建系统.infrastructure.越野车)
 	{
 		_root.确认通用面板.名称 = "购买越野车";
-		_root.确认通用面板.说明 = "是否要购买越野车？总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能。";
+		_root.确认通用面板.说明 = "是否要购买越野车？总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地。";
 		_root.确认通用面板.成功说明 = "成功购买越野车！";
 		_root.确认通用面板.失败说明 = "购买失败！";
 		_root.确认通用面板.确认 = function()
 		{
 			if (_root.金钱 < 500000)
 			{
+				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
 				return false;
 			}
 			_root.金钱 -= 500000;
