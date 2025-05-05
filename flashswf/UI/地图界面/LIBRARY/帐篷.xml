@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="帐篷" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -195,7 +195,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 51858" selected="true" centerPoint3DX="303.75" centerPoint3DY="164.3" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 51858" centerPoint3DX="303.75" centerPoint3DY="164.3" exportAsBitmap="true">
                   <matrix>
                     <Matrix a="1.75761413574219" d="1.75765991210938" tx="-0.9" ty="0.7"/>
                   </matrix>
