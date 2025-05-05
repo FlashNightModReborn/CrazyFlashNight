@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746452410" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746453077" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -113,7 +113,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="冷兵器商人" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -293,7 +293,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家的车" color="#FF800A" autoNamed="false">
+        <DOMLayer name="玩家的车" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -337,7 +337,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" centerPoint3DX="905.25" centerPoint3DY="755.95">
+                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" selected="true" centerPoint3DX="905.25" centerPoint3DY="755.95">
                   <matrix>
                     <Matrix a="0.247238159179688" d="0.247238159179688" tx="770.95" ty="664.85"/>
                   </matrix>
@@ -354,27 +354,36 @@ on(rollOut){
 		_root.确认通用面板.失败说明 = "购买失败！";
 		_root.确认通用面板.确认 = function()
 		{
-			if (_root.金钱 < 35000)
+			if (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 1)
 			{
-				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+				if (_root.金钱 < 35000)
+				{
+					_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+					return false;
+				}
+				_root.金钱 -= 35000;
+				_root.基建系统.infrastructure.摩托车 = 1;
+			}
+			else
+			{
+				_root.确认通用面板.失败说明 = "购买失败，驾驶摩托车需获得驾照，请学习驾驶技能！";
 				return false;
 			}
-			_root.金钱 -= 35000;
-			_root.基建系统.infrastructure.摩托车 = 1;
 			return true;
 		};
 		_root.确认通用面板.启动();
-	}else{
+	}
+	else
+	{
 		_root.地图界面.gotoAndStop(4);
 	}
 }
-on(rollOver){
-   gotoAndStop("描边");
+on (rollOver) {
+	gotoAndStop("描边");
 }
-on(rollOut){
-   gotoAndPlay(1);
-}
-]]></script>
+on (rollOut) {
+	gotoAndPlay(1);
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="318.3" centerPoint3DY="717.45">
@@ -389,22 +398,32 @@ on(rollOut){
 	if (!_root.基建系统.infrastructure.越野车)
 	{
 		_root.确认通用面板.名称 = "购买越野车";
-		_root.确认通用面板.说明 = "是否要购买越野车？总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地。";
+		_root.确认通用面板.说明 = "是否要购买越野车？需要学习2级驾驶，总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地，并可增加一页后勤战备箱。";
 		_root.确认通用面板.成功说明 = "成功购买越野车！";
 		_root.确认通用面板.失败说明 = "购买失败！";
 		_root.确认通用面板.确认 = function()
 		{
-			if (_root.金钱 < 500000)
+			if (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 2)
 			{
-				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+				if (_root.金钱 < 500000)
+				{
+					_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+					return false;
+				}
+				_root.金钱 -= 500000;
+				_root.基建系统.infrastructure.越野车 = 1;
+			}
+			else
+			{
+				_root.确认通用面板.失败说明 = "购买失败，驾驶越野车需获得驾照，请学习驾驶技能至2级！";
 				return false;
 			}
-			_root.金钱 -= 500000;
-			_root.基建系统.infrastructure.越野车 = 1;
 			return true;
 		};
 		_root.确认通用面板.启动();
-	}else{
+	}
+	else
+	{
 		_root.地图界面.gotoAndStop(4);
 	}
 }
