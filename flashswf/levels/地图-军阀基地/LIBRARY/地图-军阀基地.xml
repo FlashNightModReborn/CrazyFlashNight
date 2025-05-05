@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1746445675" lastUniqueIdentifier="20">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1746452175" lastUniqueIdentifier="20">
   <timeline>
     <DOMTimeline name="地图-军阀基地">
       <layers>
@@ -313,7 +313,7 @@ onClipEvent (load) {
 	}
 }
 on (rollOver) {
-	_root.注释(100,"回到A兵团。");
+	_root.注释(100,"回到A兵团");
 	gotoAndStop("描边");
 }
 on (rollOut) {
