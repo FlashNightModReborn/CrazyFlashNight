@@ -113,11 +113,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="冷兵器商人" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" centerPoint3DX="203.9" centerPoint3DY="395.6">
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" selected="true" centerPoint3DX="203.9" centerPoint3DY="395.6">
                   <matrix>
                     <Matrix tx="139.9" ty="336.95"/>
                   </matrix>
@@ -293,7 +293,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家的车" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="玩家的车" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -337,7 +337,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" selected="true" centerPoint3DX="905.25" centerPoint3DY="755.95">
+                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" centerPoint3DX="905.25" centerPoint3DY="755.95">
                   <matrix>
                     <Matrix a="0.247238159179688" d="0.247238159179688" tx="770.95" ty="664.85"/>
                   </matrix>
