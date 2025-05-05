@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1746445421" lastUniqueIdentifier="20">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1746445675" lastUniqueIdentifier="20">
   <timeline>
     <DOMTimeline name="地图-军阀基地">
       <layers>
@@ -301,11 +301,10 @@ onClipEvent (load) {
 		_root.关卡结束界面._visible = 0;
 		_root.场景进入位置名 = "出生地";
 		_root.淡出动画.淡出跳转帧("基地车库");
-		_parent.gotoAndStop(1);
 	}
 	_root.注释结束();
 }
-on (load) {
+onClipEvent (load) {
 	if (_root.基建系统.infrastructure.越野车)
 	{
 		this._visible = true;
