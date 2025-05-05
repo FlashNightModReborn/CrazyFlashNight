@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/确认confirm" itemID="68188ac5-000011f2" lastModified="1746442821">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/确认confirm" itemID="68188ac5-000011f2" lastModified="1746443380">
   <timeline>
     <DOMTimeline name="确认confirm">
       <layers>
@@ -22,9 +22,7 @@
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[确认 = function(){
-	//占位用的，这是传入的执行函数
-}
+                <script><![CDATA[
 默认确认 = function(){
 	//清除掉传入的执行函数
 }
@@ -32,10 +30,22 @@
 	gotoAndStop(1);
 	this._visible = true;
 }
-名称 = "确认面板";
-说明 = "你确定吗？";
-成功说明 = "操作成功！";
-失败说明 = "操作失败！";
+结束 = function(){
+	确认 = 默认确认;
+	名称 = "确认面板";
+	说明 = "是否确定？";
+	成功说明 = "操作成功！";
+	失败说明 = "操作失败！";
+	this._visible = false;
+	gotoAndStop(1);
+}
+if(!确认){
+	确认 = 默认确认;
+}
+名称 = 名称? 名称 : "确认面板";
+说明 = 说明? 说明: "是否确定？";
+成功说明 = 成功说明? 成功说明 :"操作成功！";
+失败说明 = 失败说明? 失败说明:"操作失败！";
 
 stop();]]></script>
               </Actionscript>
@@ -49,9 +59,8 @@ stop();]]></script>
             </DOMFrame>
             <DOMFrame index="15" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_visible = false;
-确认 = 默认确认;
-gotoAndStop(1);
+                <script><![CDATA[
+this.结束();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -75,8 +84,7 @@ gotoAndStop(1);
 }
 on(release){
    gotoAndStop(1);
-   _parent.确认 = _parent.默认确认;
-   _parent._visible = false;
+   _parent.结束();
 }
 on(press){
    gotoAndStop(3);
@@ -151,8 +159,8 @@ on (rollOut) {
 }
 on(release){
    gotoAndStop(1);
-   _parent.确认 = _parent.默认确认;
-   _parent._visible = false;
+   _parent.结束();
+
 }
 on(press){
    gotoAndStop(3);
@@ -225,7 +233,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="16" duration="5" keyMode="9728">
               <elements>
-                <DOMDynamicText name="txt" selected="true" fontRenderingMode="device" width="302.95" height="83" isSelectable="false" variableName="失败说明" lineType="multiline">
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="302.95" height="83" isSelectable="false" variableName="失败说明" lineType="multiline">
                   <matrix>
                     <Matrix tx="20" ty="43"/>
                   </matrix>
@@ -255,8 +263,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   this._visible = 0;
-   this.确认 = this.默认确认;
+   this.结束();
 }
 ]]></script>
                   </Actionscript>

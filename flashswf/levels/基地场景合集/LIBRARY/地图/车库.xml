@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746442993" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746443093" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -297,7 +297,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/自行车" selected="true" centerPoint3DX="1091.35" centerPoint3DY="709.9">
+                <DOMSymbolInstance libraryItemName="sprite/自行车" centerPoint3DX="1091.35" centerPoint3DY="709.9">
                   <matrix>
                     <Matrix a="0.508346557617188" d="0.508346557617188" tx="1013.1" ty="663.2"/>
                   </matrix>
@@ -377,7 +377,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="318.3" centerPoint3DY="717.45">
+                <DOMSymbolInstance libraryItemName="sprite/越野车" selected="true" centerPoint3DX="318.3" centerPoint3DY="717.45">
                   <matrix>
                     <Matrix a="-0.808090209960938" d="0.783767700195313" tx="376.3" ty="680.55"/>
                   </matrix>
@@ -389,17 +389,17 @@ on(rollOut){
 	if (!_root.基建系统.infrastructure.越野车)
 	{
 		_root.确认通用面板.名称 = "购买越野车";
-		_root.确认通用面板.说明 = "是否要购买越野车？总花费合计30万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地。";
+		_root.确认通用面板.说明 = "是否要购买越野车？总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地。";
 		_root.确认通用面板.成功说明 = "成功购买越野车！";
 		_root.确认通用面板.失败说明 = "购买失败！";
 		_root.确认通用面板.确认 = function()
 		{
-			if (_root.金钱 < 300000)
+			if (_root.金钱 < 500000)
 			{
 				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
 				return false;
 			}
-			_root.金钱 -= 300000;
+			_root.金钱 -= 500000;
 			_root.基建系统.infrastructure.越野车 = 1;
 			return true;
 		};
