@@ -30,6 +30,15 @@
                           </RadialGradient>
                         </FillStyle>
                         <FillStyle index="3">
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0207672119140625" b="-0.0012664794921875" c="0.0012664794921875" d="0.0207672119140625" tx="5.2" ty="13.4"/>
+                            </matrix>
+                            <GradientEntry color="#999999" ratio="0"/>
+                            <GradientEntry color="#666666" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="4">
                           <LinearGradient spreadMethod="reflect">
                             <matrix>
                               <Matrix a="0.0023345947265625" b="-0.011505126953125" c="0.02703857421875" d="0.0055084228515625" tx="1.65" ty="26.65"/>
@@ -38,15 +47,6 @@
                             <GradientEntry color="#270000" ratio="0.454901960784314"/>
                             <GradientEntry color="#990000" ratio="1"/>
                           </LinearGradient>
-                        </FillStyle>
-                        <FillStyle index="4">
-                          <RadialGradient spreadMethod="reflect">
-                            <matrix>
-                              <Matrix a="0.0207672119140625" b="-0.0012664794921875" c="0.0012664794921875" d="0.0207672119140625" tx="5.2" ty="13.4"/>
-                            </matrix>
-                            <GradientEntry color="#999999" ratio="0"/>
-                            <GradientEntry color="#666666" ratio="1"/>
-                          </RadialGradient>
                         </FillStyle>
                         <FillStyle index="5">
                           <RadialGradient spreadMethod="reflect">
@@ -81,15 +81,15 @@
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!669 59S7[671 551 675 932"/>
                         <Edge fillStyle0="1" fillStyle1="6" strokeStyle="1" edges="!675 932S7[659 1269 679 1620"/>
                         <Edge fillStyle0="2" strokeStyle="1" edges="!669 59S5|610 0!610 0|339 0"/>
-                        <Edge fillStyle0="2" fillStyle1="4" edges="!339 0S3|56 419"/>
-                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!56 419S7|50 809"/>
+                        <Edge fillStyle0="2" fillStyle1="3" edges="!339 0S3|56 419"/>
+                        <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!56 419S7|50 809"/>
                         <Edge fillStyle0="2" fillStyle1="5" edges="!50 809S3|146 1109"/>
                         <Edge fillStyle0="2" strokeStyle="1" edges="!146 1109S5|469 1415"/>
                         <Edge fillStyle0="2" fillStyle1="6" edges="!469 1415S3|675 932"/>
-                        <Edge fillStyle0="3" strokeStyle="1" edges="!64 60S5|63 61!63 61[30 85 15 120!15 120|0 886!0 886|48 985"/>
-                        <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!48 985S7|50 809"/>
-                        <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!64 60S7|56 419"/>
-                        <Edge fillStyle0="4" strokeStyle="1" edges="!339 0S5|122 0!122 0|64 60"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="!339 0S5|122 0!122 0|64 60"/>
+                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!64 60S7|56 419"/>
+                        <Edge fillStyle0="4" strokeStyle="1" edges="!64 60S5|63 61!63 61[30 85 15 120!15 120|0 886!0 886|48 985"/>
+                        <Edge fillStyle0="4" fillStyle1="5" strokeStyle="1" edges="!48 985S7|50 809"/>
                         <Edge fillStyle0="5" strokeStyle="1" edges="!48 985S5|61 1035!61 1035|146 1109"/>
                         <Edge fillStyle0="6" strokeStyle="1" edges="!469 1415S5|679 1620"/>
                       </edges>

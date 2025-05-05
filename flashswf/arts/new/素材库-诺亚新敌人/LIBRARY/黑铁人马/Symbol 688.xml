@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁人马/Symbol 688" itemID="6613f3cf-00000f2f" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会改造人" lastModified="1746435729" lastUniqueIdentifier="30">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁人马/Symbol 688" itemID="6613f3cf-00000f2f" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会改造人" lastModified="1746456378" lastUniqueIdentifier="30">
   <timeline>
-    <DOMTimeline name="Symbol 688">
+    <DOMTimeline name="Symbol 688" currentFrame="8">
       <layers>
         <DOMLayer name="Labels_Layer" color="#AFA4AB" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
@@ -451,11 +451,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B72CF6" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="逻辑ai层" color="#B72CF6" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="3" centerPoint3DY="2.95">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="3" centerPoint3DY="2.95">
                   <matrix>
                     <Matrix tx="0.5" ty="0.45"/>
                   </matrix>

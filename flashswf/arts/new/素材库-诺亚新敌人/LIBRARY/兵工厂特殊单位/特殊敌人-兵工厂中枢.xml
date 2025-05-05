@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-兵工厂中枢" itemID="66b8b287-00000914" linkageExportForAS="true" linkageIdentifier="特殊敌人-兵工厂中枢" lastModified="1740496340" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-兵工厂中枢" itemID="66b8b287-00000914" linkageExportForAS="true" linkageIdentifier="特殊敌人-兵工厂中枢" lastModified="1746456324" lastUniqueIdentifier="16">
   <timeline>
     <DOMTimeline name="特殊敌人-兵工厂中枢">
       <layers>
@@ -60,6 +60,8 @@ hp = hp满血值 = 1;
 无敌 = true;
 状态 = "正常";
 击中效果 = "击中金属";
+
+unitAIType = "None";
 
 _root.敌人函数.初始化单位(this);
 gotoAndStop("正常");

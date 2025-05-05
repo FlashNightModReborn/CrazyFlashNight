@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1740496943" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1746456302" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="特殊敌人-雕像">
       <layers>
@@ -117,6 +117,8 @@ hp = hp满血值 = 45000;
 
 状态 = "正常";
 击中效果 = "火花";
+
+unitAIType = "None";
 
 _root.敌人函数.初始化单位(this);
 gotoAndStop("正常");
