@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1742201079" lastUniqueIdentifier="108">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1746453845" lastUniqueIdentifier="108">
   <timeline>
     <DOMTimeline name="地图-靶场">
       <layers>
@@ -125,10 +125,29 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="提示" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="提示" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!5238 5954|5238 11120!5238 11120|848 11120!848 11120|848 5954!848 5954|5238 5954"/>
+                  </edges>
+                </DOMShape>
                 <DOMSymbolInstance libraryItemName="提示箭头" centerPoint3DX="1309.65" centerPoint3DY="476.05">
                   <matrix>
                     <Matrix d="0.563629150390625" tx="1282.8" ty="460.1"/>
@@ -142,6 +161,19 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
+                <DOMDynamicText fontRenderingMode="standard" width="215.5" height="254.3" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="44.4" ty="299.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>你不该看到这句话的，看到了说明你用喷气背包或者一瞬千击之类的方式穿过地图了，快回去！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="30" bitmapSize="600" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
               </elements>
             </DOMFrame>
           </frames>
@@ -171,7 +203,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
