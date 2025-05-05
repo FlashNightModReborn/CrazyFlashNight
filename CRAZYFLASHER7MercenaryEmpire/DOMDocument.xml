@@ -6,7 +6,7 @@
           <DOMFolderItem name="import" itemID="65977cdc-00001d38" isExpanded="true"/>
           <DOMFolderItem name="import/arts" itemID="65981594-00000b2f"/>
           <DOMFolderItem name="import/scripts" itemID="65996a47-00000b1c"/>
-          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13"/>
+          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13" isExpanded="true"/>
           <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac"/>
           <DOMFolderItem name="import/弃用关卡地图" itemID="664a1e04-00000cbd"/>
           <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63" isExpanded="true"/>
@@ -18,7 +18,7 @@
           <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122"/>
           <DOMFolderItem name="sprite/新地图" itemID="659bbd75-0000152d"/>
           <DOMFolderItem name="sprite/悬浮UI" itemID="659bbbc2-000014cc" isExpanded="true"/>
-          <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa"/>
+          <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa" isExpanded="true"/>
           <DOMFolderItem name="UI重构/商店相关" itemID="6689822f-000044fa"/>
           <DOMFolderItem name="UI重构/通缉令UI" itemID="663afec8-00000c0c"/>
           <DOMFolderItem name="弹出公告UI" itemID="65bb95a3-00000c69"/>
@@ -802,7 +802,6 @@
           <Include href="sprite/Symbol 35482.xml" loadImmediate="false" itemID="6597607e-00000cd3" lastModified="1704196122"/>
           <Include href="sprite/Symbol 35498.xml" loadImmediate="false" itemID="6597607e-00000cef" lastModified="1704196122"/>
           <Include href="sprite/Symbol 35499.xml" loadImmediate="false" itemID="6597607e-00000cf1" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 35561.xml" loadImmediate="false" itemID="6597607e-00000d78" lastModified="1745171020"/>
           <Include href="sprite/volBtn.xml" itemIcon="0" loadImmediate="false" itemID="67ada626-0000078d" lastModified="1740332216"/>
           <Include href="sprite/标题画面/Symbol 965.xml" loadImmediate="false" itemID="6597607e-00000822" lastModified="1704196122"/>
           <Include href="sprite/标题画面/Symbol 968.xml" loadImmediate="false" itemID="6597607e-00000823" lastModified="1704196122"/>
@@ -838,7 +837,6 @@
           <Include href="sprite/解决莫名其妙主角消失的BUG.xml" loadImmediate="false" itemID="6787749b-0000206a" lastModified="1739610507"/>
           <Include href="sprite/旧版任务栏界面.xml" loadImmediate="false" itemID="67cb1652-0000049b" lastModified="1741362770"/>
           <Include href="sprite/旧版任务图标.xml" loadImmediate="false" itemID="67cb166a-0000049c" lastModified="1741362807"/>
-          <Include href="sprite/快速传送.xml" loadImmediate="false" itemID="66521d64-00000bd5" lastModified="1716657508"/>
           <Include href="sprite/片头动画复选框.xml" loadImmediate="false" itemID="67b056ea-00000b0c" lastModified="1739609968"/>
           <Include href="sprite/确认按钮.xml" loadImmediate="false" itemID="659d4707-000039c7" lastModified="1740332618"/>
           <Include href="sprite/任务奖励物品显示块.xml" itemID="67bb1f98-00000459" lastModified="1740316568"/>
@@ -893,11 +891,9 @@
           <Include href="sprite/装备强化按钮.xml" loadImmediate="false" itemID="66521e44-00000bdc" lastModified="1740332185"/>
           <Include href="UI引用.xml" loadImmediate="false" itemID="67cea98d-0000092d" lastModified="1741597092"/>
           <Include href="UI重构/K点图标.xml" itemID="666120fd-000010dd" lastModified="1717646028"/>
-          <Include href="UI重构/材料大全（弃用）.xml" loadImmediate="false" itemID="6787613f-00001858" lastModified="1736925503"/>
           <Include href="UI重构/合成系统检视框.xml" itemID="6622136b-00002024" lastModified="1740316500"/>
           <Include href="UI重构/技能学习图标.xml" loadImmediate="false" itemID="66914f92-00004dff" lastModified="1720799123"/>
           <Include href="UI重构/金币图标.xml" itemID="66612104-000010df" lastModified="1717646045"/>
-          <Include href="UI重构/捐献者名单（弃用）.xml" loadImmediate="false" itemID="6787613a-00001857" lastModified="1736925498"/>
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1732205311"/>
           <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720356537"/>
           <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
@@ -912,7 +908,7 @@
           <Include href="弹出公告UI/任务开启栏.xml" loadImmediate="false" itemID="65bb9236-000001f5" lastModified="1706795449"/>
           <Include href="底部UI/底部UI按钮1.xml" itemIcon="0" loadImmediate="false" itemID="66365767-0000211f" lastModified="1740332184"/>
           <Include href="底部UI/底部UI按钮2.xml" itemIcon="0" loadImmediate="false" itemID="66365816-00002174" lastModified="1716478150"/>
-          <Include href="底部UI/底部UI组.xml" loadImmediate="false" itemID="6636575b-0000211d" lastModified="1728102640"/>
+          <Include href="底部UI/底部UI组.xml" loadImmediate="false" itemID="6636575b-0000211d" lastModified="1746452910"/>
           <Include href="底部UI/平板电脑.xml" loadImmediate="false" itemID="6700c0f0-00000a9f" lastModified="1728102640"/>
           <Include href="底部UI/原版4图标备份.xml" loadImmediate="false" itemID="664df9ac-00004b87" lastModified="1716386220"/>
           <Include href="全局音量mc.xml" loadImmediate="false" itemID="67ada6a8-00000794" lastModified="1740072967"/>
@@ -923,7 +919,7 @@
           <Include href="外部导入UI界面.xml" loadImmediate="false" itemID="67162590-0000093d" lastModified="1736954576"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="156" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="162" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -5067,15 +5063,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11465 5270!11465 5270|11162 5270!11162 5270|10872 5089!10872 5089|11175 5089!11175 5089|11465 5270!11465 5270|11769 5270!11769 5270|11479 5089!11479 5089|11175 5089!11175 5089|10885
- 4908!10885 4908|10595 4727!10595 4727|10292 4727!10292 4727|10582 4908!10582 4908|10885 4908!10885 4908|11189 4908!11189 4908|10899 4727!10899 4727|10595 4727!10595 4727|10305 4546!10305 4546|10002 4546!10002 4546|10292 4727!10292 4727
-|9989 4727!9989 4727|9685 4727!9685 4727|9395 4546!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9672 4908!9672 4908|9369 4908!9369 4908|9079 4727!9079 4727|9382 4727!9382 4727|9685 4727!9685 4727|9975 4908!9975 4908|10265 5089!10265
- 5089|10555 5270!10555 5270|10845 5451!10845 5451|11149 5451!11149 5451|10859 5270!10859 5270|10555 5270!9395 4546|9699 4546!9699 4546|10002 4546!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633
- 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8775 4727!8775 4727|9079 4727!9079 4727|8789 4546!8789 4546|8485 4546!8485 4546|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!9369 4908|9659 5089
-!9659 5089|9355 5089!9355 5089|9645 5270!9645 5270|9342 5270!8472 4727|8182 4546!8182 4546|8485 4546!9052 5089|9355 5089!9355 5089|9065 4908!9065 4908|8762 4908!8789 4546|9092 4546!11162 5270|11452 5451!11452 5451|11755 5451!10305 4546
-|10609 4546!10609 4546|10899 4727!9935 5451|9645 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9962 5089!9962 5089|10265 5089!10265 5089|10569 5089!10569 5089|10279 4908!10279 4908|9975 4908!9699 4546|9989 4727!9989 4727|10279
- 4908!10279 4908|10582 4908!10582 4908|10872 5089!10872 5089|10569 5089!9975 4908|9672 4908!9672 4908|9962 5089!9962 5089|10252 5270!10252 5270|9949 5270!9949 5270|10239 5451!10859 5270|10569 5089!11162 5270|10859 5270!10542 5451|10252
- 5270!10252 5270|10555 5270!11189 4908|11479 5089!11149 5451|11452 5451"/>
+!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9685 4727!9685 4727|9395 4546!9382 4727|9672 4908!9672 4908|9975 4908!9975 4908|9685 4727!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|9672 4908!9672 4908|9369 4908!9395 4546|9699
+ 4546!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451
+|11149 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546|8485
+ 4546!8485 4546|8789 4546!8789 4546|9092 4546!9369 4908|9079 4727!9079 4727|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!8789 4546|9079 4727!9079 4727|9382 4727!8485 4546|8775 4727!8472 4727|8775 4727!9052 5089|9355 5089!9355 5089
+|9065 4908!9065 4908|8762 4908!9935 5451|9645 5270!9645 5270|9342 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9355 5089|9645 5270!11479 5089|11175 5089!11175 5089|11465 5270!11465 5270|11769 5270!11755 5451|11465
+ 5270!11465 5270|11162 5270!11162 5270|11452 5451!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908!10595 4727|10292 4727!10292 4727|10582 4908!10582 4908|10885 4908!10292 4727|9989 4727!9989 4727|10279 4908!10279 4908
+|10582 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569 5089|10279 4908!10279 4908|9975 4908!10002 4546|10292 4727!10542 5451|10252 5270!10252 5270|9949 5270!9949 5270|10239 5451!10252 5270|10555 5270!10555 5270|10265 5089!10265
+ 5089|9962 5089!9962 5089|10252 5270!11149 5451|10859 5270!10859 5270|10555 5270!10555 5270|10845 5451!10569 5089|10859 5270!10859 5270|11162 5270!11162 5270|10872 5089!10872 5089|10569 5089!10582 4908|10872 5089!10872 5089|11175 5089
+!11175 5089|10885 4908!10595 4727|10305 4546!9699 4546|9989 4727!9989 4727|9685 4727"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5518,15 +5514,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9385 4533|9675 4714!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9372 4714|9662 4895!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9385 4533|9082
- 4533!9082 4533|9372 4714!9055 4895|9345 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8752 4895|9055 4895!9055 4895|8765 4714!8765 4714|8462 4714!8462 4714|8752 4895!8475 4533|8765 4714!8765 4714|9069 4714!9069 4714
-|8779 4533!8779 4533|8475 4533!8462 4714|8172 4533!8172 4533|8475 4533!9042 5076|9332 5257!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9042 5076!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!8752 4895|9042 5076!8779
- 4533|9082 4533!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11455 5257!11455 5257|11745 5438!11759 5257|11469 5076!11469 5076|11165 5076!11165 5076|11455 5257!11455 5257|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438
-!11469 5076|11179 4895!11179 4895|10875 4895!10875 4895|11165 5076!11179 4895|10889 4714!10889 4714|10585 4714!10585 4714|10875 4895!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|10585 4714!10875 4895|10572 4895!10572 4895|10862
- 5076!10862 5076|11165 5076!9979 4714|10282 4714!10282 4714|9992 4533!9992 4533|9689 4533!9979 4714|10269 4895!10269 4895|10572 4895!10572 4895|10282 4714!9965 4895|10269 4895!10295 4533|9992 4533!9952 5076|10242 5257!10242 5257|10545
- 5257!10545 5257|10255 5076!10255 5076|9952 5076!9925 5438|10229 5438!10229 5438|9939 5257!9939 5257|9635 5257!9952 5076|9649 5076!9649 5076|9939 5257!9939 5257|10242 5257!10242 5257|10532 5438!10532 5438|10835 5438!10835 5438|10545 5257
-!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10255 5076!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|10559 5076!10835 5438|11139 5438!11139 5438|10849 5257!10255 5076|9965 4895!10269 4895|10559 5076!10532 5438|10229
- 5438!10282 4714|10585 4714!11139 5438|11442 5438!9662 4895|9952 5076"/>
+!10295 4533|10585 4714!10585 4714|10875 4895!10875 4895|11165 5076!11165 5076|11455 5257!11455 5257|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11469 5076!11469 5076|11179 4895!11179 4895|10889 4714!10889 4714|10599
+ 4533!10599 4533|10295 4533!10295 4533|9992 4533!9992 4533|9689 4533!9689 4533|9385 4533!9385 4533|9675 4714!9675 4714|9372 4714!9372 4714|9662 4895!9662 4895|9952 5076!9952 5076|9649 5076!9649 5076|9359 4895!9359 4895|9662 4895!9662
+ 4895|9965 4895!9965 4895|10255 5076!10255 5076|10559 5076!10559 5076|10849 5257!10849 5257|10545 5257!10545 5257|10835 5438!10835 5438|10532 5438!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|9649 5076!9649 5076|9345 5076!9345
+ 5076|9055 4895!9055 4895|8765 4714!8765 4714|9069 4714!9069 4714|9359 4895!9359 4895|9055 4895!9069 4714|8779 4533!8779 4533|9082 4533!9082 4533|9372 4714!9372 4714|9069 4714!9385 4533|9082 4533!8779 4533|8475 4533!8475 4533|8765 4714
+!8765 4714|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8462 4714|8752 4895!8752 4895|9055 4895!9345 5076|9042 5076!9042 5076|9332 5257!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|10229 5438!10229 5438|10532 5438!9925 5438
+|9635 5257!9635 5257|9345 5076!9332 5257|9635 5257!9635 5257|9939 5257!9939 5257|10229 5438!8752 4895|9042 5076!10835 5438|11139 5438!11139 5438|11442 5438!11442 5438|11745 5438!11759 5257|11455 5257!11455 5257|11152 5257!11152 5257|10862
+ 5076!10862 5076|11165 5076!11179 4895|10875 4895!10875 4895|10572 4895!10572 4895|10282 4714!10282 4714|9992 4533!10889 4714|10585 4714!10585 4714|10282 4714!9965 4895|10269 4895!10269 4895|10572 4895!10572 4895|10862 5076!10862 5076
+|10559 5076!9965 4895|9675 4714!9675 4714|9979 4714!9979 4714|10269 4895!10269 4895|10559 5076!9979 4714|10282 4714!10255 5076|9952 5076!9952 5076|10242 5257!11139 5438|10849 5257!10849 5257|11152 5257!11152 5257|11442 5438!10545 5257
+|10255 5076!10242 5257|10545 5257!11469 5076|11165 5076!9979 4714|9689 4533"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -6392,35 +6388,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="传送界面" color="#DED2EF" parentLayerIndex="21" autoNamed="false" visible="false">
-                         <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="148" duration="97" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 35561" name="传送界面" selected="true" centerPoint3DX="503.4" centerPoint3DY="220.95">
-                                             <matrix>
-                                                  <Matrix tx="274.95" ty="55"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                                             </Actionscript>
-                                             <color>
-                                                  <Color alphaMultiplier="0.80078125"/>
-                                             </color>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="修改工具界面" color="#4676EE" parentLayerIndex="21" autoNamed="false" visible="false">
+                    <DOMLayer name="修改工具界面" color="#4676EE" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="148" keyMode="9728">
                                    <elements/>
@@ -6523,7 +6491,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="确认通用面板" color="#4FFF4F" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false" visible="false">
+                    <DOMLayer name="确认通用面板" color="#4FFF4F" parentLayerIndex="21" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
@@ -7193,7 +7161,7 @@ on(rollOut){
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="玩家信息UI" color="#4FFF4F" autoNamed="false" open="false" layerType="folder"/>
-                    <DOMLayer name="存盘动画" color="#DCD6F9" parentLayerIndex="52" autoNamed="false">
+                    <DOMLayer name="存盘动画" color="#DCD6F9" parentLayerIndex="51" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
@@ -7218,7 +7186,7 @@ on(rollOut){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="任务完成提示" color="#69EC4F" parentLayerIndex="52" autoNamed="false">
+                    <DOMLayer name="任务完成提示" color="#69EC4F" parentLayerIndex="51" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
@@ -7240,7 +7208,7 @@ on(rollOut){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="玩家信息界面" color="#84EAF7" parentLayerIndex="52" locked="true" autoNamed="false">
+                    <DOMLayer name="玩家信息界面" color="#84EAF7" parentLayerIndex="51" locked="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
@@ -7260,7 +7228,7 @@ on(rollOut){
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="按钮UI" color="#4FFF4F" locked="true" autoNamed="false" layerType="folder"/>
-                    <DOMLayer name="场景名称文本" color="#4FFF4F" parentLayerIndex="56" autoNamed="false">
+                    <DOMLayer name="场景名称文本" color="#4FFF4F" parentLayerIndex="55" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="148" keyMode="9728">
                                    <elements/>
@@ -7287,7 +7255,7 @@ on(rollOut){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="地图界面" color="#4FFF4F" parentLayerIndex="56" autoNamed="false">
+                    <DOMLayer name="地图界面" color="#4FFF4F" parentLayerIndex="55" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="148" keyMode="9728">
                                    <elements/>
@@ -7309,7 +7277,7 @@ on(rollOut){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="底部按钮组1" color="#DC8BA2" parentLayerIndex="56" autoNamed="false">
+                    <DOMLayer name="底部按钮组1" color="#DC8BA2" parentLayerIndex="55" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="148" keyMode="9728">
                                    <elements/>
@@ -7331,7 +7299,7 @@ on(rollOut){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="顶部UI-2" color="#9933CC" parentLayerIndex="56" locked="true" autoNamed="false">
+                    <DOMLayer name="顶部UI-2" color="#9933CC" parentLayerIndex="55" locked="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="148" keyMode="9728">
                                    <elements/>
@@ -7433,7 +7401,7 @@ onClipEvent (load) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="顶部UI-1" color="#72FB84" parentLayerIndex="56" autoNamed="false">
+                    <DOMLayer name="顶部UI-1" color="#72FB84" parentLayerIndex="55" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="148" keyMode="9728">
                                    <elements/>
@@ -7538,7 +7506,7 @@ onClipEvent (load) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="在线奖励" color="#1ECBB4" parentLayerIndex="56" autoNamed="false">
+                    <DOMLayer name="在线奖励" color="#1ECBB4" parentLayerIndex="55" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>

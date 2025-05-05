@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="底部UI/底部UI组" itemID="6636575b-0000211d" lastModified="1728102640" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="底部UI/底部UI组" itemID="6636575b-0000211d" lastModified="1746452910" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="底部UI组" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="底部UI组" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -119,35 +119,9 @@ onClipEvent(load){
                     <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/快速传送" centerPoint3DX="525.35" centerPoint3DY="14.3">
+                <DOMSymbolInstance libraryItemName="底部UI/平板电脑" centerPoint3DX="514.9" centerPoint3DY="9.15">
                   <matrix>
                     <Matrix tx="473.75" ty="-5.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="11.8"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(release){
-   _root.传送界面._visible = !_root.传送界面._visible;
-}
-onClipEvent(load){
-   显示文字 = _root.获得翻译("快速移动");
-}
-on(rollOver){
-   _root.注释(100,_root.获得翻译("快速移动至基地任意场景"));
-}
-on(rollOut){
-   _root.注释结束();
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
-                  </filters>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="底部UI/平板电脑" centerPoint3DX="593.65" centerPoint3DY="9.15">
-                  <matrix>
-                    <Matrix tx="552.5" ty="-5.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="11.8"/>
