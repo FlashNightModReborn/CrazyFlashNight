@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/确认confirm" itemID="68188ac5-000011f2" lastModified="1746439653">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/确认confirm" itemID="68188ac5-000011f2" lastModified="1746439851">
   <timeline>
     <DOMTimeline name="确认confirm">
       <layers>
@@ -28,6 +28,11 @@
 默认确认 = function(){
 	//清除掉传入的执行函数
 }
+名称 = "确认面板";
+说明 = "你确定吗？";
+成功说明 = "操作成功！";
+失败说明 = "操作失败！";
+
 stop();]]></script>
               </Actionscript>
               <elements/>
@@ -49,7 +54,7 @@ gotoAndStop(1);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F6B336">
+        <DOMLayer name="Layer 3" color="#F6B336" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -162,7 +167,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#EEAD6A" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#EEAD6A">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -206,7 +211,7 @@ on(rollOut){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>正在雇佣</characters>
+                      <characters>操作成功！</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -217,7 +222,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="16" duration="5" keyMode="9728">
               <elements>
-                <DOMDynamicText name="txt" fontRenderingMode="device" width="302.95" height="83" isSelectable="false" variableName="失败说明" lineType="multiline">
+                <DOMDynamicText name="txt" selected="true" fontRenderingMode="device" width="302.95" height="83" isSelectable="false" variableName="失败说明" lineType="multiline">
                   <matrix>
                     <Matrix tx="20" ty="43"/>
                   </matrix>
