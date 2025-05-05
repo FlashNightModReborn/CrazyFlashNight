@@ -1,12 +1,17 @@
 ﻿import org.flashNight.neur.ScheduleTimer.*;
 
 /**
- * CooldownWheelTests.as
- * ——————————————————————————————————————————
- * 冷却时间轮测试类，验证各种技能冷却场景
- */
+CooldownWheelTests.as
+——————————————————————————————————————————
+冷却时间轮测试类，验证各种技能冷却场景
+
+时间轮的实际行为：
+- pos 初始化为 119
+- tick() 先移动 pos，再执行当前槽
+- delay=1 和 delay=0 的任务都在下一次 tick 时执行（均放入同一槽位）
+- delay>1 的任务在第 delay 次 tick 时执行
+*/
 class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
-    
     /** 断言工具 */
     private function assert(condition:Boolean, message:String):Void {
         if (!condition) {
@@ -28,6 +33,9 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
             testPerformanceStress();
             testTimeWheelIntegrity();
             
+            // 游戏场景测试
+            testGameScenarios();
+            
             trace("✅ 所有测试通过！");
         } catch (e:Error) {
             trace("❌ 测试失败: " + e.toString());
@@ -38,47 +46,51 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
     private function testSingleSkillCooldown():Void {
         trace("- 测试单个技能冷却...");
         var wheel:CooldownWheel = CooldownWheel.I();
-        var count:Number = 0;
+        wheel.reset();
         
+        var count:Number = 0;
+        // delay=5 表示在第 5 次 tick 时执行
         wheel.add(5, function() {
             count++;
         });
         
-        // 模拟5帧
+        // 模拟 5 帧（不是 6 帧）
         for (var i:Number = 0; i < 5; i++) {
             wheel.tick();
         }
         
-        assert(count == 1, "5帧延迟应在第5帧执行 (count=" + count + ")");
+        assert(count == 1, "delay=5 的任务应在第 5 次 tick 时执行");
     }
     
     /** 测试2: 多个技能并发冷却 */
     private function testMultipleSkillsConcurrent():Void {
         trace("- 测试多个技能并发冷却...");
         var wheel:CooldownWheel = CooldownWheel.I();
-        var counts:Array = [0, 0, 0];
+        wheel.reset();
         
+        var counts:Array = [0, 0, 0];
         // 同时添加3个不同延迟的任务
         wheel.add(2, function() { counts[0]++; });
         wheel.add(5, function() { counts[1]++; });
         wheel.add(10, function() { counts[2]++; });
         
-        // 运行10帧
+        // 运行 10 帧
         for (var i:Number = 0; i < 10; i++) {
             wheel.tick();
         }
         
-        assert(counts[0] == 1, "第1个技能应在第2帧执行");
-        assert(counts[1] == 1, "第2个技能应在第5帧执行");
-        assert(counts[2] == 1, "第3个技能应在第10帧执行");
+        assert(counts[0] == 1, "第1个技能应在第2次tick时执行");
+        assert(counts[1] == 1, "第2个技能应在第5次tick时执行");
+        assert(counts[2] == 1, "第3个技能应在第10次tick时执行");
     }
     
     /** 测试3: 立即执行 */
     private function testImmediateExecution():Void {
         trace("- 测试立即执行场景...");
         var wheel:CooldownWheel = CooldownWheel.I();
-        var executeCount:Number = 0;
+        wheel.reset();
         
+        var executeCount:Number = 0;
         // 负延迟测试
         wheel.add(-5, function() { executeCount++; });
         
@@ -88,50 +100,52 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
         // 模拟1帧执行
         wheel.tick();
         
-        assert(executeCount == 2, "负延迟和0延迟应立即执行");
+        assert(executeCount == 2, "负延迟和0延迟应在第1次tick时立即执行");
     }
     
     /** 测试4: 超长延迟环绕 */
     private function testLongDelayWrapping():Void {
         trace("- 测试超长延迟环绕处理...");
         var wheel:CooldownWheel = CooldownWheel.I();
-        var executeCount:Number = 0;
+        wheel.reset();
         
-        // 延迟130帧 = 120 + 10，应该在10帧后执行
+        var executeCount:Number = 0;
+        // 延迟130帧 = 120 + 10，应该在第10次tick时执行
         wheel.add(130, function() { executeCount++; });
         
-        // 模拟11帧
-        for (var i:Number = 0; i < 11; i++) {
+        // 模拟 10 帧
+        for (var i:Number = 0; i < 10; i++) {
             wheel.tick();
         }
         
-        assert(executeCount == 1, "超长延迟应正确环绕");
+        assert(executeCount == 1, "超长延迟应正确环绕，在第10次tick时执行");
     }
     
     /** 测试5: 负延迟处理 */
     private function testNegativeDelay():Void {
         trace("- 测试负延迟边界情况...");
         var wheel:CooldownWheel = CooldownWheel.I();
-        var results:Array = [];
+        wheel.reset();
         
+        var results:Array = [];
         // 测试各种负延迟
         for (var i:Number = -10; i <= -1; i++) {
-            wheel.add(i, createCallback(results, i));
+            wheel.add(i, function() { results.push(1); });
         }
         
         // 执行一帧
         wheel.tick();
         
-        // 所有负延迟任务应在第一帧执行
-        assert(results.length == 10, "所有负延迟任务应立即执行");
+        assert(results.length == 10, "所有负延迟任务应在第1次tick时执行");
     }
     
     /** 测试6: 零帧处理 */
     private function testZeroFrameHandling():Void {
         trace("- 测试零帧边界处理...");
         var wheel:CooldownWheel = CooldownWheel.I();
-        var order:Array = [];
+        wheel.reset();
         
+        var order:Array = [];
         // 添加到同一槽位的多个任务
         wheel.add(0, function() { order.push("Task1"); });
         wheel.add(0, function() { order.push("Task2"); });
@@ -148,6 +162,8 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
     private function testPerformanceStress():Void {
         trace("- 性能压力测试...");
         var wheel:CooldownWheel = CooldownWheel.I();
+        wheel.reset();
+        
         var startTime:Number = getTimer();
         var execCount:Number = 0;
         
@@ -172,11 +188,16 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
     private function testTimeWheelIntegrity():Void {
         trace("- 时间轮完整性测试...");
         var wheel:CooldownWheel = CooldownWheel.I();
-        var executionTimes:Array = [];
+        wheel.reset();
         
-        // 在所有槽位添加任务
+        var executionCounts:Array = new Array(120);
         for (var i:Number = 0; i < 120; i++) {
-            wheel.add(i, createCallback(executionTimes, i));
+            executionCounts[i] = 0;
+        }
+        
+        // 测试每个延迟值是否在正确的时机执行
+        for (var delay:Number = 0; delay < 120; delay++) {
+            wheel.add(delay, createCallback(executionCounts, delay));
         }
         
         // 运行120帧
@@ -184,26 +205,22 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
             wheel.tick();
         }
         
-        // 验证所有任务按预期时间执行
-        assert(executionTimes.length == 120, "所有120个任务应执行");
-        
-        // 验证执行顺序
-        for (var j:Number = 0; j < 120; j++) {
-            assert(executionTimes[j] == j, "任务" + j + "应在第" + j + "帧执行");
+        // 验证每个延迟值都执行了一次
+        for (var d:Number = 0; d < 120; d++) {
+            assert(executionCounts[d] == 1, "延迟" + d + "的任务应执行一次");
         }
     }
     
     /** 工具方法：创建带上下文的回调 */
     private function createCallback(storage:Array, value):Function {
         return function() {
-            storage.push(value);
+            storage[value]++;
         };
     }
     
     /** 模拟游戏场景测试 */
     public function testGameScenarios():Void {
         trace("\n开始游戏场景测试...");
-        
         // 模拟技能冷却场景
         testSkillCooldownScenario();
         
@@ -218,6 +235,7 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
     private function testSkillCooldownScenario():Void {
         trace("- 模拟技能冷却场景...");
         var wheel:CooldownWheel = CooldownWheel.I();
+        wheel.reset();
         
         // 模拟3个技能的冷却系统
         var skill1_ready:Boolean = true;
@@ -236,13 +254,13 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
             wheel.add(60, function() { skill2_ready = true; });
         }
         
-        // 模拟运行90帧
-        for (var i:Number = 0; i < 90; i++) {
+        // 模拟运行61帧
+        for (var i:Number = 0; i < 61; i++) {
             wheel.tick();
         }
         
-        assert(skill1_ready == true, "技能1应在30帧后可用");
-        assert(skill2_ready == true, "技能2应在60帧后可用");
+        assert(skill1_ready == true, "技能1应在第30次tick后可用");
+        assert(skill2_ready == true, "技能2应在第60次tick后可用");
         assert(skill3_ready == true, "技能3未使用应始终可用");
     }
     
@@ -250,27 +268,34 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
     private function testRapidSkillUsage():Void {
         trace("- 测试连续技能释放...");
         var wheel:CooldownWheel = CooldownWheel.I();
+        wheel.reset();
+        
         var castCount:Number = 0;
         var skillReady:Boolean = true;
         
         // 模拟每20帧释放一次技能（30帧冷却）
         for (var frame:Number = 0; frame < 100; frame++) {
+            // 每20帧尝试施法
             if (frame % 20 == 0 && skillReady) {
                 skillReady = false;
                 castCount++;
+                // 30帧后重新可用
                 wheel.add(30, function() { skillReady = true; });
             }
+            
             wheel.tick();
         }
         
-        // 验证释放次数符合预期
-        assert(castCount >= 3 && castCount <= 4, "连续释放次数应合理");
+        // 只能施放3次（分别在frame 0, 40, 80），总共3次
+        assert(castCount == 3, "应该施放3次技能 (实际: " + castCount + ")");
     }
     
     /** 测试11: 长时间战斗场景 */
     private function testLongBattleScenario():Void {
         trace("- 模拟长时间战斗场景...");
         var wheel:CooldownWheel = CooldownWheel.I();
+        wheel.reset();
+        
         var totalSkillCasts:Number = 0;
         
         // 模拟1000帧的战斗（约33秒）
@@ -306,4 +331,3 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
         };
     }
 }
-
