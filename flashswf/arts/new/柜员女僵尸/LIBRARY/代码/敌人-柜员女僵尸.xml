@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/敌人-柜员女僵尸" itemID="65e9c27a-000011a8" linkageExportForAS="true" linkageIdentifier="敌人-柜员女僵尸" lastModified="1740037825" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/敌人-柜员女僵尸" itemID="65e9c27a-000011a8" linkageExportForAS="true" linkageIdentifier="敌人-柜员女僵尸" lastModified="1746436168" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="敌人-柜员女僵尸" currentFrame="73" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;18&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-柜员女僵尸" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;18&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B147BB" locked="true">
           <frames>
@@ -207,7 +207,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="代码/Symbol 19" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="代码/Symbol 19" name="area" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -234,13 +234,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#417EEB" locked="true">
+        <DOMLayer name="Layer 6" color="#417EEB" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="代码/Symbol 17" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-29.65" centerPoint3DY="22.65">
                   <matrix>
-                    <Matrix tx="-36" ty="16.35"/>
+                    <Matrix tx="-32.15" ty="20.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -253,7 +253,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#AA2AD3" locked="true">
+        <DOMLayer name="Layer 7" color="#AA2AD3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -281,7 +281,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#0BF2D4" locked="true">
+        <DOMLayer name="Layer 8" color="#0BF2D4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="95" keyMode="9728">
               <elements/>
@@ -309,7 +309,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#33E57D" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#33E57D">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -548,11 +548,11 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1/Symbol 2" centerPoint3DX="86.35" centerPoint3DY="100.4">
+                <DOMSymbolInstance libraryItemName="1/Symbol 2" selected="true" centerPoint3DX="86.35" centerPoint3DY="100.4">
                   <matrix>
                     <Matrix a="0.498504638671875" d="0.130126953125" tx="-0.3" ty="13.75"/>
                   </matrix>
