@@ -786,13 +786,13 @@
         <MP>0</MP>
     </Skill>
     <Skill id="71">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>驾驶</Name>
+        <Type>被动</Type>
+        <Description>被动技能学习后可获得被动效果，点击可启用或停用。被动效果：解锁对部分车辆的购买，1级可驾驶摩托车，2级可驾驶汽车。</Description>
+        <UnlockLevel>10</UnlockLevel>
+        <MaxLevel>2</MaxLevel>
+        <UnlockSP>5</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
