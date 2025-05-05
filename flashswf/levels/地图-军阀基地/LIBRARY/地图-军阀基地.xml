@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1742201546" lastUniqueIdentifier="19">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1746445421" lastUniqueIdentifier="20">
   <timeline>
     <DOMTimeline name="地图-军阀基地">
       <layers>
@@ -254,7 +254,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#78FE25" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#78FE25" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -278,6 +278,50 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/越野车" selected="true" centerPoint3DX="338.7" centerPoint3DY="600.7">
+                  <matrix>
+                    <Matrix a="0.808090209960938" d="0.783767700195313" tx="280.7" ty="563.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="271.4" y="119.25"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_root.基建系统.infrastructure.越野车)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("基地车库");
+		_parent.gotoAndStop(1);
+	}
+	_root.注释结束();
+}
+on (load) {
+	if (_root.基建系统.infrastructure.越野车)
+	{
+		this._visible = true;
+	}else{
+		this._visible = false;
+	}
+}
+on (rollOver) {
+	_root.注释(100,"回到A兵团。");
+	gotoAndStop("描边");
+}
+on (rollOut) {
+	_root.注释结束();
+	gotoAndPlay(1);
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
