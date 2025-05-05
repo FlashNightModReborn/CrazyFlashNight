@@ -344,6 +344,7 @@ _root.物品UI函数.计算战备箱总页数 = function():Number{
 		if(挑战 > 2) 页数++;
 	}
 	if (_root.主线任务进度 > 77) 页数 += 2;
+	if (_root.基建系统.infrastructure.越野车) 页数++;
 	return 页数;
 }
 

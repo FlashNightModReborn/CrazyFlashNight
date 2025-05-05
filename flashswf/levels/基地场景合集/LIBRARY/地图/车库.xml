@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746453077" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746453372" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -337,7 +337,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" selected="true" centerPoint3DX="905.25" centerPoint3DY="755.95">
+                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" centerPoint3DX="905.25" centerPoint3DY="755.95">
                   <matrix>
                     <Matrix a="0.247238159179688" d="0.247238159179688" tx="770.95" ty="664.85"/>
                   </matrix>
@@ -349,7 +349,7 @@ on(rollOut){
 	if (!_root.基建系统.infrastructure.摩托车)
 	{
 		_root.确认通用面板.名称 = "购买摩托车";
-		_root.确认通用面板.说明 = "是否要购买摩托车？总花费合计35000金币。\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。";
+		_root.确认通用面板.说明 = "是否要购买摩托车？需要学习1级驾驶，总花费合计35000金币。\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。";
 		_root.确认通用面板.成功说明 = "成功购买摩托车！";
 		_root.确认通用面板.失败说明 = "购买失败！";
 		_root.确认通用面板.确认 = function()
@@ -386,7 +386,7 @@ on (rollOut) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="318.3" centerPoint3DY="717.45">
+                <DOMSymbolInstance libraryItemName="sprite/越野车" selected="true" centerPoint3DX="318.3" centerPoint3DY="717.45">
                   <matrix>
                     <Matrix a="-0.808090209960938" d="0.783767700195313" tx="376.3" ty="680.55"/>
                   </matrix>
