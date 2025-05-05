@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/敌人-方舟爪豪" itemID="65aa1d34-00000748" linkageExportForAS="true" linkageIdentifier="敌人-方舟爪豪" lastModified="1746435843" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/敌人-方舟爪豪" itemID="65aa1d34-00000748" linkageExportForAS="true" linkageIdentifier="敌人-方舟爪豪" lastModified="1746456948" lastUniqueIdentifier="29">
   <timeline>
-    <DOMTimeline name="敌人-方舟爪豪">
+    <DOMTimeline name="敌人-方舟爪豪" currentFrame="4">
       <layers>
         <DOMLayer name="label" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -355,7 +355,35 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="ai" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/通用ai元件/行走ai载体" name="控制块" selected="true" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="42" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ai" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements>
@@ -421,7 +449,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="25" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/动画合集/空手攻击" selected="true" centerPoint3DX="-4.55" centerPoint3DY="-84.85">
+                <DOMSymbolInstance libraryItemName="方舟指挥官/动画合集/空手攻击" centerPoint3DX="-4.55" centerPoint3DY="-84.85">
                   <matrix>
                     <Matrix tx="-55.9" ty="-171.5"/>
                   </matrix>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/敌人-方舟收割者" itemID="664cd014-000006d6" linkageExportForAS="true" linkageIdentifier="敌人-方舟收割者" lastModified="1746435782" lastUniqueIdentifier="63">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/敌人-方舟收割者" itemID="664cd014-000006d6" linkageExportForAS="true" linkageIdentifier="敌人-方舟收割者" lastModified="1746456943" lastUniqueIdentifier="63">
   <timeline>
-    <DOMTimeline name="敌人-方舟收割者">
+    <DOMTimeline name="敌人-方舟收割者" currentFrame="7">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -430,7 +430,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -449,7 +449,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="行走ai层" color="#A5D8F2" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="行走ai层" color="#A5D8F2" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
