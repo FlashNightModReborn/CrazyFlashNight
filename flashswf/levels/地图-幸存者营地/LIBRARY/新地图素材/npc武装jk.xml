@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc武装jk" itemID="65b64071-00002d13" lastModified="1740635108" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc武装jk" itemID="65b64071-00002d13" lastModified="1746437984" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="npc武装jk">
       <layers>
@@ -7,12 +7,12 @@
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" name="描边" labelType="name" keyMode="9728">
+            <DOMFrame index="15" duration="5" name="描边" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C29BBA" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#C29BBA" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -37,7 +37,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#656FE8" locked="true">
+        <DOMLayer name="Layer 3" color="#656FE8">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
@@ -53,11 +53,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A8C7CD" locked="true">
+        <DOMLayer name="Layer 4" color="#A8C7CD" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 51820" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 51820" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="2.44140625" d="6.103515625" tx="15" ty="-15"/>
                   </matrix>
