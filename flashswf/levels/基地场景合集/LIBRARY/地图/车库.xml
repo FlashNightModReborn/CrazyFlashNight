@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746443093" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746452410" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -113,13 +113,13 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="冷兵器商人" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" centerPoint3DX="203.9" centerPoint3DY="236.25">
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" centerPoint3DX="203.9" centerPoint3DY="395.6">
                   <matrix>
-                    <Matrix tx="139.9" ty="177.6"/>
+                    <Matrix tx="139.9" ty="336.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="64" y="58.8"/>
@@ -146,7 +146,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="BPK" color="#9933CC" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="BPK" color="#9933CC" autoNamed="false" layerType="folder"/>
         <DOMLayer name="KING" color="#BA6078" parentLayerIndex="7" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -293,7 +293,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家的车" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="玩家的车" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -377,7 +377,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野车" selected="true" centerPoint3DX="318.3" centerPoint3DY="717.45">
+                <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="318.3" centerPoint3DY="717.45">
                   <matrix>
                     <Matrix a="-0.808090209960938" d="0.783767700195313" tx="376.3" ty="680.55"/>
                   </matrix>
