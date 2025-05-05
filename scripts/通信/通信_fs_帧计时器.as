@@ -99,6 +99,9 @@ _root.帧计时器.初始化任务栈 = function():Void {
                                   this.precisionThreshold);
     // 用 TaskManager 统一管理任务调度，内部会维护任务表和零帧任务
     this.taskManager = new TaskManager(this.ScheduleTimer, this.帧率);
+
+    // 创建冷却时间轮，用于调度轻量化的ui任务
+    this.cooldownWheel = CooldownWheel.I();
     
     // --------------------------
     // 其他相关初始化
@@ -577,6 +580,12 @@ _root.帧计时器.定位任务 = function(taskID:Number):Task {
 _root.帧计时器.延迟执行任务 = function(taskID:Number, delayTime):Boolean {
     return this.taskManager.delayTask(taskID, delayTime);
 };
+
+
+_root.帧计时器.添加冷却任务 = function(delay:Number, callback:Function):Void {
+    this.cooldownWheel.add(delay, callback);
+};
+
 
 
 EventBus.getInstance().subscribe("SceneChanged", StaticInitializer.onSceneChanged, StaticInitializer); 

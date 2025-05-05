@@ -19,9 +19,9 @@
           <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="9999"/>
      </fonts>
      <media>
-          <DOMBitmapItem name="image/bitmap1804.png" itemID="6597607b-00000400" sourceExternalFilepath="./LIBRARY/image/bitmap1804.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1804.png" bitmapDataHRef="M 2 1716646761.dat" frameRight="140" frameBottom="180"/>
-          <DOMBitmapItem name="image/bitmap1805.png" itemID="6597607b-00000405" sourceExternalFilepath="./LIBRARY/image/bitmap1805.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1805.png" bitmapDataHRef="M 1 1716646761.dat" frameRight="120" frameBottom="180"/>
-          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="./LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 3 1716646761.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="image/bitmap1804.png" itemID="6597607b-00000400" sourceExternalFilepath="../玩家信息界面/LIBRARY/image/bitmap1804.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1804.png" bitmapDataHRef="M 2 1716646761.dat" frameRight="140" frameBottom="180"/>
+          <DOMBitmapItem name="image/bitmap1805.png" itemID="6597607b-00000405" sourceExternalFilepath="../玩家信息界面/LIBRARY/image/bitmap1805.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1805.png" bitmapDataHRef="M 1 1716646761.dat" frameRight="120" frameBottom="180"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../玩家信息界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 3 1716646761.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
      </media>
      <symbols>
           <Include href="button/Symbol 1743.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009e6" lastModified="1704196122"/>
@@ -71,7 +71,7 @@
           <Include href="sprite/Symbol 1785.xml" loadImmediate="false" itemID="6597607e-00000a01" lastModified="1716132232"/>
           <Include href="sprite/Symbol 1789.xml" loadImmediate="false" itemID="6597607e-00000a05" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1790.xml" loadImmediate="false" itemID="6597607e-00000a06" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 1791.xml" loadImmediate="false" itemID="6597607e-00000a07" lastModified="1735149655"/>
+          <Include href="sprite/Symbol 1791.xml" loadImmediate="false" itemID="6597607e-00000a07" lastModified="1746444497"/>
           <Include href="sprite/Symbol 1792.xml" loadImmediate="false" itemID="6597607e-00000a08" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1817.xml" loadImmediate="false" itemID="6597607e-00000a14" lastModified="1716648978"/>
           <Include href="sprite/Symbol 1830.xml" loadImmediate="false" itemID="6597607e-00000a17" lastModified="1704196122"/>
@@ -80,7 +80,7 @@
           <Include href="sprite/功能按钮界面.xml" loadImmediate="false" itemID="665210a6-00002497" lastModified="1741596805"/>
           <Include href="sprite/技能控制器.xml" loadImmediate="false" itemID="6643303a-00000bee" lastModified="1735614075"/>
           <Include href="sprite/技能图标.xml" loadImmediate="false" itemID="66433dc8-0000156b" lastModified="1726334406"/>
-          <Include href="sprite/快捷技能界面.xml" loadImmediate="false" itemID="66520790-00001b5c" lastModified="1726334800"/>
+          <Include href="sprite/快捷技能界面.xml" loadImmediate="false" itemID="66520790-00001b5c" lastModified="1746408795"/>
           <Include href="sprite/快捷药剂界面.xml" loadImmediate="false" itemID="665210bd-00002498" lastModified="1735535401"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="sprite/图标壳.xml" loadImmediate="false" itemID="659d384c-0000310a" lastModified="1704802380"/>
@@ -223,6 +223,17 @@ import flash.filters.*;]]></script>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="12621343" publishTime="1746444504"/>
+          <PublishItem publishSize="12621366" publishTime="1746444448"/>
+          <PublishItem publishSize="10065015" publishTime="1746443876"/>
+          <PublishItem publishSize="10064997" publishTime="1746443718"/>
+          <PublishItem publishSize="10064974" publishTime="1746443640"/>
+          <PublishItem publishSize="10065004" publishTime="1746443370"/>
+          <PublishItem publishSize="10064787" publishTime="1746443313"/>
+          <PublishItem publishSize="10064960" publishTime="1746443056"/>
+          <PublishItem publishSize="10064974" publishTime="1746442908"/>
+          <PublishItem publishSize="10064974" publishTime="1746442751"/>
+          <PublishItem publishSize="10064975" publishTime="1746442621"/>
           <PublishItem publishSize="12776479" publishTime="1735614078"/>
           <PublishItem publishSize="12776542" publishTime="1735613987"/>
           <PublishItem publishSize="12776544" publishTime="1735613142"/>
@@ -232,16 +243,5 @@ import flash.filters.*;]]></script>
           <PublishItem publishSize="12776534" publishTime="1735610089"/>
           <PublishItem publishSize="12621907" publishTime="1735535411"/>
           <PublishItem publishSize="12621919" publishTime="1735534592"/>
-          <PublishItem publishSize="12621919" publishTime="1735533597"/>
-          <PublishItem publishSize="12621912" publishTime="1735532796"/>
-          <PublishItem publishSize="12621839" publishTime="1735532270"/>
-          <PublishItem publishSize="12621770" publishTime="1735532196"/>
-          <PublishItem publishSize="12621837" publishTime="1735532033"/>
-          <PublishItem publishSize="12621503" publishTime="1735310415"/>
-          <PublishItem publishSize="12621488" publishTime="1735310123"/>
-          <PublishItem publishSize="12621935" publishTime="1735287112"/>
-          <PublishItem publishSize="12622141" publishTime="1735153557"/>
-          <PublishItem publishSize="12622144" publishTime="1735152512"/>
-          <PublishItem publishSize="12622144" publishTime="1735152336"/>
      </publishHistory>
 </DOMDocument>
