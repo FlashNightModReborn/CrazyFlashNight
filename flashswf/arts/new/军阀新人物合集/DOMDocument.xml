@@ -120,9 +120,9 @@
           <Include href="gazer/元件素材/新屁股.xml" loadImmediate="false" itemID="6654b07e-0000025f" lastModified="1716826419"/>
           <Include href="Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1702098593"/>
           <Include href="Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1702098593"/>
-          <Include href="敌人-Gazer.xml" itemID="665b6b5e-000044ae" lastModified="1729775789"/>
-          <Include href="敌人-Itinerant.xml" itemID="66a1374f-00000492" lastModified="1730041411"/>
-          <Include href="敌人-Surveyor.xml" itemID="6652fae0-000012d7" lastModified="1721843751"/>
+          <Include href="敌人-Gazer.xml" itemID="665b6b5e-000044ae" lastModified="1746435326"/>
+          <Include href="敌人-Itinerant.xml" itemID="66a1374f-00000492" lastModified="1746435289"/>
+          <Include href="敌人-Surveyor.xml" itemID="6652fae0-000012d7" lastModified="1746435309"/>
           <Include href="怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1705929059"/>
           <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
           <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
@@ -137,6 +137,7 @@
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
           <Include href="怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="662fbc4c-0000294f" lastModified="1714404428"/>
+          <Include href="思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
           <Include href="透明控件.xml" loadImmediate="false" itemID="664afc48-000008ac" lastModified="1716190287"/>
           <Include href="吴豫Itinerant/1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 865.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000361" lastModified="1477651513"/>
           <Include href="吴豫Itinerant/1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 868.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000364" lastModified="1477651513"/>
@@ -509,7 +510,7 @@
                                                   <Point x="324.55" y="-89.2"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-Itinerant" selected="true" centerPoint3DX="679.9" centerPoint3DY="374.05">
+                                        <DOMSymbolInstance libraryItemName="敌人-Itinerant" centerPoint3DX="679.9" centerPoint3DY="374.05">
                                              <matrix>
                                                   <Matrix tx="273.05" ty="463.25"/>
                                              </matrix>

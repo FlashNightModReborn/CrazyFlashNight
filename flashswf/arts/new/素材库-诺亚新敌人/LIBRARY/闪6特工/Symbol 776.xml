@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪6特工/Symbol 776" itemID="6575ce0b-00000706" linkageExportForAS="true" linkageIdentifier="敌人-闪6特工" lastModified="1739350522" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪6特工/Symbol 776" itemID="6575ce0b-00000706" linkageExportForAS="true" linkageIdentifier="敌人-闪6特工" lastModified="1746435701" lastUniqueIdentifier="42">
   <timeline>
-    <DOMTimeline name="Symbol 776" currentFrame="73" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;3&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 776" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;3&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#CA8E4F">
           <frames>
@@ -321,7 +321,7 @@ x轴保持距离 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#EDD155" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#EDD155" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -342,9 +342,9 @@ x轴保持距离 = 50;
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="通用ai元件/逻辑ai详情元件" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="-32" centerPoint3DY="22.95">
                   <matrix>
-                    <Matrix tx="-36" ty="16.35"/>
+                    <Matrix tx="-34.5" ty="20.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -357,7 +357,7 @@ x轴保持距离 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#BEE1FA" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#BEE1FA">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

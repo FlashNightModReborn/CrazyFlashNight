@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/敌人-方舟爪豪" itemID="65aa1d34-00000748" linkageExportForAS="true" linkageIdentifier="敌人-方舟爪豪" lastModified="1739350163" lastUniqueIdentifier="27">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/敌人-方舟爪豪" itemID="65aa1d34-00000748" linkageExportForAS="true" linkageIdentifier="敌人-方舟爪豪" lastModified="1746435843" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="敌人-方舟爪豪">
       <layers>
@@ -355,26 +355,17 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="ai" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="ai" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/ai" centerPoint3DX="-38" centerPoint3DY="-3.05">
+                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="3" centerPoint3DY="2.95">
                   <matrix>
-                    <Matrix tx="-38" ty="-3.05"/>
+                    <Matrix tx="0.5" ty="0.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-    _parent.行走();
-}
-onClipEvent (unload) {
-    clearInterval(pauseInterval3);
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -383,11 +374,11 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/动画合集/停滞动作" selected="true" centerPoint3DX="-4.55" centerPoint3DY="-84.85">
+                <DOMSymbolInstance libraryItemName="方舟指挥官/动画合集/停滞动作" centerPoint3DX="-4.55" centerPoint3DY="-84.85">
                   <matrix>
                     <Matrix tx="-55.9" ty="-171.5"/>
                   </matrix>

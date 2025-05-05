@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地狱三头/敌人-诺亚地狱三头犬" itemID="6738474a-00000161" linkageExportForAS="true" linkageIdentifier="敌人-诺亚地狱三头犬" lastModified="1739350386" lastUniqueIdentifier="53">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地狱三头/敌人-诺亚地狱三头犬" itemID="6738474a-00000161" linkageExportForAS="true" linkageIdentifier="敌人-诺亚地狱三头犬" lastModified="1746435768" lastUniqueIdentifier="54">
   <timeline>
     <DOMTimeline name="敌人-诺亚地狱三头犬" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;53&lt;/guideline&gt;&lt;guideline direction="v"&gt;-92&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="18">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="18">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -437,13 +437,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/通用ai元件/逻辑ai详情元件" centerPoint3DX="-24.7" centerPoint3DY="-28.25">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-114" centerPoint3DY="46.95">
                   <matrix>
-                    <Matrix a="1.09591674804688" d="1.09591674804688" tx="-27.3" ty="-30.85"/>
+                    <Matrix tx="-116.5" ty="44.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

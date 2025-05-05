@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/敌人-方舟收割者" itemID="664cd014-000006d6" linkageExportForAS="true" linkageIdentifier="敌人-方舟收割者" lastModified="1739350207" lastUniqueIdentifier="62">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/敌人-方舟收割者" itemID="664cd014-000006d6" linkageExportForAS="true" linkageIdentifier="敌人-方舟收割者" lastModified="1746435782" lastUniqueIdentifier="63">
   <timeline>
     <DOMTimeline name="敌人-方舟收割者">
       <layers>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -430,13 +430,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/通用ai元件/逻辑ai详情元件" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="3" centerPoint3DY="2.95">
                   <matrix>
-                    <Matrix tx="-36" ty="16.35"/>
+                    <Matrix tx="0.5" ty="0.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
