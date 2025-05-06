@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/蛙型仿生僵尸/人物素材/上半身" itemID="65ab821c-000002ed" lastModified="1705841380">
+  <timeline>
+    <DOMTimeline name="上半身">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/蛙型仿生僵尸/人物素材/元件 84" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39495849609375" b="-0.018768310546875" c="-0.0267181396484375" d="0.43951416015625" tx="38.15" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.2" y="33.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 1072" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.456710815429688" b="0.134841918945313" c="0.138351440429688" d="0.4686279296875" tx="23.8" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.05" y="32.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/蛙型仿生僵尸/人物素材/元件 89" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4755859375" b="0.0038604736328125" c="0.002838134765625" d="0.34991455078125" tx="37.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.45" y="34.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

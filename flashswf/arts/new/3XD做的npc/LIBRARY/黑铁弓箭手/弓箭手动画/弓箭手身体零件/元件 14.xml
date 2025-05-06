@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 14" itemID="6766d5bd-00002382" lastModified="1727927711">
+  <timeline>
+    <DOMTimeline name="元件 14">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 941" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.400634765625" b="0.201995849609375" c="0.201995849609375" d="0.400634765625" tx="13.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 49">
+                  <matrix>
+                    <Matrix a="0.67852783203125" b="0.734359741210938" c="0.6727294921875" d="-0.621566772460938" tx="-1.1" ty="10.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.5" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

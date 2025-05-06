@@ -1,0 +1,2807 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/蛙型仿生僵尸/动画合集/起身" itemID="671dc7ff-00000a7a" lastModified="1731606867" lastUniqueIdentifier="152">
+  <timeline>
+    <DOMTimeline name="起身" currentFrame="43" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;88&lt;/guideline&gt;&lt;guideline direction="h"&gt;108&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="代码层" color="#B93CFD" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="38" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp == 0)
+{
+   stop();
+}
+if(_parent.hp < 0)
+{
+   stop();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="死亡消失层" color="#9B42CE" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/代码层/怪物通用模板/死亡消失元件/Symbol 39" centerPoint3DX="-372.1" centerPoint3DY="-138.55">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-390.1" ty="-156.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CenterMarker" color="#0000FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="4" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="7" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="11" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="17" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="15" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="16" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="17" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="19" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="25" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="29" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="32" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="35" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="you3" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.708908081054688" b="-0.705230712890625" c="0.705230712890625" d="0.708908081054688" tx="60.9" ty="60.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.081634521484375" b="-0.996566772460938" c="0.996566772460938" d="0.081634521484375" tx="3.35" ty="82.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.737548828125" b="-0.6751708984375" c="0.6751708984375" d="0.737548828125" tx="-5.1" ty="140.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.737548828125" b="-0.6751708984375" c="0.6751708984375" d="0.737548828125" tx="-5.1" ty="140.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996856689453125" b="-0.0779571533203125" c="0.0779571533203125" d="0.996856689453125" tx="-13.45" ty="132.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" selected="true" symbolType="graphic" centerPoint3DX="-23.7" centerPoint3DY="125.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.800689697265625" b="0.5987548828125" c="-0.5987548828125" d="0.800689697265625" tx="-25.7" ty="121.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.6181640625" b="0.785812377929688" c="-0.785812377929688" d="0.6181640625" tx="-6.95" ty="110.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.621185302734375" b="0.783493041992188" c="-0.783493041992188" d="0.621185302734375" tx="15.05" ty="106.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996856689453125" b="-0.0779571533203125" c="0.0779571533203125" d="0.996856689453125" tx="35.15" ty="104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996856689453125" b="-0.0779571533203125" c="0.0779571533203125" d="0.996856689453125" tx="23.1" ty="77.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996856689453125" b="-0.0779571533203125" c="0.0779571533203125" d="0.996856689453125" tx="19.6" ty="75.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.683837890625" b="0.729583740234375" c="-0.729583740234375" d="0.683837890625" tx="22.8" ty="75.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="you2" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3240966796875" b="-0.94598388671875" c="0.94598388671875" d="0.3240966796875" tx="43.3" ty="51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.367355346679688" b="-0.930038452148438" c="0.930038452148438" d="-0.367355346679688" tx="-15.9" ty="86.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101181030273438" b="-0.99481201171875" c="0.99481201171875" d="-0.101181030273438" tx="-24.85" ty="140.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101181030273438" b="-0.99481201171875" c="0.99481201171875" d="-0.101181030273438" tx="-24.85" ty="140.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.58050537109375" b="-0.81414794921875" c="0.81414794921875" d="0.58050537109375" tx="-27.75" ty="118.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" selected="true" symbolType="graphic" centerPoint3DX="-25.2" centerPoint3DY="109.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.980072021484375" b="-0.197616577148438" c="0.197616577148438" d="0.980072021484375" tx="-24.8" ty="102.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994430541992188" b="-0.103561401367188" c="0.103561401367188" d="0.994430541992188" tx="-4.45" ty="89.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.989715576171875" b="0.141845703125" c="-0.141845703125" d="0.989715576171875" tx="20.35" ty="87.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.94921875" b="-0.314239501953125" c="0.314239501953125" d="0.94921875" tx="31.6" ty="84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.881103515625" b="-0.472702026367188" c="0.472702026367188" d="0.881103515625" tx="16.25" ty="59.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.881103515625" b="-0.472702026367188" c="0.472702026367188" d="0.881103515625" tx="12.75" ty="57.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="25.65" ty="56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="qian" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.21771240234375" b="0.0290679931640625" c="-0.025054931640625" d="0.18780517578125" tx="68.5" ty="57.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.18450927734375" b="-0.119186401367188" c="0.102828979492188" d="0.159149169921875" tx="7.2" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.219635009765625" b="0.002716064453125" c="-0.0023345947265625" d="0.189453125" tx="2.5" ty="138.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.219635009765625" b="0.002716064453125" c="-0.0023345947265625" d="0.189453125" tx="2.5" ty="138.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203964233398438" b="0.0814208984375" c="-0.070220947265625" d="0.175949096679688" tx="-5.75" ty="134.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" selected="true" symbolType="graphic" centerPoint3DX="-12.1" centerPoint3DY="139.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.135009765625" b="0.17315673828125" c="-0.14935302734375" d="0.116439819335938" tx="-21.6" ty="129.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.011566162109375" b="0.219268798828125" c="-0.189117431640625" d="-0.0099639892578125" tx="-3.05" ty="117.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="-0.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.169769287109375" b="0.139266967773438" c="-0.120101928710938" d="0.14642333984375" tx="17.25" ty="114"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="0.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2100830078125" b="0.06396484375" c="-0.0551605224609375" d="0.18121337890625" tx="42.85" ty="106.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.21124267578125" b="0.059906005859375" c="-0.051666259765625" d="0.1822509765625" tx="30.8" ty="80.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.21124267578125" b="0.059906005859375" c="-0.051666259765625" d="0.1822509765625" tx="27.3" ty="78.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.150741577148438" b="0.159774780273438" c="-0.1378173828125" d="0.130050659179688" tx="25.5" ty="83.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="you1" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4793701171875" b="-0.877487182617188" c="0.877487182617188" d="0.4793701171875" tx="26.3" ty="37.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.204757690429688" b="-0.978683471679688" c="0.978683471679688" d="-0.204757690429688" tx="-38.25" ty="86.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0310821533203125" b="-0.999374389648438" c="0.999374389648438" d="-0.0310821533203125" tx="-46.75" ty="136.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0310821533203125" b="-0.999374389648438" c="0.999374389648438" d="-0.0310821533203125" tx="-46.75" ty="136.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.8731689453125" b="-0.487091064453125" c="0.487091064453125" d="0.8731689453125" tx="-34.45" ty="97.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" selected="true" symbolType="graphic" centerPoint3DX="-20.65" centerPoint3DY="88.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.993942260742188" b="0.1077880859375" c="-0.1077880859375" d="0.993942260742188" tx="-18.1" ty="82.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997406005859375" b="-0.069061279296875" c="0.069061279296875" d="0.997406005859375" tx="-1.8" ty="69.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.93194580078125" b="0.362060546875" c="-0.362060546875" d="0.93194580078125" tx="32.4" ty="68.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96917724609375" b="0.245635986328125" c="-0.245635986328125" d="0.96917724609375" tx="41.3" ty="64.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96917724609375" b="0.245635986328125" c="-0.245635986328125" d="0.96917724609375" tx="25.95" ty="39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96917724609375" b="0.245635986328125" c="-0.245635986328125" d="0.96917724609375" tx="22.45" ty="37.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9989013671875" b="0.044647216796875" c="-0.044647216796875" d="0.9989013671875" tx="31.2" ty="34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="head" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.79791259765625" b="0.6026611328125" c="-0.6026611328125" d="0.79791259765625" tx="38.2" ty="28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.474044799804688" b="-0.880416870117188" c="0.880416870117188" d="0.474044799804688" tx="-40.3" ty="71.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.56341552734375" b="-0.826080322265625" c="0.826080322265625" d="-0.56341552734375" tx="-57.9" ty="126.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.56341552734375" b="-0.826080322265625" c="0.826080322265625" d="-0.56341552734375" tx="-57.9" ty="126.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98797607421875" b="-0.1536865234375" c="0.1536865234375" d="0.98797607421875" tx="-31.35" ty="82.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" selected="true" symbolType="graphic" centerPoint3DX="-5.6" centerPoint3DY="62.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.993759155273438" b="0.109771728515625" c="-0.109771728515625" d="0.993759155273438" tx="-13" ty="68.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.97735595703125" b="0.210693359375" c="-0.210693359375" d="0.97735595703125" tx="5.25" ty="57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98211669921875" b="0.187164306640625" c="-0.187164306640625" d="0.98211669921875" tx="43.4" ty="58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96502685546875" b="0.261520385742188" c="-0.261520385742188" d="0.96502685546875" tx="51.75" ty="54.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.911239624023438" b="0.41143798828125" c="-0.41143798828125" d="0.911239624023438" tx="38.6" ty="31.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998580932617188" b="0.049530029296875" c="-0.049530029296875" d="0.998580932617188" tx="32.7" ty="26.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9927978515625" b="0.11944580078125" c="-0.11944580078125" d="0.9927978515625" tx="40.05" ty="22.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="body" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.92095947265625" b="0.389572143554688" c="-0.389572143554688" d="0.92095947265625" tx="33.15" ty="48.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.798507690429688" b="-0.601913452148438" c="0.601913452148438" d="0.798507690429688" tx="-25.35" ty="86.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.221054077148438" b="-0.975204467773438" c="0.975204467773438" d="0.221054077148438" tx="-37.2" ty="127.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.221054077148438" b="-0.975204467773438" c="0.975204467773438" d="0.221054077148438" tx="-37.2" ty="127.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.954513549804688" b="-0.2977294921875" c="0.2977294921875" d="0.954513549804688" tx="-22.2" ty="101.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" selected="true" symbolType="graphic" centerPoint3DX="-6.95" centerPoint3DY="87.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.988739013671875" b="-0.148422241210938" c="0.148422241210938" d="0.988739013671875" tx="-6.95" ty="87.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99981689453125" b="0.0043792724609375" c="-0.0043792724609375" d="0.99981689453125" tx="8.2" ty="76.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.951812744140625" b="0.30609130859375" c="-0.30609130859375" d="0.951812744140625" tx="40.15" ty="78.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.966537475585938" b="0.255889892578125" c="-0.255889892578125" d="0.966537475585938" tx="49.5" ty="74.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.879669189453125" b="0.4752197265625" c="-0.4752197265625" d="0.879669189453125" tx="31.55" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9697265625" b="0.243408203125" c="-0.243408203125" d="0.9697265625" tx="30.7" ty="47.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992782592773438" b="0.119857788085938" c="-0.119857788085938" d="0.992782592773438" tx="40.75" ty="43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yyou3" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="53.4" ty="140.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.75958251953125" b="-0.65032958984375" c="0.65032958984375" d="0.75958251953125" tx="60.45" ty="138.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.38848876953125" b="-0.921371459960938" c="0.921371459960938" d="0.38848876953125" tx="63.75" ty="137.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.38848876953125" b="-0.921371459960938" c="0.921371459960938" d="0.38848876953125" tx="63.75" ty="137.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.726425170898438" b="-0.687042236328125" c="0.687042236328125" d="0.726425170898438" tx="45" ty="139.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9051513671875" b="-0.424560546875" c="0.424560546875" d="0.9051513671875" tx="40.2" ty="143.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992645263671875" b="-0.119354248046875" c="0.119354248046875" d="0.992645263671875" tx="33.1" ty="145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.868515014648438" b="0.4952392578125" c="-0.4952392578125" d="0.868515014648438" tx="24.75" ty="140.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997604370117188" b="0.06671142578125" c="-0.06671142578125" d="0.997604370117188" tx="25.75" ty="142.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.7" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999496459960938" b="-0.02362060546875" c="0.02362060546875" d="0.999496459960938" tx="26.5" ty="143.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.995590209960938" b="-0.091705322265625" c="0.091705322265625" d="0.995590209960938" tx="27.25" ty="144.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="25.7" ty="143.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yyou2" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.91595458984375" b="-0.401153564453125" c="0.401153564453125" d="0.91595458984375" tx="34.05" ty="100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.436508178710938" b="-0.899642944335938" c="0.899642944335938" d="0.436508178710938" tx="19.65" ty="120.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1456298828125" b="-0.989288330078125" c="0.989288330078125" d="0.1456298828125" tx="19.4" ty="132.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1456298828125" b="-0.989288330078125" c="0.989288330078125" d="0.1456298828125" tx="19.4" ty="132.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.607635498046875" b="-0.794052124023438" c="0.794052124023438" d="0.607635498046875" tx="8.05" ty="113.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" centerPoint3DX="27.05" centerPoint3DY="123.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.91058349609375" b="-0.412811279296875" c="0.412811279296875" d="0.91058349609375" tx="20.8" ty="106.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997543334960938" b="0.0662994384765625" c="-0.0662994384765625" d="0.997543334960938" tx="33.45" ty="101.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.497161865234375" b="0.867431640625" c="-0.867431640625" d="0.497161865234375" tx="60.35" ty="115.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.48822021484375" b="0.872528076171875" c="-0.872528076171875" d="0.48822021484375" tx="56.4" ty="121.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.989044189453125" b="0.146163940429688" c="-0.146163940429688" d="0.989044189453125" tx="31.2" ty="97.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.995040893554688" b="0.097503662109375" c="-0.097503662109375" d="0.995040893554688" tx="29.2" ty="99.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994720458984375" b="0.102401733398438" c="-0.102401733398438" d="0.994720458984375" tx="28.65" ty="99.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yyou1" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.774566650390625" b="-0.632369995117188" c="0.632369995117188" d="0.774566650390625" tx="22.1" ty="78.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.275802612304688" b="-0.961105346679688" c="0.961105346679688" d="0.275802612304688" tx="-2.85" ty="109.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.043670654296875" b="-0.998931884765625" c="0.998931884765625" d="0.043670654296875" tx="-5.15" ty="126.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.043670654296875" b="-0.998931884765625" c="0.998931884765625" d="0.043670654296875" tx="-5.15" ty="126.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8160400390625" b="-0.577682495117188" c="0.577682495117188" d="-0.8160400390625" tx="-10.25" ty="131.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" selected="true" symbolType="graphic" centerPoint3DX="10.95" centerPoint3DY="113.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.65350341796875" b="-0.756576538085938" c="0.756576538085938" d="-0.65350341796875" tx="0.8" ty="118.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.452865600585938" b="-0.89129638671875" c="0.89129638671875" d="-0.452865600585938" tx="11.9" ty="107.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0145263671875" b="-0.999664306640625" c="0.999664306640625" d="0.0145263671875" tx="35.55" ty="110.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.626754760742188" b="-0.778961181640625" c="0.778961181640625" d="0.626754760742188" tx="39.95" ty="101.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.8369140625" b="-0.546875" c="0.546875" d="0.8369140625" tx="21.5" ty="74.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.953399658203125" b="-0.300949096679688" c="0.300949096679688" d="0.953399658203125" tx="26.15" ty="74.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997314453125" b="0.0723419189453125" c="-0.0723419189453125" d="0.997314453125" tx="35.3" ty="74.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zzuo2" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.8963623046875" b="-0.443283081054688" c="0.443283081054688" d="0.8963623046875" tx="50" ty="88.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.394256591796875" b="-0.9189453125" c="0.9189453125" d="0.394256591796875" tx="24.25" ty="98.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.102264404296875" b="-0.99468994140625" c="0.99468994140625" d="0.102264404296875" tx="17.15" ty="121.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.102264404296875" b="-0.99468994140625" c="0.99468994140625" d="0.102264404296875" tx="17.15" ty="121.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.039276123046875" b="-0.9991455078125" c="0.9991455078125" d="0.039276123046875" tx="19" ty="127.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.6240234375" b="-0.78118896484375" c="0.78118896484375" d="0.6240234375" tx="34.5" ty="108.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.926559448242188" b="-0.375732421875" c="0.375732421875" d="0.926559448242188" tx="40.25" ty="101.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9573974609375" b="-0.28814697265625" c="0.28814697265625" d="0.9573974609375" tx="62.75" ty="102.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999847412109375" b="-0.004302978515625" c="0.004302978515625" d="0.999847412109375" tx="80.3" ty="102.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986846923828125" b="-0.16070556640625" c="0.16070556640625" d="0.986846923828125" tx="50.6" ty="97.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994171142578125" b="-0.106613159179688" c="0.106613159179688" d="0.994171142578125" tx="46.5" ty="99.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="49.65" ty="97.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zzuo1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.461776733398438" b="-0.88690185546875" c="0.88690185546875" d="0.461776733398438" tx="29.05" ty="81.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10980224609375" b="-0.99383544921875" c="0.99383544921875" d="-0.10980224609375" tx="3" ty="104.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.26953125" b="-0.962875366210938" c="0.962875366210938" d="0.26953125" tx="-4.7" ty="119.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.26953125" b="-0.962875366210938" c="0.962875366210938" d="0.26953125" tx="-4.7" ty="119.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0848388671875" b="-0.99627685546875" c="0.99627685546875" d="0.0848388671875" tx="-2.95" ty="129"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" selected="true" symbolType="graphic" centerPoint3DX="18.3" centerPoint3DY="117.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0108489990234375" b="-0.999801635742188" c="0.999801635742188" d="-0.0108489990234375" tx="8.25" ty="116.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106491088867188" b="-0.994186401367188" c="0.994186401367188" d="-0.106491088867188" tx="19.35" ty="107.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2939453125" b="-0.955657958984375" c="0.955657958984375" d="-0.2939453125" tx="42.95" ty="112.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10797119140625" b="-0.993988037109375" c="0.993988037109375" d="-0.10797119140625" tx="58.65" ty="107.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.817779541015625" b="-0.57513427734375" c="0.57513427734375" d="0.817779541015625" tx="35.9" ty="82.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.981918334960938" b="-0.18817138671875" c="0.18817138671875" d="0.981918334960938" tx="39.85" ty="79.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986801147460938" b="-0.16156005859375" c="0.16156005859375" d="0.986801147460938" tx="42.7" ty="76.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="dao" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.137802124023438" b="-0.093292236328125" c="0.09320068359375" d="-0.137664794921875" tx="93" ty="53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.165374755859375" b="0.0184478759765625" c="-0.0184326171875" d="-0.165206909179688" tx="18.7" ty="50.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="-0.05"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.002593994140625" b="-0.1663818359375" c="0.16619873046875" d="0.002593994140625" tx="4.65" ty="110.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.002593994140625" b="-0.1663818359375" c="0.16619873046875" d="0.002593994140625" tx="4.65" ty="110.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.164718627929688" b="-0.0233306884765625" c="0.0233001708984375" d="-0.16455078125" tx="15.7" ty="106.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" selected="true" symbolType="graphic" centerPoint3DX="32" centerPoint3DY="87.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.160247802734375" b="-0.04461669921875" c="0.0445709228515625" d="-0.160079956054688" tx="29.25" ty="97.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.153045654296875" b="-0.065155029296875" c="0.065093994140625" d="-0.15289306640625" tx="42.75" ty="91.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.1"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.024566650390625" b="-0.16448974609375" c="0.164352416992188" d="-0.0245513916015625" tx="71.25" ty="104.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.164718627929688" b="-0.0233306884765625" c="0.0233001708984375" d="-0.16455078125" tx="94" ty="85.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.07427978515625" b="-0.1488037109375" c="0.148681640625" d="-0.07421875" tx="76.55" ty="83.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.164154052734375" b="0.026947021484375" c="-0.02691650390625" d="-0.163986206054688" tx="75.6" ty="59"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.123947143554688" b="-0.111068725585938" c="0.110946655273438" d="-0.123825073242188" tx="81.1" ty="72.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zzuo3" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="71.6" ty="128.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.75958251953125" b="-0.65032958984375" c="0.65032958984375" d="0.75958251953125" tx="66.7" ty="114.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603073120117188" b="-0.797607421875" c="0.797607421875" d="0.603073120117188" tx="62.35" ty="126.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603073120117188" b="-0.797607421875" c="0.797607421875" d="0.603073120117188" tx="62.35" ty="126.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.27008056640625" b="-0.962753295898438" c="0.962753295898438" d="0.27008056640625" tx="64.5" ty="127.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.8768310546875" b="-0.48046875" c="0.48046875" d="0.8768310546875" tx="70.35" ty="137.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99981689453125" b="0.0085906982421875" c="-0.0085906982421875" d="0.99981689453125" tx="58.2" ty="144.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" centerPoint3DX="79.15" centerPoint3DY="138">
+                  <matrix>
+                    <Matrix a="0.97491455078125" b="-0.22186279296875" c="0.22186279296875" d="0.97491455078125" tx="67.85" ty="145.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"27","parent":"26","rig":"R1729125970744","version":6,"snapTo":"2024_9_17_0_43_42_795"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9942626953125" b="-0.1058349609375" c="0.1058349609375" d="0.9942626953125" tx="77.4" ty="145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.97027587890625" b="-0.241561889648438" c="0.241561889648438" d="0.97027587890625" tx="83" ty="147"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.97625732421875" b="0.216033935546875" c="-0.216033935546875" d="0.97625732421875" tx="58.7" ty="142"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.97027587890625" b="-0.241561889648438" c="0.241561889648438" d="0.97027587890625" tx="53.8" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="51.35" ty="143.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ass" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.955001831054688" b="0.2965087890625" c="-0.2965087890625" d="0.955001831054688" tx="27.9" ty="76.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.67486572265625" b="-0.73785400390625" c="0.73785400390625" d="0.67486572265625" tx="-2.15" ty="103.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0737152099609375" b="-0.997222900390625" c="0.997222900390625" d="-0.0737152099609375" tx="-9.1" ty="122.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0737152099609375" b="-0.997222900390625" c="0.997222900390625" d="-0.0737152099609375" tx="-9.1" ty="122.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9075927734375" b="-0.419540405273438" c="0.419540405273438" d="0.9075927734375" tx="-7.3" ty="125.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" selected="true" symbolType="graphic" centerPoint3DX="1.2" centerPoint3DY="113" loop="loop">
+                  <matrix>
+                    <Matrix a="0.95452880859375" b="-0.297470092773438" c="0.297470092773438" d="0.95452880859375" tx="4.2" ty="113.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.985214233398438" b="-0.170333862304688" c="0.170333862304688" d="0.985214233398438" tx="15.9" ty="103.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9957275390625" b="0.0904541015625" c="-0.0904541015625" d="0.9957275390625" tx="40.8" ty="107.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99505615234375" b="-0.0976409912109375" c="0.0976409912109375" d="0.99505615234375" tx="55.45" ty="103"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99505615234375" b="-0.0976409912109375" c="0.0976409912109375" d="0.99505615234375" tx="26.75" ty="79.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99505615234375" b="-0.0976409912109375" c="0.0976409912109375" d="0.99505615234375" tx="36.65" ty="75.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992782592773438" b="0.119857788085938" c="-0.119857788085938" d="0.992782592773438" tx="40.6" ty="71.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zuo3" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.040283203125" b="-0.353927612304688" c="0.353927612304688" d="1.040283203125" tx="89.4" ty="53.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.561737060546875" b="-0.944381713867188" c="0.944381713867188" d="0.561737060546875" tx="15.65" ty="52.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.535369873046875" b="-0.95953369140625" c="0.95953369140625" d="0.535369873046875" tx="1.9" ty="111.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.535369873046875" b="-0.95953369140625" c="0.95953369140625" d="0.535369873046875" tx="1.9" ty="111.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34661865234375" b="-1.04266357421875" c="1.04266357421875" d="0.34661865234375" tx="13.3" ty="108.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" selected="true" symbolType="graphic" centerPoint3DX="26.55" centerPoint3DY="99.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.47967529296875" b="-0.9884033203125" c="0.9884033203125" d="0.47967529296875" tx="26.7" ty="99.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.6046142578125" b="-0.9173583984375" c="0.9173583984375" d="0.6046142578125" tx="40.05" ty="93.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.03106689453125" b="-0.379623413085938" c="0.379623413085938" d="1.03106689453125" tx="68" ty="103.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34661865234375" b="-1.04266357421875" c="1.04266357421875" d="0.34661865234375" tx="91.6" ty="87.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.06915283203125" b="-0.253204345703125" c="0.253204345703125" d="1.06915283203125" tx="73.45" ty="82.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34661865234375" b="-1.04266357421875" c="1.04266357421875" d="0.34661865234375" tx="72.7" ty="59.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.040283203125" b="-0.353927612304688" c="0.353927612304688" d="1.040283203125" tx="77.5" ty="71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zuo2" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.341278076171875" b="-0.939926147460938" c="0.939926147460938" d="0.341278076171875" tx="69.55" ty="58.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.350341796875" b="-0.936569213867188" c="0.936569213867188" d="-0.350341796875" tx="3.8" ty="69.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.510528564453125" b="-0.85980224609375" c="0.85980224609375" d="0.510528564453125" tx="-18.45" ty="112.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.510528564453125" b="-0.85980224609375" c="0.85980224609375" d="0.510528564453125" tx="-18.45" ty="112.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.340850830078125" b="-0.940048217773438" c="0.940048217773438" d="0.340850830078125" tx="-6.5" ty="113.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" selected="true" symbolType="graphic" centerPoint3DX="9.85" centerPoint3DY="102.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.46063232421875" b="-0.887451171875" c="0.887451171875" d="0.46063232421875" tx="6.8" ty="101.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.572540283203125" b="-0.81976318359375" c="0.81976318359375" d="0.572540283203125" tx="20.25" ty="92.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.76519775390625" b="-0.643646240234375" c="0.643646240234375" d="0.76519775390625" tx="48.45" ty="98.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.340850830078125" b="-0.940048217773438" c="0.940048217773438" d="0.340850830078125" tx="71.8" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.882080078125" b="-0.470932006835938" c="0.470932006835938" d="0.882080078125" tx="55.5" ty="72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.340850830078125" b="-0.940048217773438" c="0.940048217773438" d="0.340850830078125" tx="52.9" ty="64.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.94647216796875" b="-0.322723388671875" c="0.322723388671875" d="0.94647216796875" tx="61.2" ty="59.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zuo1" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.950225830078125" b="0.31134033203125" c="0.31134033203125" d="0.950225830078125" tx="47.3" ty="41.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.520858764648438" b="0.853546142578125" c="0.853546142578125" d="0.520858764648438" tx="-24.1" ty="70.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.515960693359375" b="0.85650634765625" c="0.85650634765625" d="0.515960693359375" tx="-46.3" ty="114.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.515960693359375" b="0.85650634765625" c="0.85650634765625" d="0.515960693359375" tx="-46.3" ty="114.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.961410522460938" b="-0.27459716796875" c="-0.27459716796875" d="0.961410522460938" tx="-15.6" ty="87.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" selected="true" symbolType="graphic" centerPoint3DX="1.3" centerPoint3DY="84" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.91729736328125" b="-0.397705078125" c="-0.397705078125" d="0.91729736328125" tx="1.4" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8575439453125" b="-0.5140380859375" c="-0.5140380859375" d="0.8575439453125" tx="18.3" ty="65.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.695281982421875" b="-0.718490600585938" c="-0.718490600585938" d="0.695281982421875" tx="53.7" ty="70.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.961410522460938" b="-0.27459716796875" c="-0.27459716796875" d="0.961410522460938" tx="62.7" ty="66.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.961410522460938" b="-0.27459716796875" c="-0.27459716796875" d="0.961410522460938" tx="46.4" ty="45.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.961410522460938" b="-0.27459716796875" c="-0.27459716796875" d="0.961410522460938" tx="43.8" ty="38.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9586181640625" b="-0.284469604492188" c="-0.284469604492188" d="0.9586181640625" tx="52.5" ty="32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

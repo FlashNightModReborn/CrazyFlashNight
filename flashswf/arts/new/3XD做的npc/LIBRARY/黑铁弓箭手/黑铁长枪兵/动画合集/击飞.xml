@@ -1,0 +1,304 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁弓箭手/黑铁长枪兵/动画合集/击飞" itemID="67ba017c-00002267" lastModified="1740240442">
+  <timeline>
+    <DOMTimeline name="击飞" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;114&lt;/guideline&gt;&lt;guideline direction="h"&gt;99&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#2E97BC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="6" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="108" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#14EEAE" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#FF0000" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/Symbol 1040" selected="true" symbolType="graphic" centerPoint3DX="-4.95" centerPoint3DY="-5.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0592498779296875" b="-0.0284423828125" c="0.0284423828125" d="0.0592498779296875" tx="-21.9" ty="-12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="332.35" y="309.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 26" selected="true" centerPoint3DX="11.05" centerPoint3DY="16.35">
+                  <matrix>
+                    <Matrix a="-0.0792388916015625" b="-0.13677978515625" c="-0.136886596679688" d="0.0791168212890625" tx="46.35" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="173.8"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-67"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 16" selected="true" centerPoint3DX="38.1" centerPoint3DY="1.55">
+                  <matrix>
+                    <Matrix a="0.9708251953125" b="-0.127685546875" c="0.127685546875" d="0.9708251953125" tx="20.7" ty="-7.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.95" y="7.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 15" selected="true" centerPoint3DX="53.7" centerPoint3DY="5.3">
+                  <matrix>
+                    <Matrix a="-0.025970458984375" b="0.46258544921875" c="0.388595581054688" d="0.0218505859375" tx="49.6" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.85" y="6.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 928" selected="true" centerPoint3DX="14.75" centerPoint3DY="-10.75">
+                  <matrix>
+                    <Matrix a="-0.30230712890625" b="0.325225830078125" c="0.325225830078125" d="0.30230712890625" tx="5.2" ty="-26.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.9" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 931" selected="true" centerPoint3DX="28.4" centerPoint3DY="24.1">
+                  <matrix>
+                    <Matrix a="-0.43377685546875" b="0.111663818359375" c="0.111663818359375" d="0.43377685546875" tx="36.45" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.85" y="15.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 44" selected="true" centerPoint3DX="56.2" centerPoint3DY="75.95">
+                  <matrix>
+                    <Matrix a="0.24188232421875" b="-0.1402587890625" c="0.163848876953125" d="0.28253173828125" tx="43.4" ty="72.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.4" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 17" selected="true" centerPoint3DX="43.65" centerPoint3DY="55.8">
+                  <matrix>
+                    <Matrix a="0.6121826171875" b="-0.7860107421875" c="0.7860107421875" d="0.6121826171875" tx="13.65" ty="53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.45" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 12" selected="true" centerPoint3DX="8.8" centerPoint3DY="3.7">
+                  <matrix>
+                    <Matrix a="0.84173583984375" b="-0.53631591796875" c="0.53631591796875" d="0.84173583984375" tx="-2.25" ty="0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="14.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 11" selected="true" centerPoint3DX="1.7" centerPoint3DY="-15.9">
+                  <matrix>
+                    <Matrix a="0.40252685546875" b="-0.91009521484375" c="0.91009521484375" d="0.40252685546875" tx="-26.05" ty="-6.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="33.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 939" selected="true" centerPoint3DX="9.3" centerPoint3DY="16.8">
+                  <matrix>
+                    <Matrix a="-0.428268432617188" b="0.134521484375" c="0.134521484375" d="0.428268432617188" tx="23.9" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.2" y="21.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 10" selected="true" centerPoint3DX="-1.45" centerPoint3DY="-33.85">
+                  <matrix>
+                    <Matrix a="0.555511474609375" b="-0.81939697265625" c="0.81939697265625" d="0.555511474609375" tx="-23.75" ty="-29.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.7" y="23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 17" selected="true" centerPoint3DX="36.8" centerPoint3DY="66.6">
+                  <matrix>
+                    <Matrix a="0.6588134765625" b="-0.744384765625" c="0.744384765625" d="0.6588134765625" tx="6.9" ty="62.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.6" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 44" selected="true" centerPoint3DX="48.15" centerPoint3DY="84.1">
+                  <matrix>
+                    <Matrix a="0.206207275390625" b="-0.23419189453125" c="0.2449951171875" d="0.215728759765625" tx="34.2" ty="85.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.05" y="15.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 931" selected="true" centerPoint3DX="19.05" centerPoint3DY="34.15">
+                  <matrix>
+                    <Matrix a="-0.4202880859375" b="0.1552734375" c="0.1552734375" d="0.4202880859375" tx="24.95" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.7" y="5.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 13" selected="true" centerPoint3DX="-0.85" centerPoint3DY="5.25">
+                  <matrix>
+                    <Matrix a="0.44097900390625" b="-0.885986328125" c="0.885986328125" d="0.44097900390625" tx="-23.65" ty="10.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.8" y="6.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 14" selected="true" centerPoint3DX="18.8" centerPoint3DY="22.45">
+                  <matrix>
+                    <Matrix a="0.88531494140625" b="-0.41845703125" c="0.41845703125" d="0.88531494140625" tx="-1" ty="13.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="7.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/未命名文件夹 1 复制/Symbol 797" selected="true" centerPoint3DX="33.5" centerPoint3DY="29.5">
+                  <matrix>
+                    <Matrix a="-0.143478393554688" b="0.3402099609375" c="0.340255737304688" d="0.143402099609375" tx="31.55" ty="23.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/弓箭手动画/重复项目文件夹 复制/元件 63" selected="true" symbolType="graphic" centerPoint3DX="47.25" centerPoint3DY="-0.3" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.449676513671875" b="0.10968017578125" c="0.10650634765625" d="-0.436614990234375" tx="17.75" ty="23.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.75" y="57.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

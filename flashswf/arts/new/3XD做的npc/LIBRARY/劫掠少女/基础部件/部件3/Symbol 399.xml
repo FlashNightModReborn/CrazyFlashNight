@@ -1,0 +1,570 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/基础部件/部件3/Symbol 399" itemID="6577faef-0000148c" lastModified="1715348321">
+  <timeline>
+    <DOMTimeline name="Symbol 399">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#C25A9A">
+          <frames>
+            <DOMFrame index="0" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#4FA78E">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#656CB8">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.142044067382813" b="0.454681396484375" c="0.454681396484375" d="-0.142044067382813" tx="-41.8" ty="-131.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#DDF195">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 387" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.142044067382813" b="0.454681396484375" c="0.454681396484375" d="-0.142044067382813" tx="-22.15" ty="-141"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#ED46D8">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.218765258789063" b="0.424346923828125" c="0.424346923828125" d="0.218765258789063" tx="-76.55" ty="-152.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#AECF9D">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.055877685546875" b="0.473617553710938" c="0.473617553710938" d="0.055877685546875" tx="-73.05" ty="-129.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#EC875B">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12774658203125" b="0.417144775390625" c="0.417144775390625" d="0.12774658203125" tx="-69.95" ty="-126.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#F43DAA">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.149688720703125" b="0.409896850585938" c="0.409896850585938" d="0.149688720703125" tx="-67.45" ty="-122.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#78CA72">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.190780639648438" b="0.376510620117188" c="0.376510620117188" d="0.190780639648438" tx="-65.35" ty="-119.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#EC37EF">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.171096801757813" b="0.337692260742188" c="0.337692260742188" d="0.171096801757813" tx="-63.6" ty="-114.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#FBB21D">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 383" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.055877685546875" b="0.473617553710938" c="0.473617553710938" d="0.055877685546875" tx="-60.15" ty="-108.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#C5BF46">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 382" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100418090820313" b="0.350082397460938" c="0.350082397460938" d="0.100418090820313" tx="-62.1" ty="-110.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#5AF3FC">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.142044067382813" b="0.454681396484375" c="0.454681396484375" d="-0.142044067382813" tx="-63.2" ty="-125.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#8AC4B7">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.218765258789063" b="0.424346923828125" c="0.424346923828125" d="0.218765258789063" tx="-62.05" ty="-142.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#E74EF5">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.218765258789063" b="0.424346923828125" c="0.424346923828125" d="0.218765258789063" tx="-28.6" ty="-128.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#BD79B0">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.218765258789063" b="0.424346923828125" c="0.424346923828125" d="0.218765258789063" tx="-38.95" ty="-129.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#D821FF">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.336441040039063" b="0.3375244140625" c="0.3375244140625" d="0.336441040039063" tx="-1.55" ty="-90.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#8BAAE5">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.336441040039063" b="0.3375244140625" c="0.3375244140625" d="0.336441040039063" tx="18.95" ty="-68.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#26E1ED">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.295852661132813" b="0.373809814453125" c="0.373809814453125" d="0.295852661132813" tx="-21.45" ty="-118.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#E8A727">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.202194213867188" b="0.431182861328125" c="0.431182861328125" d="0.202194213867188" tx="2.85" ty="-108.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#4BF38E">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.209381103515625" b="0.427536010742188" c="0.427536010742188" d="0.209381103515625" tx="28.85" ty="-96"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#D4D8FE">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.218765258789063" b="0.424346923828125" c="0.424346923828125" d="0.218765258789063" tx="-28.1" ty="-127.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#DA3288">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.207443237304688" b="0.42913818359375" c="0.42913818359375" d="0.207443237304688" tx="-24.1" ty="-124.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#9E16D2">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 374" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.280929565429688" b="0.385711669921875" c="0.385711669921875" d="0.280929565429688" tx="-25.6" ty="-128.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#FA9122">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.249908447265625" b="0.405288696289063" c="0.405288696289063" d="-0.249908447265625" tx="-43.85" ty="-154.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#E8E310">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.249908447265625" b="0.405288696289063" c="0.405288696289063" d="-0.249908447265625" tx="-27.95" ty="-166.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#C61FAC">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0819244384765625" b="0.108779907226563" c="0.108779907226563" d="0.0819244384765625" tx="-19.4" ty="-181.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#E4FFE8">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.249908447265625" b="0.405288696289063" c="0.405288696289063" d="-0.249908447265625" tx="-56.45" ty="-137.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#C58C69" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件2/Symbol 369" centerPoint3DX="260.2" centerPoint3DY="-28.5">
+                  <matrix>
+                    <Matrix a="0.08197021484375" b="0.114013671875" c="0.114013671875" d="-0.08197021484375" tx="-38.45" ty="-127.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

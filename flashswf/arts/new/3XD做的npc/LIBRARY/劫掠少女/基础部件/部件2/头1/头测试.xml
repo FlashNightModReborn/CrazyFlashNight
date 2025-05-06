@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/基础部件/部件2/头1/头测试" itemID="663dc410-000002b0" lastModified="1715323920" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="头测试">
+      <layers>
+        <DOMLayer name="头1" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件1/头1" centerPoint3DX="3.8" centerPoint3DY="14.15">
+                  <matrix>
+                    <Matrix a="0.552963256835938" b="-0.05096435546875" c="0.043670654296875" d="0.548095703125" tx="-69.4" ty="-42.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.5" y="135.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

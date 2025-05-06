@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁长枪兵/长枪兵身体零件/右臂上" itemID="66fe14f2-000019ac" lastModified="1727929288">
+  <timeline>
+    <DOMTimeline name="右臂上">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 19">
+                  <matrix>
+                    <Matrix a="1.1446533203125" b="-0.17071533203125" c="0.170578002929688" d="1.143798828125" tx="-1.75" ty="19.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="11.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 57" centerPoint3DX="17.3" centerPoint3DY="10.8">
+                  <matrix>
+                    <Matrix a="0.981597900390625" b="0.190826416015625" c="-0.190826416015625" d="0.981597900390625" tx="10.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.1" y="9.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 2">
+                  <matrix>
+                    <Matrix a="0.21197509765625" b="0.095977783203125" c="-0.093475341796875" d="0.199752807617188" tx="16.15" ty="2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.25" y="29.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 56">
+                  <matrix>
+                    <Matrix a="0.9920654296875" b="0.125595092773438" c="-0.0635833740234375" d="0.999923706054688" tx="5.7" ty="2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.9" y="10.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
