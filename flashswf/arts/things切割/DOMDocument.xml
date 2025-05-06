@@ -4,7 +4,8 @@
           <DOMFolderItem name="Accessories/Others" itemID="67f6952f-00002527"/>
           <DOMFolderItem name="Accessories/Others/Images" itemID="67f6952f-00002528"/>
           <DOMFolderItem name="Pins" itemID="67f6952f-0000252a"/>
-          <DOMFolderItem name="发型" itemID="661fca00-00001331"/>
+          <DOMFolderItem name="发型" itemID="661fca00-00001331" isExpanded="true"/>
+          <DOMFolderItem name="发型/无AS链接" itemID="6690f257-00002761" isExpanded="true"/>
           <DOMFolderItem name="防具" itemID="65f69283-00001be6"/>
           <DOMFolderItem name="防具/NPC-Blue套装" itemID="668d3fe9-000012c1"/>
           <DOMFolderItem name="防具/二阶战纹" itemID="661b94b4-000016cc"/>
@@ -19,7 +20,7 @@
           <DOMFolderItem name="防具/诛神胸甲" itemID="65fd7698-000012b9"/>
           <DOMFolderItem name="防具/诛神胸甲/诛神奇美拉" itemID="65fd773a-000012d4" isExpanded="true"/>
           <DOMFolderItem name="防具/诛神胸甲/诛神奇美拉/零件" itemID="65fd773a-000012d5" isExpanded="true"/>
-          <DOMFolderItem name="冷兵" itemID="65f69370-00001c09" isExpanded="true"/>
+          <DOMFolderItem name="冷兵" itemID="65f69370-00001c09"/>
           <DOMFolderItem name="冷兵/钝器" itemID="65f6e7fd-00001d96"/>
           <DOMFolderItem name="冷兵/钝器/棒球棒" itemID="660f7d70-000019b7"/>
           <DOMFolderItem name="冷兵/钝器/拆迁铁锤" itemID="660d9af7-00001c3b"/>
@@ -92,14 +93,14 @@
           <DOMFolderItem name="长枪/追月弩" itemID="65f69334-00001bf9"/>
      </folders>
      <media>
-          <DOMBitmapItem name="防具/诛神胸甲/bitmap2931.png" itemID="65f68a62-00000486" sourceExternalFilepath="./LIBRARY/防具/诛神胸甲/bitmap2931.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="防具/诛神胸甲/bitmap2931.png" bitmapDataHRef="M 4 1711109761.dat" frameRight="9120" frameBottom="9560"/>
-          <DOMBitmapItem name="冷兵/锐器-重/诛神剑/bitmap3001.png" itemID="65f68a62-0000049a" sourceExternalFilepath="./LIBRARY/冷兵/锐器-重/诛神剑/bitmap3001.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="冷兵/锐器-重/诛神剑/bitmap3001.png" bitmapDataHRef="M 3 1710660423.dat" frameRight="2920" frameBottom="12060"/>
-          <DOMBitmapItem name="长枪/诛神枪/bitmap3005.png" itemID="65f68a62-0000049f" sourceExternalFilepath="./LIBRARY/长枪/诛神枪/bitmap3005.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="长枪/诛神枪/bitmap3005.png" bitmapDataHRef="M 4 1710660423.dat" frameRight="10020" frameBottom="3160"/>
-          <DOMBitmapItem name="Accessories/Others/Images/Carbon fiber" itemID="5fb8226d-0000080f" sourceExternalFilepath="./LIBRARY/Accessories/Others/Images/Carbon fiber.jpg" sourceLastImported="1605902957" allowSmoothing="true" quality="50" href="Accessories/Others/Images/Carbon fiber.jpg" bitmapDataHRef="M 5 1744213295.dat" frameRight="38400" frameBottom="21600" isJPEG="true"/>
-          <DOMBitmapItem name="长枪/炎魔枪AB100/位图火焰特效" itemID="65f6bf8e-00001baa" sourceExternalFilepath="./LIBRARY/长枪/炎魔枪AB100/位图火焰特效.png" sourceLastImported="1710669710" originalCompressionType="lossless" quality="50" href="长枪/炎魔枪AB100/位图火焰特效.png" bitmapDataHRef="M 3 1710668334.dat" frameRight="11120" frameBottom="3720"/>
+          <DOMBitmapItem name="防具/诛神胸甲/bitmap2931.png" itemID="65f68a62-00000486" sourceExternalFilepath="../things切割/LIBRARY/防具/诛神胸甲/bitmap2931.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="防具/诛神胸甲/bitmap2931.png" bitmapDataHRef="M 4 1711109761.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="冷兵/锐器-重/诛神剑/bitmap3001.png" itemID="65f68a62-0000049a" sourceExternalFilepath="../things切割/LIBRARY/冷兵/锐器-重/诛神剑/bitmap3001.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="冷兵/锐器-重/诛神剑/bitmap3001.png" bitmapDataHRef="M 3 1710660423.dat" frameRight="2920" frameBottom="12060"/>
+          <DOMBitmapItem name="长枪/诛神枪/bitmap3005.png" itemID="65f68a62-0000049f" sourceExternalFilepath="../things切割/LIBRARY/长枪/诛神枪/bitmap3005.png" sourceLastImported="1710656098" originalCompressionType="lossless" quality="50" href="长枪/诛神枪/bitmap3005.png" bitmapDataHRef="M 4 1710660423.dat" frameRight="10020" frameBottom="3160"/>
+          <DOMBitmapItem name="Accessories/Others/Images/Carbon fiber" itemID="5fb8226d-0000080f" sourceExternalFilepath="../things切割/LIBRARY/Accessories/Others/Images/Carbon fiber.jpg" sourceLastImported="1605902957" allowSmoothing="true" quality="50" href="Accessories/Others/Images/Carbon fiber.jpg" bitmapDataHRef="M 5 1744213295.dat" frameRight="38400" frameBottom="21600" isJPEG="true"/>
+          <DOMBitmapItem name="长枪/炎魔枪AB100/位图火焰特效" itemID="65f6bf8e-00001baa" sourceExternalFilepath="../things切割/LIBRARY/长枪/炎魔枪AB100/位图火焰特效.png" sourceLastImported="1710669710" originalCompressionType="lossless" quality="50" href="长枪/炎魔枪AB100/位图火焰特效.png" bitmapDataHRef="M 3 1710668334.dat" frameRight="11120" frameBottom="3720"/>
      </media>
      <symbols>
-          <Include href="0.总元件-things切割.xml" itemID="65f68c8a-00001bc3" lastModified="1746005473"/>
+          <Include href="0.总元件-things切割.xml" itemID="65f68c8a-00001bc3" lastModified="1746522027"/>
           <Include href="2次调用.xml" itemID="668d4841-000024a6" lastModified="1720538463"/>
           <Include href="6次调用.xml" itemID="668d509c-000024b7" lastModified="1720538582"/>
           <Include href="Pins/Pin3.xml" itemIcon="1" loadImmediate="false" itemID="609349e2-00001546" lastModified="1620265442"/>
@@ -166,6 +167,24 @@
           <Include href="发型/发型-女式-深蓝色挑染短发.xml" itemID="666afcaf-000061fa" lastModified="1718287535"/>
           <Include href="发型/发型-女式-丸子头.xml" itemID="666afcac-000061f9" lastModified="1718287532"/>
           <Include href="发型/发型-女式-银色清爽直发.xml" itemID="666afcaa-000061f8" lastModified="1718287530"/>
+          <Include href="发型/男变装-脸型-胡子男.xml" itemID="6819cfab-00004587" lastModified="1746522027"/>
+          <Include href="发型/无AS链接/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005ba" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 9.xml" loadImmediate="false" itemID="668e7c1e-000005bb" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 759.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000769" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 763.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000076c" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 771.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000771" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 773.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000773" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 775.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000775" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 777.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000777" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 779.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000779" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 783.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000077c" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 785.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000077e" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 787.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000780" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 791.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000783" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 793.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000785" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 795.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000787" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000078a" lastModified="1720533000"/>
+          <Include href="发型/无AS链接/Symbol 2204.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000b6a" lastModified="1720533000"/>
           <Include href="防具/NPC-Blue套装/男变装-blue上装上臂.xml" itemID="668d3d59-0000129d" lastModified="1720533681"/>
           <Include href="防具/NPC-Blue套装/男变装-blue上装身体.xml" itemID="668d3d57-0000129c" lastModified="1720534146"/>
           <Include href="防具/NPC-Blue套装/男变装-blue上装右下臂.xml" itemID="668d3d54-0000129b" lastModified="1720532910"/>
