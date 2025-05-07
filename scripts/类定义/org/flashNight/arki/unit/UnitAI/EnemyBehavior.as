@@ -95,8 +95,8 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         }else{
             // 根据停止机率和随机移动机率随机一个临界时间
             var temp = 友军数量 <= 5 ? 3 : (友军数量 <= 15 ? 2 : 1);
-            data.idle_threshold = 友军数量 < 1 ? 999999 : EnemyBehavior.CHASE_TIME + random(temp * data.self.停止机率);
-            data.wander_threshold = 友军数量 < 1 ? 999999 : EnemyBehavior.CHASE_TIME + random(temp * data.self.随机移动机率);
+            data.idle_threshold = EnemyBehavior.CHASE_TIME + random(temp * data.self.停止机率);
+            data.wander_threshold = EnemyBehavior.CHASE_TIME + random(temp * data.self.随机移动机率);
         }
     }
     // 追击
