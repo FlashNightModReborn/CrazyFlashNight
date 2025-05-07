@@ -431,13 +431,14 @@ _root.帧计时器.定期异常检查 = function()
 
 _root.帧计时器.定期更新天气 = function()
 {
-    var 游戏世界 = _root.gameworld;
-    if (--this.天气待更新时间 === 0 || !游戏世界.已更新天气) 
+    var gameWorld:MovieClip = _root.gameworld;
+    if(!gameWorld) return;
+    if (--this.天气待更新时间 === 0 || !gameWorld.已更新天气) 
     {
         this.eventBus.publish("WeatherUpdated");
-        if(!游戏世界.已更新天气){            
-            游戏世界.已更新天气 = true;//保证换场景可切换
-            _global.ASSetPropFlags(游戏世界, ["已更新天气"], 1, true);
+        if(!gameWorld.已更新天气){            
+            gameWorld.已更新天气 = true;//保证换场景可切换
+            _global.ASSetPropFlags(gameWorld, ["已更新天气"], 1, true);
 
             // 清理缓存，避免循环引用
 
@@ -445,13 +446,7 @@ _root.帧计时器.定期更新天气 = function()
             Dictionary.destroyStatic();
 
             this.eventBus.publish("SceneChanged");
-
-            // 游戏世界.onUnload = function()
-            // {
-            //     _root.常用工具函数.释放对象绘图内存(游戏世界);
-            //     //_root.服务器.发布服务器消息("游戏世界卸载");	
-            // };
-
+            // _root.服务器.发布服务器消息("SceneChanged")
         }
         
         this.天气待更新时间 = this.更新天气间隔 * (1 + this.性能等级);

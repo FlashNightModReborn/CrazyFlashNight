@@ -221,13 +221,13 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      */
     public function addOrUpdateTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):String {
         if (!obj) return null;
-        // 如果对象上没有 taskLabel 属性，则初始化该属性用于存储任务标识
-        if (!obj.taskLabel) {
-            obj.taskLabel = {};
-            _global.ASSetPropFlags(obj, ["taskLabel"], 1, false);
-        }
         // 若对象中不存在该 labelName 对应的任务，则生成新的任务ID
         if (!obj.taskLabel[labelName]) {
+            // 如果对象上没有 taskLabel 属性，则初始化该属性用于存储任务标识
+            if (!obj.taskLabel) {
+                obj.taskLabel = {};
+                _global.ASSetPropFlags(obj, ["taskLabel"], 1, false);
+            }
             obj.taskLabel[labelName] = ++this.taskIdCounter;
         }
         // 使用对象内的任务标识作为任务ID（字符串）
@@ -291,12 +291,16 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      */
     public function addLifecycleTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):String {
         if (!obj) return null;
-        // 初始化对象上的任务标签存储容器
-        if (!obj.taskLabel) obj.taskLabel = {};
         // 若该 labelName 尚未存在，生成新的任务ID
         if (!obj.taskLabel[labelName]) {
+            // 初始化对象上的任务标签存储容器
+            if (!obj.taskLabel) {
+                obj.taskLabel = {};
+                _global.ASSetPropFlags(obj, ["taskLabel"], 1, false);
+            }
             obj.taskLabel[labelName] = ++this.taskIdCounter;
         }
+
         var taskID:String = obj.taskLabel[labelName];
         // 根据每帧耗时计算间隔对应的帧数
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
