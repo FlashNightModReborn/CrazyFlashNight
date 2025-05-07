@@ -26,6 +26,12 @@ _root.开启生存模式 = function(模式) {
     var 基本配置 = _root.无限过图基本配置[_root.无限过图模式关卡计数];
     var 游戏世界 = _root.gameworld;
 
+	// 创建事件分发器
+	_root.stageDispatcher = new LifecycleEventDispatcher(游戏世界);
+	_root.stageDispatcher.subscribeOnce("StageFinished", function() {
+		this.显示箭头();
+	},游戏世界.通关箭头);
+
     // 设置本张图结束后的过场背景
     if (基本配置.LoadingImage) {
         _root.加载背景列表.本次背景 = 基本配置.LoadingImage;
@@ -266,6 +272,8 @@ _root.生存模式关闭 = function(){
 			}
 		}
 	}
+	_root.stageDispatcher.destroy();
+	_root.stageDispatcher = null;
 };
 
 /*
@@ -278,8 +286,7 @@ _root.生存模式直接下一波 = function()
 };
 */
 
-_root.生存模式进攻 = function()
-{
+_root.生存模式进攻 = function(){
 	var 基本配置 = _root.无限过图基本配置[_root.无限过图模式关卡计数];
 	if(!基本配置.RogueMode || _root.生存模式OBJ.模式部署[_root.生存模式OBJ.波次]){
 		_root.无限过图进攻();
@@ -288,8 +295,7 @@ _root.生存模式进攻 = function()
 	}
 }
 
-_root.无限过图进攻 = function()
-{
+_root.无限过图进攻 = function(){
 	var 游戏世界 = _root.gameworld;
 	var 总波数 = _root.生存模式OBJ.模式部署.总波数;
 	var 当前波次 = _root.生存模式OBJ.波次;
@@ -341,11 +347,12 @@ _root.无限过图进攻 = function()
 		var _loc3_ = _root.帧计时器.添加循环任务(_root.生存模式出兵, interval, Attribute, i, 当前波次);
 		_root.生存模式OBJ.时钟[当前波次].push(_loc3_);
 	}
+
+	_root.stageDispatcher.publish("WaveStarted", 当前波次);
 	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加循环任务(_root.生存模式计时, 1000);
 };
 
-_root.rogue模式进攻 = function()
-{
+_root.rogue模式进攻 = function(){
 	var 游戏世界 = _root.gameworld;
 	var rogue敌人集合表 = _root.rogue敌人集合表;
 	var 波次信息 = _root.生存模式OBJ.模式部署;
@@ -451,6 +458,7 @@ _root.rogue模式进攻 = function()
 	var _loc3_ = _root.帧计时器.添加循环任务(_root.rogue模式出兵, interval, 本波敌人, 当前波次);
 	_root.生存模式OBJ.时钟[当前波次].push(_loc3_);
 
+	_root.stageDispatcher.publish("WaveStarted", 当前波次);
 	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加循环任务(_root.生存模式计时, 1000);
 };
 
@@ -512,6 +520,8 @@ _root.无限过图模式过关 = function(){
 		_root.gameworld.允许通行 = true;
 		_root.效果("小过关提示动画",_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,100);
 	}
+
+	_root.stageDispatcher.publish("StageFinished");
 };
 
 /*
@@ -529,8 +539,7 @@ _root.生存模式过关 = function()
 	}
 };*/
 
-_root.生存模式出兵 = function(兵种, 序列, 波次)
-{
+_root.生存模式出兵 = function(兵种, 序列, 波次){
 	if (!_root.生存模式OBJ.已出兵记录[波次]) _root.生存模式OBJ.已出兵记录[波次] = [];
 	var 当前波次出兵记录 = _root.生存模式OBJ.已出兵记录[波次];
 	if (!当前波次出兵记录[序列]) 当前波次出兵记录[序列] = 1;
@@ -549,7 +558,6 @@ _root.生存模式出兵 = function(兵种, 序列, 波次)
 		_root.无限过图解析额外参数(敌人参数, 兵种信息.Parameters);
 	}
 	//游戏世界.attachMovie("单个敌人加载器2", "第" + 波次 + "波" + 兵种.名字 + "-" + _root.生存模式OBJ.已出兵记录[波次][序列] + random(100), _root.gameworld.getNextHighestDepth(), 敌人参数);
-	EventBus.instance.publish("WaveStarted", 波次);
 
 	do{
 		var 敌人实例名:String = 兵种信息.InstanceName ? 兵种信息.InstanceName : 兵种.名字 + "_" + 波次 + "_" + 序列 + "_" + 当前波次出兵记录[序列];
@@ -566,8 +574,7 @@ _root.生存模式出兵 = function(兵种, 序列, 波次)
 	
 };
 
-_root.rogue模式出兵 = function(本波敌人, 波次)
-{
+_root.rogue模式出兵 = function(本波敌人, 波次){
 	if (!_root.生存模式OBJ.已出兵记录[波次]) _root.生存模式OBJ.已出兵记录[波次] = [];
 	var 当前波次出兵记录 = _root.生存模式OBJ.已出兵记录[波次];
 	if (!当前波次出兵记录[0]) 当前波次出兵记录[0] = 1;
@@ -586,8 +593,6 @@ _root.rogue模式出兵 = function(本波敌人, 波次)
 	// if(兵种信息.Parameters){
 	// 	_root.无限过图解析额外参数(敌人参数, 兵种信息.Parameters);
 	// }
-
-	EventBus.instance.publish("WaveStarted", 波次);
 	
 	var 敌人实例名:String = Attribute.名字 + "_" + 波次 + "_0_" + 本波敌人.Current;
 	var 生成结果 = _root.无限过图生成敌人(Attribute, 敌人实例名, 敌人参数, SpawnIndex, 兵种信息.x, 兵种信息.y);
