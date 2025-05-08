@@ -97,7 +97,7 @@ _root.主角函数.获取基准负重 = function(等级值:Number):Number{
 	return 12 + Math.floor(等级值 * 0.6);
 }
 
-_root.重量速度关系 = function(重量:Number, 等级值:Number):Number {
+_root.主角函数.重量速度关系 = function(重量:Number, 等级值:Number):Number {
 	var 基准负重 = _root.主角函数.获取基准负重(等级值);
 	var 轻甲下限 = 0;
 	var 轻甲阈值 = 基准负重;
@@ -105,9 +105,9 @@ _root.重量速度关系 = function(重量:Number, 等级值:Number):Number {
 	var 重甲上限 = 基准负重 * 4;
 
 	if (重量 < 轻甲下限) return 1 + _root.超重惩罚;
-	if (重量 < 轻甲阈值) return 1 + _root.超重惩罚 - (重量 / (轻甲阈值 - 轻甲下限)) * _root.超重惩罚;
+	if (重量 < 轻甲阈值) return 1 + (轻甲阈值 - 重量) / (轻甲阈值 - 轻甲下限) * _root.超重惩罚;
 	if (重量 <= 重甲阈值) return 1;
-	if (重量 < 重甲上限) return 1 - _root.超重惩罚 + (重量 / (重甲上限 - 重甲阈值)) * _root.超重惩罚;
+	if (重量 < 重甲上限) return 1 - (重量 - 重甲阈值) / (重甲上限 - 重甲阈值) * _root.超重惩罚;
 	return 1 - _root.超重惩罚;
 };
 
@@ -860,7 +860,7 @@ _root.刷新人物装扮 = function(目标){
 	//_root.发布调试消息(目标 + " " + 目标人物.重量 + " " + 目标人物.韧性系数 + " " + 目标人物.躲闪率 + " " + 目标人物.命中率);
 
 	var 速度基数:Number = _root.根据等级计算值(目标人物.速度_min, 目标人物.速度_max, 目标人物.等级) / 10;
-	var 速度系数:Number = _root.重量速度关系(目标人物.重量, 目标人物.等级);
+	var 速度系数:Number = _root.主角函数.重量速度关系(目标人物.重量, 目标人物.等级);
 	//_root.发布调试消息(目标人物.重量 + " " + 目标人物.等级 + " " + 速度系数);
 
 	目标人物.行走X速度 = 速度基数 * 速度系数;

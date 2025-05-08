@@ -515,13 +515,13 @@ _root.无限过图模式过关 = function(){
 		_root.关卡结束();
 		//设置返回地图帧值
 		if(基本配置.EndFrame) _root.关卡地图帧值 = 基本配置.EndFrame;
+		_root.stageDispatcher.publish("StageCleared");
 	}else{
 		// _root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！"); //已经不需要这种东西了
 		_root.gameworld.允许通行 = true;
 		_root.效果("小过关提示动画",_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,100);
+		_root.stageDispatcher.publish("StageFinished");
 	}
-
-	_root.stageDispatcher.publish("StageFinished");
 };
 
 /*
