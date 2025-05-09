@@ -57,7 +57,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             ItemUtil.singleSubmit(target.使用弹匣名称, 1);
             
             // 更新剩余弹匣数
-            target.剩余弹匣数 = parentRef.检查弹匣数量(target.使用弹匣名称);
+            target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
             
             // 检查弹匣是否耗尽
             if (target.剩余弹匣数 === 0) {
@@ -232,8 +232,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 ItemUtil.singleSubmit(that[magNameProp], 1);
                 
                 // 更新弹匣数量（两把枪都需要更新）
-                that.主手剩余弹匣数 = parentRef.检查弹匣数量(that.主手使用弹匣名称);
-                that.副手剩余弹匣数 = parentRef.检查弹匣数量(that.副手使用弹匣名称);
+                that.主手剩余弹匣数 = ItemUtil.getTotal(that.主手使用弹匣名称);
+                that.副手剩余弹匣数 = ItemUtil.getTotal(that.副手使用弹匣名称);
                 
                 // 检查弹匣耗尽
                 if (that[handPrefix + "剩余弹匣数"] === 0) {

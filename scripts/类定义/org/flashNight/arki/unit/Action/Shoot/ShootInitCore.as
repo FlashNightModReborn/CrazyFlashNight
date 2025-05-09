@@ -178,7 +178,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         target[speedProp] = config.weaponData[5];
         target[magNameProp] = config.weaponData[11];
         target[singleShotProp] = config.weaponData[3];
-        target[remainingMagProp] = parentRef.检查弹匣数量(target[magNameProp]);
+        target[remainingMagProp] = ItemUtil.getTotal(target[magNameProp]);
         
         // 生成子弹属性
         target[config.bulletProperty] = generateBulletProps(
@@ -261,7 +261,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         target.射击速度      = weaponData[5];
         target.使用弹匣名称  = weaponData[11];
         target.是否单发      = weaponData[3];
-        target.剩余弹匣数    = parentRef.检查弹匣数量(target.使用弹匣名称);
+        target.剩余弹匣数    = ItemUtil.getTotal(target.使用弹匣名称);
         
         // 更新弹药UI显示
         target.刷新弹匣数显示();
