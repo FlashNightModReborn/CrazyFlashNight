@@ -13,18 +13,9 @@ import org.flashNight.arki.item.*;
  */
 
 // 射击相关函数
-// Replace your original shooting methods with these refactored versions
-_root.主角函数.长枪射击 = function(枪口位置:MovieClip, 子弹属性:Object) {
-    return WeaponFireCore.executeShot(this, "长枪", 枪口位置, 子弹属性);
-}
-
-_root.主角函数.手枪射击 = function(枪口位置:MovieClip, 子弹属性:Object) {
-    return WeaponFireCore.executeShot(this, "手枪", 枪口位置, 子弹属性);
-}
-
-_root.主角函数.手枪2射击 = function(枪口位置:MovieClip, 子弹属性:Object) {
-    return WeaponFireCore.executeShot(this, "手枪2", 枪口位置, 子弹属性);
-}
+_root.主角函数.长枪射击 = WeaponFireCore.createWeaponFireFunction("长枪");
+_root.主角函数.手枪射击 = WeaponFireCore.createWeaponFireFunction("手枪");
+_root.主角函数.手枪2射击 = WeaponFireCore.createWeaponFireFunction("手枪2");
 
 
 // 初始化长枪射击函数

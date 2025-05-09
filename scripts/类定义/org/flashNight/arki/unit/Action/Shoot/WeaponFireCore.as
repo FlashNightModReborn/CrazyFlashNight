@@ -13,9 +13,30 @@ import org.flashNight.arki.unit.*;
  * 2. 处理子弹散射度计算
  * 3. 处理自动瞄准逻辑（仅长枪支持）
  * 4. 弹药管理
+ * 5. 提供射击函数工厂方法，减少重复代码
  * 
  */
 class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
+    
+    /**
+     * 创建武器射击函数的工厂方法
+     * 
+     * 该方法是一个高阶函数，接受武器类型参数，返回一个预先绑定该武器类型的射击函数。
+     * 通过使用函数工厂模式，我们可以：
+     * 1. 减少重复代码，提高代码的可维护性
+     * 2. 直接赋值给武器射击函数，避免额外的包装函数
+     * 3. 在返回的函数中保持正确的上下文（this引用）
+     * 
+     * @param weaponType 武器类型字符串，如"长枪"、"手枪"或"手枪2"
+     * 
+     * @return Function 返回一个接受枪口位置和子弹属性的函数
+     */
+    public static function createWeaponFireFunction(weaponType:String):Function {
+        return function(muzzlePosition:MovieClip, bulletProps:Object):Boolean {
+            // 这里的'this'在调用时会指向函数的拥有者（例如，_root.主角函数）
+            return WeaponFireCore.executeShot(this, weaponType, muzzlePosition, bulletProps);
+        };
+    }
     
     /**
      * 执行武器射击的核心方法
