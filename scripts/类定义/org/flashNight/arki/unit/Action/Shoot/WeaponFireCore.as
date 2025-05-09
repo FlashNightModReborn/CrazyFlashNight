@@ -18,6 +18,11 @@ import org.flashNight.arki.unit.*;
  */
 class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
     
+    public static var LONG_GUN_SHOOT:Function   = createWeaponFireFunction("长枪");
+    public static var PISTOL_SHOOT:Function     = createWeaponFireFunction("手枪");
+    public static var PISTOL2_SHOOT:Function    = createWeaponFireFunction("手枪2");
+
+
     /**
      * 创建武器射击函数的工厂方法
      * 

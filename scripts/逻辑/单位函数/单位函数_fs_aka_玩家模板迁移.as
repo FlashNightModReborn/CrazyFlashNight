@@ -3,6 +3,7 @@ import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.unit.*;
+import org.flashNight.arki.unit.Action.Shoot.*;
 
 _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
@@ -2629,9 +2630,9 @@ _root.初始化玩家模板 = function(){
 
 	this.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
 
-	this.长枪射击 = _root.主角函数.长枪射击;
-	this.手枪射击 = _root.主角函数.手枪射击;
-	this.手枪2射击 = _root.主角函数.手枪2射击;
+	this.长枪射击 = WeaponFireCore.LONG_GUN_SHOOT;
+	this.手枪射击 = WeaponFireCore.PISTOL_SHOOT;
+	this.手枪2射击 = WeaponFireCore.PISTOL2_SHOOT;
 	this.刷新枪口位置 = _root.主角函数.刷新枪口位置;
 	// this.检查弹匣数量 = _root.主角函数.检查弹匣数量;
 

@@ -12,10 +12,10 @@ import org.flashNight.arki.item.*;
  * 4. ReloadManager - 管理换弹和弹药显示逻辑
  */
 
-// 射击相关函数
-_root.主角函数.长枪射击 = WeaponFireCore.createWeaponFireFunction("长枪");
-_root.主角函数.手枪射击 = WeaponFireCore.createWeaponFireFunction("手枪");
-_root.主角函数.手枪2射击 = WeaponFireCore.createWeaponFireFunction("手枪2");
+// --- 目前未被使用，留着以备其他资源swf需要使用
+_root.主角函数.长枪射击 = WeaponFireCore.LONG_GUN_SHOOT;
+_root.主角函数.手枪射击 = WeaponFireCore.PISTOL_SHOOT;
+_root.主角函数.手枪2射击 = WeaponFireCore.PISTOL2_SHOOT;
 
 
 // 初始化长枪射击函数
