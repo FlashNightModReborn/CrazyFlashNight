@@ -20,6 +20,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
 
         UpdateEventComponent.initialize(target);
 
+        if(target.兵种 != "主角-男") return; // 主角限定
+
         ReloadEventComponent.initialize(target);
+        FireEventComponent.initialize(target);
     }
 }

@@ -1,6 +1,7 @@
 ﻿// File: org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as
 import org.flashNight.arki.unit.*;
 import org.flashNight.sara.util.*;
+import org.flashNight.neur.Event.*;
 
 /**
  * @class WeaponFireCore
@@ -67,20 +68,9 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         if (currentAmmo >= maxAmmo)
             return false;
         
-        // 增加射击计数
-        owner[weaponType + "射击次数"][owner[weaponType]]++;
-        
-        // 刷新枪口位置
-        WeaponFireCore.updateMuzzlePosition(owner, muzzlePosition, bulletProps);
-        
-        // 根据移动状态设置子弹散射度
-        // 行走状态下使用较大的散射度，站立状态下使用较小的散射度
-        bulletProps.子弹散射度 = (owner.状态.indexOf('行走') > -1) ? 
-            bulletProps.移动子弹散射度 : 
-            bulletProps.站立子弹散射度;
-        
-        // 应用武器特定的瞄准逻辑
-        applyAimingLogic(owner, weaponType, bulletProps);
+        var dispatcher:EventDispatcher = owner.dispatcher;
+
+        dispatcher.publish("processShot", owner, weaponType, muzzlePosition, bulletProps);
         
         // 发射子弹
         _root.子弹区域shoot传递(bulletProps);
@@ -100,7 +90,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
      * 
      * @return Void
      */
-    private static function applyAimingLogic(owner, weaponType:String, bulletProps:Object):Void {
+    public static function applyAimingLogic(owner, weaponType:String, bulletProps:Object):Void {
         // 只有长枪且处于自瞄模式时才应用自动瞄准逻辑
         if (weaponType == "长枪" && owner.自瞄中) {
             var target = _root.gameworld[owner.攻击目标];
