@@ -2310,17 +2310,6 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object){
 	}
 }
 
-
-_root.主角函数.刷新枪口位置 = function(枪口位置:MovieClip, 子弹属性:Object){
-	if (isNaN(枪口位置._x)) return;
-	var myPoint = {x:枪口位置._x, y:枪口位置._y};
-	枪口位置._parent.localToGlobal(myPoint);
-	_root.gameworld.globalToLocal(myPoint);
-	子弹属性.shootX = myPoint.x;
-	子弹属性.shootY = myPoint.y;
-	子弹属性.shootZ = this.Z轴坐标;
-}
-
 // 目前未被使用，留着以备其他资源swf需要使用
 _root.主角函数.检查弹匣数量 = function(使用弹匣名称){
 	return org.flashNight.arki.item.ItemUtil.getTotal(使用弹匣名称);
@@ -2633,7 +2622,6 @@ _root.初始化玩家模板 = function(){
 	this.长枪射击 = WeaponFireCore.LONG_GUN_SHOOT;
 	this.手枪射击 = WeaponFireCore.PISTOL_SHOOT;
 	this.手枪2射击 = WeaponFireCore.PISTOL2_SHOOT;
-	this.刷新枪口位置 = _root.主角函数.刷新枪口位置;
 	// this.检查弹匣数量 = _root.主角函数.检查弹匣数量;
 
 	this.释放技能 = _root.主角函数.释放技能;

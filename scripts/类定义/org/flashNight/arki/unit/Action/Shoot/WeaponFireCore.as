@@ -70,7 +70,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         owner[weaponType + "射击次数"][owner[weaponType]]++;
         
         // 刷新枪口位置
-        owner.刷新枪口位置(muzzlePosition, bulletProps);
+        WeaponFireCore.updateMuzzlePosition(owner, muzzlePosition, bulletProps);
         
         // 根据移动状态设置子弹散射度
         // 行走状态下使用较大的散射度，站立状态下使用较小的散射度
@@ -150,5 +150,29 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         bulletProps.速度X = undefined;
         bulletProps.速度Y = undefined;
         bulletProps.ZY比例 = undefined;
+    }
+
+    /**
+     * 更新枪口位置
+     * 
+     * 该方法将枪口局部坐标转换为游戏世界坐标，并更新子弹发射属性。
+     * 原先位于角色函数中，现移入核心类以提高代码内聚性。
+     * 
+     * @param owner 武器拥有者对象（玩家角色或NPC）
+     * @param muzzlePosition 枪口位置的MovieClip对象
+     * @param bulletProps 子弹属性对象
+     * 
+     * @return Void
+     */
+    public static function updateMuzzlePosition(owner, muzzlePosition:MovieClip, bulletProps:Object):Void {
+        if (isNaN(muzzlePosition._x)) return;
+        
+        var myPoint = {x:muzzlePosition._x, y:muzzlePosition._y}; 
+        muzzlePosition._parent.localToGlobal(myPoint); 
+        _root.gameworld.globalToLocal(myPoint); 
+        
+        bulletProps.shootX = myPoint.x; 
+        bulletProps.shootY = myPoint.y; 
+        bulletProps.shootZ = owner.Z轴坐标;  // 使用owner替代原来的this
     }
 }
