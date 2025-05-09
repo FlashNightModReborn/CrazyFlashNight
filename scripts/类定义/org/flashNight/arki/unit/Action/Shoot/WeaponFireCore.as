@@ -1,5 +1,6 @@
 ﻿// File: org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as
 import org.flashNight.arki.unit.*;
+import org.flashNight.sara.util.*;
 
 /**
  * @class WeaponFireCore
@@ -152,6 +153,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         bulletProps.ZY比例 = undefined;
     }
 
+    public static var position:Vector = new Vector(null)
+
     /**
      * 更新枪口位置
      * 
@@ -167,12 +170,16 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
     public static function updateMuzzlePosition(owner, muzzlePosition:MovieClip, bulletProps:Object):Void {
         if (isNaN(muzzlePosition._x)) return;
         
-        var myPoint = {x:muzzlePosition._x, y:muzzlePosition._y}; 
+        var myPoint:Vector = position;
+
+        myPoint.x = muzzlePosition._x;
+        myPoint.y = muzzlePosition._y
+
         muzzlePosition._parent.localToGlobal(myPoint); 
         _root.gameworld.globalToLocal(myPoint); 
         
         bulletProps.shootX = myPoint.x; 
         bulletProps.shootY = myPoint.y; 
-        bulletProps.shootZ = owner.Z轴坐标;  // 使用owner替代原来的this
+        bulletProps.shootZ = owner.Z轴坐标;
     }
 }
