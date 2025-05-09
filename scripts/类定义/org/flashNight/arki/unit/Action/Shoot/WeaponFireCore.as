@@ -1,0 +1,128 @@
+﻿// File: org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as
+import org.flashNight.arki.unit.*;
+
+/**
+ * @class WeaponFireCore
+ * @description 武器射击核心类
+ * 
+ * 该类采用策略模式实现了对不同武器类型射击逻辑的统一处理，
+ * 减少了代码重复，提高了可维护性，同时保持了良好的性能表现。
+ * 
+ * 主要功能：
+ * 1. 统一处理不同武器类型的射击逻辑
+ * 2. 处理子弹散射度计算
+ * 3. 处理自动瞄准逻辑（仅长枪支持）
+ * 4. 弹药管理
+ * 
+ */
+class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
+    
+    /**
+     * 执行武器射击的核心方法
+     * 
+     * 该方法是策略模式的主入口，根据传入的武器类型参数执行对应的射击逻辑。
+     * 它将处理通用的射击流程：弹药检查、弹药计数增加、枪口位置刷新、
+     * 散射度设置、自动瞄准应用，以及最终的子弹发射。
+     * 
+     * @param owner 武器拥有者对象（通常是玩家角色或NPC）
+     * @param weaponType 武器类型字符串，如"长枪"、"手枪"或"手枪2"
+     * @param muzzlePosition 枪口位置的MovieClip对象
+     * @param bulletProps 子弹属性对象，包含速度、散射度等参数
+     * 
+     * @return Boolean 射击是否成功执行（弹药不足时返回false）
+     */
+    public static function executeShot(owner, weaponType:String, muzzlePosition:MovieClip, bulletProps:Object):Boolean {
+        // 获取当前武器的弹药信息
+        var currentAmmo:Number = owner[weaponType + "射击次数"][owner[weaponType]];
+        var maxAmmo:Number = owner[weaponType + "弹匣容量"];
+        
+        // 检查是否有足够的弹药
+        if (currentAmmo >= maxAmmo)
+            return false;
+        
+        // 增加射击计数
+        owner[weaponType + "射击次数"][owner[weaponType]]++;
+        
+        // 刷新枪口位置
+        owner.刷新枪口位置(muzzlePosition, bulletProps);
+        
+        // 根据移动状态设置子弹散射度
+        // 行走状态下使用较大的散射度，站立状态下使用较小的散射度
+        bulletProps.子弹散射度 = (owner.状态.indexOf('行走') > -1) ? 
+            bulletProps.移动子弹散射度 : 
+            bulletProps.站立子弹散射度;
+        
+        // 应用武器特定的瞄准逻辑
+        applyAimingLogic(owner, weaponType, bulletProps);
+        
+        // 发射子弹
+        _root.子弹区域shoot传递(bulletProps);
+        
+        return true;
+    }
+    
+    /**
+     * 应用武器特定的瞄准逻辑
+     * 
+     * 该方法根据武器类型应用不同的瞄准策略。目前只有长枪支持自动瞄准功能。
+     * 自动瞄准时，会计算从射击位置到目标之间的弹道轨迹，并设置相应的速度参数。
+     * 
+     * @param owner 武器拥有者对象
+     * @param weaponType 武器类型字符串
+     * @param bulletProps 子弹属性对象
+     * 
+     * @return Void
+     */
+    private static function applyAimingLogic(owner, weaponType:String, bulletProps:Object):Void {
+        // 只有长枪且处于自瞄模式时才应用自动瞄准逻辑
+        if (weaponType == "长枪" && owner.自瞄中) {
+            var target = _root.gameworld[owner.攻击目标];
+            
+            if (target.hp > 0) {
+                // 计算到目标的轨迹
+                var distX:Number = target._x - bulletProps.shootX;
+                var defaultHeight:Number = UnitUtil.calculateCenterOffset(target);
+                var distY:Number = target._y - defaultHeight - bulletProps.shootY;
+                var distZ:Number = target.Z轴坐标 - bulletProps.shootZ;
+                
+                // 计算水平速度，保持子弹速度恒定
+                var speedX:Number = distX >= 0 ? bulletProps.子弹速度 : -bulletProps.子弹速度;
+                var speedY:Number = speedX * distY / distX;
+                
+                // 限制垂直速度，确保不超过子弹速度上限
+                // 如果垂直速度超限，则重新计算水平速度
+                if (speedY > bulletProps.子弹速度 || speedY < -bulletProps.子弹速度) {
+                    speedY = speedY >= 0 ? bulletProps.子弹速度 : -bulletProps.子弹速度;
+                    speedX = speedY * distX / distY;
+                }
+                
+                // 设置子弹速度和Z轴比例参数
+                bulletProps.速度X = speedX;
+                bulletProps.速度Y = speedY;
+                bulletProps.ZY比例 = target.Z轴坐标 / (target._y - defaultHeight);
+            } else {
+                // 目标已死亡，重置瞄准属性
+                resetAimingProperties(bulletProps);
+            }
+        } else {
+            // 非长枪或未开启自瞄，重置瞄准属性
+            resetAimingProperties(bulletProps);
+        }
+    }
+    
+    /**
+     * 重置瞄准属性
+     * 
+     * 当不需要自动瞄准时，将子弹的自动瞄准相关属性重置为undefined，
+     * 使子弹按默认散射规则飞行。
+     * 
+     * @param bulletProps 子弹属性对象
+     * 
+     * @return Void
+     */
+    private static function resetAimingProperties(bulletProps:Object):Void {
+        bulletProps.速度X = undefined;
+        bulletProps.速度Y = undefined;
+        bulletProps.ZY比例 = undefined;
+    }
+}
