@@ -1,24 +1,51 @@
 ﻿import org.flashNight.neur.Event.*;
 
-_root.装备生命周期函数.火药燃气液压打桩机初始化 = function(反射对象, 参数对象) 
+_root.装备生命周期函数.火药燃气液压打桩机初始化 = function(reflector:Object, paramObj:Object) 
 {
-   var 自机 = 反射对象.自机;
-   var 原长枪射击函数 = 自机.长枪射击;
+   var target:MovieClip = reflector.自机;
+   var r:Object = reflector; // 闭包持有引用
 
-   反射对象.长枪射击事件 = function(反射对象)
+   target.dispatcher.subscribeSingle("processShot", function(target:MovieClip, weaponType:String)
    {
-      _root.服务器.发布服务器消息("触发长枪射击事件: " + 反射对象.标签名);
-   }
+      if(weaponType == "长枪"){
+         r.flag = true;
+      }
+   })
 
-
-   反射对象.自机.dispatcher.subscribeSingle("processShot", 反射对象.长枪射击事件)
+   r.currentframe = 1;
+   r.flag = false;
 };
 
 
-_root.装备生命周期函数.火药燃气液压打桩机周期 = function(反射对象, 参数对象) 
-{
-   _root.装备生命周期函数.移除异常周期函数(反射对象);
-   var 自机 = 反射对象.自机;
-   var 枪 = 自机.长枪_引用;
-
+/**
+ * 火药燃气液压打桩机的装备生命周期函数
+ * @param reflector:Object - 反射器对象，包含动画状态和目标
+ * @param paramObj:Object - 参数对象(当前未使用)
+ */
+_root.装备生命周期函数.火药燃气液压打桩机周期 = function(reflector:Object, paramObj:Object) {
+    // 移除异常周期函数
+    _root.装备生命周期函数.移除异常周期函数(reflector);
+    
+    // 获取目标对象
+    var target:MovieClip = reflector.自机;
+    
+    // 帧控制逻辑
+    if (reflector.flag === true) {
+        // 如果标志为真，重置到指定帧
+        reflector.currentframe = 2;
+    } else if (reflector.currentframe > 1) {
+        // 增加当前帧
+        reflector.currentframe++;
+        
+        // 循环检查
+        if (reflector.currentframe > 60) {
+            reflector.currentframe = 1;
+        }
+    }
+    
+    // 重置标志
+    reflector.flag = false;
+    
+    // 应用动画帧
+    target.长枪_引用.动画.gotoAndStop(reflector.currentframe);
 };

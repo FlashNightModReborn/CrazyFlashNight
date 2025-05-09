@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/火药燃气打桩机" itemID="65519486-00001f36" linkageExportForAS="true" linkageIdentifier="枪-长枪-火药燃气液压打桩机" lastModified="1719460070" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/火药燃气打桩机" itemID="65519486-00001f36" linkageExportForAS="true" linkageIdentifier="枪-长枪-火药燃气液压打桩机" lastModified="1746783541" lastUniqueIdentifier="6">
   <timeline>
     <DOMTimeline name="火药燃气打桩机" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;48&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -22,63 +22,13 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/火药燃气打桩机动画" name="动画" centerPoint3DX="-22.15" centerPoint3DY="44.4">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/火药燃气打桩机动画" name="动画" selected="true" centerPoint3DX="-22.15" centerPoint3DY="44.4">
                   <matrix>
                     <Matrix a="-3.89251708984375" d="3.89251708984375" tx="407.8" ty="-4.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="110.45" y="12.65"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	var 人物 = _root.获得父节点(this,5);
-	
-	if (人物.打桩机当前帧 == undefined)
-	{
-		人物.打桩机当前帧 = 1;
-	}
-	else if (_root.获得父节点(this,5).打桩机当前帧 != 1)
-	{
-		人物.打桩机当前帧 += 1;
-	}
-	if (人物.打桩许可 == undefined)
-	{
-		人物.打桩许可 = false;
-	}
-	打桩机弹量探针 = 人物.长枪射击次数;
-	this.播放打桩机动画();
-
-	this.判断是否开火 = function()
-	{
-		flag = false;
-		if (打桩机弹量探针 < 人物.长枪射击次数)
-		{
-			flag = true;
-		}
-		打桩机弹量探针 = 人物.长枪射击次数;
-		return flag;
-	};
-	this.播放打桩机动画 = function()
-	{
-		if (人物.打桩机当前帧 > 60)
-		{
-			人物.打桩机当前帧 = 1;
-		}
-		gotoAndStop(人物.打桩机当前帧);
-	};
-	this.onEnterFrame = function()
-	{
-
-		if (this.判断是否开火() or 人物.打桩机当前帧 > 1)
-		{
-			人物.打桩机当前帧 += 1;
-
-		}
-
-		this.播放打桩机动画();
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
