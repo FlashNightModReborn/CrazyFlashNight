@@ -1,72 +1,59 @@
 ﻿_root.人物信息函数 = new Object();
 
-_root.人物信息函数.获得韧性负荷 = function(自机)
-{
+_root.人物信息函数.获得韧性负荷 = function(自机){
 	var 自机 = _root.gameworld[_root.控制目标];
 	var 韧性上限 = 自机.韧性系数 * 自机.hp / _root.防御减伤比(自机.防御力 / 1000);
 	return Math.floor(韧性上限 / 自机.躲闪率) + " / " + Math.floor(韧性上限);
 };
 
-_root.人物信息函数.获得综合防御力 = function(自机)
-{
+_root.人物信息函数.获得综合防御力 = function(自机){
 	var 自机 = _root.gameworld[_root.控制目标];
 	var buff数值 = Math.floor(自机.防御力 - 自机.基本防御力 - 自机.装备防御力);
 	var buff字符 = buff数值 > 1 ? " + " + buff数值 : ( buff数值 < -1? buff数值: "" );
 	return 自机.基本防御力 + " + " + 自机.装备防御力 + buff字符;
 };
 
-_root.人物信息函数.获得最大HP = function(自机)
-{
+_root.人物信息函数.获得最大HP = function(自机){
 	return 自机.hp满血值;
 };
 
-_root.人物信息函数.获得最大MP = function(自机)
-{
+_root.人物信息函数.获得最大MP = function(自机){
 	return 自机.mp满血值;
 };
 
-_root.人物信息函数.获得空手攻击力 = function(自机)
-{
+_root.人物信息函数.获得空手攻击力 = function(自机){
 	return 自机.空手攻击力;
 };
 
-_root.人物信息函数.获得内力 = function(自机)
-{
+_root.人物信息函数.获得内力 = function(自机){
 	return 自机.内力;
 };
 
 
-_root.人物信息函数.获得命中力 = function(自机)
-{
+_root.人物信息函数.获得命中力 = function(自机){
 	return Math.floor(自机.命中率 * 10);
 };
 
-_root.人物信息函数.获得速度 = function(自机)
-{
+_root.人物信息函数.获得速度 = function(自机){
 	return Math.floor(自机.行走X速度 * 20) / 10 + "m/s";
 };
 
-_root.人物信息函数.获得被击硬直度 = function(自机)
-{
+_root.人物信息函数.获得被击硬直度 = function(自机){
 	return Math.floor(自机.被击硬直度) + "ms";
 };
 
-_root.人物信息函数.获得拆挡_坚稳 = function(自机)
-{
+_root.人物信息函数.获得拆挡_坚稳 = function(自机){
 	return Math.floor(50 / 自机.躲闪率) + " / " + Math.floor(100 * 自机.韧性系数);
 };
 
-_root.人物信息函数.获得身高 = function(自机)
-{
+_root.人物信息函数.获得身高 = function(自机){
 	return _root.身高 + "cm";
 };
-_root.人物信息函数.获得称号 = function(自机)
-{
+_root.人物信息函数.获得称号 = function(自机){
 	return 自机.称号;
 };
 
-_root.人物信息函数.获得装备重量 = function(自机)
-{
+_root.人物信息函数.获得装备重量 = function(自机){
 	return 自机.重量 + "kg";
 };
 

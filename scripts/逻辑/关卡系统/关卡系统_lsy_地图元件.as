@@ -31,7 +31,7 @@ _root.pickupItemManager.pickup = function(target, 拾取者, 播放拾取动画)
 	}else if (itemName == "K点"){
 		_root.虚拟币 += value;
 		str += "K点" + value;
-	}else if (!拾取者 && Key.isDown(_root.组合键) &&_root.拾取并装备(itemName, value)){
+	}else if (!拾取者 && Key.isDown(_root.组合键) &&_root.pickupItemManager.拾取并装备(itemName, value)){
 		str =  "已拾取" + itemName;
 	}else if (_root.singleAcquire(itemName, value)){
 		str += itemName + value + "个。";
@@ -49,7 +49,7 @@ _root.pickupItemManager.pickup = function(target, 拾取者, 播放拾取动画)
 		控制对象.拾取();
 	}
 }
-_root.拾取并装备 = function(itemName, value){
+_root.pickupItemManager.拾取并装备 = function(itemName, value){
 	var itemData = _root.getItemData(itemName);
 	if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
 		装备 = _root.物品栏.装备栏.getNameString(itemData.use);
