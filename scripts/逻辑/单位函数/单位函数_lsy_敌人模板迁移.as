@@ -3,6 +3,7 @@ import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.aven.Coordinator.*;
+import org.flashNight.arki.unit.*;
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
@@ -402,7 +403,7 @@ _root.初始化敌人模板 = function(){
 	remainingImpactForce = 0;
 	
 	//转换身高，调整层级
-	身高转换值 = _root.身高百分比转换(this.身高);
+	身高转换值 = UnitUtil.getHeightPercentage(this.身高);
 	this._xscale = 身高转换值;
 	this._yscale = 身高转换值;
 	myxscale = this._xscale;
@@ -602,7 +603,7 @@ _root.初始化可操控敌人模板 = function()
 
 	_root.刷新人物装扮(this._name);
 
-	身高转换值 = _root.身高百分比转换(this.身高);
+	身高转换值 = UnitUtil.getHeightPercentage(this.身高);
 	this._xscale = 身高转换值;
 	this._yscale = 身高转换值;
 	myxscale = this._xscale;

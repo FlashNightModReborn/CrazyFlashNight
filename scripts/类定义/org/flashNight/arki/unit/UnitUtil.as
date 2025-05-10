@@ -61,4 +61,13 @@ class org.flashNight.arki.unit.UnitUtil {
             y: unit._y - yOffset
         };
     }
+    
+    /**
+     * 计算身高百分比
+     * @param heightCM 身高厘米数
+     * @return Number 相对于标准身高(175cm)的百分比值
+     */
+    public static function getHeightPercentage(heightCM:Number):Number {
+        return (heightCM * 100 / STANDARD_HEIGHT) | 0;
+    }
 }

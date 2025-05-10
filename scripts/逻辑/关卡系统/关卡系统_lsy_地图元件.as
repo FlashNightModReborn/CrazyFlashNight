@@ -1,6 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.neur.Event.*;
-
+import org.flashNight.arki.unit.*;
 
 // 拾取相关函数
 _root.pickupItemManager = new Object();
@@ -221,7 +221,7 @@ _root.初始化NPC = function(目标){
 	//目标.击中效果 = "飙血"; //意义不明
 	if(目标.方向 == null) 目标.方向 = "右";
 	if(isNaN(目标.身高)) 目标.身高 = 175;
-	var 缩放系数 = _root.身高百分比转换(目标.身高) / 100;
+	var 缩放系数 = UnitUtil.getHeightPercentage(目标.身高) / 100;
 	目标._yscale *= 缩放系数;
 	if(目标.方向 == "左"){
 		目标._xscale *= - 缩放系数;

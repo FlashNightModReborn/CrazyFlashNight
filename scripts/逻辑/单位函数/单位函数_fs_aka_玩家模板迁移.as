@@ -4,6 +4,8 @@ import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
+import org.flashNight.neur.Event.*;
+
 
 _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
@@ -112,9 +114,7 @@ _root.主角函数.重量速度关系 = function(重量:Number, 等级值:Number
 	return 1 - _root.超重惩罚;
 };
 
-_root.身高百分比转换 = function(身高厘米数){
-	return Math.floor(身高厘米数 * 100 / 175);
-}
+_root.身高百分比转换 = UnitUtil.getHeightPercentage;
 
 _root.获取操控编号 = function(目标名){
 	return 目标名 == _root.控制目标 ? 0 : -1;
@@ -2738,7 +2738,7 @@ _root.初始化玩家模板 = function(){
 
 	// if (!_root.玩家与佣兵区分装扮刷新 || _root.控制目标 === this._name)
 
-	身高转换值 = _root.身高百分比转换(this.身高);
+	身高转换值 = UnitUtil.getHeightPercentage(this.身高);
 	this._xscale = 身高转换值;
 	this._yscale = 身高转换值;
 	myxscale = this._xscale;
@@ -2829,7 +2829,7 @@ _root.初始化佣兵NPC模板 = function(){
 	倒地 = false;
 	硬直中 = false;
 
-	身高转换值 = _root.身高百分比转换(this.身高);
+	身高转换值 = UnitUtil.getHeightPercentage(this.身高);
 	this._xscale = 身高转换值;
 	this._yscale = 身高转换值;
 	myxscale = this._xscale;
