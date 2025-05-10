@@ -11,7 +11,18 @@ _root.跳弹基准重量 = 100;
 _root.过穿基准重量 = 20;
 _root.跳弹防御系数 = 5;
 
+//防御计算公式
+_root.防御减伤比 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.defenseDamageRatio);
 
+//跳弹模式可以减法过滤掉轻火力，最低伤害为1
+_root.跳弹伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.bounceDamageCalculation);
+
+//过穿模式可以二次减伤重火力，最低伤害为1
+_root.过穿伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.penetrationDamageCalculation);
+
+
+// 以下函数已在DodgeHandler重构
+/*
 _root.is119 = function(x:Number):Boolean 
 {
 	return x == _root.闪客之夜;
@@ -35,15 +46,6 @@ _root.softplus = function(x:Number):Number
 {
 	return Math.log(1 + Math.exp(x));
 };
-
-//防御计算公式
-_root.防御减伤比 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.defenseDamageRatio);
-
-//跳弹模式可以减法过滤掉轻火力，最低伤害为1
-_root.跳弹伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.bounceDamageCalculation);
-
-//过穿模式可以二次减伤重火力，最低伤害为1
-_root.过穿伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.penetrationDamageCalculation);
 
 _root.sig_tyler = function(x:Number):Number 
 {
@@ -79,17 +81,17 @@ _root.躲闪状态计算 = function(命中对象:MovieClip, 躲闪结果:Boolean
 	if(命中对象.受击反制) return "格挡";
 
     if (躲闪结果) {
-		/*
-        if (isNaN(命中对象.等级)) {
-            命中对象.等级 = 1;
-            _root.发布消息(命中对象 + " 触发异常等级 " + 命中对象.等级)
-        }
-        if (isNaN(命中对象.重量)) {
+		
+        // if (isNaN(命中对象.等级)) {
+        //     命中对象.等级 = 1;
+        //     _root.发布消息(命中对象 + " 触发异常等级 " + 命中对象.等级)
+        // }
+        // if (isNaN(命中对象.重量)) {
 
-            命中对象.重量 = 999;
-            _root.发布消息(命中对象 + " 触发异常重量 " + 命中对象.重量)
-        }
-		*/
+        //     命中对象.重量 = 999;
+        //     _root.发布消息(命中对象 + " 触发异常重量 " + 命中对象.重量)
+        // }
+		
 		return _root.躲闪状态校验(命中对象.重量, 命中对象.等级);
     }
 
@@ -122,3 +124,4 @@ _root.根据命中计算闪避结果 = function(发射者对象, 命中者对象
 	return _root.成功率(闪避率);
 };
 
+*/

@@ -286,8 +286,8 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 
 _root.场景转换函数.是否从门加载角色 = function(){
 	if (this.是否从门加载主角 && _root.场景进入位置名 == this._name){
-		_root.gameworld鼠标横向位置 = this._x;
-		_root.gameworld鼠标纵向位置 = this._y;
+		// _root.gameworld鼠标横向位置 = this._x;
+		// _root.gameworld鼠标纵向位置 = this._y;
 		_root.场景进入横坐标 = this._x;
 		_root.场景进入纵坐标 = this._y;
 		_root.转场景数据传递();
