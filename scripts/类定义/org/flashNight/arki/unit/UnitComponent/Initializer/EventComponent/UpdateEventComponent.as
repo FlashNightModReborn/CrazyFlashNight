@@ -12,7 +12,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     public static function initialize(target:MovieClip):Void {
         var dispatcher:EventDispatcher = target.dispatcher;
         // 订阅 UpdateEventComponent 事件到 onUpdate 逻辑
-        dispatcher.subscribeSingle("UpdateEventComponent", UpdateEventComponent.onUpdate, target);
+        var func:Function = UpdateEventComponent.onUpdate;
+        if(target._name === _root.控制目标) func = UpdateEventComponent.onHeroUpdate;
+        dispatcher.subscribeSingle("UpdateEventComponent", func, target);
         
         // 主角换装不会销毁自身，因此直接使用相同的标签会导致生命周期函数多次设置
         // 利用版本号进行区分
@@ -34,5 +36,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         ImpactUpdater.update(target);
         InformationComponentUpdater.update(target);
         target.unitAI.update();
+    }
+
+    public static function onHeroUpdate(target:MovieClip):Void {
+        ImpactUpdater.updateHero(target);
+        InformationComponentUpdater.update(target);
     }
 }
