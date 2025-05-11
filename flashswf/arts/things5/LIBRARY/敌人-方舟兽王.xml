@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-方舟兽王" itemID="67e615cf-000008d9" linkageExportForAS="true" linkageIdentifier="敌人-方舟兽王" lastModified="1743135161" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-方舟兽王">
+    <DOMTimeline name="敌人-方舟兽王" currentFrame="39">
       <layers>
         <DOMLayer name="Labels Layer" color="#AED60F">
           <frames>
@@ -271,7 +271,7 @@ else if(是否史诗(名字) == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#CEDB4A" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#CEDB4A" locked="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -525,7 +525,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#77BAA0">
+        <DOMLayer name="Layer 12" color="#77BAA0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

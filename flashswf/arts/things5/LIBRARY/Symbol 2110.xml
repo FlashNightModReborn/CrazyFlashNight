@@ -25,13 +25,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!2569 3841[2558 2999 3140 1971!3140 1971[3723 943 5104 551!5104 551[5016 227 4893 181!4893 181[4760 132 4624 279"/>
-                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!4624 279[4566 338 4466 359"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!4466 359[4853 318 4670 529!4670 529[3578 924 3046 1819!3046 1819[2517 2704 2569 3841"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!2569 3841[2517 4322 2545 4868"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!2545 4868|2550 5103!2550 5103[1597 4759 892 4867!892 4867[1011 3211 1449 2258!1449 2258[1739 1609 2131 1151"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!2131 1151[2831 306 3792 72"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!3792 72[3987 17 4098 0!4098 0|4624 279"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!2569 3841[2558 2999 3140 1971!3140 1971[3723 943 5104 551!5104 551[5016 227 4893 181!4893 181[4760 132 4624 279!4624 279|4098 0!4098 0[3987 17 3792 72"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!3792 72[2831 306 2131 1151"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!2131 1151[1739 1609 1449 2258!1449 2258[1011 3211 892 4867!892 4867[1597 4759 2550 5103!2550 5103|2545 4868"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!2545 4868[2517 4322 2569 3841"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!2569 3841[2517 2704 3046 1819!3046 1819[3578 924 4670 529!4670 529[4853 318 4466 359"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!4466 359[4566 338 4624 279"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!4091 335[4326 389 4466 359"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!3792 72[4369 148 4091 335"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="!2131 1151[1200 2642 1136 4528!1136 4528[1885 4610 2545 4868"/>
