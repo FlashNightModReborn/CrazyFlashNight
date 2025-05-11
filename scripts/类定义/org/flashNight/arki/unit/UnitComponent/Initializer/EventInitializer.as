@@ -19,6 +19,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         // 初始化敌人ai组件
 
         UpdateEventComponent.initialize(target);
+        RespawnEventComponent.initialize(target);
 
         if(target.兵种 != "主角-男") return; // 主角限定
 
