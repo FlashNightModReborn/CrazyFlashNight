@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角mp显示界面" itemID="66520796-00001b5d" lastModified="1746875380" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角mp显示界面" itemID="66520796-00001b5d" lastModified="1746877068" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="主角mp显示界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;36&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="主角mp显示界面" currentFrame="44" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;36&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="刷新符" color="#C452B2" locked="true" autoNamed="false">
+        <DOMLayer name="刷新符" color="#C452B2" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -44,7 +44,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="信息" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="信息" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements>
@@ -463,7 +463,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左侧MP遮罩" color="#31C697" locked="true" autoNamed="false" visible="false" layerType="mask">
+        <DOMLayer name="左侧MP遮罩" color="#31C697" locked="true" autoNamed="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="99" tweenType="shape" keyMode="17922">
               <MorphShape>
@@ -537,7 +537,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左侧MP槽" color="#B9D016" parentLayerIndex="4" autoNamed="false">
+        <DOMLayer name="左侧MP槽" color="#B9D016" parentLayerIndex="4" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="100" keyMode="9728">
               <elements>

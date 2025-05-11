@@ -116,7 +116,7 @@
           <Include href="sprite/主角/Symbol 1198.xml" loadImmediate="false" itemID="6597607e-000008ab" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1199.xml" loadImmediate="false" itemID="6597607e-000008ac" lastModified="1704196122"/>
           <Include href="sprite/主角hp显示界面.xml" loadImmediate="false" itemID="6652079b-00001b5e" lastModified="1746869971"/>
-          <Include href="sprite/主角mp显示界面.xml" loadImmediate="false" itemID="66520796-00001b5d" lastModified="1746875380"/>
+          <Include href="sprite/主角mp显示界面.xml" loadImmediate="false" itemID="66520796-00001b5d" lastModified="1746877068"/>
           <Include href="UI重构/快捷道具格子.xml" itemIcon="1" loadImmediate="false" itemID="664e18ac-00004df5" lastModified="1716395838"/>
           <Include href="UI重构/姓名动画.xml" loadImmediate="false" itemID="664e2146-000084a9" lastModified="1717573774"/>
           <Include href="UI重构/血槽相关/姓名动画-网格背景.xml" loadImmediate="false" itemID="665edd7b-00000468" lastModified="1717573901"/>
@@ -132,11 +132,13 @@
           <Include href="UI重构/长方块按钮.xml" loadImmediate="false" itemID="664df471-000026f1" lastModified="1735141510"/>
           <Include href="UI重构/长方块按钮 任务.xml" loadImmediate="false" itemID="67cea821-0000080e" lastModified="1741596784"/>
           <Include href="UI重构/长方块按钮（临时屏蔽点歌器用）.xml" loadImmediate="false" itemID="67bddb04-000004f1" lastModified="1740495714"/>
-          <Include href="UI重构/主角韧性UI.xml" loadImmediate="false" itemID="664c984c-00000c11" lastModified="1746875554"/>
+          <Include href="UI重构/主角韧性UI.xml" loadImmediate="false" itemID="664c984c-00000c11" lastModified="1746930573"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66a0f596-0000025d" lastModified="1721824662"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66a0f596-0000025f" lastModified="1721824662"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="681f2a78-0000095e" lastModified="1746872952"/>
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="681f2a78-00000960" lastModified="1746872952"/>
+          <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6820073b-00000ec9" lastModified="1746929467"/>
+          <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6820073b-00000ecb" lastModified="1746929467"/>
           <Include href="通用透明组件.xml" loadImmediate="false" itemID="659d4755-000039c9" lastModified="1704806229"/>
           <Include href="玩家信息界面.xml" itemID="6651f9a1-00001952" lastModified="1746876008"/>
           <Include href="玩家信息界面示意图.xml" loadImmediate="false" itemID="6651fadf-00001a7f" lastModified="1716648671"/>
@@ -239,6 +241,34 @@ import flash.filters.*;]]></script>
                          <GradientEntry color="#4D4D4D" ratio="1"/>
                          <GradientEntry color="#696969" ratio="1"/>
                     </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#52B4C4" ratio="0"/>
+                         <GradientEntry color="#6B4952" ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#8C7337" ratio="0"/>
+                         <GradientEntry color="#3F2A30" ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#FF001C" ratio="0"/>
+                         <GradientEntry color="#FF9900" ratio="1"/>
+                         <GradientEntry color="#FF7E00" ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.305882352941176">
+                         <GradientEntry color="#FF001C" ratio="0"/>
+                         <GradientEntry color="#FF9900" ratio="1"/>
+                         <GradientEntry color="#FF7E00" ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <LinearGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#FF001C" ratio="0"/>
+                         <GradientEntry color="#FF9900" ratio="1"/>
+                         <GradientEntry color="#FF7E00" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#FF001C" ratio="0"/>
+                         <GradientEntry color="#FF9900" ratio="1"/>
+                         <GradientEntry color="#FF7E00" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -247,6 +277,11 @@ import flash.filters.*;]]></script>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="12630529" publishTime="1746930313"/>
+          <PublishItem publishSize="12630225" publishTime="1746928486"/>
+          <PublishItem publishSize="12630227" publishTime="1746928137"/>
+          <PublishItem publishSize="12630137" publishTime="1746876304"/>
+          <PublishItem publishSize="12630142" publishTime="1746876014"/>
           <PublishItem publishSize="12630128" publishTime="1746875746"/>
           <PublishItem publishSize="12630118" publishTime="1746875671"/>
           <PublishItem publishSize="12628748" publishTime="1746870829"/>
@@ -262,10 +297,5 @@ import flash.filters.*;]]></script>
           <PublishItem publishSize="10065015" publishTime="1746443876"/>
           <PublishItem publishSize="10064997" publishTime="1746443718"/>
           <PublishItem publishSize="10064974" publishTime="1746443640"/>
-          <PublishItem publishSize="10065004" publishTime="1746443370"/>
-          <PublishItem publishSize="10064787" publishTime="1746443313"/>
-          <PublishItem publishSize="10064960" publishTime="1746443056"/>
-          <PublishItem publishSize="10064974" publishTime="1746442908"/>
-          <PublishItem publishSize="10064974" publishTime="1746442751"/>
      </publishHistory>
 </DOMDocument>

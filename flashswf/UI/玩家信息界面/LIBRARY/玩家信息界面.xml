@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="玩家信息界面">
       <layers>
-        <DOMLayer name="as" color="#4FFF4F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -77,11 +77,11 @@ function 刷新攻击模式(攻击模式)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="主角韧性显示界面" color="#FF800A" autoNamed="false">
+        <DOMLayer name="主角韧性显示界面" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/主角韧性UI" name="主角韧性显示界面" centerPoint3DX="78.7" centerPoint3DY="37.2">
+                <DOMSymbolInstance libraryItemName="UI重构/主角韧性UI" name="主角韧性显示界面" selected="true" centerPoint3DX="78.7" centerPoint3DY="37.2">
                   <matrix>
                     <Matrix tx="-0.1" ty="24.95"/>
                   </matrix>
