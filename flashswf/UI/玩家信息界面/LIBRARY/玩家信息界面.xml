@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1746876008" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1746943378" lastUniqueIdentifier="21">
   <timeline>
     <DOMTimeline name="玩家信息界面">
       <layers>
@@ -6,32 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 刷新hp显示()
-{
-	主角hp显示界面.刷新显示();
-	主角韧性显示界面.刷新显示();
-}
-
-function 刷新韧性显示()
-{
-	主角韧性显示界面.刷新显示();
-}
-function 刷新mp显示()
-{
-	主角mp显示界面.刷新显示();
-}
-function 刷新经验值显示()
-{
-	主角经验值显示界面.刷新显示();
-}
-function 刷新技能等级显示()
-{
-	快捷技能界面.刷新技能等级显示();
-}
-function 刷新攻击模式(攻击模式)
-{
-	玩家必要信息界面.刷新(攻击模式);
-}]]></script>
+                <script><![CDATA[_root.UI系统.初始化玩家信息界面.call(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -53,7 +28,7 @@ function 刷新攻击模式(攻击模式)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="快捷技能界面" color="#9933CC" autoNamed="false">
+        <DOMLayer name="快捷技能界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -77,11 +52,11 @@ function 刷新攻击模式(攻击模式)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="主角韧性显示界面" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="主角韧性显示界面" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/主角韧性UI" name="主角韧性显示界面" selected="true" centerPoint3DX="78.7" centerPoint3DY="37.2">
+                <DOMSymbolInstance libraryItemName="UI重构/主角韧性UI" name="主角韧性显示界面" centerPoint3DX="78.7" centerPoint3DY="37.2">
                   <matrix>
                     <Matrix tx="-0.1" ty="24.95"/>
                   </matrix>
@@ -220,39 +195,10 @@ function 刷新攻击模式(攻击模式)
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	
-	// 辅助函数：在数字前补零，确保达到指定的位数
-	function padZeroes(number, length)
-	{
-		var str = String(Math.floor(number));
-		while (str.length < length)
-		{
-   	     str = "0" + str;
-		}
-		return str;
-	}
-	
-   function 刷新显示()
-	{
-		a = Math.floor((_root.升级需要经验值 - _root.经验值) / (_root.升级需要经验值 - _root.上次升级需要经验值) * 100);
-		if(a <= 100 and a > 0)
-		{
-		this.gotoAndStop(a);
-		}
-		this.经验百分比.text = Math.floor((_root.经验值 / _root.升级需要经验值) * 100) + "%";
-		
-		// 格式化当前等级为三位数，前面补零
-		var 格式化当前等级 = padZeroes(_root.等级, 3);
-		this.玩家等级.text = 格式化当前等级;
-	}
-   //gotoAndStop(437);
-		
-   刷新显示();
-   _root.主角是否升级(_root.等级,_root.经验值);
-   stop();
-}
-]]></script>
+                    <script><![CDATA[onClipEvent(load) {
+    this.刷新显示 = _root.UI系统.经验刷新显示;
+    stop();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#666666" isEnabled="false"/>

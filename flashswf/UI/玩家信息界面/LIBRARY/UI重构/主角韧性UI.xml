@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/主角韧性UI" itemID="664c984c-00000c11" lastModified="1746930573">
   <timeline>
-    <DOMTimeline name="主角韧性UI" currentFrame="30">
+    <DOMTimeline name="主角韧性UI" currentFrame="27">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -9,11 +9,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-453.85"/>
                   </matrix>
@@ -30,7 +30,7 @@
                     <Edge strokeStyle="1" edges="!3912 7933|4149 7933!4149 7933|4253 7879!4253 7879|4695 7879!4695 7879|5588 7879!5588 7879|6298 7879!4695 7879|4799 7933!4799 7933|5484 7933!5484 7933|5588 7879"/>
                   </edges>
                 </DOMShape>
-                <DOMStaticText fontRenderingMode="standard" width="40.3" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="40.3" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="77.75" ty="2.9"/>
                   </matrix>
@@ -43,7 +43,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMDynamicText fontRenderingMode="standard" width="34.6" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false" variableName="poise">
+                <DOMDynamicText selected="true" fontRenderingMode="standard" width="34.6" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false" variableName="poise">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="130.9" ty="2.9"/>
                   </matrix>
@@ -56,7 +56,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
                     <Matrix c="-0.262496948242188" tx="5.45" ty="0.5"/>
                   </matrix>
@@ -76,11 +76,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原点" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="原点" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-359.15"/>
                   </matrix>
