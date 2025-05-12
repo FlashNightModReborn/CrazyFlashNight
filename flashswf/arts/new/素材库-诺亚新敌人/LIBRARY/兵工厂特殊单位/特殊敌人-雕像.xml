@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1746456302" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1747043125" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="特殊敌人-雕像">
       <layers>
@@ -112,6 +112,7 @@ hp = hp满血值 = 45000;
 躲闪率 = 100;
 
 回血间隔帧 = 0;
+respawn = true;
 复活时间 = 4000;
 死亡次数 = 0;
 

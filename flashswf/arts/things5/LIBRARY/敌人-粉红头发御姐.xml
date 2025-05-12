@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1745161333" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1747043009" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-粉红头发御姐" currentFrame="111">
+    <DOMTimeline name="敌人-粉红头发御姐">
       <layers>
         <DOMLayer name="Script Layer" color="#77AB72" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#F66DBF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#F66DBF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -106,6 +106,8 @@ x轴保持距离 = 50;
 女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
 女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
 女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+
+respawn = true;
 
 已使用兴奋剂 = false;
 变身阶段 = 0;
@@ -453,7 +455,7 @@ function Phoenix()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#D98C95" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#D98C95">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -930,7 +932,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 568" name="man" selected="true" centerPoint3DX="147" centerPoint3DY="137.8">
+                <DOMSymbolInstance libraryItemName="Symbol 568" name="man" centerPoint3DX="147" centerPoint3DY="137.8">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>
