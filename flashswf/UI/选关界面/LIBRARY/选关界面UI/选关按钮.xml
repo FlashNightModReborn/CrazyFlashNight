@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关按钮" itemID="666ea230-0000056b" lastModified="1739186635">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关按钮" itemID="666ea230-0000056b" lastModified="1747051390">
   <timeline>
     <DOMTimeline name="选关按钮" currentFrame="1">
       <layers>
@@ -42,8 +42,9 @@ this.初始化关卡界面 = function()
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(this.限制词条.length > 0){
-	详细 +="<BR><FONT COLOR=\'#FFCC00\'>" + _root.任务栏UI函数.打印限制词条明细(this.限制词条) + "</FONT>";
+                <script><![CDATA[if(!已添加限制词条详细 && this.限制词条.length > 0){
+	已添加限制词条详细 = true;
+	详细 +="<BR><FONT COLOR=\'#FFCC00\'>" + _root.任务栏UI函数.打印限制词条明细(this.限制词条,this.限制难度等级) + "</FONT>";
 }
 _root.全部翻译(this);
 this.难度提示._visible = this.是任务关卡;

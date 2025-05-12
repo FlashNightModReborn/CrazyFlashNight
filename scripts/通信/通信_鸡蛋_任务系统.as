@@ -301,6 +301,13 @@ _root.计算难度等级 = function(等级描述){
 	if (等级描述 === "地狱") return 2.5;
 	return 1;
 }
+_root.获取难度等级 = function(等级){
+	if (等级 == 1) return "简单";
+	if (等级 == 1.5) return "冒险";
+	if (等级 == 2) return "修罗";
+	if (等级 == 2.5) return "地狱";
+	return "";
+}
 
 _root.点击npc后检测任务 = function(npc名字){
 	var ret = NPCTaskCheck(npc名字);

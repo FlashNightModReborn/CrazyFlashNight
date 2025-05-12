@@ -4,7 +4,7 @@
 }
 
 _root.加载宠物 = function(地点X, 地点Y){
-	if(_root.限制系统.DisableCompanion) return;
+	if((!_root.限制系统.limitLevel || _root.难度等级 >= _root.限制系统.limitLevel) && _root.限制系统.DisableCompanion) return;
 	_root.宠物mc库 = [];
 	_root.出战宠物id库 = [];
 	

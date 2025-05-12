@@ -389,6 +389,7 @@ _root.配置基础关卡信息 = function(对象, StageInfo){
 	对象.起点帧 = StageInfo.StartFrame ? StageInfo.StartFrame : null;
 	对象.终点帧 = StageInfo.EndFrame ? StageInfo.EndFrame : null;
 	对象.限制词条 = StageInfo.Limitation ? _root.配置数据为数组(StageInfo.Limitation) : null;
+	对象.限制难度等级 = StageInfo.LimitLevel ? StageInfo.LimitLevel : null;
 };
 
 

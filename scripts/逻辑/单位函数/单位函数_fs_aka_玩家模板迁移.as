@@ -2467,7 +2467,7 @@ _root.主角函数.读取基础被动效果 = function(){
 	if(this.被动技能.独行者 && this.被动技能.独行者.启用){
 		var 是否独行 = true;
 		//若禁用同伴词条开启则无需额外判定，否则遍历佣兵与宠物出战情况
-		if(!_root.限制系统.DisableCompanion){
+		if((!_root.限制系统.limitLevel || _root.难度等级 >= _root.限制系统.limitLevel) && _root.限制系统.DisableCompanion){
 			for (var i = 0; i < _root.宠物信息.length; i++){
 				var 当前宠物信息 = _root.宠物信息[i];
 				if (当前宠物信息[4] == 1){

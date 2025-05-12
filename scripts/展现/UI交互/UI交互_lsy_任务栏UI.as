@@ -20,10 +20,12 @@ _root.任务栏UI函数.打印物品列表 = function(itemList):String{
 	return list.join("  ") + "\n";
 }
 
-_root.任务栏UI函数.打印限制词条明细 = function(entryArray):String{
+_root.任务栏UI函数.打印限制词条明细 = function(entryArray,limitLevel):String{
 	var str = "";
 	for (var i = 0; i < entryArray.length; i++){
-		str += "- " + _root.限制系统.getDiscription(entryArray[i]);
+		str += "- " ;
+		if(limitLevel){str += _root.获取难度等级(limitLevel) + "难度后";}
+		str +=  _root.限制系统.getDiscription(entryArray[i]);
 		str += "\n";
 	}
 	return str;

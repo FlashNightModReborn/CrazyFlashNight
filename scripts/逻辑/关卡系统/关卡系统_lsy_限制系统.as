@@ -24,6 +24,11 @@ _root.限制系统 = 限制系统;
 	}
 }
 
+//添加限制难度等级
+限制系统.addLimitLevel = function(limitLevel){
+	this.limitLevel = limitLevel;
+}
+
 //清空所有限制词条
 限制系统.clearEntries = function(){
 	this.entries = new Object();

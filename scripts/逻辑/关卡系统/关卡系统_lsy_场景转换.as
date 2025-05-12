@@ -140,7 +140,7 @@ _root.加载主角和战宠 = function(地点X, 地点Y){
 }
 
 _root.加载佣兵 = function(地点X, 地点Y){
-	if(_root.限制系统.DisableCompanion) return;
+	if((!_root.限制系统.limitLevel || _root.难度等级 >= _root.限制系统.limitLevel) && _root.限制系统.DisableCompanion) return;
 	_root.帧计时器.添加单次任务(function() {
 		for(var i = 0; i < _root.佣兵个数限制; i++){
 			var 同伴信息 = _root.同伴数据[i];

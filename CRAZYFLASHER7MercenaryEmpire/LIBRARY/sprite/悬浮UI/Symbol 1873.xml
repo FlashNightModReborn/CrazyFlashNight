@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1738919380" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1747051181" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="Symbol 1873">
       <layers>
-        <DOMLayer name="Script Layer" color="#BBD388" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BBD388">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -51,7 +51,7 @@
 	任务明细 = taskData.title + "\r难度限制：" + _root.getDifficultyString(关卡难度) + "\r完成条件：" + 收集品条件 + 通关条件 + 提交任务 + 奖励物品 + "\r " + taskData.description;
 	if (this.限制词条.length > 0)
 	{
-		任务明细 += "\r<FONT COLOR=\'#FFCC00\'>" + _root.任务栏UI函数.打印限制词条明细(this.限制词条) + "</FONT>";
+		任务明细 += "\r<FONT COLOR=\'#FFCC00\'>" + _root.任务栏UI函数.打印限制词条明细(this.限制词条,this.限制难度等级) + "</FONT>";
 	}
 	接收条件 = _root.获得翻译("委托领取条件") + "\r" + _root.获得翻译("任务_契约金：") + NPC任务_任务_契约金 + "   " + _root.获得翻译("情报费（K点）：") + NPC任务_任务_K点 + "\r" + _root.获得翻译("任务等级限制：") + NPC任务_任务_等级限制 + 推荐等级 + "\r";
 	进入挑战 = false;
@@ -191,9 +191,9 @@ _root.全部翻译(this);]]></script>
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" name="取消按钮" centerPoint3DX="71.4" centerPoint3DY="346.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" name="取消按钮" centerPoint3DX="71.4" centerPoint3DY="364.9">
                   <matrix>
-                    <Matrix tx="32.05" ty="334.2"/>
+                    <Matrix tx="32.05" ty="352.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -226,9 +226,9 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/开始副本按钮" centerPoint3DX="89.9" centerPoint3DY="316.25">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/开始副本按钮" centerPoint3DX="89.9" centerPoint3DY="334.45">
                   <matrix>
-                    <Matrix tx="32.05" ty="303.75"/>
+                    <Matrix tx="32.05" ty="321.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -281,9 +281,9 @@ on (rollOut) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/开始挑战按钮" name="进入挑战按钮" centerPoint3DX="89.9" centerPoint3DY="346.75">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/开始挑战按钮" name="进入挑战按钮" centerPoint3DX="89.9" centerPoint3DY="364.95">
                   <matrix>
-                    <Matrix tx="32.05" ty="334.25"/>
+                    <Matrix tx="32.05" ty="352.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -341,13 +341,13 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本框" color="#60C7E6" autoNamed="false">
+        <DOMLayer name="文本框" color="#60C7E6" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="270" height="74.95" isSelectable="false" variableName="接收条件" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix tx="180" ty="292"/>
+                    <Matrix tx="180" ty="316.05"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -373,8 +373,11 @@ on (rollOut) {
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="270" height="73.5" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix tx="180" ty="212"/>
+                    <Matrix d="1.28579711914063" tx="180" ty="213.25"/>
                   </matrix>
+                  <transformationPoint>
+                    <Point x="135" y="-4.2"/>
+                  </transformationPoint>
                   <textRuns>
                     <DOMTextRun>
                       <characters></characters>
@@ -520,13 +523,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="12" color="#E4947C" locked="true" autoNamed="false">
+        <DOMLayer name="12" color="#E4947C" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="228.45" centerPoint3DY="165.95">
                   <matrix>
-                    <Matrix d="1.11871337890625"/>
+                    <Matrix d="1.18865966796875"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

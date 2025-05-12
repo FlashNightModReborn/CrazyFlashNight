@@ -737,6 +737,7 @@ _root.选关界面进入关卡 = function(关卡难度){
 
 	//应用限制词条
 	if(this.限制词条.length > 0) _root.限制系统.openEntries(this.限制词条);
+	if(this.限制难度等级) _root.限制系统.addLimitLevel(this.限制难度等级);
 
 	if(起点帧) _root.关卡地图帧值 = 起点帧;
 
@@ -756,6 +757,7 @@ _root.委托界面进入关卡 = function(关卡难度){
 
 	//应用限制词条
 	if(this.限制词条.length > 0) _root.限制系统.openEntries(this.限制词条);
+	if(this.限制难度等级) _root.限制系统.addLimitLevel(this.限制难度等级);
 	if(this.进入挑战 === true && this.挑战限制词条.length > 0) _root.限制系统.openEntries(this.挑战限制词条);
 	
 	//对尚未xml化的关卡打补丁
