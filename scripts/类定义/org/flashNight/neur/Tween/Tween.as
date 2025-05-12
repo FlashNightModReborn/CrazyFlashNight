@@ -77,7 +77,7 @@ class org.flashNight.neur.Tween.Tween extends TweenCore {
      */
     private static function _getTweenFromPool():Tween {
         if (_pool.length > 0) {
-            return _pool.pop();
+            return Tween(_pool.pop());
         }
         return new Tween(null, 0, {});
     }
@@ -197,7 +197,7 @@ class org.flashNight.neur.Tween.Tween extends TweenCore {
      * 更新补间
      */
     public function update(elapsed:Number):Boolean {
-        if (super.state != TweenCore.ACTIVE) {
+        if (_state != TweenCore.ACTIVE) {
             return false;
         }
         
@@ -218,7 +218,7 @@ class org.flashNight.neur.Tween.Tween extends TweenCore {
             if (_onComplete != null) {
                 _onComplete.apply(null, _onCompleteParams);
             }
-            super.state = TweenCore.COMPLETED;
+            _state = TweenCore.COMPLETED;
             return false;
         }
         

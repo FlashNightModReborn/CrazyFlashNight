@@ -1,129 +1,159 @@
-﻿/**
+﻿
+
+import org.flashNight.neur.Tween.*;
+
+/**
  * Easing 提供各种缓动函数，用于控制补间动画的速率变化。
+ * 重构版：使用基于接口和类的组合方式
  * 
  * @org.flashNight.neur.Tween
- * @version 1.0
+ * @version 2.0
  */
 class org.flashNight.neur.Tween.Easing {
-    
     /**
      * 线性缓动，没有加速或减速
      */
     public static var Linear:Object = {
-        easeNone: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c * t / d + b;
-        },
-        easeIn: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c * t / d + b;
-        },
-        easeOut: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c * t / d + b;
-        },
-        easeInOut: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c * t / d + b;
-        }
+        easeNone: new LinearEasing(BaseEasing.EASE_NONE).ease,
+        easeIn: new LinearEasing(BaseEasing.EASE_IN).ease,
+        easeOut: new LinearEasing(BaseEasing.EASE_OUT).ease,
+        easeInOut: new LinearEasing(BaseEasing.EASE_IN_OUT).ease
     };
     
     /**
      * 二次方缓动函数
      */
     public static var Quad:Object = {
-        easeIn: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c * (t /= d) * t + b;
-        },
-        easeOut: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return -c * (t /= d) * (t - 2) + b;
-        },
-        easeInOut: function(t:Number, b:Number, c:Number, d:Number):Number {
-            if ((t /= d / 2) < 1) return c / 2 * t * t + b;
-            return -c / 2 * ((--t) * (t - 2) - 1) + b;
-        }
+        easeIn: new QuadEasing(BaseEasing.EASE_IN).ease,
+        easeOut: new QuadEasing(BaseEasing.EASE_OUT).ease,
+        easeInOut: new QuadEasing(BaseEasing.EASE_IN_OUT).ease
     };
     
     /**
      * 三次方缓动函数
      */
     public static var Cubic:Object = {
-        easeIn: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c * (t /= d) * t * t + b;
-        },
-        easeOut: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c * ((t = t / d - 1) * t * t + 1) + b;
-        },
-        easeInOut: function(t:Number, b:Number, c:Number, d:Number):Number {
-            if ((t /= d / 2) < 1) return c / 2 * t * t * t + b;
-            return c / 2 * ((t -= 2) * t * t + 2) + b;
-        }
+        easeIn: new CubicEasing(BaseEasing.EASE_IN).ease,
+        easeOut: new CubicEasing(BaseEasing.EASE_OUT).ease,
+        easeInOut: new CubicEasing(BaseEasing.EASE_IN_OUT).ease
     };
     
     /**
      * 回弹效果
      */
     public static var Back:Object = {
-        easeIn: function(t:Number, b:Number, c:Number, d:Number, s:Number):Number {
-            if (s == undefined) s = 1.70158;
-            return c * (t /= d) * t * ((s + 1) * t - s) + b;
-        },
-        easeOut: function(t:Number, b:Number, c:Number, d:Number, s:Number):Number {
-            if (s == undefined) s = 1.70158;
-            return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
-        },
-        easeInOut: function(t:Number, b:Number, c:Number, d:Number, s:Number):Number {
-            if (s == undefined) s = 1.70158;
-            if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= (1.525)) + 1) * t - s)) + b;
-            return c / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;
-        }
+        easeIn: new BackEasing(BaseEasing.EASE_IN).ease,
+        easeOut: new BackEasing(BaseEasing.EASE_OUT).ease,
+        easeInOut: new BackEasing(BaseEasing.EASE_IN_OUT).ease
     };
     
     /**
      * 弹性效果
      */
     public static var Elastic:Object = {
-        easeOut: function(t:Number, b:Number, c:Number, d:Number, a:Number, p:Number):Number {
-            if (t == 0) return b;
-            if ((t /= d) == 1) return b + c;
-            if (!p) p = d * .3;
-            var s:Number;
-            if (!a || a < Math.abs(c)) {
-                a = c;
-                s = p / 4;
-            } else {
-                s = p / (2 * Math.PI) * Math.asin(c / a);
-            }
-            return (a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b);
-        },
-        easeIn: function(t:Number, b:Number, c:Number, d:Number, a:Number, p:Number):Number {
-            if (t == 0) return b;
-            if ((t /= d) == 1) return b + c;
-            if (!p) p = d * .3;
-            var s:Number;
-            if (!a || a < Math.abs(c)) {
-                a = c;
-                s = p / 4;
-            } else {
-                s = p / (2 * Math.PI) * Math.asin(c / a);
-            }
-            return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-        }
+        easeIn: new ElasticEasing(BaseEasing.EASE_IN).ease,
+        easeOut: new ElasticEasing(BaseEasing.EASE_OUT).ease,
+        easeInOut: new ElasticEasing(BaseEasing.EASE_IN_OUT).ease
     };
     
     /**
      * 弹跳效果
      */
     public static var Bounce:Object = {
-        easeOut: function(t:Number, b:Number, c:Number, d:Number):Number {
-            if ((t /= d) < (1 / 2.75)) {
-                return c * (7.5625 * t * t) + b;
-            } else if (t < (2 / 2.75)) {
-                return c * (7.5625 * (t -= (1.5 / 2.75)) * t + .75) + b;
-            } else if (t < (2.5 / 2.75)) {
-                return c * (7.5625 * (t -= (2.25 / 2.75)) * t + .9375) + b;
-            } else {
-                return c * (7.5625 * (t -= (2.625 / 2.75)) * t + .984375) + b;
-            }
-        },
-        easeIn: function(t:Number, b:Number, c:Number, d:Number):Number {
-            return c - Bounce.easeOut(d - t, 0, c, d) + b;
-        }
+        easeIn: new BounceEasing(BaseEasing.EASE_IN).ease,
+        easeOut: new BounceEasing(BaseEasing.EASE_OUT).ease,
+        easeInOut: new BounceEasing(BaseEasing.EASE_IN_OUT).ease
     };
+    
+    /**
+     * 缓动函数类型映射
+     */
+    private static var _easingClassMap:Object = {
+        linear: LinearEasing,
+        quad: QuadEasing,
+        cubic: CubicEasing,
+        back: BackEasing,
+        elastic: ElasticEasing,
+        bounce: BounceEasing
+    };
+    
+    /**
+     * 获取指定类型的缓动函数实例
+     * 
+     * @param type 缓动类型（linear, quad, cubic, back, elastic, bounce）
+     * @param easeType 缓动方式（easeIn, easeOut, easeInOut, easeNone）
+     * @param params 额外参数，根据不同的缓动类型可能需要不同的参数
+     * @return 缓动函数实例
+     */
+    public static function getEasing(type:String, easeType:String):IEasing {
+        var easingClass:Function = _easingClassMap[type.toLowerCase()];
+        if (!easingClass) {
+            return new LinearEasing(); // 默认返回线性缓动
+        }
+
+        // 转换easeType字符串为BaseEasing中的常量
+        var easingTypeConstant:String;
+        easeType = (easeType == undefined || easeType == null) ? "easeOut" : easeType;
+
+        switch (easeType) {
+            case "easeIn":
+                easingTypeConstant = BaseEasing.EASE_IN;
+                break;
+            case "easeOut":
+                easingTypeConstant = BaseEasing.EASE_OUT;
+                break;
+            case "easeInOut":
+                easingTypeConstant = BaseEasing.EASE_IN_OUT;
+                break;
+            case "easeNone":
+                easingTypeConstant = BaseEasing.EASE_NONE;
+                break;
+            default:
+                easingTypeConstant = BaseEasing.EASE_OUT;
+        }
+
+        // 提取附加参数（从第3个参数开始）
+        var params:Array = [];
+        for (var i:Number = 2; i < arguments.length; i++) {
+            params.push(arguments[i]);
+        }
+
+        // 创建对应缓动函数实例
+        switch (type.toLowerCase()) {
+            case "back":
+                return new BackEasing(easingTypeConstant, params.length > 0 ? params[0] : 1.70158);
+            case "elastic":
+                return new ElasticEasing(
+                    easingTypeConstant,
+                    params.length > 0 ? params[0] : NaN,
+                    params.length > 1 ? params[1] : NaN
+                );
+            default:
+                return new easingClass(easingTypeConstant);
+        }
+    }
+
+    
+    /**
+     * 创建自定义缓动函数
+     * 
+     * @param easingFunction 自定义缓动函数
+     * @return 包装后的缓动函数实例
+     */
+    public static function createCustomEasing(easingFunction:Function):IEasing {
+        return new CustomEasing(easingFunction);
+    }
+
+    
+    /**
+     * 注册自定义缓动类型
+     * 
+     * @param name 自定义缓动类型名称
+     * @param easingClass 缓动类的构造函数
+     */
+    public static function registerEasingType(name:String, easingClass:IEasing):Void {
+        if (name && easingClass) {
+            _easingClassMap[name.toLowerCase()] = easingClass;
+        }
+    }
 }
