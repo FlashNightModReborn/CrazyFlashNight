@@ -1149,136 +1149,215 @@ _root.主角函数.初始化可用技能 = function()
 
 };
 
-_root.主角函数.行走_玩家 = function()
-{
-	//加上飞行浮空的判断
-	if (this.飞行浮空) return;
-	this._rotation = 0;
-
-	移动射击倒退 = false;
-	var 射击中 = this.主手射击中 || this.副手射击中;
-	if ((射击中 && (射击最大后摇中 || this.动作A || this.动作B)) || this.man.换弹标签) {
-		强制奔跑 = false;
-		if(!移动射击){
-			this.右行 = false;
-			this.左行 = false;
-		}
-		if(!上下移动射击){
-			this.上行 = false;
-			this.下行 = false;
-		}
-	}
-	
-	if (this.右行 || this.左行 || this.上行 || this.下行){
-		if (状态 != 攻击模式 + "跑" && !强制奔跑){
-			if (this.右行){
-				if (移动射击 && 射击中 && this.方向 === "左"){
-					移动射击倒退 = true;
-				}else{
-					方向改变("右");
-				}
-				移动("右",行走X速度);
-				状态改变(攻击模式 + "行走");
-			}else if (this.左行){
-				if (移动射击 && 射击中 && this.方向 === "右"){
-					移动射击倒退 = true;
-				}else{
-					方向改变("左");
-				}
-				移动("左",行走X速度);
-				状态改变(攻击模式 + "行走");
-			}
-			if (this.下行){
-				移动("下",行走Y速度);
-				状态改变(攻击模式 + "行走");
-			}else if (this.上行){
-				移动("上",行走Y速度);
-				状态改变(攻击模式 + "行走");
-			}
-		}else{
-			if (this.右行){
-				方向改变("右");
-				移动("右",跑X速度);
-				状态改变(攻击模式 + "跑");
-			}else if (this.左行){
-				方向改变("左");
-				移动("左",跑X速度);
-				状态改变(攻击模式 + "跑");
-			}
-			if (this.下行){
-				移动("下",跑Y速度);
-				状态改变(攻击模式 + "跑");
-			}else if (this.上行){
-				移动("上",跑Y速度);
-				状态改变(攻击模式 + "跑");
-			}
-		}
-	}else{
-		状态改变(攻击模式 + "站立");
-	}
+_root.主角函数.行走_玩家 = function() {
+    // 提取频繁访问的属性到局部变量
+    var self = this;
+    var isFlying = self.飞行浮空;
+    var rightMove = self.右行;
+    var leftMove = self.左行;
+    var upMove = self.上行;
+    var downMove = self.下行;
+    var currentDirection = self.方向;
+    var isMainHandShooting = self.主手射击中;
+    var isOffHandShooting = self.副手射击中;
+    var isReloading = self.man.换弹标签;
+    var isActionA = self.动作A;
+    var isActionB = self.动作B;
+    
+    // 提前计算复合条件
+    var isShooting = isMainHandShooting || isOffHandShooting;
+    var isMoving = rightMove || leftMove || upMove || downMove;
+    var isShootingRestricted = isShooting && (射击最大后摇中 || isActionA || isActionB);
+    var shouldRestrictMovement = (isShootingRestricted || isReloading);
+    var isBackwardsShooting = false;
+    
+    // 飞行状态检查 - 如果在飞行状态则直接返回
+    if (isFlying) return;
+    
+    // 重置旋转
+    self._rotation = 0;
+    移动射击倒退 = false;
+    
+    // 射击时移动限制
+    if (shouldRestrictMovement) {
+        强制奔跑 = false;
+        
+        if (!移动射击) {
+            rightMove = leftMove = false;
+        }
+        
+        if (!上下移动射击) {
+            upMove = downMove = false;
+        }
+    }
+    
+    // 处理移动逻辑
+    if (isMoving) {
+        var isWalking = 状态 != 攻击模式 + "跑" && !强制奔跑;
+        
+        // 行走状态处理
+        if (isWalking) {
+            // 水平移动处理
+            if (rightMove) {
+                if (移动射击 && isShooting && currentDirection === "左") {
+                    isBackwardsShooting = true;
+                } else {
+                    方向改变("右");
+                }
+                移动("右", 行走X速度);
+                状态改变(攻击模式 + "行走");
+            } else if (leftMove) {
+                if (移动射击 && isShooting && currentDirection === "右") {
+                    isBackwardsShooting = true;
+                } else {
+                    方向改变("左");
+                }
+                移动("左", 行走X速度);
+                状态改变(攻击模式 + "行走");
+            }
+            
+            // 垂直移动处理
+            if (downMove) {
+                移动("下", 行走Y速度);
+                状态改变(攻击模式 + "行走");
+            } else if (upMove) {
+                移动("上", 行走Y速度);
+                状态改变(攻击模式 + "行走");
+            }
+        } 
+        // 奔跑状态处理
+        else {
+            // 水平奔跑处理
+            if (rightMove) {
+                方向改变("右");
+                移动("右", 跑X速度);
+                状态改变(攻击模式 + "跑");
+            } else if (leftMove) {
+                方向改变("左");
+                移动("左", 跑X速度);
+                状态改变(攻击模式 + "跑");
+            }
+            
+            // 垂直奔跑处理
+            if (downMove) {
+                移动("下", 跑Y速度);
+                状态改变(攻击模式 + "跑");
+            } else if (upMove) {
+                移动("上", 跑Y速度);
+                状态改变(攻击模式 + "跑");
+            }
+        }
+    } 
+    // 站立状态处理
+    else {
+        状态改变(攻击模式 + "站立");
+    }
+    
+    // 更新移动射击倒退状态
+    移动射击倒退 = isBackwardsShooting;
 };
 
-_root.主角函数.行走 = function(){
-	移动射击倒退 = false;
-	var 射击中 = this.主手射击中 || this.副手射击中;
-	if ((射击中 && (射击最大后摇中 || this.动作A || this.动作B)) || this.man.换弹标签) {
-		强制奔跑 = false;
-		if(!移动射击){
-			this.右行 = false;
-			this.左行 = false;
-		}
-		if(!上下移动射击){
-			this.上行 = false;
-			this.下行 = false;
-		}
-	}
-	if (this.右行 || this.左行 || this.上行 || this.下行){
-		if (状态 != 攻击模式 + "跑" && !强制奔跑){
-			if (this.右行){
-				if (移动射击 && 射击中 && this.方向 === "左"){
-					移动射击倒退 = true;
-				}else{
-					方向改变("右");
-				}
-				移动("右",行走X速度);
-				状态改变(攻击模式 + "行走");
-			}else if (this.左行){
-				if (移动射击 && 射击中 && this.方向 === "右"){
-					移动射击倒退 = true;
-				}else{
-					方向改变("左");
-				}
-				移动("左",行走X速度);
-				状态改变(攻击模式 + "行走");
-			}
-			if (this.下行){
-				移动("下",行走Y速度);
-				状态改变(攻击模式 + "行走");
-			}else if (this.上行){
-				移动("上",行走Y速度);
-				状态改变(攻击模式 + "行走");
-			}
-		}else{
-			if (this.右行){
-				方向改变("右");
-				移动("右",跑X速度);
-				状态改变(攻击模式 + "跑");
-			}else if (this.左行){
-				方向改变("左");
-				移动("左",跑X速度);
-				状态改变(攻击模式 + "跑");
-			}
-			if (this.下行){
-				移动("下",跑Y速度);
-				状态改变(攻击模式 + "跑");
-			}else if (this.上行){
-				移动("上",跑Y速度);
-				状态改变(攻击模式 + "跑");
-			}
-		}
-	}else{
-		状态改变(攻击模式 + "站立");
-	}
+_root.主角函数.行走 = function() {
+    // 提取频繁访问的属性到局部变量
+    var self = this;
+    var rightMove = self.右行;
+    var leftMove = self.左行;
+    var upMove = self.上行;
+    var downMove = self.下行;
+    var currentDirection = self.方向;
+    var isMainHandShooting = self.主手射击中;
+    var isOffHandShooting = self.副手射击中;
+    var isReloading = self.man.换弹标签;
+    var isActionA = self.动作A;
+    var isActionB = self.动作B;
+    
+    // 提前计算复合条件
+    var isShooting = isMainHandShooting || isOffHandShooting;
+    var isMoving = rightMove || leftMove || upMove || downMove;
+    var isShootingRestricted = isShooting && (射击最大后摇中 || isActionA || isActionB);
+    var shouldRestrictMovement = (isShootingRestricted || isReloading);
+    var isBackwardsShooting = false;
+    
+    // 重置移动射击倒退状态
+    移动射击倒退 = false;
+    
+    // 射击时移动限制
+    if (shouldRestrictMovement) {
+        强制奔跑 = false;
+        
+        if (!移动射击) {
+            rightMove = leftMove = false;
+        }
+        
+        if (!上下移动射击) {
+            upMove = downMove = false;
+        }
+    }
+    
+    // 处理移动逻辑
+    if (isMoving) {
+        var isWalking = 状态 != 攻击模式 + "跑" && !强制奔跑;
+        
+        // 行走状态处理
+        if (isWalking) {
+            // 水平移动处理
+            if (rightMove) {
+                if (移动射击 && isShooting && currentDirection === "左") {
+                    isBackwardsShooting = true;
+                } else {
+                    方向改变("右");
+                }
+                移动("右", 行走X速度);
+                状态改变(攻击模式 + "行走");
+            } else if (leftMove) {
+                if (移动射击 && isShooting && currentDirection === "右") {
+                    isBackwardsShooting = true;
+                } else {
+                    方向改变("左");
+                }
+                移动("左", 行走X速度);
+                状态改变(攻击模式 + "行走");
+            }
+            
+            // 垂直移动处理
+            if (downMove) {
+                移动("下", 行走Y速度);
+                状态改变(攻击模式 + "行走");
+            } else if (upMove) {
+                移动("上", 行走Y速度);
+                状态改变(攻击模式 + "行走");
+            }
+        } 
+        // 奔跑状态处理
+        else {
+            // 水平奔跑处理
+            if (rightMove) {
+                方向改变("右");
+                移动("右", 跑X速度);
+                状态改变(攻击模式 + "跑");
+            } else if (leftMove) {
+                方向改变("左");
+                移动("左", 跑X速度);
+                状态改变(攻击模式 + "跑");
+            }
+            
+            // 垂直奔跑处理
+            if (downMove) {
+                移动("下", 跑Y速度);
+                状态改变(攻击模式 + "跑");
+            } else if (upMove) {
+                移动("上", 跑Y速度);
+                状态改变(攻击模式 + "跑");
+            }
+        }
+    } 
+    // 站立状态处理
+    else {
+        状态改变(攻击模式 + "站立");
+    }
+    
+    // 更新移动射击倒退状态
+    移动射击倒退 = isBackwardsShooting;
 };
 
 _root.主角函数.人物暂停 = function(){

@@ -101,6 +101,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 jumpFrameName = "上射击" + config.prefix;
             }
         }
+
+        // _root.发布消息(core.下行, core.上行, offset, jumpFrameName)
+
         // 更新所有需要重置的子弹属性角度偏移
         for (var i:Number = 0; i < len; i++) {
             man[bulletAttrKeys[i]].角度偏移 = offset;
