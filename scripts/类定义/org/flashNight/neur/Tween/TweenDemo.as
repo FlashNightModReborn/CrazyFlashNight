@@ -1,4 +1,5 @@
-﻿import org.flashNight.neur.Tween.*
+﻿import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * TweenDemo - 演示补间动画库的基本功能

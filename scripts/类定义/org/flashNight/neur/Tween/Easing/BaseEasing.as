@@ -1,5 +1,6 @@
 ﻿
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * BaseEasing 基类
@@ -8,7 +9,7 @@ import org.flashNight.neur.Tween.*;
  * @org.flashNight.neur.Tween
  * @version 1.0
  */
-class org.flashNight.neur.Tween.BaseEasing implements IEasing {
+class org.flashNight.neur.Tween.Easing.BaseEasing implements IEasing {
     /**
      * 缓动函数类型常量
      */

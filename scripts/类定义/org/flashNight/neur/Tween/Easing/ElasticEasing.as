@@ -1,5 +1,6 @@
 ﻿
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * ElasticEasing 弹性效果缓动
@@ -8,7 +9,7 @@ import org.flashNight.neur.Tween.*;
  * @org.flashNight.neur.Tween
  * @version 1.0
  */
-class org.flashNight.neur.Tween.ElasticEasing extends BaseEasing {
+class org.flashNight.neur.Tween.Easing.ElasticEasing extends BaseEasing {
     /**
      * 弹性振幅
      */

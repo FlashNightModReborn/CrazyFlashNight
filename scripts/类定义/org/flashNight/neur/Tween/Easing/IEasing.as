@@ -1,5 +1,6 @@
 ﻿
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * IEasing 接口
@@ -8,7 +9,7 @@ import org.flashNight.neur.Tween.*;
  * @org.flashNight.neur.Tween
  * @version 1.0
  */
-interface org.flashNight.neur.Tween.IEasing {
+interface org.flashNight.neur.Tween.Easing.IEasing {
     /**
      * 缓动函数的核心方法
      * 

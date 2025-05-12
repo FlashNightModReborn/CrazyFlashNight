@@ -6,6 +6,7 @@
  */
 
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 class org.flashNight.neur.Tween.Tween extends TweenCore {
     // 静态变量

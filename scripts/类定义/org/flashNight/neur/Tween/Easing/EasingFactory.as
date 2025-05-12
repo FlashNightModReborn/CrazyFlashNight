@@ -1,5 +1,6 @@
 ﻿
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * 缓动函数工厂类
@@ -8,7 +9,7 @@ import org.flashNight.neur.Tween.*;
  * @org.flashNight.neur.Tween
  * @version 1.0
  */
-class org.flashNight.neur.Tween.EasingFactory {
+class org.flashNight.neur.Tween.Easing.EasingFactory {
     /**
      * 创建线性缓动
      */

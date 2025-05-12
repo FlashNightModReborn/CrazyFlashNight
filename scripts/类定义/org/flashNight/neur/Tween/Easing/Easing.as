@@ -1,6 +1,7 @@
 ﻿
 
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * Easing 提供各种缓动函数，用于控制补间动画的速率变化。
@@ -9,7 +10,7 @@ import org.flashNight.neur.Tween.*;
  * @org.flashNight.neur.Tween
  * @version 2.0
  */
-class org.flashNight.neur.Tween.Easing {
+class org.flashNight.neur.Tween.Easing.Easing {
     /**
      * 线性缓动，没有加速或减速
      */

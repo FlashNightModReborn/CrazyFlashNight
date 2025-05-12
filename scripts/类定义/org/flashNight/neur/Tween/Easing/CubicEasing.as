@@ -1,6 +1,7 @@
 ﻿
 
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * CubicEasing 三次方缓动
@@ -9,7 +10,7 @@ import org.flashNight.neur.Tween.*;
  * @org.flashNight.neur.Tween
  * @version 1.0
  */
-class org.flashNight.neur.Tween.CubicEasing extends BaseEasing {
+class org.flashNight.neur.Tween.Easing.CubicEasing extends BaseEasing {
     /**
      * 构造函数
      * 

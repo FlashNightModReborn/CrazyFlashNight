@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * BackEasing 回弹效果缓动
@@ -7,7 +8,7 @@
  * @org.flashNight.neur.Tween
  * @version 1.0
  */
-class org.flashNight.neur.Tween.BackEasing extends BaseEasing {
+class org.flashNight.neur.Tween.Easing.BackEasing extends BaseEasing {
     /**
      * 默认回弹系数
      */

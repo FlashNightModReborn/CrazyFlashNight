@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
-class org.flashNight.neur.Tween.CustomEasing implements IEasing {
+class org.flashNight.neur.Tween.Easing.CustomEasing implements IEasing {
     private var _func:Function;
 
     public function CustomEasing(func:Function) {

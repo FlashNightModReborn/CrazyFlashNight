@@ -1,5 +1,6 @@
 ﻿
 import org.flashNight.neur.Tween.*;
+import org.flashNight.neur.Tween.Easing.*;
 
 /**
  * QuadEasing 二次方缓动
@@ -8,7 +9,7 @@ import org.flashNight.neur.Tween.*;
  * @org.flashNight.neur.Tween
  * @version 1.0
  */
-class org.flashNight.neur.Tween.QuadEasing extends BaseEasing {
+class org.flashNight.neur.Tween.Easing.QuadEasing extends BaseEasing {
     /**
      * 构造函数
      * 
