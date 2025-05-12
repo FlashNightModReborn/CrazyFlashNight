@@ -68,9 +68,9 @@ _root.任务栏UI函数.打印任务挑战明细 = function(id){
 	if(challenge.description) str += "* " + challenge.description + "\n";
 	str += "额外奖励："
 	if(challenge.rewards) str +=_root.任务栏UI函数.打印物品列表(challenge.rewards);
-	if(challenge.rewards_text) str +=  challenge.rewards_text;
+	if(challenge.rewards_text) str +=  challenge.rewards_text + '\n';
 	if(challenge.recommended_level){
-		str += "\n推荐等级：" + challenge.recommended_level;
+		str += "推荐等级：" + challenge.recommended_level;
 	} 
 	return str;
 }
