@@ -126,12 +126,15 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 		物品需求图标.iconList = new Array();
 		for (var i = 0; i < items.length; i++){
 			var itemArr = items[i].split("#");
-			var 物品图标 = 物品展示框.attachMovie("物品图标","物品图标" + i, i);
-			物品图标._x = 10 + i * 20;
-			物品图标._y = 10;
-			物品图标._xscale = 物品图标._yscale = 75;
-			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
-			物品需求图标.iconList.push(物品图标);
+
+			_root.帧计时器.添加单次任务(function(count) {
+				var 物品图标 = 物品展示框.attachMovie("物品图标","物品图标" + count, count);
+				物品图标._x = 10 + count * 20;
+				物品图标._y = 10;
+				物品图标._xscale = 物品图标._yscale = 75;
+				物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
+				物品需求图标.iconList.push(物品图标);
+			},(i + 1) * 500, i);
 		}
 		if(items.length == 1){
 			var itemArr = items[0].split("#");
@@ -164,7 +167,14 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 	this.任务奖励.refresh();
 	// this.任务奖励.taskFinishNPC.htmlText = "提交NPC：" + taskData.finish_npc;
 	this.提交NPC界面.finish_npc = taskData.finish_npc;
-	this.提交NPC界面.提交NPC.NPC头像框.gotoAndStop(taskData.finish_npc);
+
+	var self:MovieClip = this;
+	self.提交NPC界面.提交NPC.NPC头像框._visible = false;
+	_root.帧计时器.添加单次任务(function() {
+		self.提交NPC界面.提交NPC.NPC头像框._visible = true;
+		self.提交NPC界面.提交NPC.NPC头像框.gotoAndStop(taskData.finish_npc);
+	}, 200)
+	
 }
 
 _root.任务栏UI函数.隐藏任务明细 = function(){

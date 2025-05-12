@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2、事件日志/组件/事件日志-动态" itemID="67cc0cc2-000002a5" lastModified="1741700291" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="事件日志-动态">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2、事件日志/组件/事件标志-动态">
+                  <matrix>
+                    <Matrix ty="15.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="21.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="160.2" height="57.5" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="49.3" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>事件日志</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="40" bitmapSize="800" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="40" bitmapSize="800" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

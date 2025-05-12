@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="6、任务信息/主线详情" itemID="67cc3c1a-00000513" lastModified="1741596066">
+  <timeline>
+    <DOMTimeline name="主线详情">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="120.2" height="43.1" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>任务详情</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="30" bitmapSize="600" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="-2" size="30" bitmapSize="600" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务树相关/任务树" itemID="67d2a260-0000026d" lastModified="1741874634" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="任务树">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="任务树相关/任务节点图标" name="任务节点图标" selected="true" centerPoint3DX="84.4" centerPoint3DY="48">
+                  <matrix>
+                    <Matrix ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底部拖拽按钮" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

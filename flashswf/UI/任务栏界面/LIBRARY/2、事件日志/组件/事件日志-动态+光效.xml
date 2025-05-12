@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2、事件日志/组件/事件日志-动态+光效" itemID="67cc0cc8-000002a7" lastModified="1741425864">
+  <timeline>
+    <DOMTimeline name="事件日志-动态+光效">
+      <layers>
+        <DOMLayer name="遮罩" color="#00FFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="90" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2、事件日志/组件/事件日志-动态">
+                  <transformationPoint>
+                    <Point x="105.75" y="30.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光效" color="#9933CC" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="90" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/光效">
+                  <matrix>
+                    <Matrix tx="-3.7" ty="8.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="110.35" y="25.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="动画" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="90" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2、事件日志/组件/事件日志-动态" selected="true" centerPoint3DX="106.4" centerPoint3DY="30.75">
+                  <transformationPoint>
+                    <Point x="105.75" y="30.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

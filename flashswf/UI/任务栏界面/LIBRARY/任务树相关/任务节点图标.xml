@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务树相关/任务节点图标" itemID="67d2a378-00000290" lastModified="1742025330">
+  <timeline>
+    <DOMTimeline name="任务节点图标">
+      <layers>
+        <DOMLayer name="btn" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/透明按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.79998779296875" d="1.19979858398438" ty="15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	_parent._parent.显示事件日志任务明细(this.taskID);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="taskChain" fontRenderingMode="device" width="76.9" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-38.4" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>主线#999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#DDDDDD"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!800 300|600 500!600 500|-600 500!-600 500|-800 300!-800 300|-600 100!-600 100|600 100!600 100|800 300"/>
+                    <Edge fillStyle1="1" edges="!600 600|-600 600!-600 600|-900 300!-900 300|-600 0!-600 0|600 0!600 0|900 300!900 300|600 600"/>
+                    <Edge cubics="!-900 300(;-900,300 -600,0 -600,0q-900 300 -600 0);"/>
+                    <Edge cubics="!-900 300(;-900,300 -600,600 -600,600q-900 300 -600 600);"/>
+                    <Edge cubics="!900 300(;900,300 600,0 600,0q900 300 600 0);"/>
+                    <Edge cubics="!900 300(;900,300 600,600 600,600q900 300 600 600);"/>
+                    <Edge cubics="!-800 300(;-800,300 -600,100 -600,100q-800 300 -600 100);"/>
+                    <Edge cubics="!-800 300(;-800,300 -600,500 -600,500q-800 300 -600 500);"/>
+                    <Edge cubics="!800 300(;800,300 600,100 600,100q800 300 600 100);"/>
+                    <Edge cubics="!800 300(;800,300 600,500 600,500q800 300 600 500);"/>
+                    <Edge cubics="!-600 100(;-600,100 600,100 600,100q-600 100 600 100);"/>
+                    <Edge cubics="!600 500(;600,500 -600,500 -600,500q600 500 -600 500);"/>
+                    <Edge cubics="!600 600(;600,600 -600,600 -600,600q600 600 -600 600);"/>
+                    <Edge cubics="!-600 0(;-600,0 600,0 600,0q-600 0 600 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

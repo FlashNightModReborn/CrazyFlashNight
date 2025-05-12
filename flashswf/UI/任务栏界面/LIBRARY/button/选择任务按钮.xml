@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="button/选择任务按钮" itemID="67d93032-00000396" symbolType="button" lastModified="1742287219">
+  <timeline>
+    <DOMTimeline name="选择任务按钮">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMRectangleObject objectWidth="250" objectHeight="88" x="378.55" y="384.55" selected="true" lockFlag="true">
+                  <matrix>
+                    <Matrix tx="-378.55" ty="-384.55"/>
+                  </matrix>
+                  <fill>
+                    <SolidColor color="#FFFFFF" alpha="0"/>
+                  </fill>
+                </DOMRectangleObject>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/组件/选择任务按钮-光效" centerPoint3DX="125" centerPoint3DY="44">
+                  <transformationPoint>
+                    <Point x="125" y="44"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMRectangleObject objectWidth="250" objectHeight="88" x="378.55" y="384.55" lockFlag="true">
+                  <matrix>
+                    <Matrix tx="-378.55" ty="-384.55"/>
+                  </matrix>
+                  <fill>
+                    <SolidColor/>
+                  </fill>
+                </DOMRectangleObject>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

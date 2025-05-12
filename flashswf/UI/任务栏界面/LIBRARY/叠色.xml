@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="叠色" itemID="67d3c51c-00003a99" lastModified="1741931804">
+  <timeline>
+    <DOMTimeline name="叠色">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-132.3" ty="-12.35"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0431060791015625" b="0.0431060791015625" c="-0.0431060791015625" d="0.0431060791015625" tx="202.25" ty="87.7"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0"/>
+                        <GradientEntry alpha="0.247058823529412" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4646 2247|2646 2247!2646 2247|2646 247!2646 247|4646 247!4646 247|4646 2247"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

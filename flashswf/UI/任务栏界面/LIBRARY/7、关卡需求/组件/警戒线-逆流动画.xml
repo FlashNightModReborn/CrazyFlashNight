@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="7、关卡需求/组件/警戒线-逆流动画" itemID="67cca8ef-000001be" lastModified="1741465889" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="警戒线-逆流动画" currentFrame="29">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="7、关卡需求/组件/警戒线-图形" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="96.6" y="2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="7、关卡需求/组件/警戒线-图形" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-30.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="96.6" y="2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

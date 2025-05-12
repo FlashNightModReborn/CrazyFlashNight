@@ -1,0 +1,135 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1、我的任务/我的任务" itemID="67ce96ef-00000376" lastModified="1741592879" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="我的任务" currentFrame="38">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="5" name="idle" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" name="rollover" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="30" name="press" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/我的任务-静态">
+                  <matrix>
+                    <Matrix tx="-18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.75" y="30.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/我的任务-静态">
+                  <transformationPoint>
+                    <Point x="105.75" y="30.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/我的任务-动态+光效" selected="true" centerPoint3DX="105.75" centerPoint3DY="30.75">
+                  <transformationPoint>
+                    <Point x="105.75" y="30.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/我的任务-动态+光效" centerPoint3DX="105.75" centerPoint3DY="30.75">
+                  <transformationPoint>
+                    <Point x="105.75" y="30.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/我的任务-动态+光效" centerPoint3DX="105.75" centerPoint3DY="30.75">
+                  <transformationPoint>
+                    <Point x="105.75" y="30.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="透明按钮" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="70" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/透明按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="8.39999389648438" d="1.60000610351563" tx="105" ty="30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	this.gotoAndPlay("press");
+	_parent.gotoAndStop("我的任务");
+}
+on (release) {
+	this.gotoAndStop("idle");
+}
+on (rollOver) {
+	this.gotoAndStop("rollover");
+}
+on (rollOut) {
+	this.gotoAndStop("idle");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

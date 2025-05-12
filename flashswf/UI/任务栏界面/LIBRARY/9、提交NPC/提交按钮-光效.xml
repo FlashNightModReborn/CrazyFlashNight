@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="9、提交NPC/提交按钮-光效" itemID="67cd54b3-000004a1" lastModified="1741704696">
+  <timeline>
+    <DOMTimeline name="提交按钮-光效" currentFrame="89">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="89" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" duration="89" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, #0.C8" startPointB="0, #0.C8" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves anchorPointA="#0.C8, 0" anchorPointB="#0.C8, 0"/>
+                    <MorphCurves controlPointA="#9.C4, 0" anchorPointA="18.75, 0" controlPointB="#9.C4, 0" anchorPointB="18.75, 0" isLine="true"/>
+                    <MorphCurves controlPointA="#13.88, 0" anchorPointA="#13.88, #0.C8" controlPointB="#13.88, 0" anchorPointB="#13.88, #0.C8"/>
+                    <MorphCurves controlPointA="#13.88, #3.7" anchorPointA="#13.88, #6.18" controlPointB="#13.88, #3.7" anchorPointB="#13.88, #6.18" isLine="true"/>
+                    <MorphCurves controlPointA="#13.88, #6.E" anchorPointA="18.75, #6.E" controlPointB="#13.88, #6.E" anchorPointB="18.75, #6.E"/>
+                    <MorphCurves controlPointA="#9.C4, #6.E" anchorPointA="#0.C8, #6.E" controlPointB="#9.C4, #6.E" anchorPointB="#0.C8, #6.E" isLine="true"/>
+                    <MorphCurves controlPointA="0, #6.E" anchorPointA="0, #6.18" controlPointB="0, #6.E" anchorPointB="0, #6.18"/>
+                    <MorphCurves controlPointA="0, #3.7" anchorPointA="0, #0.C8" controlPointB="0, #3.7" anchorPointB="0, #0.C8" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMRectangleObject objectWidth="250" objectHeight="88" x="378.55" y="384.55" lockFlag="true" topLeftRadius="10" topRightRadius="10" bottomLeftRadius="10" bottomRightRadius="10">
+                  <matrix>
+                    <Matrix tx="-378.55" ty="-384.55"/>
+                  </matrix>
+                  <fill>
+                    <LinearGradient spreadMethod="reflect">
+                      <matrix>
+                        <Matrix a="0" b="0.05401611328125" c="-0.0537109375" d="0" tx="503.55" ty="428.55"/>
+                      </matrix>
+                      <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="0.16078431372549"/>
+                      <GradientEntry color="#9B9B9B" alpha="0" ratio="1"/>
+                    </LinearGradient>
+                  </fill>
+                </DOMRectangleObject>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMRectangleObject objectWidth="250" objectHeight="88" x="378.55" y="384.55" lockFlag="true" topLeftRadius="10" topRightRadius="10" bottomLeftRadius="10" bottomRightRadius="10">
+                  <matrix>
+                    <Matrix tx="-378.55" ty="-384.55"/>
+                  </matrix>
+                  <fill>
+                    <LinearGradient spreadMethod="reflect">
+                      <matrix>
+                        <Matrix a="0" b="0.05401611328125" c="-0.0537109375" d="0" tx="502.55" ty="603.55"/>
+                      </matrix>
+                      <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="0.16078431372549"/>
+                      <GradientEntry color="#9B9B9B" alpha="0" ratio="1"/>
+                    </LinearGradient>
+                  </fill>
+                </DOMRectangleObject>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

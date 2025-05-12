@@ -20,6 +20,14 @@ class org.flashNight.arki.task.TaskUtil{
         return ObjectUtil.clone(tasks[index]);
     }
 
+    /*
+     * 获取任务数据（返回原始数据，不进行拷贝）
+     * as2不支持protected，原则上只能在高性能需求时谨慎使用
+     */
+    public static function getRawTaskData(index){
+        return tasks[index];
+    }
+
     public static function getTaskText(str:String):String{
         if (str.charAt(0) == "$") return task_texts[str];
         return str;
