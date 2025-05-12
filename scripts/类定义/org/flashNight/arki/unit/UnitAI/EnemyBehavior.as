@@ -123,7 +123,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
                 self.方向改变("右");
             }
             self.状态改变(self.攻击模式 + "攻击");
-        }else{
+        }else if(!data.standby){
             var sm = this.superMachine;
             if(sm.actionCount % 2 == 0){
                 //每奇数次action判定追击方向
@@ -146,16 +146,17 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     // 跟随
     public function follow_enter():Void{
         data.updateSelf(); // 更新自身坐标
+        self.左行 = false;
+        self.右行 = false;
+        self.上行 = false;
+        self.下行 = false;
+        if(data.standby) return; // 待机状态下无法移动
         var self = data.self;
         var X距离 = random(200) + 100;
         var Y距离 = 50;
         var playerx = data.player._x;
         var playery = data.player._y;
 
-        self.左行 = false;
-        self.右行 = false;
-        self.上行 = false;
-        self.下行 = false;
         if (Math.abs(data.x - playerx) > X距离){
             self.左行 = data.x > playerx;
             self.右行 = data.x < playerx;
@@ -189,6 +190,14 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.target = null;
         data.self.攻击目标 = "无";
         data.updateSelf(); // 更新自身坐标
+        if(data.standby) {
+            // 待机状态下无法移动
+            data.self.左行 = false;
+            data.self.右行 = false;
+            data.self.上行 = false;
+            data.self.下行 = false;
+            return; 
+        }
         var randy = random(_root.Ymax - _root.Ymin) + _root.Ymin;
         var randx = random(_root.Xmax - _root.Xmin) + _root.Xmin;
         data.self.左行 = randx < data.x;

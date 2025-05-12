@@ -2617,12 +2617,6 @@ _root.反转数组 = function(arr){
 	return arr;
 }
 
-_root.主角函数.卸载 = function(){
-	//解决射击任务没有正确移除的bug
-	_root.帧计时器.移除任务(this.keepshooting);
-	_root.帧计时器.移除任务(this.keepshooting2);
-}
-
 
 
 //初始化玩家模板
@@ -2717,8 +2711,6 @@ _root.初始化玩家模板 = function(){
 	this.按距离索敌 = _root.主角函数.按距离索敌;
 	this.jetpack = _root.jetpack;
 	this.jetpackCheck = _root.jetpackCheck;
-
-	this.onUnload = _root.主角函数.卸载;
 
 	最小经验值 = 16;
 	最大经验值 = 134;

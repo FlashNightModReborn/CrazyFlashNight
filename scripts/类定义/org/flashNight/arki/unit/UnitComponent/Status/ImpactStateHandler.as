@@ -25,6 +25,7 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
 
         // 若目标既不处于浮空也不处于倒地状态，执行常规冲击处理
         if (!(hitTarget.浮空 || hitTarget.倒地)) {
+        // if (hitTarget.状态 !== "击倒" || hitTarget.状态 !== "倒地") {
             ImpactHandler.settleImpactForce(hitTarget.损伤值, bullet.击倒率, hitTarget);
             hitTarget.barColorState = "常态";
 
@@ -69,9 +70,7 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
         // 若子弹有垂直击退速度，则恢复动画播放并处理相关状态
         if (bullet.垂直击退速度 > 0) {
             hitTarget.man.play();
-            clearInterval(hitTarget.pauseInterval);
             hitTarget.硬直中 = false;
-            clearInterval(hitTarget.pauseInterval2);
             _root.fly(hitTarget, bullet.垂直击退速度, 0);
         }
     }

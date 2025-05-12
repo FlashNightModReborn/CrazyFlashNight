@@ -44,6 +44,8 @@
     public var wander_threshold:Number; // 由追击转入随机移动状态的临界动作次数
     public var think_threshold:Number // 返回思考的临界时长
 
+    public var standby:Boolean; // 是否处于待机状态
+
     
     public function UnitAIData(_self:MovieClip){
         this.self = _self;
@@ -73,6 +75,7 @@
         this.z = self.Z轴坐标;
         this.right = self.方向 === "右";
         this.left = self.方向 === "左";
+        this.standby = self.待机 === true ? true : false;
     }
     
     public function updateTarget():Void{
