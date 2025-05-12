@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1746436664" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1747036190" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
@@ -231,7 +231,7 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="女仆黑" color="#BA6078" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="女仆黑" color="#BA6078" parentLayerIndex="10" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -254,7 +254,7 @@ onClipEvent (load) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/杰克霜精/杰克霜精npc" centerPoint3DX="2492.55" centerPoint3DY="312.6">
+                <DOMSymbolInstance libraryItemName="NPC/杰克霜精/杰克霜精npc" selected="true" centerPoint3DX="2492.55" centerPoint3DY="312.6">
                   <matrix>
                     <Matrix tx="2451.95" ty="259.6"/>
                   </matrix>
@@ -267,6 +267,7 @@ onClipEvent (load) {
 	名字 = "杰克霜精";
 	身高 = 150;
 	性别 = "男";
+	NPC任务_任务_关卡路径 = "圣诞副本";
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
@@ -302,11 +303,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="JK" color="#D2FD7B" parentLayerIndex="10" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="JK" color="#D2FD7B" parentLayerIndex="10" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc武装jk" selected="true" centerPoint3DX="1375.15" centerPoint3DY="327.6">
+                <DOMSymbolInstance libraryItemName="新地图素材/npc武装jk" centerPoint3DX="1375.15" centerPoint3DY="327.6">
                   <matrix>
                     <Matrix tx="1327.25" ty="250.5"/>
                   </matrix>
