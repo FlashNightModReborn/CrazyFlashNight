@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1747051181" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1747052583" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="Symbol 1873">
       <layers>
@@ -345,7 +345,7 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="270" height="74.95" isSelectable="false" variableName="接收条件" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText selected="true" fontRenderingMode="device" width="270" height="74.95" isSelectable="false" variableName="接收条件" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="180" ty="316.05"/>
                   </matrix>
@@ -371,18 +371,18 @@ on (rollOut) {
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="270" height="73.5" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText selected="true" fontRenderingMode="device" width="270" height="75.25" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix d="1.28579711914063" tx="180" ty="213.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="135" y="-4.2"/>
+                    <Point x="135" y="33.75"/>
                   </transformationPoint>
                   <textRuns>
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="12" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEE99"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="12" size="10" bitmapSize="200" face="MicrosoftYaHei" fillColor="#FFEE99"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
