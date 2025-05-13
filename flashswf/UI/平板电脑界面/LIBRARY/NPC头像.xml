@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC头像" itemID="670b3e25-000003ea" lastModified="1735727034" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC头像" itemID="670b3e25-000003ea" lastModified="1747124629" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="NPC头像">
       <layers>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -11,13 +11,6 @@
 	this.名字 = NPC名字;
 	肖像.gotoAndStop(this.名字);
 	肖像.肖像.stop();
-}
-
-function 打开商店()
-{
-	_root.购买物品界面._x = 43.5;
-	_root.购买物品界面._y = 101.5;
-	_root.物品UI函数.刷新商店图标(_root.getNPCShop(this.名字));
 }
 
 this.attachMovie("对话框肖像","肖像",0);
@@ -43,40 +36,17 @@ this.onEnterFrame = function()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="进入商店文字" blendMode="add" centerPoint3DX="143.7" centerPoint3DY="152.8">
-                  <matrix>
-                    <Matrix tx="112.45" ty="143.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="31.25" y="10.7"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
-                  <matrix>
-                    <Matrix a="0.631866455078125" d="0.515579223632813" tx="112.45" ty="142.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on (release) {
-	打开商店();
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -87,13 +57,13 @@ this.onEnterFrame = function()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像位置示意" centerPoint3DX="249.75" centerPoint3DY="447.8">
+                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像位置示意" centerPoint3DX="261.95" centerPoint3DY="471.45">
                   <matrix>
-                    <Matrix a="0.82373046875" d="0.82373046875" tx="33" ty="79.85"/>
+                    <Matrix a="0.607620239257813" d="0.607620239257813" tx="45.2" ty="103.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -114,7 +84,7 @@ this.onEnterFrame = function()
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!3000 0|3000 3400!3000 3400|0 3400!0 3400|0 0!0 0|3000 0"/>
+                    <Edge fillStyle1="1" edges="!3000 0S2|3000 3400!3000 3400|0 3400!0 3400|0 0!0 0|3000 0"/>
                   </edges>
                 </DOMShape>
               </elements>
