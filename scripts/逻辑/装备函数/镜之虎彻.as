@@ -4,6 +4,7 @@
     reflector.duration = Number(paramObj.duration) || 0.25;
     reflector.basicRate = Number(paramObj.basicRate) || 5;
     reflector.speed = Number(paramObj.speed) || 360;
+    reflector.borderLength = Number(paramObj.borderLength) || 180;
     reflector.damageRate = Number(paramObj.damageRate) || 40;
     reflector.bulletrename = reflector.bulletrename || "镜闪";
 };
@@ -46,10 +47,10 @@ _root.装备生命周期函数.镜之虎彻周期 = function(reflector:Object, p
             
 
             var distance:Number = Math.min(target._x - _root.Xmin, _root.Xmax - target._x)
-            var atksp:Number = Math.min(reflector.speed,distance);
+            var atksp:Number = Math.max(0, Math.min(reflector.speed,distance));
             // _root.发布消息(distance, atksp)
-            if(((target.方向 == "左") && target._x > _root.Xmin + 100) ||
-               ((target.方向 == "右") && target._x < _root.Xmax - 100) ) {
+            if(((target.方向 == "左") && target._x > _root.Xmin + reflector.borderLength) ||
+               ((target.方向 == "右") && target._x < _root.Xmax - reflector.borderLength) ) {
 
                 target.man.攻击时移动(0, atksp);
                 target.man.攻击时可改变移动方向(1);
