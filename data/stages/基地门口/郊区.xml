@@ -145,7 +145,7 @@
                         <Case casevalue="0">
                             <Enemy>
                                 <Type>
-                                    <CaseSwitch expression="_root.随机整数" params="0,8">
+                                    <CaseSwitch expression="_root.随机整数" params="0,7">
                                         <Case casevalue="0">兵种415</Case>
                                         <Case casevalue="1">兵种416</Case>
                                         <Case casevalue="2">兵种417</Case>
@@ -242,7 +242,7 @@
                         <Case casevalue="0">
                             <Enemy>
                                 <Type>
-                                    <CaseSwitch expression="_root.随机整数" params="0,8">
+                                    <CaseSwitch expression="_root.随机整数" params="0,7">
                                         <Case casevalue="0">兵种415</Case>
                                         <Case casevalue="1">兵种416</Case>
                                         <Case casevalue="2">兵种417</Case>
@@ -359,7 +359,7 @@
                         <Case casevalue="0">
                             <Enemy>
                                 <Type>
-                                    <CaseSwitch expression="_root.随机整数" params="0,8">
+                                    <CaseSwitch expression="_root.随机整数" params="0,7">
                                         <Case casevalue="0">兵种415</Case>
                                         <Case casevalue="1">兵种416</Case>
                                         <Case casevalue="2">兵种417</Case>
