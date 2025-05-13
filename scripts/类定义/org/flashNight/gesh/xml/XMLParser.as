@@ -143,6 +143,156 @@ class org.flashNight.gesh.xml.XMLParser
     }
 
     /**
+     * 解析给定的 关卡XML 节点并将其转换为对象。
+     * @param node XMLNode 要解析的 关卡XML 节点。
+     * @return Object 解析后的对象。如果解析失败，返回 null。
+     */
+    public static function parseStageXMLNode(node:XMLNode):Object{
+        try
+        {
+            // 处理文本节点直接返回其值
+            if (node.nodeType == 3) // TEXT_NODE
+            {
+                return convertDataType(node.nodeValue);
+            }
+            else if (node.nodeType == 4) // CDATA_SECTION_NODE
+            {
+                return node.nodeValue;
+            }
+
+            // 现在，节点是元素节点，进行有效性检查
+            if (node == null || !isValidXML(node)) {
+                return null;
+            }
+
+            // 查找CaseSwitch节点
+            if(node.firstChild.nodeName === "CaseSwitch"){
+                var switchNode = node.firstChild;
+                // 读取要调用的目标函数expression与参数params
+                var expression = eval(switchNode.attributes.expression);
+                if(expression == null) return switchNode.attributes.expression;
+                var params = switchNode.attributes.params.split(",");
+                for(var i=0; i<params.length; i++){
+                    params[i] = convertDataType(params[i]);
+                }
+                // 执行目标函数并读取返回值
+                var switchResult;
+                if(params.length <= 1) switchResult = expression();
+                if(params.length == 1) switchResult = expression(params[0]);
+                else if(params.length == 2) switchResult = expression(params[0],params[1]);
+                else switchResult = expression.apply(null,params);
+                // 遍历CaseSwitch节点下的所有Case节点
+                for (var i:Number = 0; i < switchNode.childNodes.length; i++){
+                    var caseNode:XMLNode = switchNode.childNodes[i];
+                    var nodeName:String = caseNode.nodeName;
+                    if(nodeName !== "Case") continue;
+                    var casevalue = convertDataType(caseNode.attributes.casevalue);
+                    // 若检测成功，则以对应Case节点内的属性作为该节点的属性
+                    if(casevalue == switchResult || casevalue === "default"){
+                        // 若节点为文本节点（会被解析为带着casevalue属性与一个null子节点的节点），则返回子节点的文本值
+                        if(caseNode.hasChildNodes() && caseNode.firstChild.nodeName == null) return convertDataType(caseNode.firstChild.nodeValue);
+                        // 否则，返回整个节点的值
+                        else return parseStageXMLNode(caseNode);
+                    }
+                }
+                return null;
+            }
+
+            var result:Object = {};
+            
+            // 处理节点属性并进行类型转换
+            for (var attr:String in node.attributes)
+            {
+                result[attr] = convertDataType(node.attributes[attr]);
+            }
+
+            // 处理子节点
+            for (var i:Number = 0; i < node.childNodes.length; i++)
+            {
+                var childNode:XMLNode = node.childNodes[i];
+                var nodeName:String = childNode.nodeName;
+
+                // 跳过注释节点
+                if (childNode.nodeType == 8) // COMMENT_NODE
+                {
+                    continue;
+                }
+
+                // 特别处理 Description 和 MaterialDetail 节点
+                // if ((nodeName == "Description" || nodeName == "MaterialDetail") && childNode.nodeType == 1)
+                // {
+                //     var innerText:String = getInnerText(childNode);
+                //     result[nodeName] = StringUtils.decodeHTML(innerText);
+                //     continue;
+                // }
+
+                if (childNode.hasChildNodes())
+                {
+                    var childValue:Object;
+
+                    if (childNode.childNodes.length == 1 && childNode.firstChild.nodeType == 3)
+                    {
+                        childValue = convertDataType(childNode.firstChild.nodeValue);
+                    }
+                    else
+                    {
+                        childValue = parseStageXMLNode(childNode);
+                    }
+
+                    // 如果已经有同名节点，则转换为数组
+                    if (result[nodeName] !== undefined)
+                    {
+                        if (!(result[nodeName] instanceof Array))
+                        {
+                            result[nodeName] = [result[nodeName]];
+                        }
+                        result[nodeName].push(childValue);
+                    }
+                    else
+                    {
+                        result[nodeName] = childValue;
+                    }
+                }
+                else
+                {
+                    var nodeValue:Object;
+                    if(childNode.nodeValue != null){
+                        nodeValue = convertDataType(childNode.nodeValue);
+                    }else{
+                        // 子节点无值时若存在attributes则解析attributes，不存在则处理为空字符串
+                        var hasAttr = false;
+                        var attrs = {};
+                        for(var attr:String in childNode.attributes){
+                            hasAttr = true;
+                            attrs[attr] = childNode.attributes[attr];
+                        }
+                        nodeValue = hasAttr ? attrs : "";
+                    }
+                    if (result[nodeName] !== undefined)
+                    {
+                        if (!(result[nodeName] instanceof Array))
+                        {
+                            result[nodeName] = [result[nodeName]];
+                        }
+                        result[nodeName].push(nodeValue);
+                    }
+                    else
+                    {
+                        result[nodeName] = nodeValue;
+                    }
+                }
+            }
+
+            return result;
+        }
+        catch (e:Error)
+        {
+            trace("StageXMLParser.parseStageXMLNode Error: " + e.message);
+            return null;
+        }
+    }
+
+    /**
      * 从包含 HTML 标签的 XML 节点中提取内部文本内容。
      * @param node XMLNode 包含 HTML 标签的父节点。
      * @return String 内部文本内容。

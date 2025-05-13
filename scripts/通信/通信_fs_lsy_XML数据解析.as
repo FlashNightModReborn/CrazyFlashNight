@@ -347,7 +347,7 @@ _root.解析单次对话 = function(对话列表:Array){
 }
 
 _root.载入关卡数据 = function(stageType, url){
-	var loader = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader(url);
+	var loader = new org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader(url);
 	loader.load(function(data:Object):Void {
 		_root.发布调试消息("load xml " + stageType + "  " + url);
 		var 奖励品配置 = _root.配置数据为数组(data.Rewards.Reward);

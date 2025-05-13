@@ -8,6 +8,21 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[/*function 随机整数(a, b)
+{
+	var r = random(b - a + 1) + a;
+	return r;
+}
+
+import org.flashNight.gesh.xml.StageXMLLoader;
+import org.flashNight.gesh.object.ObjectUtil;
+
+loader = new StageXMLLoader("../data/stages/基地门口/郊区.xml", function (parsedData)
+{
+	trace(ObjectUtil.toString(parsedData.SubStage[1].Wave.SubWave));
+});*/]]></script>
+                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -21,25 +36,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="316896" publishTime="1743587629"/>
-          <PublishItem publishSize="316901" publishTime="1743587612"/>
-          <PublishItem publishSize="316891" publishTime="1743587488"/>
-          <PublishItem publishSize="316879" publishTime="1743587381"/>
-          <PublishItem publishSize="305150" publishTime="1743587314"/>
-          <PublishItem publishSize="316827" publishTime="1743585827"/>
-          <PublishItem publishSize="316795" publishTime="1743585366"/>
-          <PublishItem publishSize="273009" publishTime="1743577563"/>
-          <PublishItem publishSize="302400" publishTime="1742367071"/>
-          <PublishItem publishSize="300894" publishTime="1742100256"/>
-          <PublishItem publishSize="300211" publishTime="1742037329"/>
-          <PublishItem publishSize="289092" publishTime="1741200574"/>
-          <PublishItem publishSize="289093" publishTime="1741200558"/>
-          <PublishItem publishSize="289112" publishTime="1741199686"/>
-          <PublishItem publishSize="289058" publishTime="1741199449"/>
-          <PublishItem publishSize="289058" publishTime="1741199082"/>
-          <PublishItem publishSize="289024" publishTime="1741199019"/>
-          <PublishItem publishSize="289108" publishTime="1741198902"/>
-          <PublishItem publishSize="289189" publishTime="1741198674"/>
-          <PublishItem publishSize="289044" publishTime="1741198648"/>
+          <PublishItem publishSize="342268" publishTime="1747114811"/>
+          <PublishItem publishSize="342268" publishTime="1747114800"/>
+          <PublishItem publishSize="342261" publishTime="1747114741"/>
+          <PublishItem publishSize="342265" publishTime="1747114582"/>
+          <PublishItem publishSize="342260" publishTime="1747114524"/>
+          <PublishItem publishSize="342259" publishTime="1747114472"/>
+          <PublishItem publishSize="342259" publishTime="1747114412"/>
+          <PublishItem publishSize="342256" publishTime="1747114385"/>
+          <PublishItem publishSize="342259" publishTime="1747114373"/>
+          <PublishItem publishSize="342259" publishTime="1747114173"/>
+          <PublishItem publishSize="342254" publishTime="1747114128"/>
+          <PublishItem publishSize="342239" publishTime="1747113859"/>
+          <PublishItem publishSize="342240" publishTime="1747113849"/>
+          <PublishItem publishSize="342241" publishTime="1747113644"/>
+          <PublishItem publishSize="341677" publishTime="1747113388"/>
+          <PublishItem publishSize="341679" publishTime="1747113375"/>
+          <PublishItem publishSize="341687" publishTime="1747113338"/>
+          <PublishItem publishSize="341241" publishTime="1747113328"/>
+          <PublishItem publishSize="341690" publishTime="1747113146"/>
+          <PublishItem publishSize="341669" publishTime="1747112939"/>
      </publishHistory>
 </DOMDocument>

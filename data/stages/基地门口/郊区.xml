@@ -141,62 +141,87 @@
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
-                    <Enemy>
-                        <Type>兵种3</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>6</Level>
-                        <x>929</x>
-                        <y>448</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种3</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>6</Level>
-                        <x>1287</x>
-                        <y>520</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种1</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>6</Level>
-                        <x>474</x>
-                        <y>520</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种6</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>6</Level>
-                        <x>1006</x>
-                        <y>309</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种5</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>6</Level>
-                        <x>1545</x>
-                        <y>351</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种4</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>6</Level>
-                        <x>1039</x>
-                        <y>570</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种3</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>6</Level>
-                        <x>745</x>
-                        <y>322</y>
-                    </Enemy>
+                    <CaseSwitch expression="_root.随机整数" params="0,3">
+                        <Case casevalue="0">
+                            <Enemy>
+                                <Type>
+                                    <CaseSwitch expression="_root.随机整数" params="0,8">
+                                        <Case casevalue="0">兵种415</Case>
+                                        <Case casevalue="1">兵种416</Case>
+                                        <Case casevalue="2">兵种417</Case>
+                                        <Case casevalue="3">兵种418</Case>
+                                        <Case casevalue="4">兵种419</Case>
+                                        <Case casevalue="5">兵种420</Case>
+                                        <Case casevalue="6">兵种421</Case>
+                                        <Case casevalue="default">兵种422</Case>
+                                    </CaseSwitch>
+                                </Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>10</Level>
+                                <x>1500</x>
+                                <y>500</y>
+                            </Enemy>
+                        </Case>
+                        <Case casevalue="default">
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>929</x>
+                                <y>448</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1287</x>
+                                <y>520</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种1</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>474</x>
+                                <y>520</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种6</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1006</x>
+                                <y>309</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种5</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1545</x>
+                                <y>351</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种4</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1039</x>
+                                <y>570</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>745</x>
+                                <y>322</y>
+                            </Enemy>
+                        </Case>
+                    </CaseSwitch>
                 </EnemyGroup>
             </SubWave>
         </Wave>
