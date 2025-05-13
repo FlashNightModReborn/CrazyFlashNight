@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 953" itemID="6577faef-0000160a" lastModified="1734949516">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 953" itemID="6577faef-0000160a" lastModified="1747143117">
   <timeline>
-    <DOMTimeline name="Symbol 953" currentFrame="17">
+    <DOMTimeline name="Symbol 953">
       <layers>
         <DOMLayer name="Labels Layer" color="#A5BB7F">
           <frames>
@@ -51,46 +51,47 @@ gotoAndPlay(_parent.近战招式);
               <Actionscript>
                 <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
 {
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += 加血值;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("药剂动画-2",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
+	for (each in _root.gameworld)
+	{
+		if (_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
+		{
+			if (Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
+			{
+				if (_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
+				{
+					_root.gameworld[each].hp += 加血值;
+					if (_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
+					{
+						_root.gameworld[each].hp = _root.gameworld[each].hp满血值;
+					}
+					_root.效果("药剂动画-2",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
+				}
+			}
+		}
+	}
 }
 集体加血(300,900,600);
-"onClipEvent"(load);
-var myPoint = {x:this._x,y:this._y};
-_parent.localToGlobal(myPoint);
-_root.gameworld.globalToLocal(myPoint);
-shootX = myPoint.x;
-shootY = myPoint.y;
-兵种库 = ["敌人-军阀突击兵"];
-兵种 = 兵种库[random(兵种库.length)];
-等级 = _parent.等级;
-名字 = "军阀亲卫";
-是否为敌人 = _parent.是否为敌人;
-身高 = 175;
-长枪 = "";
-手枪 = "";
-手枪2 = "";
-刀 = "";
-手雷 = "";
-僵尸型敌人newname = _parent._name + 兵种 + random(99);
-_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷});
-集体加血(300,900,600);
+if (_parent.召唤次数 < _parent.召唤上限)
+{
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	兵种库 = ["敌人-军阀突击兵"];
+	兵种 = 兵种库[random(兵种库.length)];
+	等级 = _parent.等级;
+	名字 = "军阀亲卫";
+	是否为敌人 = _parent.是否为敌人;
+	身高 = 175;
+	长枪 = "";
+	手枪 = "";
+	手枪2 = "";
+	刀 = "";
+	手雷 = "";
+	僵尸型敌人newname = _parent._name + 兵种 + random(99);
+	_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX, _y:shootY, 等级:this.等级, 名字:this.名字, 是否为敌人:this.是否为敌人, 身高:this.身高, 长枪:this.长枪, 手枪:this.手枪, 手枪2:this.手枪2, 刀:this.刀, 手雷:this.手雷});
+}
 ]]></script>
               </Actionscript>
               <elements/>
@@ -122,46 +123,47 @@ _root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.get
               <Actionscript>
                 <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
 {
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += 加血值;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("药剂动画-2",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
+	for (each in _root.gameworld)
+	{
+		if (_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
+		{
+			if (Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
+			{
+				if (_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
+				{
+					_root.gameworld[each].hp += 加血值;
+					if (_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
+					{
+						_root.gameworld[each].hp = _root.gameworld[each].hp满血值;
+					}
+					_root.效果("药剂动画-2",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
+				}
+			}
+		}
+	}
 }
-集体加血(900,300,600);
-"onClipEvent"(load);
-var myPoint = {x:this._x,y:this._y};
-_parent.localToGlobal(myPoint);
-_root.gameworld.globalToLocal(myPoint);
-shootX = myPoint.x;
-shootY = myPoint.y;
-兵种库 = ["敌人-军阀狙击兵"];
-兵种 = 兵种库[random(兵种库.length)];
-等级 = _parent.等级;
-名字 = "军阀亲卫";
-是否为敌人 = _parent.是否为敌人;
-身高 = 175;
-长枪 = "";
-手枪 = "";
-手枪2 = "";
-刀 = "";
-手雷 = "";
-僵尸型敌人newname = _parent._name + 兵种 + random(99);
-_root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷});
-集体加血(900,300,600);
+集体加血(300,900,600);
+if (_parent.召唤次数 < _parent.召唤上限)
+{
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	兵种库 = ["敌人-军阀突击兵"];
+	兵种 = 兵种库[random(兵种库.length)];
+	等级 = _parent.等级;
+	名字 = "军阀亲卫";
+	是否为敌人 = _parent.是否为敌人;
+	身高 = 175;
+	长枪 = "";
+	手枪 = "";
+	手枪2 = "";
+	刀 = "";
+	手雷 = "";
+	僵尸型敌人newname = _parent._name + 兵种 + random(99);
+	_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX, _y:shootY, 等级:this.等级, 名字:this.名字, 是否为敌人:this.是否为敌人, 身高:this.身高, 长枪:this.长枪, 手枪:this.手枪, 手枪2:this.手枪2, 刀:this.刀, 手雷:this.手雷});
+}
 ]]></script>
               </Actionscript>
               <elements/>
@@ -183,46 +185,47 @@ _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNex
               <Actionscript>
                 <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
 {
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += 加血值;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("药剂动画-2",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
+	for (each in _root.gameworld)
+	{
+		if (_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
+		{
+			if (Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
+			{
+				if (_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
+				{
+					_root.gameworld[each].hp += 加血值;
+					if (_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
+					{
+						_root.gameworld[each].hp = _root.gameworld[each].hp满血值;
+					}
+					_root.效果("药剂动画-2",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
+				}
+			}
+		}
+	}
 }
 集体加血(600,600,600);
-"onClipEvent"(load);
-var myPoint = {x:this._x,y:this._y};
-_parent.localToGlobal(myPoint);
-_root.gameworld.globalToLocal(myPoint);
-shootX = myPoint.x;
-shootY = myPoint.y;
-兵种库 = ["敌人-军阀弹药兵"];
-兵种 = 兵种库[random(兵种库.length)];
-等级 = _parent.等级;
-名字 = "军阀亲卫";
-是否为敌人 = _parent.是否为敌人;
-身高 = 175;
-长枪 = "";
-手枪 = "";
-手枪2 = "";
-刀 = "";
-手雷 = "";
-僵尸型敌人newname = _parent._name + 兵种 + random(99);
-_root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷});
-集体加血(600,600,600);
+if (_parent.召唤次数 < _parent.召唤上限)
+{
+	var myPoint = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	兵种库 = ["敌人-军阀突击兵"];
+	兵种 = 兵种库[random(兵种库.length)];
+	等级 = _parent.等级;
+	名字 = "军阀亲卫";
+	是否为敌人 = _parent.是否为敌人;
+	身高 = 175;
+	长枪 = "";
+	手枪 = "";
+	手枪2 = "";
+	刀 = "";
+	手雷 = "";
+	僵尸型敌人newname = _parent._name + 兵种 + random(99);
+	_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX, _y:shootY, 等级:this.等级, 名字:this.名字, 是否为敌人:this.是否为敌人, 身高:this.身高, 长枪:this.长枪, 手枪:this.手枪, 手枪2:this.手枪2, 刀:this.刀, 手雷:this.手雷});
+}
 ]]></script>
               </Actionscript>
               <elements/>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 552" itemID="6577faef-000014ee" lastModified="1701508661">
   <timeline>
-    <DOMTimeline name="Symbol 552">
+    <DOMTimeline name="Symbol 552" currentFrame="11">
       <layers>
         <DOMLayer name="Labels Layer" color="#A737BB">
           <frames>
@@ -45,7 +45,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#599DAF">
+        <DOMLayer name="Script Layer" color="#599DAF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -519,7 +519,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#BC48F7" current="true" isSelected="true">
+        <DOMLayer name="Layer 27" color="#BC48F7">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements>

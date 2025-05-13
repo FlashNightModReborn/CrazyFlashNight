@@ -71,7 +71,11 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
         if (bullet.垂直击退速度 > 0) {
             hitTarget.man.play();
             hitTarget.硬直中 = false;
-            _root.fly(hitTarget, bullet.垂直击退速度, 0);
+            // _root.fly(hitTarget, bullet.垂直击退速度, 0);
+            var flyspeed = hitTarget.起跳速度 - bullet.垂直击退速度;
+            if(hitTarget.垂直速度 > flyspeed){
+                hitTarget.垂直速度 = flyspeed;
+            }
         }
     }
 }

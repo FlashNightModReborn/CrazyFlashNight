@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-军阀重装兵" itemID="67ac3e38-00000626" linkageExportForAS="true" linkageIdentifier="敌人-军阀重装兵" lastModified="1739341368" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-军阀重装兵" itemID="67ac3e38-00000626" linkageExportForAS="true" linkageIdentifier="敌人-军阀重装兵" lastModified="1747142912" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="敌人-军阀重装兵" currentFrame="109">
+    <DOMTimeline name="敌人-军阀重装兵" currentFrame="91">
       <layers>
         <DOMLayer name="Labels Layer" color="#EA4CF1">
           <frames>
@@ -61,16 +61,10 @@
             <DOMFrame index="72" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" name="击倒" labelType="name" keyMode="9728">
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="80" duration="8" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="88" name="倒地" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="89" duration="6" keyMode="9728">
+            <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="95" name="被投" labelType="name" keyMode="9728">
@@ -94,7 +88,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[初始化敌人模板 = _root.初始化敌人模板;
+                <script><![CDATA[起跳速度 = -2;
+
+初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
 ]]></script>
               </Actionscript>
@@ -445,32 +441,8 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = 2;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
 }
 ]]></script>
                   </Actionscript>
@@ -490,15 +462,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

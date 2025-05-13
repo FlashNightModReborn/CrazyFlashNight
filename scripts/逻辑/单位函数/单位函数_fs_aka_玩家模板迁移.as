@@ -1454,8 +1454,8 @@ _root.主角函数.跳跃上下移动 = function(移动方向, 速度) {
 };
 
 _root.主角函数.强制移动 = function(移动方向, 速度) {
-    // 直接调用常规 2D 移动
-    Mover.move2D(this, 移动方向, 速度);
+    // 调用 2.5D 移动
+    Mover.move25D(this, 移动方向, 速度);
 };
 
 

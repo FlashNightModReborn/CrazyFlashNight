@@ -19,7 +19,7 @@ _root.敌人函数.根据等级初始数值 = function(等级值){
 	跑X速度 = 行走X速度 * 奔跑速度倍率;
 	跑Y速度 = 行走Y速度 * 奔跑速度倍率;
 	被击硬直度 = _root.根据等级计算值(被击硬直度_min, 被击硬直度_max, 等级值);
-	起跳速度 = -10;
+	起跳速度 = isNaN(起跳速度) ? -10 : 起跳速度;
 	基本防御力 = _root.根据等级计算值(基本防御力_min, 基本防御力_max, 等级值);
 	防御力 = 基本防御力 + 装备防御力;
 	躲闪率 = _root.根据等级计算值(躲闪率_min, 躲闪率_max, 等级值, true); //允许小数躲闪率
@@ -97,10 +97,11 @@ _root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力){
 	this.onEnterFrame = function(){
 		if (!硬直中){
 			speed -= 减速度;
-			this.移动(移动方向,speed);
 			if (speed <= 0){
 				delete this.onEnterFrame;
+				return;
 			}
+			this.移动(移动方向,speed);
 		}
 	};
 };
@@ -257,12 +258,13 @@ _root.敌人函数.击飞浮空 = function(){
 	this.浮空 = true;
 	this.倒地 = false;
 	this.man.落地 = false;
-	this.垂直速度 = this.起跳速度;
+	if(this.垂直速度 >= this.起跳速度) this.垂直速度 = this.起跳速度;
 
 	this.flyID = _root.帧计时器.添加生命周期任务(this, "击飞浮空", function(target:MovieClip){
 		if(target.硬直中 == false){
 			target._y += target.垂直速度;
 			target.垂直速度 += _root.重力加速度;
+			_root.服务器.发布服务器消息(target._y+" "+target.Z轴坐标);
 		}
 		if(target._y >= target.Z轴坐标){
 			target._y = target.Z轴坐标;
@@ -278,6 +280,7 @@ _root.敌人函数.击飞浮空 = function(){
 
 _root.敌人函数.击飞倒地 = function(){
 	this._y = this.Z轴坐标;
+	this.垂直速度 = 0;
 	this.倒地 = true;
 	this.man.onUnload = function(){
 		_parent.倒地 = false;
@@ -399,6 +402,7 @@ _root.初始化敌人模板 = function(){
 	浮空 = false;
 	倒地 = false;
 	硬直中 = false;
+	垂直速度 = 0;
 	已加经验值 = false;
 	remainingImpactForce = 0;
 	

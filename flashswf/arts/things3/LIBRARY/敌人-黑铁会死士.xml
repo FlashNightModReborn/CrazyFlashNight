@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁会死士" itemID="67ac3e4f-0000062b" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会死士" lastModified="1739341391">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁会死士" itemID="67ac3e4f-0000062b" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会死士" lastModified="1747143166">
   <timeline>
-    <DOMTimeline name="敌人-黑铁会死士" currentFrame="51">
+    <DOMTimeline name="敌人-黑铁会死士" currentFrame="99">
       <layers>
         <DOMLayer name="Labels Layer" color="#9D8EE9">
           <frames>
@@ -144,17 +144,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#FBF3D2">
-          <frames>
-            <DOMFrame index="0" duration="130" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="130" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 5" color="#DCEF30">
+        <DOMLayer name="Layer 5" color="#DCEF30" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
@@ -444,7 +434,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="87" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 823" name="man" centerPoint3DX="79.35" centerPoint3DY="78.65">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 823" name="man" selected="true" centerPoint3DX="79.35" centerPoint3DY="78.65">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -452,35 +442,9 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.击倒呐喊();
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -498,15 +462,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

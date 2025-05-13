@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-军阀突击兵" itemID="67ac3e3c-00000627" linkageExportForAS="true" linkageIdentifier="敌人-军阀突击兵" lastModified="1739341372">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-军阀突击兵" itemID="67ac3e3c-00000627" linkageExportForAS="true" linkageIdentifier="敌人-军阀突击兵" lastModified="1747142935">
   <timeline>
-    <DOMTimeline name="敌人-军阀突击兵" currentFrame="108">
+    <DOMTimeline name="敌人-军阀突击兵" currentFrame="90">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E82C6">
           <frames>
@@ -61,16 +61,10 @@
             <DOMFrame index="72" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" name="击倒" labelType="name" keyMode="9728">
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="80" duration="8" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="88" name="倒地" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="89" duration="6" keyMode="9728">
+            <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="95" name="被投" labelType="name" keyMode="9728">
@@ -142,17 +136,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#CEF9C7">
-          <frames>
-            <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="120" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 5" color="#C5A71C">
+        <DOMLayer name="Layer 5" color="#C5A71C" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -336,7 +320,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#C79948" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#C79948">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -488,35 +472,9 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.击倒呐喊();
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -534,15 +492,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

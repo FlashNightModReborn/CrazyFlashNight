@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 1396" itemID="6577faef-00001703" lastModified="1701508661">
   <timeline>
-    <DOMTimeline name="Symbol 1396">
+    <DOMTimeline name="Symbol 1396" currentFrame="5">
       <layers>
         <DOMLayer name="Labels Layer" color="#C726CB">
           <frames>
@@ -45,7 +45,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E990BF">
+        <DOMLayer name="Script Layer" color="#E990BF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -372,7 +372,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#01B5DF" current="true" isSelected="true">
+        <DOMLayer name="Layer 18" color="#01B5DF">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements>
