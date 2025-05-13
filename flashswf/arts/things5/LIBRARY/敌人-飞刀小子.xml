@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-飞刀小子" itemID="67e615ca-000008d7" linkageExportForAS="true" linkageIdentifier="敌人-飞刀小子" lastModified="1745157800" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-飞刀小子" itemID="67e615ca-000008d7" linkageExportForAS="true" linkageIdentifier="敌人-飞刀小子" lastModified="1747144067" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-飞刀小子" currentFrame="79">
+    <DOMTimeline name="敌人-飞刀小子" currentFrame="88">
       <layers>
         <DOMLayer name="Labels Layer" color="#E55466">
           <frames>
@@ -158,7 +158,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B37C5A">
+        <DOMLayer name="Layer 5" color="#B37C5A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -189,7 +189,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#EF13DC">
+        <DOMLayer name="Layer 6" color="#EF13DC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -228,7 +228,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#EE9098">
+        <DOMLayer name="Layer 7" color="#EE9098" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -267,7 +267,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#60C7E6">
+        <DOMLayer name="Layer 8" color="#60C7E6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -306,7 +306,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#6673AD">
+        <DOMLayer name="Layer 9" color="#6673AD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -353,7 +353,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#EBA58A">
+        <DOMLayer name="Layer 11" color="#EBA58A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -536,7 +536,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 608" name="man" selected="true" centerPoint3DX="48.6" centerPoint3DY="83.05">
+                <DOMSymbolInstance libraryItemName="Symbol 608" name="man" centerPoint3DX="48.6" centerPoint3DY="83.05">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -551,33 +551,8 @@ onClipEvent(unload){
 	}
 	else
 	{
-		_parent.击倒呐喊();
-		_parent.浮空 = true;
-		gotoAndPlay(_parent.攻击模式);
+		_parent.击飞浮空();
 	}
-}
-onClipEvent (unload) {
-	_parent.浮空 = false;
-}
-onClipEvent (load) {
-	落地 = false;
-	垂直速度 = _parent.起跳速度;
-	起始Y = _parent._y;
-	this.onEnterFrame = function()
-	{
-		if (_parent.硬直中 == false)
-		{
-			_parent._y += 垂直速度;
-			垂直速度 += _root.重力加速度;
-			if (_parent._y >= _parent.Z轴坐标)
-			{
-				_parent._y = 起始Y;
-				落地 = true;
-				delete this.onEnterFrame;
-				_parent.状态改变("倒地");
-			}
-		}
-	};
 }]]></script>
                   </Actionscript>
                   <filters>
@@ -596,15 +571,9 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

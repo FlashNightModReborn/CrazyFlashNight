@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚克隆兽/敌人-诺亚克隆兽" itemID="661d26ec-00000697" linkageExportForAS="true" linkageIdentifier="敌人-诺亚克隆兽" lastModified="1746435747" lastUniqueIdentifier="43">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚克隆兽/敌人-诺亚克隆兽" itemID="661d26ec-00000697" linkageExportForAS="true" linkageIdentifier="敌人-诺亚克隆兽" lastModified="1747144538" lastUniqueIdentifier="43">
   <timeline>
     <DOMTimeline name="敌人-诺亚克隆兽" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-45&lt;/guideline&gt;&lt;guideline direction="h"&gt;11&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -90,11 +90,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[停止机率 = 500;
+                <script><![CDATA[起跳速度 = -3;
+
+停止机率 = 500;
 随机移动机率 = 500;
 
 攻击欲望 = 3;
@@ -388,11 +390,11 @@ x轴保持距离 = 100;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="3" centerPoint3DY="2.95">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="3" centerPoint3DY="2.95">
                   <matrix>
                     <Matrix tx="0.5" ty="0.45"/>
                   </matrix>
@@ -600,34 +602,9 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -645,15 +622,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

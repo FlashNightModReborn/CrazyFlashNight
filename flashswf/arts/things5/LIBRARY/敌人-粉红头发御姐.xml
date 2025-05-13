@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1747043009" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1747144027" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-粉红头发御姐">
+    <DOMTimeline name="敌人-粉红头发御姐" currentFrame="90">
       <layers>
         <DOMLayer name="Script Layer" color="#77AB72" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#F66DBF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#F66DBF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -455,7 +455,7 @@ function Phoenix()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#D98C95">
+        <DOMLayer name="Layer 10" color="#D98C95" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -783,7 +783,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 555" name="man" centerPoint3DX="82.8" centerPoint3DY="83.15">
+                <DOMSymbolInstance libraryItemName="Symbol 555" name="man" selected="true" centerPoint3DX="82.8" centerPoint3DY="83.15">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -798,34 +798,10 @@ onClipEvent(enterFrame){
 	}
 	else
 	{
-		_parent.击倒呐喊();
-		_parent.浮空 = true;
-		gotoAndPlay(_parent.攻击模式);
+		_parent.击飞浮空();
 	}
 }
-onClipEvent (unload) {
-	_parent.浮空 = false;
-}
-onClipEvent (load) {
-	落地 = false;
-	垂直速度 = _parent.起跳速度;
-	起始Y = _parent._y;
-	this.onEnterFrame = function()
-	{
-		if (_parent.硬直中 == false)
-		{
-			_parent._y += 垂直速度;
-			垂直速度 += _root.重力加速度;
-			if (_parent._y >= _parent.Z轴坐标)
-			{
-				_parent._y = 起始Y;
-				落地 = true;
-				delete this.onEnterFrame;
-				_parent.状态改变("倒地");
-			}
-		}
-	};
-}
+
 onClipEvent (enterFrame) {
 	if (_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
 	{
@@ -870,13 +846,8 @@ onClipEvent (enterFrame) {
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
 }
 onClipEvent(enterFrame){
    if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)

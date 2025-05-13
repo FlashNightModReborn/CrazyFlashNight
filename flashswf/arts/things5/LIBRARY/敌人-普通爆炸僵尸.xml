@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-普通爆炸僵尸" itemID="679482ad-000008c6" linkageExportForAS="true" linkageIdentifier="敌人-普通爆炸僵尸" lastModified="1743135098" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-普通爆炸僵尸" itemID="679482ad-000008c6" linkageExportForAS="true" linkageIdentifier="敌人-普通爆炸僵尸" lastModified="1747143959" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-普通爆炸僵尸">
+    <DOMTimeline name="敌人-普通爆炸僵尸" currentFrame="92">
       <layers>
         <DOMLayer name="Labels Layer" color="#5F5DC6">
           <frames>
@@ -132,7 +132,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B59568" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#B59568" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -270,7 +270,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#A8DAD3">
+        <DOMLayer name="Layer 9" color="#A8DAD3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -399,7 +399,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1216" name="man" centerPoint3DX="81.25" centerPoint3DY="78.3">
+                <DOMSymbolInstance libraryItemName="Symbol 1216" name="man" selected="true" centerPoint3DX="81.25" centerPoint3DY="78.3">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -407,34 +407,9 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -452,15 +427,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

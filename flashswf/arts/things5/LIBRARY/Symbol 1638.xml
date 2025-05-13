@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="Symbol 1638">
       <layers>
-        <DOMLayer name="Script Layer" color="#BFC5A1">
+        <DOMLayer name="Script Layer" color="#BFC5A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -300,7 +300,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#DEA2E3" current="true" isSelected="true">
+        <DOMLayer name="Layer 15" color="#DEA2E3">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements>

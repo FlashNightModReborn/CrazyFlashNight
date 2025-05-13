@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪6特工/Symbol 776" itemID="6575ce0b-00000706" linkageExportForAS="true" linkageIdentifier="敌人-闪6特工" lastModified="1746435701" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪6特工/Symbol 776" itemID="6575ce0b-00000706" linkageExportForAS="true" linkageIdentifier="敌人-闪6特工" lastModified="1747144559" lastUniqueIdentifier="42">
   <timeline>
-    <DOMTimeline name="Symbol 776" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;3&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 776" currentFrame="91" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;3&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#CA8E4F">
           <frames>
@@ -321,7 +321,7 @@ x轴保持距离 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#EDD155" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#EDD155" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -357,7 +357,7 @@ x轴保持距离 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#BEE1FA">
+        <DOMLayer name="Layer 9" color="#BEE1FA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -451,7 +451,7 @@ x轴保持距离 = 50;
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 863" centerPoint3DX="17.2" centerPoint3DY="-79.55">
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 863" selected="true" centerPoint3DX="17.2" centerPoint3DY="-79.55">
                   <matrix>
                     <Matrix tx="3" ty="-81"/>
                   </matrix>
@@ -459,34 +459,9 @@ x轴保持距离 = 50;
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -501,15 +476,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
