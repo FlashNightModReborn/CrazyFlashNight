@@ -831,6 +831,24 @@
       <mp>240</mp>
       <defence>20</defence>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>镜之虎彻初始化</initRoutines>
+          <initParam>
+            <precent>2</precent>
+            <duration>0.25</duration>
+            <basicRate>5</basicRate>
+            <speed>360</speed>
+            <damageRate>40</damageRate>
+            <bulletrename>镜闪</bulletrename>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>镜之虎彻周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>428</id>

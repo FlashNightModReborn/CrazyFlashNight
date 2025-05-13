@@ -1432,6 +1432,22 @@ _root.主角函数.移动 = function(移动方向, 速度) {
     Mover.move2D(this, 移动方向, 速度);
 };
 
+_root.主角函数.攻击时移动 = function(慢速度, 快速度){
+	if(this._name != _root.控制目标 || isNaN(快速度)){
+		Mover.move2D(this, this.方向, 慢速度);
+		return;
+	}
+
+	var func:Function = 快速度 > 100 ? Mover.move2D : Mover.move2DStrict;
+	if (this.右行) func(this, "右", 快速度);
+	else if (this.左行) func(this, "左", 快速度);
+	else Mover.move2D(this, this.方向, 慢速度);
+}
+
+_root.主角函数.严格移动 = function(移动方向, 速度) {
+    Mover.move2DStrict(this, 移动方向, 速度);
+};
+
 _root.主角函数.跳跃上下移动 = function(移动方向, 速度) {
     // 调用 Mover.move25D，跳跃状态传 true
     Mover.move25D(this, 移动方向, 速度);
@@ -2665,6 +2681,7 @@ _root.初始化玩家模板 = function(){
 	this.攻击 = _root.主角函数.攻击;
 	this.方向改变 = _root.主角函数.方向改变;
 	this.移动 = _root.主角函数.移动;
+	this.攻击时移动 = _root.主角函数.攻击时移动;
 	this.跳跃上下移动 = _root.主角函数.跳跃上下移动;
 	this.被击移动 = _root.主角函数.被击移动;
 	this.强制移动 = _root.主角函数.强制移动;

@@ -1,5 +1,5 @@
 ﻿_root.技能函数 = new Object();
-
+import org.flashNight.arki.spatial.move.*;
 
 //释放条件函数
 _root.技能函数.释放条件 = new Object();
@@ -38,94 +38,108 @@ _root.技能函数.释放行为.默认 = function(技能名, 技能等级){
 
 //主角技能的移动相关函数
 _root.技能函数.攻击时移动 = function(慢速度, 快速度){
-	if(_parent._name != _root.控制目标 || isNaN(快速度)){
-		_parent.移动(_parent.方向,慢速度);
+	var parent:MovieClip = _parent;
+
+	if(parent._name != _root.控制目标 || isNaN(快速度)){
+		Mover.move2D(parent, parent.方向, 慢速度);
 		return;
 	}
-	if (_parent.右行) _parent.移动("右",快速度);
-	else if (_parent.左行) _parent.移动("左",快速度);
-	else _parent.移动(_parent.方向,慢速度);
+
+	var func:Function = 快速度 > 100 ? Mover.move2D : Mover.move2DStrict;
+	if (parent.右行) func(parent, "右", 快速度);
+	else if (parent.左行) func(parent, "左", 快速度);
+	else Mover.move2D(parent, parent.方向, 慢速度);
 	//忘了给哪里用的硬代码
 	if (快速度 == 6){
-		if (_parent.上行) _parent.移动("上",1);
-		else if (_parent.下行) _parent.移动("下",1);
+		if (parent.上行) Mover.move2D(parent, "上", 1);
+		else if (parent.下行) Mover.move2D(parent, "下", 1);
 	}
 }
 //
 _root.技能函数.攻击时按键四向移动 = function(慢速度, 快速度){
-	if(_parent._name != _root.控制目标){
-		_parent.移动(_parent.方向, 慢速度);
+	var parent:MovieClip = _parent;
+
+	if(parent._name != _root.控制目标){
+		Mover.move2D(parent, parent.方向, 慢速度);
 		return;
 	}
 	var 上下未按键 = false;
 	var 左右未按键 = false;
 	//检测上下是否按键
-	if (_parent.上行) _parent.移动("上", 快速度 / 2);
-	else if (_parent.下行) _parent.移动("下", 快速度 / 2);
+	if (parent.上行) Mover.move2D(parent, "上", 快速度 / 2);
+	else if (parent.下行) Mover.move2D(parent, "下", 快速度 / 2);
 	else 上下未按键 = true;
 	//检测左右是否按键
-	if (_parent.左行) _parent.移动("左", 快速度);
-	else if (_parent.右行) _parent.移动("右", 快速度);
+	if (parent.左行) Mover.move2D(parent, "左", 快速度);
+	else if (parent.右行) Mover.move2D(parent, "右", 快速度);
 	else 左右未按键 = true;
 	if (上下未按键 && 左右未按键){
-		_parent.移动(_parent.方向, 慢速度);
+		Mover.move2D(parent, parent.方向, 慢速度);
 	}
 }
 
 _root.技能函数.攻击时可改变移动方向 = function(速度){
-	if(_parent._name != _root.控制目标){
-		_parent.移动(_parent.方向,速度);
+	var parent:MovieClip = _parent;
+
+	if(parent._name != _root.控制目标){
+		Mover.move2D(parent, parent.方向, 速度);
 		return;
 	}
 	//根据按键改变方向后执行移动
-	if (_parent.右行) _parent.方向改变("右");
-	else if (_parent.左行) _parent.方向改变("左");
-	_parent.移动(_parent.方向,速度);
+	if (parent.右行) parent.方向改变("右");
+	else if (parent.左行) parent.方向改变("左");
+	Mover.move2D(parent, parent.方向, 速度);
 }
 
 _root.技能函数.攻击时可斜向改变移动方向 = function(速度){
-	if(_parent._name != _root.控制目标){
-		_parent.移动(_parent.方向,速度);
+	var parent:MovieClip = _parent;
+
+	if(parent._name != _root.控制目标){
+		Mover.move2D(parent, parent.方向, 速度);
 		return;
 	}
 	//根据按键改变方向后执行移动
-	if (_parent.右行) _parent.方向改变("右");
-	else if (_parent.左行) _parent.方向改变("左");
-	_parent.移动(_parent.方向,速度);
-	if (_parent.上行) _parent.移动("上",速度 / 2);
-	else if (_parent.下行) _parent.移动("下",速度 / 2);
+	if (parent.右行) parent.方向改变("右");
+	else if (parent.左行) parent.方向改变("左");
+	Mover.move2D(parent, parent.方向, 速度);
+	if (parent.上行) Mover.move2D(parent, "上", 速度 / 2);
+	else if (parent.下行) Mover.move2D(parent, "下", 速度 / 2);
 }
 
 _root.技能函数.攻击时斜向移动 = function(慢速度, 快速度){
-	if(_parent._name != _root.控制目标){
-		_parent.移动(_parent.方向,慢速度);
+	var parent:MovieClip = _parent;
+
+	if(parent._name != _root.控制目标){
+		Mover.move2D(parent, parent.方向, 慢速度);
 		return;
 	}
-	if (_parent.方向 == "右"){
-		if (_parent.右行) _parent.移动("右",快速度);
-		else _parent.移动("右",慢速度);
-	}else if (_parent.方向 == "左"){
-		if (_parent.左行) _parent.移动("左",快速度);
-		else _parent.移动("左",慢速度);
+	if (parent.方向 == "右"){
+		if (parent.右行) Mover.move2D(parent, "右", 快速度);
+		else Mover.move2D(parent, "右", 慢速度);
+	}else if (parent.方向 == "左"){
+		if (parent.左行) Mover.move2D(parent, "左", 快速度);
+		else Mover.move2D(parent, "左", 慢速度);
 	}
-	if (_parent.上行) _parent.移动("上",快速度);
-	else if (_parent.下行) _parent.移动("下",快速度);
+	if (parent.上行) Mover.move2D(parent, "上", 快速度);
+	else if (parent.下行) Mover.move2D(parent, "下", 快速度);;
 }
 
 _root.技能函数.攻击时可斜向改变移动方向2 = function(速度, 上下){
+	var parent:MovieClip = _parent;
+
 	if(_parent._name != _root.控制目标){
-		_parent.移动(_parent.方向,速度);
+		Mover.move2D(parent, parent.方向, 速度);
 		return;
 	}
 	//根据按键改变方向后执行水平移动，但水平移动的距离为速度/2
 	if (_parent.右行) _parent.方向改变("右");
 	else if (_parent.左行) _parent.方向改变("左");
-	_parent.移动(_parent.方向,速度 / 2);
+	Mover.move2D(parent, parent.方向, 速度 / 2);
 	//根据上下的正负性决定移动方向
 	if (上下 > 0){
-		_parent.移动("上",速度);
+		Mover.move2D(parent, "上", 速度);
 	}else if (上下 < 0){
-		_parent.移动("下",速度);
+		Mover.move2D(parent, "下", 速度);
 	}
 }
 
