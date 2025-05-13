@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1747040201" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1747120962" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="任务图标" currentFrame="29">
+    <DOMTimeline name="任务图标" currentFrame="1">
       <layers>
         <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
@@ -9,18 +9,20 @@
                 <script><![CDATA[function refresh()
 {
 	var self = this;
-	
-	if(self.数组号 == null){
-		self.任务图标._visible = false;
-		self.任务明细按钮._visible = false;
-		self.删除任务按钮._visible = false;
-		self.完成标志._visible = false;
-		return;
-	}
-	
-	self.任务图标.NPC头像框位置示意._visible = false;
-	
+	self.任务图标._visible = false;
+	self.任务明细按钮._visible = false;
+	self.删除任务按钮._visible = false;
+	self.完成标志._visible = false
 	_root.帧计时器.添加单次任务(function() {
+		if(self.数组号 == null){
+			self.任务图标._visible = false;
+			self.任务明细按钮._visible = false;
+			self.删除任务按钮._visible = false;
+			self.完成标志._visible = false;
+			return;
+		}
+	
+		self.任务图标.NPC头像框位置示意._visible = false;
 		self.任务图标._visible = true;
 		self.任务明细按钮._visible = true;
 		self.任务图标.taskName.htmlText = self.任务标题;
@@ -37,7 +39,7 @@
 		self.任务图标.NPC头像框.gotoAndStop(self.接取NPC);
 		self.删除任务按钮._visible = self.允许删除 ? true : false;
 		self.完成标志._visible = self.任务进度 === "达成";
-	}, (refreshDelay + 1) * 500)
+	}, (refreshDelay + 1) * 200)
 }
 ]]></script>
               </Actionscript>

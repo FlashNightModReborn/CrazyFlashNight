@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="完成标志" currentFrame="29">
       <layers>
-        <DOMLayer name="代码" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="代码" color="#4FFFFF" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -69,7 +69,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>

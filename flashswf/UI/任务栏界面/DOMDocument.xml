@@ -27,7 +27,7 @@
           <DOMFolderItem name="任务树相关" itemID="67d2a25c-0000026b" isExpanded="true"/>
      </folders>
      <media>
-          <DOMBitmapItem name="0、背景底图/背景转位图" itemID="67cea416-000004b3" sourceExternalFilepath="./LIBRARY/0、背景底图/背景转位图.png" sourceLastImported="1741595663" externalFileCRC32="4019582285" externalFileSize="293145" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="0、背景底图/背景转位图.png" bitmapDataHRef="M 3 1741595649.dat" frameRight="20480" frameBottom="11520"/>
+          <DOMBitmapItem name="0、背景底图/背景转位图" itemID="67cea416-000004b3" sourceExternalFilepath="../任务栏界面/LIBRARY/0、背景底图/背景转位图.png" sourceLastImported="1741595663" externalFileCRC32="4019582285" externalFileSize="293145" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="0、背景底图/背景转位图.png" bitmapDataHRef="M 3 1741595649.dat" frameRight="20480" frameBottom="11520"/>
      </media>
      <symbols>
           <Include href="1、我的任务/我的任务.xml" loadImmediate="false" itemID="67ce96ef-00000376" lastModified="1741592879"/>
@@ -53,7 +53,7 @@
           <Include href="4、单项任务/当前任务标志.xml" loadImmediate="false" itemID="67d9594c-000002f7" lastModified="1742298162"/>
           <Include href="4、单项任务/横出方块.xml" loadImmediate="false" itemID="67d95c46-00000450" lastModified="1742298198"/>
           <Include href="4、单项任务/任务列表.xml" loadImmediate="false" itemID="67cc5739-0000079e" lastModified="1742298407"/>
-          <Include href="4、单项任务/任务图标.xml" loadImmediate="false" itemID="67d95954-000002f8" lastModified="1747040201"/>
+          <Include href="4、单项任务/任务图标.xml" loadImmediate="false" itemID="67d95954-000002f8" lastModified="1747120962"/>
           <Include href="6、任务信息/边角.xml" loadImmediate="false" itemID="67cc4e42-00000629" lastModified="1741442745"/>
           <Include href="6、任务信息/任务名称.xml" loadImmediate="false" itemID="67cc3cbc-00000517" lastModified="1747036171"/>
           <Include href="6、任务信息/任务详情-动效.xml" loadImmediate="false" itemID="67cc2e78-0000048a" lastModified="1747036194"/>
@@ -458,6 +458,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="364165" publishTime="1747120905"/>
+          <PublishItem publishSize="364163" publishTime="1747120788"/>
+          <PublishItem publishSize="364165" publishTime="1747120673"/>
           <PublishItem publishSize="364238" publishTime="1747040387"/>
           <PublishItem publishSize="364306" publishTime="1747040318"/>
           <PublishItem publishSize="364307" publishTime="1747040204"/>
@@ -475,8 +478,5 @@
           <PublishItem publishSize="364243" publishTime="1747038475"/>
           <PublishItem publishSize="364269" publishTime="1747038426"/>
           <PublishItem publishSize="364266" publishTime="1747038267"/>
-          <PublishItem publishSize="364262" publishTime="1747038229"/>
-          <PublishItem publishSize="364271" publishTime="1747038184"/>
-          <PublishItem publishSize="364312" publishTime="1747038032"/>
      </publishHistory>
 </DOMDocument>
