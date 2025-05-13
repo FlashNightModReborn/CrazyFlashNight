@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747039627" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747121680" lastUniqueIdentifier="22">
   <timeline>
     <DOMTimeline name="任务栏界面">
       <layers>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -273,11 +273,11 @@ on(releaseOutside){
           </frames>
         </DOMLayer>
         <DOMLayer name="我的任务" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="10" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="10" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="9、提交NPC/提交NPC-动效" name="提交NPC界面" selected="true" centerPoint3DX="803.7" centerPoint3DY="360.05">
+                <DOMSymbolInstance libraryItemName="9、提交NPC/提交NPC-动效" name="提交NPC界面" centerPoint3DX="803.7" centerPoint3DY="360.05">
                   <matrix>
                     <Matrix d="0.989547729492188" tx="745.5" ty="315.55"/>
                   </matrix>
