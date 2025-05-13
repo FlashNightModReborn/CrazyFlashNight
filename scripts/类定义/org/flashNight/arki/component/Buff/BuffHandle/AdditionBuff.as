@@ -1,41 +1,41 @@
 ﻿import org.flashNight.arki.component.Buff.BuffHandle.*;
 
-class org.flashNight.arki.component.Buff.BuffHandle.AdditionBuff extends BaseBuff implements IBuff {
-    private var _addition:Number;
-
+/**
+ * AdditionBuff
+ * 加法类型Buff，将指定值加到原始值上
+ */
+class org.flashNight.arki.component.Buff.BuffHandle.AdditionBuff extends PODBuff {
+    
     /**
      * 构造函数
-     * @param addition 加算值
+     * @param value 要添加的值
      */
-    public function AdditionBuff(addition:Number) {
-        super(BuffTypes.ADDITION); // 设置 Buff 类型为 "addition"
-        this._addition = addition;
+    public function AdditionBuff(value:Number) {
+        super(BuffTypes.ADDITION, value);
     }
-
+    
     /**
-     * 应用加算 buff 到一个值
+     * 应用加法计算到输入值
      * @param value 原始值
-     * @return 修改后的值
+     * @return 加上buff值后的结果
      */
     public function apply(value:Number):Number {
-        var result:Number = value + this._addition;
-        // trace("Applied addition " + this._addition + ": " + result);
-        return result;
+        return value + this._value;
     }
-
+    
     /**
-     * 使 buff 的缓存失效
+     * 设置新的加法值
+     * @param newValue 新的加法值
      */
-    public function invalidate():Void {
-        // 对于加算 buff，通常不需要额外操作
-        // 如果有复杂逻辑，可在此实现
+    public function setValue(newValue:Number):Void {
+        this._value = newValue;
     }
-
+    
     /**
-     * 获取加算值
-     * @return 加算值
+     * 获取当前加法值
+     * @return 当前加法值
      */
-    public function getAddition():Number {
-        return this._addition;
+    public function getValue():Number {
+        return this._value;
     }
 }

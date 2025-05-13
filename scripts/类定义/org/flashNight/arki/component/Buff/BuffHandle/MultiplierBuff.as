@@ -1,41 +1,42 @@
 ﻿import org.flashNight.arki.component.Buff.BuffHandle.*;
 
-class org.flashNight.arki.component.Buff.BuffHandle.MultiplierBuff extends BaseBuff implements IBuff {
-    private var _multiplier:Number;
 
+/**
+ * MultiplierBuff
+ * 乘法类型Buff，将原始值乘以指定系数
+ */
+class org.flashNight.arki.component.Buff.BuffHandle.MultiplierBuff extends PODBuff {
+    
     /**
      * 构造函数
-     * @param multiplier 乘算值
+     * @param value 乘法系数
      */
-    public function MultiplierBuff(multiplier:Number) {
-        super(BuffTypes.MULTIPLIER); // 设置 Buff 类型为 "multiplier"
-        this._multiplier = multiplier;
+    public function MultiplierBuff(value:Number) {
+        super(BuffTypes.MULTIPLIER, value);
     }
-
+    
     /**
-     * 应用乘算 buff 到一个值
+     * 应用乘法计算到输入值
      * @param value 原始值
-     * @return 修改后的值
+     * @return 乘以系数后的结果
      */
     public function apply(value:Number):Number {
-        var result:Number = value * this._multiplier;
-        trace("Applied multiplier " + this._multiplier + ": " + result);
-        return result;
+        return value * this._value;
     }
-
+    
     /**
-     * 使 buff 的缓存失效
+     * 设置新的乘法系数
+     * @param newValue 新的乘法系数
      */
-    public function invalidate():Void {
-        // 对于乘算 buff，通常不需要额外操作
-        // 如果有复杂逻辑，可在此实现
+    public function setValue(newValue:Number):Void {
+        this._value = newValue;
     }
-
+    
     /**
-     * 获取乘算值
-     * @return 乘算值
+     * 获取当前乘法系数
+     * @return 当前乘法系数
      */
-    public function getMultiplier():Number {
-        return this._multiplier;
+    public function getValue():Number {
+        return this._value;
     }
 }

@@ -20,13 +20,13 @@ class org.flashNight.arki.component.Buff.BuffHandle.MetaBuff extends BaseBuff {
     public function MetaBuff(
         type:String,
         effect:Function,
-        condition:Function = null,
-        duration:Number = -1
+        condition:Function,
+        duration:Number
     ) {
         super(type);
         this._effect = effect;
         this._condition = condition || function():Boolean { return true; };
-        this._duration = duration;
+        this._duration = Number(duration) || -1;
         this._timer = duration;
         this._isActive = false;
         this._eventSubscriptions = [];
