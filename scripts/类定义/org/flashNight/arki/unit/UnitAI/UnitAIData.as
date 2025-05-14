@@ -61,8 +61,9 @@
         this.player = _root.gameworld[_root.控制目标];
         //初始化ai参数
         this.xrange = self.x轴攻击范围;
-        this.zrange = 10; // 这里暂时不使用设置的参数
         this.xdistance = self.x轴保持距离;
+        this.zrange = 10; // 这里暂时不使用设置的z轴范围参数，并强制将原来填的数值刷新为10
+        this.self.y轴攻击范围 = 10;
         // 根据自身的奔跑xy速度计算起跑距离
         this.run_threshold_x = self.跑X速度 * 8;
         this.run_threshold_z = self.跑Y速度 * 8;
