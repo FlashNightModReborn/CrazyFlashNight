@@ -281,6 +281,13 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>500</y>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -310,6 +317,7 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -319,6 +327,18 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/avp1_4_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>100</x>
+                <y>500</y>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>1600</x>
+                <y>400</y>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -355,17 +375,17 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种24</Type>
-                        <Interval>1000</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
-                        <SpawnIndex>left</SpawnIndex>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种24</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
-                        <SpawnIndex>door</SpawnIndex>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
