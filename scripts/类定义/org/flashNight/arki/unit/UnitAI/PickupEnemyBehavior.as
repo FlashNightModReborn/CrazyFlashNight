@@ -2,7 +2,7 @@
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.EnemyBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
-
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 // 会拾取物品的敌人状态机，继承敌人基础状态机
 
 class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
@@ -33,17 +33,12 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
         var chaseTarget = self.攻击目标;
         if (!chaseTarget || chaseTarget == "无"){
             // 先检索敌人距离
-            var 遍历敌人表 = _root.帧计时器.获取敌人缓存(self,5);
-            var 敌人距离表 = new Array();
-            for (var i:Number = 0; i < 遍历敌人表.length; i++){
-                var 敌人 = 遍历敌人表[i];
-                敌人距离表.push({敌人: 敌人, 距离: Math.abs(敌人._x - data.x)});
-            }
-            敌人距离表.sortOn("距离",16);
-            var target_enemy = 敌人距离表[0].敌人;
+            var target_enemy = TargetCacheManager.findNearestEnemy(self, 5); 
+            var distance:Number = Math.abs(target_enemy._x - data.x);
+            
             if(target_enemy){
                 // 最大拾取范围为最近敌人的距离与800中的最小值
-                if(敌人距离表[0].距离 > 0 && 敌人距离表[0].距离 < maxdistance) maxdistance = 敌人距离表[0].距离;
+                if(distance > 0 && distance < maxdistance) maxdistance = distance;
                 data.target = target_enemy;
                 self.攻击目标 = target_enemy._name;
                 self.拾取目标 = null;

@@ -3,7 +3,7 @@ import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
-
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 // 敌人基础状态机，继承单位状态机基类
 
 class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
@@ -62,14 +62,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         var self = data.self;
         var chaseTarget = self.攻击目标;
         if (!chaseTarget || chaseTarget == "无"){
-            var 遍历敌人表 = _root.帧计时器.获取敌人缓存(self,5);
-            var 敌人距离表 = new Array();
-            for (var i:Number = 0; i < 遍历敌人表.length; i++){
-                var 敌人 = 遍历敌人表[i];
-                敌人距离表.push({敌人: 敌人, 距离: Math.abs(敌人._x - data.x)});
-            }
-            敌人距离表.sortOn("距离",16);
-            var target = 敌人距离表[0].敌人;
+            var target = TargetCacheManager.findNearestEnemy(self, 5); 
             if(target){
                 data.target = target;
                 self.攻击目标 = target._name;

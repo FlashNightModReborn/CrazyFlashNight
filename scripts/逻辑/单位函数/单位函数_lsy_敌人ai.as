@@ -1,4 +1,6 @@
-﻿_root.敌人ai函数 = new Object();
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.敌人ai函数 = new Object();
 
 _root.敌人ai函数.思考 = function()
 {
@@ -145,25 +147,16 @@ _root.敌人ai函数.攻击 = function(x轴攻击范围, y轴攻击范围, x轴�
 	}
 }
 
-_root.敌人ai函数.寻找攻击目标 = function()
-{
-	if (_parent.攻击目标 === "无")
-	{
-		var 遍历敌人表 = _root.帧计时器.获取敌人缓存(_parent,5);
-		var 敌人距离表 = new Array();
-		for (i = 0; i < 遍历敌人表.length; i++)
-		{
-			var 敌人 = 遍历敌人表[i];
-			敌人距离表.push({敌人名: 敌人._name, 距离: Math.abs(敌人._x - _parent._x)});
-		}
-		敌人距离表.sortOn("距离",16);
-		_parent.攻击目标 = 敌人距离表[0].敌人名 ? 敌人距离表[0].敌人名 : "无";
-	}
-	else if (_root.gameworld[_parent.攻击目标].hp <= 0)
-	{
-		_parent.攻击目标 = "无";
-	}
-}
+_root.敌人ai函数.寻找攻击目标 = function() {
+    // 如果没有攻击目标，或者当前目标已死亡，则寻找新目标
+    if (_parent.攻击目标 === "无" || (_parent.攻击目标 !== "无" && _root.gameworld[_parent.攻击目标].hp <= 0)) {
+        // 直接使用TargetCacheManager的findNearestEnemy方法查找X轴上最近的敌人
+        var enemy = TargetCacheManager.findNearestEnemy(_parent, 5);
+        
+        // 设置攻击目标
+        _parent.攻击目标 = (enemy) ? enemy._name : "无";
+    }
+};
 
 
 //敌人佣兵
