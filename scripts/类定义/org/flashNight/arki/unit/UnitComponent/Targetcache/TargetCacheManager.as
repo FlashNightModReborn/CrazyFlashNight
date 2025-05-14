@@ -1,151 +1,294 @@
-﻿// 文件路径: org/flashNight/arki/unit/UnitComponent/targetcache/TargetCacheManager.as
-
-import org.flashNight.naki.Sort.InsertionSort;
+﻿// ============================================================================
+// 目标缓存管理器（升级版）
+// ----------------------------------------------------------------------------
+// 1. 管理敌人 / 友军 / 全体三大类缓存
+// 2. 提供「最近单位」快速查询 API：
+//    • findNearestTarget : 按 X 轴查最近单位（核心）
+//    • findNearestEnemy  : 便捷封装（敌人）
+//    • findNearestAlly   : 便捷封装（友军）
+//    • findNearestAll    : 便捷封装（全体）
+// 3. 依赖 TargetCacheUpdater 生成的 nameIndex，可 O(1) 拿到目标在
+//    排序数组中的位置，仅需对左右相邻元素做常数级比较
+// ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.gesh.object.*;
 
-// 目标缓存管理器类
-// 该类负责管理并更新游戏中的目标缓存，包括敌人和友军目标的缓存处理。
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
-    // 静态缓存结构，存储不同状态和请求类型的目标缓存
+    // ------------------------------------------------------------------
+    // 静态成员
+    // ------------------------------------------------------------------
+    /**
+     * 目标缓存集合
+     * 结构: {状态键:{敌人/友军/全体:cacheEntry}}
+     * 状态键包括: "undefined", "true", "false", "all"
+     */
     private static var _targetCaches:Object;
-
-    // 初始化标志，确保只初始化一次
+    
+    /**
+     * 初始化标志，确保只初始化一次
+     */
     private static var _initialized:Boolean = initialize();
-
-    // 模块化配置: 类常量，存储目标缓存的状态标识
+    
+    /**
+     * 缓存状态键数组
+     * "true" - 敌人状态
+     * "false" - 友军状态
+     * "all" - 全体状态
+     * "undefined" - 未定义状态
+     */
     private static var _STATUS_KEYS:Array = ["undefined", "true", "false", "all"];
 
-    // 缓存模板，包含了缓存的数据数组、最后更新时间和数据版本
-    private static var _CACHE_TEMPLATE:Object = {data: [], // 缓存数据（目标列表）
-            lastUpdatedFrame: 0 // 缓存的最后更新时间帧
-        };
-
     /**
-     * 初始化目标缓存管理器。
-     * 为每个状态键（undefined、true、false）创建一个缓存结构，存储敌人和友军的数据。
-     * @return {Boolean} 返回初始化是否成功
+     * 缓存项模板
+     * 定义了缓存项的基本结构
+     */
+    private static var _CACHE_TEMPLATE:Object = {
+        data:        [],   // 已按 left 升序排序的单位数组
+        nameIndex:   {},   // 名称到索引的映射: {_name: index}，用于O(1)时间查找单位位置
+        lastUpdatedFrame: 0 // 缓存最后更新的帧数
+    };
+
+    // ------------------------------------------------------------------
+    // 初始化
+    // ------------------------------------------------------------------
+    /**
+     * 初始化目标缓存管理器
+     * 为每个状态键创建敌人、友军和全体的缓存结构
+     * @return {Boolean} 初始化是否成功
      */
     public static function initialize():Boolean {
-        _targetCaches = {}; // 初始化缓存对象
-
-        // 使用状态键来驱动缓存初始化
+        _targetCaches = {};
+        // 遍历所有状态键，初始化缓存结构
         for (var i:Number = 0; i < _STATUS_KEYS.length; i++) {
             var key:String = _STATUS_KEYS[i];
             _targetCaches[key] = {
-                // 深拷贝模板避免引用污染，初始化敌人和友军缓存项
-                    敌人: _createCacheEntry(),
-                    友军: _createCacheEntry(),
-                    全体: _createCacheEntry()};
+                敌人 : _createCacheEntry(), // 敌人缓存
+                友军 : _createCacheEntry(), // 友军缓存
+                全体 : _createCacheEntry()  // 全体缓存
+            };
         }
         return true;
     }
 
     /**
-     * 创建一个新的缓存项。
-     * 每个缓存项包含数据、名称索引和最后更新时间。
-     * @return {Object} 返回新的缓存项对象
+     * 创建一个新的缓存项
+     * 包含独立的数据数组、名称索引和时间戳
+     * @return {Object} 新的缓存项对象
      */
     private static function _createCacheEntry():Object {
-        return {data: _CACHE_TEMPLATE.data.concat(), // 新建数组，避免与其他缓存数据共享引用
-            // nameIndex: {},  // 名称索引，可能用于快速查找目标
-                lastUpdatedFrame: _CACHE_TEMPLATE.lastUpdatedFrame // 初始化时设置为0
-            };
+        return {
+            data: _CACHE_TEMPLATE.data.concat(), // 创建新数组，避免引用污染
+            nameIndex: {},                       // 创建新的名称索引映射
+            lastUpdatedFrame: _CACHE_TEMPLATE.lastUpdatedFrame // 初始更新时间
+        };
     }
 
+    // ------------------------------------------------------------------
+    // 对外 · 更新接口 —— 直接强制更新
+    // ------------------------------------------------------------------
     /**
-     * 更新目标缓存。
-     * 直接执行缓存更新操作，不再检查更新间隔。
-     * @param {Object} target - 目标对象
-     * @param {String} requestType - 请求类型，例如"敌人"或"友军"
-     * @param {String} targetStatus - 目标的状态（true/false，表示敌人或友军）
+     * 强制更新目标缓存
+     * 不检查更新间隔，直接更新缓存数据
+     * @param {Object} target - 目标单位
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @param {String} targetStatus - 目标状态: "true"(敌人)、"false"(友军)或"all"(全体)
      */
-    public static function updateTargetCache(target:Object, requestType:String, targetStatus:String):Void {
+    public static function updateTargetCache(
+        target:Object,
+        requestType:String,
+        targetStatus:String
+    ):Void {
         var frame:Number = _root.帧计时器.当前帧数; // 获取当前帧数
 
-        // 内联_getCacheEntry逻辑开始
-        // 如果没有找到目标状态的缓存，初始化它
-        if (!_targetCaches[targetStatus])
-            _targetCaches[targetStatus] = {};
+        // 获取或创建缓存项
+        if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
         var stateCache:Object = _targetCaches[targetStatus];
         var cache:Object = stateCache[requestType];
+        if (!cache) cache = stateCache[requestType] = _createCacheEntry();
 
-        // 如果该请求类型的缓存不存在，则初始化
-        if (!cache)
-            cache = stateCache[requestType] = _createCacheEntry();
-        // 内联_getCacheEntry逻辑结束
-
-        // _root.服务器.发布服务器消息("updateTargetCache")
-
-        // 直接执行缓存更新，不再检查更新间隔
-        TargetCacheUpdater.updateCache(_root.gameworld, frame, requestType, targetStatus == "true", // 如果目标是敌人，则为true
-            cache);
+        // 调用更新器进行缓存更新
+        TargetCacheUpdater.updateCache(
+            _root.gameworld,
+            frame,
+            requestType,
+            targetStatus == "true", // true表示敌人，false表示友军
+            cache
+        );
     }
 
+    // ------------------------------------------------------------------
+    // 对外 · 读取接口 —— 带自动按帧更新
+    // ------------------------------------------------------------------
     /**
-     * 获取缓存的目标数据。
-     * 根据更新间隔检查缓存是否需要更新，如果需要则自动调用updateTargetCache更新。
-     * @param {Object} target - 目标对象
-     * @param {Number} updateInterval - 更新间隔，单位为帧数
-     * @param {String} requestType - 请求类型，例如"敌人"或"友军"
-     * @return {Array} 返回目标数据列表
+     * 获取缓存的目标单位列表
+     * 根据更新间隔检查是否需要刷新缓存
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @return {Array} 目标单位数组(已按x轴排序)
      */
-    public static function getCachedTargets(target:Object, updateInterval:Number, requestType:String):Array {
-        // 全体请求使用all状态键
-        var targetStatus:String = (requestType == "全体") ? "all" : target.是否为敌人.toString(); // 获取目标的状态（敌人或友军）
+    public static function getCachedTargets(
+        target:Object,
+        updateInterval:Number,
+        requestType:String
+    ):Array {
+        // 确定目标状态
+        var targetStatus:String = (requestType == "全体")
+            ? "all"
+            : target.是否为敌人.toString();
         var currentFrame:Number = _root.帧计时器.当前帧数; // 获取当前帧数
 
-        // 内联_getCacheEntry逻辑开始
-        // 如果没有找到目标状态的缓存，初始化它
-        if (!_targetCaches[targetStatus])
-            _targetCaches[targetStatus] = {};
+        // 获取或创建缓存项
+        if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
         var stateCache:Object = _targetCaches[targetStatus];
         var cacheEntry:Object = stateCache[requestType];
+        if (!cacheEntry) cacheEntry = stateCache[requestType] = _createCacheEntry();
 
-        // 如果该请求类型的缓存项不存在，则初始化
-        if (!cacheEntry)
-            cacheEntry = stateCache[requestType] = _createCacheEntry();
-        // 内联_getCacheEntry逻辑结束
-
-        // _root.服务器.发布服务器消息("getCachedTargets at " + currentFrame + " (" + cacheEntry.lastUpdatedFrame + "," + updateInterval + ")");
-
-        // 检查是否需要更新缓存（基于更新间隔）
+        // 检查是否需要更新缓存
         if ((currentFrame - cacheEntry.lastUpdatedFrame) >= updateInterval) {
-            // 调用不带updateInterval的updateTargetCache方法
             updateTargetCache(target, requestType, targetStatus);
         }
 
-        return cacheEntry.data; // 返回目标缓存数据
-    }
-
-
-    /**
-     * 获取缓存的敌人数据。
-     * @param {Object} target - 目标对象
-     * @param {Number} updateInterval - 更新间隔，单位为帧数
-     * @return {Array} 返回敌人数据列表
-     */
-    public static function getCachedEnemy(target:Object, updateInterval:Number):Array {
-        return getCachedTargets(target, updateInterval, "敌人"); // 获取敌人的缓存数据
+        // _root.服务器.发布服务器消息(ObjectUtil.toString(cacheEntry))
+        return cacheEntry.data; // 返回缓存数据
     }
 
     /**
-     * 获取缓存的友军数据。
-     * @param {Object} target - 目标对象
-     * @param {Number} updateInterval - 更新间隔，单位为帧数
-     * @return {Array} 返回友军数据列表
+     * 获取缓存的敌人单位列表
+     * @param {Object} t - 目标单位
+     * @param {Number} i - 更新间隔(帧数)
+     * @return {Array} 敌人单位数组
      */
-    public static function getCachedAlly(target:Object, updateInterval:Number):Array {
-        return getCachedTargets(target, updateInterval, "友军"); // 获取友军的缓存数据
+    public static function getCachedEnemy(t:Object, i:Number):Array { 
+        return getCachedTargets(t, i, "敌人"); 
+    }
+    
+    /**
+     * 获取缓存的友军单位列表
+     * @param {Object} t - 目标单位
+     * @param {Number} i - 更新间隔(帧数)
+     * @return {Array} 友军单位数组
+     */
+    public static function getCachedAlly(t:Object, i:Number):Array { 
+        return getCachedTargets(t, i, "友军"); 
+    }
+    
+    /**
+     * 获取缓存的全体单位列表
+     * @param {Object} t - 目标单位
+     * @param {Number} i - 更新间隔(帧数)
+     * @return {Array} 全体单位数组
+     */
+    public static function getCachedAll(t:Object, i:Number):Array { 
+        return getCachedTargets(t, i, "全体"); 
+    }
+
+    // ------------------------------------------------------------------
+    // ★ 新增 · 最近单位查询 ★
+    // ------------------------------------------------------------------
+    /**
+     * 按X轴快速查找与目标单位最近的单位
+     * 利用nameIndex实现O(1)邻居查找，或在目标不在列表时进行全表扫描
+     * @param {Object} target - 当前单位
+     * @param {Number} updateInterval - 缓存失效帧间隔
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @return {Object} 最近单位对象，若不存在返回null
+     */
+    public static function findNearestTarget(
+        target:Object,
+        updateInterval:Number,
+        requestType:String
+    ):Object {
+        // 确定目标状态
+        var targetStatus:String = (requestType == "全体")
+            ? "all"
+            : target.是否为敌人.toString();
+
+        // 获取缓存项并确保最新
+        if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
+        var stateCache:Object = _targetCaches[targetStatus];
+        var cacheEntry:Object = stateCache[requestType];
+        if (!cacheEntry) cacheEntry = stateCache[requestType] = _createCacheEntry();
+
+        // 检查是否需要更新缓存
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        if ((currentFrame - cacheEntry.lastUpdatedFrame) >= updateInterval) {
+            updateTargetCache(target, requestType, targetStatus);
+        }
+
+        // --- 快速定位自身索引 ---
+        var idx:Number = cacheEntry.nameIndex[target._name];
+        if (idx == undefined) {
+            // 如果自身不在列表中，则进行全表扫描查找最近单位
+            var list:Array = cacheEntry.data;
+            var minDist:Number = Number.MAX_VALUE;
+            var nearest:Object = null;
+            var lx:Number = target.aabbCollider.left; // 目标X坐标
+            
+            // 遍历所有单位，找到最近的
+            for (var i:Number = 0; i < list.length; i++) {
+                if (list[i] == target) continue; // 跳过自身
+                var d:Number = Math.abs(list[i].aabbCollider.left - lx); // 计算X轴距离
+                if (d < minDist) { 
+                    minDist = d; // 更新最小距离
+                    nearest = list[i]; // 更新最近单位
+                }
+            }
+            return nearest;
+        }
+
+        // --- 当目标在列表中时，只需检查左右相邻两个元素 ---
+        // 获取左侧单位（如果存在）
+        var leftObj:Object = (idx > 0) ? cacheEntry.data[idx - 1] : null;
+        // 获取右侧单位（如果存在）
+        var rightObj:Object = (idx < cacheEntry.data.length - 1) ? cacheEntry.data[idx + 1] : null;
+
+        // 计算左右单位与目标的距离
+        var lx:Number = target.aabbCollider.left; // 目标X坐标
+        var dl:Number = (leftObj) ? Math.abs(leftObj.aabbCollider.left - lx) : Number.MAX_VALUE;
+        var dr:Number = (rightObj) ? Math.abs(rightObj.aabbCollider.left - lx) : Number.MAX_VALUE;
+
+        // 如果左右都没有单位，返回null
+        if (dl == Number.MAX_VALUE && dr == Number.MAX_VALUE) return null;
+        
+        // 返回距离较近的单位
+        return (dl <= dr) ? leftObj : rightObj;
     }
 
     /**
-     * 获取缓存的全体数据。
-     * @param {Object} target - 目标对象
-     * @param {Number} updateInterval - 更新间隔，单位为帧数
-     * @return {Array} 返回全体数据列表
+     * 查找X轴上最近的敌人单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Object} 最近的敌人单位，若不存在返回null
      */
-    public static function getCachedAll(target:Object, updateInterval:Number):Array {
-        return getCachedTargets(target, updateInterval, "全体");
+    public static function findNearestEnemy(
+        t:Object, interval:Number
+    ):Object { 
+        return findNearestTarget(t, interval, "敌人"); 
+    }
+
+    /**
+     * 查找X轴上最近的友军单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Object} 最近的友军单位，若不存在返回null
+     */
+    public static function findNearestAlly(
+        t:Object, interval:Number
+    ):Object { 
+        return findNearestTarget(t, interval, "友军"); 
+    }
+
+    /**
+     * 查找X轴上最近的全体单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Object} 最近的全体单位，若不存在返回null
+     */
+    public static function findNearestAll(
+        t:Object, interval:Number
+    ):Object { 
+        return findNearestTarget(t, interval, "全体"); 
     }
 }

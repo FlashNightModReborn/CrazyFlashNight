@@ -113,12 +113,15 @@ class org.flashNight.arki.spatial.move.Mover {
 
         // 执行碰撞检测：若目标位置无碰撞，则更新实体位置
         if (!gameworld.地图.hitTest(gwx + vx, gwy + vy, true)) {
-            if (vy === 0) {
-                // 水平移动：仅更新 _x 坐标
-                entity._x += vx;
-            } else {
+            if (vx === 0) {
                 // 垂直移动：更新 Z轴 和 _y 坐标，并调整显示层次
                 entity.swapDepths(entity._y = (entity.Z轴坐标 += vy));
+            } else {
+                // 水平移动：仅更新 _x 坐标
+                entity._x += vx;
+
+
+
             }
 
             entity.aabbCollider.updateFromUnitArea(entity);
