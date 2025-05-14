@@ -8,21 +8,6 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[/*function 随机整数(a, b)
-{
-	var r = random(b - a + 1) + a;
-	return r;
-}
-
-import org.flashNight.gesh.xml.StageXMLLoader;
-import org.flashNight.gesh.object.ObjectUtil;
-
-loader = new StageXMLLoader("../data/stages/基地门口/郊区.xml", function (parsedData)
-{
-	trace(ObjectUtil.toString(parsedData.SubStage[1].Wave.SubWave));
-});*/]]></script>
-                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -36,6 +21,18 @@ loader = new StageXMLLoader("../data/stages/基地门口/郊区.xml", function (
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="342509" publishTime="1747196793"/>
+          <PublishItem publishSize="342497" publishTime="1747196763"/>
+          <PublishItem publishSize="342440" publishTime="1747196700"/>
+          <PublishItem publishSize="342499" publishTime="1747195770"/>
+          <PublishItem publishSize="342467" publishTime="1747195744"/>
+          <PublishItem publishSize="342508" publishTime="1747195648"/>
+          <PublishItem publishSize="342501" publishTime="1747195560"/>
+          <PublishItem publishSize="342495" publishTime="1747195525"/>
+          <PublishItem publishSize="342491" publishTime="1747195501"/>
+          <PublishItem publishSize="342444" publishTime="1747195424"/>
+          <PublishItem publishSize="342364" publishTime="1747195254"/>
+          <PublishItem publishSize="342404" publishTime="1747194838"/>
           <PublishItem publishSize="342268" publishTime="1747114811"/>
           <PublishItem publishSize="342268" publishTime="1747114800"/>
           <PublishItem publishSize="342261" publishTime="1747114741"/>
@@ -44,17 +41,5 @@ loader = new StageXMLLoader("../data/stages/基地门口/郊区.xml", function (
           <PublishItem publishSize="342259" publishTime="1747114472"/>
           <PublishItem publishSize="342259" publishTime="1747114412"/>
           <PublishItem publishSize="342256" publishTime="1747114385"/>
-          <PublishItem publishSize="342259" publishTime="1747114373"/>
-          <PublishItem publishSize="342259" publishTime="1747114173"/>
-          <PublishItem publishSize="342254" publishTime="1747114128"/>
-          <PublishItem publishSize="342239" publishTime="1747113859"/>
-          <PublishItem publishSize="342240" publishTime="1747113849"/>
-          <PublishItem publishSize="342241" publishTime="1747113644"/>
-          <PublishItem publishSize="341677" publishTime="1747113388"/>
-          <PublishItem publishSize="341679" publishTime="1747113375"/>
-          <PublishItem publishSize="341687" publishTime="1747113338"/>
-          <PublishItem publishSize="341241" publishTime="1747113328"/>
-          <PublishItem publishSize="341690" publishTime="1747113146"/>
-          <PublishItem publishSize="341669" publishTime="1747112939"/>
      </publishHistory>
 </DOMDocument>

@@ -99,8 +99,8 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             var temp = 友军数量 <= 5 ? 3 : (友军数量 <= 10 ? 2 : 1);
             var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
 
-            data.idle_threshold = EnemyBehavior.IDLE_BASIC_TIME + engine.randomCheck(temp * self.停止机率);
-            data.wander_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.randomCheck(temp * self.随机移动机率);
+            data.idle_threshold = EnemyBehavior.IDLE_BASIC_TIME + engine.random(temp * self.停止机率);
+            data.wander_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.random(temp * self.随机移动机率);
         }
     }
     // 追击

@@ -260,13 +260,13 @@ _root.敌人函数.击飞浮空 = function(){
 	this.浮空 = true;
 	this.倒地 = false;
 	this.man.落地 = false;
+	if(this._y >= this.Z轴坐标) this._y = this.Z轴坐标 - 1;
 	if(this.垂直速度 >= this.起跳速度) this.垂直速度 = this.起跳速度;
 
 	this.flyID = _root.帧计时器.添加生命周期任务(this, "击飞浮空", function(target:MovieClip){
 		if(target.硬直中 == false){
 			target._y += target.垂直速度;
 			target.垂直速度 += _root.重力加速度;
-			_root.服务器.发布服务器消息(target._y+" "+target.Z轴坐标);
 		}
 		if(target._y >= target.Z轴坐标){
 			target._y = target.Z轴坐标;
