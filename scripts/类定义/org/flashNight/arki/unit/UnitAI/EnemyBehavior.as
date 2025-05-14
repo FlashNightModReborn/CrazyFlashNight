@@ -1,6 +1,6 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
-
+import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
@@ -87,7 +87,8 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
     // 追击开始
     public function chase_enter():Void{
-        var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
+        var self:MovieClip = data.self;
+        var 友军数量 = _root.帧计时器.获取友军缓存(self,5).length;
         if(友军数量 <= 1){
             // 若己方没有任何队友，则永远不会停止追击
             data.idle_threshold = 999999;
@@ -95,8 +96,10 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         }else{
             // 根据停止机率和随机移动机率随机一个临界时间
             var temp = 友军数量 <= 5 ? 3 : (友军数量 <= 15 ? 2 : 1);
-            data.idle_threshold = EnemyBehavior.CHASE_TIME + random(temp * data.self.停止机率);
-            data.wander_threshold = EnemyBehavior.CHASE_TIME + random(temp * data.self.随机移动机率);
+            var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+
+            data.idle_threshold = EnemyBehavior.CHASE_TIME + engine.randomCheck(temp * self.停止机率);
+            data.wander_threshold = EnemyBehavior.CHASE_TIME + engine.randomCheck(temp * self.随机移动机率);
         }
     }
     // 追击
@@ -151,8 +154,11 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         self.上行 = false;
         self.下行 = false;
         if(data.standby) return; // 待机状态下无法移动
+
+        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+
         var self = data.self;
-        var X距离 = random(200) + 100;
+        var X距离 = engine.randomIntegerStrict(100, 300);
         var Y距离 = 50;
         var playerx = data.player._x;
         var playery = data.player._y;
@@ -160,7 +166,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         if (Math.abs(data.x - playerx) > X距离){
             self.左行 = data.x > playerx;
             self.右行 = data.x < playerx;
-            var randz = _root.Ymin + random(_root.Ymax - _root.Ymin);
+            var randz = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
             if(Math.abs(data.z - randz) > Y距离){
                 self.上行 = data.z > randz;
                 self.下行 = data.z < randz;
@@ -182,7 +188,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         // 根据友军数量计算随机时间
         var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
         var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
-        data.think_threshold = EnemyBehavior.IDLE_BASIC_TIME + random(temp * EnemyBehavior.IDLE_BASIC_TIME);
+        data.think_threshold = EnemyBehavior.IDLE_BASIC_TIME + LinearCongruentialEngine.instance.random(temp * EnemyBehavior.IDLE_BASIC_TIME);
     }
     // 随机移动
     public function wander_enter():Void{
@@ -198,8 +204,12 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             data.self.下行 = false;
             return; 
         }
-        var randy = random(_root.Ymax - _root.Ymin) + _root.Ymin;
-        var randx = random(_root.Xmax - _root.Xmin) + _root.Xmin;
+
+        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+
+        var randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
+        var randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
+        
         data.self.左行 = randx < data.x;
         data.self.右行 = !data.self.左行;
         data.self.上行 = randy < data.z;
@@ -207,6 +217,6 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         // 根据友军数量计算随机时间
         var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
         var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
-        data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + random(temp * EnemyBehavior.WANDER_BASIC_TIME);
+        data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.random(temp * EnemyBehavior.WANDER_BASIC_TIME);
     }
 }

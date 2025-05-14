@@ -1,6 +1,6 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
-
+import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
@@ -29,7 +29,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             return this.actionCount >= MecenaryBehavior.IDLE_TIME;
         });
         this.transitions.push("Walking","Thinking",function(){
-            return this.actionCount % MecenaryBehavior.WALK_TIME == 0 && random(2) == 0;
+            return this.actionCount % MecenaryBehavior.WALK_TIME == 0 && LinearCongruentialEngine.instance.randomCheckHalf();
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
@@ -44,6 +44,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         data.updateSelf(); // 更新自身坐标
         //search target
         var newstate:String = null;
+        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
         if(data.target == null){
             var 出生点列表 = [];
             for (var 单位 in _root.gameworld){
@@ -52,14 +53,14 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
                     出生点列表.push(出生点);
                 }
             }
-            data.target = 出生点列表[random(出生点列表.length)];
+            data.target = MovieClip(engine.getRandomArrayElement(出生点列表));
             data.updateTarget();
             if(data.absdiff_x < 100 && data.absdiff_z < 50){
                 newstate = "Idle"; // 若离目标门太近则先进入Idle
             }
         }
         if(newstate == null){
-            newstate = random(2) == 0 ? "Idle" : "Walking"; // 否则有1/2的几率进入Walking，1/2的几率进入Idle
+            newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 否则有1/2的几率进入Walking，1/2的几率进入Idle
         }
         this.superMachine.ChangeState(newstate);
     }

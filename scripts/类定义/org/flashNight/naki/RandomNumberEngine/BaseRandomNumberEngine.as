@@ -53,6 +53,47 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         return next() / 0x100000000; // 默认实现（无实际用途）
     }
 
+    // 模拟传统的 random(n) 函数，生成 0 到 n-1 之间的随机整数
+    // @param n: 上限值（不包含）
+    // @return 生成的随机整数
+    public function random(n:Number):Number {
+        return Math.floor(nextFloat() * n);
+    }
+
+    /**
+     * 高性能概率判定（假定 denominator ≥ 1）
+     * 等价于 “random(denominator) == 0”，但完全内联，无任何额外分支。
+     *
+     * @param denominator 分母 d（> = 1 时命中概率为 1/d）
+     * @return Boolean    是否命中
+     */
+    public function randomCheck(denominator:Number):Boolean {
+        // nextFloat() ∈ [0,1)，乘以 denominator 后 ⌊·⌋ 就相当于 randomIntegerStrict(0, denominator-1)
+        // “>> 0” 是 AS2 中最快的向下取整手段（integer cast）
+        return ((nextFloat() * denominator) >> 0) == 0;
+    }
+
+    /**
+     * 1/2 概率检查
+     * 等价于 random(2)==0，但更直接
+     */
+    public function randomCheckHalf():Boolean {
+        // nextFloat()*2 ∈ [0,2)，>>0 相当于 floor()
+        // 如果结果是 0，就命中 1/2
+        return ((nextFloat() * 2) >> 0) == 0;
+    }
+
+    /**
+     * 1/3 概率检查
+     * 同理，直接 floor(nextFloat()*3)==0
+     */
+    public function randomCheckThird():Boolean {
+        return ((nextFloat() * 3) >> 0) == 0;
+    }
+
+
+
+
     // 判断给定的成功率是否发生
     // @param probabilityPercent: 成功率的百分比（0-100）
     // @return 是否发生成功事件

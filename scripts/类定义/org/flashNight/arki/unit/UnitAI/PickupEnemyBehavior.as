@@ -1,5 +1,5 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
-
+import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.EnemyBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
@@ -109,7 +109,7 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
                 //每2次action判定移动方向
                 if (data.absdiff_x + data.absdiff_z < 150){
                     self.状态改变(self.攻击模式 + "行走");
-                }else if(self.状态 != self.攻击模式 + "跑" && random(3) == 0){
+                }else if(self.状态 != self.攻击模式 + "跑" && LinearCongruentialEngine.instance.randomCheck(3)){
                     self.状态改变(self.攻击模式 + "跑");
                 }
                 self.上行 = data.diff_z < 0;
