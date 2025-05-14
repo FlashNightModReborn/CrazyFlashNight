@@ -1673,6 +1673,7 @@ _root.主角函数.动画完毕 = function(){
 		}
 	}
 	状态改变(攻击模式 + "站立");
+	this.aabbCollider.updateFromUnitArea(this);
 };
 
 _root.主角函数.硬直 = function(目标, 时间){
