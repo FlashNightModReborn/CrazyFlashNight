@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1746783152" lastUniqueIdentifier="185">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1747202248" lastUniqueIdentifier="185">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="207">
+    <DOMTimeline name="对话框肖像" currentFrame="282">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -271,7 +271,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
+                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -703,12 +703,12 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="277" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1628" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="学生妹" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.637725830078125" d="0.637725830078125" tx="38.5" ty="120.45"/>
+                    <Matrix a="0.860137939453125" d="0.860137939453125" tx="-66.3" ty="-224.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="157.25" y="193.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
