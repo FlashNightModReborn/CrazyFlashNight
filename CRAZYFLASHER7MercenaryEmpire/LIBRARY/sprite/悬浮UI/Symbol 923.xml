@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1744811819">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1747238689">
   <timeline>
     <DOMTimeline name="Symbol 923">
       <layers>
@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#CEF873">
+        <DOMLayer name="Script Layer" color="#CEF873" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -45,7 +45,7 @@
 		{
 			this.attachMovie("佣兵信息显示框","佣兵信息显示框" + _loc3_,this.getNextHighestDepth(),{_x:8, _y:31 + _loc3_ * 70, 同伴数据数组号:_loc3_, 佣兵数据:_root.同伴数据[_loc3_], 是否出战:_root.佣兵是否出战信息[_loc3_], 名字:_root.同伴数据[_loc3_][1], 等级:_root.同伴数据[_loc3_][0]});
 
-			var 计算强化度 = _root.获取人形怪强化等级(_root.同伴数据[_loc3_][0], _root.同伴数据[_loc3_][1]);
+			var 计算强化度 = _root.主角函数.获取人形怪强化等级(_root.同伴数据[_loc3_][0], _root.同伴数据[_loc3_][1]);
 			if (isNaN(计算强化度))
 			{
 				计算强化度 = 1;
@@ -147,7 +147,7 @@ function 排列可雇用佣兵图标(页数值)
 			}
 			this.attachMovie("佣兵列表信息显示框","佣兵列表信息显示框" + _loc4_,this.getNextHighestDepth(),{_x:8, _y:31 + _loc4_ * 60, 可雇用佣兵列表数据:可雇用佣兵列表数据[_loc4_], 名字:可雇用佣兵列表数据[_loc4_][1], 等级:可雇用佣兵列表数据[_loc4_][0], 身价:所需K点, 金币身价:所需金币, 热度:可雇用佣兵列表数据[_loc4_][18], 鲜度:0});
 
-			var 计算强化度 = _root.获取人形怪强化等级(当前佣兵等级, 可雇用佣兵列表数据[_loc4_][1]);
+			var 计算强化度 = _root.主角函数.获取人形怪强化等级(当前佣兵等级, 可雇用佣兵列表数据[_loc4_][1]);
 			if (isNaN(计算强化度))
 			{
 				计算强化度 = 1;
@@ -1276,7 +1276,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#24E282" current="true" isSelected="true">
+        <DOMLayer name="Layer 22" color="#24E282">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements>
