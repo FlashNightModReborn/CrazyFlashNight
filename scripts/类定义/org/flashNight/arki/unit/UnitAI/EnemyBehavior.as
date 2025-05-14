@@ -8,11 +8,11 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
 class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
-    public static var IDLE_BASIC_TIME:Number = 5; // 停止状态最低持续5次action（即20帧）。计划在ai进一步重构后废弃
-    public static var WANDER_BASIC_TIME:Number = 10; // 随机移动状态最低持续10次action（即40帧）。计划在ai进一步重构后废弃
+    public static var IDLE_BASIC_TIME:Number = 5; // 由追击进入停止 / 停止进入思考的最低间隔为5次action（即20帧）。计划在ai进一步重构后废弃
+    public static var WANDER_BASIC_TIME:Number = 10; // 由追击进入随机移动 / 随机移动进入思考的最低间隔为10次action（即40帧）。计划在ai进一步重构后废弃
     public static var FOLLOW_TIME:Number = 5; // 跟随状态持续5次action（即20帧）
 
-    public static var CHASE_TIME:Number = 30; // 追击状态持续30次action（即120帧）后再开始判断停止或随机移动。计划在ai进一步重构后废弃
+    public static var CHASE_TIME:Number = 30; // 暂时弃用
 
     public function EnemyBehavior(_data:UnitAIData){
         super(_data);
@@ -59,9 +59,10 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
         //search target
-        var chaseTarget = data.self.攻击目标;
+        var self = data.self;
+        var chaseTarget = self.攻击目标;
         if (!chaseTarget || chaseTarget == "无"){
-            var 遍历敌人表 = _root.帧计时器.获取敌人缓存(data.self,5);
+            var 遍历敌人表 = _root.帧计时器.获取敌人缓存(self,5);
             var 敌人距离表 = new Array();
             for (var i:Number = 0; i < 遍历敌人表.length; i++){
                 var 敌人 = 遍历敌人表[i];
@@ -71,14 +72,14 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             var target = 敌人距离表[0].敌人;
             if(target){
                 data.target = target;
-                data.self.攻击目标 = target._name;
+                self.攻击目标 = target._name;
             }
         }else{
             data.target = _root.gameworld[chaseTarget];
         }
         if (data.target.hp <= 0){
             data.target = null;
-            data.self.攻击目标 = "无";
+            self.攻击目标 = "无";
         }
         //
         var newstate:String = data.target ? "Chasing" : "Following";
@@ -95,24 +96,24 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             data.wander_threshold = 999999;
         }else{
             // 根据停止机率和随机移动机率随机一个临界时间
-            var temp = 友军数量 <= 5 ? 3 : (友军数量 <= 15 ? 2 : 1);
+            var temp = 友军数量 <= 5 ? 3 : (友军数量 <= 10 ? 2 : 1);
             var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
 
-            data.idle_threshold = EnemyBehavior.CHASE_TIME + engine.randomCheck(temp * self.停止机率);
-            data.wander_threshold = EnemyBehavior.CHASE_TIME + engine.randomCheck(temp * self.随机移动机率);
+            data.idle_threshold = EnemyBehavior.IDLE_BASIC_TIME + engine.randomCheck(temp * self.停止机率);
+            data.wander_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.randomCheck(temp * self.随机移动机率);
         }
     }
     // 追击
     public function chase():Void{
+        var self = data.self;
         // 与攻击目标参数一致
-        if(data.target._name != data.self.攻击目标){
-            data.target = _root.gameworld[data.self.攻击目标];
+        if(data.target._name != self.攻击目标){
+            data.target = _root.gameworld[self.攻击目标];
         }
         // 更新自身与攻击目标的坐标及差值
         data.updateSelf();
         data.updateTarget();
 
-        var self = data.self;
         if (data.absdiff_z < data.zrange && data.absdiff_x < data.xrange){
             //每次action判定是否进入攻击
             self.左行 = false;
@@ -149,6 +150,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     // 跟随
     public function follow_enter():Void{
         data.updateSelf(); // 更新自身坐标
+        var self = data.self;
         self.左行 = false;
         self.右行 = false;
         self.上行 = false;
@@ -157,7 +159,6 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
 
-        var self = data.self;
         var X距离 = engine.randomIntegerStrict(100, 300);
         var Y距离 = 50;
         var playerx = data.player._x;
