@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1746444990" lastUniqueIdentifier="177">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1747216954" lastUniqueIdentifier="179">
   <timeline>
-    <DOMTimeline name="地图界面" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="地图界面" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
           <frames>
@@ -1496,13 +1496,7 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>其他</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>阵营</characters>
+                      <characters>其他阵营</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1547,13 +1541,7 @@ else
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>兵</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>团</characters>
+                      <characters>兵团</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1670,13 +1658,7 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地屋</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>顶</characters>
+                      <characters>基地屋顶</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1695,13 +1677,7 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地一</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>层</characters>
+                      <characters>基地一层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1720,13 +1696,7 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下一</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>层</characters>
+                      <characters>地下一层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1745,13 +1715,7 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下二</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>层</characters>
+                      <characters>地下二层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1808,13 +1772,7 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>层级关</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>系</characters>
+                      <characters>层级关系</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -3192,7 +3150,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下二层" color="#9933CC" parentLayerIndex="8" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="地下二层" color="#9933CC" parentLayerIndex="8" autoNamed="false" layerType="folder"/>
         <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -3206,6 +3164,14 @@ onClipEvent (load) {
                   </matrix>
                   <transformationPoint>
                     <Point x="23.5" y="26.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="厨师_闪光提示" centerPoint3DX="344.5" centerPoint3DY="439.2" isVisible="false">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="308.7" ty="403.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
