@@ -213,7 +213,7 @@ class org.flashNight.arki.spatial.move.Mover {
         var dir:Vector = Mover.directions2D[direction];
         if (!dir) return;
 
-        _root.发布消息("move2DStrict")
+        // _root.发布消息("move2DStrict")
 
         // 计算总位移
         var vx:Number = dir.x * speed;
