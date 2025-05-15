@@ -1,12 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1742201735" lastUniqueIdentifier="77">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1747279134" lastUniqueIdentifier="77">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
-        <DOMLayer name="as" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="as" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
+_root.关卡地图帧值 = "基地车库";
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
@@ -17,7 +18,7 @@ _root.配置场景环境信息();]]></script>
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="效果" name="效果">
+                <DOMSymbolInstance libraryItemName="效果" name="效果" selected="true">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -69,7 +70,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

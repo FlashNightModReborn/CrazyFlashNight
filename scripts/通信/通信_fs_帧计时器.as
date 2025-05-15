@@ -115,6 +115,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // --------------------------
     this.eventBus.subscribe("frameUpdate", function():Void {
         _root.帧计时器.taskManager.updateFrame();
+        // _root.服务器.发布服务器消息(_root.场景进入位置名)
     }, this);
 };
 

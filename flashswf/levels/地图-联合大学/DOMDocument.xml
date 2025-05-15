@@ -141,7 +141,7 @@
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子右大腿.xml" loadImmediate="false" itemID="66e7d2b5-000021eb" lastModified="1726469989"/>
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子左大腿.xml" loadImmediate="false" itemID="66e7d2af-000021ea" lastModified="1726469990"/>
           <Include href="地板.xml" loadImmediate="false" itemID="66e6d0e9-000003ef" lastModified="1726402793"/>
-          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1742201735"/>
+          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1747279134"/>
           <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e377-000019cf" lastModified="1742201724"/>
           <Include href="地图元件/deadbody.xml" loadImmediate="false" itemID="666e9ef0-000003cc" lastModified="1727182776"/>
           <Include href="地图元件/效果.xml" loadImmediate="false" itemID="666ea047-000003ea" lastModified="1718526023"/>
@@ -203,7 +203,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="地图-联合大学" selected="true" centerPoint3DX="3263.65" centerPoint3DY="475.45">
+                                        <DOMSymbolInstance libraryItemName="地图-联合大学" centerPoint3DX="3263.65" centerPoint3DY="475.45">
                                              <transformationPoint>
                                                   <Point x="3263.65" y="475.45"/>
                                              </transformationPoint>
@@ -534,6 +534,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="314976" publishTime="1747279137"/>
           <PublishItem publishSize="314941" publishTime="1742201739"/>
           <PublishItem publishSize="315094" publishTime="1737186685"/>
           <PublishItem publishSize="488661" publishTime="1737186478"/>
@@ -553,6 +554,5 @@
           <PublishItem publishSize="535251" publishTime="1727181111"/>
           <PublishItem publishSize="535116" publishTime="1727181080"/>
           <PublishItem publishSize="535258" publishTime="1727179661"/>
-          <PublishItem publishSize="535254" publishTime="1727179448"/>
      </publishHistory>
 </DOMDocument>
