@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1770" itemID="6597607e-000009f7" lastModified="1738914571">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1770" itemID="6597607e-000009f7" lastModified="1747330625">
   <timeline>
     <DOMTimeline name="Symbol 1770">
       <layers>
@@ -11,7 +11,7 @@
 	var NPC对象 = _root.gameworld[当前NPC];
 	var 对话检测 = !!NPC对象.默认对话;
 	var 商店检测 = !!NPC对象.物品栏;
-	var 雇佣检测 = !!NPC对象.佣兵数据 && NPC对象.受雇欲望 > _root.受雇欲望基准 - 1;
+	var 雇佣检测 = (NPC对象.佣兵数据 != null) && (NPC对象.受雇欲望 > _root.受雇欲望基准 - 1);
 	var 任务检测 = !!NPC对象.NPC任务_任务_关卡路径;
 	var 技能检测 = !!NPC对象.可学的技能;
 	

@@ -60,7 +60,8 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
             if (!isRigid) {
                 hitTarget.状态改变("击倒");
                 hitTarget.barColorState = "击倒";
-                if (!(bullet.垂直击退速度 > 0)) {
+                if (bullet.垂直击退速度 <= 0) {
+                    if(hitTarget.垂直速度 > -5) hitTarget.垂直速度 = -5;
                     hitTarget.man.垂直速度 = -5;
                 }
             }
