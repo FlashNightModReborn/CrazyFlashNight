@@ -349,7 +349,7 @@ _root.无限过图进攻 = function(){
 	}
 
 	_root.stageDispatcher.publish("WaveStarted", 当前波次);
-	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加循环任务(_root.生存模式计时, 1000);
+	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加生命周期任务(游戏世界, "生存模式计时", _root.生存模式计时, 1000);
 };
 
 _root.rogue模式进攻 = function(){
@@ -459,7 +459,7 @@ _root.rogue模式进攻 = function(){
 	_root.生存模式OBJ.时钟[当前波次].push(_loc3_);
 
 	_root.stageDispatcher.publish("WaveStarted", 当前波次);
-	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加循环任务(_root.生存模式计时, 1000);
+	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加生命周期任务(游戏世界, "生存模式计时", _root.生存模式计时, 1000);
 };
 
 _root.生存模式计时 = function(){
@@ -515,7 +515,6 @@ _root.无限过图模式过关 = function(){
 		_root.关卡结束();
 		//设置返回地图帧值
 		if(基本配置.EndFrame) _root.关卡地图帧值 = 基本配置.EndFrame;
-		_root.stageDispatcher.publish("StageCleared");
 	}else{
 		// _root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！"); //已经不需要这种东西了
 		_root.gameworld.允许通行 = true;
