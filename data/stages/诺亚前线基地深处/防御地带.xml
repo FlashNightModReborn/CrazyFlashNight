@@ -35,6 +35,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带高地.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Relativity</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">
