@@ -284,28 +284,16 @@
          <MaxIntention>5</MaxIntention>
       </Dialogue>
    </Group>
+
    <!-- 填塞超多设定的黑铁会对话 -->
+   <!-- 黑铁会通用对话 -->
    <Group>
       <Identity>黑铁会部众</Identity>
+      <Identity>黑铁会精英</Identity>
       <Dialogue>
          <Text>莫非伤我教众者耶？若非此处为中立地，定将与汝决死！</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>0</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>我黑铁会道法自然，凡坛长以上职位皆以先贤古语释教论义……其实我听到过堂主们私下聊天，明明用的是白话。</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>4</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>那边坐着的家伙据说以前是我们黑铁教的大人物，因为犯错被赶了出去，在那之后就天天来这酒吧里干坐着。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>堂主严令我等不得参与追捕通缉犯。难得的机会了结恩怨，真是怪哉……</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
          <Text>坚守黑铁正朔，方能在这乱世立足！外界的歪理邪说，听都不要听！</Text>
@@ -340,51 +328,6 @@
       <Dialogue>
          <Text>今儿个又听见几个老家伙念叨祖训，好像祖宗亲自上阵似的，笑话得很！</Text>
          <MinIntention>0</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>武护法大人庶务繁忙，已有些日子没参与祭祖仪式了。仪护法大人想来不拘小节，对祭祖仪式似不严肃，长此以往恐有不祥。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>堂主未必管得了所有事，手下的散人才是我等日常接触的。他们几句话，我们下面人做的事就得改。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>4</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>堂主一发话，便弄得下面人急忙改弦易辙，好像几句话能改天命似的。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>4</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>既说道法自然，何要背诵教义？自然者，不背即忘，背而自然。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>教主他老人家……深不可测啊。我们这些人，连见一面都难</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>前任铁枪堂主……唉，说是人早没了。</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>堂主今儿板着脸，怕是水搅浑了。</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>外面的势力想和我们谈合作？天高水深，淹死的都是不知死活的。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>堂主说话，教众流汗。散人喝酒，教众买单。</Text>
-         <MinIntention>1</MinIntention>
          <MaxIntention>3</MaxIntention>
       </Dialogue>
       <Dialogue>
@@ -448,11 +391,6 @@
          <MaxIntention>3</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>你看这外头江湖风波不断，倒不如咱们底层聚在一起，喝几杯小酒，谈谈人生，何必计较老爷们的规矩？</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
          <Text>我总觉得武护法大人长得有点像什么人，似是以前见过，但忘记具体场所，只记得是在尘都。</Text>
          <MinIntention>1</MinIntention>
          <MaxIntention>3</MaxIntention>
@@ -463,29 +401,9 @@
          <MaxIntention>2</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>背靠黑铁会，那叫一个踏实！老子以前在宗族里挨训，如今能让族里人给我使唤，真活久见了！</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>一边喊着“敬祖守法”，一边却在大街小巷里明打算盘，这教规到底还能讲几遭？</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>散人说，黑铁会可能会和其他势力结盟，不知道是真是假。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
          <Text>不孝是大忌，我等教众尊卑有序，不可乱长幼之伦。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>都说坛主互为手足，我等教众为何无此规矩？坛长遵教义纳我为子，却不许我与同坛弟兄结义，是何道理？</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>2</MaxIntention>
       </Dialogue>
       <Dialogue>
          <Text>教众？要干的不就是把黑铁教那一套传播出去吗。老子末世前办电台的，有的是办法干这事。</Text>
@@ -543,11 +461,6 @@
          <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>智慧充盈，诠释教义——护法之职理应如此，然两大护法皆不理祭祖，难堪大任。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
          <Text>这护法对堂主，其实就是散人对坛主，均是舅侄关系。教主管护法，堂主管散人，黑铁会等级严明，可见一斑。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
@@ -556,11 +469,6 @@
          <Text>教主即会长，教主即道，教主即祖。道法自然，定论教义，教内一切悉遵教主旨意。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>我可不懂什么教义，不过黑铁会给的好处不少，听听念经也不是什么坏事。</Text>
-         <MinIntention>3</MinIntention>
-         <MaxIntention>3</MaxIntention>
       </Dialogue>
       <Dialogue>
          <Text>祭祖仪式是我教最重要的仪式，祖宗之法非他物所及。然黑铁会建立后，我教仪式日趋没落，实在令人痛心。</Text>
@@ -583,6 +491,203 @@
          <MaxIntention>4</MaxIntention>
       </Dialogue>
       <Dialogue>
+         <Text>祖先之行即真理，神禧律派如此，宗族共举亦如此，然当今教主似不遵此法，令人疑惑。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>火凤新规难堪大用，她靠什么阴谋诡计上位，我等心知肚明。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主今儿板着脸，怕是水搅浑了。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>分坛虽分为坛长、长老、会理与自然四制，各有千秋；然若教众失去规矩，恐难守正道。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>教主之令不可违！近期外部势力频频动摇，必得整顿我会内部秩序。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主的训诫虽严，然临战则需随机应变，方能护卫兄弟一命。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>每次聆听长老诠释古训，那含混古语倒真当令我受益匪浅。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+
+      <Dialogue>
+         <Text>疑虑只配蒙蔽弱者之心。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>我们脚下是土，手上是血。这血土之污，锈铸黑铁。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>这酒吧老板也不是一般人，能在各方势力间保持中立，还让我们这些黑铁会的随便进出，定有背景。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+   </Group>
+
+   <!-- 黑铁会基层部众对话 -->
+   <Group>
+      <Identity>黑铁会部众</Identity>
+      <Dialogue>
+         <Text>我黑铁会道法自然，凡坛长以上职位皆以先贤古语释教论义……其实我听到过堂主们私下聊天，明明用的是白话。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>那边坐着的家伙据说以前是我们黑铁教的大人物，因为犯错被赶了出去，在那之后就天天来这酒吧里干坐着。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主严令我等不得参与追捕通缉犯。难得的机会了结恩怨，真是怪哉……</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主未必管得了所有事，手下的散人才是我等日常接触的。他们几句话，我们下面人做的事就得改。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主一发话，便弄得下面人急忙改弦易辙，好像几句话能改天命似的。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>既说道法自然，何要背诵教义？自然者，不背即忘，背而自然。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>教主他老人家……深不可测啊。我们这些人，连见一面都难</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>前任铁枪堂主……唉，说是人早没了。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>外面的势力想和我们谈合作？天高水深，淹死的都是不知死活的。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主说话，教众流汗。散人喝酒，教众买单。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>你看这外头江湖风波不断，倒不如咱们底层聚在一起，喝几杯小酒，谈谈人生，何必计较老爷们的规矩？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>背靠黑铁会，那叫一个踏实！老子以前在宗族里挨训，如今能让族里人给我使唤，真活久见了！</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>一边喊着“敬祖守法”，一边却在大街小巷里明打算盘，这教规到底还能讲几遭？</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>散人说，黑铁会可能会和其他势力结盟，不知道是真是假。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>都说坛主互为手足，我等教众为何无此规矩？坛长遵教义纳我为子，却不许我与同坛弟兄结义，是何道理？</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>我可不懂什么教义，不过黑铁会给的好处不少，听听念经也不是什么坏事。</Text>
+         <MinIntention>3</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+
+      <Dialogue>
+         <Text>有个灵知派的兄弟说，昨晚梦见祖宗给他指点迷津，让他今天别出门。结果今天我们都被拉去干活，只有他躺家里睡觉。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>听闻灵知派近来梦见祖训显灵，教我等如何酿酒。试饮之，如饮水沟。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>宗族共举派的人最近在基层拉票，他们给教众发带符咒的压缩饼干，说吃了能辨忠奸——我怀疑是泻药。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>宗族共举派又来基层宣传了，这回发的是带“祖宗庇佑”字样的香囊。上次吃饼干拉肚子的兄弟还没缓过来呢。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>听说索隐派的弟兄，最近翻古籍翻得厉害，查到有一本书上说俺们教的祖训其实是菜谱。咱这规矩不会全得改吧？</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>赵坛主昨日换了黑龙堂新制的铠甲，往甲片里刻《黑铁正朔》的全文，硬生生给他凿裂了。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>坛上老长老老是念叨“圆满方正”，我看他光头倒是挺圆满身材倒是挺方正的。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>祖训上写：“持铁为道，持心为义”，老子寻思着，拿铁也是铁，续命刚刚好。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>教主谕令“巩固根基”，可黑龙堂把好钢都留着了。俺们总不能用信仰和泥巴打地基？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+   </Group>
+
+   <!-- 黑铁会精英部众对话 -->
+   <Group>
+      <Identity>黑铁会精英</Identity>
+      <Dialogue>
+         <Text>武护法大人庶务繁忙，已有些日子没参与祭祖仪式了。仪护法大人想来不拘小节，对祭祖仪式似不严肃，长此以往恐有不祥。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>智慧充盈，诠释教义——护法之职理应如此，然两大护法皆不理祭祖，难堪大任。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>教义之分乃我教头等大事，自索知派至灵知派，人之理性逐步让位于自然教化，现世的探索逐步让位于乡土的启迪。这之中的人理派、定论派倒也不过去其极端，骑墙而已。</Text>
          <MinIntention>1</MinIntention>
          <MaxIntention>2</MaxIntention>
@@ -601,16 +706,6 @@
          <Text>黑铁即教主，黑铁即正朔。黑铁正朔正是我教权威，黑铁正朔之规即我教教法之正统。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>0</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>祖先之行即真理，神禧律派如此，宗族共举亦如此，然当今教主似不遵此法，令人疑惑。</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>火凤新规难堪大用，她靠什么阴谋诡计上位，我等心知肚明。</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>3</MaxIntention>
       </Dialogue>
       <Dialogue>
          <Text>铁枪革新本就重教胜于枪械，不过以枪械为器，却遭此劫难，令人扼腕。</Text>
@@ -636,27 +731,6 @@
          <Text>致知派崇尚以沉思顿悟为尊，冥想所得为神之启迪，亦祖宗显灵。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>
-
-      <Dialogue>
-         <Text>分坛虽分为坛长、长老、会理与自然四制，各有千秋；然若教众失去规矩，恐难守正道。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>教主之令不可违！近期外部势力频频动摇，必得整顿我会内部秩序。</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>4</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>堂主的训诫虽严，然临战则需随机应变，方能护卫兄弟一命。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>每次聆听长老诠释古训，那含混古语倒真当令我受益匪浅。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>2</MaxIntention>
       </Dialogue>
       <Dialogue>
          <Text>新进之辈，莫受外界花言巧语所惑，黑铁正道，切不可轻易动摇。</Text>
@@ -713,68 +787,8 @@
          <MinIntention>1</MinIntention>
          <MaxIntention>3</MaxIntention>
       </Dialogue>
-
-      <Dialogue>
-         <Text>有个灵知派的兄弟说，昨晚梦见祖宗给他指点迷津，让他今天别出门。结果今天我们都被拉去干活，只有他躺家里睡觉。</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>4</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>听闻灵知派近来梦见祖训显灵，教我等如何酿酒。试饮之，如饮水沟。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>宗族共举派的人最近在基层拉票，他们给教众发带符咒的压缩饼干，说吃了能辨忠奸——我怀疑是泻药。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>宗族共举派又来基层宣传了，这回发的是带“祖宗庇佑”字样的香囊。上次吃饼干拉肚子的兄弟还没缓过来呢。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>听说索隐派的弟兄，最近翻古籍翻得厉害，查到有一本书上说俺们教的祖训其实是菜谱。咱这规矩不会全得改吧？</Text>
-         <MinIntention>2</MinIntention>
-         <MaxIntention>4</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>赵坛主昨日换了黑龙堂新制的铠甲，往甲片里刻《黑铁正朔》的全文，硬生生给他凿裂了。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>坛上老长老老是念叨“圆满方正”，我看他光头倒是挺圆满身材倒是挺方正的。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>祖训上写：“持铁为道，持心为义”，老子寻思着，拿铁也是铁，续命刚刚好。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>教主谕令“巩固根基”，可黑龙堂把好钢都留着了。俺们总不能用信仰和泥巴打地基？</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>疑虑只配蒙蔽弱者之心。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>1</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>我们脚下是土，手上是血。这血土之污，锈铸黑铁。</Text>
-         <MinIntention>1</MinIntention>
-         <MaxIntention>3</MaxIntention>
-      </Dialogue>
-      <Dialogue>
-         <Text>这酒吧老板也不是一般人，能在各方势力间保持中立，还让我们这些黑铁会的随便进出，定有背景。</Text>
-         <MinIntention>0</MinIntention>
-         <MaxIntention>2</MaxIntention>
-      </Dialogue>
    </Group>
+   
    <!-- 摇滚对话 -->
    <Group>
       <Identity>狂野玫瑰成员</Identity>
