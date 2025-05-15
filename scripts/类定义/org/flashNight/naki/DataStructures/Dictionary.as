@@ -2,7 +2,9 @@
 
     private var stringStorage:Object;    // 用于存储字符串键的对象
     private var objectStorage:Object;    // 用于存储对象和函数键的对象
-    private static var uidCounter:Number = 1; // 用于生成对象和函数键的唯一标识符（UID）
+
+    // 更改为负数实现，以天然与字符串入参隔绝
+    private static var uidCounter:Number = 0; // 用于生成对象和函数键的唯一标识符（UID）
     private static var uidMap:Object = {}; // 用于映射对象和函数键的 UID 到原始对象
     private var count:Number = 0;         // 存储当前字典中的键值对数量
 
@@ -27,10 +29,10 @@
     public function getUID(key:Object):Number {
         var uid:Number = key.__dictUID;
         if (uid === undefined) {
-            uid = key.__dictUID = uidCounter++;
-            uidMap[uid] = key;
-            _global.ASSetPropFlags(key, ["__dictUID"], 1, false); // 设置 __dictUID 不可枚举
+            uidMap[uid = key.__dictUID = --uidCounter] = key;
+            // _global.ASSetPropFlags(key, ["__dictUID"], 1, false); // 设置 __dictUID 不可枚举
         }
+
         return uid;
     }
 
@@ -42,10 +44,11 @@
     public static function getStaticUID(key:Object):Number {
         var uid:Number = key.__dictUID;
         if (uid === undefined) {
-            uid = key.__dictUID = uidCounter++;
+            uid = key.__dictUID = --uidCounter;
             // uidMap[uid] = key;
-            _global.ASSetPropFlags(key, ["__dictUID"], 1, false); // 设置 __dictUID 不可枚举
+            // _global.ASSetPropFlags(key, ["__dictUID"], 1, false); // 设置 __dictUID 不可枚举
         }
+
         return uid;
     }
 
@@ -70,7 +73,7 @@
             var uid:Number = key.__dictUID;
             if (uid === undefined) {
                 // 如果该对象没有 UID，则分配新的 UID 并存储在 uidMap 中
-                uid = key.__dictUID = uidCounter++;
+                uid = key.__dictUID = --uidCounter;
                 uidMap[uid] = key;
                 isKeysCacheDirty = true;
             }

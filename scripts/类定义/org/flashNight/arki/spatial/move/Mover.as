@@ -119,9 +119,6 @@ class org.flashNight.arki.spatial.move.Mover {
             } else {
                 // 水平移动：仅更新 _x 坐标
                 entity._x += vx;
-
-
-
             }
 
             entity.aabbCollider.updateFromUnitArea(entity);

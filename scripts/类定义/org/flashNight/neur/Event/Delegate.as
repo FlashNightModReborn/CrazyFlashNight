@@ -93,7 +93,7 @@ class org.flashNight.neur.Event.Delegate {
 
             // 生成缓存键：结合 scope 和 method 的 UID。
             // 使用字符串连接通常比位运算更健壮，尤其当 UID 可能很大或为负数时。
-            cacheKey = scopeUID + "_" + methodUID;
+            cacheKey = scopeUID + "#" + methodUID;
 
             // 检查缓存中是否已存在对应的特定作用域委托函数
             var cachedFunctionScope:Function = loccache[cacheKey];
@@ -239,7 +239,7 @@ class org.flashNight.neur.Event.Delegate {
 
         // 如果作用域为 null，则函数将在全局作用域中执行
         if (scope == null) {
-            cacheKey = methodUID + "|" + paramsUID;  // 组合方法 UID 和参数 UID 生成缓存键
+            cacheKey = methodUID + "^" + paramsUID;  // 组合方法 UID 和参数 UID 生成缓存键
             //  ServerManager.getInstance().sendServerMessage("create param" + cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
             //  trace(cacheKey)
             // 尝试从缓存中获取已存在的委托函数
@@ -267,7 +267,7 @@ class org.flashNight.neur.Event.Delegate {
             // 为作用域生成 UID，并与 methodUID 和 paramsUID 组合
             var scopeUID:Number = Dictionary.getStaticUID(scope);
             // 使用位运算生成缓存键，将 scopeUID、methodUID 和 paramsUID 组合
-            cacheKey = String(((scopeUID << 24) | (methodUID << 8)) + "|" + paramsUID);
+            cacheKey = String(((scopeUID << 24) | (methodUID << 8)) + "+" + paramsUID);
             //cacheKey = scopeUID + "|" + methodUID + "|" + paramsUID;
             //  ServerManager.getInstance().sendServerMessage("create param" + cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
             //  trace(cacheKey)
