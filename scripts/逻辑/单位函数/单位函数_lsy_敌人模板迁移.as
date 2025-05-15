@@ -139,22 +139,18 @@ _root.敌人函数.动画完毕 = function() {
 };
 
 _root.敌人函数.硬直 = function(目标, 时间) {
+	if(this.stiffID != null) return;
+	var 自机:Object = this;  // 在外部保存对当前对象的引用
     目标.stop();
 
-    _root.帧计时器.添加或更新任务(目标, "硬直", function() {
+    this.stiffID = _root.帧计时器.添加或更新任务(目标, "硬直", function() {
+		自机.stiffID = null;
         目标.play();
     }, 时间); 
 };
 
+_root.敌人函数.移动钝感硬直 = _root.主角函数.移动钝感硬直;
 
-_root.敌人函数.移动钝感硬直 = function(时间) {
-    var 自机:Object = this;  // 在外部保存对当前对象的引用
-
-    this.硬直中 = true;  
-    _root.帧计时器.添加或更新任务(this, "移动钝感硬直", function() {
-        自机.硬直中 = false;  
-    }, 时间);
-};
 
 _root.敌人函数.随机掉钱 = function(){
 	if (!this.不掉钱 && random(_root.打怪掉钱机率) === 0){
