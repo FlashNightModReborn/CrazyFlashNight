@@ -76,6 +76,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 var task:Task = this.taskTable[taskID];
                 if (task) {
                     // 执行任务回调函数
+
+                    // _root.服务器.发布服务器消息("taskTable: " + task.toString());
+                    
                     task.action();
                     // 根据任务重复逻辑进行处理：
                     // 如果只执行一次，则从任务表中删除；如果重复，则根据计数（或无限循环）重新调度
@@ -103,6 +106,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         // 单独处理零帧任务：这些任务通常需要立即执行，且任务间隔为0
         for (var id in this.zeroFrameTasks) {
             var zTask:Task = this.zeroFrameTasks[id];
+
+            //_root.服务器.发布服务器消息("zeroFrameTasks " + zTask.toString());
+
             zTask.action();
             // 若非无限循环任务则减少重复次数，并检查是否执行完毕
             if (zTask.repeatCount !== true) {
@@ -129,6 +135,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
     public function addTask(action:Function, interval:Number, repeatCount, parameters:Array):String {
         // 生成任务ID（以字符串保存，便于和其他任务使用同一类型）
         var taskID:String = String(++this.taskIdCounter);
+
+        // _root.服务器.发布服务器消息("addTask" + " " + taskID);
+
         // 根据每帧耗时计算任务的间隔帧数，并向上取整
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 创建任务实例，构造参数：任务ID、间隔帧数、重复次数
@@ -166,6 +175,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         } else {
             // 创建任务并加入调度（repeatCount 固定为 1，代表单次执行）
             var taskID:String = String(++this.taskIdCounter);
+
+            //_root.服务器.发布服务器消息("addSingleTask" + " " + taskID);
+
             var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
             var task:Task = new Task(taskID, intervalFrames, 1);
             task.action = Delegate.createWithParams(task, action, parameters);
@@ -192,6 +204,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      */
     public function addLoopTask(action:Function, interval:Number, parameters:Array):String {
         var taskID:String = String(++this.taskIdCounter);
+
+        //_root.服务器.发布服务器消息("addLoopTask" + " " + taskID);
+
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 创建任务时将 repeatCount 设置为 true，无限循环执行
         var task:Task = new Task(taskID, intervalFrames, true);
@@ -232,6 +247,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         }
         // 使用对象内的任务标识作为任务ID（字符串）
         var taskID:String = obj.taskLabel[labelName];
+        // _root.服务器.发布服务器消息("addOrUpdateTask labelName:" + labelName + " " + taskID);
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 从任务表或零帧任务中查找是否已有该任务
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
@@ -291,6 +307,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      */
     public function addLifecycleTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):String {
         if (!obj) return null;
+        
         // 若该 labelName 尚未存在，生成新的任务ID
         if (!obj.taskLabel[labelName]) {
             // 初始化对象上的任务标签存储容器
@@ -302,6 +319,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
         }
 
         var taskID:String = obj.taskLabel[labelName];
+        // _root.服务器.发布服务器消息("addLifecycleTask  labelName:" + labelName + " " + taskID);
         // 根据每帧耗时计算间隔对应的帧数
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         // 使用 Delegate 封装回调函数，以确保执行时 this 指向正确，并传递参数
@@ -363,6 +381,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param taskID 要移除的任务ID（字符串）。
      */
     public function removeTask(taskID:String):Void {
+        // _root.服务器.发布服务器消息("removeTask" + " " + taskID);
         var task:Task = this.taskTable[taskID];
         if (task) {
             // 调用调度器接口移除任务节点

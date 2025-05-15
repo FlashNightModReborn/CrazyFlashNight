@@ -92,4 +92,28 @@ class org.flashNight.neur.ScheduleTimer.Task {
         // 使用双等号同时处理 undefined 和 null
         this.repeatCount = (repeatCount == null) ? 1 : repeatCount;
     }
+
+    /**
+     * 返回任务的调试信息字符串
+     * - 显示关键属性：ID、间隔帧数、重复模式、剩余帧数
+     * - 包含运行状态：参数数量、动作绑定状态、队列节点关联状态
+     * @return {String} 任务详细信息的格式化字符串
+     */
+    public function toString():String {
+        var repeatInfo:String = (typeof this.repeatCount == "boolean" && this.repeatCount === true) 
+            ? "无限循环" 
+            : "剩余" + this.repeatCount + "次";
+        
+        var paramInfo:String = this.parameters ? "参数[" + this.parameters.length + "]" : "无参数";
+        var actionInfo:String = this.action ? "已绑定" : "未绑定";
+        var nodeInfo:String = this.node ? "队列中" : "非队列";
+        
+        return "[Task id=" + this.id + 
+            " interval=" + this.intervalFrames + 
+            " repeat=" + repeatInfo + 
+            " pending=" + this.pendingFrames + 
+            " | " + paramInfo + 
+            ", action:" + actionInfo + 
+            ", node:" + nodeInfo + "]";
+    }
 }
