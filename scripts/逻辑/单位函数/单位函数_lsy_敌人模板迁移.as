@@ -251,6 +251,23 @@ _root.敌人函数.掉落物品 = function(item){
 	}
 }
 
+_root.敌人函数.fly = function(target:MovieClip){
+	if(target.硬直中 == false){
+		target._y += target.垂直速度;
+		target.垂直速度 += _root.重力加速度;
+		target.aabbCollider.updateFromUnitArea(target); // 更新碰撞箱
+	}
+	if(target._y >= target.Z轴坐标){
+		target._y = target.Z轴坐标;
+		target.浮空 = false;
+		_root.帧计时器.移除任务(target.flyID);
+		target.flyID = null;
+		if(target.状态 == "击倒"){
+			target.状态改变("倒地");
+		}
+	}
+}
+
 _root.敌人函数.击飞浮空 = function(){
 	if(this.flyID != null) return;
 	this.浮空 = true;
@@ -259,21 +276,7 @@ _root.敌人函数.击飞浮空 = function(){
 	if(this._y >= this.Z轴坐标) this._y = this.Z轴坐标 - 1;
 	if(this.垂直速度 >= this.起跳速度) this.垂直速度 = this.起跳速度;
 
-	this.flyID = _root.帧计时器.添加生命周期任务(this, "击飞浮空", function(target:MovieClip){
-		if(target.硬直中 == false){
-			target._y += target.垂直速度;
-			target.垂直速度 += _root.重力加速度;
-		}
-		if(target._y >= target.Z轴坐标){
-			target._y = target.Z轴坐标;
-			target.浮空 = false;
-			_root.帧计时器.移除任务(target.flyID);
-			target.flyID = null;
-			if(target.状态 == "击倒"){
-				target.状态改变("倒地");
-			}
-		}
-	}, 1, this);
+	this.flyID = _root.帧计时器.添加生命周期任务(this, "击飞浮空", _root.敌人函数.fly, 1, this);
 }
 
 _root.敌人函数.击飞倒地 = function(){
