@@ -1,0 +1,182 @@
+﻿/**
+ * 零血不死检测组件
+ * 
+ * 专门检测单位HP为0但未正常死亡的异常情况。
+ * 当检测到单位血量为0但持续存活超过设定阈值时，
+ * 将触发强制死亡机制，防止"不死单位"影响游戏平衡。
+ * 
+ * 设计重点：
+ * 1. 低频检测HP值，减少性能开销
+ * 2. 可配置的检测阈值和响应机制
+ * 3. 支持不同类型单位的特殊情况处理
+ * 
+ * @version 1.0
+ * @update 2025-05-16
+ */
+class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDetector {
+    
+    /** 组件数据在watchDogData中的命名空间 */
+    private static var NAMESPACE:String = "zeroHPDetector";
+    
+    /** 零血状态持续的阈值，超过此值触发处理 */
+    private static var ZERO_HP_THRESHOLD:Number = 10;
+    
+    /**
+     * 初始化零血不死检测组件
+     * @param target:MovieClip 需要监视的目标对象
+     * @param watchDogData:Object 监视器数据容器
+     */
+    public static function init(target:MovieClip, watchDogData:Object):Void {
+        // 创建组件专用数据命名空间
+        var data:Object = watchDogData[NAMESPACE] = {};
+        
+        // 初始化检测数据
+        data.zeroHPCounter = 0;   // 处于零血状态的持续次数
+        data.lastHP = -1;         // 上次检测到的HP值
+        data.enabled = true;      // 组件启用状态
+        data.forceKilled = false; // 是否已经被强制处理过
+    }
+    
+    /**
+     * 更新零血不死检测状态
+     * @param target:MovieClip 需要监视的目标对象
+     * @param watchDogData:Object 监视器数据容器
+     */
+    public static function update(target:MovieClip, watchDogData:Object):Void {
+        // 获取组件数据
+        var data:Object = watchDogData[NAMESPACE];
+        if (data == null || !data.enabled) return;
+        
+        // 已经被强制处理过的单位不再检测
+        if (data.forceKilled) return;
+        
+        
+        // 执行零血检测
+        _checkZeroHPState(target, data);
+    }
+    
+    /**
+     * 检测单位是否处于零血但未死亡的状态
+     * @param target:MovieClip 目标对象
+     * @param data:Object 组件数据
+     * @private
+     */
+    private static function _checkZeroHPState(target:MovieClip, data:Object):Void {
+        // 获取当前HP（假设单位有hp属性）
+        var currentHP:Number = target.hp;
+        
+        // 单位已经死亡或HP正常，重置计数
+        if (target.isDead || currentHP > 0) {
+            _resetZeroHPState(data);
+            data.lastHP = currentHP;
+            return;
+        }
+        
+        // 检测到HP为0
+        if (currentHP === 0) {
+            // 增加零血计数
+            data.zeroHPCounter++;
+            
+            // 超过阈值，触发强制死亡处理
+            if (data.zeroHPCounter >= ZERO_HP_THRESHOLD) {
+                _handleZeroHPStuck(target, data);
+            }
+        } else {
+            // HP不为0，重置计数
+            _resetZeroHPState(data);
+        }
+        
+        // 更新上次HP记录
+        data.lastHP = currentHP;
+    }
+    
+    /**
+     * 重置零血状态计数
+     * @param data:Object 组件数据
+     * @private
+     */
+    private static function _resetZeroHPState(data:Object):Void {
+        data.zeroHPCounter = 0;
+    }
+    
+    /**
+     * 处理零血不死的卡死状态
+     * @param target:MovieClip 目标对象
+     * @param data:Object 组件数据
+     * @private
+     */
+    private static function _handleZeroHPStuck(target:MovieClip, data:Object):Void {
+        // 标记已处理，避免重复触发
+        data.forceKilled = true;
+        
+        // 调用回调处理方法
+        onZeroHPStuckDetected(target);
+    }
+    
+    /**
+     * 重置组件状态
+     * 在单位重生或状态重置时调用
+     * @param target:MovieClip 目标对象
+     * @param watchDogData:Object 监视器数据容器
+     */
+    public static function reset(target:MovieClip, watchDogData:Object):Void {
+        var data:Object = watchDogData[NAMESPACE];
+        if (data == null) return;
+        
+        // 重置所有计数和状态
+        data.zeroHPCounter = 0;
+        data.forceKilled = false;
+    }
+    
+    /**
+     * 启用/禁用组件
+     * @param target:MovieClip 目标对象
+     * @param watchDogData:Object 监视器数据容器
+     * @param enabled:Boolean 是否启用
+     */
+    public static function setEnabled(target:MovieClip, watchDogData:Object, enabled:Boolean):Void {
+        var data:Object = watchDogData[NAMESPACE];
+        if (data == null) return;
+        
+        data.enabled = enabled;
+        
+        // 禁用时重置状态
+        if (!enabled) {
+            reset(target, watchDogData);
+        }
+    }
+    
+    /**
+     * 零血不死状态检测回调方法（可在外部重写）
+     * 默认行为：强制设置单位死亡状态并发布消息
+     * @param target:MovieClip 卡死的目标对象
+     */
+    public static function onZeroHPStuckDetected(target:MovieClip):Void {
+        // 强制触发死亡
+        if (typeof target.死亡 === "function") {
+            target.死亡();
+        } else {
+            // 如果没有死亡方法，尝试设置关键状态
+            target.isDead = true;
+            target.hp = 0;
+            
+            // 可选：隐藏或禁用单位
+            target._visible = false;
+        }
+        
+        // 发布消息通知系统
+        if (typeof _root.发布消息 === "function") {
+            _root.发布消息("[WatchDog] 检测到单位零血不死，已强制处理: " + target);
+        } else {
+            trace("[WatchDog] 检测到单位零血不死，已强制处理: " + target);
+        }
+    }
+    
+    /**
+     * 设置零血持续检测阈值
+     * @param threshold:Number 新的阈值值（默认为10帧）
+     */
+    public static function setZeroHPThreshold(threshold:Number):Void {
+        ZERO_HP_THRESHOLD = threshold;
+    }
+}

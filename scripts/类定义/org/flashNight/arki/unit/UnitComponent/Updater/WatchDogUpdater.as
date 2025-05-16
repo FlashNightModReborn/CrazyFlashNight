@@ -38,10 +38,12 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater {
     public static function update(target:MovieClip):Void {
         // 安全检查：确保已初始化
         var watchDogData:Object = target.watchDogData;
+        /*
         if (watchDogData == null || watchDogData.initialized !== true) {
             init(target);
             return;
         }
+        */
         
         // 依次更新各监视组件
         // 1. 更新硬直卡死检测
