@@ -22,6 +22,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater {
         // 初始化各监视组件
         // 1. 硬直卡死检测组件
         StuckDetector.init(target, watchDogData);
+
+        // 2. 0血不死检测组件
+        ZeroHPDetector.init(target, watchDogData);
         
         // [预留] 其他监视组件的初始化
         // Component2.init(target, watchDogData);
@@ -48,6 +51,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater {
         // 依次更新各监视组件
         // 1. 更新硬直卡死检测
         StuckDetector.update(target, watchDogData);
+        ZeroHPDetector.update(target, watchDogData);
         
         // [预留] 其他监视组件的更新
         // Component2.update(target, watchDogData);
@@ -65,6 +69,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater {
         
         // 重置各组件
         StuckDetector.reset(target, watchDogData);
+        ZeroHPDetector.reset(target, watchDogData);
         
         // [预留] 其他组件重置
     }
