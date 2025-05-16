@@ -34,7 +34,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         data.zeroHPCounter = 0;   // 处于零血状态的持续次数
         data.lastHP = -1;         // 上次检测到的HP值
         data.enabled = true;      // 组件启用状态
-        data.forceKilled = false; // 是否已经被强制处理过
     }
     
     /**
@@ -46,10 +45,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         // 获取组件数据
         var data:Object = watchDogData[NAMESPACE];
         if (data == null || !data.enabled) return;
-        
-        // 已经被强制处理过的单位不再检测
-        if (data.forceKilled) return;
-        
         
         // 执行零血检测
         _checkZeroHPState(target, data);
@@ -66,25 +61,20 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         var currentHP:Number = target.hp;
         
         // 单位已经死亡或HP正常，重置计数
-        if (target.isDead || currentHP > 0) {
+        if (currentHP > 0) {
             _resetZeroHPState(data);
-            data.lastHP = currentHP;
             return;
         }
         
         // 检测到HP为0
-        if (currentHP === 0) {
-            // 增加零血计数
-            data.zeroHPCounter++;
-            
-            // 超过阈值，触发强制死亡处理
-            if (data.zeroHPCounter >= ZERO_HP_THRESHOLD) {
-                _handleZeroHPStuck(target, data);
-            }
-        } else {
-            // HP不为0，重置计数
-            _resetZeroHPState(data);
+        // 增加零血计数
+        data.zeroHPCounter++;
+        
+        // 超过阈值，触发强制死亡处理
+        if (data.zeroHPCounter >= ZERO_HP_THRESHOLD) {
+            _handleZeroHPStuck(target, data);
         }
+
         
         // 更新上次HP记录
         data.lastHP = currentHP;
@@ -106,9 +96,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      * @private
      */
     private static function _handleZeroHPStuck(target:MovieClip, data:Object):Void {
-        // 标记已处理，避免重复触发
-        data.forceKilled = true;
-        
         // 调用回调处理方法
         onZeroHPStuckDetected(target);
     }
@@ -125,7 +112,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         
         // 重置所有计数和状态
         data.zeroHPCounter = 0;
-        data.forceKilled = false;
     }
     
     /**
@@ -152,24 +138,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      * @param target:MovieClip 卡死的目标对象
      */
     public static function onZeroHPStuckDetected(target:MovieClip):Void {
-        // 强制触发死亡
-        if (typeof target.死亡 === "function") {
-            target.死亡();
-        } else {
-            // 如果没有死亡方法，尝试设置关键状态
-            target.isDead = true;
-            target.hp = 0;
-            
-            // 可选：隐藏或禁用单位
-            target._visible = false;
-        }
-        
-        // 发布消息通知系统
-        if (typeof _root.发布消息 === "function") {
-            _root.发布消息("[WatchDog] 检测到单位零血不死，已强制处理: " + target);
-        } else {
-            trace("[WatchDog] 检测到单位零血不死，已强制处理: " + target);
-        }
+        // _root.发布消息("[WatchDog] 检测到单位零血不死: " + target);
     }
     
     /**
