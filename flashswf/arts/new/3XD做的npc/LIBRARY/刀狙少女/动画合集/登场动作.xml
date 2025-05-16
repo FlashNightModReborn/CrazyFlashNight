@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/动画合集/登场动作" itemID="67ea6b3f-000005d3" lastModified="1743501069" lastUniqueIdentifier="157">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/动画合集/登场动作" itemID="67ea6b3f-000005d3" lastModified="1747387268" lastUniqueIdentifier="157">
   <timeline>
-    <DOMTimeline name="登场动作" currentFrame="16">
+    <DOMTimeline name="登场动作" currentFrame="1">
       <layers>
         <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -21,6 +21,19 @@
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("索降.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1821,7 +1834,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="绳索" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="绳索" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
