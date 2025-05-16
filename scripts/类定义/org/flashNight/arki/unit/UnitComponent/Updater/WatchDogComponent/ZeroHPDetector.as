@@ -1,16 +1,19 @@
-﻿/**
+﻿import org.flashNight.neur.Event.EventDispatcher;
+
+/**
  * 零血不死检测组件
  * 
  * 专门检测单位HP为0但未正常死亡的异常情况。
  * 当检测到单位血量为0但持续存活超过设定阈值时，
- * 将触发强制死亡机制，防止"不死单位"影响游戏平衡。
+ * 将触发强制死亡机制，防止"幽灵单位"影响游戏平衡。
  * 
  * 设计重点：
  * 1. 低频检测HP值，减少性能开销
  * 2. 可配置的检测阈值和响应机制
  * 3. 支持不同类型单位的特殊情况处理
+ * 4. 区分处理带复活标签和不带复活标签的单位
  * 
- * @version 1.0
+ * @version 1.1
  * @update 2025-05-16
  */
 class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDetector {
@@ -31,9 +34,10 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         var data:Object = watchDogData[NAMESPACE] = {};
         
         // 初始化检测数据
-        data.zeroHPCounter = 0;   // 处于零血状态的持续次数
-        data.lastHP = -1;         // 上次检测到的HP值
-        data.enabled = true;      // 组件启用状态
+        data.zeroHPCounter = 0;        // 处于零血状态的持续次数
+        data.lastHP = -1;              // 上次检测到的HP值
+        data.enabled = true;           // 组件启用状态
+        data.waitingForRespawn = false; // 是否正在等待复活
     }
     
     /**
@@ -46,6 +50,12 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         var data:Object = watchDogData[NAMESPACE];
         if (data == null || !data.enabled) return;
         
+        // 如果正在等待复活，则处理复活等待逻辑
+        if (data.waitingForRespawn) {
+            _handleRespawnWaiting(target, data);
+            return;
+        }
+        
         // 执行零血检测
         _checkZeroHPState(target, data);
     }
@@ -57,7 +67,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      * @private
      */
     private static function _checkZeroHPState(target:MovieClip, data:Object):Void {
-        // 获取当前HP（假设单位有hp属性）
+        // 获取当前HP
         var currentHP:Number = target.hp;
         
         // 单位已经死亡或HP正常，重置计数
@@ -66,18 +76,45 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
             return;
         }
         
-        // 检测到HP为0
-        // 增加零血计数
+        // 检测到HP为0，增加零血计数
         data.zeroHPCounter++;
         
-        // 超过阈值，触发强制死亡处理
+        // 超过阈值，触发处理
         if (data.zeroHPCounter >= ZERO_HP_THRESHOLD) {
             _handleZeroHPStuck(target, data);
         }
-
         
         // 更新上次HP记录
         data.lastHP = currentHP;
+    }
+    
+    /**
+     * 处理等待复活的逻辑
+     * @param target:MovieClip 目标对象
+     * @param data:Object 组件数据
+     * @private
+     */
+    private static function _handleRespawnWaiting(target:MovieClip, data:Object):Void {
+        // 检查单位是否已经复活（HP已恢复）
+        if (target.hp > 0) {
+            // 单位已复活，发布复活事件
+            _publishRespawnEvent(target);
+            
+            // 重置等待状态
+            data.waitingForRespawn = false;
+            _resetZeroHPState(data);
+            return;
+        }
+    }
+    
+    /**
+     * 发布复活成功事件
+     * @param target:MovieClip 目标对象
+     * @private
+     */
+    private static function _publishRespawnEvent(target:MovieClip):Void {
+        // target.dispatcher.publish("respawn", target);
+        _root.发布消息("[WatchDog] 单位已成功复活: ", target);
     }
     
     /**
@@ -97,7 +134,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      */
     private static function _handleZeroHPStuck(target:MovieClip, data:Object):Void {
         // 调用回调处理方法
-        onZeroHPStuckDetected(target);
+        onZeroHPStuckDetected(target, data);
     }
     
     /**
@@ -112,6 +149,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         
         // 重置所有计数和状态
         data.zeroHPCounter = 0;
+        data.waitingForRespawn = false;
     }
     
     /**
@@ -133,12 +171,26 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
     }
     
     /**
-     * 零血不死状态检测回调方法（可在外部重写）
-     * 默认行为：强制设置单位死亡状态并发布消息
+     * 零血不死状态检测回调方法
+     * 根据单位是否有复活标签选择不同的处理方式：
+     * - 有复活标签的单位：进入等待复活状态
+     * - 无复活标签的单位：直接发布击杀事件
+     * 
      * @param target:MovieClip 卡死的目标对象
+     * @param data:Object 组件数据
      */
-    public static function onZeroHPStuckDetected(target:MovieClip):Void {
-        // _root.发布消息("[WatchDog] 检测到单位零血不死: " + target);
+    public static function onZeroHPStuckDetected(target:MovieClip, data:Object):Void {
+        var dispatcher:EventDispatcher = target.dispatcher;
+        
+        _root.发布消息("[WatchDog] 检测到单位零血不死: ", target, target.respawn, target._killed);
+        
+        if (target.respawn) {
+            // 有复活标签的单位，进入等待复活状态
+            data.waitingForRespawn = true;
+        } else {
+            // 无复活标签且未被击杀的单位，直接发布击杀事件
+            if (!target._killed ) dispatcher.publish("kill", target);
+        }
     }
     
     /**

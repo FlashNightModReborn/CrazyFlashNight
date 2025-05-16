@@ -44,7 +44,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
     public static function onHeroRespawn(target:MovieClip):Void {
         RespawnEventComponent.onRespawn(target);
 
-        // _root.发布消息("主角复活");
+        _root.发布消息("主角复活");
 
         _root.玩家信息界面.刷新hp显示();
         _root.玩家信息界面.刷新mp显示();

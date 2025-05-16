@@ -15,6 +15,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
 
     public static function onKill(target:MovieClip):Void {
         target.状态改变("血腥死");
+        target._killed = true;
         // 不再在Kill事件时移除碰撞箱
         // target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
         // target.aabbCollider = null;
