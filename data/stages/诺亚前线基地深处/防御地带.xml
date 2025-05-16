@@ -392,6 +392,13 @@
             <PlayerX>420</PlayerX>
             <PlayerY>230</PlayerY>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>458</x>
+                <y>194</y>
+                <Identifier>出生点-防御地带内部入口</Identifier>
+            </Point>
+        </SpawnPoint>
         <Dialogue>
             <SubDialogue id="0">
                 <Name>$PC</Name>
@@ -601,6 +608,13 @@
             <PlayerX>450</PlayerX>
             <PlayerY>230</PlayerY>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>430</x>
+                <y>195</y>
+                <Identifier>出生点-防御地带内部大门</Identifier>
+            </Point>
+        </SpawnPoint>
         <Dialogue>
             <SubDialogue id="0">
                 <Name>$PC</Name>

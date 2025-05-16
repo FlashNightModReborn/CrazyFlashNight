@@ -25,7 +25,7 @@
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
-                    <DOMLayer name="Script Layer" color="#B16AAD" current="true" isSelected="true">
+                    <DOMLayer name="Script Layer" color="#B16AAD">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
@@ -39,16 +39,7 @@
                     <DOMLayer name="门" color="#FF800A" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="防御地带内部大门" centerPoint3DX="1068.95" centerPoint3DY="112.95">
-                                             <matrix>
-                                                  <Matrix tx="957.1" ty="42.4"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="111.85" y="70.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -28243,15 +28234,13 @@
                                                             <Edge strokeStyle="2" edges="
 !19197 31109|19197 31459"/>
                                                             <Edge strokeStyle="3" edges="
-!19197 31459|16669 31459"/>
+!19197 31459|16669 31459!16669 29903|19197 29903"/>
+                                                            <Edge strokeStyle="2" edges="
+!19197 29903|19197 29553"/>
                                                             <Edge strokeStyle="4" edges="
 !19197 29553|16669 29553"/>
                                                             <Edge strokeStyle="1" edges="
 !16669 29553|16669 29903"/>
-                                                            <Edge strokeStyle="3" edges="
-!16669 29903|19197 29903"/>
-                                                            <Edge strokeStyle="2" edges="
-!19197 29903|19197 29553"/>
                                                             <Edge strokeStyle="6" edges="
 !16663 31810|19197 31810"/>
                                                             <Edge strokeStyle="5" edges="
@@ -28811,13 +28800,15 @@
                                                             <Edge strokeStyle="2" edges="
 !19197 31109|19197 31459"/>
                                                             <Edge strokeStyle="4" edges="
-!19197 31459|16669 31459!19197 29903|16669 29903"/>
-                                                            <Edge strokeStyle="1" edges="
-!16669 29903|16669 29553"/>
+!19197 31459|16669 31459"/>
                                                             <Edge strokeStyle="3" edges="
 !16669 29553|19197 29553"/>
                                                             <Edge strokeStyle="2" edges="
 !19197 29553|19197 29903"/>
+                                                            <Edge strokeStyle="4" edges="
+!19197 29903|16669 29903"/>
+                                                            <Edge strokeStyle="1" edges="
+!16669 29903|16669 29553"/>
                                                             <Edge strokeStyle="6" edges="
 !16662 31879|19197 31879"/>
                                                             <Edge strokeStyle="5" edges="
@@ -36162,7 +36153,7 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="地板" color="#9933CC" autoNamed="false">
+                    <DOMLayer name="地板" color="#9933CC" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
@@ -36175,13 +36166,6 @@
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="图层 1" color="#4FFF4F">
-                         <frames>
-                              <DOMFrame index="0" keyMode="9728">
-                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>

@@ -24,7 +24,9 @@ _root.任务栏UI函数.打印限制词条明细 = function(entryArray,limitLeve
 	var str = "";
 	for (var i = 0; i < entryArray.length; i++){
 		str += "- " ;
-		if(limitLevel){str += _root.获取难度等级(limitLevel) + "难度后";}
+		if(limitLevel){
+			str += "[" + _root.获取难度等级(limitLevel) + "难度]";
+		}
 		str +=  _root.限制系统.getDiscription(entryArray[i]);
 		str += "\n";
 	}
