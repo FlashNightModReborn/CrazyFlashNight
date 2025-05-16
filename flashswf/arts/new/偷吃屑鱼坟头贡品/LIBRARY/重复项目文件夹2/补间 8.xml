@@ -97,13 +97,13 @@
                             <Edge fillStyle0="4" fillStyle1="5" edges="!173 8|120 44"/>
                             <Edge fillStyle0="4" fillStyle1="8" edges="!120 44|144 144"/>
                             <Edge fillStyle0="4" fillStyle1="7" strokeStyle="1" edges="!144 144|156 192"/>
+                            <Edge fillStyle0="3" fillStyle1="8" strokeStyle="1" edges="!63 40|28 32"/>
+                            <Edge fillStyle0="3" fillStyle1="9" strokeStyle="1" edges="!28 32|10 29!10 29|2 26"/>
+                            <Edge fillStyle0="6" fillStyle1="8" strokeStyle="1" edges="!79 123|63 40"/>
                             <Edge fillStyle0="6" fillStyle1="3" edges="!63 40|22 46"/>
                             <Edge fillStyle0="6" fillStyle1="1" edges="!22 46|42 146"/>
                             <Edge fillStyle0="6" fillStyle1="7" edges="!42 146|82 137"/>
                             <Edge fillStyle0="6" fillStyle1="1" strokeStyle="1" edges="!82 137|79 123"/>
-                            <Edge fillStyle0="6" fillStyle1="8" strokeStyle="1" edges="!79 123|63 40"/>
-                            <Edge fillStyle0="3" fillStyle1="9" strokeStyle="1" edges="!28 32|10 29!10 29|2 26"/>
-                            <Edge fillStyle0="3" fillStyle1="8" strokeStyle="1" edges="!63 40|28 32"/>
                             <Edge fillStyle0="7" fillStyle1="1" strokeStyle="1" edges="!61 191|82 137"/>
                             <Edge fillStyle0="7" fillStyle1="1" edges="!42 146|7 233"/>
                             <Edge fillStyle0="7" fillStyle1="11" strokeStyle="1" edges="!7 233|48 222"/>
@@ -149,11 +149,10 @@
                                 </StrokeStyle>
                               </strokes>
                               <edges>
-                                <Edge fillStyle0="1" strokeStyle="1" edges="!-63 181|-41 57!-41 57[-44 49 -49 49"/>
-                                <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-49 49|-72 173!-72 173[-71 183 -63 181"/>
+                                <Edge fillStyle0="1" strokeStyle="1" edges="!-49 49[-50 49 -53 50!-53 50|-76 176!-76 176[-74 188 -64 183!-64 183|-63 181"/>
+                                <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-63 181[-71 183 -72 173!-72 173|-49 49"/>
+                                <Edge fillStyle0="1" strokeStyle="1" edges="!-11 57|-34 184!-34 184[-32 192 -26 187!-26 187|-3 66!-3 66[-6 58 -11 57!-63 181|-41 57!-41 57[-44 49 -49 49"/>
                                 <Edge strokeStyle="1" edges="!-11 57[-13 57 -15 58!-15 58|-37 184!-37 184[-34 197 -27 191!-27 191|-26 187"/>
-                                <Edge fillStyle1="1" strokeStyle="1" edges="!-26 187[-32 192 -34 184!-34 184|-11 57"/>
-                                <Edge fillStyle0="1" strokeStyle="1" edges="!-26 187|-3 66!-3 66[-6 58 -11 57!-49 49[-50 49 -53 50!-53 50|-76 176!-76 176[-74 188 -64 183!-64 183|-63 181"/>
                                 <Edge cubics="!-15 58(;-15,58 -37,184 -37,184q-15 58 -37 184);"/>
                                 <Edge cubics="!-34 184(-34,184;-34,184 -11,57 -11,57q-34 184 -11 57);"/>
                                 <Edge cubics="!-3 66(-3,66;-3,66 -26,187 -26,187q-3 66 -26 187);"/>
@@ -192,9 +191,9 @@
                                 </StrokeStyle>
                               </strokes>
                               <edges>
-                                <Edge fillStyle1="1" strokeStyle="1" edges="!123 115|84 110!84 110|87 102!87 102|123 107!123 107|123 115!120 99|81 94!81 94|84 86!84 86|120 91!120 91|120 99"/>
-                                <Edge fillStyle0="1" strokeStyle="1" edges="!115 58|79 53!79 53|76 61!76 61|115 66!115 66|115 58"/>
                                 <Edge fillStyle1="1" strokeStyle="1" edges="!117 82|78 77!78 77|81 69!81 69|117 74!117 74|117 82"/>
+                                <Edge fillStyle0="1" strokeStyle="1" edges="!115 58|79 53!79 53|76 61!76 61|115 66!115 66|115 58"/>
+                                <Edge fillStyle1="1" strokeStyle="1" edges="!123 115|84 110!84 110|87 102!87 102|123 107!123 107|123 115!120 99|81 94!81 94|84 86!84 86|120 91!120 91|120 99"/>
                               </edges>
                             </DOMShape>
                           </members>

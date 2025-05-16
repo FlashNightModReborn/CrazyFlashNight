@@ -5,9 +5,9 @@
           <DOMFolderItem name="3.防具" itemID="666afe7d-000007f7" isExpanded="true"/>
           <DOMFolderItem name="3.防具/试作原种套装" itemID="666afeac-0000080d" isExpanded="true"/>
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
-          <DOMFolderItem name="ARMS指挥官" itemID="6655ada7-000003ff" isExpanded="true"/>
+          <DOMFolderItem name="ARMS指挥官" itemID="6655ada7-000003ff"/>
           <DOMFolderItem name="ARMS指挥官/sound" itemID="6658727d-0000239d" isExpanded="true"/>
-          <DOMFolderItem name="Graphic" itemID="58132c33-0000064e" isExpanded="true"/>
+          <DOMFolderItem name="Graphic" itemID="58132c33-0000064e"/>
           <DOMFolderItem name="MovieClip" itemID="6655e5bc-00000c93" isExpanded="true"/>
           <DOMFolderItem name="sound" itemID="66586728-000011c7" isExpanded="true"/>
           <DOMFolderItem name="备用" itemID="65f7ce57-000009f7" isExpanded="true"/>
@@ -132,7 +132,7 @@
           <Include href="ARMS指挥官/攻击动作.xml" loadImmediate="false" itemID="6655f1e3-00000a75" lastModified="1745465548"/>
           <Include href="ARMS指挥官/击飞.xml" loadImmediate="false" itemID="6655ae2a-00000407" lastModified="1716891198"/>
           <Include href="ARMS指挥官/跑步动作.xml" loadImmediate="false" itemID="6655b0fb-000004b5" lastModified="1745410448"/>
-          <Include href="ARMS指挥官/普通攻击动作.xml" loadImmediate="false" itemID="6655ed00-0000082a" lastModified="1745459546"/>
+          <Include href="ARMS指挥官/普通攻击动作.xml" loadImmediate="false" itemID="6655ed00-0000082a" lastModified="1747406978"/>
           <Include href="ARMS指挥官/起身.xml" loadImmediate="false" itemID="6655ad82-000003fa" lastModified="1739183236"/>
           <Include href="ARMS指挥官/死亡.xml" loadImmediate="false" itemID="6655dff1-000006a0" lastModified="1739183245"/>
           <Include href="ARMS指挥官/走路动作.xml" loadImmediate="false" itemID="6655b141-000004d7" lastModified="1716903636"/>
@@ -284,8 +284,8 @@
           <Include href="怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
           <Include href="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="666c5d45-00000626" lastModified="1701582054"/>
           <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
+          <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1716387345"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
@@ -784,12 +784,13 @@
           <Include href="重复项目文件夹1/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="66588745-00005c91" lastModified="1705929009"/>
           <Include href="重复项目文件夹1/怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="665872ad-000037c1" lastModified="1717072557"/>
           <Include href="重复项目文件夹1/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="66588746-00006748" lastModified="1701884437"/>
-          <Include href="重复项目文件夹1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="66588745-00005c92" lastModified="1705929134"/>
           <Include href="重复项目文件夹1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="66588745-00005c93" lastModified="1705928955"/>
+          <Include href="重复项目文件夹1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="66588745-00005c92" lastModified="1705929134"/>
           <Include href="重复项目文件夹1/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="66588746-00006463" lastModified="1716387345"/>
           <Include href="重复项目文件夹1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="66588746-00006465" lastModified="1701884437"/>
           <Include href="重复项目文件夹1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="66588746-00006464" lastModified="1701884437"/>
           <Include href="重复项目文件夹1/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="66588745-00005c85" lastModified="1714404428"/>
+          <Include href="重复项目文件夹1/行走ai载体.xml" loadImmediate="false" itemID="665870e1-0000155f" lastModified="1705928955"/>
           <Include href="重复项目文件夹1/击飞.xml" loadImmediate="false" itemID="665870e1-00001d17" lastModified="1717071920"/>
           <Include href="重复项目文件夹1/近战子弹定位用.xml" loadImmediate="false" itemID="665870e1-00001b3b" lastModified="1716387345"/>
           <Include href="重复项目文件夹1/静止动作.xml" loadImmediate="false" itemID="665870e1-00001e38" lastModified="1717070893"/>
@@ -801,7 +802,6 @@
           <Include href="重复项目文件夹1/死亡.xml" loadImmediate="false" itemID="665870e1-00001e84" lastModified="1717078012"/>
           <Include href="重复项目文件夹1/索敌框载体.xml" loadImmediate="false" itemID="665870e1-0000155d" lastModified="1705929009"/>
           <Include href="重复项目文件夹1/新版血条位置示意.xml" loadImmediate="false" itemID="665870e1-00001551" lastModified="1714404428"/>
-          <Include href="重复项目文件夹1/行走ai载体.xml" loadImmediate="false" itemID="665870e1-0000155f" lastModified="1705928955"/>
           <Include href="重复项目文件夹1/阴影.xml" loadImmediate="false" itemID="665870e2-00002034" lastModified="1705744649"/>
           <Include href="重复项目文件夹1/元件 1.xml" loadImmediate="false" itemID="66588747-00006b5e" lastModified="1717076105"/>
           <Include href="重复项目文件夹1/元件 6.xml" loadImmediate="false" itemID="665870e1-00001f76" lastModified="1717072034"/>
@@ -877,6 +877,7 @@
           <Include href="重复项目文件夹2/补间 54.xml" itemIcon="1" loadImmediate="false" itemID="66587d89-00004874" lastModified="1717073573"/>
           <Include href="重复项目文件夹2/补间 55.xml" itemIcon="1" loadImmediate="false" itemID="66587d89-00004876" lastModified="1717073578"/>
           <Include href="重复项目文件夹2/攻击动作.xml" loadImmediate="false" itemID="66587d89-00004520" lastModified="1739326036"/>
+          <Include href="重复项目文件夹2/行走ai载体.xml" loadImmediate="false" itemID="66587d88-000042f8" lastModified="1705928955"/>
           <Include href="重复项目文件夹2/击飞.xml" loadImmediate="false" itemID="66587d89-00004d10" lastModified="1717075076"/>
           <Include href="重复项目文件夹2/近战子弹定位用.xml" loadImmediate="false" itemID="66587d89-00004b3f" lastModified="1716387345"/>
           <Include href="重复项目文件夹2/静止动作.xml" loadImmediate="false" itemID="66587d8a-00004e31" lastModified="1717073060"/>
@@ -887,7 +888,6 @@
           <Include href="重复项目文件夹2/死亡.xml" loadImmediate="false" itemID="66587d8a-00004e7a" lastModified="1717078012"/>
           <Include href="重复项目文件夹2/索敌框载体.xml" loadImmediate="false" itemID="66587d88-000042f6" lastModified="1705929009"/>
           <Include href="重复项目文件夹2/新版血条位置示意.xml" loadImmediate="false" itemID="66587d88-000042ea" lastModified="1714404428"/>
-          <Include href="重复项目文件夹2/行走ai载体.xml" loadImmediate="false" itemID="66587d88-000042f8" lastModified="1705928955"/>
           <Include href="重复项目文件夹2/阴影.xml" loadImmediate="false" itemID="66587d8a-00005034" lastModified="1705744649"/>
           <Include href="重复项目文件夹2/元件 6.xml" loadImmediate="false" itemID="66587d8a-00004f74" lastModified="1717075151"/>
           <Include href="重复项目文件夹2/走路动作.xml" loadImmediate="false" itemID="66587d89-00004342" lastModified="1717073242"/>
@@ -1372,6 +1372,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1056902" publishTime="1747407013"/>
           <PublishItem publishSize="1056932" publishTime="1745465863"/>
           <PublishItem publishSize="1056932" publishTime="1745465666"/>
           <PublishItem publishSize="1056932" publishTime="1745465365"/>
@@ -1391,6 +1392,5 @@
           <PublishItem publishSize="935723" publishTime="1745416620"/>
           <PublishItem publishSize="934635" publishTime="1745415047"/>
           <PublishItem publishSize="915631" publishTime="1745349951"/>
-          <PublishItem publishSize="915588" publishTime="1745349271"/>
      </publishHistory>
 </DOMDocument>

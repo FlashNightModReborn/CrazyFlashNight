@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1710" itemID="6577efbc-00000754" lastModified="1702098593">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1710" itemID="6577efbc-00000754" lastModified="1747391484">
   <timeline>
-    <DOMTimeline name="Symbol 1710">
+    <DOMTimeline name="Symbol 1710" currentFrame="13">
       <layers>
         <DOMLayer name="Script Layer" color="#C3E2C3">
           <frames>
@@ -30,32 +30,7 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   stop();
-}
-if(_parent.hp <= 0)
-{
-   stop();
-}
-if(_parent.hp == 0)
-{
-   stop();
-}
-if(_parent.hp < 0)
-{
-   stop();
-}
-]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="18" duration="9" keyMode="9728">
+            <DOMFrame index="14" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="27" keyMode="9728">
@@ -67,7 +42,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#9AC54D">
+        <DOMLayer name="Layer 2" color="#9AC54D" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -93,14 +68,14 @@ if(_parent.hp < 0)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="29" keyMode="9728">
+            <DOMFrame index="14" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#8AACFE">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1698" centerPoint3DX="-387.9" centerPoint3DY="-175.05">
                   <matrix>
@@ -116,7 +91,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 4" color="#CB3DD2">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1693" centerPoint3DX="-315.25" centerPoint3DY="-114.85">
                   <matrix>
@@ -132,7 +107,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 5" color="#2DB7DD">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1691" centerPoint3DX="-312.05" centerPoint3DY="-88.2">
                   <matrix>
@@ -148,7 +123,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 6" color="#E87EF8">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1689" centerPoint3DX="-294.85" centerPoint3DY="-96.9">
                   <matrix>
@@ -164,7 +139,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 7" color="#21F8AB">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1687" centerPoint3DX="-305.5" centerPoint3DY="-101.45">
                   <matrix>
@@ -180,7 +155,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 8" color="#BF74A0">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1685" centerPoint3DX="-330.9" centerPoint3DY="-111.4">
                   <matrix>
@@ -196,7 +171,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 9" color="#9D9187">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1683" centerPoint3DX="-348.85" centerPoint3DY="-118.2">
                   <matrix>
@@ -212,7 +187,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 10" color="#B946F7">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1681" centerPoint3DX="-351.5" centerPoint3DY="-107.55">
                   <matrix>
@@ -228,7 +203,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 11" color="#0B89F4">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1679" centerPoint3DX="-372.6" centerPoint3DY="-137">
                   <matrix>
@@ -244,7 +219,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 12" color="#FB6DDD">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1677" centerPoint3DX="-392.8" centerPoint3DY="-149.7">
                   <matrix>
@@ -260,7 +235,7 @@ if(_parent.hp < 0)
         </DOMLayer>
         <DOMLayer name="Layer 13" color="#E987A0">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 1675" centerPoint3DX="-412.6" centerPoint3DY="-160.3">
                   <matrix>
@@ -274,9 +249,9 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#E19B3E" current="true" isSelected="true">
+        <DOMLayer name="Layer 14" color="#E19B3E">
           <frames>
-            <DOMFrame index="0" duration="43" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 2" centerPoint3DX="-323.8" centerPoint3DY="-91.35">
                   <matrix>

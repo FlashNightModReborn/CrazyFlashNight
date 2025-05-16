@@ -54,10 +54,10 @@
                           </transformationPoint>
                           <fills>
                             <FillStyle index="1">
-                              <SolidColor color="#303030"/>
+                              <SolidColor color="#343434"/>
                             </FillStyle>
                             <FillStyle index="2">
-                              <SolidColor color="#343434"/>
+                              <SolidColor color="#303030"/>
                             </FillStyle>
                             <FillStyle index="3">
                               <SolidColor color="#323232"/>
@@ -76,15 +76,15 @@
                             </StrokeStyle>
                           </strokes>
                           <edges>
-                            <Edge fillStyle1="1" strokeStyle="1" edges="!191 587|68 645!68 645|45 642!45 642|37 612!37 612|73 561!73 561|163 519!163 519|124 309!124 309|144 302"/>
-                            <Edge fillStyle1="2" strokeStyle="1" edges="!144 302|261 287!261 287|286 305"/>
-                            <Edge fillStyle1="3" strokeStyle="1" edges="!286 305|345 526"/>
-                            <Edge fillStyle1="4" strokeStyle="1" edges="!345 526|308 572!308 572|191 587"/>
-                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!169 321|286 305"/>
-                            <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!144 302|169 321"/>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!144 302|169 321"/>
+                            <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!169 321|286 305"/>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="!286 305|261 287!261 287|144 302"/>
+                            <Edge fillStyle1="2" strokeStyle="1" edges="!191 587|68 645!68 645|45 642!45 642|37 612!37 612|73 561!73 561|163 519!163 519|124 309!124 309|144 302"/>
                             <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!228 542|345 526"/>
-                            <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!228 542|191 587"/>
-                            <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!169 321|228 542"/>
+                            <Edge fillStyle0="3" strokeStyle="1" edges="!345 526|286 305"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="!345 526|308 572!308 572|191 587"/>
+                            <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!228 542|191 587"/>
+                            <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!169 321|228 542"/>
                             <Edge cubics="!73 561(;73,561 163,519 163,519q73 561 163 519)163,519;"/>
                             <Edge cubics="!37 612(37,612;37,612 73,561 73,561q37 612 73 561);"/>
                             <Edge cubics="!45 642(45,642;45,642 37,612 37,612q45 642 37 612);"/>
