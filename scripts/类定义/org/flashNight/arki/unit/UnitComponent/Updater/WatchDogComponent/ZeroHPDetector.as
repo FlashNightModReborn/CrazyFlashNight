@@ -22,7 +22,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
     private static var NAMESPACE:String = "zeroHPDetector";
     
     /** 零血状态持续的阈值，超过此值触发处理 */
-    private static var ZERO_HP_THRESHOLD:Number = 10;
+    private static var ZERO_HP_THRESHOLD:Number = 50;
     
     /**
      * 初始化零血不死检测组件
@@ -70,7 +70,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         // 获取当前HP
         var currentHP:Number = target.hp;
         
-        // 单位已经死亡或HP正常，重置计数
+        // HP正常，重置计数
         if (currentHP > 0) {
             _resetZeroHPState(data);
             return;
@@ -189,7 +189,10 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
             data.waitingForRespawn = true;
         } else {
             // 无复活标签且未被击杀的单位，直接发布击杀事件
-            if (!target._killed ) dispatcher.publish("kill", target);
+            if (!target._killed ) {
+                _root.发布消息("[WatchDog] 强制击杀幽灵单位: ", target);
+                dispatcher.publish("kill", target);
+            }
         }
     }
     
