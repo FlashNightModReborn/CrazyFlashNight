@@ -510,7 +510,11 @@ _root.配置关卡属性 = function(StageName:String):Void {
 			_root.配置基础关卡信息(关卡引用,StageInfo);
 			break;
 		case "外交地图" :
-			_root.配置外交地图关卡信息(关卡引用,StageInfo);//外交地图数据配置
+			if(!_root.isStageUnlocked(StageName)){
+				this._visible = false;
+			}else{
+				_root.配置外交地图关卡信息(关卡引用,StageInfo);//外交地图数据配置
+			}
 			break;
 	}/// 配置缓存数据
 	// _root.配置关卡缓存数据(关卡引用,xml文件地址);
