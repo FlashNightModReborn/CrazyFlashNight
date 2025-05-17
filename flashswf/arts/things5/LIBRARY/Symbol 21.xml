@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="Symbol 21">
       <layers>
-        <DOMLayer name="Script Layer" color="#88F25D">
+        <DOMLayer name="Script Layer" color="#88F25D" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -13,11 +13,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#A64F9D" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#A64F9D">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#00FFFF"/>
