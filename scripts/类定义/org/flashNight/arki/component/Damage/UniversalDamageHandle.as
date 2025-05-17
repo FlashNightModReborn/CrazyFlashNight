@@ -40,7 +40,7 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
     }
 
     /**
-     * 处理子弹伤害（含通用伤害 + 躲闪状态）。
+     * 处理子弹伤害（含通用伤害）。
      *
      * @param bullet  子弹对象
      * @param shooter 射击者对象
@@ -79,60 +79,6 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
         } else {
             target.损伤值 = bullet.破坏力 * DamageResistanceHandler.defenseDamageRatio(target.防御力);
         }
-        
-        var damageNumber:Number = target.损伤值;
-        var damageSize:Number = result.damageSize;
-
-        // _root.服务器.发布服务器消息(manager.dodgeState);
-        
-        switch (manager.dodgeState) {
-            case "跳弹":
-                damageNumber = DamageResistanceHandler.bounceDamageCalculation(damageNumber, target.防御力);
-                target.损伤值 = damageNumber;
-                damageSize *= 0.5 + 0.5 * damageNumber / bullet.破坏力;
-                var jumpDamageColor:String = bullet.子弹敌我属性值 ? "#7F6A00" : "#7F0000";
-                result.setDamageColor(jumpDamageColor);
-                break;
-            case "过穿":
-                damageNumber = DamageResistanceHandler.penetrationDamageCalculation(damageNumber, target.防御力);
-                target.损伤值 = damageNumber;
-                damageSize *= 0.5 + 0.5 * damageNumber / bullet.破坏力;
-                var pierceDamageColor:String = bullet.子弹敌我属性值 ? "#FFE770" : "#FF7F7F";
-                result.setDamageColor(pierceDamageColor);
-                break;
-            case "躲闪":
-            case "直感":
-                damageNumber = NaN;
-                target.损伤值 = 0;
-                damageSize *= 0.5;
-                result.dodgeStatus = "MISS";
-                break;
-            case "格挡":
-                damageNumber = target.受击反制(damageNumber, bullet);
-                
-                if (damageNumber) {
-                    target.损伤值 = damageNumber;
-                    damageSize *= 0.5 + 0.5 * target.损伤值 / bullet.破坏力;
-                } else if (damageNumber === 0) {
-                    target.损伤值 = 0;
-                    damageSize *= 1.2;
-                } else {
-                    damageNumber = NaN;
-                    target.损伤值 = 0;
-                    damageSize *= 0.5;
-                    result.dodgeStatus = "MISS";
-                }
-                break;
-            default:
-                damageNumber = Math.max(Math.floor(damageNumber), 1);
-                target.损伤值 = damageNumber;
-                _root.受击变红(120, target);
-        }
-
-        // _root.服务器.发布服务器消息(manager.dodgeState + ":" + result.damageColor);
-        
-        // _root.服务器.发布服务器消息(manager.dodgeState + ":" + damageNumber);
-        result.damageSize = damageSize;
     }
 
     public function toString():String {
