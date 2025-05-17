@@ -182,7 +182,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
         // 缓存常用属性到局部变量
         var dmgColor:String = this.damageColor || "#FFFFFF"; // 提供默认颜色
-        var dmgSize:Number = this.damageSize;
+        var dmgSize:Number = Math.floor(this.damageSize); // 将字体大小设为整数
         var dmgEffects:String = this.damageEffects;
         var dodgeStatus:String = this.dodgeStatus;
         var displayFn:Function = this.displayFunction;

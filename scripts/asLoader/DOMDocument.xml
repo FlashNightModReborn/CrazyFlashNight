@@ -8,6 +8,19 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[/*function calc()
+{
+	trace(org.flashNight.arki.component.StatHandler.DodgeHandler.calcDodgeRateByLevel(attackerLevel,dodgerLevel,dodgeRate,hitRate));
+}
+
+attackerLevel = 30;
+dodgerLevel = 30;
+dodgeRate = 6;
+hitRate = 10;
+
+calc();*/]]></script>
+                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -21,6 +34,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="344427" publishTime="1747473162"/>
+          <PublishItem publishSize="344430" publishTime="1747473151"/>
+          <PublishItem publishSize="344430" publishTime="1747473132"/>
+          <PublishItem publishSize="344429" publishTime="1747473114"/>
+          <PublishItem publishSize="344297" publishTime="1747471464"/>
+          <PublishItem publishSize="344351" publishTime="1747471266"/>
+          <PublishItem publishSize="344305" publishTime="1747471030"/>
           <PublishItem publishSize="342509" publishTime="1747196793"/>
           <PublishItem publishSize="342497" publishTime="1747196763"/>
           <PublishItem publishSize="342440" publishTime="1747196700"/>
@@ -34,12 +54,5 @@
           <PublishItem publishSize="342364" publishTime="1747195254"/>
           <PublishItem publishSize="342404" publishTime="1747194838"/>
           <PublishItem publishSize="342268" publishTime="1747114811"/>
-          <PublishItem publishSize="342268" publishTime="1747114800"/>
-          <PublishItem publishSize="342261" publishTime="1747114741"/>
-          <PublishItem publishSize="342265" publishTime="1747114582"/>
-          <PublishItem publishSize="342260" publishTime="1747114524"/>
-          <PublishItem publishSize="342259" publishTime="1747114472"/>
-          <PublishItem publishSize="342259" publishTime="1747114412"/>
-          <PublishItem publishSize="342256" publishTime="1747114385"/>
      </publishHistory>
 </DOMDocument>
