@@ -1,7 +1,7 @@
 ﻿/**
  * 硬直卡死检测组件
  * 
- * 专门负责检测角色是否因持续硬直且位置不变而进入卡死状态。
+ * 专门负责检测角色是否因持续处于受击硬直状态且位置不变而进入卡死状态。
  * 监控目标的硬直状态和位置变化，在满足卡死条件时自动恢复。
  * 设计重点：
  * 1. 仅在必要时访问坐标属性，减少getter调用
@@ -16,7 +16,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
     /** 组件数据在watchDogData中的命名空间 */
     private static var NAMESPACE:String = "stuckDetector";
     
-    /** 连续硬直检测的阈值，达到此值开始进行位置监控 */
+    /** 连续受击硬直检测的阈值，达到此值开始进行位置监控 */
     private static var STUN_THRESHOLD:Number = 6;
     
     /** 连续位置不变的阈值，达到此值判定为卡死 */
@@ -49,7 +49,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
         if (data == null || !data.enabled) return;
         
         // 执行硬直卡死检测
-        if (target.硬直中) {
+        if (target.硬直中 || target.knockStiffID != null) {
             _handleStunState(target, data);
         } else {
             _handleNormalState(target, data);
@@ -192,15 +192,16 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
      * @param target:MovieClip 卡死的目标对象
      */
     public static function onStuckDetected(target:MovieClip):Void {
-        // 解除硬直状态
-        target.硬直中 = false;
-        
         // 发布消息通知系统
         if (typeof _root.发布消息 === "function") {
-            _root.发布消息("[WatchDog] 检测到对象硬直卡死，已自动恢复: " + target);
+            _root.发布消息("[WatchDog] 检测到对象受击硬直卡死，已自动恢复: " + target + "[" + target.knockStiffID + "]");
         } else {
-            trace("[WatchDog] 检测到对象硬直卡死，已自动恢复: " + target);
+            trace("[WatchDog] 检测到对象受击硬直卡死，已自动恢复: " + target + "[" + target.knockStiffID + "]");
         }
+
+        // 解除硬直状态
+        target.硬直中 = false;
+        target.knockStiffID = null;
     }
     
     /**

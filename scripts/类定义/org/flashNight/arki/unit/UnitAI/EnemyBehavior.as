@@ -190,27 +190,30 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.target = null;
         data.self.攻击目标 = "无";
         data.updateSelf(); // 更新自身坐标
+
+        var self = data.self;
+        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+
+        // 根据友军数量计算随机时间
+        var 友军数量 = _root.帧计时器.获取友军缓存(self,5).length;
+        var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
+        data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.random(temp * EnemyBehavior.WANDER_BASIC_TIME);
+
         if(data.standby) {
             // 待机状态下无法移动
-            data.self.左行 = false;
-            data.self.右行 = false;
-            data.self.上行 = false;
-            data.self.下行 = false;
+            self.左行 = false;
+            self.右行 = false;
+            self.上行 = false;
+            self.下行 = false;
             return; 
         }
-
-        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
 
         var randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
         var randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
         
-        data.self.左行 = randx < data.x;
-        data.self.右行 = !data.self.左行;
-        data.self.上行 = randy < data.z;
-        data.self.下行 = randy > data.z;
-        // 根据友军数量计算随机时间
-        var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
-        var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
-        data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.random(temp * EnemyBehavior.WANDER_BASIC_TIME);
+        self.左行 = randx < data.x;
+        self.右行 = !self.左行;
+        self.上行 = randy < data.z;
+        self.下行 = randy > data.z;
     }
 }
