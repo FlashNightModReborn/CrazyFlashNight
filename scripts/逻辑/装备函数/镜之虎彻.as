@@ -1,4 +1,6 @@
-﻿_root.装备生命周期函数.镜之虎彻初始化 = function(reflector:Object, paramObj:Object) {
+﻿import org.flashNight.arki.spatial.move.*;
+
+_root.装备生命周期函数.镜之虎彻初始化 = function(reflector:Object, paramObj:Object) {
     reflector.lastTime = 0;
     reflector.precent = Number(paramObj.precent) || 2;
     reflector.duration = Number(paramObj.duration) || 0.25;
@@ -54,6 +56,7 @@ _root.装备生命周期函数.镜之虎彻周期 = function(reflector:Object, p
 
                 target.man.攻击时移动(0, atksp);
                 target.man.攻击时可改变移动方向(1);
+                Mover.enforceScreenBounds(target);
             }
 
             var mpCount:Number = Math.floor(target.mp满血值 / 100 * reflector.precent);

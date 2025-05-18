@@ -455,4 +455,41 @@ class org.flashNight.arki.spatial.move.Mover {
     public static function isMovieClipValid(clip:MovieClip):Boolean {
         return !clip.hitTest(_root.gameworld.地图, true);
     }
+
+
+    /**
+     * 强制将实体限制在屏幕/关卡范围内
+     *
+     * @param entity 需要限制的 MovieClip 对象，要求其具有 _x、_y、Z轴坐标、aabbCollider、swapDepths 等属性
+     */
+    public static function enforceScreenBounds(entity:MovieClip):Void {
+        // 从全局读取边界值，确保在关卡里定义了 Xmin/Xmax/Ymin/Ymax
+        var minX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
+        var maxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
+        var minY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
+        var maxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
+
+        // 限制水平坐标
+        if (entity._x < minX) {
+            entity._x = minX;
+        } else if (entity._x > maxX) {
+            entity._x = maxX;
+        }
+
+        // 限制垂直/高度坐标：Z轴 和 _y 保持一致
+        if (entity.Z轴坐标 < minY) {
+            entity.Z轴坐标 = minY;
+            entity._y         = minY;
+        } else if (entity.Z轴坐标 > maxY) {
+            entity.Z轴坐标 = maxY;
+            entity._y         = maxY;
+        }
+
+        // _root.发布消息(entity._x, entity._y, _root.Xmin, _root.Xmax, _root.Ymin, _root.Ymax);
+
+        // 更新碰撞箱并调整显示深度
+        entity.aabbCollider.updateFromUnitArea(entity);
+        entity.swapDepths(entity._y);
+    }
+
 }
