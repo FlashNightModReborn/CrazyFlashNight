@@ -322,10 +322,11 @@ class org.flashNight.arki.item.ItemUtil{
      * 若对应栏位没有足够物品，返回null
      */
     public static function contain(itemArray:Array):Object{
-        var list = {背包:{},材料:{},情报:{}};
+        var list = {背包:{},材料:{},情报:{},药剂栏:{}};
         var 背包 = _root.物品栏.背包;
         var 材料 = _root.收集品栏.材料;
         var 情报 = _root.收集品栏.情报;
+        var 药剂栏 = _root.物品栏.药剂栏;
         var inventoryItems = {};
         //
         for(var i = 0; i < itemArray.length; i++){
@@ -356,6 +357,22 @@ class org.flashNight.arki.item.ItemUtil{
                     }
                     list.背包[index] = bagItem.value;
                     value -= bagItem.value;
+                }
+                
+                var drugindexArr:Array = 药剂栏.getIndexes();
+                // var drugArr:Array = 药剂栏.getItemArray();
+                for(var j = 0; j < drugindexArr.length; j++){
+                    var index = drugindexArr[j];
+                    // var drugItem:Object = drugArr[j];
+                    var drugItem:Object = 药剂栏.getItem(index);
+                    if(name != drugItem.name) continue;
+                    if(drugItem.value >= value){
+                        list.药剂栏[index] = value;
+                        value = 0;
+                        break;
+                    }
+                    list.药剂栏[index] = drugItem.value;
+                    value -= drugItem.value;
                 }
                 if(value > 0) return null;
             }
@@ -390,6 +407,13 @@ class org.flashNight.arki.item.ItemUtil{
             var item = 背包.getItem(i);
             if(isNaN(item.value)) 背包.remove(i);
             else 背包.addValue(i, -list.背包[i]);
+        }
+        //药剂栏
+        var 药剂栏 = _root.物品栏.药剂栏;
+        for(var i in list.药剂栏){
+            var item = 药剂栏.getItem(i);
+            if(isNaN(item.value)) 药剂栏.remove(i);
+            else 药剂栏.addValue(i, -list.药剂栏[i]);
         }
         return true;
     }
