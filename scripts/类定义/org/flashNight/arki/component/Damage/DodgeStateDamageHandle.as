@@ -99,7 +99,7 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
                 break;
             default:
                 // 内联展开 Math.max 和 Math.floor
-                damageNumber = (damageNumber > 0) ? (damageNumber | 0) : 1; // 相当于 Math.max(Math.floor(damageNumber), 1)
+                damageNumber = (damageNumber > 1) ? (damageNumber | 0) : 1; // 相当于 Math.max(Math.floor(damageNumber), 1)
                 target.损伤值 = damageNumber;
                 _root.受击变红(120, target);
         }

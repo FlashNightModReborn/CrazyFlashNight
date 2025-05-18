@@ -88,6 +88,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         } else {
             ceilC = floorC;
         }
+        // _root.发布消息( "A:" + A + ", B:" + B + ", ceilC:" + ceilC);
 
         // 计算 min(bullet.霰弹值, ceilC)
         var actualScatterUsed:Number;
@@ -101,7 +102,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         result.actualScatterUsed = actualScatterUsed;
 
         // 更新 bullet 和 target
-        bullet.霰弹值 -= actualScatterUsed;
+        if(bullet.普通检测) bullet.霰弹值 -= actualScatterUsed; // 只有普通子弹会降低联弹霰弹值
         result.finalScatterValue = bullet.霰弹值;
 
         // _root.发布消息("au:" + actualScatterUsed + ",fv:" + bullet.霰弹值 + ", dg:" + target.损伤值);

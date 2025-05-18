@@ -4,12 +4,12 @@
  * 专门负责检测角色是否因持续处于攻击硬直而进入卡死状态。
  * 监控目标的硬直状态和位置变化，在满足卡死条件时自动恢复。
  * 设计重点：
- * 1. 仅在必要时访问坐标属性，减少getter调用
+ * 1. 只通过stiffID是否存在判断任务丢失，不会错误检测时停等其他正常卡住敌人的手段
  * 2. 模块化设计，独立于其他监视逻辑
  * 3. 可配置的检测阈值
  * 
  * @version 1.0
- * @update 2025-05-16
+ * @update 2025-05-18
  */
 class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StiffDetector {
     
