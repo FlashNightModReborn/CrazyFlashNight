@@ -14,7 +14,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
     }
 
     public static function onDeath(target:MovieClip):Void {
-        target.人物文字信息.removeMovieClip();
-        target.新版人物文字信息.removeMovieClip();
+        if(!target.respawn){
+            target.人物文字信息.removeMovieClip();
+            target.新版人物文字信息.removeMovieClip();
+        }
     }
 }

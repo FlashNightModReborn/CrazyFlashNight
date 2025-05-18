@@ -114,7 +114,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      */
     private static function _publishRespawnEvent(target:MovieClip):Void {
         // target.dispatcher.publish("respawn", target);
-        _root.发布消息("[WatchDog] 单位已成功复活: ", target);
+        // _root.发布消息("[WatchDog] 单位已成功复活: ", target);
     }
     
     /**
@@ -189,7 +189,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
             data.waitingForRespawn = true;
         } else {
             // 无复活标签且未被击杀的单位，直接发布击杀事件
-            if (!target._killed ) {
+            if (!target._killed) {
                 _root.发布消息("[WatchDog] 强制击杀幽灵单位: ", target);
                 dispatcher.publish("kill", target);
             }
