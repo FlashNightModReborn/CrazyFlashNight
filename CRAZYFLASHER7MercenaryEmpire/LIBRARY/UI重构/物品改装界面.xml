@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1746209926" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1747583423" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="物品改装界面" currentFrame="9">
+    <DOMTimeline name="物品改装界面">
       <layers>
         <DOMLayer name="Labels Layer" color="#F2BEC5">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C44A9F">
+        <DOMLayer name="Script Layer" color="#C44A9F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -126,7 +126,7 @@ function 虚拟币支付(amount, 素材数组)
 				_root.金钱 = tmp_金钱;
 			}
 			删除材料块();
-			_root.最上层发布文字提示(_root.获得翻译("改装成功！请查看背包。"));
+			_root.最上层发布文字提示(_root.获得翻译("制作成功！请查看背包。"));
 			_root.获取虚拟币值();
 			gotoAndStop("成功");
 			play();
@@ -161,7 +161,7 @@ function 虚拟币支付(amount, 素材数组)
 				_root.金钱 = tmp_金钱;
 			}
 			删除材料块();
-			_root.最上层发布文字提示(_root.获得翻译("改装成功！请查看背包。"));
+			_root.最上层发布文字提示(_root.获得翻译("制作成功！请查看背包。"));
 			_root.获取虚拟币值();
 			gotoAndStop("成功");
 			play();
@@ -613,11 +613,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#9CCF7E" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#9CCF7E">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements>
-                <DOMStaticText selected="true" fontRenderingMode="device" width="165.1" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="165.1" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="33.9" ty="6.6"/>
                   </matrix>
