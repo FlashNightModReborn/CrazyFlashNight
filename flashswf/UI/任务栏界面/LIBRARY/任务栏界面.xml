@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747641352" lastUniqueIdentifier="25">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747642854" lastUniqueIdentifier="25">
   <timeline>
     <DOMTimeline name="任务栏界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;517&lt;/guideline&gt;&lt;guideline direction="v"&gt;276&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -80,7 +80,9 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[排列任务图标();]]></script>
+                <script><![CDATA[
+排列任务图标();
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -92,44 +94,11 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="翻页按钮" color="#FF800A" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="当前页数" color="#9933CC" parentLayerIndex="2" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
+            <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="翻页箭头" selected="true" symbolType="button">
-                  <matrix>
-                    <Matrix a="0" b="-1.03028869628906" c="1.43710327148438" d="0" tx="317.75" ty="524.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="0.25" y="-20.6"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-    var 最大页数 = Math.ceil(_root.tasks_to_do.length / 4) - 1;
-    
-    if (页数 < 最大页数) {
-        页数 += 1;
-        排列任务图标();
-    }
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="翻页箭头" symbolType="button">
-                  <matrix>
-                    <Matrix a="0" b="1.03028869628906" c="-1.43710327148438" d="0" tx="433.2" ty="524.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-    if (页数 > 0) {
-        页数 -= 1;
-        排列任务图标();
-    }
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
                 <DOMDynamicText fontRenderingMode="device" width="39" height="91.95" variableName="页数" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="360.05" ty="482.7"/>
@@ -144,6 +113,65 @@ gotoAndStop("我的任务");]]></script>
                   </textRuns>
                 </DOMDynamicText>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="翻页箭头" color="#4F80FF" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翻页箭头" symbolType="button">
+                  <matrix>
+                    <Matrix a="0" b="1.0302734375" c="-1.43710327148438" d="0" tx="433.2" ty="524.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+    var 最大页数 = Math.ceil(_root.tasks_to_do.length / 4) - 1;
+    
+    if (页数 < 最大页数) {
+        页数 += 1;
+        排列任务图标();
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="翻页箭头" color="#FF4F4F" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翻页箭头" symbolType="button">
+                  <matrix>
+                    <Matrix a="0" b="-1.0302734375" c="1.43710327148438" d="0" tx="317.75" ty="524.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="-20.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+    if (页数 > 0) {
+        页数 -= 1;
+        排列任务图标();
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -196,7 +224,7 @@ gotoAndStop("我的任务");]]></script>
           </frames>
         </DOMLayer>
         <DOMLayer name="事件日志" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="对话按钮" color="#9933CC" parentLayerIndex="5" autoNamed="false">
+        <DOMLayer name="对话按钮" color="#9933CC" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -233,7 +261,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#4FFFFF" parentLayerIndex="5" autoNamed="false">
+        <DOMLayer name="文字" color="#4FFFFF" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -257,7 +285,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="mask" color="#9933CC" parentLayerIndex="5" locked="true" autoNamed="false">
+        <DOMLayer name="mask" color="#9933CC" parentLayerIndex="8" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -276,7 +304,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务树" color="#9933CC" parentLayerIndex="5" autoNamed="false">
+        <DOMLayer name="任务树" color="#9933CC" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -295,7 +323,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拖拽按钮" color="#FF800A" parentLayerIndex="5" autoNamed="false">
+        <DOMLayer name="拖拽按钮" color="#FF800A" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -335,7 +363,7 @@ on(releaseOutside){
           </frames>
         </DOMLayer>
         <DOMLayer name="我的任务" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -362,7 +390,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务奖励" color="#9933CC" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="任务奖励" color="#9933CC" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -381,11 +409,11 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="持有物品" color="#FF800A" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="持有物品" color="#FF800A" parentLayerIndex="14" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="8、持有物品/持有物品-动效" name="物品需求" centerPoint3DX="560.6" centerPoint3DY="359.6">
+                <DOMSymbolInstance libraryItemName="8、持有物品/持有物品-动效" name="物品需求" selected="true" centerPoint3DX="560.6" centerPoint3DY="359.6">
                   <matrix>
                     <Matrix tx="495.9" ty="315.55"/>
                   </matrix>
@@ -400,7 +428,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关卡需求" color="#9933CC" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="关卡需求" color="#9933CC" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -419,7 +447,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务详情" color="#9933CC" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="任务详情" color="#9933CC" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -446,7 +474,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF800A" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="文字" color="#FF800A" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -456,7 +484,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -493,7 +521,7 @@ on(releaseOutside){
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!12000 0|12000 11520!11600 11000|400 11000!400 11000|400 1400!400 1400|11600 1400!11600 1400|11600 11000"/>
+                    <Edge strokeStyle="1" edges="!11600 11000|400 11000!400 11000|400 1400!400 1400|11600 1400!11600 1400|11600 11000!12000 0|12000 11520"/>
                   </edges>
                 </DOMShape>
               </elements>

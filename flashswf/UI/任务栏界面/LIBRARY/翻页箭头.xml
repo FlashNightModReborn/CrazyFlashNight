@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="翻页箭头" itemID="682ad455-00002290" symbolType="button" lastModified="1747639138">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="翻页箭头" itemID="682ad455-00002290" symbolType="button" lastModified="1747642557">
   <timeline>
-    <DOMTimeline name="翻页箭头" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-12&lt;/guideline&gt;&lt;guideline direction="v"&gt;-20&lt;/guideline&gt;&lt;guideline direction="v"&gt;-21&lt;/guideline&gt;&lt;guideline direction="h"&gt;21&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="翻页箭头" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-12&lt;/guideline&gt;&lt;guideline direction="v"&gt;-20&lt;/guideline&gt;&lt;guideline direction="v"&gt;-21&lt;/guideline&gt;&lt;guideline direction="h"&gt;21&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="方向栏-光效" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -121,7 +121,7 @@
                     <FillStyle index="1">
                       <LinearGradient spreadMethod="repeat">
                         <matrix>
-                          <Matrix a="-0.0209197998046875" d="-0.01409912109375" tx="0.25" ty="6.45"/>
+                          <Matrix a="0" b="-0.005859375" c="0.0253753662109375" d="0" tx="2.9" ty="-3.85"/>
                         </matrix>
                         <GradientEntry color="#666666" ratio="0"/>
                         <GradientEntry color="#333333" ratio="1"/>
@@ -130,7 +130,7 @@
                     <FillStyle index="2">
                       <LinearGradient spreadMethod="repeat">
                         <matrix>
-                          <Matrix a="0" b="-0.01495361328125" c="0.0253753662109375" d="0" tx="2.85" ty="3.4"/>
+                          <Matrix a="0" b="0.004150390625" c="-0.01409912109375" d="0" tx="3.05" ty="3.65"/>
                         </matrix>
                         <GradientEntry color="#666666" ratio="0"/>
                         <GradientEntry color="#333333" ratio="1"/>
@@ -138,8 +138,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="2" edges="!393 215|6 -177!6 -177|-383 215!-383 215|-578 215!-578 215|6 -404!6 -404|588 215!588 215|393 215"/>
-                    <Edge fillStyle1="1" edges="!285 215|-275 215!-275 215|6 -68!6 -68|285 215"/>
+                    <Edge fillStyle1="1" edges="!393 215|6 -177!6 -177|-383 215!-383 215|-578 215!-578 215|6 -404!6 -404|588 215!588 215|393 215"/>
+                    <Edge fillStyle1="2" edges="!285 215|-275 215!-275 215|6 -68!6 -68|285 215"/>
                   </edges>
                 </DOMShape>
               </elements>
