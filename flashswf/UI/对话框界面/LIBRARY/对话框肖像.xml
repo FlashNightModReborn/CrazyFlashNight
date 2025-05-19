@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1747202248" lastUniqueIdentifier="185">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1747645792" lastUniqueIdentifier="185">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="282">
+    <DOMTimeline name="对话框肖像" currentFrame="208">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -271,7 +271,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
+                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -587,7 +587,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="206" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="将军" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="将军" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110092163085938" d="0.110092163085938" tx="-131.3" ty="-196.35"/>
                   </matrix>
