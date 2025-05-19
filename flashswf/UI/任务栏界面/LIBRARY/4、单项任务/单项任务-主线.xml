@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/单项任务-主线" itemID="67cc18e5-00000154" lastModified="1747040287" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/单项任务-主线" itemID="67cc18e5-00000154" lastModified="1747643837" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="单项任务-主线">
       <layers>
@@ -13,11 +13,11 @@ this.taskChain.htmlText = _parent.任务类型;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务类型" color="#FF0000" autoNamed="false">
+        <DOMLayer name="任务类型" color="#FF0000" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText name="taskChain" fontRenderingMode="device" width="113" height="38.8" isSelectable="false" renderAsHTML="true">
+                <DOMDynamicText name="taskChain" width="113" height="38.8" isSelectable="false" renderAsHTML="true">
                   <matrix>
                     <Matrix tx="17" ty="10.05"/>
                   </matrix>
@@ -36,7 +36,7 @@ this.taskChain.htmlText = _parent.任务类型;]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="taskName" fontRenderingMode="device" width="112.3" height="44" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="taskName" selected="true" width="112.3" height="44" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="18" ty="47.1"/>
                   </matrix>
@@ -76,11 +76,11 @@ this.taskChain.htmlText = _parent.任务类型;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#9933CC" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="头像" color="#9933CC" parentLayerIndex="2" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC头像框" name="NPC头像框位置示意" selected="true" centerPoint3DX="207.3" centerPoint3DY="87.35" isVisible="false">
+                <DOMSymbolInstance libraryItemName="NPC头像框" name="NPC头像框位置示意" centerPoint3DX="207.3" centerPoint3DY="87.35" isVisible="false">
                   <matrix>
                     <Matrix a="0.5" d="0.5" tx="182.3" ty="62.35"/>
                   </matrix>
@@ -93,7 +93,7 @@ this.taskChain.htmlText = _parent.任务类型;]]></script>
           </frames>
         </DOMLayer>
         <DOMLayer name="纹理" color="#FF800A" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="纹理遮罩" color="#00FFFF" parentLayerIndex="5" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+        <DOMLayer name="纹理遮罩" color="#00FFFF" parentLayerIndex="5" locked="true" autoNamed="false" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

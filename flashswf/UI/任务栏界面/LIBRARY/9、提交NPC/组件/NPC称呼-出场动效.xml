@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="9、提交NPC/组件/NPC称呼-出场动效" itemID="67cccfe2-0000044e" lastModified="1742302641" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="9、提交NPC/组件/NPC称呼-出场动效" itemID="67cccfe2-0000044e" lastModified="1747643690" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="NPC称呼-出场动效" currentFrame="18" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;515&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="NPC称呼-出场动效" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;515&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="代码" color="#9933CC" autoNamed="false">
           <frames>
@@ -74,7 +74,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="圆圈" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="圆圈" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -93,14 +93,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="物品名" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="物品名" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" duration="13" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="207.9" height="25.85" isSelectable="false" variableName="_parent._parent.finish_npc">
+                <DOMDynamicText width="207.9" height="25.85" isSelectable="false" variableName="_parent._parent.finish_npc">
                   <matrix>
                     <Matrix tx="24.1" ty="-3.35"/>
                   </matrix>

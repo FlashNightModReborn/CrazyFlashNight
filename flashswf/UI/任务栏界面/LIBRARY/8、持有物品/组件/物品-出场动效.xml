@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/组件/物品-出场动效" itemID="67ccc417-0000018e" lastModified="1742302883" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/组件/物品-出场动效" itemID="67ccc417-0000018e" lastModified="1747643791" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="物品-出场动效" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;515&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="物品-出场动效" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;515&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="代码" color="#9933CC" autoNamed="false">
           <frames>
@@ -33,7 +33,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="黑块动效" color="#FF800A" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="黑块动效" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -52,14 +52,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="物品名" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="物品名" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" duration="13" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="127.95" height="31.85" isSelectable="false" variableName="itemInfo">
+                <DOMDynamicText width="127.95" height="31.85" isSelectable="false" variableName="itemInfo">
                   <matrix>
                     <Matrix tx="21.3" ty="-3.35"/>
                   </matrix>
@@ -67,7 +67,7 @@
                     <DOMTextRun>
                       <characters>无需提交物品</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" alpha="0.733333333333333" size="18" bitmapSize="360" face="SourceHanSerifSC-Heavy"/>
+                        <DOMTextAttrs aliasText="false" alpha="0.729411764705882" size="18" bitmapSize="360" face="SourceHanSerifSC-Heavy"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>

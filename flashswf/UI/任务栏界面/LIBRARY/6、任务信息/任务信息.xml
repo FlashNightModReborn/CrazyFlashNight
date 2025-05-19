@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="6、任务信息/任务信息" itemID="67cc492d-0000053a" lastModified="1741701938" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="6、任务信息/任务信息" itemID="67cc492d-0000053a" lastModified="1747643498" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="任务信息" currentFrame="29" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;997&lt;/guideline&gt;&lt;guideline direction="v"&gt;974&lt;/guideline&gt;&lt;guideline direction="h"&gt;207&lt;/guideline&gt;&lt;guideline direction="h"&gt;233&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="任务信息" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;997&lt;/guideline&gt;&lt;guideline direction="v"&gt;974&lt;/guideline&gt;&lt;guideline direction="h"&gt;207&lt;/guideline&gt;&lt;guideline direction="h"&gt;233&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
@@ -44,7 +44,7 @@ function clearDescription(){
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMDynamicText name="taskDesc" selected="true" fontRenderingMode="device" width="673.15" height="91.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="taskDesc" width="673.15" height="91.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="23.75" ty="15.85"/>
                   </matrix>

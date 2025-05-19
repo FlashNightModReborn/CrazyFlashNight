@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/持有物品" itemID="67ccb67d-00000271" lastModified="1747642964" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/持有物品" itemID="67ccb67d-00000271" lastModified="1747643782" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="持有物品">
       <layers>
@@ -56,7 +56,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="物品" color="#9933CC" autoNamed="false">
+        <DOMLayer name="物品" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -68,7 +68,7 @@
                     <Point x="2.45" y="61.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="8、持有物品/组件/物品-出场动效" name="物品展示框" centerPoint3DX="80.4" centerPoint3DY="73.55">
+                <DOMSymbolInstance libraryItemName="8、持有物品/组件/物品-出场动效" name="物品展示框" selected="true" centerPoint3DX="80.4" centerPoint3DY="73.55">
                   <matrix>
                     <Matrix tx="5" ty="64"/>
                   </matrix>
@@ -80,7 +80,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="持有物品" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="持有物品" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

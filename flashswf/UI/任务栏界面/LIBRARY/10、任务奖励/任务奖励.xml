@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="任务奖励" currentFrame="25">
       <layers>
-        <DOMLayer name="代码" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="代码" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <Actionscript>
@@ -135,7 +135,7 @@ this.创建任务奖励图标 = _root.任务栏UI函数.创建任务奖励图标
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="奖励物品" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="奖励物品" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

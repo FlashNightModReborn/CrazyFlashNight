@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="9、提交NPC/提交NPC-动效" itemID="67cccc31-000002bd" lastModified="1747040380" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="提交NPC-动效" currentFrame="22">
+    <DOMTimeline name="提交NPC-动效" currentFrame="28">
       <layers>
-        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层_2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_1" color="#00FFFF">
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>

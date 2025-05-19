@@ -32,7 +32,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="方块" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="方块" color="#00FFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -109,7 +109,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="6" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix a="0.79998779296875"/>
                   </matrix>
@@ -153,7 +153,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务名" color="#9933CC" parentLayerIndex="2" autoNamed="false">
+        <DOMLayer name="任务名" color="#9933CC" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -175,7 +175,7 @@
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="6、任务信息/任务名称" name="任务名称">
+                <DOMSymbolInstance libraryItemName="6、任务信息/任务名称" name="任务名称" selected="true">
                   <matrix>
                     <Matrix tx="21" ty="20.55"/>
                   </matrix>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1747642880" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1747643832" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="任务图标" currentFrame="9">
+    <DOMTimeline name="任务图标" currentFrame="23">
       <layers>
-        <DOMLayer name="代码层" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -60,7 +60,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="完成标志" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="完成标志" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -79,14 +79,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="删除任务按钮" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="删除任务按钮" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/删除任务按钮" name="删除任务按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/删除任务按钮" name="删除任务按钮" symbolType="button">
                   <matrix>
                     <Matrix a="2.3255615234375" d="2.3255615234375" tx="223.4" ty="20.9"/>
                   </matrix>
@@ -110,7 +110,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="按钮" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -137,7 +137,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="横出方块" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="横出方块" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
@@ -150,14 +150,14 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务" color="#00FFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="任务" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" centerPoint3DX="105.75" centerPoint3DY="60">
+                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" selected="true" centerPoint3DX="105.75" centerPoint3DY="60">
                   <matrix>
                     <Matrix tx="-14.25"/>
                   </matrix>
