@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/持有物品-动效" itemID="67ccb75f-00000289" lastModified="1742300569" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="持有物品-动效" currentFrame="34">
+    <DOMTimeline name="持有物品-动效">
       <layers>
         <DOMLayer name="代码" color="#9933CC" autoNamed="false">
           <frames>
@@ -68,7 +68,7 @@
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="8、持有物品/组件/方向栏">
+                <DOMSymbolInstance libraryItemName="8、持有物品/组件/方向栏" selected="true">
                   <matrix>
                     <Matrix d="0.989974975585938" tx="44.05"/>
                   </matrix>

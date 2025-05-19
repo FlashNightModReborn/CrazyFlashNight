@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" width="1024" height="576" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" width="1024" height="576" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" gridVisible="true" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="0、背景底图" itemID="67ce996c-00000445" isExpanded="true"/>
           <DOMFolderItem name="1、我的任务" itemID="67ce97af-000003a7" isExpanded="true"/>
@@ -13,7 +13,7 @@
           <DOMFolderItem name="7、关卡需求" itemID="67d95d8b-000004f8" isExpanded="true"/>
           <DOMFolderItem name="7、关卡需求/组件" itemID="67cca8ae-000001b2"/>
           <DOMFolderItem name="8、持有物品" itemID="67d9644f-000007ab" isExpanded="true"/>
-          <DOMFolderItem name="8、持有物品/组件" itemID="67ccb1f1-0000020d"/>
+          <DOMFolderItem name="8、持有物品/组件" itemID="67ccb1f1-0000020d" isExpanded="true"/>
           <DOMFolderItem name="9、提交NPC" itemID="67d04e2c-00000814" isExpanded="true"/>
           <DOMFolderItem name="9、提交NPC/组件" itemID="67cccb1f-0000027a"/>
           <DOMFolderItem name="9、提交NPC/组件/警戒线" itemID="67cd50bc-00000419"/>
@@ -52,7 +52,7 @@
           <Include href="4、单项任务/单项任务-主线.xml" loadImmediate="false" itemID="67cc18e5-00000154" lastModified="1747040287"/>
           <Include href="4、单项任务/当前任务标志.xml" loadImmediate="false" itemID="67d9594c-000002f7" lastModified="1742298162"/>
           <Include href="4、单项任务/横出方块.xml" loadImmediate="false" itemID="67d95c46-00000450" lastModified="1742298198"/>
-          <Include href="4、单项任务/任务列表.xml" loadImmediate="false" itemID="67cc5739-0000079e" lastModified="1742298407"/>
+          <Include href="4、单项任务/任务列表.xml" loadImmediate="false" itemID="67cc5739-0000079e" lastModified="1747638930"/>
           <Include href="4、单项任务/任务图标.xml" loadImmediate="false" itemID="67d95954-000002f8" lastModified="1747122173"/>
           <Include href="6、任务信息/边角.xml" loadImmediate="false" itemID="67cc4e42-00000629" lastModified="1741442745"/>
           <Include href="6、任务信息/任务名称.xml" loadImmediate="false" itemID="67cc3cbc-00000517" lastModified="1747036171"/>
@@ -65,10 +65,11 @@
           <Include href="7、关卡需求/组件/警戒线-逆流动画.xml" loadImmediate="false" itemID="67cca8ef-000001be" lastModified="1741465889"/>
           <Include href="7、关卡需求/组件/警戒线-顺流动画.xml" loadImmediate="false" itemID="67cca8a6-000001ab" lastModified="1741465805"/>
           <Include href="7、关卡需求/组件/警戒线-图形.xml" itemIcon="1" loadImmediate="false" itemID="67cca80e-000001a5" lastModified="1741465654"/>
-          <Include href="8、持有物品/持有物品.xml" loadImmediate="false" itemID="67ccb67d-00000271" lastModified="1742303695"/>
+          <Include href="8、持有物品/持有物品.xml" loadImmediate="false" itemID="67ccb67d-00000271" lastModified="1747639993"/>
           <Include href="8、持有物品/持有物品-动效.xml" loadImmediate="false" itemID="67ccb75f-00000289" lastModified="1742300569"/>
+          <Include href="8、持有物品/组件/翻页箭头-光效.xml" loadImmediate="false" itemID="682ad589-000022af" lastModified="1747638112"/>
           <Include href="8、持有物品/组件/方向栏.xml" loadImmediate="false" itemID="67ccb897-000002a4" lastModified="1741474369"/>
-          <Include href="8、持有物品/组件/方向栏-光效.xml" loadImmediate="false" itemID="67ccc9f7-00000205" lastModified="1741474329"/>
+          <Include href="8、持有物品/组件/方向栏-光效.xml" loadImmediate="false" itemID="67ccc9f7-00000205" lastModified="1747637641"/>
           <Include href="8、持有物品/组件/光效.xml" loadImmediate="false" itemID="67ccbd0d-000002d5" lastModified="1741474222"/>
           <Include href="8、持有物品/组件/黑块-动效.xml" loadImmediate="false" itemID="67ccc712-000001e3" lastModified="1741473864"/>
           <Include href="8、持有物品/组件/警戒线-顺流动画.xml" loadImmediate="false" itemID="67ccb1f1-00000212" lastModified="1741465805"/>
@@ -113,9 +114,10 @@
           <Include href="sprite/通用背景mc.xml" loadImmediate="false" itemID="659d46f5-000039c6" lastModified="1704806133"/>
           <Include href="sprite/完成标志mc.xml" loadImmediate="false" itemID="67cbe7a8-00000202" lastModified="1741416360"/>
           <Include href="叠色.xml" loadImmediate="false" itemID="67d3c51c-00003a99" lastModified="1741931804"/>
+          <Include href="翻页箭头.xml" itemIcon="0" loadImmediate="false" itemID="682ad455-00002290" lastModified="1747639138"/>
           <Include href="关卡难度标志.xml" loadImmediate="false" itemID="67d96234-000006cc" lastModified="1742300174"/>
           <Include href="任务对话按钮.xml" loadImmediate="false" itemID="67d30a2e-0000026c" lastModified="1741884062"/>
-          <Include href="任务栏界面.xml" itemID="67c9bf8f-00000766" lastModified="1747121680"/>
+          <Include href="任务栏界面.xml" itemID="67c9bf8f-00000766" lastModified="1747641352"/>
           <Include href="任务树相关/任务节点图标.xml" loadImmediate="false" itemID="67d2a378-00000290" lastModified="1742025330"/>
           <Include href="任务树相关/任务树.xml" loadImmediate="false" itemID="67d2a260-0000026d" lastModified="1741874634"/>
           <Include href="任务树相关/拖拽按钮.xml" itemIcon="0" loadImmediate="false" itemID="67d2dff2-0000027c" lastModified="1741873291"/>
@@ -458,25 +460,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="364171" publishTime="1747122204"/>
-          <PublishItem publishSize="364171" publishTime="1747122177"/>
-          <PublishItem publishSize="364283" publishTime="1747122120"/>
-          <PublishItem publishSize="364263" publishTime="1747121990"/>
-          <PublishItem publishSize="364238" publishTime="1747121878"/>
-          <PublishItem publishSize="364161" publishTime="1747120969"/>
-          <PublishItem publishSize="364165" publishTime="1747120905"/>
-          <PublishItem publishSize="364163" publishTime="1747120788"/>
-          <PublishItem publishSize="364165" publishTime="1747120673"/>
-          <PublishItem publishSize="364238" publishTime="1747040387"/>
-          <PublishItem publishSize="364306" publishTime="1747040318"/>
-          <PublishItem publishSize="364307" publishTime="1747040204"/>
-          <PublishItem publishSize="364305" publishTime="1747040056"/>
-          <PublishItem publishSize="364323" publishTime="1747039958"/>
-          <PublishItem publishSize="364433" publishTime="1747039899"/>
-          <PublishItem publishSize="364487" publishTime="1747039818"/>
-          <PublishItem publishSize="364507" publishTime="1747039742"/>
-          <PublishItem publishSize="364310" publishTime="1747039636"/>
-          <PublishItem publishSize="364310" publishTime="1747039131"/>
-          <PublishItem publishSize="364310" publishTime="1747038758"/>
+          <PublishItem publishSize="365395" publishTime="1747641356"/>
+          <PublishItem publishSize="365370" publishTime="1747641228"/>
+          <PublishItem publishSize="365375" publishTime="1747641165"/>
+          <PublishItem publishSize="365374" publishTime="1747640988"/>
+          <PublishItem publishSize="365385" publishTime="1747640895"/>
+          <PublishItem publishSize="365380" publishTime="1747640801"/>
+          <PublishItem publishSize="365400" publishTime="1747640753"/>
+          <PublishItem publishSize="365396" publishTime="1747640739"/>
+          <PublishItem publishSize="365390" publishTime="1747640603"/>
+          <PublishItem publishSize="365390" publishTime="1747640362"/>
+          <PublishItem publishSize="365390" publishTime="1747640258"/>
+          <PublishItem publishSize="365390" publishTime="1747640166"/>
+          <PublishItem publishSize="365386" publishTime="1747639866"/>
+          <PublishItem publishSize="365387" publishTime="1747639720"/>
+          <PublishItem publishSize="365372" publishTime="1747639360"/>
+          <PublishItem publishSize="365316" publishTime="1747639277"/>
+          <PublishItem publishSize="365260" publishTime="1747639038"/>
+          <PublishItem publishSize="365220" publishTime="1747639014"/>
+          <PublishItem publishSize="365226" publishTime="1747638629"/>
+          <PublishItem publishSize="365236" publishTime="1747638547"/>
      </publishHistory>
 </DOMDocument>

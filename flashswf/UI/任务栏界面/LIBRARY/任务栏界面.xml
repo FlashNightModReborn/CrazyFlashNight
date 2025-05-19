@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747121680" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747641352" lastUniqueIdentifier="25">
   <timeline>
-    <DOMTimeline name="任务栏界面">
+    <DOMTimeline name="任务栏界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;517&lt;/guideline&gt;&lt;guideline direction="v"&gt;276&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -33,37 +33,44 @@ this.页数 = 0;
 
 function 排列任务图标()
 {
-	if (this.任务列表 == null)
-	{
-		return;
-	}
-	for (var i = this.页数 * 4; i < this.页数 * 4 + 4; i++)
-	{
-		if(i > _root.可同时接的任务数) break;
-		var 当前任务图标 = this.任务列表["任务图标" + i];
-		if (_root.tasks_to_do[i] != null){
-			var taskData = _root.getTaskData(_root.tasks_to_do[i].id);
-			当前任务图标.数组号 = i;
-			当前任务图标.任务标题 = _root.getTaskText(taskData.title);
-			当前任务图标.任务进度 = !(!_root.taskCompleteCheck(i)) ? "达成" : "进行";
-			当前任务图标.任务类型 = taskData.chain[0];
-			当前任务图标.接取NPC = taskData.get_npc;
-			当前任务图标.允许删除 = taskData.chain[0] == "委托" && 当前任务图标.任务进度 !== "达成";
-		}
-		else
-		{
-			当前任务图标.数组号 = null;
-			当前任务图标.任务标题 = null;
-			当前任务图标.任务进度 = null;
-			当前任务图标.任务类型 = null;
-			当前任务图标.接取NPC = null;
-			当前任务图标.允许删除 = false;
-			当前任务图标.完成提示._visible = false;
-		}
-		当前任务图标.refreshDelay = i;
-		当前任务图标.refresh();
-	}
-	this.显示任务明细(this.页数 * 4);
+    if (this.任务列表 == null)
+    {
+        return;
+    }
+    
+    for (var i = 0; i < 4; i++)
+    {
+        var taskIndex = this.页数 * 4 + i;
+        
+        // if(taskIndex > _root.tasks_to_do.length) break;
+        
+        var 当前任务图标 = this.任务列表["任务图标" + i];
+        
+        if (_root.tasks_to_do[taskIndex] != null){
+            var taskData = _root.getTaskData(_root.tasks_to_do[taskIndex].id);
+            当前任务图标.数组号 = taskIndex;
+            当前任务图标.任务标题 = _root.getTaskText(taskData.title);
+            当前任务图标.任务进度 = !(!_root.taskCompleteCheck(taskIndex)) ? "达成" : "进行";
+            当前任务图标.任务类型 = taskData.chain[0];
+            当前任务图标.接取NPC = taskData.get_npc;
+            当前任务图标.允许删除 = taskData.chain[0] == "委托" && 当前任务图标.任务进度 !== "达成";
+        }
+        else
+        {
+            当前任务图标.数组号 = null;
+            当前任务图标.任务标题 = null;
+            当前任务图标.任务进度 = null;
+            当前任务图标.任务类型 = null;
+            当前任务图标.接取NPC = null;
+            当前任务图标.允许删除 = false;
+            当前任务图标.完成提示._visible = false;
+        }
+        
+        当前任务图标.refreshDelay = i;
+        当前任务图标.refresh();
+    }
+    
+    this.显示任务明细(this.页数 * 4);
 }
 
 
@@ -82,6 +89,61 @@ gotoAndStop("我的任务");]]></script>
                 <script><![CDATA[this.创建任务树();]]></script>
               </Actionscript>
               <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翻页箭头" selected="true" symbolType="button">
+                  <matrix>
+                    <Matrix a="0" b="-1.03028869628906" c="1.43710327148438" d="0" tx="317.75" ty="524.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="-20.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+    var 最大页数 = Math.ceil(_root.tasks_to_do.length / 4) - 1;
+    
+    if (页数 < 最大页数) {
+        页数 += 1;
+        排列任务图标();
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="翻页箭头" symbolType="button">
+                  <matrix>
+                    <Matrix a="0" b="1.03028869628906" c="-1.43710327148438" d="0" tx="433.2" ty="524.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+    if (页数 > 0) {
+        页数 -= 1;
+        排列任务图标();
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMDynamicText fontRenderingMode="device" width="39" height="91.95" variableName="页数" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="360.05" ty="482.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="54" bitmapSize="1080" face="SourceHanSerifCN-Heavy" fillColor="#9E9E9E"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -134,7 +196,7 @@ gotoAndStop("我的任务");]]></script>
           </frames>
         </DOMLayer>
         <DOMLayer name="事件日志" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="对话按钮" color="#9933CC" parentLayerIndex="4" autoNamed="false">
+        <DOMLayer name="对话按钮" color="#9933CC" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -171,7 +233,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#4FFFFF" parentLayerIndex="4" autoNamed="false">
+        <DOMLayer name="文字" color="#4FFFFF" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -195,7 +257,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="mask" color="#9933CC" parentLayerIndex="4" locked="true" autoNamed="false">
+        <DOMLayer name="mask" color="#9933CC" parentLayerIndex="5" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -214,7 +276,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务树" color="#9933CC" parentLayerIndex="4" autoNamed="false">
+        <DOMLayer name="任务树" color="#9933CC" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -233,7 +295,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拖拽按钮" color="#FF800A" parentLayerIndex="4" autoNamed="false">
+        <DOMLayer name="拖拽按钮" color="#FF800A" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -273,7 +335,7 @@ on(releaseOutside){
           </frames>
         </DOMLayer>
         <DOMLayer name="我的任务" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -300,7 +362,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务奖励" color="#9933CC" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="任务奖励" color="#9933CC" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -319,7 +381,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="持有物品" color="#FF800A" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="持有物品" color="#FF800A" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -338,7 +400,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关卡需求" color="#9933CC" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="关卡需求" color="#9933CC" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -357,7 +419,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务详情" color="#9933CC" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="任务详情" color="#9933CC" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -384,7 +446,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF800A" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="文字" color="#FF800A" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -394,7 +456,7 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -431,7 +493,7 @@ on(releaseOutside){
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!11600 11000|400 11000!400 11000|400 1400!400 1400|11600 1400!11600 1400|11600 11000!12000 0|12000 11520"/>
+                    <Edge strokeStyle="1" edges="!12000 0|12000 11520!11600 11000|400 11000!400 11000|400 1400!400 1400|11600 1400!11600 1400|11600 11000"/>
                   </edges>
                 </DOMShape>
               </elements>

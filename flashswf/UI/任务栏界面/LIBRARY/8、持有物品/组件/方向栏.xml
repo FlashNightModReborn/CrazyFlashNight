@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/组件/方向栏" itemID="67ccb897-000002a4" lastModified="1741474369">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/组件/方向栏" itemID="67ccb897-000002a4" lastModified="1741474369" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="方向栏">
       <layers>
@@ -28,8 +28,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!2882 311|3501 901!3501 901|2882 1489!2882 1489|2882 1292!2882 1292|3274 901!3274 901|2882 508!2882 508|2882 311"/>
                     <Edge fillStyle1="2" edges="!3165 901|2882 1183!2882 1183|2882 617!2882 617|3165 901"/>
+                    <Edge fillStyle1="1" edges="!2882 311|3501 901!3501 901|2882 1489!2882 1489|2882 1292!2882 1292|3274 901!3274 901|2882 508!2882 508|2882 311"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -40,7 +40,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="8、持有物品/组件/方向栏-光效" selected="true">
+                <DOMSymbolInstance libraryItemName="8、持有物品/组件/方向栏-光效" centerPoint3DX="154.8" centerPoint3DY="44.75">
                   <matrix>
                     <Matrix a="0" b="-0.28076171875" c="1" d="0" tx="129.7" ty="75.75"/>
                   </matrix>
@@ -78,8 +78,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="2" edges="!3165 901|2882 1183!2882 1183|2882 617!2882 617|3165 901"/>
                     <Edge fillStyle1="1" edges="!2882 311S2|3501 901!3501 901|2882 1489!2882 1489|2882 1292!2882 1292|3274 901!3274 901|2882 508!2882 508|2882 311"/>
+                    <Edge fillStyle1="2" edges="!3165 901|2882 1183!2882 1183|2882 617!2882 617|3165 901"/>
                   </edges>
                 </DOMShape>
               </elements>
