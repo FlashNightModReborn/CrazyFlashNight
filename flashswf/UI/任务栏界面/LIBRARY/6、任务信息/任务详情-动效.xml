@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="6、任务信息/任务详情-动效" itemID="67cc2e78-0000048a" lastModified="1747036194">
   <timeline>
-    <DOMTimeline name="任务详情-动效" currentFrame="25">
+    <DOMTimeline name="任务详情-动效" currentFrame="24">
       <layers>
         <DOMLayer name="代码" color="#FF4FFF" autoNamed="false">
           <frames>
@@ -153,14 +153,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务名" color="#9933CC" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="任务名" color="#9933CC" parentLayerIndex="2" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="15" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="6、任务信息/任务名称" name="任务名称">
+                <DOMSymbolInstance libraryItemName="6、任务信息/任务名称" name="任务名称" selected="true">
                   <matrix>
                     <Matrix tx="-317.15" ty="20.55"/>
                   </matrix>
@@ -190,7 +190,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="主线详情" color="#009999" parentLayerIndex="2" autoNamed="false">
+        <DOMLayer name="主线详情" color="#009999" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>

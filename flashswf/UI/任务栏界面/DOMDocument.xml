@@ -28,6 +28,7 @@
           <DOMFolderItem name="任务树相关" itemID="67d2a25c-0000026b" isExpanded="true"/>
      </folders>
      <fonts>
+          <DOMFontItem name="字体 1" itemID="682aef5b-000026a2" font="SourceHanSerifCN-Heavy" size="0" id="3" sourceLastImported="1747644251" embedRanges="9999"/>
           <DOMFontItem name="字体 2" itemID="682aea54-0000269c" font="SourceHanSerifSC-Heavy" size="0" id="2" sourceLastImported="1747642964" embedRanges="9999"/>
      </fonts>
      <media>
@@ -53,13 +54,13 @@
           <Include href="3、关闭按钮/组件/关闭按钮-动画.xml" loadImmediate="false" itemID="67cc2529-0000043d" lastModified="1741433180"/>
           <Include href="3、关闭按钮/组件/关闭按钮-图形.xml" itemIcon="1" loadImmediate="false" itemID="67cc23ee-0000041a" lastModified="1741432840"/>
           <Include href="4、单项任务/斑驳纹理.xml" loadImmediate="false" itemID="67cc61db-00000843" lastModified="1741447924"/>
-          <Include href="4、单项任务/单项任务-主线.xml" loadImmediate="false" itemID="67cc18e5-00000154" lastModified="1747643837"/>
+          <Include href="4、单项任务/单项任务-主线.xml" loadImmediate="false" itemID="67cc18e5-00000154" lastModified="1747644660"/>
           <Include href="4、单项任务/当前任务标志.xml" loadImmediate="false" itemID="67d9594c-000002f7" lastModified="1742298162"/>
           <Include href="4、单项任务/横出方块.xml" loadImmediate="false" itemID="67d95c46-00000450" lastModified="1742298198"/>
           <Include href="4、单项任务/任务列表.xml" loadImmediate="false" itemID="67cc5739-0000079e" lastModified="1747638930"/>
           <Include href="4、单项任务/任务图标.xml" loadImmediate="false" itemID="67d95954-000002f8" lastModified="1747643832"/>
           <Include href="6、任务信息/边角.xml" loadImmediate="false" itemID="67cc4e42-00000629" lastModified="1741442745"/>
-          <Include href="6、任务信息/任务名称.xml" loadImmediate="false" itemID="67cc3cbc-00000517" lastModified="1747643524"/>
+          <Include href="6、任务信息/任务名称.xml" loadImmediate="false" itemID="67cc3cbc-00000517" lastModified="1747644491"/>
           <Include href="6、任务信息/任务详情-动效.xml" loadImmediate="false" itemID="67cc2e78-0000048a" lastModified="1747036194"/>
           <Include href="6、任务信息/任务信息.xml" loadImmediate="false" itemID="67cc492d-0000053a" lastModified="1747643498"/>
           <Include href="6、任务信息/主线详情.xml" loadImmediate="false" itemID="67cc3c1a-00000513" lastModified="1741596066"/>
@@ -78,7 +79,7 @@
           <Include href="8、持有物品/组件/黑块-动效.xml" loadImmediate="false" itemID="67ccc712-000001e3" lastModified="1741473864"/>
           <Include href="8、持有物品/组件/警戒线-顺流动画.xml" loadImmediate="false" itemID="67ccb1f1-00000212" lastModified="1741465805"/>
           <Include href="8、持有物品/组件/警戒线-图形.xml" itemIcon="1" loadImmediate="false" itemID="67ccb1f1-00000217" lastModified="1741465654"/>
-          <Include href="8、持有物品/组件/物品-出场动效.xml" loadImmediate="false" itemID="67ccc417-0000018e" lastModified="1747643791"/>
+          <Include href="8、持有物品/组件/物品-出场动效.xml" loadImmediate="false" itemID="67ccc417-0000018e" lastModified="1747644431"/>
           <Include href="8、持有物品/组件/物品-底框.xml" loadImmediate="false" itemID="67ccc374-00000180" lastModified="1741474123"/>
           <Include href="8、持有物品/组件/线段-动效.xml" loadImmediate="false" itemID="67ccc408-0000018c" lastModified="1741472776"/>
           <Include href="9、提交NPC/提交NPC.xml" loadImmediate="false" itemID="67cccb83-000002ba" lastModified="1747643681"/>
@@ -121,7 +122,7 @@
           <Include href="翻页箭头/翻页箭头.xml" itemIcon="0" loadImmediate="false" itemID="682ad455-00002290" lastModified="1747642557"/>
           <Include href="关卡难度标志.xml" loadImmediate="false" itemID="67d96234-000006cc" lastModified="1742300174"/>
           <Include href="任务对话按钮.xml" loadImmediate="false" itemID="67d30a2e-0000026c" lastModified="1741884062"/>
-          <Include href="任务栏界面.xml" itemID="67c9bf8f-00000766" lastModified="1747643454"/>
+          <Include href="任务栏界面.xml" itemID="67c9bf8f-00000766" lastModified="1747644309"/>
           <Include href="任务树相关/任务节点图标.xml" loadImmediate="false" itemID="67d2a378-00000290" lastModified="1742025330"/>
           <Include href="任务树相关/任务树.xml" loadImmediate="false" itemID="67d2a260-0000026d" lastModified="1741874634"/>
           <Include href="任务树相关/拖拽按钮.xml" itemIcon="0" loadImmediate="false" itemID="67d2dff2-0000027c" lastModified="1741873291"/>
@@ -464,6 +465,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="41627644" publishTime="1747644715"/>
+          <PublishItem publishSize="24590070" publishTime="1747644439"/>
           <PublishItem publishSize="24590092" publishTime="1747643908"/>
           <PublishItem publishSize="24589470" publishTime="1747643032"/>
           <PublishItem publishSize="366983" publishTime="1747642884"/>
@@ -482,7 +485,5 @@
           <PublishItem publishSize="365396" publishTime="1747640739"/>
           <PublishItem publishSize="365390" publishTime="1747640603"/>
           <PublishItem publishSize="365390" publishTime="1747640362"/>
-          <PublishItem publishSize="365390" publishTime="1747640258"/>
-          <PublishItem publishSize="365390" publishTime="1747640166"/>
      </publishHistory>
 </DOMDocument>
