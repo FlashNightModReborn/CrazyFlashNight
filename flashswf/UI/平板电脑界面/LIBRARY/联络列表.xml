@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1747124669" lastUniqueIdentifier="20">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1747717172" lastUniqueIdentifier="20">
   <timeline>
     <DOMTimeline name="联络列表">
       <layers>
@@ -33,7 +33,7 @@ function 刷新NPC列表()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -48,7 +48,7 @@ function 刷新NPC列表()
                     <script><![CDATA[on (release) {
 	_root.购买物品界面._x = 43.5;
 	_root.购买物品界面._y = 101.5;
-	_root.物品UI函数.刷新商店图标(_root.getNPCShop(this.名字));
+	_root.物品UI函数.刷新商店图标(_root.getNPCShop(this.NPC头像.名字));
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -64,7 +64,7 @@ function 刷新NPC列表()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" layerType="mask">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -82,7 +82,7 @@ function 刷新NPC列表()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#FF800A" parentLayerIndex="2" locked="true" autoNamed="false">
+        <DOMLayer name="头像" color="#FF800A" parentLayerIndex="2" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

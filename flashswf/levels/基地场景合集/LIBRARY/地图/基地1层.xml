@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1744658724" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1747717349" lastUniqueIdentifier="22">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
@@ -566,11 +566,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蜜汁盔甲君" color="#2D62F6" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="蜜汁盔甲君" color="#2D62F6" parentLayerIndex="16" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2699" selected="true" centerPoint3DX="612.45" centerPoint3DY="523.95">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2699" centerPoint3DX="612.45" centerPoint3DY="523.95">
                   <matrix>
                     <Matrix tx="509" ty="418"/>
                   </matrix>
@@ -718,11 +718,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#AB9E98" autoNamed="false">
+        <DOMLayer name="背景" color="#AB9E98" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2600" name="背景" centerPoint3DX="1982.2" centerPoint3DY="549.75">
+                <DOMSymbolInstance libraryItemName="sprite/基地1层背景" name="背景" centerPoint3DX="1982.2" centerPoint3DY="549.75" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="937.7" ty="245.1"/>
                   </matrix>

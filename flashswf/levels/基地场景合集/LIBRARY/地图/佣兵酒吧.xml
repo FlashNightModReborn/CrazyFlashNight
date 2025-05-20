@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1742200686" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1747718311" lastUniqueIdentifier="11">
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
@@ -231,7 +231,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图碰撞箱" color="#79F7C2" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图碰撞箱" color="#79F7C2" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -263,11 +263,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#73C0B1" autoNamed="false">
+        <DOMLayer name="场景" color="#73C0B1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2789" name="背景" centerPoint3DX="1707.5" centerPoint3DY="552.65">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2789" name="背景" centerPoint3DX="1707.5" centerPoint3DY="552.65" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="933.7" ty="245.1"/>
                   </matrix>

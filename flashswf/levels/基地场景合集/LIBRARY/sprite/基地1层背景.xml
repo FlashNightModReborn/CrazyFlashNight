@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2600" itemID="6597607e-00000c12" lastModified="1723056474">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/基地1层背景" itemID="682c0cd1-000006b9" lastModified="1747717329">
   <timeline>
-    <DOMTimeline name="Symbol 2600">
+    <DOMTimeline name="基地1层背景">
       <layers>
         <DOMLayer name="Layer 1" color="#8076E4">
           <frames>
@@ -743,7 +743,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="127.5" height="13.35" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="129.4" height="13.65" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix a="0.22894287109375" b="-0.0374755859375" c="0.0374755859375" d="0.22894287109375" tx="242.75" ty="-84.6"/>
                   </matrix>
@@ -803,12 +803,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!11870 -5002|11862 -5002!11862 -5002|11870 -4992"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!11870 -4992|11870 -5002"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!11870 -5002|11862 -5002!11862 -5002|11870 -4992"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!17494 6114|12010 -478!12010 -478|11870 -4992"/>
-                    <Edge fillStyle1="2" edges="!17502 6114|17689 6254!17689 6254|17494 6114"/>
-                    <Edge strokeStyle="1" edges="!17494 6114|17483 6114"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!17502 6114|17494 6114"/>
+                    <Edge fillStyle0="2" edges="!17494 6114|17689 6254!17689 6254|17502 6114"/>
+                    <Edge strokeStyle="1" edges="!17494 6114|17483 6114"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!11870 -5002|19084 -4944!19084 -4944|19163 6134!19163 6134|17502 6114"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!11870 -4992|17542 1386!17542 1386|17502 6114"/>
                   </edges>

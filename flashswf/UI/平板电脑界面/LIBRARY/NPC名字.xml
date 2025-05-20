@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="NPC名字">
       <layers>
-        <DOMLayer name="as" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="as" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -60,7 +60,7 @@ this.init = false;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文字" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1746453560" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1747717311" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -113,11 +113,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="冷兵器商人" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" selected="true" centerPoint3DX="203.9" centerPoint3DY="395.6">
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" centerPoint3DX="203.9" centerPoint3DY="395.6">
                   <matrix>
                     <Matrix tx="139.9" ty="336.95"/>
                   </matrix>
@@ -455,11 +455,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#A65995" locked="true" autoNamed="false">
+        <DOMLayer name="场景" color="#A65995" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3070" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="sprite/车库背景" centerPoint3DX="577.8" centerPoint3DY="269.6" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="937.7" ty="245.1"/>
                   </matrix>

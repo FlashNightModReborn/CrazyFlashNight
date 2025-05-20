@@ -26,7 +26,7 @@
           <DOMFolderItem name="UI重构/商店相关" itemID="6689822f-000044fa"/>
           <DOMFolderItem name="UI重构/书架系统" itemID="66519f17-00003cc9"/>
           <DOMFolderItem name="UI重构/文天彩蛋UI所用素材" itemID="660ce453-00000ed0"/>
-          <DOMFolderItem name="地图" itemID="668a9fac-00004fc9" isExpanded="true"/>
+          <DOMFolderItem name="地图" itemID="668a9fac-00004fc9"/>
           <DOMFolderItem name="房间摆件" itemID="66328e0c-00001565"/>
           <DOMFolderItem name="房间摆件/乐器" itemID="66328ec2-0000158b"/>
           <DOMFolderItem name="房间摆件/乐器/话筒" itemID="66329217-000015cd"/>
@@ -622,7 +622,6 @@
           <Include href="sprite/Symbol 1545.xml" loadImmediate="false" itemID="6597607e-0000095c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2254.xml" loadImmediate="false" itemID="6597607e-00000adb" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2276.xml" loadImmediate="false" itemID="6597607e-00000ae7" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2326.xml" loadImmediate="false" itemID="6597607e-00000b11" lastModified="1712240094"/>
           <Include href="sprite/Symbol 2330.xml" loadImmediate="false" itemID="6597607e-00000b13" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2336.xml" loadImmediate="false" itemID="6597607e-00000b17" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2337.xml" loadImmediate="false" itemID="6597607e-00000b18" lastModified="1704196122"/>
@@ -641,7 +640,6 @@
           <Include href="sprite/Symbol 2412.xml" loadImmediate="false" itemID="6597607e-00000b47" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2414.xml" loadImmediate="false" itemID="6597607e-00000b49" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2423.xml" loadImmediate="false" itemID="6597607e-00000b51" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2424.xml" loadImmediate="false" itemID="6597607e-00000b52" lastModified="1704645500"/>
           <Include href="sprite/Symbol 2426.xml" loadImmediate="false" itemID="6597607e-00000b53" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2429.xml" loadImmediate="false" itemID="6597607e-00000b55" lastModified="1737284313"/>
           <Include href="sprite/Symbol 2433.xml" loadImmediate="false" itemID="6597607e-00000b58" lastModified="1704196122"/>
@@ -668,7 +666,6 @@
           <Include href="sprite/Symbol 2584.xml" loadImmediate="false" itemID="6597607e-00000bf8" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2586.xml" loadImmediate="false" itemID="6597607e-00000bfc" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2587.xml" loadImmediate="false" itemID="6597607e-00000bfe" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2600.xml" loadImmediate="false" itemID="6597607e-00000c12" lastModified="1723056474"/>
           <Include href="sprite/Symbol 2605.xml" loadImmediate="false" itemID="6597607e-00000c18" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2610.xml" loadImmediate="false" itemID="6597607e-00000c1f" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2619.xml" loadImmediate="false" itemID="6597607e-00000c28" lastModified="1704196122"/>
@@ -732,7 +729,6 @@
           <Include href="sprite/Symbol 3040.xml" loadImmediate="false" itemID="6597607e-00000e03" lastModified="1704196122"/>
           <Include href="sprite/Symbol 3047.xml" loadImmediate="false" itemID="6597607e-00000e09" lastModified="1720344338"/>
           <Include href="sprite/Symbol 3061.xml" loadImmediate="false" itemID="6597607e-00000e16" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 3070.xml" loadImmediate="false" itemID="6597607e-00000e1d" lastModified="1746433532"/>
           <Include href="sprite/Symbol 3089.xml" loadImmediate="false" itemID="6597607e-00000e28" lastModified="1714551053"/>
           <Include href="sprite/Symbol 3090.xml" loadImmediate="false" itemID="6597607e-00000e29" lastModified="1704196122"/>
           <Include href="sprite/Symbol 3092.xml" loadImmediate="false" itemID="6597607e-00000e2a" lastModified="1704196122"/>
@@ -744,6 +740,7 @@
           <Include href="sprite/Symbol 35499.xml" loadImmediate="false" itemID="6597607e-00000cf1" lastModified="1704196122"/>
           <Include href="sprite/场景门.xml" loadImmediate="false" itemID="663d92b0-0000167f" lastModified="1723567257"/>
           <Include href="sprite/场景门 废弃.xml" loadImmediate="false" itemID="67d7c804-0000057c" lastModified="1742194692"/>
+          <Include href="sprite/车库背景.xml" loadImmediate="false" itemID="682c0cbc-000006b5" lastModified="1747717308"/>
           <Include href="sprite/车轮.xml" loadImmediate="false" itemID="68187f90-00000e04" lastModified="1746435984"/>
           <Include href="sprite/地图碰撞箱 地下1层.xml" loadImmediate="false" itemID="67d7de51-000014c8" lastModified="1742200401"/>
           <Include href="sprite/地图碰撞箱 房间.xml" loadImmediate="false" itemID="67d7c6a6-00000571" lastModified="1742200619"/>
@@ -755,7 +752,10 @@
           <Include href="sprite/地图碰撞箱 武器库.xml" loadImmediate="false" itemID="67d7df02-000014ce" lastModified="1742200578"/>
           <Include href="sprite/地图碰撞箱 医务室.xml" loadImmediate="false" itemID="67d7c6c8-00000579" lastModified="1742200658"/>
           <Include href="sprite/地图碰撞箱 佣兵酒吧.xml" loadImmediate="false" itemID="67d7c5ec-00000551" lastModified="1742200704"/>
+          <Include href="sprite/地下1层背景.xml" loadImmediate="false" itemID="682c0cf8-000006c0" lastModified="1747717368"/>
           <Include href="sprite/地下2层地图碰撞箱.xml" loadImmediate="false" itemID="65d0b4f2-000014ce" lastModified="1742200453"/>
+          <Include href="sprite/基地1层背景.xml" loadImmediate="false" itemID="682c0cd1-000006b9" lastModified="1747717329"/>
+          <Include href="sprite/健身房背景.xml" loadImmediate="false" itemID="682c108e-000006cb" lastModified="1747718286"/>
           <Include href="sprite/健身房沙袋.xml" loadImmediate="false" itemID="66a8ed03-0000125e" lastModified="1722346755"/>
           <Include href="sprite/健身房沙袋 强制移动.xml" loadImmediate="false" itemID="66a8ed0d-00001267" lastModified="1722347298"/>
           <Include href="sprite/理发师/理发师-NPC.xml" loadImmediate="false" itemID="668aace8-0000626b" lastModified="1736955547"/>
@@ -824,17 +824,17 @@
           <Include href="UI重构/书架系统/书架.xml" loadImmediate="false" itemID="66519f17-00003cc7" lastModified="1716631965"/>
           <Include href="UI重构/文天彩蛋UI所用素材/文天.xml" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1707198663"/>
           <Include href="UI重构/文天彩蛋UI所用素材/元件 1.xml" loadImmediate="false" itemID="65c1c94d-00000c97" lastModified="1720345000"/>
-          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1746453560"/>
-          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1744658724"/>
-          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1742200401"/>
+          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1747717311"/>
+          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1747717349"/>
+          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1747718602"/>
           <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1743585946"/>
-          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1742200421"/>
+          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1747718294"/>
           <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1742200440"/>
+          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1747717252"/>
+          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1747718297"/>
           <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1742200609"/>
-          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1743589305"/>
-          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1742200583"/>
-          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1742200672"/>
-          <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1742200686"/>
+          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1747717315"/>
+          <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1747718311"/>
           <Include href="房间摆件/摆件茶壶.xml" loadImmediate="false" itemID="663347f0-000017f6" lastModified="1714636784"/>
           <Include href="房间摆件/摆件初始床.xml" loadImmediate="false" itemID="66363eaa-00000d76" lastModified="1714831225"/>
           <Include href="房间摆件/摆件初始梯子.xml" loadImmediate="false" itemID="66363ec7-00000dc5" lastModified="1714831047"/>
@@ -1157,6 +1157,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2073301" publishTime="1747718511"/>
+          <PublishItem publishSize="2452922" publishTime="1747718308"/>
           <PublishItem publishSize="1043162" publishTime="1746453387"/>
           <PublishItem publishSize="1043144" publishTime="1746453113"/>
           <PublishItem publishSize="1043149" publishTime="1746453082"/>
@@ -1175,7 +1177,5 @@
           <PublishItem publishSize="975712" publishTime="1746433900"/>
           <PublishItem publishSize="970591" publishTime="1744224581"/>
           <PublishItem publishSize="970590" publishTime="1744224512"/>
-          <PublishItem publishSize="970585" publishTime="1744224264"/>
-          <PublishItem publishSize="970567" publishTime="1744224181"/>
      </publishHistory>
 </DOMDocument>
