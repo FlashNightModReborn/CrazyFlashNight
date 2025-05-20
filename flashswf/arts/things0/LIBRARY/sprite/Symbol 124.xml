@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 124" itemID="6577b699-000009a8" lastModified="1734858415" lastUniqueIdentifier="355">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 124" itemID="6577b699-000009a8" lastModified="1747750846" lastUniqueIdentifier="355">
   <timeline>
-    <DOMTimeline name="Symbol 124" currentFrame="98" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 124" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B562FD" locked="true">
           <frames>
@@ -418,7 +418,7 @@ else
             </DOMFrame>
             <DOMFrame index="20" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="139.4" centerPoint3DY="20.3">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="139.4" centerPoint3DY="20.3">
                   <matrix>
                     <Matrix a="3.13352966308594" d="1.35382080078125" tx="140.45" ty="19.65"/>
                   </matrix>
@@ -441,7 +441,7 @@ else
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0.1;
-	子弹属性.垂直击退速度 = 5;
+	子弹属性.垂直击退速度 = 2;
 	
 	//非常用
 	/*
