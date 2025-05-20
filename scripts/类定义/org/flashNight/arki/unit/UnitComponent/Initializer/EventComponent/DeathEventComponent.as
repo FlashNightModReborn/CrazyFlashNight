@@ -12,11 +12,19 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
         // 订阅 hkil 事件到 HitUpdater 逻辑
         dispatcher.subscribeSingle("death", DeathEventComponent.onDeath, target);
     }
-
+    
     public static function onDeath(target:MovieClip):Void {
         if(!target.respawn){
-            target.人物文字信息.removeMovieClip();
-            target.新版人物文字信息.removeMovieClip();
+            // 遍历目标下的所有影片剪辑
+            for(var i:String in target){
+                // 检查属性是否为影片剪辑且不是名为"man"的实例
+                var child = target[i];
+                if(child instanceof MovieClip && child._name && child._name != "man") {
+                    // 移除该影片剪辑
+                    // _root.服务器.发布服务器消息("移除 " + child._name)
+                    child.removeMovieClip();
+                }
+            }
         }
     }
 }
