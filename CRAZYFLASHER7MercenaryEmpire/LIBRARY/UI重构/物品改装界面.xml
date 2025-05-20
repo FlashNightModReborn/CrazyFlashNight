@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1747583423" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1747748224" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="物品改装界面">
+    <DOMTimeline name="物品改装界面" currentFrame="37">
       <layers>
         <DOMLayer name="Labels Layer" color="#F2BEC5">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C44A9F" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#C44A9F">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -486,7 +486,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#3AEF6A">
+        <DOMLayer name="Layer 9" color="#3AEF6A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -575,13 +575,25 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="37" duration="43" keyMode="9728">
               <elements>
-                <DOMDynamicText name="mytext" fontRenderingMode="device" width="181" height="81.2" isSelectable="false" lineType="multiline">
+                <DOMDynamicText name="mytext" selected="true" fontRenderingMode="device" width="181" height="81.2" isSelectable="false" lineType="multiline">
                   <matrix>
                     <Matrix tx="166" ty="157"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters> 成功！&#xD;请查看背包。</characters>
+                      <characters> </characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="30" bitmapSize="600" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>制作</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="30" bitmapSize="600" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>成功！&#xD;请查看背包。</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="30" bitmapSize="600" face="MicrosoftYaHei" fillColor="#FFCC00"/>
                       </textAttrs>

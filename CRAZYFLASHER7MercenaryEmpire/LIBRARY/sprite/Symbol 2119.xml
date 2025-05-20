@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2119" itemID="6597607e-00000aa4" lastModified="1746291867" lastUniqueIdentifier="13">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2119" itemID="6597607e-00000aa4" lastModified="1747748372" lastUniqueIdentifier="13">
   <timeline>
-    <DOMTimeline name="Symbol 2119" currentFrame="93">
+    <DOMTimeline name="Symbol 2119">
       <layers>
         <DOMLayer name="Labels Layer" color="#DE6E89">
           <frames>
@@ -111,11 +111,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#93F46F">
+        <DOMLayer name="Layer 5" color="#93F46F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText name="段落_帮助1" fontRenderingMode="device" width="639.75" height="309.75" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="段落_帮助1" selected="true" fontRenderingMode="device" width="639.75" height="309.75" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix a="0.901779174804688" d="0.901779174804688" tx="213.25" ty="120.8"/>
                   </matrix>
@@ -379,13 +379,13 @@ _root.全部翻译(this);
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>F&#xD;</characters>
+                      <characters>F</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>装备的变形：</characters>
+                      <characters>；装备的变形：</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
                       </textAttrs>
@@ -416,6 +416,42 @@ _root.全部翻译(this);
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>E </characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>鼠标左键；标注可拾取物：长按</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>E</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>；</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>拾取并装备：</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>Ctrl+E  Ctrl+</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
                       </textAttrs>
@@ -846,7 +882,7 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#D2EB77" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#D2EB77">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1050,20 +1086,27 @@ _root.全部翻译(this);
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="2" edges="!13637 8443|14089 8443!14089 8443[14103 8518 14103 8602!14103 8602[14103 8855 13968 9034!13968 9034[13833 9214 13642 9214!13642 9214[13450 9214 13315 9034!13315 9034[13180 8855 13180 8602!13180 8602[13180 8518 13195 8443"/>
-                    <Edge fillStyle0="1" strokeStyle="2" edges="!13195 8443|13637 8443!13637 8443|13637 7989!13637 7989[13449 7991 13315 8168!13315 8168[13224 8289 13195 8443"/>
-                    <Edge strokeStyle="2" edges="!13637 7989[13639 7989 13642 7989!13642 7989[13833 7989 13968 8168!13968 8168[14058 8289 14089 8443"/>
-                    <Edge strokeStyle="1" edges="!6045 8668|6525 8668!6525 8668[6573 8668 6600 8647!6600 8647[6635 8620 6635 8558!6635 8558|6635 8078!6635 8078[6635 7968 6525 7968!6525 7968|6045 7968!6045 7968[5935 7968 5935 8078!5935 8078|5935 8558!5935 8558[5935 8668 6045 8668!12672
+                    <Edge strokeStyle="2" edges="!13637 7989[13639 7989 13642 7989!13642 7989[13833 7989 13968 8168!13968 8168[14058 8289 14089 8443!14089 8443[14103 8518 14103 8602!14103 8602[14103 8855 13968 9034!13968 9034[13833 9214 13642 9214!13642 9214[13450 9214 13315 9034!13315
+ 9034[13180 8855 13180 8602!13180 8602[13180 8518 13195 8443"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="
+!13195 8443[13224 8289 13315 8168!13315 8168[13449 7991 13637 7989"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="
+!13195 8443|13637 8443!13637 8443|13637 7989"/>
+                    <Edge strokeStyle="2" edges="
+!13637 8443|14089 8443"/>
+                    <Edge strokeStyle="1" edges="
+!6045 8668|6525 8668!6525 8668[6573 8668 6600 8647!6600 8647[6635 8620 6635 8558!6635 8558|6635 8078!6635 8078[6635 7968 6525 7968!6525 7968|6045 7968!6045 7968[5935 7968 5935 8078!5935 8078|5935 8558!5935 8558[5935 8668 6045 8668!12672
  8735[12720 8735 12747 8714!12747 8714[12782 8687 12782 8625!12782 8625|12782 8145!12782 8145[12782 8035 12672 8035!12672 8035|12192 8035!12192 8035[12082 8035 12082 8145!12082 8145|12082 8625!12082 8625[12082 8735 12192 8735!12192 8735
 |12672 8735!11536 8625|11536 8145!11536 8145[11536 8035 11337 8035!11337 8035|10466 8035!10466 8035[10266 8035 10266 8145!10266 8145|10266 8625!10266 8625[10266 8735 10466 8735!10466 8735|11337 8735!11337 8735[11424 8735 11472 8714!11472
  8714[11536 8687 11536 8625"/>
-                    <Edge fillStyle0="1" strokeStyle="2" edges="
-!7490 8376|7490 7922!7490 7922[7302 7924 7168 8101!7168 8101[7077 8222 7048 8376"/>
                     <Edge strokeStyle="2" edges="
-!7048 8376[7033 8451 7033 8535!7033 8535[7033 8788 7168 8967!7168 8967[7303 9147 7495 9147!7495 9147[7686 9147 7821 8967!7821 8967[7956 8788 7956 8535!7956 8535[7956 8451 7942 8376!7942 8376[7911 8222 7821 8101!7821 8101[7686 7922 7495
- 7922!7495 7922[7492 7922 7490 7922!7490 8376|7942 8376"/>
+!7490 8376|7942 8376!7942 8376[7911 8222 7821 8101!7821 8101[7686 7922 7495 7922!7495 7922[7492 7922 7490 7922"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="
+!7490 7922|7490 8376"/>
+                    <Edge strokeStyle="2" edges="
+!7048 8376[7033 8451 7033 8535!7033 8535[7033 8788 7168 8967!7168 8967[7303 9147 7495 9147!7495 9147[7686 9147 7821 8967!7821 8967[7956 8788 7956 8535!7956 8535[7956 8451 7942 8376"/>
                     <Edge fillStyle0="1" strokeStyle="2" edges="
-!7048 8376|7490 8376"/>
+!7490 7922[7302 7924 7168 8101!7168 8101[7077 8222 7048 8376!7048 8376|7490 8376"/>
                     <Edge cubics="!7490 8376(;7490,8376 7942,8376 7942,8376q7490 8376 7942 8376);"/>
                     <Edge cubics="!7495 7922(;7622,7922 7731,7982 7821,8101q7495 7922Q7686 7922q7821 8101);"/>
                     <Edge cubics="!7490 7922(;7490,7922 7490,8376 7490,8376q7490 7922 7490 8376);"/>
