@@ -52,6 +52,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
             target.新版人物文字信息.称号文本框.removeMovieClip();
         }
 
+        if(target.新版人物文字信息) {
+            target.人物文字信息.unloadMovie();
+        }
+        
+
         var color:String = "<FONT COLOR='" + nameColor + "'>";
 
         // 设置显示名称（保持不变）

@@ -415,10 +415,11 @@ _root.初始化敌人模板 = function(){
 	
 	// 应用新版人物文字信息
 	if(this.人物文字信息){
-		this.人物文字信息.unloadMovie();
 		this.attachMovie("新版人物文字信息","新版人物文字信息",this.getNextHighestDepth());
 		this.新版人物文字信息._x = 人物文字信息._x;
 		this.新版人物文字信息._y = 人物文字信息._y;
+
+		this.人物文字信息.unloadMovie();
 	}
 		
 	// 应用初始器
