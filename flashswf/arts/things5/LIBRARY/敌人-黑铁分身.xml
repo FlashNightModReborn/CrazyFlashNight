@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁分身" itemID="67e615c6-000008d5" linkageExportForAS="true" linkageIdentifier="敌人-黑铁分身" lastModified="1743135123">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁分身" itemID="67e615c6-000008d5" linkageExportForAS="true" linkageIdentifier="敌人-黑铁分身" lastModified="1747743448">
   <timeline>
     <DOMTimeline name="敌人-黑铁分身">
       <layers>
@@ -191,7 +191,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#D47849" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#D47849">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -232,7 +232,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#5DD5C6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 8" color="#5DD5C6" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -247,7 +247,7 @@ stop();
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (this._currentframe == 1)
 	{
-		if (_parent.是否为敌人 && _root.gameworld.玩家0.换弹中)
+		if (_parent.是否为敌人 && _root.gameworld.玩家0.man.换弹标签 != null)
 		{
 			_parent.攻击目标 = "玩家0";
 			play();

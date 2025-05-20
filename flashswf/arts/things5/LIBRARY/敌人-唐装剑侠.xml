@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-唐装剑侠" itemID="67e614fb-000008c8" linkageExportForAS="true" linkageIdentifier="敌人-唐装剑侠" lastModified="1747143830" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-唐装剑侠" itemID="67e614fb-000008c8" linkageExportForAS="true" linkageIdentifier="敌人-唐装剑侠" lastModified="1747743455" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="敌人-唐装剑侠">
+    <DOMTimeline name="敌人-唐装剑侠" currentFrame="12">
       <layers>
         <DOMLayer name="Labels Layer" color="#52EF6E">
           <frames>
@@ -130,7 +130,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#5AF93E" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#5AF93E" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -184,7 +184,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#C4EDDC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 8" color="#C4EDDC" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -202,7 +202,7 @@
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (this._currentframe == 1)
 	{
-		if (_parent.是否为敌人 && _root.gameworld.玩家0.换弹中)
+		if (_parent.是否为敌人 && _root.gameworld.玩家0.man.换弹标签 != null)
 		{
 			_parent.攻击目标 = "玩家0";
 			play();
