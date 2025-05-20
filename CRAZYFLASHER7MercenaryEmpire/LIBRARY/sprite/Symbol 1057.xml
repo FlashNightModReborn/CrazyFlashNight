@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1057" itemID="6597607e-00000848" lastModified="1740327586">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1057" itemID="6597607e-00000848" lastModified="1747747524">
   <timeline>
     <DOMTimeline name="Symbol 1057">
       <layers>
@@ -32,6 +32,8 @@
 	主角.下装装备 = _root.下装装备;
 	主角.脚部装备 = _root.脚部装备;
 	主角.攻击模式 = "空手";
+	主角.称号 = "菜鸟";
+	主角.颈部装备 = "";
 	//_root.刷新人物装扮("主角");
 	主角.hp = 1;
 	this.onEnterFrame = function(){
