@@ -1,6 +1,8 @@
 ﻿class org.flashNight.arki.unit.UnitComponent.Initializer.ParameterInitializer {
     public static var versionCount:Number = 0;
 
+    private static var lastInitFrame:Number = 0;
+
     public static function initialize(target:MovieClip):Void {
         if (isNaN(target.重量)) target.重量 = 60;
         if (isNaN(target.韧性系数)) target.韧性系数 = 1;
@@ -20,6 +22,17 @@
         if (isNaN(target.icY)) target.icY = ic._y;
         if (target.状态 == "登场") ic._visible = false;
 
-        target.version = ++versionCount;
+        if(_root.控制目标 === target._name) {
+            if(_root.帧计时器.当前帧数 > lastInitFrame) {
+
+                // 部分情况主角会原地多次刷新，原因未定位
+                // 多次刷新会导致版本号迭代，装备生命周期函数失效，因此手动防护避免频繁刷新
+                target.version = ++versionCount;
+                lastInitFrame = _root.帧计时器.当前帧数;
+            }
+        } else {
+            target.version = ++versionCount;
+        }
+        
     }
 }
