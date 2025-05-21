@@ -52,7 +52,8 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         // 2. 若需要一并清除 target 自身的所有事件监听器，可在此调用
         EventCoordinator.clearEventListeners(_target);
         
-        // 3. 释放对 target 的引用，防止内存泄漏
+        // 3. 释放对 target 的引用（并试图释放 target 对自身的引用），防止内存泄漏
+        if(this._target.dispatcher === this) this._target.dispatcher = null;
         this._target = null;
         
         // 4. 调用父类的销毁逻辑

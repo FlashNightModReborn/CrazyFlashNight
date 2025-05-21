@@ -102,6 +102,9 @@ _root.帧计时器.初始化任务栈 = function():Void {
 
     // 创建冷却时间轮，用于调度轻量化的ui任务
     this.cooldownWheel = CooldownWheel.I();
+
+    // 创建单位update时间轮
+    this.unitUpdateWheel = UnitUpdateWheel.I();
     
     // --------------------------
     // 其他相关初始化
@@ -114,6 +117,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // 注册帧更新事件：每次帧更新时调用 TaskManager.updateFrame() 来处理任务
     // --------------------------
     this.eventBus.subscribe("frameUpdate", function():Void {
+        _root.帧计时器.unitUpdateWheel.tick();
         _root.帧计时器.taskManager.updateFrame();
         // _root.服务器.发布服务器消息(_root.场景进入位置名)
     }, this);
