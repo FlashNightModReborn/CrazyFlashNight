@@ -48,6 +48,23 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater {
             return;
         }
         */
+
+        if(_root.控制目标 === target._name) {
+            var state:Object = {
+                                    长枪:true,
+                                    手枪:true,
+                                    手枪2:true,
+                                    双枪:true,
+                                    手雷:true
+            };
+
+            if(!state[target.攻击模式]) {
+                target.射击最大后摇中 = false;
+                // _root.发布消息(target.射击最大后摇中, target.攻击模式)
+            }
+        }
+
+        
         
         // 依次更新各监视组件
         // 1. 更新硬直卡死检测

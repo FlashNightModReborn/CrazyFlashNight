@@ -1166,6 +1166,8 @@ _root.主角函数.行走_玩家 = function() {
     var isReloading = self.man.换弹标签;
     var isActionA = self.动作A;
     var isActionB = self.动作B;
+
+	// _root.服务器.发布服务器消息("射击最大后摇中:" + 射击最大后摇中);
     
     // 提前计算复合条件
     var isShooting = isMainHandShooting || isOffHandShooting;
