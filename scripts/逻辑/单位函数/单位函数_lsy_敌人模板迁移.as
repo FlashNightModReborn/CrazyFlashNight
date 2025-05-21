@@ -12,6 +12,8 @@ _root.敌人函数 = new Object();
 //以下14个是原版敌人的必要函数
 
 _root.敌人函数.根据等级初始数值 = function(等级值){
+	//_root.服务器.发布服务器消息("unit: " + this._name + " at level: " + 等级值)
+	
 	hp满血值 = _root.根据等级计算值(hp_min, hp_max, 等级值) * _root.难度等级;
 	空手攻击力 = _root.根据等级计算值(空手攻击力_min, 空手攻击力_max, 等级值) * _root.难度等级;
 	行走X速度 = _root.根据等级计算值(速度_min, 速度_max, 等级值) / 10;

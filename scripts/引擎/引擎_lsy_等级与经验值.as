@@ -1,4 +1,7 @@
-﻿_root.最大等级 = 60;
+﻿import org.flashNight.gesh.object.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+
+_root.最大等级 = 60;
 _root.等级限制 = 100;
 
 _root.根据等级得升级所需经验 = function(等级):Number{
@@ -166,7 +169,15 @@ _root.宠物升级加载 = function(i){
 		// var 新宠物对象 = _root.加载游戏世界人物(宠物标识符,宠物僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{等级:宠物等级, 名字:宠物名字, 宠物属性:this.宠物属性, 是否为敌人:宠物是否为敌人, 身高:宠物身高, _x:temppet_x, _y:temppet_y});//,称号:称号
 		// _root.宠物mc库[i] = 新宠物对象;
 
+		// _root.发布消息("宠物属性", ObjectUtil.toString(宠物属性));
+
+		
+
+		
+
 		宠物对象.等级 = 宠物等级;
+		DisplayNameInitializer.initialize(宠物对象);
+		// _root.发布消息(宠物等级, 宠物对象.等级, 宠物对象.displayName)
 		宠物对象.宠物属性 = 宠物属性;
 		宠物对象.根据等级初始数值(宠物对象.等级);
 		宠物对象.宠物属性初始化(宠物对象.等级);

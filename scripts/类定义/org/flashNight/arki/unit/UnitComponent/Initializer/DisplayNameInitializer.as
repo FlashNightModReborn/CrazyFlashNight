@@ -19,6 +19,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
         return obj;
     }
 
+    // 新增：格式化显示名称的函数
+    public static function formatDisplayName(color:String, level:Number, name:String):String {
+        return color + "Lv." + level + "   " + name + "</FONT>";
+    }
+
     public static function initialize(target:Object):Void {
         var nameColor:String;
 
@@ -60,6 +65,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
         var color:String = "<FONT COLOR='" + nameColor + "'>";
 
         // 设置显示名称（保持不变）
-        target.displayName = color + "Lv." + target.等级 + "   " + target.名字 + "</FONT>";
+        target.displayName = formatDisplayName(color, target.等级, target.名字);
     }
 }
