@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1746206656" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1747818700" lastUniqueIdentifier="42">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="1">
+    <DOMTimeline name="新版物品栏界面" currentFrame="49">
       <layers>
-        <DOMLayer name="Labels Layer" color="#23D4A1" locked="true">
+        <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#894BAD" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#894BAD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -322,7 +322,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="已装备" color="#7CE74D" locked="true" autoNamed="false">
+        <DOMLayer name="已装备" color="#7CE74D" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -424,7 +424,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="未装备" color="#C3D7F3" locked="true" autoNamed="false">
+        <DOMLayer name="未装备" color="#C3D7F3" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -479,7 +479,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮组" color="#B4F015" locked="true" autoNamed="false">
+        <DOMLayer name="按钮组" color="#B4F015" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -679,7 +679,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#E3D96D" locked="true" autoNamed="false">
+        <DOMLayer name="文字" color="#E3D96D" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -902,7 +902,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="排序图标" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="排序图标" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
@@ -1126,7 +1126,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="垃圾箱" color="#12C3CF" locked="true" autoNamed="false">
+        <DOMLayer name="垃圾箱" color="#12C3CF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
@@ -1166,7 +1166,18 @@ on(rollOut){
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="整理" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
                   <matrix>
                     <Matrix tx="163.2" ty="306.65"/>
                   </matrix>
@@ -1187,12 +1198,38 @@ on(rollOut){
                 </DOMStaticText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" duration="29" keyMode="9728">
+            <DOMFrame index="23" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="163.2" ty="322.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>整理</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="金币" color="#DBBC42" locked="true" autoNamed="false">
+        <DOMLayer name="金币" color="#DBBC42" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
@@ -1243,7 +1280,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人影&amp;信息文字" color="#A1DFA7" locked="true" autoNamed="false">
+        <DOMLayer name="人影&amp;信息文字" color="#A1DFA7" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
@@ -1274,7 +1311,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="装备栏位" color="#BDF8E3" locked="true" autoNamed="false">
+        <DOMLayer name="装备栏位" color="#BDF8E3" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
@@ -1415,7 +1452,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="格子" color="#E66AA8" locked="true" autoNamed="false">
+        <DOMLayer name="格子" color="#E66AA8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
@@ -1463,30 +1500,11 @@ onClipEvent (unload) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMStaticText fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="163.2" ty="322.15"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>整理</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拖拽" color="#EF9205" locked="true" autoNamed="false">
+        <DOMLayer name="拖拽" color="#EF9205" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
@@ -1518,7 +1536,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关闭" color="#8EC1E5" locked="true" autoNamed="false">
+        <DOMLayer name="关闭" color="#8EC1E5" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
@@ -1540,7 +1558,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景2" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="背景2" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="45" keyMode="9728">
               <elements/>
@@ -1563,7 +1581,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#F2FFEA" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#F2FFEA" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements>

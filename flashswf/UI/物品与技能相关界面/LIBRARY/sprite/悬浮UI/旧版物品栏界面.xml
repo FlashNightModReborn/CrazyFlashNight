@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/旧版物品栏界面" itemID="676bc8ea-00000850" lastModified="1739847583" lastUniqueIdentifier="27">
   <timeline>
-    <DOMTimeline name="旧版物品栏界面">
+    <DOMTimeline name="旧版物品栏界面" currentFrame="3">
       <layers>
-        <DOMLayer name="Labels Layer" color="#23D4A1" locked="true">
+        <DOMLayer name="Labels Layer" color="#23D4A1" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" name="物品栏" labelType="name" keyMode="9728">
               <elements/>
@@ -2090,7 +2090,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="格子" color="#E66AA8" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="格子" color="#E66AA8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
