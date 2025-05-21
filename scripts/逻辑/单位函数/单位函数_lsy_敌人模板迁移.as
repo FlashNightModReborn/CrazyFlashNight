@@ -30,8 +30,10 @@ _root.敌人函数.根据等级初始数值 = function(等级值){
 
 _root.敌人函数.获取线性插值经验值 = function(target, list:Array){
 	var level = target.等级;
-	for(var i = 0; i < list.length - 1; i++){
-		if(level < list[i+1].level) break;
+	if(list.length > 2){
+		for(var i = 0; i < list.length - 1; i++){
+			if(level < list[i+1].level) break;
+		}
 	}
 	target.最小经验值 = _root.常用工具函数.线性插值(1, list[i].level, list[i+1].level, list[i].value, list[i+1].value);
 	target.最大经验值 = _root.常用工具函数.线性插值(_root.最大等级, list[i].level, list[i+1].level, list[i].value, list[i+1].value);

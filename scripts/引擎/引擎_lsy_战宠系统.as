@@ -34,7 +34,8 @@ _root.战宠UI函数.计算战宠升级所需经验 = function(兵种,等级){
 		obj.最小经验值 = 敌人属性.最小经验值;
 		obj.最大经验值 = 敌人属性.最大经验值;
 	}
-	return (obj.最小经验值 + ((obj.最大经验值 - obj.最小经验值) / (_root.最大等级 - 1)) * 等级 ) *等级;
+	var exp = Math.floor((obj.最小经验值 + ((obj.最大经验值 - obj.最小经验值) / (_root.最大等级 - 1)) * 等级) * 等级);
+	return exp;
 }
 
 _root.战宠UI函数.计算战宠最大出战数 = function(){
