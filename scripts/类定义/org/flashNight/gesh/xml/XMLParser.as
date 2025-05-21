@@ -114,7 +114,7 @@ class org.flashNight.gesh.xml.XMLParser
                         var attrs = {};
                         for(var attr:String in childNode.attributes){
                             hasAttr = true;
-                            attrs[attr] = childNode.attributes[attr];
+                            attrs[attr] = convertDataType(childNode.attributes[attr]);
                         }
                         nodeValue = hasAttr ? attrs : "";
                     }
@@ -264,7 +264,7 @@ class org.flashNight.gesh.xml.XMLParser
                         var attrs = {};
                         for(var attr:String in childNode.attributes){
                             hasAttr = true;
-                            attrs[attr] = childNode.attributes[attr];
+                            attrs[attr] = convertDataType(childNode.attributes[attr]);
                         }
                         nodeValue = hasAttr ? attrs : "";
                     }

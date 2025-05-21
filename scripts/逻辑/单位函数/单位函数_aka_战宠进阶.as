@@ -475,10 +475,15 @@ _root.战宠进阶函数.切换发型 = {
 		}else{
 			this.当前宠物属性.发色="白";
 		}
-   		_root.删除场景宠物();
-   		_root.加载宠物(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
 		//this.JK.gotoAndStop(this.当前宠物属性.发色);
 		_root.宠物信息界面["宠物信息显示框"+this.宠物信息数组号].宠物头像.JK.gotoAndStop(this.当前宠物属性.发色);
+		// 查找战宠是否在场
+		for(i=0; i<_root.宠物mc库.length; i++){
+			if(_root.宠物mc库[i].宠物属性.宠物信息数组号 == this.宠物信息数组号){
+				_root.宠物mc库[i].发色 = this.当前宠物属性.发色;
+				break;
+			}
+		}
 	}
 }
 
@@ -844,8 +849,7 @@ _root.战宠进阶函数.影子刺客 = {
 		}else{
 			this.当前宠物属性.影子单位 = !this.当前宠物属性.影子单位;
 			_root.最上层发布文字提示("影子状态已" + (this.当前宠物属性.影子单位?"启用":"停用"));
-			_root.删除场景宠物();
-			_root.加载宠物(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
+			_root.敌人函数.应用影子色彩(this);
 		}
 	},
 	单位进阶执行:function(){

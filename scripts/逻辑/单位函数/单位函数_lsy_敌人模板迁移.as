@@ -26,6 +26,16 @@ _root.敌人函数.根据等级初始数值 = function(等级值){
 	hp = !isNaN(hp) ? hp : hp满血值;
 };
 
+_root.敌人函数.获取线性插值经验值 = function(target, list:Array){
+	var level = target.等级;
+	for(var i = 0; i < list.length - 1; i++){
+		if(level < list[i+1].level) break;
+	}
+	target.最小经验值 = _root.常用工具函数.线性插值(1, list[i].level, list[i+1].level, list[i].value, list[i+1].value);
+	target.最大经验值 = _root.常用工具函数.线性插值(_root.最大等级, list[i].level, list[i+1].level, list[i].value, list[i+1].value);
+	// _root.发布消息(target.最小经验值 + " " + target.最大经验值);
+}
+
 _root.敌人函数.宠物属性初始化 = function(等级值){
 	if(宠物属性){
 		for(var key in 宠物属性){
@@ -302,6 +312,23 @@ _root.敌人函数.尝试拾取 = function(){
 }
 
 
+_root.敌人函数.应用影子色彩 = function(target:MovieClip){
+	if(target.影子单位){
+		target.影子倍率 = target.影子倍率? target.影子倍率 : 0;
+		target.透明倍率 =  target.透明倍率? target.透明倍率 : 0.7;
+		_root.设置色彩(target,target.影子倍率,target.影子倍率,target.影子倍率,NaN,NaN,NaN,target.透明倍率,0);
+		target.不掉钱 = true;
+		target.掉落物 = [];
+	}else if(target.色彩单位){
+		_root.设置色彩(target,target.红色乘数,target.绿色乘数,target.蓝色乘数,target.红色偏移,target.绿色偏移,target.蓝色偏移,target.透明乘数,target.透明偏移);
+		target.不掉钱 = true;
+		target.掉落物 = [];
+	}else{
+		_root.重置色彩(target);
+	}
+}
+
+
 _root.初始化敌人模板 = function(){
 	//以下14个是原版敌人的必要函数
 	this.根据等级初始数值 = this.根据等级初始数值 ? this.根据等级初始数值 : _root.敌人函数.根据等级初始数值;
@@ -335,8 +362,12 @@ _root.初始化敌人模板 = function(){
 	var 敌人属性 = _root.敌人属性表[this.兵种];
 	if(!敌人属性) 敌人属性 = _root.敌人属性表["默认"];
 	//13项基础数值
-	if (isNaN(最小经验值)) 最小经验值 = 敌人属性.最小经验值;
-	if (isNaN(最大经验值)) 最大经验值 = 敌人属性.最大经验值;
+	if(敌人属性.线性插值经验值.length > 1){
+		_root.敌人函数.获取线性插值经验值(this,敌人属性.线性插值经验值);
+	}else{
+		if (isNaN(最小经验值)) 最小经验值 = 敌人属性.最小经验值;
+		if (isNaN(最大经验值)) 最大经验值 = 敌人属性.最大经验值;
+	}
 	if (isNaN(hp_min)) hp_min = 敌人属性.hp_min;
 	if (isNaN(hp_max)) hp_max = 敌人属性.hp_max;
 	if (isNaN(速度_min)) 速度_min = 敌人属性.速度_min;
@@ -421,24 +452,14 @@ _root.初始化敌人模板 = function(){
 
 		this.人物文字信息.unloadMovie();
 	}
-		
+	
 	// 应用初始器
 	根据等级初始数值(等级);
 	宠物属性初始化();
 	StaticInitializer.initializeUnit(this);
 
 	// 应用影子色彩
-	if(this.影子单位){
-		this.影子倍率 = this.影子倍率? this.影子倍率 : 0;
-		this.透明倍率 =  this.透明倍率? this.透明倍率 : 0.7;
-		_root.设置色彩(this,this.影子倍率,this.影子倍率,this.影子倍率,NaN,NaN,NaN,this.透明倍率,0);
-		this.不掉钱 = true;
-		this.掉落物 = [];
-	}else if(this.色彩单位){
-		_root.设置色彩(this,this.红色乘数,this.绿色乘数,this.蓝色乘数,this.红色偏移,this.绿色偏移,this.蓝色偏移,this.透明乘数,this.透明偏移);
-		this.不掉钱 = true;
-		this.掉落物 = [];
-	}
+	_root.敌人函数.应用影子色彩(this);
 	
 	// 初始化完毕
 	方向改变(方向);
