@@ -102,7 +102,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         result.actualScatterUsed = actualScatterUsed;
 
         // 更新 bullet 和 target
-        if(bullet.普通检测) bullet.霰弹值 -= actualScatterUsed; // 只有普通子弹会降低联弹霰弹值
+        if(bullet.普通检测 && !bullet.透明检测) bullet.霰弹值 -= actualScatterUsed; // 只有非透明的普通子弹会降低联弹霰弹值
         result.finalScatterValue = bullet.霰弹值;
 
         // _root.发布消息("au:" + actualScatterUsed + ",fv:" + bullet.霰弹值 + ", dg:" + target.损伤值);

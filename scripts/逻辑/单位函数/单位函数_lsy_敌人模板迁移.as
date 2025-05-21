@@ -474,6 +474,9 @@ _root.初始化敌人模板 = function(){
 _root.敌人函数.初始化单位 = function(target){
 	StaticInitializer.initializeUnit(target);
 }
+_root.敌人函数.注销单位 = function(target){
+	StaticDeinitializer.deinitializeUnit(target);
+}
 
 
 /*

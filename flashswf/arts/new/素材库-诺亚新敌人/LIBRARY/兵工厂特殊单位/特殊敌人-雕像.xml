@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1747043125" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1747837960" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="特殊敌人-雕像">
       <layers>
@@ -49,6 +49,7 @@ function 死亡检测(){
 				_parent.计算经验值();
 			}
  	  	}
+		_root.敌人函数.注销单位(_parent);
 		stop();
 	}
 }
@@ -81,7 +82,7 @@ function 复活计时()
 	if (游戏世界.兵工厂中枢.hp <= 0)
 	{
 		this.hp = 0;
-		死亡判定();
+		死亡检测();
 		return;
 	}
 	死亡次数++;
@@ -99,7 +100,7 @@ function 复活计时()
 			自机.man.play();
 		}else{
 			自机.hp = 0;
-			自机.死亡判定();
+			自机.死亡检测();
 		}
 	},复活时间);
 	复活时间 += 2000 * 死亡次数;

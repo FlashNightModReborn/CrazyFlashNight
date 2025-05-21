@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-兵工厂中枢" itemID="66b8b287-00000914" linkageExportForAS="true" linkageIdentifier="特殊敌人-兵工厂中枢" lastModified="1746456324" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-兵工厂中枢" itemID="66b8b287-00000914" linkageExportForAS="true" linkageIdentifier="特殊敌人-兵工厂中枢" lastModified="1747837935" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="特殊敌人-兵工厂中枢">
+    <DOMTimeline name="特殊敌人-兵工厂中枢" currentFrame="12">
       <layers>
         <DOMLayer name="label" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -158,7 +158,7 @@ gotoAndStop("正常");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>

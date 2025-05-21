@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/中枢结束" itemID="66ba5570-0000135a" lastModified="1723644358" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/中枢结束" itemID="66ba5570-0000135a" lastModified="1747837956" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="中枢结束" currentFrame="31">
+    <DOMTimeline name="中枢结束" currentFrame="44">
       <layers>
         <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
@@ -84,12 +84,14 @@ _root.子弹区域shoot传递(子弹属性);
 
 //强制击杀所有怪物
 var 玩家 = _root.gameworld[_root.控制目标];
-var 敌人列表 = _root.帧计时器.获取敌人缓存(玩家, 5);
+var 敌人列表 = _root.帧计时器.获取敌人缓存(玩家, 1);
 for (var i = 0; i < 敌人列表.length; i++)
 {
 	敌人列表[i].hp = 0;
+	敌人列表[i].dispatcher.publish("death",敌人列表[i]);
 	敌人列表[i].状态改变("血腥死");
-}]]></script>
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -114,6 +116,7 @@ for (var i = 0; i < 敌人列表.length; i++)
 		}
 	}
 }
+_root.敌人函数.注销单位(_parent);
 stop();]]></script>
               </Actionscript>
               <elements/>
