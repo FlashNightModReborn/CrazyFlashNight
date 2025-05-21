@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1747238689">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1747836992">
   <timeline>
     <DOMTimeline name="Symbol 923">
       <layers>
@@ -165,7 +165,8 @@ function 排列可雇用佣兵图标(页数值)
 					this["佣兵列表信息显示框" + _loc4_]["物品图标" + _loc5_].onRollOver = function()
 					{
 						var temp_name = this.物品名 == "角斗高手项链" ? "战斗专家军牌" : this.物品名 ==  "角斗王者项链" ? "战斗狂人军牌" : this.物品名;
-						_root.物品图标注释(this.物品名,{level:this.强化度});
+						//_root.物品图标注释(this.物品名,{level:this.强化度});
+						_root.物品图标注释(temp_name,{level:this.强化度});
 					};
 					this["佣兵列表信息显示框" + _loc4_]["物品图标" + _loc5_].onRollOut = function()
 					{
