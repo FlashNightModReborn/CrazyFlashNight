@@ -361,14 +361,17 @@ _root.加载共享场景 = function(加载场景名){
 
 // 转换场景画面完全淡出时移除组件
 _root.清除游戏世界组件 = function(){
-	//彻底移除gameworld
+	// 彻底移除gameworld
 	_root.gameworld.swapDepths(_root.getNextHighestDepth());
 	_root.gameworld.removeMovieClip();
 	
-	//清除游戏世界相关组件
+	// 清除游戏世界相关组件
 	_root.gameworld层级定位器.removeMovieClip();
 	_root.层级管理器.检查层级范围();
 	_root.卸载后景();
+
+	// 清除重置部分绑定gameworld的数据组件
+	_root.帧计时器.unitUpdateWheel.reset();
 
 	//关闭UI
 	_root.卸载外部UI();
