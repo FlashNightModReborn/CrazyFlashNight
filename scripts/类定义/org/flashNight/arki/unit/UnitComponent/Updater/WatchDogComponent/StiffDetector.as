@@ -149,10 +149,16 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StiffDete
         } else {
             trace("[WatchDog] 检测到对象攻击硬直卡死，已自动恢复: " + target + "[" + target.stiffID + "]");
         }
+        printStiffTaskInfo(target.stiffID);
 
         // 解除硬直状态
         target.stiffID = null;
         target.man.play();
+    }
+
+    private static function printStiffTaskInfo(taskID):Void{
+        var singleLevelTimeWheel = _root.帧计时器.ScheduleTimer.singleLevelTimeWheel;
+        _root.服务器.发布服务器消息(singleLevelTimeWheel.printTimerInfoByID(taskID));
     }
     
     /**

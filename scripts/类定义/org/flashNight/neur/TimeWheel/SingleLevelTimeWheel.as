@@ -319,6 +319,34 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
         }
     }
 
+    /**
+     * 通过任务ID输出定时器信息。
+     * 遍历所有槽位，找到对应的节点。
+     * @param taskID 目标任务的唯一标识符。
+     */
+    public function printTimerInfoByID(taskID:String):String {
+        if(taskID == null){
+            return "TaskID is null";
+        }
+        for (var i:Number = 0; i < wheelSize; i++) { // 遍历所有槽位
+            var tasks:TaskIDLinkedList = slots[i];
+            if (tasks != null) { // 如果槽位中有任务
+                var node:TaskIDNode = tasks.getFirst(); // 获取链表中的第一个节点
+                while (node != null) { // 遍历链表中的所有节点
+                    if (node.taskID == taskID) { // 找到匹配的任务
+                        var strArr = ["TaskID["+ taskID+"]"];
+                        strArr.push("Slot["+i+"]");
+                        var dist = (i - currentPointer) % wheelSize;
+                        strArr.push("Distance["+dist+"]");
+                        return strArr.join(", ");
+                    }
+                    node = node.next; // 移动到下一个节点
+                }
+            }
+        }
+        return "TaskID " + taskID + " not found";
+    }
+
 
     /**
      * 执行 tick 操作，推进时间轮的当前指针，并获取当前槽位中的任务。

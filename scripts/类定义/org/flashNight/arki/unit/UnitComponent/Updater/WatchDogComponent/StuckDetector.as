@@ -196,6 +196,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
     public static function onStuckDetected(target:MovieClip):Void {
         // 发布消息通知系统
         _root.发布消息("[WatchDog] 检测到对象受击硬直卡死，已自动恢复: " + target + "[" + target.hp + "," + target.knockStiffID + "] " + target.硬直中 + " " + target.浮空);
+        printStuckTaskInfo(target.knockStiffID);
 
         // 解除硬直状态
         target.硬直中 = false;
@@ -210,6 +211,11 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
             dispatcher.publish("kill", target);
         }
         
+    }
+
+    private static function printStuckTaskInfo(taskID):Void{
+        var singleLevelTimeWheel = _root.帧计时器.ScheduleTimer.singleLevelTimeWheel;
+        _root.服务器.发布服务器消息(singleLevelTimeWheel.printTimerInfoByID(taskID));
     }
     
     /**

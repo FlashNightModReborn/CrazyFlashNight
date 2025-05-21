@@ -89,7 +89,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             data.wander_threshold = 999999;
         }else{
             // 根据停止机率和随机移动机率随机一个临界时间
-            var temp = 友军数量 <= 5 ? 3 : (友军数量 <= 10 ? 2 : 1);
+            var temp = 友军数量 <= 5 ? 4 : (友军数量 <= 10 ? 3 : 2);
             var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
 
             data.idle_threshold = EnemyBehavior.IDLE_BASIC_TIME + engine.random(temp * self.停止机率);
@@ -181,7 +181,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.self.下行 = false;
         // 根据友军数量计算随机时间
         var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
-        var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
+        var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
         data.think_threshold = EnemyBehavior.IDLE_BASIC_TIME + LinearCongruentialEngine.instance.random(temp * EnemyBehavior.IDLE_BASIC_TIME);
     }
     // 随机移动
@@ -196,7 +196,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
         // 根据友军数量计算随机时间
         var 友军数量 = _root.帧计时器.获取友军缓存(self,5).length;
-        var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
+        var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
         data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.random(temp * EnemyBehavior.WANDER_BASIC_TIME);
 
         if(data.standby) {
