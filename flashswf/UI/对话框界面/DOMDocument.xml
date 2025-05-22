@@ -109,6 +109,12 @@
           <DOMFolderItem name="冷兵" itemID="67331ffe-00000751"/>
           <DOMFolderItem name="冷兵/钝器" itemID="67331ffe-00000752"/>
           <DOMFolderItem name="冷兵/钝器/棒球棒" itemID="67331ffe-00000753"/>
+          <DOMFolderItem name="牛仔.svg" itemID="682ed9af-000001f9"/>
+          <DOMFolderItem name="牛仔.svg/Layer 1" itemID="682ed9af-000001fa"/>
+          <DOMFolderItem name="牛仔背景.svg" itemID="682ed992-00000121"/>
+          <DOMFolderItem name="牛仔背景.svg/Layer 1" itemID="682ed992-00000122"/>
+          <DOMFolderItem name="牛仔前景.svg" itemID="682eda6d-00000219"/>
+          <DOMFolderItem name="牛仔前景.svg/Layer 1" itemID="682eda6d-0000021a"/>
           <DOMFolderItem name="普通.svg_0" itemID="67bc27cb-00000fad"/>
           <DOMFolderItem name="普通.svg_0/Layer 1" itemID="67bc27cb-00000fae" isExpanded="true"/>
           <DOMFolderItem name="失落.svg" itemID="67bc2b49-00001055" isExpanded="true"/>
@@ -1735,7 +1741,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1747122337"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1747645792"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1747901629"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc29fa-0000103b" lastModified="1740384762"/>
@@ -1851,6 +1857,98 @@
           <Include href="冷兵/钝器/棒球棒/棒球棒.xml" itemIcon="1" loadImmediate="false" itemID="660f7d90-000019bc" lastModified="1712291609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棍末端.xml" loadImmediate="false" itemID="64b91170-00001168" lastModified="1690285773"/>
           <Include href="轮子.xml" loadImmediate="false" itemID="67683bc4-000001e3" lastModified="1734884292"/>
+          <Include href="牛仔.xml" itemIcon="1" loadImmediate="false" itemID="682ed9c0-0000020c" lastModified="1747900865"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="682edc39-00000ac9" lastModified="1747901497"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="682edc39-00000aca" lastModified="1747901497"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="682edc39-00000acb" lastModified="1747901497"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="682edc39-00000acc" lastModified="1747901497"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="682edc39-00000acd" lastModified="1747901497"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="682edc39-00000ace" lastModified="1747901497"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="682edc39-00000acf" lastModified="1747901497"/>
+          <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="682edc39-00000ad0" lastModified="1747901497"/>
+          <Include href="牛仔背景.xml" itemIcon="1" loadImmediate="false" itemID="682ed9a1-000001ae" lastModified="1747900833"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="682edc39-00000a84" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="682edc39-00000a85" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="682edc39-00000a86" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="682edc39-00000a87" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="682edc39-00000a88" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="682edc39-00000a89" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="682edc39-00000a8a" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="682edc39-00000a8b" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7.xml" loadImmediate="false" itemID="682edc39-00000a8c" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="682edc39-00000a8d" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9.xml" loadImmediate="false" itemID="682edc39-00000a8e" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_10.xml" loadImmediate="false" itemID="682edc39-00000a8f" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_11.xml" loadImmediate="false" itemID="682edc39-00000a90" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_12.xml" loadImmediate="false" itemID="682edc39-00000a91" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_13.xml" loadImmediate="false" itemID="682edc39-00000a92" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_14.xml" loadImmediate="false" itemID="682edc39-00000a93" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_15.xml" loadImmediate="false" itemID="682edc39-00000a94" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_16.xml" loadImmediate="false" itemID="682edc39-00000a95" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_17.xml" loadImmediate="false" itemID="682edc39-00000a96" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_18.xml" loadImmediate="false" itemID="682edc39-00000a97" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_19.xml" loadImmediate="false" itemID="682edc39-00000a98" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_20.xml" loadImmediate="false" itemID="682edc39-00000a99" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_21.xml" loadImmediate="false" itemID="682edc39-00000a9a" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_22.xml" loadImmediate="false" itemID="682edc39-00000a9b" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_23.xml" loadImmediate="false" itemID="682edc39-00000a9c" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_24.xml" loadImmediate="false" itemID="682edc39-00000a9d" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_25.xml" loadImmediate="false" itemID="682edc39-00000a9e" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_26.xml" loadImmediate="false" itemID="682edc39-00000a9f" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_27.xml" loadImmediate="false" itemID="682edc39-00000aa0" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_28.xml" loadImmediate="false" itemID="682edc39-00000aa1" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_29.xml" loadImmediate="false" itemID="682edc39-00000aa2" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_30.xml" loadImmediate="false" itemID="682edc39-00000aa3" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_31.xml" loadImmediate="false" itemID="682edc39-00000aa4" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_32.xml" loadImmediate="false" itemID="682edc39-00000aa5" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_33.xml" loadImmediate="false" itemID="682edc39-00000aa6" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_34.xml" loadImmediate="false" itemID="682edc39-00000aa7" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_35.xml" loadImmediate="false" itemID="682edc39-00000aa8" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_36.xml" loadImmediate="false" itemID="682edc39-00000aa9" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_37.xml" loadImmediate="false" itemID="682edc39-00000aaa" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_38.xml" loadImmediate="false" itemID="682edc39-00000aab" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_39.xml" loadImmediate="false" itemID="682edc39-00000aac" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_40.xml" loadImmediate="false" itemID="682edc39-00000aad" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_41.xml" loadImmediate="false" itemID="682edc39-00000aae" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_42.xml" loadImmediate="false" itemID="682edc39-00000aaf" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_43.xml" loadImmediate="false" itemID="682edc39-00000ab0" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_44.xml" loadImmediate="false" itemID="682edc39-00000ab1" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_45.xml" loadImmediate="false" itemID="682edc39-00000ab2" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_46.xml" loadImmediate="false" itemID="682edc39-00000ab3" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_47.xml" loadImmediate="false" itemID="682edc39-00000ab4" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_48.xml" loadImmediate="false" itemID="682edc39-00000ab5" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_49.xml" loadImmediate="false" itemID="682edc39-00000ab6" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_50.xml" loadImmediate="false" itemID="682edc39-00000ab7" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_51.xml" loadImmediate="false" itemID="682edc39-00000ab8" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_52.xml" loadImmediate="false" itemID="682edc39-00000ab9" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_53.xml" loadImmediate="false" itemID="682edc39-00000aba" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_54.xml" loadImmediate="false" itemID="682edc39-00000abb" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_55.xml" loadImmediate="false" itemID="682edc39-00000abc" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_56.xml" loadImmediate="false" itemID="682edc39-00000abd" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_57.xml" loadImmediate="false" itemID="682edc39-00000abe" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_58.xml" loadImmediate="false" itemID="682edc39-00000abf" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_59.xml" loadImmediate="false" itemID="682edc39-00000ac0" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_60.xml" loadImmediate="false" itemID="682edc39-00000ac1" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_61.xml" loadImmediate="false" itemID="682edc39-00000ac2" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_62.xml" loadImmediate="false" itemID="682edc39-00000ac3" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_63.xml" loadImmediate="false" itemID="682edc39-00000ac4" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_64.xml" loadImmediate="false" itemID="682edc39-00000ac5" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_65.xml" loadImmediate="false" itemID="682edc39-00000ac6" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_66.xml" loadImmediate="false" itemID="682edc39-00000ac7" lastModified="1747901497"/>
+          <Include href="牛仔背景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_67.xml" loadImmediate="false" itemID="682edc39-00000ac8" lastModified="1747901497"/>
+          <Include href="牛仔前景.xml" itemIcon="1" loadImmediate="false" itemID="682eda86-00000234" lastModified="1747901063"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="682edc39-00000ad1" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="682edc39-00000ad2" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="682edc39-00000ad3" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="682edc39-00000ad4" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="682edc39-00000ad5" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="682edc39-00000ad6" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="682edc39-00000ad7" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="682edc39-00000ad8" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7.xml" loadImmediate="false" itemID="682edc39-00000ad9" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="682edc39-00000ada" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9.xml" loadImmediate="false" itemID="682edc39-00000adb" lastModified="1747901497"/>
+          <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_10.xml" loadImmediate="false" itemID="682edc39-00000adc" lastModified="1747901497"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc27cb-00000fc9" lastModified="1740384203"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc27cb-00000fca" lastModified="1740384203"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc27cb-00000fcb" lastModified="1740384203"/>

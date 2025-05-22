@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1747645792" lastUniqueIdentifier="185">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1747901629" lastUniqueIdentifier="185">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="208">
+    <DOMTimeline name="对话框肖像" currentFrame="357">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -271,7 +271,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
+                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -975,12 +975,28 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="355" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/对话-牛仔" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="牛仔背景" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-49.3" ty="-88.2"/>
+                    <Matrix a="0.510574340820313" d="0.510574340820313" tx="-117.25" ty="-230.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="106.3" y="232.8"/>
+                    <Point x="434.1" y="334.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="牛仔" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.165206909179688" d="0.165206909179688" tx="-18.8" ty="-246.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="649.2" y="1076.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="牛仔前景" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.128799438476563" d="0.132293701171875" tx="-125.7" ty="-205.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1600.55" y="1147.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
