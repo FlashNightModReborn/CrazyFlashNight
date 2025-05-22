@@ -182,7 +182,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
     public static function onZeroHPStuckDetected(target:MovieClip, data:Object):Void {
         var dispatcher:EventDispatcher = target.dispatcher;
         
-        _root.发布消息("[WatchDog] 检测到单位零血不死: ", target, target.respawn, target._killed);
+        // _root.发布消息("[WatchDog] 检测到单位零血不死: ", target, target.respawn, target._killed);
         
         if (target.respawn) {
             // 有复活标签的单位，进入等待复活状态
@@ -190,7 +190,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         } else {
             // 无复活标签且未被击杀的单位，直接发布击杀事件
             if (!target._killed) {
-                _root.发布消息("[WatchDog] 强制击杀幽灵单位: ", target);
+                // _root.发布消息("[WatchDog] 强制击杀幽灵单位: ", target);
                 dispatcher.publish("kill", target);
             }
         }

@@ -144,12 +144,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StiffDete
      */
     public static function onStiffDetected(target:MovieClip):Void {
         // 发布消息通知系统
-        if (typeof _root.发布消息 === "function") {
-            _root.发布消息("[WatchDog] 检测到对象攻击硬直卡死，已自动恢复: " + target + "[" + target.stiffID + "]");
-        } else {
-            trace("[WatchDog] 检测到对象攻击硬直卡死，已自动恢复: " + target + "[" + target.stiffID + "]");
-        }
-        printStiffTaskInfo(target.stiffID);
+        //_root.发布消息("[WatchDog] 检测到对象攻击硬直卡死，已自动恢复: " + target + "[" + target.stiffID + "]");
+
+        // printStiffTaskInfo(target.stiffID);
 
         // 解除硬直状态
         target.stiffID = null;
