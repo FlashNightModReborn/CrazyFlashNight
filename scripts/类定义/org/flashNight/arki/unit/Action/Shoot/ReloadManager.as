@@ -144,7 +144,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             
             // 计算剩余子弹数
             var remaining:Number = w.capacity - w.shot;
-            
             // 更新UI显示
             ui[w.uiBullet] = cost * remaining;
             ui[w.uiMag] = w.magCount;

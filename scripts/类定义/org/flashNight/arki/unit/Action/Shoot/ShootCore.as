@@ -126,12 +126,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             for (var p:Number = 0; p < pathLen; p++) {
                 gunRef = gunRef[gunPath[p]];
             }
-
             // 调用具体射击方法，并将结果缓存
-            core[shootStateName] = core[shootMethodName](gunRef, man[config.shootBulletAttrKey]);
+            var shootBulletAttrKey:String = config.shootBulletAttrKey;
+            var bulletAttr:Object = man[shootBulletAttrKey];
+            core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
 
             // 更新弹匣剩余子弹数量
-            var magazineRemaining:Number = core.man.子弹属性.ammoCost * (core[magazineCapName] - core[shootCountName][core[attackMode]]);
+            var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[shootCountName][core[attackMode]]);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField);
             if (shootSpeed > 300) {
                 // 延迟任务：结束后摇状态
