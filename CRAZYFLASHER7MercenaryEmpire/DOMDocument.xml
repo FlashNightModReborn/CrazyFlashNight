@@ -919,7 +919,7 @@
           <Include href="外部导入UI界面.xml" loadImmediate="false" itemID="67162590-0000093d" lastModified="1736954576"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="165" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="5" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1054,7 +1054,7 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="as" color="#7B84C3" autoNamed="false">
+                    <DOMLayer name="as" color="#7B84C3" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <Actionscript>
@@ -1357,7 +1357,50 @@ function 获得翻译或不显示(key){
 	return key;
 }
 
-_root.欢迎语 = "欢迎您，尊敬的闪客玩家       ";
+// 新建 XML 对象并忽略空白节点
+var cfgXML:XML = new XML();
+cfgXML.ignoreWhite = true;
+
+// 加载完成回调
+cfgXML.onLoad = function(success:Boolean):Void {
+    if (!success) {
+        _root.欢迎语 = "配置加载失败，请检查 config.xml";
+        return;
+    }
+
+    // 1. 收集所有字段到一个 key->value 的对象里
+    var placeholders:Object = {};
+    var nodes:Array = this.firstChild.childNodes;
+    for (var i:Number = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        // node.firstChild.nodeValue 即内层文本
+        placeholders[node.nodeName] = node.firstChild.nodeValue;
+    }
+
+    // 2. 取出模板
+    var tpl:String = placeholders["template"];
+    if (tpl == undefined) {
+        _root.欢迎语 = "找不到模板(template)节点";
+        return;
+    }
+
+    // 3. 遍历 placeholders，逐个替换模板中的 {key}
+    for (var key:String in placeholders) {
+        if (key == "template") continue;
+        // 生成 "{key}" 形式
+        var tag:String = "{" + key + "}";
+        // 反复用 split/join 来全局替换
+        tpl = tpl.split(tag).join(placeholders[key]);
+    }
+
+    // 4. 填入到舞台
+    _root.欢迎语 = tpl;
+};
+
+// 开始加载（确保 config.xml 与 SWF 在同一路径）
+cfgXML.load("config.xml");
+
+
 stop();
 
 _root.多语言是否中文 = true;
@@ -2649,367 +2692,355 @@ onClipEvent (mouseMove) {
                                                   <DOMTextRun>
                                                        <characters>1 </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>本游戏游戏过程中将存储数据在本地，请勿设置禁止储存数据。</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>&#xD;2 </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>本游戏为无网单机版。无充值系统，无与网络相关的功能。如果要体验完整联机功能，请选择《闪客快打</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>7</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>佣兵帝国》网络版。</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>&#xD;</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>3 </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>然而网络版已经停服，你现在玩到的是玩家重置的单机版</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>MOD</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>，当前版本号：</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>2.6</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>。</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>&#xD;4 </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>请首先在</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>Steam</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>平台</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>购买正版游戏，按照指南覆盖</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>MOD</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>文件包。本</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>MOD</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>为免费开源项目，如果您不慎支付购买，请保留交易证据并联系我们。</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>&#xD;5 </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>加入我们的</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>QQ</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>群</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters> </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>562130873(</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>将满</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>)</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>，</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>149188029(</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>将满</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>)</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>，</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>307710279</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters> </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>参与讨论，</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>&#xD;</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>关注</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>B</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>站账号</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters> </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>黑月雾人</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters> </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>与</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters> </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>无名的低谷</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#EEFF33"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters> </characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>获取最新信息。</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>&#xD;&#xD;</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>本</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>MOD</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>版权归原游戏开发者</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>AndyLaw</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#00FF00"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#00FF00"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>及社区共同所有。特此感谢</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>FFDec</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#0FFDEC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#0FFDEC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>软件作者在文件编译与版本适配方面给予的支持，以及</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>AndyLaw</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#00FF00"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#00FF00"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters>提供改编授权。</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                                   <DOMTextRun>
                                                        <characters></characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEECC"/>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                              </textRuns>
@@ -5063,15 +5094,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!8789 4546|8485 4546!8485 4546|8775 4727!8775 4727|9079 4727!9079 4727|9382 4727!9382 4727|9092 4546!9092 4546|8789 4546!8789 4546|9079 4727!9079 4727|9369 4908!9369 4908|9672 4908!9672 4908|9962 5089!9962 5089|10265 5089!10265 5089|10569
- 5089!10569 5089|10279 4908!10279 4908|9975 4908!9975 4908|9672 4908!9672 4908|9382 4727!9382 4727|9685 4727!9685 4727|9975 4908!9975 4908|10265 5089!10265 5089|10555 5270!10555 5270|10845 5451!10845 5451|11149 5451!11149 5451|10859 5270
-!10859 5270|11162 5270!11162 5270|11465 5270!11465 5270|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149 5451!10279 4908|9989 4727!9989 4727|9685 4727!9685 4727|9395 4546!9395 4546|9092 4546
-!9395 4546|9699 4546!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!8775 4727|9065 4908!9065 4908|9355 5089!9355 5089|9659 5089
-!9659 5089|9369 4908!9369 4908|9065 4908!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546
-|8485 4546!8472 4727|8775 4727!9342 5270|9645 5270!9645 5270|9935 5451!9645 5270|9355 5089!9355 5089|9052 5089!9065 4908|8762 4908!11755 5451|11465 5270!11465 5270|11175 5089!11175 5089|10872 5089!10872 5089|10569 5089!10899 4727|10595
- 4727!10595 4727|10305 4546!10595 4727|10885 4908!10885 4908|11189 4908!10595 4727|10292 4727!10292 4727|10582 4908!10582 4908|10885 4908!10885 4908|11175 5089!11175 5089|11479 5089!10292 4727|9989 4727!10002 4546|10292 4727!10542 5451
-|10252 5270!10252 5270|9949 5270!9949 5270|10239 5451!10859 5270|10555 5270!10555 5270|10252 5270!10252 5270|9962 5089!9962 5089|9659 5089!9659 5089|9949 5270!9949 5270|9645 5270!10859 5270|10569 5089!11452 5451|11162 5270!11162 5270
-|10872 5089!10872 5089|10582 4908!10279 4908|10582 4908!9699 4546|9989 4727"/>
+!10292 4727|10582 4908!10582 4908|10279 4908!10279 4908|9989 4727!9989 4727|9699 4546!9699 4546|10002 4546!10002 4546|10292 4727!10292 4727|9989 4727!9989 4727|9685 4727!9685 4727|9975 4908!9975 4908|9672 4908!9672 4908|9962 5089!9962
+ 5089|9659 5089!9659 5089|9369 4908!9369 4908|9672 4908!9672 4908|9382 4727!9382 4727|9092 4546!9092 4546|9395 4546!9395 4546|9685 4727!9079 4727|8775 4727!8775 4727|8485 4546!8485 4546|8789 4546!8789 4546|9079 4727!9079 4727|9382 4727
+!9382 4727|9685 4727!9395 4546|9699 4546!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|9355 5089!9355 5089|9052 5089!9052 5089|8762 4908!8762 4908|9065 4908!8762 4908|8472 4727!8472 4727|8775 4727!8775 4727|9065 4908!8472 4727|8182
+ 4546!8182 4546|8485 4546!10279 4908|9975 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569 5089|10859 5270!10859 5270|10555 5270!10555 5270|10845 5451!10845 5451|10542 5451!10542 5451|10252 5270!10252 5270|9962 5089!9962 5089|10265
+ 5089!10265 5089|10555 5270!10555 5270|10252 5270!10252 5270|9949 5270!9949 5270|9645 5270!9645 5270|9355 5089!9355 5089|9659 5089!9659 5089|9949 5270!9949 5270|10239 5451!10239 5451|9935 5451!9935 5451|9645 5270!9645 5270|9342 5270!9342
+ 5270|9052 5089!9935 5451|9633 5451!9633 5451|9342 5270!9092 4546|8789 4546!11755 5451|11452 5451!11452 5451|11162 5270!11162 5270|11465 5270!11465 5270|11175 5089!11175 5089|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059
+ 5451|11755 5451!11755 5451|11465 5270!11465 5270|11769 5270!10292 4727|10595 4727!10595 4727|10885 4908!10885 4908|11175 5089!11175 5089|10872 5089!10872 5089|10582 4908!10582 4908|10885 4908!10885 4908|11189 4908!11189 4908|11479 5089
+!10595 4727|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|10595 4727!10899 4727|11189 4908!10002 4546|10305 4546!10859 5270|11162 5270!11162 5270|10872 5089!10872 5089|10569 5089!10569 5089|10279 4908!10845 5451|11149
+ 5451!11149 5451|11452 5451!11149 5451|10859 5270!10542 5451|10239 5451"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5514,15 +5545,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9055 4895|9345
- 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8475 4533|8765 4714!8765 4714|9069 4714!9069 4714|8779 4533!8779 4533|8475 4533!8475 4533|8172 4533!8172 4533|8462 4714!8462 4714|8765 4714!8462 4714|8752 4895!8752 4895
-|9055 4895!9055 4895|8765 4714!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9042 5076!9042 5076|9332 5257!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!9082 4533|8779 4533!8752 4895|9042 5076!11745 5438|11455 5257!11455
- 5257|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!11469 5076|11165 5076!11165 5076|11455 5257!11455 5257|11759 5257!11759 5257|11469 5076!11745 5438|12049 5438!12049 5438|11759 5257!10599 4533|10295 4533!10295 4533|10585 4714
-!10585 4714|10889 4714!10889 4714|10599 4533!10585 4714|10875 4895!10875 4895|11179 4895!11179 4895|10889 4714!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!10295 4533|9992 4533!9992 4533|10282 4714!9675 4714|9965
- 4895!9965 4895|10269 4895!10269 4895|9979 4714!9979 4714|10282 4714!9925 5438|10229 5438!10229 5438|9939 5257!9939 5257|9635 5257!10229 5438|10532 5438!10532 5438|10242 5257!10242 5257|9939 5257!9952 5076|10242 5257!10242 5257|10545
- 5257!10545 5257|10255 5076!10255 5076|9952 5076!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10255 5076!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10559 5076|10862 5076!10532 5438|10835 5438!10835 5438
-|10545 5257!10862 5076|11165 5076!11165 5076|10875 4895!11152 5257|10849 5257!10849 5257|11139 5438!11139 5438|11442 5438!10835 5438|11139 5438!11152 5257|10862 5076!10255 5076|9965 4895!9965 4895|9662 4895!9662 4895|9952 5076!11469 5076
-|11179 4895!9992 4533|9689 4533!9939 5257|9649 5076!9952 5076|9649 5076"/>
+!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9675 4714|9385 4533!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9055 4895|9345
+ 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8752 4895|9055 4895!9055 4895|8765 4714!8765 4714|8462 4714!8462 4714|8752 4895!8765 4714|8475 4533!8475 4533|8172 4533!8172 4533|8462 4714!8765 4714|9069 4714!9069 4714
+|8779 4533!8779 4533|8475 4533!9623 5438|9925 5438!9925 5438|9635 5257!9635 5257|9332 5257!9332 5257|9623 5438!9635 5257|9345 5076!9345 5076|9042 5076!9042 5076|9332 5257!8752 4895|9042 5076!9082 4533|8779 4533!11759 5257|11455 5257!11455
+ 5257|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11469 5076!11469 5076|11165 5076!11165 5076|11455 5257!11455 5257|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!10875 4895|10585 4714!10585 4714|10282 4714
+!10282 4714|10572 4895!10572 4895|10875 4895!10875 4895|11179 4895!11179 4895|10889 4714!10889 4714|10585 4714!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|10585 4714!9979 4714|10282 4714!10282 4714|9992 4533!9992 4533|9689
+ 4533!9675 4714|9965 4895!9965 4895|10269 4895!10269 4895|9979 4714!10295 4533|9992 4533!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!9939 5257|10229 5438!10229 5438|10532 5438!10532 5438|10242
+ 5257!10242 5257|9939 5257!9925 5438|10229 5438!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10255 5076!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10559 5076|10862 5076!10532 5438|10835 5438!10835 5438
+|10545 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|11165 5076!11165 5076|10875 4895!10849 5257|11139 5438!11139 5438|11442 5438!10835 5438|11139 5438!10255 5076|9965 4895!9965 4895|9662 4895!9662 4895|9952 5076!11469 5076
+|11179 4895!9952 5076|9649 5076!9649 5076|9939 5257!9939 5257|9635 5257"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -6716,7 +6747,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="佣兵信息界面" color="#FAE77E" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false" visible="false">
+                    <DOMLayer name="佣兵信息界面" color="#FAE77E" parentLayerIndex="21" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="148" keyMode="9728">
                                    <elements/>
@@ -8321,6 +8352,10 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="872529" publishTime="1747905472"/>
+          <PublishItem publishSize="872514" publishTime="1747905333"/>
+          <PublishItem publishSize="872118" publishTime="1747905107"/>
+          <PublishItem publishSize="872097" publishTime="1747905033"/>
           <PublishItem publishSize="872083" publishTime="1747837010"/>
           <PublishItem publishSize="872083" publishTime="1747837003"/>
           <PublishItem publishSize="890559" publishTime="1747583393"/>
@@ -8337,9 +8372,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="1076201" publishTime="1744811901"/>
           <PublishItem publishSize="1076317" publishTime="1744810695"/>
           <PublishItem publishSize="1076278" publishTime="1744810630"/>
-          <PublishItem publishSize="1076175" publishTime="1744810562"/>
-          <PublishItem publishSize="1076247" publishTime="1744809121"/>
-          <PublishItem publishSize="1075727" publishTime="1743607450"/>
-          <PublishItem publishSize="1094949" publishTime="1742901634"/>
      </publishHistory>
 </DOMDocument>

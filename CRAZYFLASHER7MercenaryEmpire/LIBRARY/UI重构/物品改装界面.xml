@@ -581,19 +581,7 @@ on(rollOut){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="30" bitmapSize="600" face="MicrosoftYaHei" fillColor="#FFCC00"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>制作</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="30" bitmapSize="600" face="MicrosoftYaHei" fillColor="#FFCC00"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>成功！&#xD;请查看背包。</characters>
+                      <characters> 制作成功！&#xD;请查看背包。</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="30" bitmapSize="600" face="MicrosoftYaHei" fillColor="#FFCC00"/>
                       </textAttrs>
