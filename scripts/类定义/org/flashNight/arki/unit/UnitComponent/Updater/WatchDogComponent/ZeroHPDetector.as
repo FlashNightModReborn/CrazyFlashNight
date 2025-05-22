@@ -70,8 +70,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         // 获取当前HP
         var currentHP:Number = target.hp;
         
-        // HP正常，重置计数
-        if (currentHP > 0) {
+        // HP正常或目标已进入死亡动画，重置计数
+        if (currentHP > 0 || target.状态 === "血腥死") {
             _resetZeroHPState(data);
             return;
         }
