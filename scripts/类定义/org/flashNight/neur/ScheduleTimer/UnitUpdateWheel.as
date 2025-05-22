@@ -1,29 +1,32 @@
 ﻿/**
-UnitUpdateWheel.as  （无链表 / 无重复任务）
-——————————————————————————————————————————
-以极端轻量级的方式托管所有单位的update事件。
-固定 WHEEL_SIZE = 4 槽，对应 4 帧的步长。
-每帧拨轮一次，对该槽里所有单位发布update事件，并自动检测移除已卸载的单位引用。
-*/
+ * UnitUpdateWheel.as (优化版本)
+ * ——————————————————————————————————————————
+ * 优化点：
+ * 1. 修复数据一致性问题
+ * 2. 改进删除算法，通过标记懒操作以提高性能
+ * 3. 增强错误处理
+ * 4. 优化内存使用
+ * 5. 添加调试和统计功能
+ */
 class org.flashNight.neur.ScheduleTimer.UnitUpdateWheel {
     // ————————————————————————
     // 配置常量 & 私有字段
     // ————————————————————————
     private static var WHEEL_SIZE:Number = 4;           // 时间轮槽数
-    private var slots:Array;                            // Array<MovieClip>[]，每槽保存单位列表
-    private var unitDict:Object;                        // 记录unit影片剪辑的引用
-    private var posDict:Object;                         // 记录unit所在的槽位
-    private var counter:Number = 0;                     // 为每个unit分配唯一的全局ID
-    private var pos:Number = WHEEL_SIZE - 1;            // 当前读写指针，初始化到"上一次帧"
-
+    private var slots:Array;                            // Array<Number>[], 存储unit ID列表
+    private var unitDict:Object;                        // ID -> MovieClip 映射
+    private var slotDict:Object;                        // ID -> slot索引 映射
+    private var counter:Number = 0;                     // 全局ID计数器
+    private var currentPos:Number = WHEEL_SIZE - 1;     // 当前处理位置
     private static var inst:UnitUpdateWheel;            // 单例引用
+    
+    // 统计信息（可选）
+    private var totalUnits:Number = 0;                  // 当前总单位数
+    private var processedCount:Number = 0;              // 已处理计数
     
     // ————————————————————————
     // 单例获取
     // ————————————————————————
-    /**
-     * 返回全局唯一实例
-     */
     public static function I():UnitUpdateWheel {
         return inst || (inst = new UnitUpdateWheel());
     }
@@ -32,88 +35,224 @@ class org.flashNight.neur.ScheduleTimer.UnitUpdateWheel {
     // 构造函数（私有）
     // ————————————————————————
     private function UnitUpdateWheel() {
-        // 初始化各槽为一个空数组
         slots = new Array(WHEEL_SIZE);
-        for (var i:Number = 0; i < WHEEL_SIZE; ++i) {
+        for (var i:Number = 0; i < WHEEL_SIZE; i++) {
             slots[i] = [];
         }
-
         unitDict = {};
-        posDict = {};
+        slotDict = {};
     }
     
     // ————————————————————————
     // 公开方法
     // ————————————————————————
+    
     /**
      * 添加 update 任务
-     * @param unit     目标单位
+     * @param unit 目标单位
+     * @return 分配的ID，如果已存在则返回现有ID
      */
     public function add(unit:MovieClip):Number {
-        if(unit.updateEventComponentID != null){
+        // 防重复添加
+        if (unit.updateEventComponentID != null) {
             return unit.updateEventComponentID;
         }
-        counter++;
-        slots[pos].push(counter);
-        unit.updateEventComponentID = counter;
-        unitDict[counter] = unit;
-        posDict[counter] = pos;
-        return counter;
+        
+        var id:Number = ++counter;
+        var targetSlot:Number = currentPos;
+        
+        // 添加到数据结构
+        slots[targetSlot].push(id);
+        unitDict[id] = unit;
+        slotDict[id] = targetSlot;
+        unit.updateEventComponentID = id;
+        
+        totalUnits++;
+        return id;
     }
-
+    
     /**
-     * 移除 update 任务
-     * @param unit     目标单位
+     * 移除 update 任务（优化版本）
+     * @param unit 目标单位
      */
     public function remove(unit:MovieClip):Void {
-        var id = unit.updateEventComponentID;
-        var list = slots[posDict[id]];
-        if(list == null) return;
-        // 遍历目标槽位，找到unit所在位置并移除
-        for (var i = list.length - 1; i > -1; i--) {
-            if(unitDict[list[i]] === unit){
-                delete unitDict[id];
-                delete posDict[id];
-                list.splice(i,1);
-                unit.updateEventComponentID = null;
-                return;
-            }
+        var id:Number = unit.updateEventComponentID;
+        
+        // 参数验证
+        if (id == null || unitDict[id] !== unit) {
+            return;
         }
+        
+        // 快速删除：不需要遍历数组，只需标记删除
+        // 在tick时会自动清理无效引用
+        delete unitDict[id];
+        delete slotDict[id];
+        unit.updateEventComponentID = null;
+        totalUnits--;
     }
     
     /**
-     * 对当前槽所有unit发布UpdateEventComponent事件
-     * 指针前移一格
+     * 强制立即移除（遍历查找版本，适用于紧急情况）
+     * @param unit 目标单位
+     */
+    public function forceRemove(unit:MovieClip):Void {
+        var id:Number = unit.updateEventComponentID;
+        if (id == null) return;
+        
+        var slotIndex:Number = slotDict[id];
+        if (slotIndex != null) {
+            var list:Array = slots[slotIndex];
+            for (var i:Number = list.length - 1; i >= 0; i--) {
+                if (list[i] == id) {
+                    list.splice(i, 1);
+                    break;
+                }
+            }
+        }
+        
+        delete unitDict[id];
+        delete slotDict[id];
+        unit.updateEventComponentID = null;
+        totalUnits--;
+    }
+    
+    /**
+     * 时间轮前进一帧
      */
     public function tick():Void {
-        // 先移动指针到下一槽
-        pos = (pos + 1) % WHEEL_SIZE;
+        // 移动到下一个槽位
+        currentPos = (currentPos + 1) % WHEEL_SIZE;
         
-        // 再执行当前槽的事件发布
-        var list:Array = slots[pos];
-        for (var i = list.length - 1; i > -1; i--) {
-            var unit = unitDict[list[i]];
-            // 通过读取单位身上的事件分发器来判断单位是否存在，若不存在则自动移除
-            if(unit.dispatcher == null){
-                delete unitDict[list[i]];
-                delete posDict[list[i]];
-                list.splice(i,1);
+        var list:Array = slots[currentPos];
+        var cleanupNeeded:Boolean = false;
+        
+        // 处理当前槽位的所有单位
+        for (var i:Number = list.length - 1; i >= 0; i--) {
+            var id:Number = list[i];
+            var unit:MovieClip = unitDict[id];
+            
+            // 检查单位是否仍然有效
+            if (unit == null || unit.dispatcher == null) {
+                // 标记需要清理
+                list.splice(i, 1);
+                if (unit != null) {
+                    unit.updateEventComponentID = null;
+                }
+                delete unitDict[id];
+                delete slotDict[id];
+                cleanupNeeded = true;
                 continue;
             }
-            // 发布UpdateEventComponent事件
-            unit.dispatcher.publish("UpdateEventComponent", unit);
+            
+            // 发布更新事件
+            try {
+                unit.dispatcher.publish("UpdateEventComponent", unit);
+                processedCount++;
+            } catch (e:Error) {
+                // 发布事件失败，移除该单位
+                list.splice(i, 1);
+                unit.updateEventComponentID = null;
+                delete unitDict[id];
+                delete slotDict[id];
+                cleanupNeeded = true;
+            }
+        }
+        
+        // 更新统计信息
+        if (cleanupNeeded) {
+            totalUnits = getTotalUnitsCount();
         }
     }
     
     /**
-     * 重置时间轮状态
+     * 获取统计信息
+     */
+    public function getStats():Object {
+        return {
+            totalUnits: totalUnits,
+            processedCount: processedCount,
+            currentPos: currentPos,
+            slotsDistribution: getSlotDistribution()
+        };
+    }
+    
+    /**
+     * 重置时间轮
      */
     public function reset():Void {
-        for (var i:Number = 0; i < WHEEL_SIZE; ++i) {
+        // 清理所有单位的ID标记
+        for (var id:String in unitDict) {
+            var unit:MovieClip = unitDict[id];
+            if (unit != null) {
+                unit.updateEventComponentID = null;
+            }
+        }
+        
+        // 重置数据结构
+        for (var i:Number = 0; i < WHEEL_SIZE; i++) {
             slots[i] = [];
         }
-        pos = WHEEL_SIZE - 1;
+        currentPos = WHEEL_SIZE - 1;
         unitDict = {};
-        posDict = {};
+        slotDict = {};
+        counter = 0;
+        totalUnits = 0;
+        processedCount = 0;
+    }
+    
+    // ————————————————————————
+    // 私有辅助方法
+    // ————————————————————————
+    
+    /**
+     * 计算实际的单位总数（用于验证统计信息）
+     */
+    private function getTotalUnitsCount():Number {
+        var count:Number = 0;
+        for (var id:String in unitDict) {
+            if (unitDict[id] != null) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * 获取各槽位的单位分布情况
+     */
+    private function getSlotDistribution():Array {
+        var distribution:Array = [];
+        for (var i:Number = 0; i < WHEEL_SIZE; i++) {
+            distribution[i] = slots[i].length;
+        }
+        return distribution;
+    }
+    
+    /**
+     * 清理无效引用（可定期调用）
+     */
+    public function cleanup():Number {
+        var cleaned:Number = 0;
+        
+        for (var i:Number = 0; i < WHEEL_SIZE; i++) {
+            var list:Array = slots[i];
+            for (var j:Number = list.length - 1; j >= 0; j--) {
+                var id:Number = list[j];
+                var unit:MovieClip = unitDict[id];
+                
+                if (unit == null || unit.dispatcher == null) {
+                    list.splice(j, 1);
+                    if (unit != null) {
+                        unit.updateEventComponentID = null;
+                    }
+                    delete unitDict[id];
+                    delete slotDict[id];
+                    cleaned++;
+                }
+            }
+        }
+        
+        totalUnits = getTotalUnitsCount();
+        return cleaned;
     }
 }
