@@ -200,6 +200,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var magazineCapName:String = attackMode + "弹匣容量";
         var shootCountName:String = attackMode + "射击次数";
 
+
         // 检查弹匣是否打空
         if (core[shootCountName][core[attackMode]] >= core[magazineCapName]) {
             // 若剩余弹匣>0 或非控制目标，触发换弹

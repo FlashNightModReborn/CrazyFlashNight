@@ -217,11 +217,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             
             // 更新武器状态
             stateManager.updateState();
+
+            var rMP:Number = that[remainingMagProp];
             
             // 使用状态管理器检查是否需要换弹
-            if (stateManager.needsReload()) {
+            if (stateManager.needsReload(config.handPrefix, rMP)) {
                 // 检查是否需要开始换弹
-                if ((that[remainingMagProp] > 0) || _root.控制目标 != parentRef._name) {
+                if ((rMP > 0) || _root.控制目标 != parentRef._name) {
                     that.开始换弹();
                 }
                 return;

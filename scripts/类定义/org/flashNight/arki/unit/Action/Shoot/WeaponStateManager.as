@@ -1,4 +1,6 @@
-﻿/**
+﻿import org.flashNight.arki.item.*;
+
+/**
  * WeaponStateManager.as
  * 
  * 武器状态管理器
@@ -92,11 +94,19 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      * 3. 主手满了且副手空了
      * 4. 一把枪空了且两把枪不同类型
      */
-    public function needsReload():Boolean {
+    public function needsReload(handPrefix:String, magazineNumber:Number):Boolean {
         var needReload:Boolean = (_mainIsEmpty && _subIsEmpty);
         needReload = needReload || (_mainIsEmpty && _subIsFull);
         needReload = needReload || (_mainIsFull && _subIsEmpty);
         needReload = needReload || ((_mainIsEmpty || _subIsEmpty) && !_isSameWeapon);
+
+        if(needReload && magazineNumber > 0) {
+            if(handPrefix === "主手" ) {
+                return _mainIsEmpty;
+            } else if (handPrefix === "副手") {
+                return _subIsEmpty;
+            }
+        }
         
         return needReload;
     }
