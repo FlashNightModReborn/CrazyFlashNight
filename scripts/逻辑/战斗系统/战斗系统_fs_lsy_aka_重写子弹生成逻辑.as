@@ -161,16 +161,18 @@ _root.子弹生命周期 = function()
     }
     
     var gameWorld = _root.gameworld;
-    var shooter = gameWorld[this.发射者名];
-    var unitMap:Array;
+    var shooter = gameWorld[this.发射者名];;
+    var rangeResult:Object;
     if(this.友军伤害) {
-        unitMap = TargetCacheManager.getCachedAll(shooter, 1);
+        rangeResult = TargetCacheManager.getCachedAllFromIndex(shooter, 1, areaAABB);
     }
     else
     {
-        unitMap = TargetCacheManager.getCachedEnemy(shooter, 1);
+        rangeResult = TargetCacheManager.getCachedEnemyFromIndex(shooter, 1, areaAABB);
     }
 
+    var unitMap:Array = rangeResult.data;
+    var startIndex:Number = rangeResult.startIndex;
     this.shouldGeneratePostHitEffect = true;
 
     var len:Number = unitMap.length;
@@ -181,7 +183,7 @@ _root.子弹生命周期 = function()
     var unitArea:AABBCollider;
     var collisionResult:CollisionResult;
 
-    for (var i:Number = 0; i < len ; ++i)
+    for (var i:Number = startIndex; i < len ; ++i)
     {
         hitTarget = this.hitTarget = unitMap[i];
         // 计算子弹与目标在 z 轴上的相对偏移值

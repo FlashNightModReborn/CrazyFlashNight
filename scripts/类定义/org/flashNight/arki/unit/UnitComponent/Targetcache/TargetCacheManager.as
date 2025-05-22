@@ -12,6 +12,8 @@
 // ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.gesh.object.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
@@ -182,6 +184,108 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      */
     public static function getCachedAll(t:Object, i:Number):Array { 
         return getCachedTargets(t, i, "全体"); 
+    }
+
+    // 范围查询方法 - 只查找起始索引，利用有序性提前退出
+
+    // 静态复用对象，减少GC压力
+    private static var _emptyResult:Object = { data: [], startIndex: 0 };
+    private static var _resultCache:Object = { data: null, startIndex: 0 };
+
+    public static function getCachedTargetsFromIndex(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        query:AABBCollider
+    ):Object {
+        var list:Array = getCachedTargets(target, updateInterval, requestType);
+        var n:Number = list.length;
+        
+        if (n == 0) return _emptyResult;
+        
+        var queryLeft:Number = query.left;
+        var resultCache:Object = _resultCache; // 局部化变量
+        
+        // 小数组线性查找优化
+        if (n <= 8) {
+            var i:Number = 0;
+            do {
+                if (list[i].aabbCollider.right >= queryLeft) {
+                    resultCache.data = list;
+                    resultCache.startIndex = i;
+                    return resultCache;
+                }
+            } while (++i < n);
+            
+            resultCache.data = list;
+            resultCache.startIndex = n;
+            return resultCache;
+        }
+        
+        // 先检查首元素，避免在二分查找中重复检查
+        var firstUnit:Object = list[0];
+        if (firstUnit.aabbCollider.right >= queryLeft) {
+            resultCache.data = list;
+            resultCache.startIndex = 0;
+            return resultCache;
+        }
+        
+        // 再检查尾元素
+        var lastUnit:Object = list[n - 1];
+        if (lastUnit.aabbCollider.right < queryLeft) {
+            resultCache.data = list;
+            resultCache.startIndex = n;
+            return resultCache;
+        }
+        
+        // 此时确保: list[0].right < queryLeft && list[n-1].right >= queryLeft
+        // 在 [1, n-1] 范围内一定有解，使用 do-while
+        var l:Number = 1;
+        var r:Number = n - 1;
+        
+        do {
+            var m:Number = (l + r) >> 1;
+            var unitRight:Number = list[m].aabbCollider.right;
+            
+            if (unitRight >= queryLeft) {
+                // l >= 1，所以 m >= 1，无需检查 m == 0
+                if (list[m - 1].aabbCollider.right < queryLeft) {
+                    resultCache.data = list;
+                    resultCache.startIndex = m;
+                    return resultCache;
+                }
+                r = m - 1;
+            } else {
+                l = m + 1;
+            }
+        } while (l <= r);
+        
+        // 理论上不会到达这里，但保持代码健壮性
+        resultCache.data = list;
+        resultCache.startIndex = l;
+        return resultCache;
+    }
+
+    // 便捷封装方法
+    /**
+     * 获取从指定索引开始的敌人单位
+     */
+    public static function getCachedEnemyFromIndex(t:Object, i:Number, aabb:AABBCollider):Object {
+        return getCachedTargetsFromIndex(t, i, "敌人", aabb);
+    }
+
+    /**
+     * 获取从指定索引开始的友军单位
+     */
+    public static function getCachedAllyFromIndex(t:Object, i:Number, aabb:AABBCollider):Object {
+        return getCachedTargetsFromIndex(t, i, "友军", aabb);
+    }
+
+    /**
+     * 获取从指定索引开始的全体单位
+     */
+    public static function getCachedAllFromIndex(t:Object, i:Number, aabb:AABBCollider):Object {
+        return getCachedTargetsFromIndex(t, i, "全体", aabb);
     }
 
     // ------------------------------------------------------------------
