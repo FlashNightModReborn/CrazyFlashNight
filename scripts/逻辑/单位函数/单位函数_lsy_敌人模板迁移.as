@@ -148,7 +148,7 @@ _root.敌人函数.状态改变 = function(新状态名) {
 _root.敌人函数.动画完毕 = function() {
 	状态改变(hp <= 0 ? "血腥死" : 攻击模式 + "站立"); // 防止没有倒地动画的敌人在击倒动画被扣至0血导致不死
 	// 考虑到该函数较为低频，一些状态更新顺带在此触发
-	_parent.倒地 = false;
+	this.倒地 = false;
 	this.aabbCollider.updateFromUnitArea(this); // 起身时更新碰撞箱
 };
 
