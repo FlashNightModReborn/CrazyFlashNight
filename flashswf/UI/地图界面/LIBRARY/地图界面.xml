@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1747216954" lastUniqueIdentifier="179">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1747908837" lastUniqueIdentifier="179">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -493,7 +493,8 @@ var NPCFlashData = {
         "Blue_闪光提示", "酒保_闪光提示", "格格巫_闪光提示", "丽丽丝_闪光提示",
         "小F_闪光提示", "冷兵器商人_闪光提示", "宝石线人_闪光提示",
         "学生妹_闪光提示", "幸存老兵_闪光提示", "前治安官_闪光提示",
-        "黑铁会外交部长_闪光提示", "舞女_闪光提示", "杀马特_闪光提示"
+        "黑铁会外交部长_闪光提示", "舞女_闪光提示", "杀马特_闪光提示",
+		"厨师_闪光提示"
     ]
 };
 
@@ -2400,22 +2401,22 @@ else
           </frames>
         </DOMLayer>
         <DOMLayer name="A兵团" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="基地屋顶" color="#4F80FF" parentLayerIndex="8" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="基地屋顶npc" color="#4F80FF" parentLayerIndex="9" autoNamed="false">
+        <DOMLayer name="基地屋顶" color="#4F80FF" parentLayerIndex="8" locked="true" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="基地屋顶npc" color="#4F80FF" parentLayerIndex="9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="9" autoNamed="false">
+        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" centerPoint3DX="484.75" centerPoint3DY="159.15">
+                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" selected="true" centerPoint3DX="484.75" centerPoint3DY="159.15">
                   <matrix>
                     <Matrix a="0.200958251953125" d="0.200958251953125" tx="223.6" ty="95.25"/>
                   </matrix>
