@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1747908837" lastUniqueIdentifier="179">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1747921766" lastUniqueIdentifier="179">
   <timeline>
-    <DOMTimeline name="地图界面" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="地图界面" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
           <frames>
@@ -495,10 +495,11 @@ var NPCFlashData = {
         "学生妹_闪光提示", "幸存老兵_闪光提示", "前治安官_闪光提示",
         "黑铁会外交部长_闪光提示", "舞女_闪光提示", "杀马特_闪光提示",
 		"厨师_闪光提示"
-    ]
+    ],
+	mapping: {}
 };
 
-NPCFlashData["mapping"]["∞天ㄙ★使的剪∞"] = {
+NPCFlashData.mapping["∞天ㄙ★使的剪∞"] = {
         头像: "杀马特头像",
         闪光提示: "杀马特_闪光提示"
     };
@@ -512,16 +513,18 @@ function setNpcFlashTips() {
     for (var i = 0; i < flashNames.length; i++) {
         if (_this[flashNames[i]]) {
             _this[flashNames[i]]._visible = false;
-            trace(d);
+            // trace(d);
             _this[flashNames[i]].swapDepths(--d);
         }
     }
+
     // 处理特殊映射中的闪光提示
     for (var npcName in mapping) {
         var specialKey = mapping[npcName].闪光提示;
+		trace(specialKey)
         if (_this[specialKey]) {
             _this[specialKey]._visible = false;
-            trace(d);
+            // trace(d);
             _this[specialKey].swapDepths(--d);
         }
     }
@@ -1269,7 +1272,8 @@ function setTaskRelatedAvatar(avatarName, requiredProgress)
 
 
 // 共享的 NPC 闪光提示数据
-var NPCFlashData = {flashNames:["general_闪光提示", "itinerant_闪光提示", "gazer_闪光提示", "surveyor_闪光提示", "director_闪光提示"]};
+var NPCFlashData = {flashNames:["general_闪光提示", "itinerant_闪光提示", "gazer_闪光提示", "surveyor_闪光提示", "director_闪光提示"],
+	mapping: {}};
 
 function setNpcFlashTips()
 {
@@ -1497,7 +1501,13 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>其他阵营</characters>
+                      <characters>其他</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>阵营</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1542,7 +1552,13 @@ else
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>兵团</characters>
+                      <characters>兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>团</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1659,7 +1675,13 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地屋顶</characters>
+                      <characters>基地屋</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>顶</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1678,7 +1700,13 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地一层</characters>
+                      <characters>基地一</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1697,7 +1725,13 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下一层</characters>
+                      <characters>地下一</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1716,7 +1750,13 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下二层</characters>
+                      <characters>地下二</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1773,7 +1813,13 @@ else
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>层级关系</characters>
+                      <characters>层级关</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>系</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -2416,7 +2462,7 @@ else
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" selected="true" centerPoint3DX="484.75" centerPoint3DY="159.15">
+                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" centerPoint3DX="484.75" centerPoint3DY="159.15">
                   <matrix>
                     <Matrix a="0.200958251953125" d="0.200958251953125" tx="223.6" ty="95.25"/>
                   </matrix>
