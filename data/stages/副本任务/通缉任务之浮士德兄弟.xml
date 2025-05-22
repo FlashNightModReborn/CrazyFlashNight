@@ -76,7 +76,12 @@
                         <Quantity>1</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>right</SpawnIndex>
-                        <Parameters>死亡动画:a1</Parameters>
+                        <Parameters>
+                            <宠物属性>
+                                <复仇者>true</复仇者>
+                            </宠物属性>
+                            <死亡动画>a1</死亡动画>
+                        </Parameters>
                         <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
