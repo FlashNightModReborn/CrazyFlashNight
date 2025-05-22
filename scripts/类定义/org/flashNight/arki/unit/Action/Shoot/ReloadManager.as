@@ -182,13 +182,18 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             
             if (rootRef.控制目标 === parentRef._name) {
                 // 使用状态管理器检查应该优先换哪把枪
-                if (stateManager.shouldReloadMainFirst()) {
-                    if (ItemUtil.singleContain(that.主手使用弹匣名称, 1)) {
-                        that.gotoAndPlay("主手换弹匣");
-                        return;
-                    }
+                var isMainHandReloadable:Boolean = !!(ItemUtil.singleContain(that.主手使用弹匣名称, 1));
+                var isSubHandReloadable:Boolean = !!(ItemUtil.singleContain(that.副手使用弹匣名称, 1));
+                
+                if (isMainHandReloadable && 
+                    (stateManager.shouldReloadMainFirst() || !isSubHandReloadable) &&
+                    stateManager.shouldReloadMain()) {
+                    // _root.发布消息("主手换弹匣" );
+                    that.gotoAndPlay("主手换弹匣");
+                    return;
                 } else {
-                    if (ItemUtil.singleContain(that.副手使用弹匣名称, 1)) {
+                    if (stateManager.shouldReloadSub() && isSubHandReloadable) {
+                        // _root.发布消息("副手换弹匣");
                         that.gotoAndPlay("副手换弹匣");
                         return;
                     }

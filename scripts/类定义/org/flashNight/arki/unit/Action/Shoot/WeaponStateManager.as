@@ -99,26 +99,48 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
         needReload = needReload || (_mainIsEmpty && _subIsFull);
         needReload = needReload || (_mainIsFull && _subIsEmpty);
         needReload = needReload || ((_mainIsEmpty || _subIsEmpty) && !_isSameWeapon);
-
-        if(needReload && magazineNumber > 0) {
-            if(handPrefix === "主手" ) {
-                return _mainIsEmpty;
-            } else if (handPrefix === "副手") {
-                return _subIsEmpty;
-            }
+        
+        // 如果基础条件不满足，直接返回 false
+        if (!needReload) {
+            return false;
         }
         
-        return needReload;
+        // 当前射击手有弹匣：检查当前手是否需要换弹
+        if (magazineNumber > 0) {
+            return (handPrefix === "主手") ? _mainIsEmpty : _subIsEmpty;
+        }
+        
+        // 当前射击手没有弹匣：检查另一只手是否需要换弹
+        return (handPrefix === "主手") ? _subIsEmpty : _mainIsEmpty;
     }
     
     /**
      * 判断主手是否应该首先换弹
      * 在以下情况下主手应该先换弹:
      * 1. 主手已空
-     * 2. 主手未满且副手未空
+     * 2. 主手未满且副手满弹
      */
     public function shouldReloadMainFirst():Boolean {
-        return _mainIsEmpty || (!_mainIsFull && !_subIsEmpty);
+        return !_mainIsFull && (_mainIsEmpty || (!_mainIsFull && _subIsFull));
+    }
+
+    /**
+     * 判断主手是否应该换弹
+     * 在以下情况下副手应该换弹:
+     * 1. 主手未满
+     */
+    public function shouldReloadMain():Boolean {
+        return !_mainIsFull;
+    }
+
+        
+    /**
+     * 判断副手是否应该换弹
+     * 在以下情况下副手应该换弹:
+     * 1. 副手未满
+     */
+    public function shouldReloadSub():Boolean {
+        return !_subIsFull;
     }
     
     /**
