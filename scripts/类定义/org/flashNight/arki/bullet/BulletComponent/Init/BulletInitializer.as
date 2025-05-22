@@ -80,10 +80,10 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         var shooterMagicDmg:Object = shooter.魔法伤害属性;
         Obj.魔法伤害属性 = (!objMagicDmg && shooterMagicDmg) ? shooterMagicDmg : objMagicDmg;
         if (Obj.吸血 || shooter.吸血) {
-            Obj.吸血 = Math.max(Obj.吸血 | 0, shooter.吸血 | 0);
+            Obj.吸血 = Math.max(Obj.吸血 > 0 ? Obj.吸血 : 0, shooter.吸血 > 0 ? shooter.吸血 : 0);
         }
         if (Obj.血量上限击溃 || shooter.击溃) {
-            Obj.击溃 = Math.max(Obj.血量上限击溃 | 0, shooter.击溃 | 0);
+            Obj.击溃 = Math.max(Obj.血量上限击溃 > 0 ? Obj.血量上限击溃 : 0, shooter.击溃 > 0 ? shooter.击溃 : 0);
         }
     }
     
