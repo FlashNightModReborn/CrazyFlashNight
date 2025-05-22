@@ -191,7 +191,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     // 静态复用对象，减少GC压力
     private static var _emptyResult:Object = { data: [], startIndex: 0 };
     private static var _resultCache:Object = { data: null, startIndex: 0 };
-
+    
+    /**
+     * 获取从指定起始索引开始的缓存目标单位
+     * 利用二分查找快速定位第一个可能碰撞的单位，后续利用isOrdered机制提前退出
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @param {AABBCollider} query - 查询用的AABB碰撞器
+     * @return {Object} 包含data数组、startIndex的结果对象
+     */
     public static function getCachedTargetsFromIndex(
         target:Object,
         updateInterval:Number,
