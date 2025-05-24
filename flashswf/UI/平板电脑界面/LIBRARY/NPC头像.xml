@@ -1,0 +1,97 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC头像" itemID="670b3e25-000003ea" lastModified="1747124629" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="NPC头像">
+      <layers>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 刷新(NPC名字)
+{
+	this.名字 = NPC名字;
+	肖像.gotoAndStop(this.名字);
+	肖像.肖像.stop();
+}
+
+this.attachMovie("对话框肖像","肖像",0);
+肖像.swapDepths(肖像位置示意);
+肖像._x = 肖像位置示意._x;
+肖像._y = 肖像位置示意._y;
+肖像._xscale = 肖像位置示意._xscale;
+肖像._yscale = 肖像位置示意._yscale;
+肖像位置示意._visible = false;
+this._alpha = 0;
+this.onEnterFrame = function()
+{
+	this._alpha += 10;
+	if (this._alpha >= 100)
+	{
+		delete this.onEnterFrame;
+	}
+};
+
+刷新("Andy Law");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像位置示意" centerPoint3DX="261.95" centerPoint3DY="471.45">
+                  <matrix>
+                    <Matrix a="0.607620239257813" d="0.607620239257813" tx="45.2" ty="103.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0099FF" alpha="0.2"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3000 0S2|3000 3400!3000 3400|0 3400!0 3400|0 0!0 0|3000 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

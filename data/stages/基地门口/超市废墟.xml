@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>醋</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk2_1_BG.swf</Background>
+            <PlayerX>153</PlayerX>
+            <PlayerY>461</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Moan</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1116</x>
+                <y>238</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种2</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种6</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk2_2_BG.swf</Background>
+            <PlayerX>100</PlayerX>
+            <PlayerY>360</PlayerY>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>867</x>
+                <y>246</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>内部物:牛肉罐头,数量_min:1,数量_max:3,等级:0,名字:木箱</Parameters>
+            </Instance>
+            <Instance id="1">
+                <x>955</x>
+                <y>313</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>最小主线进度:4,最大主线进度:4,内部物:抗生素,数量:2,等级:0,名字:木箱2</Parameters>
+            </Instance>
+            <Instance id="2">
+                <x>1150</x>
+                <y>451</y>
+                <Identifier>隐藏资源点</Identifier>
+                <Parameters>最小主线进度:3,最大主线进度:3,内部物:牛皮手套,数量:1,等级:0,名字:木箱3</Parameters>
+            </Instance>
+            <Instance id="2">
+                <x>1150</x>
+                <y>452</y>
+                <Identifier>隐藏资源点</Identifier>
+                <Parameters>最小主线进度:4,最大主线进度:5,内部物:黑色军用皮鞋,数量:1,等级:0,名字:木箱4</Parameters>
+            </Instance>
+        </Instances>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>让我看看还有没有没有被洗劫的箱子……里面也许有我需要的东西……</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>先解决掉这个家伙先！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>715</x>
+                        <y>334</y>
+                        <spritename>主角-男</spritename>
+                        <Name>盗贼</Name>
+                        <IsHostile>true</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon />
+                        <SecondaryWeapon />
+                        <SecondaryWeapon2 />
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-络腮胡</HairStyle>
+                        <HeadEquipment>男变装-圆框墨镜</HeadEquipment>
+                        <BodyArmor>褐色背带背心</BodyArmor>
+                        <LegArmor>盗贼牛仔裤带腿包</LegArmor>
+                        <HandGear />
+                        <FootGear>褐色简单皮鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

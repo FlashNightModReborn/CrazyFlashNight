@@ -1,0 +1,530 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="7">
+            <Name>弹簧</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>上色涂料</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>增效剂</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="10">
+            <Name>可塑式钢板</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="11">
+            <Name>战术导轨</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="12">
+            <Name>螺丝套件</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="13">
+            <Name>小型液晶屏</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="14">
+            <Name>防沙皮革</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="15">
+            <Name>烈性火药</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="16">
+            <Name>生物催化剂</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="17">
+            <Name>不锈钢材</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="18">
+            <Name>高强度合金</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="19">
+            <Name>枪械内构强化套件</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="20">
+            <Name>镭射瞄准具</Name>
+            <AcquisitionProbability>50</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="21">
+            <Name>碳纤维布料</Name>
+            <AcquisitionProbability>50</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="22">
+            <Name>战术握把</Name>
+            <AcquisitionProbability>50</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="23">
+            <Name>突击型光学瞄具</Name>
+            <AcquisitionProbability>50</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="24">
+            <Name>水冷机构</Name>
+            <AcquisitionProbability>50</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk24_1_BG.swf</Background>
+            <PlayerX>184</PlayerX>
+            <PlayerY>372</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>The Time Is Now</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1404</x>
+                        <y>439</y>
+                        <Parameters>
+                            <长枪>Sniper</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1281</x>
+                        <y>587</y>
+                        <Parameters>
+                            <长枪>XM8</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>963</x>
+                        <y>334</y>
+                        <Parameters>
+                            <长枪>G36</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>764</x>
+                        <y>529</y>
+                        <Parameters>
+                            <长枪>M134</长枪>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk24_2_BG.swf</Background>
+            <PlayerX>126</PlayerX>
+            <PlayerY>468</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1318</x>
+                <y>444</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1416</x>
+                        <y>574</y>
+                        <Parameters>
+                            <长枪>UMP</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>951</x>
+                        <y>397</y>
+                        <Parameters>
+                            <长枪>M134</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>620</x>
+                        <y>571</y>
+                        <Parameters>
+                            <长枪>G36</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>26</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <长枪>M4A1改</长枪>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk24_3_BG.swf</Background>
+            <PlayerX>184</PlayerX>
+            <PlayerY>372</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1239</x>
+                <y>605</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>994</x>
+                <y>490</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1412</x>
+                <y>394</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1167</x>
+                        <y>370</y>
+                        <Parameters>
+                            <长枪>G36</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>26</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <长枪>XM8</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>26</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <长枪>UMP</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>584</x>
+                        <y>500</y>
+                        <Parameters>
+                            <长枪>AWP</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种9</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>26</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk24_4_BG.swf</Background>
+            <PlayerX>542</PlayerX>
+            <PlayerY>369</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1502</x>
+                <y>614</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>166</x>
+                <y>574</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1389</x>
+                <y>405</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <长枪>M134</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <长枪>M134</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1415</x>
+                        <y>459</y>
+                        <Parameters>
+                            <长枪>XM8</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1087</x>
+                        <y>551</y>
+                        <Parameters>
+                            <长枪>M3 Rocket Launcher</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>787</x>
+                        <y>369</y>
+                        <Parameters>
+                            <长枪>M4A1改</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <长枪>G36</长枪>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk24_5_BG.swf</Background>
+            <PlayerX>734</PlayerX>
+            <PlayerY>299</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>179</x>
+                <y>381</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>5</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>1119</x>
+                <y>602</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>4</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>322</x>
+                <y>602</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1222</x>
+                <y>356</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种9</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <长枪>SPAS12</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <长枪>Fire Gun</长枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <长枪>战术版FIM92</长枪>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

@@ -1,0 +1,97 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/镜之虎彻/刀-镜之虎彻" itemID="65f84c7f-00003222" linkageExportForAS="true" linkageIdentifier="刀-镜之虎彻" lastModified="1747104246">
+  <timeline>
+    <DOMTimeline name="刀-镜之虎彻">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B6B5FD" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="21.75" centerPoint3DY="346.1">
+                  <matrix>
+                    <Matrix a="0.82537841796875" d="12.3984832763672" ty="46.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FF9E72" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="4.95" centerPoint3DY="-87.35">
+                  <matrix>
+                    <Matrix a="1.52500915527344" d="5.85406494140625" tx="-17.5" ty="-99.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F1F671" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="-5" centerPoint3DY="59.4">
+                  <matrix>
+                    <Matrix a="0.699722290039063" d="12.4343414306641" tx="-17.5" ty="46.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EBD14F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂七杂八/Symbol 3437" centerPoint3DX="22.95" centerPoint3DY="375.8">
+                  <matrix>
+                    <Matrix a="0.80999755859375" d="0.899993896484375" tx="6.1" ty="201.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FFFFFF" strength="0.8"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.48046875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#FF00AE" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/镜之虎彻/镜之虎彻" centerPoint3DX="31.55" centerPoint3DY="252.1">
+                  <matrix>
+                    <Matrix a="0.80999755859375" d="0.899993896484375" tx="1.25" ty="-5.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="25" blurY="25" color="#FFFFFF" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

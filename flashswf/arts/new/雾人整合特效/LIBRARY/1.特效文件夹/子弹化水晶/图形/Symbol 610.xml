@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/子弹化水晶/图形/Symbol 610" itemID="6577f221-00000b05" symbolType="graphic" lastModified="1701332846">
+  <timeline>
+    <DOMTimeline name="Symbol 610">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FCE2F4"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#F6BEE6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!9 -249[39 -275 164 -565"/>
+                    <Edge fillStyle0="1" edges="!164 -565|-13 -794!-13 -794[-145 -956 -182 -963!-182 -963|-330 -486"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!-330 -486|-171 -377!-171 -377|9 -249"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!9 -249|256 483"/>
+                    <Edge fillStyle0="2" edges="!256 483|315 436!315 436|319 432!319 432|164 -565"/>
+                    <Edge fillStyle0="3" edges="!-330 -486|-337 -462!-337 -462|-267 -356!-267 -356[-148 -172 202 517!202 517|207 515!207 515|256 483"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,224 @@
+{
+    "skills": [
+        {
+            "name": "兴奋剂",
+            "pointCost": 10,
+            "cooldown": 120,
+            "manaCost": 16,
+            "limit": 1,
+            "distanceMin": 200,
+            "distanceMax": 400,
+            "type": "增益",
+            "function": "速度"
+        },
+        {
+            "name": "小跳",
+            "pointCost": 10,
+            "cooldown": 1,
+            "manaCost": 5,
+            "limit": 1,
+            "distanceMin": 0,
+            "distanceMax": 100,
+            "type": "躲避",
+            "function": "高频位移"
+        },
+        {
+            "name": "铁布衫",
+            "pointCost": 20,
+            "cooldown": 120,
+            "manaCost": 16,
+            "limit": 10,
+            "distanceMin": 200,
+            "distanceMax": 400,
+            "type": "增益",
+            "function": "防护"
+        },
+        {
+            "name": "闪现",
+            "pointCost": 30,
+            "cooldown": 2,
+            "manaCost": 10,
+            "limit": 25,
+            "distanceMin": 0,
+            "distanceMax": 100,
+            "type": "躲避",
+            "function": "长距位移"
+        },
+        {
+            "name": "霸体",
+            "pointCost": 10,
+            "cooldown": 20,
+            "manaCost": 40,
+            "limit": 15,
+            "distanceMin": 0,
+            "distanceMax": 400,
+            "type": "增益",
+            "function": "解围霸体"
+        },
+        {
+            "name": "觉醒霸体",
+            "pointCost": 150,
+            "cooldown": 120,
+            "manaCost": 60,
+            "limit": 30,
+            "distanceMin": 0,
+            "distanceMax": 400,
+            "type": "增益",
+            "function": "解围霸体"
+        },
+        {
+            "name": "寸拳",
+            "pointCost": 10,
+            "cooldown": 5,
+            "manaCost": 20,
+            "limit": 1,
+            "distanceMin": 30,
+            "distanceMax": 100,
+            "type": "格斗",
+            "function": "爆发输出"
+        },
+        {
+            "name": "气功波",
+            "pointCost": 15,
+            "cooldown": 5,
+            "manaCost": 20,
+            "limit": 1,
+            "distanceMin": 0,
+            "distanceMax": 400,
+            "type": "格斗",
+            "function": "远程输出"
+        },
+        {
+            "name": "踩人",
+            "pointCost": 15,
+            "cooldown": 5,
+            "manaCost": 15,
+            "limit": 1,
+            "distanceMin": 0,
+            "distanceMax": 50,
+            "type": "格斗",
+            "function": "贴身输出"
+        },
+        {
+            "name": "日字冲拳",
+            "pointCost": 20,
+            "cooldown": 5,
+            "manaCost": 15,
+            "limit": 10,
+            "distanceMin": 30,
+            "distanceMax": 60,
+            "type": "格斗",
+            "function": "贴身持续输出"
+        },
+        {
+            "name": "组合拳",
+            "pointCost": 5,
+            "cooldown": 5,
+            "manaCost": 15,
+            "limit": 10,
+            "distanceMin": 30,
+            "distanceMax": 60,
+            "type": "格斗",
+            "function": "贴身持续蓄力输出"
+        },
+        {
+            "name": "虎拳",
+            "pointCost": 30,
+            "cooldown": 8,
+            "manaCost": 30,
+            "limit": 30,
+            "distanceMin": 30,
+            "distanceMax": 60,
+            "type": "格斗",
+            "function": "贴身持续输出"
+        },
+        {
+            "name": "震地",
+            "pointCost": 25,
+            "cooldown": 5,
+            "manaCost": 30,
+            "limit": 10,
+            "distanceMin": 0,
+            "distanceMax": 100,
+            "type": "格斗",
+            "function": "爆发解围输出"
+        },
+        {
+            "name": "地震",
+            "pointCost": 60,
+            "cooldown": 10,
+            "manaCost": 60,
+            "limit": 30,
+            "distanceMin": 0,
+            "distanceMax": 100,
+            "type": "格斗",
+            "function": "持续解围输出"
+        },
+        {
+            "name": "瞬步斩",
+            "pointCost": 20,
+            "cooldown": 5,
+            "manaCost": 20,
+            "limit": 10,
+            "distanceMin": 50,
+            "distanceMax": 250,
+            "type": "刀技",
+            "function": "位移持续输出"
+        },
+        {
+            "name": "凶斩",
+            "pointCost": 25,
+            "cooldown": 5,
+            "manaCost": 20,
+            "limit": 15,
+            "distanceMin": 40,
+            "distanceMax": 80,
+            "type": "刀技",
+            "function": "蓄力输出"
+        },
+        {
+            "name": "拔刀术",
+            "pointCost": 50,
+            "cooldown": 6,
+            "manaCost": 40,
+            "limit": 25,
+            "distanceMin": 0,
+            "distanceMax": 400,
+            "type": "刀技",
+            "function": "位移持续输出"
+        },
+        {
+            "name": "龙斩",
+            "pointCost": 100,
+            "cooldown": 30,
+            "manaCost": 80,
+            "limit": 35,
+            "distanceMin": 0,
+            "distanceMax": 150,
+            "type": "刀技",
+            "function": "解围持续爆发输出"
+        },
+        {
+            "name": "能量盾",
+            "pointCost": 20,
+            "cooldown": 60,
+            "manaCost": 50,
+            "limit": 10,
+            "distanceMin": 100,
+            "distanceMax": 400,
+            "type": "增益",
+            "function": "防护"
+        },
+        {
+            "name": "翻滚换弹",
+            "pointCost": 15,
+            "cooldown": 15,
+            "manaCost": 50,
+            "limit": 15,
+            "distanceMin": 200,
+            "distanceMax": 500,
+            "type": "火器",
+            "function": "换弹"
+        }
+    ]
+}

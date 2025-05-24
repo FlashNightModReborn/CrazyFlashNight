@@ -1,0 +1,126 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="9、提交NPC/组件/NPC称呼-出场动效" itemID="67cccfe2-0000044e" lastModified="1747643690" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="NPC称呼-出场动效" currentFrame="26" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;515&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#00FFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#B04800"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4806 421|6 421!6 421|6 21!6 21|4806 21!4806 21|4806 421"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="黑块动效" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/组件/黑块-动效 复制" centerPoint3DX="2.1" centerPoint3DY="10.95">
+                  <matrix>
+                    <Matrix tx="1.1" ty="1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9" y="9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完成时勾选" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/组件/转圈 &amp; 勾选/勾选动画" centerPoint3DX="8.4" centerPoint3DY="12.35">
+                  <matrix>
+                    <Matrix a="0.5999755859375" d="0.79998779296875" tx="7.4" ty="11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.65" y="1.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="圆圈" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/组件/转圈 &amp; 勾选/转圈动画" centerPoint3DX="12.25" centerPoint3DY="11.35">
+                  <matrix>
+                    <Matrix tx="4.25" ty="3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8" y="8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="物品名" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="13" keyMode="9728">
+              <elements>
+                <DOMDynamicText width="207.9" height="25.85" isSelectable="false" variableName="_parent._parent.finish_npc">
+                  <matrix>
+                    <Matrix tx="24.1" ty="-3.35"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>NPC</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="18" bitmapSize="360" face="SourceHanSerifCN-Heavy" fillColor="#3F0B00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" distance="2" strength="0.3"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

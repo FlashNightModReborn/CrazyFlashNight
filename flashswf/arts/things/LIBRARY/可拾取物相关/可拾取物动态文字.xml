@@ -1,0 +1,88 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物相关/可拾取物动态文字" itemID="678d1c0c-00000d64" lastModified="1737854945" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="可拾取物动态文字" currentFrame="34">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0436" y="0.1138"/>
+                  <Point x="0.1245" y="0.3635"/>
+                  <Point x="0.2175" y="0.4897"/>
+                  <Point x="0.3158" y="0.6233"/>
+                  <Point x="0.5041" y="0.7568"/>
+                  <Point x="0.5789" y="0.8185"/>
+                  <Point x="0.6391" y="0.868"/>
+                  <Point x="0.815" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="可拾取物相关/可拾取物文字">
+                  <matrix>
+                    <Matrix tx="-75" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="可拾取物相关/可拾取物文字">
+                  <matrix>
+                    <Matrix tx="-75" ty="2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1"/>
+                  <Point x="0.2902" y="0.0411"/>
+                  <Point x="0.45" y="0.2"/>
+                  <Point x="0.5244" y="0.274"/>
+                  <Point x="0.622" y="0.3665"/>
+                  <Point x="0.6809" y="0.4384"/>
+                  <Point x="0.7148" y="0.4798"/>
+                  <Point x="0.95" y="0.7877"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="可拾取物相关/可拾取物文字" selected="true">
+                  <matrix>
+                    <Matrix tx="-75" ty="-5.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="可拾取物相关/可拾取物文字">
+                  <matrix>
+                    <Matrix tx="-75" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

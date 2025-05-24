@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁弓箭手/弓箭手动画/重复项目文件夹 复制/元件 1" itemID="6766d5bd-000023ec" lastModified="1727926277">
+  <timeline>
+    <DOMTimeline name="元件 1">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#121212"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.0027313232421875" b="-0.0009002685546875" c="0.0207061767578125" d="0.0626068115234375" tx="17.55" ty="54.05"/>
+                        </matrix>
+                        <GradientEntry color="#3C3C3C" ratio="0"/>
+                        <GradientEntry color="#292929" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor color="#0E0E0E"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="3" edges="!162 0|174 8"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!174 8[#FFFFE0.73 #13F.5E 295.5 982!295.5 982[298.5 #3DB.FC 301.5 994!301.5 994[#12E.19 #3E3.33 302.5 996.5!302.5 996.5[#15D.EE #443.2A 408 1193!408 1193[#25B.8F #60E.AE 671.5 1901!671.5 1901[#29F.A7 #76D.C4 672 1902.5!672 1902.5[#2B9.66
+ #7F1.43 705 2163!705 2163|555 2070!555 2070[#224.24 #7C6.6A 536 1911!536 1911[#1E3.34 #621.7D 330.5 1231.5!330.5 1231.5[#11E.1D #46C.8F 233 1034!233 1034|231 1028!231 1028[#E4.F7 #400.F2 227 1022!227 1022[#E1.D5 #3FB.AA 224.5 1017.5
+!224.5 1017.5[#E0.59 #3F8.B2 224 1016!224 1016[-55 543 14 286!14 286|14 285!14 285[65 79 162 0"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="
+!606 1864[624 1864 636 1876!636 1876[649 1889 649 1906!649 1906[650 1923 637 1935!637 1935[625 1948 607 1948!607 1948[589 1948 576 1936!576 1936[564 1924 563 1907!563 1907[563 1890 575 1877!575 1877[#242.CB #751.35 583 1870.5!583 1870.5
+[#251.41 1864 606 1864"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="
+!602 1909[608 1909 613 1905!613 1905[617 1901 617 1895!617 1895[617 1888 613 1884!613 1884[608 1879 602 1879!602 1879[596 1879 591 1883!591 1883[587 1888 587 1894!587 1894[587 1900 591 1904!591 1904[596 1909 602 1909"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

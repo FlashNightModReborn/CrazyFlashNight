@@ -1,0 +1,123 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-主角模板" itemID="662fd6a4-00000c50" lastModified="1714663186" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="对话-主角模板" currentFrame="2">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#5D68BC">
+          <frames>
+            <DOMFrame index="0" name="刷新" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="男" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="女" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_parent._parent.对话对象)
+{
+	var 对话对象 = _parent._parent.对话对象;
+	var 性别 = 对话对象.性别;
+	this.发型 = 对话对象.发型;
+	if (_root.getItemData(对话对象.头部装备).helmet)
+	{
+		this.发型 = "";
+	}
+	面具 = _root.根据物品名查找属性(对话对象.头部装备, 15);
+	身体 = 性别 + _root.根据物品名查找属性(对话对象.上装装备, 15) + "身体";
+	上臂 = 性别 + _root.根据物品名查找属性(对话对象.上装装备, 15) + "上臂";
+	左下臂 = 性别 + _root.根据物品名查找属性(对话对象.上装装备, 15) + "左下臂";
+	右下臂 = 性别 + _root.根据物品名查找属性(对话对象.上装装备, 15) + "右下臂";
+	左手 = _root.根据物品名查找属性(对话对象.手部装备, 15) + "左手";
+	右手 = _root.根据物品名查找属性(对话对象.手部装备, 15) + "右手";
+	屁股 = 性别 + _root.根据物品名查找属性(对话对象.下装装备, 15) + "屁股";
+	左大腿 = 性别 + _root.根据物品名查找属性(对话对象.下装装备, 15) + "左大腿";
+	右大腿 = 性别 + _root.根据物品名查找属性(对话对象.下装装备, 15) + "右大腿";
+	小腿 = 性别 + _root.根据物品名查找属性(对话对象.下装装备, 15) + "小腿";
+	脚 = _root.根据物品名查找属性(对话对象.脚部装备, 15);
+	刀 = _root.根据物品名查找属性(对话对象.刀, 15);
+	长枪 = _root.根据物品名查找属性(对话对象.长枪, 15);
+	手枪 = _root.根据物品名查找属性(对话对象.手枪, 15);
+	手枪2 = _root.根据物品名查找属性(对话对象.手枪2, 15);
+}
+
+gotoAndStop(性别);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.aa.text = _parent._parent.人物表情;
+this.man.头.头.基本款.gotoAndStop(_parent._parent.人物表情);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.aa.text = _parent._parent.人物表情;
+this.man.头.头.基本款.gotoAndStop(_parent._parent.人物表情);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8F66E5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="80" height="31.7" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-21" ty="-58.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>刷新</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="24" bitmapSize="480" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="24" bitmapSize="480" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1170" name="man" centerPoint3DX="86.7" centerPoint3DY="200.7">
+                  <matrix>
+                    <Matrix tx="-22.9" ty="-37.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1224" name="man" centerPoint3DX="86.7" centerPoint3DY="200.7">
+                  <matrix>
+                    <Matrix tx="-22.9" ty="-37.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/赤橙强击/Symbol 499" itemID="653debbc-000013ff" lastModified="1698428733">
+  <timeline>
+    <DOMTimeline name="Symbol 499">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B0835D" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0316162109375" d="0.0316162109375" tx="25.75" ty="25.75"/>
+                        </matrix>
+                        <GradientEntry color="#002AAA" alpha="0" ratio="0.635294117647059"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1030 515[1030 728 879 879!879 879[728 1030 515 1030!515 1030[302 1030 151 879!151 879[0 728 0 515!0 515[0 302 151 151!151 151[302 0 515 0!515 0[728 0 879 151!879 151[1030 302 1030 515"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

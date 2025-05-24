@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/人物素材/重兵器" itemID="57bfd394-000029a6" lastModified="1717493101" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="重兵器">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架">
+                  <matrix>
+                    <Matrix a="-0.759033203125" b="0.004241943359375" c="-0.0039215087890625" d="-0.6951904296875" tx="564.05" ty="227.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="361.95" y="104.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/42424" isVisible="false">
+                  <matrix>
+                    <Matrix tx="124.5" ty="198.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-51" contrast="27" saturation="-100" hue="65"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

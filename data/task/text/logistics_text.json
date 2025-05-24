@@ -1,0 +1,542 @@
+{
+    "$SIDE_TITLE_50001": "食堂事件",
+    "$SIDE_DESCRIPTION_50001": "（该支线要求先通过主线任务“尸群”）找厨师谈谈。厨师在地下二层的食堂，通过the girl左边的楼梯进入地下二层，向左前往食堂。",
+    "$SIDE_GET_50001": [
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "不错嘛，看起来你逐渐成长为优秀的战士了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "能有今天，也是多亏了你的救命之恩。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "哈哈，或许我们将来会被你救很多次，你早晚会不欠我们的。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl",
+            "text": "嗯···那么，我说点正事。你现在对我们基地的运转可能还不够了解，正好现在有件事可以帮你了解下。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl",
+            "text": "从这里往下走，可以到食堂。我们在食堂每天提供免费食物，这在末世里也是不容易了。不过据厨师说，就算如此也有人闹事。我暂时抽不开身，这里得麻烦你去厨师那里了解详细情况。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "这都有人闹事啊。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl",
+            "text": "这也是安抚过程中必须面对的事情，不这么做的话后果更严重，那样的话我们也永远会是只顾利益的流寇了。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl",
+            "text": "总之，问题不大的话还请你直接解决，比较麻烦的话就找我。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白了，我这就去。"
+        }
+    ],
+    "$SIDE_FINISH_50001": [
+    ],
+    "$SIDE_TITLE_50002": "涂鸦罢了",
+    "$SIDE_DESCRIPTION_50002": "找The girl谈谈。",
+    "$SIDE_GET_50002": [
+        {
+            "name": "厨师",
+            "title": "机器人厨师",
+            "char": "厨师",
+            "text": "您好。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没想到厨师居然是机器人···"
+        },
+        {
+            "name": "厨师",
+            "title": "机器人厨师",
+            "char": "厨师",
+            "text": "我是统合制式机器人Ⅰ号，由战前尘都叉叉重工集团型号机器人改造而来，现负责Andylaw的兵团食堂烹饪工作。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那么，我听the girl说，你声称食堂有人闹事，具体情况如何？"
+        },
+        {
+            "name": "厨师",
+            "title": "机器人厨师",
+            "char": "厨师",
+            "text": "根据预设情况，针对异常现象进行排查，发现标语处存在异常。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "标语···你上面的这个，我看看···“每人每日最多一个免费罐头···去你妈的···”"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这么说，是有人来砸场子，他们人在哪？"
+        },
+        {
+            "name": "厨师",
+            "title": "机器人厨师",
+            "char": "厨师",
+            "text": "未检测到标语异常现象之外的特殊情况。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "··所以只是有人乱涂鸦骂人是吗。看来这甚至算不上什么事。"
+        }
+    ],
+    "$SIDE_FINISH_50002": [
+    ],
+    "$SIDE_TITLE_50003": "谄媚···但合理",
+    "$SIDE_DESCRIPTION_50003": "烹饪一份番茄炒蛋，然后找King谈谈。通过食堂地图的烹饪按钮进行烹饪，可在厨师处学习烹饪技能。",
+    "$SIDE_GET_50003": [
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "看起来的确是些微不足道的事情，真是麻烦你了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "哈哈，哪里的话。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "我可不会让你白走一趟的。这样，我这里给你做菜配方吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "做菜？这我可完全不会啊。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "做菜可没这么难，按照步骤一步步来就行。战斗这么复杂的事情你可以掌握，做菜可不至于炸了锅吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "嗯嗯···话说姐你平时做菜吗？"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "这个嘛，我的确做，不过只有andy大人能吃到。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "哦哦，那andy老大是要大饱口福了。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "说回之前的话题吧。只有配方可不能做菜，你还需要食材和设备，恰好这些都可以在厨师那里获取。哦，你还得找厨师学习烹饪技能才能开始做菜，学深了才能做更复杂的菜呢。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "厨师那里会出售新鲜食材，你也可以在那里使用烹饪设备。作为试手，先做道番茄炒蛋吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "为什么是这个？"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "这道菜有够简单，而且king喜欢，你做完了送给她，她可不会亏待你。要知道她可是叽叽喳喳好久了，跟我说讨厌罐装番茄炒蛋，就喜欢现炒的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好的，我这就去做。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "祝你好运哦。"
+        }
+    ],
+    "$SIDE_FINISH_50003": [
+    ],
+    "$SIDE_TITLE_50004": "连续上菜",
+    "$SIDE_DESCRIPTION_50004": "烹饪一份土豆炒肉丝，然后找Blue谈谈。",
+    "$SIDE_GET_50004": [
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "我操！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "呃，怎么了？"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "快端过来，别逼我求你。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好好···"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "妈的这简直稀世珍宝，人间至臻。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "怎么感觉king姐突然有文化了？"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king",
+            "text": "嗯嗯···你说什么？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没什么没什么。"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king",
+            "text": "你做的太好了，可惜我手头没什么东西，这些子弹给你吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "谢谢谢谢。是the girl姐教我做这个的。。"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#微笑",
+            "text": "那家伙还挺上心啊。噢，你不如多做做菜。末世里愿意花时间做这事的人没那么多，大部分还是吃上顿没下顿的。给他们现做的菜可比当他们亲爹亲妈还厉害。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "king姐你知道有哪些人需要菜吗？"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#微笑",
+            "text": "blue那小子绝对想吃炒菜，我上次开会就感觉到了，而且那菜绝对是土豆炒肉。相信老娘的直觉。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我明白了，谢谢king姐！"
+        }
+    ],
+    "$SIDE_FINISH_50004": [
+    ],
+    "$SIDE_TITLE_50005": "新晋厨师体验",
+    "$SIDE_DESCRIPTION_50005": "找The girl谈谈。",
+    "$SIDE_GET_50005": [
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#微笑",
+            "text": "哦，这是给我的？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "是的，我从king姐那里听说blue哥想吃土豆炒肉，就做了一份捎来。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#微笑",
+            "text": "那女人在吃这方面的直觉真是可怕啊···既然如此，我就不推脱了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "blue哥怎么评价？"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "嗯···其实你做的已经非常好了，在末世里非常难得。但老实说，我很念旧，我还是怀念当年打黑拳时候吃的那份土豆炒肉。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "blue哥还有这种经历吗？"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#悲伤",
+            "text": "当年赚钱可不容易，我在尘都东区，哦就是现在的废城，在那参加死亡竞赛。那种稍有疏忽必死无疑的比赛，我打了好几年。中间有一次打输了饿的不行，有人给我施舍点钱，我去大排档点了份土豆炒肉，那绝对是我吃过最好的东西。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#悲伤",
+            "text": "妈的，我打拳就为了买辆黄包车，还被城管拿了。我为了生计又跑到叉叉重工的酒吧当保安，结果被andy打了。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "不过也不完全是坏事，后来又跟andy打了几架，结果在3xf绑了我兄弟后受到andy帮助，我就铁了心跟他。这一路过来，我都有点觉得难以置信了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "真是传奇的经历。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#微笑",
+            "text": "哈哈，见笑了。以后有什么招式想学就来找我，我奉陪。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "谢谢blue哥！"
+        }
+    ],
+    "$SIDE_FINISH_50005": [
+    ],
+    "$SIDE_TITLE_50006": "据点考察",
+    "$SIDE_DESCRIPTION_50006": "找artist谈谈。主线完成第一防线关卡后，会在废城解锁“第一防线防区”地图，可在该地图内找到artist。",
+    "$SIDE_GET_50006": [
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "看来你收获颇多。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "我还是头一次体会到做菜的魅力，这可是个交心的技能啊。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "你做的炒菜可是末世里的稀罕货，我们食堂每日现炒菜都是限量的。不得不感叹你真是进步神速啊···"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "啊，总之你应该学到了不少。做菜嘛不过是后勤的一环，我作为后勤负责人也有义务帮助基地成员学习后勤方面的技能。"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl",
+            "text": "另外，我们收复第一防线的工作正在稳步进行，现在已经在当地建立了前哨。不过因为暂时抽不出来太多人，我们只能把守卫工作交给了不那么靠谱的人···"
+        },
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl",
+            "text": "考虑到我们后续还要在废城进行不少工作，了解当地情况对你是有利的。所以尝试和那边的负责人聊一聊吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白了！"
+        }
+    ],
+    "$SIDE_FINISH_50006": [
+    ],
+    "$SIDE_TITLE_50007": "收复工作预备",
+    "$SIDE_DESCRIPTION_50007": "找The girl谈谈。",
+    "$SIDE_GET_50007": [
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "哦，你是···你是···"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "呃，你见过我吗？"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "没有，但我猜到你应该是Andylaw的佣兵团的人。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "嗯？为什么能猜到？"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "哈哈，因为the girl之前跟我说会派个人来这里找我。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "···"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "哦，顺带一问，你喜欢这个涂鸦吗？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "嗯···还好吧，我觉得。"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "要是想学随时来找我！我是知识的传火者，反知识产权运动万岁！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "现在已经没什么知识产权了吧。"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "那可不是，要知道，堕落城那里近期可是开始针对科学技术进行专利权体系重建了。虽说不一定能成功，但这可不是好事，要是逐渐影响到艺术···"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好的好的好的，我明白了。那么说正事，现在废城情况如何？"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "唔···废城大部分相对安全的区域会在近期收复，但是还有部分区域过于危险，上面暂时不打算进攻。"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "暂定危险区域包含自来水厂、医院等等。地铁站也很危险，但有侦察兵说那边可能有不同寻常的怪物，大概我们得优先解决地铁站的问题，自来水厂之类只能放一放了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "看起来收复废城还得要很久···话说你在这只是涂鸦吗？"
+        },
+        {
+            "name": "artist",
+            "title": "喷漆艺术家",
+            "char": "artist",
+            "text": "哈哈，虽然我想说不是，但仔细想想这个阵地并没有被攻击过，我差不多确实只在涂鸦。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "··那我先回去了。"
+        }
+    ],
+    "$SIDE_FINISH_50007": [
+        {
+            "name": "The girl",
+            "title": "Andy的女仆",
+            "char": "The girl#微笑",
+            "text": "嗯，我明白了。废城的收复关乎我们阵营的发展，非常重要，这方面的工作以后或许还需要麻烦你，让我们共同进步吧。"
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹/次元斩" itemID="672cfb71-00000339" lastModified="1730912805" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="次元斩" currentFrame="2">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/次元斩刀光" selected="true" symbolType="graphic" centerPoint3DX="70.2" centerPoint3DY="29.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.23822021484375" b="-0.52117919921875" c="0.785552978515625" d="-0.914291381835938" tx="-29.45" ty="290.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="182.3" y="182.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.01" tintColor="#FF0000"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/次元斩刀光" symbolType="graphic" centerPoint3DX="32.1" centerPoint3DY="64.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" c="-0.5614013671875" d="-0.732696533203125" tx="316.85" ty="197.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="182.45" y="182.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.01" tintColor="#FF0000"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/次元斩刀光" symbolType="graphic" centerPoint3DX="32" centerPoint3DY="64.05" loop="loop">
+                  <matrix>
+                    <Matrix c="-0.63031005859375" d="0.732696533203125" tx="-35.4" ty="-69.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="182" y="182.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.01" tintColor="#FF0000"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

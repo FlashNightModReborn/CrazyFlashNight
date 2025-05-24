@@ -1,0 +1,807 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载mc库-黑铁会" itemID="67e615e0-000008e1" linkageExportForAS="true" linkageIdentifier="加载mc库-黑铁会" lastModified="1743132128">
+  <timeline>
+    <DOMTimeline name="加载mc库-黑铁会" currentFrame="2">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E64CE6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7192C4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="白色手里剑" centerPoint3DX="-201.8" centerPoint3DY="7.95">
+                  <matrix>
+                    <Matrix tx="-238.3" ty="-4.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#A331F2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-黑铁会大叔" centerPoint3DX="485.85" centerPoint3DY="299.5">
+                  <matrix>
+                    <Matrix tx="46.8" ty="103.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#91D07B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-黑铁会刺客" centerPoint3DX="833.3" centerPoint3DY="14.85">
+                  <matrix>
+                    <Matrix tx="288.05" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#E582C9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-唐装剑侠" centerPoint3DX="687.25" centerPoint3DY="138.15">
+                  <matrix>
+                    <Matrix tx="41.05" ty="-123.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#26CC97">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-铠甲勇士" centerPoint3DX="584.9" centerPoint3DY="668.65">
+                  <matrix>
+                    <Matrix tx="73.1" ty="336.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 1;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 175;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#24C1E5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="普通霹雷" centerPoint3DX="263.3" centerPoint3DY="113.3">
+                  <matrix>
+                    <Matrix tx="91.45" ty="-40.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#CDAC6A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-铠甲勇士战马形态" centerPoint3DX="10.45" centerPoint3DY="580.75">
+                  <matrix>
+                    <Matrix tx="-341.3" ty="338.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 1;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 175;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#D18A85">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-方舟兽王虎" centerPoint3DX="622.65" centerPoint3DY="41.95">
+                  <matrix>
+                    <Matrix tx="100.65" ty="-266.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-暴走基因虫" centerPoint3DX="-280.45" centerPoint3DY="446.7">
+                  <matrix>
+                    <Matrix tx="-449" ty="329.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#F1AED9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-方舟兽王" centerPoint3DX="707.2" centerPoint3DY="76.65">
+                  <matrix>
+                    <Matrix tx="-129.3" ty="-121.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#EAA3B0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-飞刀小子" centerPoint3DX="171.85" centerPoint3DY="223.3">
+                  <matrix>
+                    <Matrix tx="-321.75" ty="82.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#8462B5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-普通僵尸蛆" centerPoint3DX="-316.95" centerPoint3DY="248.5">
+                  <matrix>
+                    <Matrix tx="-445" ty="128.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#7EEBE1">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-暴走尸母" centerPoint3DX="35" centerPoint3DY="285.1">
+                  <matrix>
+                    <Matrix tx="-410.45" ty="90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#BB23F0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-普通基因虫" centerPoint3DX="-242.25" centerPoint3DY="31.35">
+                  <matrix>
+                    <Matrix tx="-410.8" ty="-86.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#D5ED2C">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-普通尸母" centerPoint3DX="-276" centerPoint3DY="345.95">
+                  <matrix>
+                    <Matrix tx="-721.45" ty="150.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#F7E1A7">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-暴走爆炸僵尸" centerPoint3DX="98.95" centerPoint3DY="39.2">
+                  <matrix>
+                    <Matrix tx="-362.3" ty="-160.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#7FA46F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-粉红头发御姐" centerPoint3DX="13.25" centerPoint3DY="48.65">
+                  <matrix>
+                    <Matrix tx="-315.25" ty="-137.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#EEBCBA">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-暴走兽化改造僵尸" centerPoint3DX="-603.1" centerPoint3DY="453.25">
+                  <matrix>
+                    <Matrix tx="-915.7" ty="301"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 1;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#D855F5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-兽化改造僵尸" centerPoint3DX="-479.85" centerPoint3DY="486">
+                  <matrix>
+                    <Matrix tx="-792.45" ty="333.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 1;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#E9C104">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-暴走重型改造僵尸" centerPoint3DX="-254.8" centerPoint3DY="351.85">
+                  <matrix>
+                    <Matrix tx="-892.85" ty="120.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 1;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 175;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#F686F7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-重型改造僵尸" centerPoint3DX="-164.3" centerPoint3DY="331.65">
+                  <matrix>
+                    <Matrix tx="-802.35" ty="100.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 1;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 175;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#7AF9F8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-普通改造僵尸" centerPoint3DX="-428.25" centerPoint3DY="-15.95">
+                  <matrix>
+                    <Matrix tx="-787.2" ty="-166.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-普通爆炸僵尸" centerPoint3DX="-207.05" centerPoint3DY="113.9">
+                  <matrix>
+                    <Matrix tx="-668.3" ty="-86.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="敌人-暴走改造僵尸" centerPoint3DX="-517.65" centerPoint3DY="3.45">
+                  <matrix>
+                    <Matrix tx="-876.6" ty="-147"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   等级 = 10;
+   名字 = "susu";
+   是否为敌人 = true;
+   身高 = 195;
+   长枪 = "";
+   手枪 = "";
+   手枪2 = "";
+   刀 = "";
+   手雷 = "";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,86 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、持有物品/持有物品-动效" itemID="67ccb75f-00000289" lastModified="1742300569" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="持有物品-动效" currentFrame="34">
+      <layers>
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="34" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="持有物品" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="8、持有物品/持有物品" name="物品需求图标">
+                  <matrix>
+                    <Matrix d="0.989547729492188" tx="-18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90" y="40.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="10" blurY="10" distance="10" quality="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="8、持有物品/持有物品" name="物品需求图标" centerPoint3DX="90" centerPoint3DY="44.05">
+                  <matrix>
+                    <Matrix d="0.989547729492188"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90" y="40.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="10" blurY="10" distance="10" quality="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="方向栏" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="8、持有物品/组件/方向栏">
+                  <matrix>
+                    <Matrix d="0.989974975585938"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="8、持有物品/组件/方向栏">
+                  <matrix>
+                    <Matrix d="0.989974975585938" tx="44.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

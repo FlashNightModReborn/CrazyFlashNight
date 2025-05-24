@@ -1,0 +1,1 @@
+org.flashNight.gesh.array.PrimeSpectrumMapperTest.runAllTests()

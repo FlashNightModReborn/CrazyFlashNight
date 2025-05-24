@@ -1,0 +1,74 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1791" itemID="6597607e-00000a07" lastModified="1746444497" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="Symbol 1791">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BA7D82" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// —— Timeline 第一帧或构造阶段 ——
+// 冷却相关变量
+冷却    = true;    // 标记：是否可再次使用技能
+// 以下不必手动赋值，函数内部会重置
+总步  = 0;       
+当前进度 = 0;
+
+// —— 启动冷却 ——
+// 参数 coldTimeMs 可以是毫秒，也可以是帧数，
+// 这里假设传入的“冷却时间” = 步长×步数(ms单位对帧率无感)：
+function 冷却开始(冷却时间:Number):Void {
+    if (!冷却) return;               // 正在冷却时不重复触发
+    总步数   = Math.ceil(冷却时间 / 33.33333);
+    当前进度 = 0;
+    冷却     = false;
+    // 调度第一次“进度更新”
+    _root.帧计时器.添加冷却任务(步长, 下一格);
+}
+
+// —— 每步更新函数 ——
+// 完成一次进度后，会再次自调度，直至结束
+function 下一格():Void {
+    当前进度++;
+	// _root.发布消息(_root.帧计时器.当前帧数, ":下一格", 当前进度)
+    if (当前进度 >= 总步数) {
+        // 冷却结束，回到初始帧，允许再次使用
+        动画.gotoAndStop(1);
+        冷却     = true;
+        当前进度 = 0;
+    } else {
+        // 显示进度：1~101帧之间滚动（动画帧 2～101 代表 1%～100%）
+        var pct:Number = Math.round(当前进度 / 总步数 * 100);
+        动画.gotoAndStop(1 + pct);
+        // 自调度下一步
+        _root.帧计时器.添加冷却任务(步长, 下一格);
+    }
+}
+
+// 停在第一帧，等待触发
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#D7EA78">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1790" name="动画" centerPoint3DX="34.55" centerPoint3DY="35.3">
+                  <matrix>
+                    <Matrix a="0.3712158203125" d="0.3712158203125" tx="0.2" ty="0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,670 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>诺亚雪山山顶情报</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>透镜</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>方舟卫士样本</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>诺亚枪械碎片</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>诺亚僵尸证明</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>强化金属管</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>无人机残骸</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="7">
+            <Name>高级木料</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>诺亚医疗器械</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>传动装置</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="10">
+            <Name>冰雪之心线索文件</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="11">
+            <Name>可充锂电池</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/nyxssd_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种81</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/nyxssd_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种108</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种82</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种108</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/nyxssd_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种80</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/nyxssd_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种110</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种83</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种110</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/nyxssd_3_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种110</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种85</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种110</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/nyxssd_3_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种110</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种84</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种110</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Background>flashswf/nyxssd_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种114</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种115</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种108</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种111</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种107</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种109</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种110</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种60</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

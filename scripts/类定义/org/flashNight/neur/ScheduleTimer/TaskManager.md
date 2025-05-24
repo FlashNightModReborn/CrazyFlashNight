@@ -1,0 +1,1 @@
+org.flashNight.neur.ScheduleTimer.TaskManagerTester.runAllTests();

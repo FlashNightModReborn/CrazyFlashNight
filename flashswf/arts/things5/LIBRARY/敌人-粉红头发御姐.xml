@@ -1,0 +1,929 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1747455325" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="敌人-粉红头发御姐">
+      <layers>
+        <DOMLayer name="Script Layer" color="#77AB72" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" name="近战" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" name="躲闪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="96" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#F66DBF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[攻击欲望 = 6;
+停止机率 = 500;
+随机移动机率 = 500;
+x轴攻击范围 = 100;
+y轴攻击范围 = 20;
+x轴保持距离 = 50;
+
+方向 = 方向 ? 方向 : "左";
+
+女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
+女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
+女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+
+// respawn = true; // 火凤实际上不需要使用该属性
+
+已使用兴奋剂 = false;
+变身阶段 = 0;
+
+/*
+function Phoenix()
+{
+   this.onEnterFrame = function()
+   {
+      if(this.已使用兴奋剂 != true and this.hp < this.hp满血值 and _root.暂停 == false)
+      {
+         this.hp += 10;
+         _root.发布消息("测试测试/" + this.hp + this.已使用兴奋剂 + this.hp满血值);
+      }
+      else if(this.已使用兴奋剂 == true and this.hp > 0)
+      {
+         this.hp -= 2;
+         _root.发布消息("测试测试/" + this.hp + this.已使用兴奋剂 + this.hp满血值);
+      }
+      if(this.hp <= 0)
+      {
+         _root.发布消息("测试测试/删除");
+         delete this.onEnterFrame;
+      }
+      _root.发布消息("测试测试/" + this.hp + this.已使用兴奋剂 + this.hp满血值);
+   };
+   _root.最上层发布文字提示("测试测试/" + this.hp + this.已使用兴奋剂 + this.hp满血值);
+   if(变身阶段 == 2)
+   {
+      temp_MovieFire = this.attachMovie("火回旋","火回旋",this.getNextHighestDepth(),{_xscale:100,_yscale:150});
+      temp_MovieFire.play();
+      temp_MovieFire.onEnterFrame = function()
+      {
+         if(this._currentFrame == this._totalFrames - 1)
+         {
+            this.gotoAndPlay(1);
+         }
+      };
+   }
+}
+*/
+
+初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="102" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(this.已变身最后阶段){
+	this.变身控制块.temp_MovieFire.removeMovieClip();
+}else{
+	if(this.变身阶段 == 2){
+		this.已变身最后阶段 = true;
+	}
+	gotoAndStop("倒地");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="变身图层" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="127" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 17" name="变身控制块" centerPoint3DX="65.55" centerPoint3DY="-1.65">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-85.95" ty="-153.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+    if(_parent.已使用兴奋剂 != true)
+   {
+      if( _parent.宠物属性.涅槃重生 || (_parent.hp <= 1500 and _parent.hp > 0 and _parent.变身阶段 == 0))
+      {
+         //_parent.无敌 = true;
+         _root.效果("浴火重生",_parent._x,_parent._y,100);
+         _root.效果("火回旋",_parent._x,_parent._y,100);
+         _root.效果("火攻",_parent._x,_parent._y,100);
+         _parent.hp = _parent.hp满血值;
+         _parent.空手攻击力 *= 0.7;
+         _parent.行走X速度 *= 1.5;
+         _parent.行走Y速度 *= 1.5;
+         _parent.跑X速度 *= 1.5;
+         _parent.跑Y速度 *= 1.5;
+         _root.发布消息("燎原烈火……");
+         _parent.已使用兴奋剂 = true;
+         _parent.变身阶段 = 1;
+      }
+   }
+   else if(_parent.hp <= 1500 and _parent.hp > 0 and _parent.变身阶段 == 1)
+   {
+      //_parent.无敌 = true;
+      _root.效果("熔炎裂渊",_parent._x,_parent._y,100);
+      _root.效果("火回旋",_parent._x,_parent._y,100);
+      _root.效果("火攻",_parent._x,_parent._y,100);
+      _parent.hp满血值 = 1500;
+      _parent.hp = _parent.hp满血值;
+      _root.发布消息("涅槃重生……");
+      _parent.已使用兴奋剂 = true;
+      _parent.变身阶段 = 2;
+      temp_MovieFire = _parent.attachMovie("火凤余烬","火凤余烬",_parent.getNextHighestDepth(),{_xscale:100,_yscale:150});
+      temp_MovieFire.play();
+      temp_MovieFire.onEnterFrame = function()
+      {
+         if(this._currentFrame == this._totalFrames - 1)
+         {
+            this.gotoAndPlay(1);
+         }
+         if(_parent._parent.hp <= 0 and _parent._parent.变身阶段 == 2)
+         {
+            this.gotoAndPlay(this._totalFrames);
+            this.play();
+            delete this.onEnterFrame;
+         }
+      };
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#8259BD" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 36" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-141.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-170.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#91F0D2" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 23" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 23" name="area" centerPoint3DX="-51.1" centerPoint3DY="-19.15">
+                  <matrix>
+                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-63.6" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#BAE2B4" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 21" centerPoint3DX="116.75" centerPoint3DY="-38.8">
+                  <matrix>
+                    <Matrix a="5.43363952636719" d="0.72247314453125" tx="86.75" ty="-119.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "a1";
+            _parent.状态改变("近战");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#C375FB" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 21" centerPoint3DX="-26.45" centerPoint3DY="-35.5">
+                  <matrix>
+                    <Matrix a="3.09634399414063" d="0.72247314453125" tx="-56.45" ty="-116.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "a0";
+            _parent.状态改变("近战");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#36D4E0" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                  <matrix>
+                    <Matrix tx="-36" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="66" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 48" name="area" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48651123046875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   this._rotation = _parent.man._rotation;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#FC7F19" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 17" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#D98C95" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 502" name="man" centerPoint3DX="39.15" centerPoint3DY="20.1">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   {
+      _parent.hp += 26;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 26;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 130;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 504" name="man" centerPoint3DX="43" centerPoint3DY="23.45">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   {
+      _parent.hp += 22;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 22;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 90;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 510" name="man" selected="true" centerPoint3DX="67.65" centerPoint3DY="23.3">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   {
+      _parent.hp += 17;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 17;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 90;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 538" name="man" selected="true" centerPoint3DX="339.05" centerPoint3DY="-7.1">
+                  <matrix>
+                    <Matrix a="-1" tx="88.6" ty="-170.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.刚体 = true;
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+   _parent.无敌 = false;
+}
+onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   {
+      _parent.hp += 39;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 39;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 1200;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 50;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 553" name="man" centerPoint3DX="164.85" centerPoint3DY="63.6">
+                  <matrix>
+                    <Matrix tx="6.45" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.刚体 = true;
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+   _parent.无敌 = false;
+}
+onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0)
+   {
+      _parent.hp += 7;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 7;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 1800;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 50;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 502" name="man" centerPoint3DX="39.15" centerPoint3DY="20.1">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   {
+      _parent.hp += 15;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 15;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 90;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 554" name="man" centerPoint3DX="99.6" centerPoint3DY="28.6">
+                  <matrix>
+                    <Matrix tx="10.5" ty="-62"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(2));
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+   _parent.无敌 = false;
+}
+onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   {
+      _parent.hp += 10;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 10;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 70;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 555" name="man" centerPoint3DX="82.8" centerPoint3DY="83.15">
+                  <matrix>
+                    <Matrix tx="0.4" ty="-1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent.hp > 0 && _parent.宠物属性.涅槃重生)
+	{
+		_parent.状态改变("被击");
+	}
+	else
+	{
+		_parent.击飞浮空();
+	}
+}
+
+onClipEvent (enterFrame) {
+	if (_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+	{
+		_parent.hp += 17;
+	}
+	else if (_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+	{
+		if (_parent.变身阶段 == 1)
+		{
+			if (_parent.宠物属性.涅槃重生)
+			{
+				if (_parent.hp < _parent.hp满血值)
+				{
+					_parent.hp += 17;
+				}
+			}
+			else
+			{
+				_parent.hp -= _parent.hp满血值 / 3600;
+			}
+		}
+		else if (_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+		{
+			_parent.hp += 105;
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 556" name="man" centerPoint3DX="498.35" centerPoint3DY="292.8">
+                  <matrix>
+                    <Matrix tx="409.1" ty="177.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}
+onClipEvent(enterFrame){
+   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   {
+      _parent.hp += 13;
+   }
+   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+   {
+      if(_parent.变身阶段 == 1)
+      {
+         if(_parent.宠物属性.涅槃重生){
+			 if(_parent.hp < _parent.hp满血值){
+			 	_parent.hp += 13;
+			 }
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
+      }
+      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      {
+         _parent.hp += 130;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 568" name="man" centerPoint3DX="147" centerPoint3DY="137.8">
+                  <matrix>
+                    <Matrix d="1.00039672851563"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(1));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 568" name="man" centerPoint3DX="147" centerPoint3DY="137.8">
+                  <matrix>
+                    <Matrix d="1.00039672851563"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(1));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,113 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/能量火花/能量火花" itemID="6666da9d-0000248b" linkageExportForAS="true" linkageIdentifier="能量火花" lastModified="1723303733">
+  <timeline>
+    <DOMTimeline name="能量火花">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 771" symbolType="graphic" centerPoint3DX="-15.15" centerPoint3DY="-0.25" loop="loop">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="85.1" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-325.2" y="-265.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 772" symbolType="graphic" centerPoint3DX="-16.95" centerPoint3DY="-7.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="85.1" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-324.2" y="-265.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 773" symbolType="graphic" centerPoint3DX="-18.4" centerPoint3DY="-1.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="85.1" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-323" y="-265.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 774" symbolType="graphic" centerPoint3DX="-19.4" centerPoint3DY="3.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="85.1" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-326.35" y="-267"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 775" symbolType="graphic" centerPoint3DX="-18.6" centerPoint3DY="6.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="85.1" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-321.85" y="-264.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 776" symbolType="graphic" centerPoint3DX="-18.8" centerPoint3DY="5.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="85.1" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-326.35" y="-265.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 777" symbolType="graphic" centerPoint3DX="-13.15" centerPoint3DY="7.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="85.1" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-326.35" y="-264.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

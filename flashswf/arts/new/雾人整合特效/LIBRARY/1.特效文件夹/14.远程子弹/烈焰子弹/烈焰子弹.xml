@@ -1,0 +1,333 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/烈焰子弹/烈焰子弹" itemID="666723b6-00002124" linkageExportForAS="true" linkageIdentifier="烈焰子弹" lastModified="1723298993" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="烈焰子弹">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#DD27D5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#A1FFA0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EE1C9E" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/Symbol 6" name="area" centerPoint3DX="0.9" centerPoint3DY="0.05">
+                  <matrix>
+                    <Matrix a="2.51199340820313" d="0.404006958007813" tx="-30.5" ty="-5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A695CB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/烈焰子弹/烈焰轨迹" centerPoint3DX="-6.65" centerPoint3DY="-0.05">
+                  <matrix>
+                    <Matrix a="0.849990844726563" d="0.849990844726563" tx="-45.45" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.2" y="3.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#00FFFF" quality="3" strength="1.2" isEnabled="false"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.849990844726563" d="0.849990844726563" tx="-0.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.35" y="-0.05"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0089111328125" d="0.0063018798828125" tx="31.7"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0.262745098039216"/>
+                        <GradientEntry color="#FF8888" alpha="0" ratio="0.607843137254902"/>
+                        <GradientEntry color="#FF0000" alpha="0.47843137254902" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="2">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.005615234375" d="0.005615234375" tx="33.35" ty="-0.05"/>
+                            </matrix>
+                            <GradientEntry color="#FF3300" alpha="0" ratio="0"/>
+                            <GradientEntry color="#FFCC00" alpha="0.650980392156863" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!595 -92[629 -93 667 -93!667 -93[705 -93 732 -66!732 -66[759 -39 759 -1!759 -1[759 37 732 64!732 64[705 91 667 91!667 91[629 91 594 88"/>
+                    <Edge fillStyle1="1" edges="!594 88[575 37 575 -1!575 -1[575 -39 595 -92"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.699478149414063" d="0.699478149414063" tx="-20.3" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.15" y="2.3"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.00225830078125" d="0.00225830078125" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.47843137254902" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.001708984375" d="0.001708984375" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#3D150C" alpha="0.309803921568627" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.650980392156863" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!-535 45[#FFFDE9.12 #30.8C -537 51!-537 51[#FFFDE4.9D #35.3F -543 53!-543 53[#FFFDDD.74 #35.12 -549 51!-549 51[#FFFDD8.C1 #30.9D -551 45!-551 45[#FFFDD8.EE #29.74 -549 39!-549 39[#FFFDDD.63 #24.C1 -543 37!-543 37[#FFFDE4.8C #24.EE -537
+ 39!-537 39[#FFFDE9.3F #29.63 -535 45"/>
+                    <Edge fillStyle0="2" edges="
+!-591 45[#FFFDB1.3E #41.62 -577 79!-577 79[#FFFDCC.8B #5C.EE -543 93!-543 93[#FFFDF5.62 #5C.C2 -509 79!-509 79[#FFFE10.EE #41.75 -495 45!-495 45[#FFFE10.C2 #18.9E -509 11!-509 11[#FFFDF5.75 -2.9296875 -543 -3!-543 -3[#FFFDCC.9E -2.7578125
+ -577 11!-577 11[#FFFDB1.12 #18.8B -591 45"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.849990844726563" d="0.849990844726563" tx="-10.2" ty="-3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.2" y="2.25"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.00225830078125" d="0.00225830078125" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.47843137254902" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.001708984375" d="0.001708984375" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#3D150C" alpha="0.309803921568627" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.650980392156863" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-543 27[#FFFDE8.C6 #1A.F7 -530 32!-530 32[#FFFDF3.1F #25.31 -525 45!-525 45[#FFFDF3.09 #34.C6 -530 58!-530 58[#FFFDE8.CF #3F.1F -543 63!-543 63[#FFFDD9.3A #3F.09 -556 58!-556 58[#FFFDCE.E1 #34.CF -561 45!-561 45[#FFFDCE.F7 #25.3A -556
+ 32!-556 32[#FFFDD9.31 #1A.E1 -543 27"/>
+                    <Edge fillStyle0="2" edges="
+!-543 7[#FFFDD0.CF #7.1F -570 18!-570 18[#FFFDBB.09 #1C.C5 -581 45!-581 45[#FFFDBB.1F #3D.31 -570 72!-570 72[#FFFDD0.C5 #52.F7 -543 83!-543 83[#FFFDF1.31 #52.E1 -516 72!-516 72[#FFFE06.F7 #3D.3B -505 45!-505 45[#FFFE06.E1 #1C.CF -516
+ 18!-516 18[#FFFDF1.3B #7.09 -543 7"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.699478149414063" d="0.699478149414063" tx="-27.75" ty="-1.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.15" y="2.2"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.00225830078125" d="0.00225830078125" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.47843137254902" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.001708984375" d="0.001708984375" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#3D150C" alpha="0.309803921568627" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.650980392156863" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-551 45[#FFFDD8.EE #29.74 -549 39!-549 39[#FFFDDD.63 #24.C1 -543 37!-543 37[#FFFDE4.8C #24.EE -537 39!-537 39[#FFFDE9.3F #29.63 -535 45!-535 45[#FFFDE9.12 #30.8C -537 51!-537 51[#FFFDE4.9D #35.3F -543 53!-543 53[#FFFDDD.74 #35.12 -549
+ 51!-549 51[#FFFDD8.C1 #30.9D -551 45"/>
+                    <Edge fillStyle0="2" edges="
+!-591 45[#FFFDB1.3E #41.62 -577 79!-577 79[#FFFDCC.8B #5C.EE -543 93!-543 93[#FFFDF5.62 #5C.C2 -509 79!-509 79[#FFFE10.EE #41.75 -495 45!-495 45[#FFFE10.C2 #18.9E -509 11!-509 11[#FFFDF5.75 -2.9296875 -543 -3!-543 -3[#FFFDCC.9E -2.7578125
+ -577 11!-577 11[#FFFDB1.12 #18.8B -591 45"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.514480590820313" d="0.514480590820313" tx="-40.3" ty="-2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.2" y="2.25"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.00225830078125" d="0.00225830078125" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.47843137254902" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.001708984375" d="0.001708984375" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#3D150C" alpha="0.309803921568627" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.650980392156863" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="
+!-543 7[#FFFDD0.CF #7.1F -570 18!-570 18[#FFFDBB.09 #1C.C5 -581 45!-581 45[#FFFDBB.1F #3D.31 -570 72!-570 72[#FFFDD0.C5 #52.F7 -543 83!-543 83[#FFFDF1.31 #52.E1 -516 72!-516 72[#FFFE06.F7 #3D.3B -505 45!-505 45[#FFFE06.E1 #1C.CF -516
+ 18!-516 18[#FFFDF1.3B #7.09 -543 7"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-543 27[#FFFDE8.C6 #1A.F7 -530 32!-530 32[#FFFDF3.1F #25.31 -525 45!-525 45[#FFFDF3.09 #34.C6 -530 58!-530 58[#FFFDE8.CF #3F.1F -543 63!-543 63[#FFFDD9.3A #3F.09 -556 58!-556 58[#FFFDCE.E1 #34.CF -561 45!-561 45[#FFFDCE.F7 #25.3A -556
+ 32!-556 32[#FFFDD9.31 #1A.E1 -543 27"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.514480590820313" d="0.514480590820313" tx="-6.75" ty="-3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.1" y="2.25"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.00225830078125" d="0.00225830078125" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.47843137254902" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.001708984375" d="0.001708984375" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#3D150C" alpha="0.309803921568627" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.650980392156863" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-543 27[#FFFDE8.C6 #1A.F7 -530 32!-530 32[#FFFDF3.1F #25.31 -525 45!-525 45[#FFFDF3.09 #34.C6 -530 58!-530 58[#FFFDE8.CF #3F.1F -543 63!-543 63[#FFFDD9.3A #3F.09 -556 58!-556 58[#FFFDCE.E1 #34.CF -561 45!-561 45[#FFFDCE.F7 #25.3A -556
+ 32!-556 32[#FFFDD9.31 #1A.E1 -543 27"/>
+                    <Edge fillStyle0="2" edges="
+!-543 7[#FFFDD0.CF #7.1F -570 18!-570 18[#FFFDBB.09 #1C.C5 -581 45!-581 45[#FFFDBB.1F #3D.31 -570 72!-570 72[#FFFDD0.C5 #52.F7 -543 83!-543 83[#FFFDF1.31 #52.E1 -516 72!-516 72[#FFFE06.F7 #3D.3B -505 45!-505 45[#FFFE06.E1 #1C.CF -516
+ 18!-516 18[#FFFDF1.3B #7.09 -543 7"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.514480590820313" d="0.514480590820313" tx="-2.8" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.2" y="2.25"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.00225830078125" d="0.00225830078125" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.47843137254902" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.001708984375" d="0.001708984375" tx="-27.15" ty="2.25"/>
+                        </matrix>
+                        <GradientEntry color="#3D150C" alpha="0.309803921568627" ratio="0"/>
+                        <GradientEntry color="#333333" alpha="0.650980392156863" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="
+!-543 7[#FFFDD0.CF #7.1F -570 18!-570 18[#FFFDBB.09 #1C.C5 -581 45!-581 45[#FFFDBB.1F #3D.31 -570 72!-570 72[#FFFDD0.C5 #52.F7 -543 83!-543 83[#FFFDF1.31 #52.E1 -516 72!-516 72[#FFFE06.F7 #3D.3B -505 45!-505 45[#FFFE06.E1 #1C.CF -516
+ 18!-516 18[#FFFDF1.3B #7.09 -543 7"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-543 27[#FFFDE8.C6 #1A.F7 -530 32!-530 32[#FFFDF3.1F #25.31 -525 45!-525 45[#FFFDF3.09 #34.C6 -530 58!-530 58[#FFFDE8.CF #3F.1F -543 63!-543 63[#FFFDD9.3A #3F.09 -556 58!-556 58[#FFFDCE.E1 #34.CF -561 45!-561 45[#FFFDCE.F7 #25.3A -556
+ 32!-556 32[#FFFDD9.31 #1A.E1 -543 27"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

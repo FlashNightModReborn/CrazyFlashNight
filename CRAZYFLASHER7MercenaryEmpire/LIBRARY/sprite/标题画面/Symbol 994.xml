@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/标题画面/Symbol 994" itemID="6597607e-0000082d" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 994">
+      <layers>
+        <DOMLayer name="Layer 1" color="#DE5968">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="bitmap" left="122" width="72.2" height="14" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-183" ty="4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>KILL THEM ALL&#xD;KEEP ALIVE</characters>
+                      <textAttrs>
+                        <DOMTextAttrs rotation="true" lineSpacing="0" size="7" bitmapSize="140" face="7px2bus" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F29FD1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" left="-30.05" width="176" height="13.75" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-31.6" ty="-20.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>CRAZYFLASHER.COM</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="15" bitmapSize="300" face="Usuzi" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#836AF5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 697" centerPoint3DX="-0.65" centerPoint3DY="79.65">
+                  <matrix>
+                    <Matrix a="0.255447387695313" d="0.255447387695313" tx="-91.25" ty="1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" quality="3" angle="44.9992520943067" distance="1" strength="0.5"/>
+                    <DropShadowFilter angle="44.9992520943067" blurX="2" blurY="2" distance="1" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

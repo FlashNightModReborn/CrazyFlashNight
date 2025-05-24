@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 4" itemID="678f6467-00000a1e" symbolType="graphic" lastModified="1737450599">
+  <timeline>
+    <DOMTimeline name="补间 4">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部大门左" selected="true" centerPoint3DX="-191.2" centerPoint3DY="0.15">
+                  <matrix>
+                    <Matrix tx="-247.15" ty="-70.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.95" y="70.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防御地带内部大门右" selected="true" centerPoint3DX="182.65" centerPoint3DY="-0.05">
+                  <matrix>
+                    <Matrix tx="118.15" ty="-70.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="64.5" y="70.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

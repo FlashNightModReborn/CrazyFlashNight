@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/2/身体/头1" itemID="67378b26-00000146" symbolType="graphic" lastModified="1731697033">
+  <timeline>
+    <DOMTimeline name="头1">
+      <layers>
+        <DOMLayer name="CenterMarker" color="#0000FF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/EDAPT objects/Center Marker" locked="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/头" centerPoint3DX="-16.25" centerPoint3DY="-22.75">
+                  <matrix>
+                    <Matrix a="-2.32176208496094" b="-1.23759460449219" c="-1.15606689453125" d="2.16888427734375" tx="-15.9" ty="-22.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

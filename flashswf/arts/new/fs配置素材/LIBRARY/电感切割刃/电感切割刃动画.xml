@@ -1,0 +1,393 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="电感切割刃/电感切割刃动画" itemID="655c5708-00000309" lastModified="1718777193" lastUniqueIdentifier="20">
+  <timeline>
+    <DOMTimeline name="电感切割刃动画" currentFrame="14">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="9" keyMode="9728" soundName="sound 233">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="电感" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 8" centerPoint3DX="373.9" centerPoint3DY="10.45">
+                  <matrix>
+                    <Matrix tx="359.55" ty="6.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.35" y="4.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="握把" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 7" centerPoint3DX="83.4" centerPoint3DY="15.75">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.75" y="21.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.18"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 7" centerPoint3DX="83.4" centerPoint3DY="15.75">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.75" y="21.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.18"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 7" centerPoint3DX="83.4" centerPoint3DY="15.75">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.75" y="21.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.18"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀脊" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/刀脊" centerPoint3DX="223.1" centerPoint3DY="8.6">
+                  <matrix>
+                    <Matrix a="0.935562133789063" d="0.720611572265625" tx="127.45" ty="0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.25" y="11.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/刀脊" centerPoint3DX="223.1" centerPoint3DY="8.6">
+                  <matrix>
+                    <Matrix a="0.935562133789063" d="0.720611572265625" tx="127.45" ty="0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.25" y="11.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/刀脊" centerPoint3DX="223.1" centerPoint3DY="8.6">
+                  <matrix>
+                    <Matrix a="0.935562133789063" d="0.720611572265625" tx="127.45" ty="0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.25" y="11.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 10" color="#9933CC" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.2635498046875" d="0.07135009765625" tx="372.75" ty="22.65"/>
+                        </matrix>
+                        <GradientEntry color="#6A6A6A" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!11773 -716S6|11773 1621!11773 1621|3137 1621!3137 1621|3137 -716!3137 -716|11773 -716"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀中间" color="#FF4FFF" parentLayerIndex="4" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="21">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 4" centerPoint3DX="161.9" centerPoint3DY="19.7">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625" tx="2.3" ty="11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.5" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 4" centerPoint3DX="287.05" centerPoint3DY="19.7">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625" tx="127.45" ty="11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.5" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 4" centerPoint3DX="287.05" centerPoint3DY="19.7">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625" tx="127.45" ty="11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.5" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀背" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/锯齿" centerPoint3DX="243.2" centerPoint3DY="11">
+                  <matrix>
+                    <Matrix a="0.935562133789063" d="0.720611572265625" tx="171.2" ty="7.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.95" y="4.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/锯齿" centerPoint3DX="243.2" centerPoint3DY="3.5">
+                  <matrix>
+                    <Matrix a="0.935562133789063" d="0.720611572265625" tx="171.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.95" y="4.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀承接刃" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="22">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/中间刀" centerPoint3DX="265.85" centerPoint3DY="17.75">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625" tx="123.5" ty="13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="197.55" y="6.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/中间刀" centerPoint3DX="271.25" centerPoint3DY="24.75">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625" tx="128.9" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="197.55" y="6.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀刃" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 10" centerPoint3DX="263.35" centerPoint3DY="25.7">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625" tx="129.6" ty="22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="185.6" y="4.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter color="#FFFFFF" inner="true" strength="0.4"/>
+                    <GlowFilter blurX="24" blurY="24" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 10" centerPoint3DX="263.35" centerPoint3DY="32.45">
+                  <matrix>
+                    <Matrix a="0.720611572265625" d="0.720611572265625" tx="129.6" ty="29.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="185.6" y="4.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter color="#FFFFFF" inner="true" strength="0.4"/>
+                    <GlowFilter blurX="24" blurY="24" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 11" color="#FF800A" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.04931640625" d="0.0159454345703125" tx="369" ty="11"/>
+                        </matrix>
+                        <GradientEntry color="#6A6A6A" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!8188 -41|8188 481!8188 481|6573 481!6573 481|6573 -41!6573 -41|8188 -41"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="9">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="18">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/静电发生器" centerPoint3DX="252.65" centerPoint3DY="19.7">
+                  <matrix>
+                    <Matrix a="1.42105102539063" tx="25.85" ty="11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="159.6" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/静电发生器" centerPoint3DX="287.05" centerPoint3DY="19.7">
+                  <matrix>
+                    <Matrix tx="127.45" ty="11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="159.6" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

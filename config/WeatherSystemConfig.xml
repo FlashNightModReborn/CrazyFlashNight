@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WeatherSystemConfig>
+    <GeneralParameters>
+        <DayLength>27000</DayLength> <!-- 15 * 60 * 30 -->
+        <HourFrames>1125</HourFrames> <!-- DayLength / 24 -->
+        <LightUpdateThreshold>0.1</LightUpdateThreshold>
+        <UseFilterRendering>false</UseFilterRendering>
+        <EnableDayNightCycle>true</EnableDayNightCycle>
+        <PauseDayNightCycle>false</PauseDayNightCycle>
+        <TimeMultiplierStartLevel>2.5</TimeMultiplierStartLevel>
+        <CoinTimeMultiplier>1</CoinTimeMultiplier>
+        <CoinTimeMaxMultiplier>2</CoinTimeMaxMultiplier>
+        <ExpTimeMultiplier>1</ExpTimeMultiplier>
+        <ExpTimeMaxMultiplier>2</ExpTimeMaxMultiplier>
+        <CharacterInfoOpacity>100</CharacterInfoOpacity>
+        <WeatherCondition>正常</WeatherCondition>
+        <SpaceCondition>室外</SpaceCondition>
+        <VisualCondition>光照</VisualCondition>
+        <CurrentTime>6</CurrentTime>
+        <CurrentFrame>0</CurrentFrame>
+        <MaxLight>9</MaxLight>
+        <MinLight>0</MinLight>
+        <InfiniteMapEnvironmentInfo>null</InfiniteMapEnvironmentInfo>
+    </GeneralParameters>
+    <LightLevels>
+        <Hour index="0">0</Hour>
+        <Hour index="1">0</Hour>
+        <Hour index="2">1</Hour>
+        <Hour index="3">4</Hour>
+        <Hour index="4">7</Hour>
+        <Hour index="5">7</Hour>
+        <Hour index="6">7</Hour>
+        <Hour index="7">7</Hour>
+        <Hour index="8">7</Hour>
+        <Hour index="9">7</Hour>
+        <Hour index="10">7</Hour>
+        <Hour index="11">7</Hour>
+        <Hour index="12">9</Hour>
+        <Hour index="13">7</Hour>
+        <Hour index="14">7</Hour>
+        <Hour index="15">7</Hour>
+        <Hour index="16">7</Hour>
+        <Hour index="17">7</Hour>
+        <Hour index="18">7</Hour>
+        <Hour index="19">4</Hour>
+        <Hour index="20">1</Hour>
+        <Hour index="21">0</Hour>
+        <Hour index="22">0</Hour>
+        <Hour index="23">0</Hour>
+    </LightLevels>
+</WeatherSystemConfig>

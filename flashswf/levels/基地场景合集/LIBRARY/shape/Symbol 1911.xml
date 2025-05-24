@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="shape/Symbol 1911" itemID="6597607e-00000a45" symbolType="graphic" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 1911">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#ABABAB"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#996600"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!24 19|-629 19!-629 19|-670 39!-670 39|-826 26!-826 26|-826 -26!-826 -26|-667 -52!-667 -52|-634 -30!-634 -30|24 -30"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!24 -30|24 -90!24 -90|76 -90!76 -90[88 -48 132 -53!132 -53[176 -58 179 -90!179 -90|775 -90!775 -90[830 -77 825 5!825 5[820 86 772 90!772 90|184 90!184 90[173 60 141 57!141 57[100 52 80 90!80 90|24 90!24 90|24 19"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!24 19|24 -30"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,83 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ARMS持枪前手" itemID="6808f8a5-00000b9d" lastModified="1745418405">
+  <timeline>
+    <DOMTimeline name="ARMS持枪前手">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="ARMS fingerC" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.77691650390625" b="-0.628997802734375" c="0.628997802734375" d="0.77691650390625" tx="8.15" ty="3.95"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="2.45" y="5.95"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="ARMS fingerA" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.682525634765625" b="-0.730575561523438" c="0.73065185546875" d="0.682479858398438" tx="10.85" ty="12.65"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="2.35" y="3.9"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="ARMS fingerA" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.682525634765625" b="-0.730575561523438" c="0.73065185546875" d="0.682479858398438" tx="8.6" ty="15.75"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="2" y="4"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="ARMS fingerA" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.682525634765625" b="-0.730575561523438" c="0.73065185546875" d="0.682479858398438" tx="14.55" ty="10.35"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="2.05" y="3.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#282828"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!186 49|182 59!182 59|248 82!248 82|249 87!249 87|268 109!268 109|170 75!170 75|149 64!149 64|158 45!158 45|186 49"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                    <DOMSymbolInstance libraryItemName="ARM handpartA" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.682525634765625" b="-0.730575561523438" c="0.73065185546875" d="0.682479858398438" ty="10.35"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="7.05" y="8.95"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

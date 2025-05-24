@@ -1,0 +1,1 @@
+org.flashNight.gesh.symbol.SymbolTest.run();

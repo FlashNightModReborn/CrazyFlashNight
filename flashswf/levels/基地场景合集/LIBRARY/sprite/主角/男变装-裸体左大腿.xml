@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/男变装-裸体左大腿" itemID="67d7c62b-00000560" lastModified="1742194219">
+  <timeline>
+    <DOMTimeline name="男变装-裸体左大腿">
+      <layers>
+        <DOMLayer name="Layer 1" color="#04EFD4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!410 -1290[394 -1428 166 -1546!166 -1546[-208 -1627 -369 -1271!-369 -1271|-385 -1234"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-385 -1234[-541 -850 -511 -57!-511 -57|-275 1350"/>
+                    <Edge fillStyle0="1" edges="!-275 1350[39 1708 329 1462"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!329 1462[659 284 410 -1290"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-373 -761[-14 164 -79 941"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,337 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载MC库-00" itemID="665305b5-00000da5" linkageExportForAS="true" linkageIdentifier="加载MC库-00" lastModified="1743161763" lastUniqueIdentifier="93">
+  <timeline>
+    <DOMTimeline name="加载MC库-00" currentFrame="5">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B395E1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#6A69E2" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明子弹" centerPoint3DX="-454.1" centerPoint3DY="210.05">
+                  <matrix>
+                    <Matrix tx="-454.1" ty="210.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="106.05" height="23.75" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-582.1" ty="196.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>透明子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="106.05" height="23.75" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-582.1" ty="161.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>近战子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-454.1" centerPoint3DY="172.55">
+                  <matrix>
+                    <Matrix tx="-454.1" ty="172.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9FC044">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#439E9F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/女模" centerPoint3DX="-427.4" centerPoint3DY="511.2">
+                  <matrix>
+                    <Matrix tx="-479.55" ty="433.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#2E85E1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/男模" centerPoint3DX="-567.45" centerPoint3DY="508.2">
+                  <matrix>
+                    <Matrix tx="-619.55" ty="430.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#DD675A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/木偶-主角-男" name="man" centerPoint3DX="153.25" centerPoint3DY="611.2">
+                  <matrix>
+                    <Matrix tx="-628.6" ty="97.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#36E1A6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/女头像" centerPoint3DX="16.65" centerPoint3DY="-153.9">
+                  <matrix>
+                    <Matrix tx="-6.45" ty="-180.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#64F472">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/男头像" centerPoint3DX="-73.15" centerPoint3DY="-162.5">
+                  <matrix>
+                    <Matrix tx="-96.25" ty="-189.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#21B8FD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/佣兵npc" centerPoint3DX="-542.75" centerPoint3DY="439.05">
+                  <matrix>
+                    <Matrix tx="-623.25" ty="315.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#5B9EA8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/npc" centerPoint3DX="-260.65" centerPoint3DY="426.7">
+                  <matrix>
+                    <Matrix tx="-354.25" ty="311.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   是否为敌人 = false;
+   脸型 = "男变装-基本脸型";
+   发型 = "";
+   头部装备 = "女ShopGirl头";
+   上装装备 = "女ShopGirl上装";
+   手部装备 = "女ShopGirl手";
+   下装装备 = "女ShopGirl下装";
+   脚部装备 = "女ShopGirl脚";
+   颈部装备 = "新手军牌";
+   长枪 = "自动步枪G36";
+   手枪 = "美国制式手枪";
+   刀 = "";
+   手雷 = "";
+   名字 = "Shop Girl";
+   身高 = 165;
+   方向 = "左";
+   动画 = "女式坐";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/觉醒霸体特效" centerPoint3DX="-309.6" centerPoint3DY="82.95">
+                  <matrix>
+                    <Matrix tx="-397.6" ty="-24.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#2DD9FC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-560 -220[-560 -286 -520 -340!-520 -340[-460 -420 -330 -420!-330 -420[-35 -420 560 220!560 220[560 285 520 341!520 341[463 420 350 420!350 420[266 420 26 259!26 259|-215 85!-215 85[-279 41 -362 -2!-362 -2|-470 -60!-470 -60[-560 -116
+ -560 -220"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角-男" centerPoint3DX="158.65" centerPoint3DY="413.85">
+                  <matrix>
+                    <Matrix tx="-623.2" ty="-100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/黑红色爆炸" centerPoint3DX="-154.1" centerPoint3DY="350.7">
+                  <matrix>
+                    <Matrix tx="-345.4" ty="84.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

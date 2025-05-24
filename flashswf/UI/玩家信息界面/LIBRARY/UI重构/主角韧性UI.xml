@@ -1,0 +1,1560 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/主角韧性UI" itemID="664c984c-00000c11" lastModified="1746930573">
+  <timeline>
+    <DOMTimeline name="主角韧性UI" currentFrame="27">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="31" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-453.85"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor color="#FFCC00"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!3912 7933|4149 7933!4149 7933|4253 7879!4253 7879|4695 7879!4695 7879|5588 7879!5588 7879|6298 7879!4695 7879|4799 7933!4799 7933|5484 7933!5484 7933|5588 7879"/>
+                  </edges>
+                </DOMShape>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="40.3" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="77.75" ty="2.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>Poise</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="Aero" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText selected="true" fontRenderingMode="standard" width="34.6" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false" variableName="poise">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="130.9" ty="2.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>100%</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="Aero" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix c="-0.262496948242188" tx="5.45" ty="0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="71.9" y="12.05"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1478 201|1478 281!1478 281|1398 281!1398 281|1478 201"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原点" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="31" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-359.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3836 6324[3848 6312 3865 6312!3865 6312[3882 6312 3894 6324!3894 6324[3906 6336 3906 6353!3906 6353[3906 6370 3894 6382!3894 6382[3882 6394 3865 6394!3865 6394[3848 6394 3836 6382!3836 6382[3825 6370 3825 6353!3825 6353[3825 6336 3836
+ 6324!3831 6387[3845 6401 3865 6401!3865 6401[3885 6401 3899 6387!3899 6387[3913 6373 3913 6353!3913 6353[3913 6333 3899 6319!3899 6319[3885 6305 3865 6305!3865 6305[3845 6305 3831 6319!3831 6319[3817 6333 3817 6353!3817 6353[3817 6373
+ 3831 6387!3886 6353[3886 6344 3880 6338!3880 6338[3874 6332 3865 6332!3865 6332[3856 6332 3850 6338!3850 6338[3844 6344 3844 6353!3844 6353[3844 6362 3850 6368!3850 6368[3856 6374 3865 6374!3865 6374[3874 6374 3880 6368!3880 6368[3886
+ 6362 3886 6353"/>
+                    <Edge cubics="!3865 6394(;3843,6394 3825,6375 3825,6353q3865 6394Q3848 6394q3836 6382Q3825 6370q3825 6353);"/>
+                    <Edge cubics="!3825 6353(;3825,6331 3843,6312 3865,6312q3825 6353Q3825 6336q3836 6324Q3848 6312q3865 6312);"/>
+                    <Edge cubics="!3865 6312(;3888,6312 3906,6331 3906,6353q3865 6312Q3882 6312q3894 6324Q3906 6336q3906 6353);"/>
+                    <Edge cubics="!3906 6353(;3906,6375 3888,6394 3865,6394q3906 6353Q3906 6370q3894 6382Q3882 6394q3865 6394);"/>
+                    <Edge cubics="!3865 6305(;3839,6305 3817,6326 3817,6353q3865 6305Q3845 6305q3831 6319Q3817 6333q3817 6353);"/>
+                    <Edge cubics="!3817 6353(;3817,6379 3839,6401 3865,6401q3817 6353Q3817 6373q3831 6387Q3845 6401q3865 6401);"/>
+                    <Edge cubics="!3865 6401(;3892,6401 3913,6379 3913,6353q3865 6401Q3885 6401q3899 6387Q3913 6373q3913 6353);"/>
+                    <Edge cubics="!3913 6353(;3913,6326 3892,6305 3865,6305q3913 6353Q3913 6333q3899 6319Q3885 6305q3865 6305);"/>
+                    <Edge cubics="!3886 6353(;3886,6341 3877,6332 3865,6332q3886 6353Q3886 6344q3880 6338Q3874 6332q3865 6332);"/>
+                    <Edge cubics="!3865 6332(;3854,6332 3844,6341 3844,6353q3865 6332Q3856 6332q3850 6338Q3844 6344q3844 6353);"/>
+                    <Edge cubics="!3844 6353(;3844,6364 3854,6374 3865,6374q3844 6353Q3844 6362q3850 6368Q3856 6374q3865 6374);"/>
+                    <Edge cubics="!3865 6374(;3877,6374 3886,6364 3886,6353q3865 6374Q3874 6374q3880 6368Q3886 6362q3886 6353);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="第四阶段动画" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!0 451S6|0 -98!0 -98[48 36 156 148!156 148|156 451!156 451|0 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!134 451|0 451!0 451|0 -98!0 -98[48 36 134 124!134 124|134 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!0 451|0 -98!0 -98[#38.B7 #22.42 109 93!109 93|117 451!117 451|0 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!99 451|0 451!0 451|0 -98!0 -98[#21.1A #FFFFFD.D5 80 58!80 58|99 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!78 451|0 451!0 451|0 -98!0 -98[#1D.9B #FFFFF5.2B 70 41!70 41|78 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!37 -9|49 451!49 451|0 451!0 451|0 -98!0 -98[#14.5B #FFFFDE.0A 37 -9"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!23 -41|32 451!32 451|0 451!0 451|0 -98!0 -98[#8.F3 #FFFFBA.29 13 -59!13 -59[#E.3C #FFFFC8.63 23 -41"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="第三阶段动画" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!364 451|208 451!208 451|208 197!208 197[281 260 364 306!364 306|364 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!352 451|208 451!208 451|208 197!208 197[281 260 341 292!341 292|352 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!341 451|208 451!208 451|208 197!208 197[281 260 324 281!324 281|341 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!325 451|208 451!208 451|208 197!208 197[281 260 293 264!293 264|325 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!307 451|208 451!208 451|208 197!208 197[281 260 280 253!280 253|307 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!256 240|278 451!278 451|208 451!208 451|208 197!208 197[#104.36 #F0.D 256 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!245 228|245 229!245 229[#10C.C2 #F9.1E 245 228"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!245 229|256 451!256 451|208 451!208 451|208 197!208 197[#E8.D3 #DA.6C 245 229"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!231 451|208 451!208 451|208 197!208 197|222 209!222 209|231 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="第二阶段动画" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!571 383|571 451!571 451|415 451!415 451|415 331!415 331[490 363 571 383"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!561 451|415 451!415 451|415 331!415 331[490 363 552 378!552 378|561 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!542 451|415 451!415 451|415 331!415 331[490 363 525 371!525 371|542 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!516 451|415 451!415 451|415 331!415 331[490 363 497 361!497 361|516 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!472 357|487 451!487 451|415 451!415 451|415 331!415 331[481.75 354.75 472 357"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!468 451|415 451!415 451|415 331!415 331|451 346!451 346|468 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!449 451|415 451!415 451|415 331!415 331|437 341!437 341|449 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!432 451|415 451!415 451|415 331!415 331|427 337!427 337|432 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="第一阶段动画" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="15872">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="35.05" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!624 392[698 404 778 404!778 404|780 404!780 404|780 451!780 451|624 451!624 451|624 392"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="15872">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!759 405|765 451!765 451|624 451!624 451|624 392!624 392[698 404 752 403"/>
+                    <Edge fillStyle1="1" edges="
+!752 403|759 405"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="15872">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!735 404|744 451!744 451|624 451!624 451|624 392!624 392[#2B0.01 #192.61 735 404"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="15872">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!720 451|624 451!624 451|624 392!624 392[#296.29 #18E.3 702 401!702 401|713 402!713 402|720 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="15872">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!687 400|695 451!695 451|624 451!624 451|624 392!624 392[#28F.0D #18D.09 687 400"/>
+                    <Edge strokeStyle="1" edges="
+!687 400[#2B1.E6 #190.33 692.5 400.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="15872">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!674 451|624 451!624 451|624 392!624 392[#28F.0D #18D.09 666 397!666 397|674 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="15872">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="34.7" ty="21.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!647 451|624 451!624 451|624 392!624 392[#282.48 #18A.F7 647 395.5!647 395.5|647 451"/>
+                    <Edge strokeStyle="1" edges="
+!692.5 400.5|702 401"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="24" keyMode="15872">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底色" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00189208984375" c="-1.52587890625e-005" d="0.004669189453125" tx="35.4" ty="21.45"/>
+                        </matrix>
+                        <GradientEntry color="#8C7337" ratio="0"/>
+                        <GradientEntry color="#3F2A30" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!778 404|780 404!780 404|780 451!780 451|624 451!624 451|624 392!624 392[698 404 778 404"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00189208984375" c="-1.52587890625e-005" d="0.004669189453125" tx="35.4" ty="21.45"/>
+                        </matrix>
+                        <GradientEntry color="#8C7337" ratio="0"/>
+                        <GradientEntry color="#3F2A30" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!415 451|415 331!415 331[490 363 571 383!571 383|571 451!571 451|415 451!780 404|780 451!780 451|624 451!624 451|624 392!624 392[698 404 778 404!778 404|780 404"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00189208984375" c="-1.52587890625e-005" d="0.004669189453125" tx="35.4" ty="21.45"/>
+                        </matrix>
+                        <GradientEntry color="#8C7337" ratio="0"/>
+                        <GradientEntry color="#3F2A30" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!415 331[490 363 571 383!571 383|571 451!571 451|415 451!415 451|415 331!780 451|624 451!624 451|624 392!624 392[698 404 778 404!778 404|780 404!780 404|780 451!208 197[281 260 364 306!364 306|364 451!364 451|208 451!208 451|208 197"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00189208984375" c="-1.52587890625e-005" d="0.004669189453125" tx="35.4" ty="21.45"/>
+                        </matrix>
+                        <GradientEntry color="#8C7337" ratio="0"/>
+                        <GradientEntry color="#3F2A30" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!571 383|571 451!571 451|415 451!415 451|415 331!415 331[490 363 571 383!624 451|624 392!624 392[698 404 778 404!778 404|780 404!780 404|780 451!780 451|624 451!156 451|0 451!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451!364 306|364
+ 451!364 451|208 451!208 451|208 197!208 197[281 260 364 306"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="6" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -0.3828125" startPointB="0, -0.3828125" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#0.3, #0.24" anchorPointA="#0.9C, #0.94" controlPointB="#0.3, #0.24" anchorPointB="#0.9C, #0.94"/>
+                    <MorphCurves controlPointA="#0.9C, #1.2C" anchorPointA="#0.9C, #1.C3" controlPointB="#0.9C, #1.2C" anchorPointB="#0.9C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.4E, #1.C3" anchorPointA="0, #1.C3" controlPointB="#0.4E, #1.C3" anchorPointB="0, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="0, #0.B1" anchorPointA="0, -0.3828125" controlPointB="0, #0.B1" anchorPointB="0, -0.3828125" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="0, -0.3828125" startPointB="0, -0.3828125" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#0.3, #0.24" anchorPointA="#0.9C, #0.94" controlPointB="#0.3, #0.24" anchorPointB="#0.9C, #0.94"/>
+                    <MorphCurves controlPointA="#0.9C, #1.2C" anchorPointA="#0.9C, #1.C3" controlPointB="#0.9C, #1.2C" anchorPointB="#0.9C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.4E, #1.C3" anchorPointA="0, #1.C3" controlPointB="#0.4E, #1.C3" anchorPointB="0, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="0, #0.B1" anchorPointA="0, -0.3828125" controlPointB="0, #0.B1" anchorPointB="0, -0.3828125" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#0.D, #0.C5" startPointB="#0.D, #0.C5" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#1.19, #1.04" anchorPointA="#1.6C, #1.32" controlPointB="#1.19, #1.04" anchorPointB="#1.6C, #1.32"/>
+                    <MorphCurves controlPointA="#1.6C, #1.7B" anchorPointA="#1.6C, #1.C3" controlPointB="#1.6C, #1.7B" anchorPointB="#1.6C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.1E, #1.C3" anchorPointA="#0.D, #1.C3" controlPointB="#1.1E, #1.C3" anchorPointB="#0.D, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.D, #1.44" anchorPointA="#0.D, #0.C5" controlPointB="#0.D, #1.44" anchorPointB="#0.D, #0.C5" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#0.D, #0.C5" startPointB="#0.D, #0.C5" strokeIndex1="0" strokeIndex2="0" fillIndex1="1" fillIndex2="1">
+                    <MorphCurves controlPointA="#1.19, #1.04" anchorPointA="#1.6C, #1.32" controlPointB="#1.19, #1.04" anchorPointB="#1.6C, #1.32"/>
+                    <MorphCurves controlPointA="#1.6C, #1.7B" anchorPointA="#1.6C, #1.C3" controlPointB="#1.6C, #1.7B" anchorPointB="#1.6C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.1E, #1.C3" anchorPointA="#0.D, #1.C3" controlPointB="#1.1E, #1.C3" anchorPointB="#0.D, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.D, #1.44" anchorPointA="#0.D, #0.C5" controlPointB="#0.D, #1.44" anchorPointB="#0.D, #0.C5" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#1.9F, #1.4B" startPointB="#1.9F, #1.4B" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#1.EA, #1.6B" anchorPointA="#2.3B, #1.7F" controlPointB="#1.EA, #1.6B" anchorPointB="#2.3B, #1.7F"/>
+                    <MorphCurves controlPointA="#2.3B, #1.A1" anchorPointA="#2.3B, #1.C3" controlPointB="#2.3B, #1.A1" anchorPointB="#2.3B, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.ED, #1.C3" anchorPointA="#1.9F, #1.C3" controlPointB="#1.ED, #1.C3" anchorPointB="#1.9F, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.9F, #1.87" anchorPointA="#1.9F, #1.4B" controlPointB="#1.9F, #1.87" anchorPointB="#1.9F, #1.4B" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#1.9F, #1.4B" startPointB="#1.9F, #1.4B" strokeIndex1="0" strokeIndex2="0" fillIndex1="2" fillIndex2="3">
+                    <MorphCurves controlPointA="#1.EA, #1.6B" anchorPointA="#2.3B, #1.7F" controlPointB="#1.EA, #1.6B" anchorPointB="#2.3B, #1.7F"/>
+                    <MorphCurves controlPointA="#2.3B, #1.A1" anchorPointA="#2.3B, #1.C3" controlPointB="#2.3B, #1.A1" anchorPointB="#2.3B, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.ED, #1.C3" anchorPointA="#1.9F, #1.C3" controlPointB="#1.ED, #1.C3" anchorPointB="#1.9F, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.9F, #1.87" anchorPointA="#1.9F, #1.4B" controlPointB="#1.9F, #1.87" anchorPointB="#1.9F, #1.4B" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="24.65" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="14.25" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="3.85" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!415 451S6|415 331!415 331[490 363 571 383!571 383|571 451!571 451|415 451"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!0 451S6|0 -98!0 -98[48 36 156 148!156 148|156 451!156 451|0 451"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!208 451S6|208 197!208 197[281 260 364 306!364 306|364 451!364 451|208 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="14.25" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="3.85" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!415 451|415 331!415 331[490 363 571 383!571 383|571 451!571 451|415 451"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!156 451|0 451!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!208 197[281 260 364 306!364 306|364 451!364 451|208 451!208 451|208 197"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -0.3828125" startPointB="0, -0.3828125" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#0.3, #0.24" anchorPointA="#0.9C, #0.94" controlPointB="#0.3, #0.24" anchorPointB="#0.9C, #0.94"/>
+                    <MorphCurves controlPointA="#0.9C, #1.2C" anchorPointA="#0.9C, #1.C3" controlPointB="#0.9C, #1.2C" anchorPointB="#0.9C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.4E, #1.C3" anchorPointA="0, #1.C3" controlPointB="#0.4E, #1.C3" anchorPointB="0, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="0, #0.B1" anchorPointA="0, -0.3828125" controlPointB="0, #0.B1" anchorPointB="0, -0.3828125" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="0, -0.3828125" startPointB="0, -0.3828125" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#0.3, #0.24" anchorPointA="#0.9C, #0.94" controlPointB="#0.3, #0.24" anchorPointB="#0.9C, #0.94"/>
+                    <MorphCurves controlPointA="#0.9C, #1.2C" anchorPointA="#0.9C, #1.C3" controlPointB="#0.9C, #1.2C" anchorPointB="#0.9C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.4E, #1.C3" anchorPointA="0, #1.C3" controlPointB="#0.4E, #1.C3" anchorPointB="0, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="0, #0.B1" anchorPointA="0, -0.3828125" controlPointB="0, #0.B1" anchorPointB="0, -0.3828125" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#0.D, #0.C5" startPointB="#0.D, #0.C5" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#1.19, #1.04" anchorPointA="#1.6C, #1.32" controlPointB="#1.19, #1.04" anchorPointB="#1.6C, #1.32"/>
+                    <MorphCurves controlPointA="#1.6C, #1.7B" anchorPointA="#1.6C, #1.C3" controlPointB="#1.6C, #1.7B" anchorPointB="#1.6C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.1E, #1.C3" anchorPointA="#0.D, #1.C3" controlPointB="#1.1E, #1.C3" anchorPointB="#0.D, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.D, #1.44" anchorPointA="#0.D, #0.C5" controlPointB="#0.D, #1.44" anchorPointB="#0.D, #0.C5" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#0.D, #0.C5" startPointB="#0.D, #0.C5" strokeIndex1="0" strokeIndex2="0" fillIndex1="1" fillIndex2="2">
+                    <MorphCurves controlPointA="#1.19, #1.04" anchorPointA="#1.6C, #1.32" controlPointB="#1.19, #1.04" anchorPointB="#1.6C, #1.32"/>
+                    <MorphCurves controlPointA="#1.6C, #1.7B" anchorPointA="#1.6C, #1.C3" controlPointB="#1.6C, #1.7B" anchorPointB="#1.6C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.1E, #1.C3" anchorPointA="#0.D, #1.C3" controlPointB="#1.1E, #1.C3" anchorPointB="#0.D, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.D, #1.44" anchorPointA="#0.D, #0.C5" controlPointB="#0.D, #1.44" anchorPointB="#0.D, #0.C5" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="14.25" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="3.85" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!0 451S6|0 -98!0 -98[48 36 156 148!156 148|156 451!156 451|0 451"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!364 451S6|208 451!208 451|208 197!208 197[281 260 364 306!364 306|364 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="3.85" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!208 197[281 260 364 306!364 306|364 451!364 451|208 451!208 451|208 197"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!156 451|0 451!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -0.3828125" startPointB="0, -0.3828125" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#0.3, #0.24" anchorPointA="#0.9C, #0.94" controlPointB="#0.3, #0.24" anchorPointB="#0.9C, #0.94"/>
+                    <MorphCurves controlPointA="#0.9C, #1.2C" anchorPointA="#0.9C, #1.C3" controlPointB="#0.9C, #1.2C" anchorPointB="#0.9C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.4E, #1.C3" anchorPointA="0, #1.C3" controlPointB="#0.4E, #1.C3" anchorPointB="0, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="0, #0.B1" anchorPointA="0, -0.3828125" controlPointB="0, #0.B1" anchorPointB="0, -0.3828125" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="0, -0.3828125" startPointB="0, -0.3828125" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.3, #0.24" anchorPointA="#0.9C, #0.94" controlPointB="#0.3, #0.24" anchorPointB="#0.9C, #0.94"/>
+                    <MorphCurves controlPointA="#0.9C, #1.2C" anchorPointA="#0.9C, #1.C3" controlPointB="#0.9C, #1.2C" anchorPointB="#0.9C, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#0.4E, #1.C3" anchorPointA="0, #1.C3" controlPointB="#0.4E, #1.C3" anchorPointB="0, #1.C3" isLine="true"/>
+                    <MorphCurves controlPointA="0, #0.B1" anchorPointA="0, -0.3828125" controlPointB="0, #0.B1" anchorPointB="0, -0.3828125" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="3.85" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!156 451S6|0 451!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.004302978515625" d="0.001800537109375" tx="30.75" ty="20.8"/>
+                        </matrix>
+                        <GradientEntry color="#FF001C" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                        <GradientEntry color="#FF7E00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!0 451S6|0 -98!0 -98[48 36 156 148!156 148|156 451!156 451|0 451"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan发卡组件1" itemID="66bf638b-000001f0" lastModified="1723818892">
+  <timeline>
+    <DOMTimeline name="lo-chan发卡组件1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!0 492|796 0!796 0|820 40!820 40|24 532!24 532|0 492"/>
+                    <Edge cubics="!24 532(;24,532 0,492 0,492q24 532 0 492);"/>
+                    <Edge cubics="!796 0(;796,0 820,40 820,40q796 0 820 40);"/>
+                    <Edge cubics="!820 40(;820,40 24,532 24,532q820 40 24 532);"/>
+                    <Edge cubics="!0 492(;0,492 796,0 796,0q0 492 796 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

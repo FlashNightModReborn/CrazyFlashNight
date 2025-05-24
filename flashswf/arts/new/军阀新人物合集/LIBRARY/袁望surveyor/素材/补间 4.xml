@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="袁望surveyor/素材/补间 4" itemID="6650a3fc-000011b2" symbolType="graphic" lastModified="1716560892">
+  <timeline>
+    <DOMTimeline name="补间 4">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/锁链" selected="true" centerPoint3DX="26.5" centerPoint3DY="-38.1">
+                  <matrix>
+                    <Matrix a="1.2911376953125" b="-0.51861572265625" c="-0.397705078125" d="-0.968017578125" tx="-9.4" ty="24.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="-10.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子" selected="true" centerPoint3DX="-8.9" centerPoint3DY="44.45">
+                  <matrix>
+                    <Matrix a="-0.310546875" b="0.191650390625" c="0.17950439453125" d="0.21978759765625" tx="11" ty="-40.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="145.4" y="104.8"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="备用/HSR bolt" itemID="602ebb6b-0000050b" lastModified="1613675371">
+  <timeline>
+    <DOMTimeline name="HSR bolt">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0025634765625" c="-0.0030670166015625" d="0" tx="8.2" ty="2.25"/>
+                            </matrix>
+                            <GradientEntry color="#191919" ratio="0.141176470588235"/>
+                            <GradientEntry color="#202020" ratio="0.509803921568627"/>
+                            <GradientEntry color="#171717" ratio="0.827450980392157"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!329 15S6|329 75!329 75|310 90!310 90|0 90!0 90|0 0!0 0|310 0!310 0|329 15"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

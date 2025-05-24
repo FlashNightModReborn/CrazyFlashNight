@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/UI组件/地图界面" itemID="6749c50f-00000907" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="地图界面" linkageURL="flashswf/UI/地图界面.swf" lastModified="1732887944" lastUniqueIdentifier="52">
+  <timeline>
+    <DOMTimeline name="地图界面">
+      <layers>
+        <DOMLayer name="缩略图" color="#EEDEBD" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2121" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.864578247070313" d="0.864578247070313" tx="996" ty="51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景边框" color="#FE8194" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2120" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="987.3" ty="51.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

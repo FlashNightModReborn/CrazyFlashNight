@@ -1,0 +1,118 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/金币图标" itemID="66612104-000010df" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="金币图标" linkageURL="flashswf/UI/经济面板.swf" lastModified="1717646045">
+  <timeline>
+    <DOMTimeline name="金币图标">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" fontRenderingMode="standard" width="73.45" height="37.8" isSelectable="false" variableName="_root.金钱">
+                  <matrix>
+                    <Matrix tx="14.45" ty="-10"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="16" bitmapSize="320" face="Bebas Neue*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10" isEnabled="false"/>
+                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="备份" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-41.1" ty="-40.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.1" y="40.05"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.00392156862745098"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!900 697S2|929 697!929 697|911 723!911 723|845 723!845 723[845 750 845 789!845 789|931 789!931 789|929 791!929 791[928 793 926 798!926 798[924 801 924 808!924 808|924 879!924 879[923 888 918 893!918 893[913 900 903 902!903 902|845 902
+!845 902[845 921 845 923!845 923|802 923!802 923|802 902!802 902|713 902!713 902|713 879!713 879|802 879!802 879|802 811!802 811|716 811!716 811|716 700!716 700|759 700!759 700|759 709!759 709[766 704 774 702!774 702[782 700 786 700!786
+ 700|802 700!802 700|802 681!802 681|848 681!848 681|848 682!848 682[847 684 847 689!847 689[845 692 845 699!845 699|845 700!845 700|896 700!896 700|900 697!845 811[845 818 845 824!845 824[845 854 845 879!845 879|867 879!867 879[873 879
+ 876 874!876 874[880 870 880 864!880 864|880 811!880 811|845 811!766 728[761 730 759 735!759 735|759 799!759 799|769 789!769 789|802 789!802 789|802 723!802 723|779 723!779 723[776 723 772 723!772 723[769 725 766 728"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!23 -79[23 -52 23 -13!23 -13|109 -13!109 -13|107 -11!107 -11[106 -9 104 -4!104 -4[102 -1 102 6!102 6|102 77!102 77[101 86 96 91!96 91[91 98 81 100!81 100|23 100!23 100[23 119 23 121!23 121|-20 121!-20 121|-20 100!-20 100|-109 100!-109
+ 100|-109 77!-109 77|-20 77!-20 77|-20 9!-20 9|-106 9!-106 9|-106 -102!-106 -102|-63 -102!-63 -102|-63 -93!-63 -93[-56 -98 -48 -100!-48 -100[-40 -102 -36 -102!-36 -102|-20 -102!-20 -102|-20 -121!-20 -121|26 -121!26 -121|26 -120!26 -120
+[25 -118 25 -113!25 -113[23 -110 23 -103!23 -103|23 -102!23 -102|74 -102!74 -102|78 -105!78 -105|107 -105!107 -105|89 -79!89 -79|23 -79"/>
+                    <Edge fillStyle1="1" edges="
+!251 -161|251 -188!251 -188|256 -188!256 -188|256 -161!256 -161|282 -161!282 -161|282 -156!282 -156|256 -156!256 -156|256 -130!256 -130|251 -130!251 -130|251 -156!251 -156|224 -156!224 -156|224 -161!224 -161|251 -161!1619 -161|1646 -161
+!1646 -161|1646 -188!1646 -188|1651 -188!1651 -188|1651 -161!1651 -161|1677 -161!1677 -161|1677 -156!1677 -156|1651 -156!1651 -156|1651 -130!1651 -130|1646 -130!1646 -130|1646 -156!1646 -156|1619 -156!1619 -156|1619 -161!1677 166|1651
+ 166!1651 166|1651 192!1651 192|1646 192!1646 192|1646 166!1646 166|1619 166!1619 166|1619 161!1619 161|1646 161!1646 161|1646 134!1646 134|1651 134!1651 134|1651 161!1651 161|1677 161!1677 161|1677 166!256 161|282 161!282 161|282 166
+!282 166|256 166!256 166|256 192!256 192|251 192!251 192|251 166!251 166|224 166!224 166|224 161!224 161|251 161!251 161|251 134!251 134|256 134!256 134|256 161"/>
+                    <Edge fillStyle0="1" edges="
+!23 22[23 52 23 77!23 77|45 77!45 77[51 77 54 72!54 72[58 68 58 62!58 62|58 9!58 9|23 9!23 9[23 16 23 22"/>
+                    <Edge fillStyle1="1" edges="
+!186 -186|-186 -186!-186 -186|-186 186!-186 186|186 186!186 186|186 -186!166 166|-166 166!-166 166|-166 -166!-166 -166|166 -166!166 -166|166 166"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!207 207|-207 207!-207 207|-207 -207!-207 -207|207 -207!207 -207|207 207"/>
+                    <Edge fillStyle0="1" edges="
+!-43 -79[-46 -79 -50 -79!-50 -79[-53 -77 -56 -74!-56 -74[-61 -72 -63 -67!-63 -67|-63 -3!-63 -3|-53 -13!-53 -13|-20 -13!-20 -13|-20 -79!-20 -79|-43 -79"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" weight="0.5">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!207 -207|1694 -207!1694 -207|1694 207!1694 207|207 207"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

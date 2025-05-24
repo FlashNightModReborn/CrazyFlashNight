@@ -1,0 +1,246 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1747837960" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="特殊敌人-雕像">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" name="结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 状态改变(状态)
+{
+	if (hp == 0)
+	{
+		gotoAndStop("结束");
+	}else if(回血间隔帧 < 4){
+		回血间隔帧 = 4;
+	}
+}
+function 动画完毕(){
+	if(hp > 0){
+		gotoAndStop("正常");
+	}else{
+		gotoAndStop("结束");
+		this.man.gotoAndPlay(1);
+	}
+}
+
+function 死亡检测(){
+	if(_parent.hp <= 0){
+		if(_parent.已加经验值 != true)
+		{
+			if(_parent.是否为敌人 == true)
+			{
+				_root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+				_root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+				_root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+				_parent.计算经验值();
+			}
+ 	  	}
+		_root.敌人函数.注销单位(_parent);
+		stop();
+	}
+}
+
+方向 = 方向 === "左" ? "左" : "右";
+if (方向 === "左")
+{
+	this._xscale = -100;
+}
+
+switch(this._name){
+	case "雕像1":
+		this.召唤物名 = "敌人-诺亚克隆兽";
+		this.召唤物参数 = {等级:30, 名字:"克隆兽", 是否为敌人:true, 身高:230, 性别:"男", 产生源:this._name};
+		break;
+	case "雕像2":
+		this.召唤物名 = "敌人-普通爆炸僵尸";
+		this.召唤物参数 = {等级:30, 名字:"爆炸僵尸", 是否为敌人:true, 身高:200, 性别:"男", 产生源:this._name};
+		break;
+	case "雕像3":
+		this.召唤物名 = "敌人-闪6特工";
+		this.召唤物参数 = {等级:30, 名字:"克隆人", 是否为敌人:true, 身高:190, 性别:"女", 产生源:this._name};
+		break;
+}
+this.召唤物计数 = 0;
+
+function 复活计时()
+{
+	var 游戏世界 = _root.gameworld;
+	if (游戏世界.兵工厂中枢.hp <= 0)
+	{
+		this.hp = 0;
+		死亡检测();
+		return;
+	}
+	死亡次数++;
+	
+	var 敌人实例名 = this._name + 召唤物名 + 召唤物计数;
+	var 召唤物 = _root.加载游戏世界人物(召唤物名, 敌人实例名, 游戏世界.getNextHighestDepth(), 召唤物参数);
+	召唤物._x = 游戏世界.door1._x;
+	召唤物._y = 游戏世界.door1._y;
+	游戏世界.door1.gotoAndPlay("开门");
+	召唤物计数++;
+	
+	var 自机 = this;
+	_root.帧计时器.添加或更新任务(自机,"复活计时",function(){
+		if(_root.gameworld.兵工厂中枢.hp > 0){
+			自机.man.play();
+		}else{
+			自机.hp = 0;
+			自机.死亡检测();
+		}
+	},复活时间);
+	复活时间 += 2000 * 死亡次数;
+}
+
+Z轴坐标 = this._y;
+
+hp = hp满血值 = 45000;
+防御力 = 1;
+躲闪率 = 100;
+
+回血间隔帧 = 0;
+respawn = true;
+复活时间 = 4000;
+死亡次数 = 0;
+
+状态 = "正常";
+击中效果 = "火花";
+
+unitAIType = "None";
+
+_root.敌人函数.初始化单位(this);
+gotoAndStop("正常");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特殊血条" name="新版人物文字信息" centerPoint3DX="3.5" centerPoint3DY="-183.7">
+                  <matrix>
+                    <Matrix tx="-0.5" ty="-177.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4" y="-5.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="回血控制器" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" centerPoint3DX="5" centerPoint3DY="15">
+                  <matrix>
+                    <Matrix a="0.399993896484375" d="0.399993896484375" ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent.hp > 0 && _parent.hp < _parent.hp满血值)
+	{
+		if (_parent.回血间隔帧 == 0)
+		{
+			var 已损失体力比值 = (_parent.hp满血值 - _parent.hp) / _parent.hp满血值;
+			var 回血量 = Math.floor(150 * 已损失体力比值);
+			_parent.hp += 回血量;
+		}
+		else
+		{
+			_parent.回血间隔帧--;
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像正常" name="man" centerPoint3DX="34.25" centerPoint3DY="76.1">
+                  <transformationPoint>
+                    <Point x="5.35" y="-68.75"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	gotoAndPlay(random(99) + 1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像结束" name="man" centerPoint3DX="34.25" centerPoint3DY="76.1">
+                  <transformationPoint>
+                    <Point x="0.35" y="-0.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" name="area" centerPoint3DY="-70">
+                  <matrix>
+                    <Matrix a="2.40000915527344" d="5.99993896484375" tx="-30" ty="-145"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

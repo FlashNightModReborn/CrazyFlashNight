@@ -1,0 +1,123 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹出公告UI/任务开启栏" itemID="65bb9236-000001f5" lastModified="1706795449">
+  <timeline>
+    <DOMTimeline name="任务开启栏">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#990000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.188323974609375" d="0.0152587890625" tx="154.25" ty="32.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.8" ratio="0.607843137254902"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.188323974609375" d="0.0152587890625" tx="154.25" ty="32.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.8" ratio="0.372549019607843"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!6000 540|6000 600!6000 600|5824.5 600"/>
+                    <Edge fillStyle1="3" edges="!5824.5 600|5676 840"/>
+                    <Edge fillStyle1="4" edges="!5676 840|5639 900!5639 900|0 900!0 900|0 840"/>
+                    <Edge fillStyle1="3" edges="!0 840|0 460"/>
+                    <Edge fillStyle1="4" edges="!0 460|0 400!0 400|3148 400"/>
+                    <Edge fillStyle1="1" edges="!3148 400|2597 60"/>
+                    <Edge fillStyle1="2" edges="!2597 60|2500 0!2500 0|6000 0!6000 0|6000 60"/>
+                    <Edge fillStyle1="1" edges="!6000 60|6000 540"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!5824.5 600|3472 600!3472 600|3375 540"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!3375 540|3245.5 460"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!3245.5 460|0 460"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!6000 540|3375 540"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!5676 840|0 840"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2597 60|6000 60"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!3245.5 460|3148 400"/>
+                    <Edge cubics="!3472 600(;3472,600 5825,600 5825,600q3472 600 5825 600);"/>
+                    <Edge cubics="!2500 0(;2500,0 6000,0 6000,0q2500 0 6000 0);"/>
+                    <Edge cubics="!0 400(;0,400 3148,400 3148,400q0 400 3148 400);"/>
+                    <Edge cubics="!5825 600(;5825,600 6000,600 6000,600q5825 600 6000 600);"/>
+                    <Edge cubics="!5639 900(;5639,900 0,900 0,900q5639 900 0 900);"/>
+                    <Edge cubics="!6000 0(;6000,0 6000,60 6000,60q6000 0 6000 60);"/>
+                    <Edge cubics="!2597 60(;2597,60 2500,0 2500,0q2597 60 2500 0);"/>
+                    <Edge cubics="!3148 400(;3148,400 2597,60 2597,60q3148 400 2597 60);"/>
+                    <Edge cubics="!6000 60(;6000,60 2597,60 2597,60q6000 60 2597 60);"/>
+                    <Edge cubics="!6000 540(;6000,540 6000,600 6000,600q6000 540 6000 600);"/>
+                    <Edge cubics="!6000 60(;6000,60 6000,540 6000,540q6000 60 6000 540);"/>
+                    <Edge cubics="!3375 540(;3375,540 3472,600 3472,600q3375 540 3472 600);"/>
+                    <Edge cubics="!6000 540(;6000,540 3375,540 3375,540q6000 540 3375 540);"/>
+                    <Edge cubics="!5825 600(;5825,600 5676,840 5676,840q5825 600 5676 840);"/>
+                    <Edge cubics="!5676 840(;5676,840 5639,900 5639,900q5676 840 5639 900);"/>
+                    <Edge cubics="!0 900(;0,900 0,840 0,840q0 900 0 840);"/>
+                    <Edge cubics="!5676 840(;5676,840 0,840 0,840q5676 840 0 840);"/>
+                    <Edge cubics="!0 460(;0,460 -698,460 -698,460q0 460 -698 460);"/>
+                    <Edge cubics="!3473 460(;3473,460 3246,460 3246,460q3473 460 3246 460);"/>
+                    <Edge cubics="!3246 460(;3246,460 3375,540 3375,540q3246 460 3375 540);"/>
+                    <Edge cubics="!0 460(;0,460 0,400 0,400q0 460 0 400);"/>
+                    <Edge cubics="!0 840(;0,840 0,460 0,460q0 840 0 460);"/>
+                    <Edge cubics="!3246 460(;3246,460 0,460 0,460q3246 460 0 460);"/>
+                    <Edge cubics="!3148 400(;3148,400 3246,460 3246,460q3148 400 3246 460);"/>
+                  </edges>
+                </DOMShape>
+                <DOMStaticText fontRenderingMode="standard" width="123.75" height="23.75" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="171.25" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>新任务！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="2" blurY="2" distance="2" strength="0.75"/>
+                  </filters>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="163" height="21.15" isSelectable="false" variableName="_parent.任务名称">
+                  <matrix>
+                    <Matrix tx="2" ty="22"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>任务名称</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" size="14" bitmapSize="280" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter blurX="2" blurY="2" color="#FFFFFF" distance="1"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

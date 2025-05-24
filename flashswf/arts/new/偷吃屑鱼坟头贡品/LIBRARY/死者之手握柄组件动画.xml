@@ -1,0 +1,293 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="死者之手握柄组件动画" itemID="6676a0f9-0000067c" lastModified="1719051434" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="死者之手握柄组件动画">
+      <layers>
+        <DOMLayer name="图层 5" color="#4FFFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" name="握把收纳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="15" name="握把打击桩展开" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="15" name="握把副手柄展开" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="15" name="握把完全展开" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手手柄框架" centerPoint3DX="67.5" centerPoint3DY="216.35">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="134.75" ty="330.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="15.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手手柄框架" centerPoint3DX="67.5" centerPoint3DY="216.35">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="134.75" ty="330.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="15.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手手柄框架" centerPoint3DX="67.5" centerPoint3DY="216.35">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="134.75" ty="330.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="15.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手手柄框架" centerPoint3DX="67.5" centerPoint3DY="216.35">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="134.75" ty="330.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="15.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手手柄框架" centerPoint3DX="67.5" centerPoint3DY="216.35">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="134.75" ty="330.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="15.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄1" centerPoint3DX="46.05" centerPoint3DY="128.3">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="85.6" ty="238.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄1" centerPoint3DX="46.05" centerPoint3DY="128.3">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="85.6" ty="238.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄1" centerPoint3DX="46.05" centerPoint3DY="34.3">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="85.6" ty="144.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄1" centerPoint3DX="46.05" centerPoint3DY="128.3">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="85.6" ty="238.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄1" centerPoint3DX="46.05" centerPoint3DY="128.3">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="85.6" ty="238.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄1" centerPoint3DX="46.05" centerPoint3DY="33.8">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="85.6" ty="143.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄2" centerPoint3DX="68.4" centerPoint3DY="138.55">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="80.45" ty="276.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.95" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄2" centerPoint3DX="68.4" centerPoint3DY="138.55">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="80.45" ty="276.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.95" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄2" centerPoint3DX="68.4" centerPoint3DY="44.55">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="80.45" ty="182.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.95" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄2" centerPoint3DX="68.4" centerPoint3DY="138.55">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="80.45" ty="276.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.95" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄2" centerPoint3DX="68.4" centerPoint3DY="-119.45">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="80.45" ty="18.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.95" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄2" centerPoint3DX="68.4" centerPoint3DY="138.55">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="80.45" ty="276.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.95" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="死者之手握柄2" centerPoint3DX="68.4" centerPoint3DY="-213.45">
+                  <matrix>
+                    <Matrix a="0" b="-4.469482421875" c="-4.469482421875" d="0" tx="80.45" ty="-75.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.95" y="2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

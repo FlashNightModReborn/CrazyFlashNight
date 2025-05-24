@@ -1,0 +1,194 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2448" itemID="6597607e-00000b60" linkageExportForAS="true" linkageIdentifier="计时器" lastModified="1737284275">
+  <timeline>
+    <DOMTimeline name="Symbol 2448">
+      <layers>
+        <DOMLayer name="Script Layer" color="#7781B2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 训练结束加经验值(值)
+{
+	_root.经验值 = Number(_root.经验值) + 值;
+	_root.发布消息(_root.获得翻译("属性得到提升，请刷新场景后查看！"));
+	_root.健身房主角是否升级();
+}
+function 训练结束加技能点(值)
+{
+	_root.技能点数 = Number(_root.技能点数) + 值;
+	_root.发布消息(_root.获得翻译("获得技能点：") + 值);
+}
+function 计时结束()
+{
+	var _loc1_ = 100 - Math.floor(进行时间 * 100 / 总时间);
+	if (_loc1_ < 100)
+	{
+		_loc1_ = Number(_loc1_) + 1;
+		时间进度条.gotoAndStop(_loc1_);
+	}
+	clearInterval(计时编号);
+	进行时间 = Number(进行时间) - 1000;
+	时间进度条.时.text = Math.floor(进行时间 / 3600000);
+	时间进度条.分.text = Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60;
+	时间进度条.秒.text = Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60;
+	时1.gotoAndStop(Math.floor(Math.floor(进行时间 / 3600000) / 10) + 1);
+	时2.gotoAndStop(Math.floor(Math.floor(进行时间 / 3600000) % 10) + 1);
+	分1.gotoAndStop(Math.floor((Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60) / 10) + 1);
+	分2.gotoAndStop(Math.floor((Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60) % 10) + 1);
+	秒1.gotoAndStop(Math.floor((Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60) / 10) + 1);
+	秒2.gotoAndStop(Math.floor((Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60) % 10) + 1);
+	计时开始();
+}
+function 计时开始()
+{
+	var 时 = Math.floor(进行时间 / 3600000);//_root.发布消息("时：" + 时);
+	var 分 = Math.floor(进行时间 / 60000);//_root.发布消息("分：" + 分);
+	var 分之后 = 分 - Math.floor(进行时间 / 3600000) * 60;//_root.发布消息("分之后：" + 分之后);
+	var 秒 = Math.floor(进行时间 / 1000);//_root.发布消息("秒：" + 秒);
+	var 秒之后 = 秒 - Math.floor(进行时间 / 60000) * 60;//_root.发布消息("秒之后：" + 秒之后);
+	
+	   
+	时间进度条.时.text = Math.floor(时);
+	时间进度条.分.text = Math.floor(分之后);
+	时间进度条.秒.text = Math.floor(秒之后);
+	时1.gotoAndStop(Math.floor(Math.floor(进行时间 / 3600000) / 10) + 1);
+	时2.gotoAndStop(Math.floor(Math.floor(进行时间 / 3600000) % 10) + 1);
+	分1.gotoAndStop(Math.floor((Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60) / 10) + 1);
+	分2.gotoAndStop(Math.floor((Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60) % 10) + 1);
+	秒1.gotoAndStop(Math.floor((Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60) / 10) + 1);
+	秒2.gotoAndStop(Math.floor((Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60) % 10) + 1);
+	if (进行时间 != 0)
+	{
+		计时编号 = setInterval(this, "计时结束", 1000);
+	}
+	else
+	{
+		时间进度条.gotoAndStop("计时结束");
+	}
+}
+function 计时初始化(总时间值, 经验值)
+{
+	this._x = _root.gameworld[_root.控制目标]._x;
+	this._y = _root.gameworld[_root.控制目标]._y;
+	this._visible = 1;
+	clearInterval(计时编号);
+	总时间 = 总时间值;
+	进行时间 = 总时间值;
+	将增加经验值 = 经验值;
+	类别 = "加经验";
+	时间进度条.gotoAndStop("计时开始");
+	计时开始();
+}
+function 计时初始化2(总时间值, 技能点)
+{
+	this._x = _root.gameworld[_root.控制目标]._x;
+	this._y = _root.gameworld[_root.控制目标]._y;
+	this._visible = 1;
+	clearInterval(计时编号);
+	总时间 = 总时间值;
+	进行时间 = 总时间值;
+	将增加技能点 = 技能点;
+	类别 = "加技能点";
+	时间进度条.gotoAndStop("计时开始");
+	计时开始();
+}
+function 停止计时()
+{
+	clearInterval(计时编号);
+	总时间 = 0;
+	进行时间 = 0;
+	时间进度条.时.text = Math.floor(进行时间 / 3600000);
+	时间进度条.分.text = Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60;
+	时间进度条.秒.text = Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60;
+	时1.gotoAndStop(Math.floor(Math.floor(进行时间 / 3600000) / 10) + 1);
+	时2.gotoAndStop(Math.floor(Math.floor(进行时间 / 3600000) % 10) + 1);
+	分1.gotoAndStop(Math.floor((Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60) / 10) + 1);
+	分2.gotoAndStop(Math.floor((Math.floor(进行时间 / 60000) - Math.floor(进行时间 / 3600000) * 60) % 10) + 1);
+	秒1.gotoAndStop(Math.floor((Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60) / 10) + 1);
+	秒2.gotoAndStop(Math.floor((Math.floor(进行时间 / 1000) - Math.floor(进行时间 / 60000) * 60) % 10) + 1);
+	时间进度条.gotoAndStop("计时开始");
+}
+function 虚拟币支付(amount, 商品编号, 训练毫秒, 增加经验, 挂机项目)
+{
+	if (_root.虚拟币 >= amount)
+	{
+		_root.虚拟币 -= amount;
+		_root.联机2015发送传言("K点消费");
+		_root.发布消息(_root.获得翻译("支付成功！"));
+		_root.播放音效("收银机.mp3");
+		_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+		_root.gameworld[挂机项目].开始挂机();
+		_root.gameworld.挂机计时器.计时初始化(训练毫秒,增加经验);
+		_root.获取虚拟币值();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("K点不足！"));
+	}
+}
+function 虚拟币支付2(amount, 商品编号, 训练毫秒, 增加技能点, 挂机项目)
+{
+	if (_root.虚拟币 >= amount)
+	{
+		_root.虚拟币 -= amount;
+		_root.发布消息(_root.获得翻译("支付成功！"));
+		_root.播放音效("收银机.mp3");
+		_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+		_root.gameworld[挂机项目].开始挂机();
+		_root.gameworld.挂机计时器.计时初始化2(训练毫秒,增加技能点);
+		_root.获取虚拟币值();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("K点不足！"));
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DAC959">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2447" name="时间进度条" centerPoint3DX="-2.5" centerPoint3DY="-219.6">
+                  <matrix>
+                    <Matrix tx="-102" ty="-259"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	gotoAndStop("计时开始");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BE2FE2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="-2.7" centerPoint3DY="-257">
+                  <matrix>
+                    <Matrix tx="-107" ty="-302"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#666666"/>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" quality="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

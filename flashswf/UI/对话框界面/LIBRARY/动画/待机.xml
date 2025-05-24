@@ -1,0 +1,741 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="动画/待机" itemID="65f4431c-00000940" lastModified="1710749398" lastUniqueIdentifier="77">
+  <timeline>
+    <DOMTimeline name="待机">
+      <layers>
+        <DOMLayer name="代码层" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="带帽霜精头" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/带帽霜精头" centerPoint3DX="244.75" centerPoint3DY="143">
+                  <matrix>
+                    <Matrix tx="75.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.5" y="267.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/带帽霜精头" centerPoint3DX="196.15" centerPoint3DY="155.35">
+                  <matrix>
+                    <Matrix a="0.965042114257813" b="-0.2620849609375" c="0.2620849609375" d="0.965042114257813" tx="-4.75" ty="62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.45" y="267.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/带帽霜精头" centerPoint3DX="158.1" centerPoint3DY="145.35">
+                  <matrix>
+                    <Matrix a="0.901092529296875" b="-0.433624267578125" c="0.433624267578125" d="0.901092529296875" tx="-55.7" ty="90.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.45" y="267.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/带帽霜精头" centerPoint3DX="196.15" centerPoint3DY="155.35">
+                  <matrix>
+                    <Matrix a="0.965042114257813" b="-0.2620849609375" c="0.2620849609375" d="0.965042114257813" tx="-4.75" ty="62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.45" y="267.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/带帽霜精头" centerPoint3DX="244.75" centerPoint3DY="143">
+                  <matrix>
+                    <Matrix tx="75.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.5" y="267.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精口水巾" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精口水巾" centerPoint3DX="192.55" centerPoint3DY="306.6">
+                  <matrix>
+                    <Matrix tx="65.4" ty="263.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.15" y="43.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精口水巾" centerPoint3DX="185.35" centerPoint3DY="326.35">
+                  <matrix>
+                    <Matrix a="0.982559204101563" b="-0.185943603515625" c="0.185943603515625" d="0.982559204101563" tx="52.15" ty="308.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.15" y="43.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精口水巾" centerPoint3DX="172.05" centerPoint3DY="315.85">
+                  <matrix>
+                    <Matrix a="0.93682861328125" b="-0.34979248046875" c="0.34979248046875" d="0.93682861328125" tx="37.3" ty="320.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.2" y="43.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精口水巾" centerPoint3DX="185.35" centerPoint3DY="326.35">
+                  <matrix>
+                    <Matrix a="0.982559204101563" b="-0.185943603515625" c="0.185943603515625" d="0.982559204101563" tx="52.15" ty="308.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.15" y="43.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精口水巾" centerPoint3DX="192.55" centerPoint3DY="306.6">
+                  <matrix>
+                    <Matrix tx="65.4" ty="263.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.15" y="43.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精手" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="359.15" centerPoint3DY="404.1">
+                  <matrix>
+                    <Matrix tx="291.55" ty="353.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.1" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="296.5" centerPoint3DY="444.75">
+                  <matrix>
+                    <Matrix a="0.826263427734375" b="0.563278198242188" c="-0.563278198242188" d="0.826263427734375" tx="269.25" ty="365.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.2" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="361.2" centerPoint3DY="367.1">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="282.6" ty="336.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.15" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="296.5" centerPoint3DY="444.75">
+                  <matrix>
+                    <Matrix a="0.826263427734375" b="0.563278198242188" c="-0.563278198242188" d="0.826263427734375" tx="269.25" ty="365.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.2" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="359.15" centerPoint3DY="404.1">
+                  <matrix>
+                    <Matrix tx="291.55" ty="353.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.1" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精臂膀" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="284.25" centerPoint3DY="332.4">
+                  <matrix>
+                    <Matrix tx="241.75" ty="285.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="263.25" centerPoint3DY="348.15">
+                  <matrix>
+                    <Matrix a="0.943893432617188" b="0.330245971679688" c="-0.330245971679688" d="0.943893432617188" tx="238.1" ty="290.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.95" y="15.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="270.65" centerPoint3DY="317.35">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="216.85" ty="283.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="263.25" centerPoint3DY="348.15">
+                  <matrix>
+                    <Matrix a="0.943893432617188" b="0.330245971679688" c="-0.330245971679688" d="0.943893432617188" tx="238.1" ty="290.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.95" y="15.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="284.25" centerPoint3DY="332.4">
+                  <matrix>
+                    <Matrix tx="241.75" ty="285.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精身子" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精身子" centerPoint3DX="195.2" centerPoint3DY="342.15">
+                  <matrix>
+                    <Matrix tx="111.65" ty="252.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="83.55" y="89.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精身子" centerPoint3DX="194.75" centerPoint3DY="361.7">
+                  <matrix>
+                    <Matrix a="0.982559204101563" b="-0.185943603515625" c="0.185943603515625" d="0.982559204101563" tx="95.65" ty="289.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="83.55" y="89.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精身子" centerPoint3DX="186.9" centerPoint3DY="348.45">
+                  <matrix>
+                    <Matrix a="0.93682861328125" b="-0.34979248046875" c="0.34979248046875" d="0.93682861328125" tx="76.95" ty="294.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="83.6" y="89.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精身子" centerPoint3DX="194.75" centerPoint3DY="361.7">
+                  <matrix>
+                    <Matrix a="0.982559204101563" b="-0.185943603515625" c="0.185943603515625" d="0.982559204101563" tx="95.65" ty="289.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="83.55" y="89.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精身子" centerPoint3DX="195.2" centerPoint3DY="342.15">
+                  <matrix>
+                    <Matrix tx="111.65" ty="252.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="83.55" y="89.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精左靴子" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精左靴子" centerPoint3DX="261.65" centerPoint3DY="492.1">
+                  <matrix>
+                    <Matrix a="0.985595703125" b="0.169113159179688" c="-0.169113159179688" d="0.985595703125" tx="223.15" ty="436.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87.85" y="93.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精左靴子" centerPoint3DX="246.9" centerPoint3DY="511.35">
+                  <matrix>
+                    <Matrix a="0.995773315429688" b="-0.09173583984375" c="0.09173583984375" d="0.995773315429688" tx="195.75" ty="467.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87.85" y="93.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精左靴子" centerPoint3DX="261.65" centerPoint3DY="492.1">
+                  <matrix>
+                    <Matrix a="0.985595703125" b="0.169113159179688" c="-0.169113159179688" d="0.985595703125" tx="223.15" ty="436.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87.85" y="93.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精左靴子" centerPoint3DX="246.9" centerPoint3DY="511.35">
+                  <matrix>
+                    <Matrix a="0.995773315429688" b="-0.09173583984375" c="0.09173583984375" d="0.995773315429688" tx="195.75" ty="467.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87.85" y="93.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精左靴子" centerPoint3DX="261.65" centerPoint3DY="492.1">
+                  <matrix>
+                    <Matrix a="0.985595703125" b="0.169113159179688" c="-0.169113159179688" d="0.985595703125" tx="223.15" ty="436.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87.85" y="93.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精右靴子" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="235.2" centerPoint3DY="435.75">
+                  <matrix>
+                    <Matrix a="0.999908447265625" b="0.013031005859375" c="-0.013031005859375" d="0.999908447265625" tx="207.75" ty="404.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="219.15" centerPoint3DY="444.6">
+                  <matrix>
+                    <Matrix a="0.96246337890625" b="0.2713623046875" c="-0.2713623046875" d="0.96246337890625" tx="200.5" ty="406.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.2" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="235.2" centerPoint3DY="435.75">
+                  <matrix>
+                    <Matrix a="0.999908447265625" b="0.013031005859375" c="-0.013031005859375" d="0.999908447265625" tx="207.75" ty="404.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="219.15" centerPoint3DY="444.6">
+                  <matrix>
+                    <Matrix a="0.96246337890625" b="0.2713623046875" c="-0.2713623046875" d="0.96246337890625" tx="200.5" ty="406.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.2" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="235.2" centerPoint3DY="435.75">
+                  <matrix>
+                    <Matrix a="0.999908447265625" b="0.013031005859375" c="-0.013031005859375" d="0.999908447265625" tx="207.75" ty="404.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精脚踝" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精右靴子" centerPoint3DX="152.85" centerPoint3DY="493.65">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="84.1" ty="468.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="89.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精右靴子" centerPoint3DX="163.1" centerPoint3DY="505.55">
+                  <matrix>
+                    <Matrix tx="103.1" ty="463"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="89.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精右靴子" centerPoint3DX="152.85" centerPoint3DY="493.65">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="84.1" ty="468.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="89.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精右靴子" centerPoint3DX="163.1" centerPoint3DY="505.55">
+                  <matrix>
+                    <Matrix tx="103.1" ty="463"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="89.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精右靴子" centerPoint3DX="152.85" centerPoint3DY="493.65">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="84.1" ty="468.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="89.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精手" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="168" centerPoint3DY="428.3">
+                  <matrix>
+                    <Matrix a="0.96246337890625" b="0.271347045898438" c="-0.271347045898438" d="0.96246337890625" tx="149.6" ty="390.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="177.3" centerPoint3DY="444.6">
+                  <matrix>
+                    <Matrix a="0.999893188476563" b="0.0130157470703125" c="-0.0130157470703125" d="0.999893188476563" tx="149.9" ty="413.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="168" centerPoint3DY="428.3">
+                  <matrix>
+                    <Matrix a="0.96246337890625" b="0.271347045898438" c="-0.271347045898438" d="0.96246337890625" tx="149.6" ty="390.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="177.3" centerPoint3DY="444.6">
+                  <matrix>
+                    <Matrix a="0.999893188476563" b="0.0130157470703125" c="-0.0130157470703125" d="0.999893188476563" tx="149.9" ty="413.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精脚踝" centerPoint3DX="168" centerPoint3DY="428.3">
+                  <matrix>
+                    <Matrix a="0.96246337890625" b="0.271347045898438" c="-0.271347045898438" d="0.96246337890625" tx="149.6" ty="390.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.25" y="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精臂膀" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="67.6" centerPoint3DY="378.55">
+                  <matrix>
+                    <Matrix a="-1" tx="135.2" ty="328.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="14.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="112.45" centerPoint3DY="439.35">
+                  <matrix>
+                    <Matrix a="-0.85992431640625" b="0.51043701171875" c="0.51043701171875" d="0.85992431640625" tx="144.75" ty="361.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.65" y="14.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="73.55" centerPoint3DY="417.25">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="125" ty="351.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.65" y="14.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="112.45" centerPoint3DY="439.35">
+                  <matrix>
+                    <Matrix a="-0.85992431640625" b="0.51043701171875" c="0.51043701171875" d="0.85992431640625" tx="144.75" ty="361.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.65" y="14.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精手" centerPoint3DX="67.6" centerPoint3DY="378.55">
+                  <matrix>
+                    <Matrix a="-1" tx="135.2" ty="328.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="14.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精脚踝" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="136.85" centerPoint3DY="317.15">
+                  <matrix>
+                    <Matrix a="-1" tx="179.35" ty="270.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.5" y="12.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="140.85" centerPoint3DY="350.45">
+                  <matrix>
+                    <Matrix a="-0.85992431640625" b="0.51043701171875" c="0.51043701171875" d="0.85992431640625" tx="153.05" ty="289.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.45" y="12.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="124.3" centerPoint3DY="340.85">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="152.65" ty="284.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.45" y="12.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="140.85" centerPoint3DY="350.45">
+                  <matrix>
+                    <Matrix a="-0.85992431640625" b="0.51043701171875" c="0.51043701171875" d="0.85992431640625" tx="153.05" ty="289.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.45" y="12.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/杰克霜精/零件/霜精臂膀" centerPoint3DX="136.85" centerPoint3DY="317.15">
+                  <matrix>
+                    <Matrix a="-1" tx="179.35" ty="270.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.5" y="12.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 476" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30577087402344" d="0.478347778320313" tx="205.65" ty="537.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

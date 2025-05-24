@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/阎凝儿gazer/上半身" itemID="6654af97-00000225" lastModified="1716826397">
+  <timeline>
+    <DOMTimeline name="上半身">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/阎凝儿gazer/shape 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999237060546875" b="-0.0390472412109375" c="0.0390472412109375" d="0.999237060546875" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.85" y="35.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="对话框UI/阎凝儿gazer/shape 1304" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.298370361328125" b="0.06756591796875" c="-0.06756591796875" d="0.298370361328125" tx="-1.35" ty="13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128.5" y="136.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/阎凝儿gazer/shape 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999237060546875" b="-0.0390472412109375" c="0.0390472412109375" d="0.999237060546875" tx="4.25" ty="59.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.85" y="18"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

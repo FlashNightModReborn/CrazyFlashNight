@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/05.粉紫色系/粉色光环/Symbol 2" itemID="654ba156-00002634" lastModified="1696643875">
+  <timeline>
+    <DOMTimeline name="Symbol 2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B93CFD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0474395751953125" d="0.013092041015625" tx="38.5" ty="10.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.741176470588235"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.701960784313725" ratio="0.882352941176471"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1540 212[1540 300 1314 363!1314 363[1089 425 770 425!770 425[451 425 225 363!225 363[0 300 0 212!0 212[0 124 225 62!225 62[451 0 770 0!770 0[1089 0 1314 62!1314 62[1540 124 1540 212"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

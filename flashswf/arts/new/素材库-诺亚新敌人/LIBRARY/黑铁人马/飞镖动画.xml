@@ -1,0 +1,1016 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁人马/飞镖动画" itemID="66136cf1-0000178d" linkageExportForAS="true" linkageIdentifier="飞镖" lastModified="1712590181" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="飞镖动画" currentFrame="53">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="52" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/近战子弹" name="area" selected="true" centerPoint3DX="-70.05" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="9.80487060546875" d="5.18803405761719" tx="-82.55" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F4FFF" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.55" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0.754776000976563" b="-0.655975341796875" c="0.655975341796875" d="0.754776000976563" tx="-34.6" ty="-27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-42.85" ty="7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="-0.707107543945313" c="0.707107543945313" d="-0.70709228515625" tx="-24.65" ty="35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="7.65" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="-0.707107543945313" tx="35.05" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.7" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="41.55" ty="-8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="0.707107543945313" c="-0.707107543945313" d="0.70709228515625" tx="23.3" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.35" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.55" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0.754776000976563" b="-0.655975341796875" c="0.655975341796875" d="0.754776000976563" tx="-34.6" ty="-27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-42.85" ty="7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="-0.707107543945313" c="0.707107543945313" d="-0.70709228515625" tx="-24.65" ty="35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="7.65" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="-0.707107543945313" tx="35.05" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.7" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="41.55" ty="-8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="0.707107543945313" c="-0.707107543945313" d="0.70709228515625" tx="23.3" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.35" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.55" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0.754776000976563" b="-0.655975341796875" c="0.655975341796875" d="0.754776000976563" tx="-34.6" ty="-27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-42.85" ty="7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="-0.707107543945313" c="0.707107543945313" d="-0.70709228515625" tx="-24.65" ty="35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="7.65" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="-0.707107543945313" tx="35.05" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.7" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="41.55" ty="-8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="0.707107543945313" c="-0.707107543945313" d="0.70709228515625" tx="23.3" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.35" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.55" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0.754776000976563" b="-0.655975341796875" c="0.655975341796875" d="0.754776000976563" tx="-34.6" ty="-27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-42.85" ty="7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="-0.707107543945313" c="0.707107543945313" d="-0.70709228515625" tx="-24.65" ty="35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="7.65" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="-0.707107543945313" tx="35.05" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.7" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="41.55" ty="-8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="0.707107543945313" c="-0.707107543945313" d="0.70709228515625" tx="23.3" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.35" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.55" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0.754776000976563" b="-0.655975341796875" c="0.655975341796875" d="0.754776000976563" tx="-34.6" ty="-27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-42.85" ty="7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="-0.707107543945313" c="0.707107543945313" d="-0.70709228515625" tx="-24.65" ty="35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="7.65" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="-0.707107543945313" tx="35.05" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.7" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="41.55" ty="-8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="0.707107543945313" c="-0.707107543945313" d="0.70709228515625" tx="23.3" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.35" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.55" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0.754776000976563" b="-0.655975341796875" c="0.655975341796875" d="0.754776000976563" tx="-34.6" ty="-27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-42.85" ty="7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="-0.707107543945313" c="0.707107543945313" d="-0.70709228515625" tx="-24.65" ty="35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="7.65" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="-0.707107543945313" tx="35.05" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.7" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="41.55" ty="-8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.8" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="0.707107543945313" c="-0.707107543945313" d="0.70709228515625" tx="23.3" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.35" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" centerPoint3DX="-0.65" centerPoint3DY="-0.65">
+                  <matrix>
+                    <Matrix tx="-8.95" ty="-42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="42.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

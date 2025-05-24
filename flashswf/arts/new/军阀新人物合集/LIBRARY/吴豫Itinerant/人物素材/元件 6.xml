@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/人物素材/元件 6" itemID="665ddd26-0000020f" lastModified="1717492203">
+  <timeline>
+    <DOMTimeline name="元件 6">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0648193359375" b="0.0648193359375" c="-0.70709228515625" d="0.70709228515625" tx="61.5" ty="4.45"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0.0862745098039216"/>
+                        <GradientEntry ratio="0.603921568627451"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2200 0|3160 0!3160 0|0 2960!0 2960|0 2124"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!0 2124|2200 0"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!2200 0|0 0!0 0|0 2124"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

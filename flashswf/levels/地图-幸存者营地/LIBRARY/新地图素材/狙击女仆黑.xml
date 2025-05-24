@@ -1,0 +1,192 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/狙击女仆黑" itemID="65b649d2-00003bd9" lastModified="1706813101" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="狙击女仆黑">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 3" centerPoint3DX="116.4" centerPoint3DY="241.4">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="29.75" ty="154.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 97" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="50.8" ty="146.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 98" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="44.1" ty="122.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 99" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="41.9" ty="91.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 100" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.387481689453125" b="-0.082672119140625" c="-0.082672119140625" d="0.387481689453125" tx="69.35" ty="80.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 101" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.368408203125" b="0.151107788085938" c="0.151107788085938" d="0.368408203125" tx="51.9" ty="48.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 102" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="29.85" ty="75.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 97" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397247314453125" b="-0.0451507568359375" c="-0.0451507568359375" d="0.397247314453125" tx="14.6" ty="151.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 98" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384918212890625" b="-0.107452392578125" c="-0.107452392578125" d="0.384918212890625" tx="14.45" ty="127.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 103" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="22.15" ty="95.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 104" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.387481689453125" b="-0.082672119140625" c="-0.082672119140625" d="0.387481689453125" tx="56.05" ty="66.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 105" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="33.65" ty="77.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 106" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="30.5" ty="46.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 109" centerPoint3DX="45.8" centerPoint3DY="94.95">
+                  <matrix>
+                    <Matrix a="-0.383010864257813" b="-0.210281372070313" c="-0.210281372070313" d="0.383010864257813" tx="28.4" ty="77.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 112" centerPoint3DX="188.25" centerPoint3DY="131.15">
+                  <matrix>
+                    <Matrix a="-0.383010864257813" b="-0.210281372070313" c="-0.210281372070313" d="0.383010864257813" tx="88.15" ty="108.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 114" centerPoint3DX="163.45" centerPoint3DY="105.2">
+                  <matrix>
+                    <Matrix a="-0.383010864257813" b="-0.210281372070313" c="-0.210281372070313" d="0.383010864257813" tx="49.95" ty="70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 115" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.398284912109375" b="0.02093505859375" c="0.02093505859375" d="0.398284912109375" tx="10.75" ty="45.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 107" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="34.85" ty="15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 104" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3460693359375" b="0.194595336914063" c="0.194595336914063" d="0.3460693359375" tx="10.75" ty="63.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/女仆黑/Symbol 116" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3717041015625" b="-0.137481689453125" c="-0.137481689453125" d="0.3717041015625" tx="26.1" ty="66.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

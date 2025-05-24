@@ -1,0 +1,49 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2、事件日志/组件/记录-多行" itemID="67cc10ad-000002fd" symbolType="graphic" lastModified="1741426861">
+  <timeline>
+    <DOMTimeline name="记录-多行">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="2、事件日志/组件/记录-单行" symbolType="graphic" loop="loop">
+                      <transformationPoint>
+                        <Point x="13.7" y="2"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="2、事件日志/组件/记录-单行" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix ty="6.7"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="13.7" y="2"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="2、事件日志/组件/记录-单行" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix ty="13.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="13.7" y="2"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="2、事件日志/组件/记录-单行" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix ty="20.1"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="13.7" y="2"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

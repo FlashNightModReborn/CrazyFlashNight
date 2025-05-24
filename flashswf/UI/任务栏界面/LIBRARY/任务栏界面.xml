@@ -1,0 +1,559 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747644309" lastUniqueIdentifier="25">
+  <timeline>
+    <DOMTimeline name="任务栏界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;517&lt;/guideline&gt;&lt;guideline direction="v"&gt;276&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" name="我的任务" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" name="事件日志" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.显示任务明细 = _root.任务栏UI函数.显示任务明细;
+//this.隐藏任务明细 = _root.任务栏UI函数.隐藏任务明细;
+this.创建任务树 = _root.任务栏UI函数.创建任务树;
+this.创建主线任务树 = _root.任务栏UI函数.创建主线任务树;
+this.创建支线任务树 = _root.任务栏UI函数.创建支线任务树;
+this.创建任务节点 = _root.任务栏UI函数.创建任务节点;
+this.拖拽任务树 = _root.任务栏UI函数.拖拽任务树;
+this.停止拖拽任务树 = _root.任务栏UI函数.停止拖拽任务树;
+this.显示事件日志任务明细 = _root.任务栏UI函数.显示事件日志任务明细;
+
+this.页数 = 0;
+
+function 排列任务图标()
+{
+    if (this.任务列表 == null)
+    {
+        return;
+    }
+    
+    for (var i = 0; i < 4; i++)
+    {
+        var taskIndex = this.页数 * 4 + i;
+        
+        // if(taskIndex > _root.tasks_to_do.length) break;
+        
+        var 当前任务图标 = this.任务列表["任务图标" + i];
+        
+        if (_root.tasks_to_do[taskIndex] != null){
+            var taskData = _root.getTaskData(_root.tasks_to_do[taskIndex].id);
+            当前任务图标.数组号 = taskIndex;
+            当前任务图标.任务标题 = _root.getTaskText(taskData.title);
+            当前任务图标.任务进度 = !(!_root.taskCompleteCheck(taskIndex)) ? "达成" : "进行";
+            当前任务图标.任务类型 = taskData.chain[0];
+            当前任务图标.接取NPC = taskData.get_npc;
+            当前任务图标.允许删除 = taskData.chain[0] == "委托" && 当前任务图标.任务进度 !== "达成";
+        }
+        else
+        {
+            当前任务图标.数组号 = null;
+            当前任务图标.任务标题 = null;
+            当前任务图标.任务进度 = null;
+            当前任务图标.任务类型 = null;
+            当前任务图标.接取NPC = null;
+            当前任务图标.允许删除 = false;
+            当前任务图标.完成提示._visible = false;
+        }
+        
+        当前任务图标.refreshDelay = i;
+        当前任务图标.refresh();
+    }
+    
+    this.显示任务明细(this.页数 * 4);
+}
+
+
+gotoAndStop("我的任务");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+排列任务图标();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.创建任务树();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="翻页按钮" color="#FF800A" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="当前页数" color="#9933CC" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMDynamicText width="39" height="91.95" variableName="页数" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="360.05" ty="482.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="54" bitmapSize="1080" face="SourceHanSerifCN-Heavy" fillColor="#9E9E9E"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="翻页箭头" color="#4F80FF" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翻页箭头/翻页箭头" symbolType="button">
+                  <matrix>
+                    <Matrix a="0" b="1.0302734375" c="-1.43710327148438" d="0" tx="433.2" ty="524.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+    var 最大页数 = Math.ceil(_root.tasks_to_do.length / 4) - 1;
+    
+    if (页数 < 最大页数) {
+        页数 += 1;
+        排列任务图标();
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="翻页箭头" color="#FF4F4F" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翻页箭头/翻页箭头" symbolType="button">
+                  <matrix>
+                    <Matrix a="0" b="-1.0302734375" c="1.43710327148438" d="0" tx="317.75" ty="524.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="-20.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+    if (页数 > 0) {
+        页数 -= 1;
+        排列任务图标();
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="切换按钮" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/我的任务" centerPoint3DX="117" centerPoint3DY="33.75">
+                  <matrix>
+                    <Matrix tx="30" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87" y="30.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="2、事件日志/事件日志" centerPoint3DX="386.3" centerPoint3DY="33.75">
+                  <matrix>
+                    <Matrix tx="300" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="86.3" y="30.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="关闭按钮" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3、关闭按钮/关闭按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="962.8" ty="20.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18" y="18"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+	_root.卸载全屏UI();
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter blurX="10" blurY="10" distance="10" quality="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="事件日志" color="#FF4FFF" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="对话按钮" color="#9933CC" parentLayerIndex="8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="任务对话按钮" name="任务对话按钮" centerPoint3DX="652.25" centerPoint3DY="542.2">
+                  <matrix>
+                    <Matrix tx="622.5" ty="534.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.75" y="7.8"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	_parent.taskDetail.htmlText = _root.任务栏UI函数.打印任务对话(this.taskText);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="任务完成对话按钮" name="任务完成对话按钮" centerPoint3DX="722.75" centerPoint3DY="542.2">
+                  <matrix>
+                    <Matrix tx="693" ty="534.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.75" y="7.8"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	_parent.taskDetail.htmlText = _root.任务栏UI函数.打印任务对话(this.taskText);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#4FFFFF" parentLayerIndex="8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="taskDetail" fontRenderingMode="device" width="373.95" height="421.95" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="622" ty="72"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="14" bitmapSize="280" face="SourceHanSerifCN-Regular" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="mask" color="#9933CC" parentLayerIndex="8" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="遮罩" name="遮罩" centerPoint3DX="300" centerPoint3DY="310">
+                  <matrix>
+                    <Matrix a="22.3997497558594" d="19.199951171875" tx="20" ty="70"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务树" color="#9933CC" parentLayerIndex="8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="任务树相关/任务树" name="任务树" centerPoint3DX="300" centerPoint3DY="82.5">
+                  <matrix>
+                    <Matrix tx="300" ty="70"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="拖拽按钮" color="#FF800A" parentLayerIndex="8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/透明按钮" selected="true" symbolType="button">
+                  <matrix>
+                    <Matrix a="22.3999938964844" d="19.1999664306641" tx="300" ty="310"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+	_root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+	_root.鼠标.gotoAndStop("手型普通");
+}
+on(press){
+	_root.鼠标.gotoAndStop("手型抓取");
+	this.拖拽任务树();
+}
+on(release){
+	_root.鼠标.gotoAndStop("手型准备抓取");
+	this.停止拖拽任务树();
+}
+on(releaseOutside){
+	_root.鼠标.gotoAndStop("手型普通");
+	this.停止拖拽任务树();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="我的任务" color="#FF800A" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="14" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/提交NPC-动效" name="提交NPC界面" selected="true" centerPoint3DX="803.7" centerPoint3DY="360.05">
+                  <matrix>
+                    <Matrix d="0.989547729492188" tx="745.5" ty="315.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90" y="40.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/提交按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="745.1" ty="316.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="125" y="44"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务奖励" color="#9933CC" parentLayerIndex="14" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/任务奖励" name="任务奖励" centerPoint3DX="438.1" centerPoint3DY="450.7">
+                  <matrix>
+                    <Matrix a="1.199951171875" d="1.199951171875" tx="291.25" ty="420"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.25" y="23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="持有物品" color="#FF800A" parentLayerIndex="14" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="8、持有物品/持有物品-动效" name="物品需求" centerPoint3DX="560.6" centerPoint3DY="359.6">
+                  <matrix>
+                    <Matrix tx="495.9" ty="315.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90.05" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="关卡需求" color="#9933CC" parentLayerIndex="14" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="7、关卡需求/关卡需求-动效" name="关卡需求" centerPoint3DX="366.95" centerPoint3DY="359.6">
+                  <matrix>
+                    <Matrix tx="290.45" ty="314.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90.05" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务详情" color="#9933CC" parentLayerIndex="14" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="6、任务信息/任务详情-动效" name="任务详情" centerPoint3DX="641.8" centerPoint3DY="104.2">
+                  <matrix>
+                    <Matrix tx="281.8" ty="74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="360" y="30"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="6、任务信息/任务信息" name="任务信息" centerPoint3DX="642.15" centerPoint3DY="221.5">
+                  <matrix>
+                    <Matrix tx="281.8" ty="158.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="360" y="192.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#FF800A" parentLayerIndex="14" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="14" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务列表" name="任务列表" centerPoint3DX="-62.3" centerPoint3DY="320.5">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.2" y="246.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辅助线" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#00FF00"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!11600 11000|400 11000!400 11000|400 1400!400 1400|11600 1400!11600 1400|11600 11000!12000 0|12000 11520"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="0、背景底图/背景转位图"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底部按钮" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/透明按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="40.9600067138672" d="23.0399780273438" tx="512" ty="288"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

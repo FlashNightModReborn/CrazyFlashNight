@@ -1,0 +1,1854 @@
+{
+    "tasks": [
+        {
+            "id": 0,
+            "title": "$MAIN_TITLE_0",
+            "description": "$MAIN_DESCRIPTION_0",
+            "genshin_impact":"注释：chain用来标记原版主线关卡进度，作用是解锁对应关卡，因为新剧情任务序号相较于原版有调整，请参照原版游戏的关卡进度来填写chain对应数值。",
+
+            "get_requirements": [],
+            "get_conversation": "$MAIN_GET_0",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_0",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "普通hp药剂#3",
+                "普通mp药剂#3"
+            ],
+
+            "chain":"主线#1"
+        },
+        {
+            "id": 1,
+            "title": "$MAIN_TITLE_1",
+            "description": "$MAIN_DESCRIPTION_1",
+
+            "get_requirements": [0],
+            "get_conversation": "$MAIN_GET_1",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "新手练习场#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_1",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "新手军牌#1",
+                "普通hp药剂#3",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#2"
+        },
+        {
+            "id": 2,
+            "title": "$MAIN_TITLE_2",
+            "description": "$MAIN_DESCRIPTION_2",
+
+            "get_requirements": [1],
+            "get_conversation": "$MAIN_GET_2",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_2",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "匕首#1",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"主线#3"
+        },
+        {
+            "id": 3,
+            "title": "$MAIN_TITLE_3",
+            "description": "$MAIN_DESCRIPTION_3",
+            "announcement":"一名爱国青年出现在了基地大厅",
+
+            "get_requirements": [2],
+            "get_conversation": "$MAIN_GET_3",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [
+                "超市废墟#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_3",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#1000",
+                "经验值#1500",
+                "普通hp药剂#1",
+                "普通mp药剂#1",
+                "浅灰蒙面#1"
+            ],
+            
+            "chain":"主线#4"
+        },
+        {
+            "id": 4,
+            "title": "$MAIN_TITLE_4",
+            "description": "$MAIN_DESCRIPTION_4",
+
+            "get_requirements": [3],
+            "get_conversation": "$MAIN_GET_4",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "超市废墟#冒险"
+            ],
+            "finish_submit_items": [
+                "抗生素#1"
+            ],
+            "finish_conversation": "$MAIN_FINISH_4",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000",
+                "普通hp药剂#5",
+                "普通mp药剂#5",
+                "复活币#5",
+                "技能点#20"
+            ],
+            
+            "chain":"主线#5"
+        },
+        {
+            "id": 5,
+            "title": "$MAIN_TITLE_5",
+            "description": "$MAIN_DESCRIPTION_5",
+            "announcement":"Shopgirl似乎有新的任务交给你#$#;可向Andy接取教学任务",
+
+            "get_requirements": [4],
+            "get_conversation": "$MAIN_GET_5",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "废墟武器店#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_5",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#1000",
+                "经验值#1500",
+                "普通hp药剂#1",
+                "普通mp药剂#1",
+                "手枪通用弹药#10"
+            ],
+            
+            "chain":"主线#6"
+        },
+        {
+            "id": 6,
+            "title": "$MAIN_TITLE_6",
+            "description": "$MAIN_DESCRIPTION_6",
+
+            "get_requirements": [5],
+            "get_conversation": "$MAIN_GET_6",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_6",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#500",
+                "经验值#1000",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"主线#7"
+        },
+        {
+            "id": 7,
+            "title": "$MAIN_TITLE_7",
+            "description": "$MAIN_DESCRIPTION_7",
+
+            "get_requirements": [6],
+            "get_conversation": "$MAIN_GET_7",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_7",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#500",
+                "经验值#1000",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"主线#8"
+        },
+        {
+            "id": 8,
+            "title": "$MAIN_TITLE_8",
+            "description": "$MAIN_DESCRIPTION_8",
+
+            "get_requirements": [7],
+            "get_conversation": "$MAIN_GET_8",
+            "get_npc": "Boy",
+
+            "finish_requirements": [
+                "DEATH MATCH入门赛#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_8",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#1000",
+                "经验值#2000",
+                "普通hp药剂#1",
+                "普通mp药剂#1",
+                "医用口罩#1"
+            ],
+            
+            "chain":"主线#9"
+        },
+        {
+            "id": 9,
+            "title": "$MAIN_TITLE_9",
+            "description": "$MAIN_DESCRIPTION_9",
+            "announcement":"King似乎有新的任务交给你",
+
+            "get_requirements": [8],
+            "get_conversation": "$MAIN_GET_9",
+            "get_npc": "Boy",
+
+            "finish_requirements": [
+                "DEATH MATCH角斗场#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_9",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#1500",
+                "经验值#2500",
+                "普通hp药剂#1",
+                "普通mp药剂#1",
+                "新手衣服#1"
+            ],
+            
+            "chain":"主线#10"
+        },
+        {
+            "id": 10,
+            "title": "$MAIN_TITLE_10",
+            "description": "$MAIN_DESCRIPTION_10",
+
+            "get_requirements": [9],
+            "get_conversation": "$MAIN_GET_10",
+            "get_npc": "Boy",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_10",
+            "finish_npc": "The Girl",
+            "rewards": [
+                "金币#1500",
+                "经验值#2000",
+                "普通hp药剂#1",
+                "普通mp药剂#1",
+                "复活币#3"
+            ],
+            
+            "chain":"主线#11"
+        },
+        {
+            "id": 11,
+            "title": "$MAIN_TITLE_11",
+            "description": "$MAIN_DESCRIPTION_11",
+
+            "get_requirements": [10],
+            "get_conversation": "$MAIN_GET_11",
+            "get_npc": "The Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_11",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#1500",
+                "经验值#2000",
+                "普通hp药剂#1",
+                "普通mp药剂#1",
+                "防毒面具2号#1"
+            ],
+            
+            "chain":"主线#12"
+        },
+        {
+            "id": 12,
+            "title": "$MAIN_TITLE_12",
+            "description": "$MAIN_DESCRIPTION_12",
+
+            "get_requirements": [11],
+            "get_conversation": "$MAIN_GET_12",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "郊区#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_12",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#15000",
+                "经验值#5000",
+                "普通hp药剂#1",
+                "普通mp药剂#1",
+                "锤子#1"
+            ],
+            
+            "chain":"主线#13"
+        },
+        {
+            "id": 13,
+            "title": "$MAIN_TITLE_13",
+            "description": "$MAIN_DESCRIPTION_13",
+
+            "get_requirements": [12],
+            "get_conversation": "$MAIN_GET_13",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "第一防线#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_13",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#3000",
+                "经验值#8000",
+                "普通hp药剂#2",
+                "普通mp药剂#2",
+                "黑色皮手套#1"
+            ],
+            
+            "chain":"主线#14"
+        },
+        {
+            "id": 14,
+            "title": "$MAIN_TITLE_14",
+            "description": "$MAIN_DESCRIPTION_14",
+            "announcement":"Shopgirl似乎有新的任务交给你",
+
+            "get_requirements": [13],
+            "get_conversation": "$MAIN_GET_14",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "商业区#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_14",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#3000",
+                "经验值#12000",
+                "普通hp药剂#2",
+                "普通mp药剂#2",
+                "新手面具#1"
+            ],
+            
+            "chain":"主线#15"
+        },
+        {
+            "id": 15,
+            "title": "$MAIN_TITLE_15",
+            "description": "$MAIN_DESCRIPTION_15",
+
+            "get_requirements": [14],
+            "get_conversation": "$MAIN_GET_15",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$MAIN_FINISH_15",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#1000",
+                "经验值#2000",
+                "普通hp药剂#2",
+                "普通mp药剂#2",
+                "新手皮鞋#1"
+            ],
+            
+            "chain":"主线#16"
+        },
+        {
+            "id": 16,
+            "title": "$MAIN_TITLE_16",
+            "description": "$MAIN_DESCRIPTION_16",
+
+            "get_requirements": [15],
+            "get_conversation": "$MAIN_GET_16",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [
+                "第三集结点#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_16",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#3000",
+                "经验值#15000",
+                "普通hp药剂#2",
+                "普通mp药剂#2",
+                "僵尸割草机军牌#1",
+                "新手裤子#1"
+            ],
+            
+            "chain":"主线#17"
+        },
+        {
+            "id": 17,
+            "title": "$MAIN_TITLE_17",
+            "description": "$MAIN_DESCRIPTION_17",
+
+            "get_requirements": [16],
+            "get_conversation": "$MAIN_GET_17",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [
+                "贫民窟#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_17",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#3000",
+                "经验值#15000",
+                "普通hp药剂#2",
+                "普通mp药剂#2",
+                "手枪通用弹药#4",
+                "军绿防弹衣#1"
+            ],
+            
+            "chain":"主线#18"
+        },
+        {
+            "id": 18,
+            "title": "$MAIN_TITLE_18",
+            "description": "$MAIN_DESCRIPTION_18",
+            "announcement":"Blue似乎有新的任务交给你",
+
+            "get_requirements": [17],
+            "get_conversation": "$MAIN_GET_18",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_18",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#3000",
+                "经验值#8000",
+                "普通hp药剂#2",
+                "普通mp药剂#2",
+                "冲锋枪通用弹药#10",
+                "棒球棒#1"
+            ],
+            
+            "chain":"主线#19"
+        },
+        {
+            "id": 19,
+            "title": "$MAIN_TITLE_19",
+            "description": "$MAIN_DESCRIPTION_19",
+            "announcement":"一位幸存老兵来到了基地大厅#$#;酒保带来了新的通缉令和挑战任务",
+
+            "get_requirements": [18],
+            "get_conversation": "$MAIN_GET_19",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "闹市区#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_19",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#3000",
+                "经验值#20000",
+                "普通hp药剂#5",
+                "普通mp药剂#5",
+                "马格南手枪弹药#10",
+                "韦森686#1"
+            ],
+            
+             "chain":"主线#20"
+        },
+        {
+            "id": 20,
+            "title": "$MAIN_TITLE_20",
+            "description": "$MAIN_DESCRIPTION_20",
+            "announcement":"Blue似乎有新的任务交给你",
+
+            "get_requirements": [19],
+            "get_conversation": "$MAIN_GET_20",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_20",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#1000",
+                "经验值#2000",
+                "普通hp药剂#2",
+                "普通mp药剂#2",
+                "冲锋枪通用弹药#5",
+                "复活币#3"
+            ],
+            
+            "chain":"主线#21"
+        },
+        {
+            "id": 21,
+            "title": "$MAIN_TITLE_21",
+            "description": "$MAIN_DESCRIPTION_21",
+
+            "get_requirements": [20],
+            "get_conversation": "$MAIN_GET_21",
+            "get_npc": "Boy",
+
+            "finish_requirements": [
+                "地铁站#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_21",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#25000",
+                "普通hp药剂#5",
+                "普通mp药剂#5",
+                "僵尸克星军牌#1",
+                "复活币#10",
+                "技能点#30"
+            ],
+            
+            "chain":"主线#22"
+        },
+        {
+            "id": 22,
+            "title": "$MAIN_TITLE_22",
+            "description": "$MAIN_DESCRIPTION_22",
+            "announcement":"一位前治安官出现在了基地大厅#$#;Andy Law发布了新的挑战任务",
+
+            "get_requirements": [21],
+            "get_conversation": "$MAIN_GET_22",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "堕落城区#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_22",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#4000",
+                "经验值#10000",
+                "普通hp药剂#2",
+                "普通mp药剂#2"
+            ],
+            
+             "chain":"主线#23"
+        },
+        {
+            "id": 23,
+            "title": "$MAIN_TITLE_23",
+            "description": "$MAIN_DESCRIPTION_23",
+            "announcement":"酒保带来了新的酒",
+
+            "get_requirements": [22],
+            "get_conversation": "$MAIN_GET_23",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "游寇基地#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_23",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#4000",
+                "经验值#15000",
+                "普通hp药剂#2",
+                "普通mp药剂#2"
+            ],
+            
+            "chain":"主线#24"
+        },
+        {
+            "id": 24,
+            "title": "$MAIN_TITLE_24",
+            "description": "$MAIN_DESCRIPTION_24",
+
+            "get_requirements": [23],
+            "get_conversation": "$MAIN_GET_24",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "禁区边缘#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_24",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#4000",
+                "经验值#15000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"主线#25"
+        },
+        {
+            "id": 25,
+            "title": "$MAIN_TITLE_25",
+            "description": "$MAIN_DESCRIPTION_25",
+            "announcement":"酒保发布了新的挑战任务",
+
+            "get_requirements": [24],
+            "get_conversation": "$MAIN_GET_25",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_25",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "经验值#25000",
+                "黑铁死士围巾#1",
+                "黑铁死士绑带#1",
+                "黑铁死士制式裤#1",
+                "黑铁死士手套#1",
+                "黑铁死士鞋#1",
+                "调停者军牌#1"
+            ],
+            
+            "chain":"主线#26"
+        },
+        {
+            "id": 26,
+            "title": "$MAIN_TITLE_26",
+            "description": "$MAIN_DESCRIPTION_26",
+            "announcement":"酒保带来了一张新的通缉令#$#;Blue似乎有新的任务交给你",
+
+            "get_requirements": [25],
+            "get_conversation": "$MAIN_GET_26",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_26",
+            "finish_npc": "King",
+            "rewards": [
+                "金币#6000",
+                "经验值#5000",
+                "普通hp药剂#2",
+                "普通mp药剂#2"
+            ],
+            
+            "chain":"主线#27"
+        },
+        {
+            "id": 27,
+            "title": "$MAIN_TITLE_27",
+            "description": "$MAIN_DESCRIPTION_27",
+            "announcement":"Andy Law发布了新的挑战任务",
+
+            "get_requirements": [26],
+            "get_conversation": "$MAIN_GET_27",
+            "get_npc": "King",
+
+            "finish_requirements": [
+                "摇滚公园#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_27",
+            "finish_npc": "King",
+            "rewards": [
+                "金币#8000",
+                "经验值#60000",
+                "普通hp药剂#4",
+                "普通mp药剂#4",
+                "复活币#2",
+                "技能点#35"
+            ],
+            
+            "chain":"主线#28"
+        },
+        {
+            "id": 28,
+            "title": "$MAIN_TITLE_28",
+            "description": "$MAIN_DESCRIPTION_28",
+
+            "get_requirements": [27],
+            "get_conversation": "$MAIN_GET_28",
+            "get_npc": "King",
+
+            "finish_requirements": [
+                "革命军哨所#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_28",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#3000",
+                "经验值#30000",
+                "普通hp药剂#4",
+                "普通mp药剂#4"
+            ],
+            
+            "chain":"主线#29"
+        },
+        {
+            "id": 29,
+            "title": "$MAIN_TITLE_29",
+            "description": "$MAIN_DESCRIPTION_29",
+            "announcement":"酒保带来了三张新的通缉令#$#;一位学生会长出现在了基地大厅",
+
+            "get_requirements": [28],
+            "get_conversation": "$MAIN_GET_29",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "难民营地#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_29",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#5000",
+                "经验值#35000",
+                "普通hp药剂#8",
+                "普通mp药剂#8"
+            ],
+            
+            "chain":"主线#30"
+        },
+        {
+            "id": 30,
+            "title": "$MAIN_TITLE_30",
+            "description": "$MAIN_DESCRIPTION_30",
+
+            "get_requirements": [29],
+            "get_conversation": "$MAIN_GET_30",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "军阀临时补给点#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_30",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#5000",
+                "经验值#35000",
+                "M249#1",
+                "抗生素#3",
+                "肾上腺素#3"
+            ],
+            
+            "chain":"主线#31"
+        },
+        {
+            "id": 31,
+            "title": "$MAIN_TITLE_31",
+            "description": "$MAIN_DESCRIPTION_31",
+
+            "get_requirements": [30],
+            "get_conversation": "$MAIN_GET_31",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_31",
+            "finish_npc": "King",
+            "rewards": [
+                "金币#2000",
+                "经验值#10000",
+                "普通hp药剂#3",
+                "普通mp药剂#3"
+            ],
+            
+            "chain":"主线#32"
+        },
+        {
+            "id": 32,
+            "title": "$MAIN_TITLE_32",
+            "description": "$MAIN_DESCRIPTION_32",
+            "announcement":"一个穿着重型盔甲的家伙来到了基地大厅",
+
+            "get_requirements": [31],
+            "get_conversation": "$MAIN_GET_32",
+            "get_npc": "King",
+
+            "finish_requirements": [
+                "残垣断壁#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_32",
+            "finish_npc": "King",
+            "rewards": [
+                "金币#5000",
+                "经验值#50000",
+                "抗生素#4",
+                "普通mp药剂#4"
+            ],
+            
+            "chain":"主线#33"
+        },
+        {
+            "id": 33,
+            "title": "$MAIN_TITLE_33",
+            "description": "$MAIN_DESCRIPTION_33",
+
+            "get_requirements": [32],
+            "get_conversation": "$MAIN_GET_33",
+            "get_npc": "King",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_33",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#2000",
+                "经验值#10000",
+                "普通hp药剂#4",
+                "普通mp药剂#4"
+            ],
+            
+            "chain":"主线#34"
+        },
+        {
+            "id": 34,
+            "title": "$MAIN_TITLE_34",
+            "description": "$MAIN_DESCRIPTION_34",
+
+            "get_requirements": [33],
+            "get_conversation": "$MAIN_GET_34",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "基地#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_34",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#5000",
+                "经验值#80000",
+                "抗生素#4",
+                "普通mp药剂#4",
+                "守护者军牌#1",
+                "技能点#30"
+            ],
+            
+            "chain":"主线#35"
+        },
+        {
+            "id": 35,
+            "title": "$MAIN_TITLE_35",
+            "description": "$MAIN_DESCRIPTION_35",
+
+            "get_requirements": [34],
+            "get_conversation": "$MAIN_GET_35",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "军阀据点#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_35",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#5000",
+                "金币#50000",
+                "经验值#100000",
+                "抗生素#10",
+                "肾上腺素#10",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#36"
+        },
+        {
+            "id": 36,
+            "title": "$MAIN_TITLE_36",
+            "description": "$MAIN_DESCRIPTION_36",
+            "announcement":"一位宝石线人出现在了基地大厅",
+
+            "get_requirements": [35],
+            "get_conversation": "$MAIN_GET_36",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "军阀前线基地#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_36",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#2000",
+                "金币#20000",
+                "经验值#150000",
+                "装甲头盔#1",
+                "军阀重装兵衣服#1",
+                "军阀装甲裤#1",
+                "接触者军牌#1"
+            ],
+            
+            "chain":"主线#37"
+        },
+        {
+            "id": 37,
+            "title": "$MAIN_TITLE_37",
+            "description": "$MAIN_DESCRIPTION_37",
+            "announcement":"Andy Law发布了新的挑战任务",
+
+            "get_requirements": [36],
+            "get_conversation": "$MAIN_GET_37",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_37",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#20000",
+                "经验值#100000",
+                "抗生素#10",
+                "肾上腺素#10",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#38"
+        },
+        {
+            "id": 38,
+            "title": "$MAIN_TITLE_38",
+            "description": "$MAIN_DESCRIPTION_38",
+
+            "get_requirements": [37],
+            "get_conversation": "$MAIN_GET_38",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_38",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#3000",
+                "经验值#50000",
+                "抗生素#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"主线#39"
+        },
+        {
+            "id": 39,
+            "title": "$MAIN_TITLE_39",
+            "description": "$MAIN_DESCRIPTION_39",
+
+            "get_requirements": [38],
+            "get_conversation": "$MAIN_GET_39",
+            "get_npc": "酒保",
+
+            "finish_requirements": [
+                "堕落城深处#简单"
+            ],
+            "finish_contain_items": [
+                "浮士德的情报书#1"
+            ],
+            "finish_conversation": "$MAIN_FINISH_39",
+            "finish_npc": "酒保",
+            "rewards": [
+                "K点#500",
+                "金币#5000",
+                "经验值#200000",
+                "抗生素#5",
+                "肾上腺素#5",
+                "冷兵器小加成项链#1",
+                "关于通缉令2#1"
+            ],
+            
+            "chain":"主线#40"
+        },
+        {
+            "id": 40,
+            "title": "$MAIN_TITLE_40",
+            "description": "$MAIN_DESCRIPTION_40",
+
+            "get_requirements": [39],
+            "get_conversation": "$MAIN_GET_40",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_40",
+            "finish_npc": "丽丽丝",
+            "rewards": [
+                "金币#3000",
+                "经验值#50000",
+                "抗生素#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"主线#41"
+        },
+        {
+            "id": 41,
+            "title": "$MAIN_TITLE_41",
+            "description": "$MAIN_DESCRIPTION_41",
+
+            "get_requirements": [40],
+            "get_conversation": "$MAIN_GET_41",
+            "get_npc": "丽丽丝",
+
+            "finish_requirements": [
+                "军阀秘密基地#简单"
+            ],
+            "finish_contain_items": [
+                "牛仔的情报书#1"
+            ],
+            "finish_conversation": "$MAIN_FINISH_41",
+            "finish_npc": "丽丽丝",
+            "rewards": [
+                "K点#500",
+                "金币#5000",
+                "经验值#220000",
+                "抗生素#5",
+                "肾上腺素#5",
+                "枪械小加成项链#1",
+                "关于诺亚方舟#1"
+            ],
+            
+            "chain":"主线#42"
+        },
+        {
+            "id": 42,
+            "title": "$MAIN_TITLE_42",
+            "description": "$MAIN_DESCRIPTION_42",
+
+            "get_requirements": [41],
+            "get_conversation": "$MAIN_GET_42",
+            "get_npc": "丽丽丝",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_42",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#3000",
+                "经验值#50000",
+                "抗生素#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"主线#43"
+        },
+        {
+            "id": 43,
+            "title": "$MAIN_TITLE_43",
+            "description": "$MAIN_DESCRIPTION_43",
+
+            "get_requirements": [42],
+            "get_conversation": "$MAIN_GET_43",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [
+                "A兵团试炼场#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_43",
+            "finish_npc": "小F",
+            "rewards": [
+                "K点#1000",
+                "金币#30000",
+                "经验值#500000",
+                "军阀装甲手套#5",
+                "军阀棕色皮靴#5",
+                "虎彻#1",
+                "空手小加成项链#1",
+                "镜之虎彻制作图纸#1"
+            ],
+            
+            "chain":"主线#44"
+        },
+        {
+            "id": 44,
+            "title": "$MAIN_TITLE_44",
+            "description": "$MAIN_DESCRIPTION_44",
+            "announcement":"Andy Law发布了新的挑战任务",
+
+            "get_requirements": [43],
+            "get_conversation": "$MAIN_GET_44",
+            "get_npc": "小F",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_44",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#3000",
+                "经验值#50000",
+                "抗生素#20",
+                "普通mp药剂#20"
+            ],
+            
+            "chain":"主线#45"
+        },
+        {
+            "id": 45,
+            "title": "$MAIN_TITLE_45",
+            "description": "$MAIN_DESCRIPTION_45",
+
+            "get_requirements": [44],
+            "get_conversation": "$MAIN_GET_45",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "地铁站#冒险"
+            ],
+            "finish_conversation": "$MAIN_FINISH_45",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#1000",
+                "金币#10000",
+                "经验值#200000",
+                "抗生素#10",
+                "肾上腺素#10",
+                "技能点#50"
+            ],
+            
+            "chain":"主线#46"
+        },
+        {
+            "id": 46,
+            "title": "$MAIN_TITLE_46",
+            "description": "$MAIN_DESCRIPTION_46",
+
+            "get_requirements": [45],
+            "get_conversation": "$MAIN_GET_46",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会总部边缘#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_46",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#15000",
+                "经验值#200000",
+                "黑铁行刑者绑带#1",
+                "黑铁行刑者制式裤#1",
+                "黑铁行刑者鞋#1",
+                "复镕望远热感仪#1",
+                "黑铁行刑者手套#1"
+            ],
+            
+            "chain":"主线#47"
+        },
+        {
+            "id": 47,
+            "title": "$MAIN_TITLE_47",
+            "description": "$MAIN_DESCRIPTION_47",
+
+            "get_requirements": [46],
+            "get_conversation": "$MAIN_GET_47",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_47",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#5000",
+                "经验值#10000",
+                "抗生素#5",
+                "肾上腺素#5",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#48"
+        },
+        {
+            "id": 48,
+            "title": "$MAIN_TITLE_48",
+            "description": "$MAIN_DESCRIPTION_48",
+
+            "get_requirements": [47],
+            "get_conversation": "$MAIN_GET_48",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_48",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#5000",
+                "经验值#10000",
+                "抗生素#10",
+                "肾上腺素#10"
+            ],
+            
+            "chain":"主线#49"
+        },
+        {
+            "id": 49,
+            "title": "$MAIN_TITLE_49",
+            "description": "$MAIN_DESCRIPTION_49",
+
+            "get_requirements": [48],
+            "get_conversation": "$MAIN_GET_49",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会翅虎堂外围#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_49",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#20000",
+                "经验值#200000",
+                "加强抗生素药剂#2",
+                "加强mp药剂#2",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#50"
+        },
+        {
+            "id": 50,
+            "title": "$MAIN_TITLE_50",
+            "description": "$MAIN_DESCRIPTION_50",
+
+            "get_requirements": [49],
+            "get_conversation": "$MAIN_GET_50",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会翅虎堂内部#修罗"
+            ],
+            "finish_conversation": "$MAIN_FINISH_50",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#1000",
+                "经验值#250000",
+                "抗生素#10",
+                "肾上腺素#10",
+                "复活币#10"
+            ],
+            
+            "chain":"主线#51"
+        },
+        {
+            "id": 51,
+            "title": "$MAIN_TITLE_51",
+            "description": "$MAIN_DESCRIPTION_51",
+
+            "get_requirements": [50],
+            "get_conversation": "$MAIN_GET_51",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_51",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#30000",
+                "经验值#20000",
+                "加强抗生素药剂#3",
+                "加强mp药剂#3",
+                "复活币#10"
+            ],
+            
+            "chain":"主线#52"
+        },
+        {
+            "id": 52,
+            "title": "$MAIN_TITLE_52",
+            "description": "$MAIN_DESCRIPTION_52",
+
+            "get_requirements": [51],
+            "get_conversation": "$MAIN_GET_52",
+            "get_npc": "Blue",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_52",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#5000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1",
+                "酒保线报：黑铁会崛起于乡间#1"
+            ],
+            
+            "chain":"主线#53"
+        },
+        {
+            "id": 53,
+            "title": "$MAIN_TITLE_53",
+            "description": "$MAIN_DESCRIPTION_53",
+
+            "get_requirements": [52],
+            "get_conversation": "$MAIN_GET_53",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_53",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#5000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#54"
+        },
+        {
+            "id": 54,
+            "title": "$MAIN_TITLE_54",
+            "description": "$MAIN_DESCRIPTION_54",
+
+            "get_requirements": [53],
+            "get_conversation": "$MAIN_GET_54",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "压制摇滚公园#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_54",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#30000",
+                "经验值#250000",
+                "加强抗生素药剂#5",
+                "加强mp药剂#5",
+                "复活币#5",
+                "强化石#100"
+            ],
+            
+            "chain":"主线#55"
+        },
+        {
+            "id": 55,
+            "title": "$MAIN_TITLE_55",
+            "description": "$MAIN_DESCRIPTION_55",
+
+            "get_requirements": [54],
+            "get_conversation": "$MAIN_GET_55",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会火凤堂外围#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_55",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#30000",
+                "经验值#260000",
+                "加强抗生素药剂#5",
+                "加强mp药剂#5",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#56"
+        },
+        {
+            "id": 56,
+            "title": "$MAIN_TITLE_56",
+            "description": "$MAIN_DESCRIPTION_56",
+
+            "get_requirements": [55],
+            "get_conversation": "$MAIN_GET_56",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会火凤堂内部#修罗"
+            ],
+            "finish_conversation": "$MAIN_FINISH_56",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#35000",
+                "K点#1000",
+                "经验值#300000",
+                "加强抗生素药剂#7",
+                "加强mp药剂#7",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#57"
+        },
+        {
+            "id": 57,
+            "title": "$MAIN_TITLE_57",
+            "description": "$MAIN_DESCRIPTION_57",
+
+            "get_requirements": [56],
+            "get_conversation": "$MAIN_GET_57",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_57",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#6000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#58"
+        },
+        {
+            "id": 58,
+            "title": "$MAIN_TITLE_58",
+            "description": "$MAIN_DESCRIPTION_58",
+
+            "get_requirements": [57],
+            "get_conversation": "$MAIN_GET_58",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_58",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#6000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#59"
+        },
+        {
+            "id": 59,
+            "title": "$MAIN_TITLE_59",
+            "description": "$MAIN_DESCRIPTION_59",
+
+            "get_requirements": [58],
+            "get_conversation": "$MAIN_GET_59",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_59",
+            "finish_npc": "格格巫",
+            "rewards": [
+                "金币#6000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1",
+                "硬化僵尸情报#1"
+            ],
+            
+            "chain":"主线#60"
+        },
+        {
+            "id": 60,
+            "title": "$MAIN_TITLE_60",
+            "description": "$MAIN_DESCRIPTION_60",
+
+            "get_requirements": [59],
+            "get_conversation": "$MAIN_GET_60",
+            "get_npc": "格格巫",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_60",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#6000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#61"
+        },
+        {
+            "id": 61,
+            "title": "$MAIN_TITLE_61",
+            "description": "$MAIN_DESCRIPTION_61",
+
+            "get_requirements": [60],
+            "get_conversation": "$MAIN_GET_61",
+            "get_npc": "Boy",
+
+            "finish_requirements": [
+                "袭杀与圈套#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_61",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#35000",
+                "经验值#300000",
+                "加强抗生素药剂#8",
+                "加强mp药剂#8",
+                "复活币#5",
+                "技能点#50"
+            ],
+            
+            "chain":"主线#62"
+        },
+        {
+            "id": 62,
+            "title": "$MAIN_TITLE_62",
+            "description": "$MAIN_DESCRIPTION_62",
+
+            "get_requirements": [61],
+            "get_conversation": "$MAIN_GET_62",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会黑龙堂外围#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_62",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#35000",
+                "经验值#300000",
+                "加强抗生素药剂#8",
+                "加强mp药剂#8",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#63"
+        },
+        {
+            "id": 63,
+            "title": "$MAIN_TITLE_63",
+            "description": "$MAIN_DESCRIPTION_63",
+
+            "get_requirements": [62],
+            "get_conversation": "$MAIN_GET_63",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会黑龙堂内部#修罗"
+            ],
+            "finish_conversation": "$MAIN_FINISH_63",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#37000",
+                "K点#1000",
+                "经验值#500000",
+                "加强抗生素药剂#10",
+                "加强mp药剂#10",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#64"
+        },
+        {
+            "id": 64,
+            "title": "$MAIN_TITLE_64",
+            "description": "$MAIN_DESCRIPTION_64",
+            "announcement":"向小F接取强化系统引导任务",
+
+            "get_requirements": [63],
+            "get_conversation": "$MAIN_GET_64",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_64",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#6000",
+                "经验值#100000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#65"
+        },
+        {
+            "id": 65,
+            "title": "$MAIN_TITLE_65",
+            "description": "$MAIN_DESCRIPTION_65",
+
+            "get_requirements": [64],
+            "get_conversation": "$MAIN_GET_65",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_65",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#6000",
+                "经验值#100000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#66"
+        },
+        {
+            "id": 66,
+            "title": "$MAIN_TITLE_66",
+            "description": "$MAIN_DESCRIPTION_66",
+
+            "get_requirements": [65],
+            "get_conversation": "$MAIN_GET_66",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会总堂外围#修罗"
+            ],
+            "finish_conversation": "$MAIN_FINISH_66",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#40000",
+                "经验值#700000",
+                "加强抗生素药剂#10",
+                "加强mp药剂#10",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#67"
+        },
+        {
+            "id": 67,
+            "title": "$MAIN_TITLE_67",
+            "description": "$MAIN_DESCRIPTION_67",
+
+            "get_requirements": [66],
+            "get_conversation": "$MAIN_GET_67",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会总堂#冒险"
+            ],
+            "finish_conversation": "$MAIN_FINISH_67",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#40000",
+                "K点#2000",
+                "经验值#1000000",
+                "加强抗生素药剂#10",
+                "加强mp药剂#10",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#68"
+        },
+        {
+            "id": 68,
+            "title": "$MAIN_TITLE_68",
+            "description": "$MAIN_DESCRIPTION_68",
+            "announcement":"Andy Law发布了新的挑战任务",
+
+            "get_requirements": [67],
+            "get_conversation": "$MAIN_GET_68",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_68",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#69"
+        },
+        {
+            "id": 69,
+            "title": "$MAIN_TITLE_69",
+            "description": "$MAIN_DESCRIPTION_69",
+            "announcement":"黑铁会的···外交部长？居然来到了基地大厅",
+
+            "get_requirements": [68],
+            "get_conversation": "$MAIN_GET_69",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_69",
+            "finish_npc": "黑铁会外交部长",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#70"
+        },
+        {
+            "id": 70,
+            "title": "$MAIN_TITLE_70",
+            "description": "$MAIN_DESCRIPTION_70",
+
+            "get_requirements": [69],
+            "get_conversation": "$MAIN_GET_70",
+            "get_npc": "黑铁会外交部长",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_70",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#71"
+        },
+        {
+            "id": 71,
+            "title": "$MAIN_TITLE_71",
+            "description": "$MAIN_DESCRIPTION_71",
+
+            "get_requirements": [70],
+            "get_conversation": "$MAIN_GET_71",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "被攻击的黑铁会#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_71",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#40000",
+                "K点#1000",
+                "经验值#300000",
+                "加强抗生素药剂#5",
+                "加强mp药剂#5",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#72"
+        },
+        {
+            "id": 72,
+            "title": "$MAIN_TITLE_72",
+            "description": "$MAIN_DESCRIPTION_72",
+
+            "get_requirements": [71],
+            "get_conversation": "$MAIN_GET_72",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_72",
+            "finish_npc": "黑铁会外交部长",
+            "rewards": [
+                "金币#10000",
+                "经验值#25000",
+                "加强抗生素药剂#2",
+                "加强mp药剂#2",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#73"
+        },
+        {
+            "id": 73,
+            "title": "$MAIN_TITLE_73",
+            "description": "$MAIN_DESCRIPTION_73",
+
+            "get_requirements": [72],
+            "get_conversation": "$MAIN_GET_73",
+            "get_npc": "黑铁会外交部长",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_73",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#25000",
+                "加强抗生素药剂#2",
+                "加强mp药剂#2",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#74"
+        },
+        {
+            "id": 74,
+            "title": "$MAIN_TITLE_74",
+            "description": "$MAIN_DESCRIPTION_74",
+
+            "get_requirements": [73],
+            "get_conversation": "$MAIN_GET_74",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "摇滚内战#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_74",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#45000",
+                "经验值#350000",
+                "加强抗生素药剂#10",
+                "加强mp药剂#10",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#75"
+        },
+        {
+            "id": 75,
+            "title": "$MAIN_TITLE_75",
+            "description": "$MAIN_DESCRIPTION_75",
+
+            "get_requirements": [74],
+            "get_conversation": "$MAIN_GET_75",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_75",
+            "finish_npc": "general",
+            "rewards": [
+                "金币#10000",
+                "经验值#25000",
+                "加强抗生素药剂#2",
+                "加强mp药剂#2",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#76"
+        },
+        {
+            "id": 76,
+            "title": "$MAIN_TITLE_76",
+            "description": "$MAIN_DESCRIPTION_76",
+
+            "get_requirements": [75],
+            "get_conversation": "$MAIN_GET_76",
+            "get_npc": "general",
+
+            "finish_requirements": [],
+            "finish_conversation": "$MAIN_FINISH_76",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#25000",
+                "加强抗生素药剂#2",
+                "加强mp药剂#2",
+                "复活币#1"
+            ],
+            
+            "chain":"主线#77"
+        },
+        {
+            "id": 77,
+            "title": "$MAIN_TITLE_77",
+            "description": "$MAIN_DESCRIPTION_77",
+            "announcement":"将军似乎有新的任务交给你#$#;通关之后在Andy可以接取剧情结束后的内容预览指引任务",
+
+            "get_requirements": [76],
+            "get_conversation": "$MAIN_GET_77",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "深入禁区#简单"
+            ],
+            "finish_conversation": "$MAIN_FINISH_77",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#45000",
+                "经验值#350000",
+                "加强抗生素药剂#10",
+                "加强mp药剂#10",
+                "复活币#5"
+            ],
+            
+            "chain":"主线#780"
+        }
+    ]
+}

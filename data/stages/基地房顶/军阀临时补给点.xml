@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>不锈钢材</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward id="10">
+            <Name>军阀前线基地通关证明</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk18_1_BG.swf</Background>
+            <PlayerX>200</PlayerX>
+            <PlayerY>450</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Bring Your Own Doggg</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1722</x>
+                <y>517</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1722</x>
+                <y>644</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1722</x>
+                <y>772</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种57</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk18_2_BG.swf</Background>
+            <PlayerX>200</PlayerX>
+            <PlayerY>500</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1740</x>
+                <y>800</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1130</x>
+                <y>660</y>
+                <BiasX>110</BiasX>
+                <BiasY>110</BiasY>
+            </Point>
+            <Point id="2">
+                <x>1740</x>
+                <y>537</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1740</x>
+                <y>670</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种54</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种57</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk18_3_BG.swf</Background>
+            <PlayerX>200</PlayerX>
+            <PlayerY>500</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1895</x>
+                <y>726</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1895</x>
+                <y>507</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1895</x>
+                <y>667</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1885</x>
+                <y>855</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种57</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

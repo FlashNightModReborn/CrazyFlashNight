@@ -1,0 +1,75 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="10、任务奖励/组件/光效 复制" itemID="67cd5df5-00000668" lastModified="1741512337">
+  <timeline>
+    <DOMTimeline name="光效 复制" currentFrame="89">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="89" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#8.A, 0" anchorPointA="#11.3F, 0" controlPointB="#8.A, 0" anchorPointB="#11.3F, 0" isLine="true"/>
+                    <MorphCurves controlPointA="#11.3F, #1.F7" anchorPointA="#11.3F, #3.ED" controlPointB="#11.3F, #1.F7" anchorPointB="#11.3F, #3.ED" isLine="true"/>
+                    <MorphCurves controlPointA="#8.A, #3.ED" anchorPointA="0, #3.ED" controlPointB="#8.A, #3.ED" anchorPointB="0, #3.ED" isLine="true"/>
+                    <MorphCurves controlPointA="0, #1.F7" controlPointB="0, #1.F7" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="4" ty="-8.5"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0307464599609375" c="-0.030670166015625" d="0" tx="103.45" ty="-16.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.149019607843137" ratio="0.23921568627451"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.298039215686275" ratio="0.517647058823529"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.149019607843137" ratio="0.768627450980392"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4335 1175S2|-80 1175!-80 1175|-80 170!-80 170|4335 170!4335 170|4335 1175"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" tweenType="shape" keyMode="17922">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="4" ty="-8.5"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0307464599609375" c="-0.030670166015625" d="0" tx="98.5" ty="84.15"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.0470588235294118" ratio="0.23921568627451"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.0980392156862745" ratio="0.517647058823529"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.0470588235294118" ratio="0.768627450980392"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4335 1175|-80 1175!-80 1175|-80 170!-80 170|4335 170!4335 170|4335 1175"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

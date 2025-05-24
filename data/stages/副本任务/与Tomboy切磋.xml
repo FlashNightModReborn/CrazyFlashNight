@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_1_BG.swf</Background>
+            <Environment>
+				<Xmax>1770</Xmax>
+				<Xmin>50</Xmin>
+				<Ymax>720</Ymax>
+				<Ymin>250</Ymin>
+				<Width>1770</Width>
+				<Height>730</Height>
+            </Environment>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种284</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

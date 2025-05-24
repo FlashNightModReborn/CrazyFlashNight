@@ -1,0 +1,102 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="电感切割刃/刀脊" itemID="655c4e2f-0000062f" lastModified="1700551159" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="刀脊">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/刀脊花纹2" blendMode="multiply" centerPoint3DX="101.4" centerPoint3DY="13.2">
+                  <matrix>
+                    <Matrix tx="2.4" ty="3.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99" y="9.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/刀脊花纹" blendMode="invert" centerPoint3DX="102.65" centerPoint3DY="12.4">
+                  <matrix>
+                    <Matrix tx="3.8" ty="2.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.85" y="9.55"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.00830078125" c="-0.12481689453125" d="0" tx="102.25" ty="13.55"/>
+                        </matrix>
+                        <GradientEntry color="#A2A2A2" ratio="0"/>
+                        <GradientEntry color="#4D4D4D" ratio="0.235294117647059"/>
+                        <GradientEntry color="#595959" ratio="0.705882352941177"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.122283935546875" d="0.0078125" tx="100.15" ty="6.4"/>
+                        </matrix>
+                        <GradientEntry color="#333333" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.00653076171875" c="0.0076141357421875" d="-1.52587890625e-005" tx="102.3" ty="8.25"/>
+                        </matrix>
+                        <GradientEntry color="#5E5E5E" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!4014 186|4090 326!4090 326|4090 466!4090 466|0 466!0 466|0 76"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!0 76|805 76!805 76|895 256!895 256|3480 256"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!3480 256|3505 186"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!3505 186|4007 173!4007 173|4014 186"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!4014 186|3505 186"/>
+                    <Edge fillStyle1="2" edges="!935 189|2300 188!2300 188|2300 187!2300 187|2640 188!2640 188|2639 184!2639 184|3505 186"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!0 76|0 0!0 0|871 0!871 0|935 189"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

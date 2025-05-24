@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="夜晚选项动画" itemID="6650c0fb-00002b43" lastModified="1716573420" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="夜晚选项动画" currentFrame="14">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="夜晚选项" centerPoint3DX="101.9" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix a="0.19366455078125" d="0.19366455078125" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="528.25" y="754.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.天气系统.当前时间 = 19;
+   _root.发布消息("一觉醒来……当前时间：夜晚七点");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" distance="3" quality="3"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="夜晚选项" centerPoint3DX="101.9" centerPoint3DY="145.95">
+                  <matrix>
+                    <Matrix a="0.19366455078125" d="0.19366455078125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="528.25" y="754.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.天气系统.当前时间 = 19;
+   _root.发布消息("一觉醒来……当前时间：夜晚七点");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" distance="3" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

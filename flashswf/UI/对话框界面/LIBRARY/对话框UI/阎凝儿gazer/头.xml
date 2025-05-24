@@ -1,0 +1,105 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/阎凝儿gazer/头" itemID="6654ae56-0000020f" lastModified="1742032194">
+  <timeline>
+    <DOMTimeline name="头">
+      <layers>
+        <DOMLayer name="基本款" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/阎凝儿gazer/55588787" name="基本款">
+                  <matrix>
+                    <Matrix a="-0.55609130859375" b="-0.01220703125" c="-0.0183258056640625" d="0.532012939453125" tx="20.95" ty="27.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="nexus_viser_副本_2" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/阎凝儿gazer/nexus viser 副本 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0220947265625" b="0.0399322509765625" c="0.0414581298828125" d="1.0611572265625" tx="53.05" ty="28.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.85" y="5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="shape_646" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/阎凝儿gazer/shape 646" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.74163818359375" b="-0.0289764404296875" c="0.0289764404296875" d="0.74163818359375" tx="27.35" ty="31.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.45" y="3.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="shape_386" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/阎凝儿gazer/shape 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999237060546875" b="-0.0390472412109375" c="0.0390472412109375" d="0.999237060546875" tx="-0.25" ty="2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.35" y="29.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2E2B1C"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!207 948.5[#CA.99 #3BA.A7 198 961!198 961[#C7.97 #3AF.88 207 948.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!207 948.5[#17B.2 #2C2.86 267 688!267 688[152 669 126 655!126 655[100 641 96 636!96 636[89 640 90 492!90 492[-18 639 47 796!47 796[37 778 73 856!73 856[93 898 243 1015!243 1015[#DA.47 #3BB.E8 207 948.5"/>
+                    <Edge cubics="!96 636(;100,641 100,656 100,662q96 636Q100 641q100 662);"/>
+                    <Edge cubics="!100 662(;100,723 150,880 160,915q100 662Q100 700q126 798Q140 850q160 915);"/>
+                    <Edge cubics="!160 915(;159,916 159,918 154,918q160 915Q157 918q154 918);"/>
+                    <Edge cubics="!154 918(;131,918 89,656 89,656q154 918Q131 918q89 656);"/>
+                    <Edge cubics="!89 656(;89,651 92,638 96,636q89 656Q89 640q96 636);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

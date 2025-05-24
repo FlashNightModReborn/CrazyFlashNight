@@ -1,0 +1,483 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 1" itemID="678f6432-00000a0c" symbolType="graphic" lastModified="1737450546">
+  <timeline>
+    <DOMTimeline name="补间 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0037841796875" b="0.01434326171875" c="-0.028594970703125" d="0.0076141357421875" tx="-12.45"/>
+                            </matrix>
+                            <GradientEntry color="#F9FEFF" ratio="0.125490196078431"/>
+                            <GradientEntry color="#4F565B" ratio="0.952941176470588"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.0392608642578125" c="-0.04278564453125" d="0" tx="-0.55" ty="-3.95"/>
+                            </matrix>
+                            <GradientEntry color="#F9FEFF" ratio="0.125490196078431"/>
+                            <GradientEntry color="#4F565B" ratio="0.952941176470588"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.03826904296875" c="-0.0429229736328125" d="0" tx="-65" ty="35.6"/>
+                            </matrix>
+                            <GradientEntry color="#C5CBCC" ratio="0"/>
+                            <GradientEntry color="#FFFFFF" ratio="0.203921568627451"/>
+                            <GradientEntry color="#EFEFEF" ratio="0.282352941176471"/>
+                            <GradientEntry color="#9CA3A5" ratio="0.415686274509804"/>
+                            <GradientEntry color="#919799" ratio="0.525490196078431"/>
+                            <GradientEntry color="#B2B2B2" ratio="0.705882352941177"/>
+                            <GradientEntry color="#919699" ratio="0.792156862745098"/>
+                            <GradientEntry color="#6C7172" ratio="0.909803921568627"/>
+                            <GradientEntry color="#787C7F" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.8"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!1 -453S5|1 -481"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1 -481S7[0 -481 -1 -481!-1 -481[-203 -481 -345 -339!-345 -339[-488 -196 -488 5"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!-488 5S7[-488 207 -345 349!-345 349[-203 492 -1 492!-1 492[0 492 1 492"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!1 492S5|1 461"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!1 461S7[-1 461 -2 461!-2 461[-191 461 -325 327!-325 327[-459 194 -459 4!-459 4[-459 -185 -325 -319!-325 -319[-191 -453 -2 -453!-2 -453[-1 -453 1 -453"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!1 -453S6|1 -335!1 -335|-1 -335!-1 -335[-142 -335 -242 -235!-242 -235[-342 -136 -342 5!-342 5[-342 146 -242 246!-242 246[-142 346 -1 346!-1 346|1 346!1 346|1 461"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!1 -481S5|1 -1405!1 -1405|-1761 -1405!-1761 -1405|-2236 -914!-2236 -914|-2236 5"/>
+                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!-2236 5S7|-488 5"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!1 492S6|1 1411!1 1411|-1761 1411!-1761 1411|-2236 924!-2236 924|-2236 5"/>
+                        <Edge fillStyle0="2" edges="!-2013 -774S1|-1606 -1187!-1606 -1187|-232 -1187!-232 -1187|-232 -712!-232 -712[-386 -660 -510 -535!-510 -535[-647 -399 -697 -226!-697 -226|-2013 -226!-2013 -226|-2013 -774"/>
+                        <Edge fillStyle1="3" edges="!-510 546S2[-647 409 -697 237!-697 237|-2013 237!-2013 237|-2013 785!-2013 785|-1606 1197!-1606 1197|-232 1197!-232 1197|-232 723!-232 723[-386 670 -510 546"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.15"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.05560302734375" c="0.08441162109375" d="0" tx="606.4" ty="2105.9"/>
+                            </matrix>
+                            <GradientEntry color="#666666" ratio="0"/>
+                            <GradientEntry color="#151719" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!3402 41953|4575 40765!4575 40765|8528 40765!8528 40765|8528 42131!8528 42131[8084 42282 7727 42640!7727 42640[7333 43034 7190 43531!7190 43531|3402 43531!3402 43531|3402 41953"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.15"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.05029296875" c="0.08441162109375" d="0" tx="619.5" ty="2310.75"/>
+                            </matrix>
+                            <GradientEntry color="#3F3F3F" ratio="0"/>
+                            <GradientEntry color="#151719" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!3402 46441|4575 47629!4575 47629|8528 47629!8528 47629|8528 46263!8528 46263[8084 46112 7727 45754!7727 45754[7333 45360 7190 44863!7190 44863|3402 44863!3402 44863|3402 46441"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.15"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3402 46441|4575 47629!4575 47629|8528 47629!8528 47629|8528 46263!8528 46263[8084 46112 7727 45754!7727 45754[7333 45360 7190 44863!7190 44863|3402 44863!3402 44863|3402 46441"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.15"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.95" y="2312"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3351 46466|4547 47685!4547 47685|8579 47685!8579 47685|8579 46223!8579 46223[#1FDD.1D #B425.5F 7770 45725!7770 45725[#1CD6.E3 #B114.A1 7224 44808!7224 44808|3351 44808!3351 44808|3351 46466"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.15"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.95" y="2312"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.498039215686275"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3452 46416|4612 47586!4612 47586|8475 47586!8475 47586|8475 46303!8475 46303[#1F6E.27 #B44F.6D 7680 45788!7680 45788[#1C91.D9 #B168.93 7153 44913!7153 44913|3452 44913!3452 44913|3452 46416"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="-0.34722900390625" tx="-159.75" ty="767.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.95" y="2312"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3351 46466|4547 47685!4547 47685|8579 47685!8579 47685|8579 46223!8579 46223[#1FDD.1D #B425.5F 7770 45725!7770 45725[#1CD6.E3 #B114.A1 7224 44808!7224 44808|3351 44808!3351 44808|3351 46466"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="-0.34722900390625" tx="-159.75" ty="767.5"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.95" y="2312"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.498039215686275"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3452 46416|4612 47586!4612 47586|8475 47586!8475 47586|8475 46303!8475 46303[#1F6E.27 #B44F.6D 7680 45788!7680 45788[#1C91.D9 #B168.93 7153 44913!7153 44913|3452 44913!3452 44913|3452 46416"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.15"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3402 41953|4575 40765!4575 40765|8528 40765!8528 40765|8528 42131!8528 42131[8084 42282 7727 42640!7727 42640[7333 43034 7190 43531!7190 43531|3402 43531!3402 43531|3402 41953"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.05"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.498039215686275"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!2759 44125|7792 44125"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.0392608642578125" c="0.0428009033203125" d="0" tx="0.2" ty="-4.05"/>
+                            </matrix>
+                            <GradientEntry color="#F9FEFF" ratio="0.125490196078431"/>
+                            <GradientEntry color="#4F565B" ratio="0.952941176470588"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0039520263671875" b="0.014923095703125" c="-0.024383544921875" d="0.006500244140625" tx="1.15" ty="-5.15"/>
+                            </matrix>
+                            <GradientEntry color="#F9FEFF" ratio="0.125490196078431"/>
+                            <GradientEntry color="#4F565B" ratio="0.952941176470588"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.0192413330078125" c="0.0292510986328125" d="0" tx="50.7" ty="-36.15"/>
+                            </matrix>
+                            <GradientEntry color="#666666" ratio="0"/>
+                            <GradientEntry color="#151719" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.038848876953125" c="-0.042938232421875" d="0" tx="55.75" ty="35.2"/>
+                            </matrix>
+                            <GradientEntry color="#C5CBCC" ratio="0"/>
+                            <GradientEntry color="#FFFFFF" ratio="0.203921568627451"/>
+                            <GradientEntry color="#EFEFEF" ratio="0.282352941176471"/>
+                            <GradientEntry color="#9CA3A5" ratio="0.415686274509804"/>
+                            <GradientEntry color="#919799" ratio="0.525490196078431"/>
+                            <GradientEntry color="#B2B2B2" ratio="0.705882352941177"/>
+                            <GradientEntry color="#919699" ratio="0.792156862745098"/>
+                            <GradientEntry color="#6C7172" ratio="0.909803921568627"/>
+                            <GradientEntry color="#787C7F" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="5">
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="0.01739501953125" c="0.0292510986328125" d="0" tx="55.25" ty="35.05"/>
+                            </matrix>
+                            <GradientEntry color="#3F3F3F" ratio="0"/>
+                            <GradientEntry color="#151719" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.8"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1 -486S7[2 -486 3 -486!3 -486[205 -486 347 -344!347 -344[490 -201 490 0"/>
+                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!490 0S7|2238 0"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!2238 0S5|2238 -918!2238 -918|1763 -1410!1763 -1410|1 -1410"/>
+                        <Edge fillStyle0="1" edges="!1 -1410S1|1 -486"/>
+                        <Edge fillStyle0="2" edges="!1 -486S1|1 -458"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="2" edges="!1 -458S7[2 -458 3 -458!3 -458[192 -458 326 -324!326 -324[461 -190 461 -1!461 -1[461 189 326 322!326 322[192 457 3 457!3 457[2 457 1 457"/>
+                        <Edge fillStyle0="2" edges="!1 457S1|1 487"/>
+                        <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!1 487S7[2 487 3 487!3 487[205 487 347 344!347 344[490 202 490 0"/>
+                        <Edge fillStyle0="2" edges="!1 -458S1|1 -340!1 -340|-1 -340!-1 -340[-142 -340 -242 -240!-242 -240[-342 -141 -342 0!-342 0[-342 141 -242 241!-242 241[-142 341 -1 341!-1 341|1 341!1 341|1 457"/>
+                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!699 -231S7|2015 -231!2015 -231|2015 -779!2015 -779|1607 -1192!1607 -1192|234 -1192!234 -1192|234 -717!234 -717[388 -665 512 -540!512 -540[649 -404 699 -231"/>
+                        <Edge fillStyle0="4" fillStyle1="5" strokeStyle="1" edges="!2015 780S7|1607 1193!1607 1193|234 1193!234 1193|234 718!234 718[388 666 512 541!512 541[649 405 699 232!699 232|2015 232!2015 232|2015 780"/>
+                        <Edge fillStyle0="4" strokeStyle="1" edges="!1 1410S5|1763 1410!1763 1410|2238 919!2238 919|2238 0"/>
+                        <Edge fillStyle0="4" edges="!1 487S1|1 1410"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="-0.34722900390625" d="0.34722900390625" tx="159.5" ty="-767.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.65" y="2312.9"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3351 46466|4547 47685!4547 47685|8579 47685!8579 47685|8579 46223!8579 46223[#1FDD.1D #B425.5F 7770 45725!7770 45725[#1CD6.E3 #B114.A1 7224 44808!7224 44808|3351 44808!3351 44808|3351 46466"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="-0.34722900390625" d="0.34722900390625" tx="159.5" ty="-767.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.65" y="2312.9"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.498039215686275"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3452 46416|4612 47586!4612 47586|8475 47586!8475 47586|8475 46303!8475 46303[#1F6E.27 #B44F.6D 7680 45788!7680 45788[#1C91.D9 #B168.93 7153 44913!7153 44913|3452 44913!3452 44913|3452 46416"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="-0.34722900390625" d="-0.34722900390625" tx="159.5" ty="767.35"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.65" y="2311.75"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3351 46466|4547 47685!4547 47685|8579 47685!8579 47685|8579 46223!8579 46223[#1FDD.1D #B425.5F 7770 45725!7770 45725[#1CD6.E3 #B114.A1 7224 44808!7224 44808|3351 44808!3351 44808|3351 46466"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="-0.34722900390625" d="-0.34722900390625" tx="159.5" ty="767.5"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="297.65" y="2311.85"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.498039215686275"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!3452 46416|4612 47586!4612 47586|8475 47586!8475 47586|8475 46303!8475 46303[#1F6E.27 #B44F.6D 7680 45788!7680 45788[#1C91.D9 #B168.93 7153 44913!7153 44913|3452 44913!3452 44913|3452 46416"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.4"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!9199 40138|9199 43217!9199 43217[8787 43217 8499 43504!8499 43504[8213 43791 8213 44197!8213 44197[8213 44603 8499 44889!8499 44889[8787 45177 9199 45177!9199 45177|9199 48256"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-767.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="437.9" y="2210.2"/>
+                      </transformationPoint>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.8"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!9254 42808|9254 43274.5!9254 43274.5[#2289.13 #A8F6.4F 8556.5 43528!8556.5 43528[#204F.DF #AB19.FE 8274 44192!8274 44192[#2054.24 #AE25.DF 8565.5 44858!8565.5 44858[#2296.C4 #B04E.07 9254 45114.5!9254 45114.5|9254 45585!9254 40148|9254
+ 42786!9254 45608|9254 48246"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.34722900390625" d="0.34722900390625" tx="-159.75" ty="-768.2"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" joints="miter">
+                            <fill>
+                              <SolidColor color="#FFFFFF" alpha="0.498039215686275"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="
+!15639 44197|10606 44197"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

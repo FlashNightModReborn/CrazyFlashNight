@@ -1,0 +1,146 @@
+{
+    "tasks": [
+        {
+            "id": 50001,
+            "title": "$SIDE_TITLE_50001",
+            "description": "$SIDE_DESCRIPTION_50001",
+
+            "get_requirements": [13],
+            "get_conversation": "$SIDE_GET_50001",
+            "get_npc": "The Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50001",
+            "finish_npc": "厨师",
+            "rewards": [
+                "金币#500",
+                "经验值#500"
+            ],
+            
+            "chain":"后勤#1"
+        },
+        {
+            "id": 50002,
+            "title": "$SIDE_TITLE_50002",
+            "description": "$SIDE_DESCRIPTION_50002",
+
+            "get_requirements": [50001],
+            "get_conversation": "$SIDE_GET_50002",
+            "get_npc": "厨师",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50002",
+            "finish_npc": "The Girl",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "基础家常菜配方#1"
+            ],
+            
+            "chain":"后勤#2"
+        },
+        {
+            "id": 50003,
+            "title": "$SIDE_TITLE_50003",
+            "description": "$SIDE_DESCRIPTION_50003",
+
+            "get_requirements": [50002],
+            "get_conversation": "$SIDE_GET_50003",
+            "get_npc": "The Girl",
+
+            "finish_submit_items": [
+                "番茄炒蛋#1"
+            ],
+            "finish_conversation": "$SIDE_FINISH_50003",
+            "finish_npc": "King",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "冲锋枪通用弹药#20",
+                "马格南手枪弹药#20"
+            ],
+            
+            "chain":"后勤#3"
+        },
+        {
+            "id": 50004,
+            "title": "$SIDE_TITLE_50004",
+            "description": "$SIDE_DESCRIPTION_50004",
+
+            "get_requirements": [50003],
+            "get_conversation": "$SIDE_GET_50004",
+            "get_npc": "King",
+
+            "finish_submit_items": [
+                "土豆炒肉丝#1"
+            ],
+            "finish_conversation": "$SIDE_FINISH_50004",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "技能点#15"
+            ],
+            
+            "chain":"后勤#4"
+        },
+        {
+            "id": 50005,
+            "title": "$SIDE_TITLE_50005",
+            "description": "$SIDE_DESCRIPTION_50005",
+
+            "get_requirements": [50004],
+            "get_conversation": "$SIDE_GET_50005",
+            "get_npc": "Blue",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50005",
+            "finish_npc": "The Girl",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000"
+            ],
+            
+            "chain":"后勤#5"
+        },
+        {
+            "id": 50006,
+            "title": "$SIDE_TITLE_50006",
+            "description": "$SIDE_DESCRIPTION_50006",
+
+            "get_requirements": [50005],
+            "get_conversation": "$SIDE_GET_50006",
+            "get_npc": "The Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50006",
+            "finish_npc": "artist",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000"
+            ],
+            
+            "chain":"后勤#6"
+        },
+        {
+            "id": 50007,
+            "title": "$SIDE_TITLE_50007",
+            "description": "$SIDE_DESCRIPTION_50007",
+
+            "get_requirements": [50006],
+            "get_conversation": "$SIDE_GET_50007",
+            "get_npc": "artist",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50007",
+            "finish_npc": "The Girl",
+            "rewards": [
+                "金币#5000",
+                "经验值#5000",
+                "技能点#10"
+            ],
+            
+            "chain":"后勤#7"
+        }
+    ]
+}

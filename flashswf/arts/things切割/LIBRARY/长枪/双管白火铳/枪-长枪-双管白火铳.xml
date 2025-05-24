@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/双管白火铳/枪-长枪-双管白火铳" itemID="65fd72f2-000011eb" linkageExportForAS="true" linkageIdentifier="枪-长枪-双管白火铳" lastModified="1723475016">
+  <timeline>
+    <DOMTimeline name="枪-长枪-双管白火铳">
+      <layers>
+        <DOMLayer name="Layer 1" color="#CA659C" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" selected="true" centerPoint3DX="342.95" centerPoint3DY="-21.55">
+                  <matrix>
+                    <Matrix tx="330.45" ty="-34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#79BEB4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/双管白火铳/双管白火铳" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-21" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

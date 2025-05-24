@@ -1,0 +1,887 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesSnapTo="false" snapAlign="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="刀狙少女" itemID="663e1bab-000006ad" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/动画合集" itemID="65ad2501-00002acd"/>
+          <DOMFolderItem name="刀狙少女/基础元件" itemID="66153686-00000444"/>
+          <DOMFolderItem name="刀狙少女/基础元件/其余部件" itemID="663e1be6-000006bd" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/基础元件/其余部件/部件1" itemID="663f0415-00001231"/>
+          <DOMFolderItem name="刀狙少女/基础元件/枪声" itemID="663e1894-000005fc" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/基础元件/原版的套皮部件" itemID="663e1c08-000006c1" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/其他" itemID="663ef8b5-00000b00" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1" itemID="663f1179-000059e5" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/定位子弹" itemID="663efb85-00000b4b" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板" itemID="663e474d-000000e5" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/area框" itemID="65ae673b-00003707" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/死亡消失元件" itemID="65ae843e-000003ca" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件" itemID="65ae6613-00001ba6" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件" itemID="65ae6c71-00003849" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/血条与名称" itemID="65ae670e-000036fc" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人" itemID="656c028d-000003db" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤" itemID="656c026d-000003d8" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸" itemID="671dc7cd-00000974"/>
+          <DOMFolderItem name="防爆服僵尸/代码层" itemID="671dc7e0-0000097b" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板" itemID="671dc806-00000aea" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/area框" itemID="671dc806-00000aeb" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/死亡消失元件" itemID="671dc806-00000aec" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/通用ai元件" itemID="671dc806-00000aed" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件" itemID="671dc806-00000aee" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="671dc806-00000aef" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/血条与名称" itemID="671dc806-00000af0" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/蛙型仿生僵尸" itemID="671dc806-00000af1" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集" itemID="671dc806-00000af2" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材" itemID="671dc806-00000af3" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/蛙型仿生僵尸/音效" itemID="671dc1df-000005a6" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材" itemID="671dc806-00000af4" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/做的动画" itemID="671dc7c7-00000973" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/做的动画/未命名文件夹 1" itemID="671db410-000001ef" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/做的动画/未命名文件夹 1/EDAPT objects" itemID="670eae9e-000001dd" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/做的动画/未命名文件夹 1/sprite" itemID="671dc493-0000075d" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/做的动画/未命名文件夹 1/各部件" itemID="671dc2e3-0000066b" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/做的动画/未命名文件夹 1/重复项目文件夹" itemID="671dc493-00000761" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板" itemID="663f0996-000058f5"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="663f0996-000058f6" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="663f0996-000058f7" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手" itemID="67ba016f-0000217f"/>
+          <DOMFolderItem name="黑铁弓箭手/弓箭手动画" itemID="6766d57d-00001436" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/弓箭手动画/弓箭手身体零件" itemID="67b9f441-00000402" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/弓箭手动画/蛙型仿生僵尸" itemID="67b9f693-000005a3" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/弓箭手动画/蛙型仿生僵尸/杂项素材" itemID="67b9f693-000005a4" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/弓箭手动画/未命名文件夹 1 复制" itemID="67b9f441-00000424" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制" itemID="6766d5bd-00002498" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/弓箭手动画/重复项目文件夹 复制" itemID="67b9f441-00000426" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/怪物通用模板" itemID="67ba017b-0000221e" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/怪物通用模板/area框" itemID="67ba017b-0000221f" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/怪物通用模板/死亡消失元件" itemID="67ba017b-00002220" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/怪物通用模板/通用ai元件" itemID="67ba017b-00002221" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/怪物通用模板/新近战子弹定位元件" itemID="67ba017b-00002222" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="67ba017b-00002223" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/怪物通用模板/血条与名称" itemID="67ba017b-00002224" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/黑铁长枪兵" itemID="67ba017b-00002225" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/黑铁长枪兵/动画合集" itemID="67ba017b-00002226" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手/乱八糟七的玩意儿" itemID="67ba017b-00002227" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵" itemID="67b9e0fc-00000ecb"/>
+          <DOMFolderItem name="黑铁长枪兵/1.特效文件夹" itemID="67b9d6b3-000008d0" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/1.特效文件夹/03.赤橙色系" itemID="67b9d6b3-000008e0" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/1.特效文件夹/03.赤橙色系/赤橙横斩" itemID="67b9d6b3-000008e1" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/1.特效文件夹/06.青蓝色系" itemID="67b9d6b3-000008d1" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪" itemID="67b9d6b3-000008d2" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1" itemID="67b9d6b3-000008d3" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/怪物通用模板" itemID="67b9e118-00000f5d" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/怪物通用模板/area框" itemID="67b9e118-00000f5e" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/怪物通用模板/死亡消失元件" itemID="67b9e118-00000f5f" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/怪物通用模板/通用ai元件" itemID="67b9e118-00000f60" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/怪物通用模板/新近战子弹定位元件" itemID="67b9e118-00000f61" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="67b9e118-00000f62" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/怪物通用模板/血条与名称" itemID="67b9e118-00000f63" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/黑铁长枪兵" itemID="67b9ce08-00000614" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/黑铁长枪兵/动画合集" itemID="67b9e118-00000f64" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/乱八糟七的玩意儿" itemID="6766d916-000025d3" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/蛙型仿生僵尸" itemID="67b9d335-00000833" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/蛙型仿生僵尸/杂项素材" itemID="67b9d335-00000834" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/未命名文件夹 1" itemID="66fd67ca-00000253" isExpanded="true"/>
+          <DOMFolderItem name="黑铁长枪兵/长枪兵身体零件" itemID="67b9ceb7-00000619" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女" itemID="663e243b-0000084e"/>
+          <DOMFolderItem name="劫掠少女/sound" itemID="6640358f-000001fa" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女/基础部件" itemID="663e2418-00000844" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女/基础部件/部件1" itemID="663dc43e-000002b8" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女/基础部件/部件2" itemID="663e2426-00000845" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女/基础部件/部件2/头1" itemID="663dc41b-000002b1" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女/基础部件/部件3" itemID="663e2429-0000084a" isExpanded="true"/>
+          <DOMFolderItem name="思考标签（与旧思考块）" itemID="67e51b4a-00000f3a" isExpanded="true"/>
+          <DOMFolderItem name="特警僵尸" itemID="671db3dc-000001b7" isExpanded="true"/>
+          <DOMFolderItem name="特警僵尸/代码层" itemID="671dc166-00000537" isExpanded="true"/>
+          <DOMFolderItem name="特警僵尸/代码层/怪物通用模板" itemID="65ae6715-000036fd" isExpanded="true"/>
+          <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/area框" itemID="671dc7ff-00000a10"/>
+          <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/死亡消失元件" itemID="671dc7ff-00000a11"/>
+          <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/通用ai元件" itemID="671dc7ff-00000a12" isExpanded="true"/>
+          <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件" itemID="671dc7ff-00000a13"/>
+          <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="671dc7ff-00000a14"/>
+          <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/血条与名称" itemID="671dc7ff-00000a15"/>
+          <DOMFolderItem name="特警僵尸/代码层/蛙型仿生僵尸" itemID="65ad2541-00002ad9"/>
+          <DOMFolderItem name="特警僵尸/代码层/蛙型仿生僵尸/动画合集" itemID="671dc7ff-00000a16"/>
+          <DOMFolderItem name="特警僵尸/代码层/蛙型仿生僵尸/人物素材" itemID="65ab8559-000003f2"/>
+          <DOMFolderItem name="特警僵尸/代码层/蛙型仿生僵尸/音效" itemID="671dbaa2-00000102"/>
+          <DOMFolderItem name="特警僵尸/代码层/蛙型仿生僵尸/杂项素材" itemID="65ad251f-00002ad5"/>
+          <DOMFolderItem name="特警僵尸/做的动画" itemID="671dc15e-00000536"/>
+          <DOMFolderItem name="特警僵尸/做的动画/EDAPT objects" itemID="670fed0b-00000162"/>
+          <DOMFolderItem name="特警僵尸/做的动画/动画" itemID="671dbd38-000002fb"/>
+          <DOMFolderItem name="特警僵尸/做的动画/身体" itemID="671dbb02-0000017d"/>
+          <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1" itemID="67095383-0000016e"/>
+          <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1/其他" itemID="6707c7ad-00001510"/>
+          <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1/人物身体的部件" itemID="6709e6f0-00000181"/>
+          <DOMFolderItem name="特警僵尸/做的动画/重复项目文件夹" itemID="671dbd38-000002ef"/>
+          <DOMFolderItem name="未命名文件夹 1" itemID="663f2163-00000148" isExpanded="true"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="刀狙少女/基础元件/原版的套皮部件/bitmap42.png" itemID="6577faef-0000134c" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/原版的套皮部件/bitmap42.png" sourceLastImported="1702361839" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="刀狙少女/基础元件/原版的套皮部件/bitmap42.png" bitmapDataHRef="M 10 1715405845.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="劫掠少女/基础部件/部件3/bitmap42.png" itemID="663f142a-00000145" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件3/bitmap42.png" sourceLastImported="1702361839" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="劫掠少女/基础部件/部件3/bitmap42.png" bitmapDataHRef="M 1 1715348284.dat" frameRight="860" frameBottom="600"/>
+          <DOMSoundItem name="劫掠少女/sound/m1887_fire_ok.wav" itemID="6819d74c-00005208" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/3XD做的npc/LIBRARY/劫掠少女/sound/m1887_fire_ok.wav" sourceLastImported="1746523971" externalFileCRC32="1741013650" externalFileSize="88466" href="劫掠少女/sound/m1887_fire_ok.wav" soundDataHRef="M 24 1715484063.dat" format="44kHz 16bit Mono" sampleCount="44156" exportFormat="1" exportBits="17"/>
+          <DOMSoundItem name="刀狙少女/基础元件/枪声/m24_ok.wav" itemID="6819d74c-00005209" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/3XD做的npc/LIBRARY/刀狙少女/基础元件/枪声/m24_ok.wav" sourceLastImported="1746523971" externalFileCRC32="1676004011" externalFileSize="83986" href="刀狙少女/基础元件/枪声/m24_ok.wav" soundDataHRef="M 26 1715493941.dat" format="44kHz 16bit Mono" sampleCount="41971" exportFormat="14" exportBits="18"/>
+          <DOMSoundItem name="刀狙少女/基础元件/枪声/m24拉栓.wav" itemID="663e18b5-00000604" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/枪声/m24拉栓.wav" sourceLastImported="1715345571" href="刀狙少女/基础元件/枪声/m24拉栓.wav" soundDataHRef="M 9 1715405845.dat" format="44kHz 16bit Mono" sampleCount="25998" exportFormat="5" exportBits="17" dataLength="51996"/>
+          <DOMSoundItem name="劫掠少女/sound/re_shotgun_m1887_reload.wav" itemID="65ab2a8f-00000a04" linkageExportForAS="true" linkageIdentifier="re_shotgun_m1887_reload.wav" sourceExternalFilepath="./LIBRARY/劫掠少女/sound/re_shotgun_m1887_reload.wav" sourceLastImported="1705333427" href="劫掠少女/sound/re_shotgun_m1887_reload.wav" soundDataHRef="M 23 1715484047.dat" format="44kHz 16bit Mono" sampleCount="22039" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="刀狙少女/基础元件/原版的套皮部件/sound232.mp3" itemID="6577faef-00001364" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/原版的套皮部件/sound232.mp3" sourceLastImported="1702361839" href="刀狙少女/基础元件/原版的套皮部件/sound232.mp3" soundDataHRef="M 11 1715405845.dat" format="11kHz 16bit Mono" sampleCount="9216" exportFormat="5" exportBits="7" dataLength="1664" exportNative="true" cachedSampleCount="4608"/>
+          <DOMSoundItem name="劫掠少女/基础部件/部件2/sound232.mp3" itemID="663f142a-00000146" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件2/sound232.mp3" sourceLastImported="1702361839" href="劫掠少女/基础部件/部件2/sound232.mp3" soundDataHRef="M 2 1715322537.dat" format="11kHz 16bit Mono" sampleCount="9216" exportFormat="5" exportBits="7" dataLength="1664" exportNative="true" cachedSampleCount="4608"/>
+          <DOMSoundItem name="劫掠少女/基础部件/部件3/sound232.mp3" itemID="663e248c-0000336c" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件3/sound232.mp3" sourceLastImported="1702361839" href="劫掠少女/基础部件/部件3/sound232.mp3" soundDataHRef="M 2 1715348284.dat" format="11kHz 16bit Mono" sampleCount="9216" exportFormat="5" exportBits="7" dataLength="1664" exportNative="true" cachedSampleCount="4608"/>
+          <DOMSoundItem name="刀狙少女/基础元件/原版的套皮部件/sound233.mp3" itemID="6577faef-00001368" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/原版的套皮部件/sound233.mp3" sourceLastImported="1702361839" href="刀狙少女/基础元件/原版的套皮部件/sound233.mp3" soundDataHRef="M 12 1715405845.dat" format="11kHz 16bit Mono" sampleCount="10944" exportFormat="5" exportBits="7" dataLength="1976" exportNative="true" cachedSampleCount="5472"/>
+          <DOMSoundItem name="劫掠少女/基础部件/部件2/sound233.mp3" itemID="663f142a-00000147" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件2/sound233.mp3" sourceLastImported="1702361839" href="劫掠少女/基础部件/部件2/sound233.mp3" soundDataHRef="M 4 1715322537.dat" format="11kHz 16bit Mono" sampleCount="10944" exportFormat="5" exportBits="7" dataLength="1976" exportNative="true" cachedSampleCount="5472"/>
+          <DOMSoundItem name="劫掠少女/基础部件/部件3/sound233.mp3" itemID="663e248c-0000336d" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件3/sound233.mp3" sourceLastImported="1702361839" href="劫掠少女/基础部件/部件3/sound233.mp3" soundDataHRef="M 4 1715348284.dat" format="11kHz 16bit Mono" sampleCount="10944" exportFormat="5" exportBits="7" dataLength="1976" exportNative="true" cachedSampleCount="5472"/>
+          <DOMSoundItem name="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound2385.mp3" itemID="6577f78a-00000f71" sourceExternalFilepath="./LIBRARY/防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound2385.mp3" sourceLastImported="1702360970" href="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound2385.mp3" soundDataHRef="M 25 1730004998.dat" format="11kHz 16bit Mono" sampleCount="8064" exportFormat="5" exportBits="7" dataLength="1456" exportNative="true" cachedSampleCount="4032"/>
+          <DOMSoundItem name="特警僵尸/代码层/蛙型仿生僵尸/音效/sound2385.mp3" itemID="671dc9b1-00000236" sourceExternalFilepath="./LIBRARY/特警僵尸/代码层/蛙型仿生僵尸/音效/sound2385.mp3" sourceLastImported="1702360970" href="特警僵尸/代码层/蛙型仿生僵尸/音效/sound2385.mp3" soundDataHRef="M 20 1730004991.dat" format="11kHz 16bit Mono" sampleCount="8064" exportFormat="5" exportBits="7" dataLength="1456" exportNative="true" cachedSampleCount="4032"/>
+          <DOMSoundItem name="未命名文件夹 1/sound309.mp3" itemID="663e248c-0000336e" linkageExportForAS="true" linkageIdentifier="ammopickup1.wav" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/sound309.mp3" sourceLastImported="1702361839" href="未命名文件夹 1/sound309.mp3" soundDataHRef="M 3 1715348284.dat" format="11kHz 16bit Mono" sampleCount="12672" exportFormat="5" exportBits="7" dataLength="2288" exportNative="true" cachedSampleCount="6336"/>
+          <DOMSoundItem name="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound425.mp3" itemID="6577f78a-00000ef6" sourceExternalFilepath="./LIBRARY/防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound425.mp3" sourceLastImported="1702360970" href="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound425.mp3" soundDataHRef="M 26 1730004998.dat" format="22kHz 16bit Mono" sampleCount="12672" exportFormat="5" exportBits="7" dataLength="2860" exportNative="true" cachedSampleCount="3168"/>
+          <DOMSoundItem name="特警僵尸/代码层/蛙型仿生僵尸/音效/sound425.mp3" itemID="671dc9b1-00000237" sourceExternalFilepath="./LIBRARY/特警僵尸/代码层/蛙型仿生僵尸/音效/sound425.mp3" sourceLastImported="1702360970" href="特警僵尸/代码层/蛙型仿生僵尸/音效/sound425.mp3" soundDataHRef="M 21 1730004991.dat" format="22kHz 16bit Mono" sampleCount="12672" exportFormat="5" exportBits="7" dataLength="2860" exportNative="true" cachedSampleCount="3168"/>
+          <DOMSoundItem name="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound436.mp3" itemID="6577f78a-00000efa" sourceExternalFilepath="./LIBRARY/防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound436.mp3" sourceLastImported="1702360970" href="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound436.mp3" soundDataHRef="M 27 1730004998.dat" format="11kHz 16bit Mono" sampleCount="25344" exportFormat="5" exportBits="7" dataLength="4576" exportNative="true" cachedSampleCount="12672"/>
+          <DOMSoundItem name="特警僵尸/代码层/蛙型仿生僵尸/音效/sound436.mp3" itemID="671dc9b1-00000238" sourceExternalFilepath="./LIBRARY/特警僵尸/代码层/蛙型仿生僵尸/音效/sound436.mp3" sourceLastImported="1702360970" href="特警僵尸/代码层/蛙型仿生僵尸/音效/sound436.mp3" soundDataHRef="M 22 1730004991.dat" format="11kHz 16bit Mono" sampleCount="25344" exportFormat="5" exportBits="7" dataLength="4576" exportNative="true" cachedSampleCount="12672"/>
+          <DOMSoundItem name="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound462.mp3" itemID="6577f78a-00000f02" sourceExternalFilepath="./LIBRARY/防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound462.mp3" sourceLastImported="1702360970" href="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound462.mp3" soundDataHRef="M 28 1730004998.dat" format="11kHz 16bit Mono" sampleCount="16704" exportFormat="5" exportBits="7" dataLength="3016" exportNative="true" cachedSampleCount="8352"/>
+          <DOMSoundItem name="特警僵尸/代码层/蛙型仿生僵尸/音效/sound462.mp3" itemID="671dc9b1-00000239" sourceExternalFilepath="./LIBRARY/特警僵尸/代码层/蛙型仿生僵尸/音效/sound462.mp3" sourceLastImported="1702360970" href="特警僵尸/代码层/蛙型仿生僵尸/音效/sound462.mp3" soundDataHRef="M 23 1730004991.dat" format="11kHz 16bit Mono" sampleCount="16704" exportFormat="5" exportBits="7" dataLength="3016" exportNative="true" cachedSampleCount="8352"/>
+          <DOMSoundItem name="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound555.mp3" itemID="6577f78a-00000f06" sourceExternalFilepath="./LIBRARY/防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound555.mp3" sourceLastImported="1702360970" href="防爆服僵尸/代码层/蛙型仿生僵尸/音效/sound555.mp3" soundDataHRef="M 29 1730004998.dat" format="11kHz 16bit Mono" sampleCount="21888" exportFormat="5" exportBits="7" dataLength="3952" exportNative="true" cachedSampleCount="10944"/>
+          <DOMSoundItem name="特警僵尸/代码层/蛙型仿生僵尸/音效/sound555.mp3" itemID="671dc9b1-0000023a" sourceExternalFilepath="./LIBRARY/特警僵尸/代码层/蛙型仿生僵尸/音效/sound555.mp3" sourceLastImported="1702360970" href="特警僵尸/代码层/蛙型仿生僵尸/音效/sound555.mp3" soundDataHRef="M 24 1730004991.dat" format="11kHz 16bit Mono" sampleCount="21888" exportFormat="5" exportBits="7" dataLength="3952" exportNative="true" cachedSampleCount="10944"/>
+          <DOMSoundItem name="刀狙少女/基础元件/sound636.wav" itemID="65b7a6c8-0000009e" linkageExportForAS="true" linkageIdentifier="02_kin_a_2-22.wav" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/sound636.wav" sourceLastImported="1706532518" href="刀狙少女/基础元件/sound636.wav" soundDataHRef="M 15 1715405849.dat" format="44kHz 16bit Mono" sampleCount="5893" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="刀狙少女/基础元件/原版的套皮部件/sound72.mp3" itemID="6577faef-00001358" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/原版的套皮部件/sound72.mp3" sourceLastImported="1702361839" href="刀狙少女/基础元件/原版的套皮部件/sound72.mp3" soundDataHRef="M 14 1715405845.dat" format="11kHz 16bit Mono" sampleCount="10368" exportFormat="5" exportBits="7" dataLength="1872" exportNative="true" cachedSampleCount="5184"/>
+          <DOMSoundItem name="劫掠少女/基础部件/部件3/sound72.mp3" itemID="663f142a-00000148" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件3/sound72.mp3" sourceLastImported="1702361839" href="劫掠少女/基础部件/部件3/sound72.mp3" soundDataHRef="M 5 1715348284.dat" format="11kHz 16bit Mono" sampleCount="10368" exportFormat="5" exportBits="7" dataLength="1872" exportNative="true" cachedSampleCount="5184"/>
+          <DOMSoundItem name="刀狙少女/基础元件/普通刀挥刀.wav" itemID="65a29b24-00000598" linkageExportForAS="true" linkageIdentifier="普通刀挥刀.wav" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/普通刀挥刀.wav" sourceLastImported="1705158560" href="刀狙少女/基础元件/普通刀挥刀.wav" soundDataHRef="M 16 1715405849.dat" format="44kHz 16bit Mono" sampleCount="9485" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="刀狙少女/基础元件/普通刀用力横斩.wav" itemID="65a29b24-0000059c" linkageExportForAS="true" linkageIdentifier="普通刀用力横斩.wav" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/普通刀用力横斩.wav" sourceLastImported="1705157086" href="刀狙少女/基础元件/普通刀用力横斩.wav" soundDataHRef="M 17 1715405849.dat" format="44kHz 16bit Mono" sampleCount="10734" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="刀狙少女/基础元件/普通刀用力竖斩.wav" itemID="65a29b24-000005a0" linkageExportForAS="true" linkageIdentifier="普通刀用力竖斩.wav" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/普通刀用力竖斩.wav" sourceLastImported="1705159192" href="刀狙少女/基础元件/普通刀用力竖斩.wav" soundDataHRef="M 18 1715405849.dat" format="44kHz 16bit Mono" sampleCount="11021" exportFormat="5" exportBits="17"/>
+     </media>
+     <symbols>
+          <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="673638e5-00000b84" lastModified="1731606757"/>
+          <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="673638e5-00000b86" lastModified="1731606757"/>
+          <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bbb" lastModified="1731606978"/>
+          <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bbd" lastModified="1731606978"/>
+          <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bbf" lastModified="1731606978"/>
+          <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bc1" lastModified="1731606978"/>
+          <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bc3" lastModified="1731606978"/>
+          <Include href="补间 8.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bc5" lastModified="1731606978"/>
+          <Include href="补间 9.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bc7" lastModified="1731606978"/>
+          <Include href="补间 10.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bc9" lastModified="1731607084"/>
+          <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bcb" lastModified="1731607084"/>
+          <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bcd" lastModified="1731607084"/>
+          <Include href="刀狙少女/敌人-刀狙少女.xml" itemID="663ef7c5-0000081f" lastModified="1745319101"/>
+          <Include href="刀狙少女/动画合集/被击.xml" loadImmediate="false" itemID="65acdb47-0000114e" lastModified="1715357885"/>
+          <Include href="刀狙少女/动画合集/登场动作.xml" loadImmediate="false" itemID="67ea6b3f-000005d3" lastModified="1747387268"/>
+          <Include href="刀狙少女/动画合集/攻击动作.xml" loadImmediate="false" itemID="65ab87a3-0000046a" lastModified="1725441157"/>
+          <Include href="刀狙少女/动画合集/击飞.xml" loadImmediate="false" itemID="65acdc14-00001566" lastModified="1715405512"/>
+          <Include href="刀狙少女/动画合集/静止动作.xml" loadImmediate="false" itemID="65abd103-00001475" lastModified="1715405471"/>
+          <Include href="刀狙少女/动画合集/跑步动作.xml" loadImmediate="false" itemID="65accf5d-00000b8a" lastModified="1715444427"/>
+          <Include href="刀狙少女/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="65abc3b8-000012d7" lastModified="1722588600"/>
+          <Include href="刀狙少女/动画合集/起身.xml" loadImmediate="false" itemID="65acdcd4-00001973" lastModified="1745319221"/>
+          <Include href="刀狙少女/动画合集/拾取动作.xml" loadImmediate="false" itemID="66ac773e-00000393" lastModified="1743072090"/>
+          <Include href="刀狙少女/动画合集/死亡.xml" loadImmediate="false" itemID="65acf016-00002569" lastModified="1745319346"/>
+          <Include href="刀狙少女/动画合集/走路.xml" loadImmediate="false" itemID="65acbf17-000005ec" lastModified="1715445065"/>
+          <Include href="刀狙少女/基础元件/其余部件/Symbol 39.xml" itemIcon="1" loadImmediate="false" itemID="663dc8fc-000002fd" lastModified="1699803847"/>
+          <Include href="刀狙少女/基础元件/其余部件/Symbol 44.xml" loadImmediate="false" itemID="663dc8fc-000002fb" lastModified="1715406179"/>
+          <Include href="刀狙少女/基础元件/其余部件/Symbol 45.xml" loadImmediate="false" itemID="663dc8fc-000002fa" lastModified="1712672663"/>
+          <Include href="刀狙少女/基础元件/其余部件/Symbol 382.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005144" lastModified="1715325606"/>
+          <Include href="刀狙少女/基础元件/其余部件/Symbol 383.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005139" lastModified="1715325619"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 6.xml" loadImmediate="false" itemID="663f041c-0000517b" lastModified="1715231980"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 10.xml" loadImmediate="false" itemID="663f041c-0000517a" lastModified="1715323665"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 13.xml" loadImmediate="false" itemID="663f0415-0000124e" lastModified="1715185847"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 15.xml" loadImmediate="false" itemID="663f041c-00005276" lastModified="1715230931"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 19.xml" loadImmediate="false" itemID="663f041c-00005213" lastModified="1715231555"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 24.xml" loadImmediate="false" itemID="663f041c-00005212" lastModified="1715232605"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 28.xml" loadImmediate="false" itemID="663cbbab-000001e1" lastModified="1715256253"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 38.xml" loadImmediate="false" itemID="663f041d-000052ad" lastModified="1715322804"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 39.xml" loadImmediate="false" itemID="663f041c-00005275" lastModified="1715322889"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 40.xml" loadImmediate="false" itemID="663f041c-000050ec" lastModified="1715340722"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 41.xml" loadImmediate="false" itemID="663f041c-000051e7" lastModified="1715324272"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 42.xml" loadImmediate="false" itemID="663f041c-0000524a" lastModified="1715322959"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 43.xml" loadImmediate="false" itemID="663f041c-00005211" lastModified="1715325079"/>
+          <Include href="刀狙少女/基础元件/其余部件/部件1/元件 44.xml" loadImmediate="false" itemID="663f041c-00005229" lastModified="1715323074"/>
+          <Include href="刀狙少女/基础元件/其余部件/头.xml" loadImmediate="false" itemID="663f1197-000059eb" lastModified="1715409303"/>
+          <Include href="刀狙少女/基础元件/其余部件/头1.xml" loadImmediate="false" itemID="663dc8fc-000002fc" lastModified="1715233550"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 1.xml" loadImmediate="false" itemID="663f041d-0000528c" lastModified="1715324207"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 2.xml" loadImmediate="false" itemID="663dc76d-000002c5" lastModified="1715324781"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 3.xml" loadImmediate="false" itemID="663dcce9-000001fd" lastModified="1715326185"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 11.xml" loadImmediate="false" itemID="663dc8fc-000002f8" lastModified="1715255152"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 12.xml" loadImmediate="false" itemID="663dc8fc-000002f9" lastModified="1715256577"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 30.xml" loadImmediate="false" itemID="663cbcd6-00000220" lastModified="1715324832"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 33.xml" loadImmediate="false" itemID="663cc26d-00000554" lastModified="1715257966"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 37.xml" loadImmediate="false" itemID="663cf989-000001ec" lastModified="1715272073"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 45.xml" loadImmediate="false" itemID="663dc79a-000002cb" lastModified="1715324826"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 46.xml" loadImmediate="false" itemID="663dc85c-000002d5" lastModified="1715325020"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 47.xml" loadImmediate="false" itemID="663dc87b-000002dc" lastModified="1715325051"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 2.xml" loadImmediate="false" itemID="663f041d-000052b9" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 19.xml" loadImmediate="false" itemID="663f0417-000026e3" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 21.xml" loadImmediate="false" itemID="663f0417-000026e4" lastModified="1702361982"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-000026e7" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 23.xml" loadImmediate="false" itemID="663f0417-000026e6" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002719" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 25.xml" loadImmediate="false" itemID="663f0417-00002718" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 27.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-000026f8" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 29.xml" loadImmediate="false" itemID="663f0417-000026f9" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 30.xml" loadImmediate="false" itemID="663f0417-000026f7" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 32.xml" loadImmediate="false" itemID="663f0417-000026f5" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 38.xml" loadImmediate="false" itemID="663f0417-000026f4" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 46.xml" loadImmediate="false" itemID="663f0417-000026fa" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 55.xml" loadImmediate="false" itemID="663f041c-000050b1" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 58.xml" loadImmediate="false" itemID="663f0417-000026fb" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 366.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-000026fd" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 367.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002700" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 368.xml" loadImmediate="false" itemID="663f0417-000026ff" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 369.xml" loadImmediate="false" itemID="663f041d-000052b8" lastModified="1715325151"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 370.xml" itemIcon="1" loadImmediate="false" itemID="663f041d-000052ac" lastModified="1715323542"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 371.xml" itemIcon="1" loadImmediate="false" itemID="663f041d-00005297" lastModified="1715325109"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 372.xml" itemIcon="1" loadImmediate="false" itemID="663f041d-0000528b" lastModified="1715324215"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 373.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005274" lastModified="1715323553"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 374.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005255" lastModified="1715324998"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 375.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005249" lastModified="1715323693"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005234" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 377.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005228" lastModified="1715323102"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 378.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005210" lastModified="1715323062"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 379.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-000051e6" lastModified="1715322952"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 380.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005191" lastModified="1715324250"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 381.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005186" lastModified="1715325042"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 384.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005179" lastModified="1715325722"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 385.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-00005159" lastModified="1715324789"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 386.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-000050f7" lastModified="1715325242"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 387.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-000050eb" lastModified="1715331527"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 388.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-000050d4" lastModified="1715324811"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 389.xml" loadImmediate="false" itemID="663f0418-000035e2" lastModified="1715357623"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 390.xml" itemIcon="0" loadImmediate="false" itemID="663f0417-00002701" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 391.xml" loadImmediate="false" itemID="663f0417-000027f2" lastModified="1715357644"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 392.xml" loadImmediate="false" itemID="663f0417-00002b42" lastModified="1715357706"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 394.xml" loadImmediate="false" itemID="663f0417-00002706" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 395.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002707" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 396.xml" loadImmediate="false" itemID="663f0418-0000300a" lastModified="1715493993"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 397.xml" loadImmediate="false" itemID="663f0418-0000343f" lastModified="1715357753"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 398.xml" loadImmediate="false" itemID="663f0419-000036ba" lastModified="1715357861"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 399.xml" loadImmediate="false" itemID="663f0419-0000371a" lastModified="1715357904"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 400.xml" loadImmediate="false" itemID="663f0419-0000374a" lastModified="1715357959"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 401.xml" loadImmediate="false" itemID="663f0419-000039de" lastModified="1715325523"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 402.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002708" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 406.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002709" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 411.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-000050b2" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 422.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-000050b0" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 423.xml" itemIcon="1" loadImmediate="false" itemID="663f041c-000050b5" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 425.xml" itemIcon="1" loadImmediate="false" itemID="663f041d-000052bb" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 430.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-0000270a" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 431.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-0000270b" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 432.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-0000270c" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-0000270d" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 434.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-0000270e" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 435.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-0000270f" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 436.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002710" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 437.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002711" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 438.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002712" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 441.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002713" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 442.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002714" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 444.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002715" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 451.xml" itemIcon="1" loadImmediate="false" itemID="663f0417-00002716" lastModified="1701508661"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 456.xml" loadImmediate="false" itemID="663f0419-00003a63" lastModified="1715358015"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/近战子弹.xml" loadImmediate="false" itemID="663f0417-00002717" lastModified="1707308093"/>
+          <Include href="刀狙少女/基础元件/原版的套皮部件/头测试.xml" loadImmediate="false" itemID="663f0415-00001260" lastModified="1715323920"/>
+          <Include href="刀狙少女/其他/近战子弹.xml" loadImmediate="false" itemID="666aedb2-00001efc" lastModified="1718283773"/>
+          <Include href="刀狙少女/未命名文件夹 1/定位子弹/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="65a55354-00001a7f" lastModified="1705337906"/>
+          <Include href="刀狙少女/未命名文件夹 1/定位子弹/Symbol 14.xml" loadImmediate="false" itemID="65a55354-00001a7e" lastModified="1701884437"/>
+          <Include href="刀狙少女/未命名文件夹 1/定位子弹/近战子弹区域定位2帧持续.xml" loadImmediate="false" itemID="65a65ae0-00000839" lastModified="1713065499"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1705929059"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1705929879"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="662fbc4c-0000294f" lastModified="1714404428"/>
+          <Include href="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
+          <Include href="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤/Symbol 23.xml" loadImmediate="false" itemID="65689e04-0000008f" lastModified="1701582054"/>
+          <Include href="防爆服僵尸/代码层/敌人-防爆服僵尸.xml" itemID="671dc7f1-0000097d" lastModified="1743068318"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="671dc806-00000b70" lastModified="1705929059"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b1a" lastModified="1700337299"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="671dc806-00000b67" lastModified="1705929037"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="671dc806-00000b72" lastModified="1705929009"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="671dc806-00000b93" lastModified="1701884437"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="671dc806-00000b74" lastModified="1705928955"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="671dc806-00000b8c" lastModified="1716387345"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b8e" lastModified="1701884437"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="671dc806-00000b8d" lastModified="1701884437"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="671dc806-00000b19" lastModified="1701582054"/>
+          <Include href="防爆服僵尸/代码层/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="671dc806-00000b66" lastModified="1714404428"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/被击.xml" loadImmediate="false" itemID="671dc806-00000b90" lastModified="1730003921"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作.xml" loadImmediate="false" itemID="671dc806-00000b78" lastModified="1730206960"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/击飞.xml" loadImmediate="false" itemID="671dc806-00000b91" lastModified="1730004085"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/静止动作.xml" loadImmediate="false" itemID="671dc807-00000b94" lastModified="1730003696"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/跑步动作.xml" loadImmediate="false" itemID="671dc806-00000b77" lastModified="1730009032"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="671dc806-00000b88" lastModified="1730206951"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/起身.xml" loadImmediate="false" itemID="671dc806-00000b92" lastModified="1731606646"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/死亡.xml" loadImmediate="false" itemID="671dc807-00000b95" lastModified="1731606767"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/走路.xml" loadImmediate="false" itemID="671dc806-00000b76" lastModified="1730005513"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/大腿.xml" loadImmediate="false" itemID="671dc806-00000b4b" lastModified="1705739470"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/屁股.xml" loadImmediate="false" itemID="671dc806-00000b53" lastModified="1705841122"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/上半身.xml" loadImmediate="false" itemID="671dc806-00000b4f" lastModified="1705841380"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/上肢.xml" loadImmediate="false" itemID="671dc806-00000b41" lastModified="1705739363"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/手爪子.xml" loadImmediate="false" itemID="671dc806-00000b42" lastModified="1705739432"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/头.xml" loadImmediate="false" itemID="671dc806-00000b4a" lastModified="1705739341"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/腿爪.xml" loadImmediate="false" itemID="671dc806-00000b4e" lastModified="1705738196"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/下肢.xml" loadImmediate="false" itemID="671dc806-00000b49" lastModified="1705739415"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/小腿.xml" loadImmediate="false" itemID="671dc806-00000b4d" lastModified="1705739506"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/右上肢.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b54" lastModified="1705739700"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/元件 1.xml" loadImmediate="false" itemID="671dc806-00000b48" lastModified="1705687664"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/元件 2.xml" loadImmediate="false" itemID="671dc806-00000b47" lastModified="1705689570"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/元件 84.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b50" lastModified="1705398655"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/元件 89.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b52" lastModified="1705841365"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/人物素材/中腿.xml" loadImmediate="false" itemID="671dc806-00000b4c" lastModified="1705739493"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 254.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b60" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 259.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b62" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 263.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b64" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 287.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b5b" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 290.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b5c" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 291.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b5d" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 299.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b5e" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 300.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b5f" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 304.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b61" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b63" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 311.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b65" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 1072.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b51" lastModified="1705841016"/>
+          <Include href="防爆服僵尸/代码层/蛙型仿生僵尸/杂项素材/刀光1.xml" loadImmediate="false" itemID="671dc806-00000b5a" lastModified="1705750090"/>
+          <Include href="防爆服僵尸/代码层/阴影.xml" loadImmediate="false" itemID="671dc807-00000b99" lastModified="1705744649"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/EDAPT objects/Center Marker.xml" itemIcon="1" loadImmediate="false" itemID="670eae9e-000001e3" lastModified="1729015454"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/EDAPT objects/Magnet Target.xml" itemIcon="1" loadImmediate="false" itemID="670eae9e-000001da" lastModified="1729015454"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/sprite/Symbol 749.xml" loadImmediate="false" itemID="6577b699-00000b46" lastModified="1702343951"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/Symbol 125.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000294" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/Symbol 127.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000295" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/Symbol 1504.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000006b9" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/Symbol 1508.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000006bd" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/Symbol 1509.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000006be" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/Symbol 1519.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000006c8" lastModified="1702098593"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1.xml" loadImmediate="false" itemID="670eaa23-000001bf" lastModified="1729054884"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2.xml" loadImmediate="false" itemID="670eaa2b-000001c4" lastModified="1729015827"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3.xml" loadImmediate="false" itemID="670eaa3d-000001c8" lastModified="1729015483"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4.xml" loadImmediate="false" itemID="670eaa41-000001cc" lastModified="1729015485"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5.xml" loadImmediate="false" itemID="670eaa45-000001d0" lastModified="1729077848"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6.xml" loadImmediate="false" itemID="670eaa49-000001d4" lastModified="1729015877"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7.xml" loadImmediate="false" itemID="670eaa4f-000001d8" lastModified="1729015875"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8.xml" loadImmediate="false" itemID="670eaa54-000001dc" lastModified="1729015877"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9.xml" loadImmediate="false" itemID="670eaa57-000001e0" lastModified="1729015870"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10.xml" loadImmediate="false" itemID="670eaa5c-000001e4" lastModified="1729015867"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11.xml" loadImmediate="false" itemID="670eaa75-000001eb" lastModified="1729015454"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12.xml" loadImmediate="false" itemID="670eaa8e-000001f1" lastModified="1729054885"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 13.xml" loadImmediate="false" itemID="6709f51c-00000247" lastModified="1729015448"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 16.xml" loadImmediate="false" itemID="6709f7e0-00000267" lastModified="1729015448"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22.xml" loadImmediate="false" itemID="6709fc3a-000002b2" lastModified="1729015836"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23.xml" loadImmediate="false" itemID="6709fc76-000002b8" lastModified="1729015824"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25.xml" loadImmediate="false" itemID="6709ffe8-00000174" lastModified="1729015867"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/重复项目文件夹/Symbol 142.xml" itemIcon="1" loadImmediate="false" itemID="671dc807-00000b96" lastModified="1717613400"/>
+          <Include href="防爆服僵尸/做的动画/未命名文件夹 1/重复项目文件夹/Symbol 146.xml" itemIcon="1" loadImmediate="false" itemID="671dc807-00000b98" lastModified="1717613400"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="662b383e-00000cb2" lastModified="1701582054"/>
+          <Include href="黑铁弓箭手/刺特效.xml" loadImmediate="false" itemID="6766df5a-00000287" lastModified="1734795098"/>
+          <Include href="黑铁弓箭手/刀光.xml" loadImmediate="false" itemID="6766e179-00000297" lastModified="1734795641"/>
+          <Include href="黑铁弓箭手/敌人-黑铁弓箭手.xml" itemID="67b9f41e-000003fd" lastModified="1745318861"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/Symbol 1040.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002496" lastModified="1734624407"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/箭矢.xml" loadImmediate="false" itemID="67642b8d-000001c2" lastModified="1734622282"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 10.xml" loadImmediate="false" itemID="6766d5bd-0000241e" lastModified="1727927658"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 11.xml" loadImmediate="false" itemID="6766d5bd-00002435" lastModified="1727927667"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 12.xml" loadImmediate="false" itemID="6766d5bd-00002440" lastModified="1727927679"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 13.xml" loadImmediate="false" itemID="6766d5bd-000023a5" lastModified="1727928636"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 14.xml" loadImmediate="false" itemID="6766d5bd-00002382" lastModified="1727927711"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 15.xml" loadImmediate="false" itemID="6766d5bd-00002464" lastModified="1727927873"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 16.xml" loadImmediate="false" itemID="6766d5bd-00002481" lastModified="1727927944"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 17.xml" loadImmediate="false" itemID="6766d5bd-00002458" lastModified="1727928119"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 21.xml" loadImmediate="false" itemID="6766d5bd-00002421" lastModified="1727888738"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 24.xml" loadImmediate="false" itemID="6766d5bd-00002459" lastModified="1727928193"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 26.xml" loadImmediate="false" itemID="6766d5bd-00002490" lastModified="1727786494"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 30.xml" loadImmediate="false" itemID="6766d5bd-00002423" lastModified="1727756793"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 31.xml" loadImmediate="false" itemID="6766d5bd-00002422" lastModified="1727756911"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 38.xml" loadImmediate="false" itemID="6766d5bd-00002420" lastModified="1727888697"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 44.xml" loadImmediate="false" itemID="6766d5bd-0000244b" lastModified="1727774444"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 48.xml" loadImmediate="false" itemID="6766d5bd-00002487" lastModified="1727776923"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 49.xml" loadImmediate="false" itemID="6766d5bd-00002483" lastModified="1727776399"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 51.xml" loadImmediate="false" itemID="6766d5bd-000023ab" lastModified="1727777682"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 54.xml" loadImmediate="false" itemID="6766d5bd-000023aa" lastModified="1727784400"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 55.xml" loadImmediate="false" itemID="6766d5bd-000023a8" lastModified="1727784295"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 60.xml" loadImmediate="false" itemID="6766d5bd-00002437" lastModified="1727786055"/>
+          <Include href="黑铁弓箭手/弓箭手动画/弓箭手身体零件/元件 61.xml" loadImmediate="false" itemID="6766d5bd-00002491" lastModified="1727786454"/>
+          <Include href="黑铁弓箭手/弓箭手动画/蛙型仿生僵尸/杂项素材/Symbol 287.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-000020b6" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/蛙型仿生僵尸/杂项素材/Symbol 291.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-000020b9" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 1 复制/Symbol 797.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002365" lastModified="1701508661"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 928.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-0000245f" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 929.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002482" lastModified="1727927935"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 931.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002446" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 932.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-0000245a" lastModified="1727928053"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 936.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002436" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 937.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-0000241f" lastModified="1727888730"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 938.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002441" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 939.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002428" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 940.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-000023a6" lastModified="1702098593"/>
+          <Include href="黑铁弓箭手/弓箭手动画/未命名文件夹 3 复制/Symbol 941.xml" itemIcon="1" loadImmediate="false" itemID="6766d5bd-00002383" lastModified="1727928844"/>
+          <Include href="黑铁弓箭手/弓箭手动画/重复项目文件夹 复制/元件 1.xml" loadImmediate="false" itemID="6766d5bd-000023ec" lastModified="1727926277"/>
+          <Include href="黑铁弓箭手/弓箭手动画/重复项目文件夹 复制/元件 6.xml" loadImmediate="false" itemID="6766d5bd-000023e4" lastModified="1727926035"/>
+          <Include href="黑铁弓箭手/弓箭手动画/重复项目文件夹 复制/元件 63.xml" loadImmediate="false" itemID="6766d5bd-000023e0" lastModified="1734622042"/>
+          <Include href="黑铁弓箭手/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="67ba017b-00002243" lastModified="1705929059"/>
+          <Include href="黑铁弓箭手/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="67ba017b-0000223a" lastModified="1705929037"/>
+          <Include href="黑铁弓箭手/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="67ba017b-00002245" lastModified="1705929009"/>
+          <Include href="黑铁弓箭手/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="67ba017c-00002269" lastModified="1701884437"/>
+          <Include href="黑铁弓箭手/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="67ba017b-00002247" lastModified="1705928955"/>
+          <Include href="黑铁弓箭手/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="67ba017c-00002262" lastModified="1716387345"/>
+          <Include href="黑铁弓箭手/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="67ba017c-00002264" lastModified="1701884437"/>
+          <Include href="黑铁弓箭手/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="67ba017c-00002263" lastModified="1701884437"/>
+          <Include href="黑铁弓箭手/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="67ba017b-00002239" lastModified="1714404428"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/被击.xml" loadImmediate="false" itemID="67ba017c-00002266" lastModified="1740240238"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/攻击动作.xml" loadImmediate="false" itemID="67ba017b-0000224b" lastModified="1740244743"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/击飞.xml" loadImmediate="false" itemID="67ba017c-00002267" lastModified="1740240442"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/静止动作.xml" loadImmediate="false" itemID="67ba017c-0000226a" lastModified="1740240033"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/跑步动作.xml" loadImmediate="false" itemID="67ba017b-0000224a" lastModified="1740240187"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="67ba017c-00002258" lastModified="1740241240"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/起身.xml" loadImmediate="false" itemID="67ba017c-00002268" lastModified="1740240479"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/死亡.xml" loadImmediate="false" itemID="67ba017c-0000226b" lastModified="1740245674"/>
+          <Include href="黑铁弓箭手/黑铁长枪兵/动画合集/走路.xml" loadImmediate="false" itemID="67ba017b-00002249" lastModified="1740240121"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 3.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b5-0000249c" lastModified="1734793141"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 4.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b5-000024a0" lastModified="1734793141"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024a4" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024a8" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024ac" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 8.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024b0" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 9.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024b4" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 10.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024b8" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 11.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024bc" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 12.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024c0" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 13.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024c4" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024c8" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 15.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024cc" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024d0" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 17.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b6-000024d4" lastModified="1734793142"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 18.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024d8" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 19.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024dc" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 20.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024e0" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 21.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024e4" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 22.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024e8" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 23.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024ec" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 24.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024f0" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 25.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024f4" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 26.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024f8" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 27.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-000024fc" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 28.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-00002500" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 29.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-00002504" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 30.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b7-00002508" lastModified="1734793143"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 31.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-0000250c" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 32.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002510" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 33.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002514" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 34.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002518" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 35.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-0000251c" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 36.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002520" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 37.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002524" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 38.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002528" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 39.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-0000252c" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 40.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002530" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 41.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002534" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 42.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002538" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 43.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-0000253c" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 44.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b8-00002540" lastModified="1734793144"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 45.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002544" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 46.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002548" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 47.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-0000254c" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 48.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002550" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 49.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002554" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 50.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002558" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 51.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-0000255c" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 52.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002560" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 53.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002564" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 54.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002568" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 55.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-0000256c" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 56.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002570" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 57.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002574" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 58.xml" itemIcon="1" loadImmediate="false" itemID="6766d7b9-00002578" lastModified="1734793145"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 59.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-0000257c" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 60.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-00002580" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 61.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-00002584" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 62.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-00002588" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 63.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-0000258c" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 64.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-00002590" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 65.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-00002594" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 66.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-00002598" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 67.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-0000259c" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 68.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025a0" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 69.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025a4" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 70.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025a8" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 71.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025ac" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 72.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025b0" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 73.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025b4" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 74.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025b8" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 75.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025bc" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 76.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025c0" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 77.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025c4" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/乱八糟七的玩意儿/补间 78.xml" itemIcon="1" loadImmediate="false" itemID="6766d7ba-000025c8" lastModified="1734793146"/>
+          <Include href="黑铁弓箭手/阴影.xml" loadImmediate="false" itemID="67ba017c-0000226c" lastModified="1705744649"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 287.xml" loadImmediate="false" itemID="653d644e-00000cb9" lastModified="1698427550"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 289.xml" loadImmediate="false" itemID="653d644e-00000cba" lastModified="1698427550"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 291.xml" loadImmediate="false" itemID="653d644e-00000cbb" lastModified="1698427550"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 293.xml" loadImmediate="false" itemID="653d644e-00000cbc" lastModified="1698427550"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 236.xml" loadImmediate="false" itemID="653cd862-000002a8" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 237.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002a9" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 238.xml" loadImmediate="false" itemID="653cd862-000002aa" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 239.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002ab" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 240.xml" loadImmediate="false" itemID="653cd862-000002ac" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 241.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002ad" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 242.xml" loadImmediate="false" itemID="653cd862-000002ae" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 243.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002af" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 244.xml" loadImmediate="false" itemID="653cd862-000002b0" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 245.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002b1" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 246.xml" loadImmediate="false" itemID="653cd862-000002b2" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 247.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002b3" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 248.xml" loadImmediate="false" itemID="653cd862-000002b4" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 249.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002b5" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 250.xml" loadImmediate="false" itemID="653cd862-000002b6" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 251.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002b7" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 252.xml" loadImmediate="false" itemID="653cd862-000002b8" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 253.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002b9" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 254.xml" loadImmediate="false" itemID="653cd862-000002ba" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 255.xml" loadImmediate="false" itemID="653cd862-000002bb" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 256.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002bc" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 257.xml" loadImmediate="false" itemID="653cd862-000002bd" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 258.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002be" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 259.xml" loadImmediate="false" itemID="653cd862-000002bf" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 260.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002c0" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 261.xml" loadImmediate="false" itemID="653cd862-000002c1" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 262.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002c2" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 263.xml" loadImmediate="false" itemID="653cd862-000002c3" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 264.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002c4" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 265.xml" loadImmediate="false" itemID="653cd862-000002c5" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 266.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002c6" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 267.xml" loadImmediate="false" itemID="653cd862-000002c7" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 268.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002c8" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 269.xml" loadImmediate="false" itemID="653cd862-000002c9" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 270.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002ca" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 271.xml" loadImmediate="false" itemID="653cd862-000002cb" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 272.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002cc" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 273.xml" loadImmediate="false" itemID="653cd862-000002cd" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 274.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002ce" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 275.xml" loadImmediate="false" itemID="653cd862-000002cf" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 276.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002d0" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 277.xml" loadImmediate="false" itemID="653cd862-000002d1" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 278.xml" itemIcon="1" loadImmediate="false" itemID="653cd862-000002d2" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 279.xml" loadImmediate="false" itemID="653cd862-000002d3" lastModified="1690082192"/>
+          <Include href="黑铁长枪兵/敌人-黑铁长枪兵.xml" itemID="67b9cdf9-00000613" lastModified="1743068294"/>
+          <Include href="黑铁长枪兵/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="67b9e118-00000f83" lastModified="1705929059"/>
+          <Include href="黑铁长枪兵/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000fd5" lastModified="1700337299"/>
+          <Include href="黑铁长枪兵/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="67b9e118-00000f7a" lastModified="1705929037"/>
+          <Include href="黑铁长枪兵/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="67b9e118-00000f85" lastModified="1705929009"/>
+          <Include href="黑铁长枪兵/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="67b9e118-00000fe7" lastModified="1701884437"/>
+          <Include href="黑铁长枪兵/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="67b9e118-00000f87" lastModified="1705928955"/>
+          <Include href="黑铁长枪兵/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="67b9e118-00000fe0" lastModified="1716387345"/>
+          <Include href="黑铁长枪兵/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000fe2" lastModified="1701884437"/>
+          <Include href="黑铁长枪兵/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="67b9e118-00000fe1" lastModified="1701884437"/>
+          <Include href="黑铁长枪兵/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="67b9e118-00000fd4" lastModified="1701582054"/>
+          <Include href="黑铁长枪兵/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="67b9e118-00000f79" lastModified="1714404428"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/被击.xml" loadImmediate="false" itemID="67b9e118-00000fe4" lastModified="1740230713"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/攻击动作.xml" loadImmediate="false" itemID="67b9e118-00000f8c" lastModified="1740244158"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/击飞.xml" loadImmediate="false" itemID="67b9e118-00000fe5" lastModified="1740231417"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/静止动作.xml" loadImmediate="false" itemID="67b9e118-00000fe8" lastModified="1740230961"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/跑步动作.xml" loadImmediate="false" itemID="67b9e118-00000f8b" lastModified="1740230524"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="67b9e118-00000fd6" lastModified="1740237410"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/起身.xml" loadImmediate="false" itemID="67b9e118-00000fe6" lastModified="1740231371"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/死亡.xml" loadImmediate="false" itemID="67b9e118-00000fe9" lastModified="1740231580"/>
+          <Include href="黑铁长枪兵/黑铁长枪兵/动画合集/走路.xml" loadImmediate="false" itemID="67b9e118-00000f8a" lastModified="1740230472"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 2.xml" loadImmediate="false" itemID="66fa1247-00000216" lastModified="1727777566"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 7.xml" loadImmediate="false" itemID="66fe153e-000019df" lastModified="1727927614"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 8.xml" loadImmediate="false" itemID="67b9e118-00000f89" lastModified="1727890377"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 9.xml" loadImmediate="false" itemID="66fe1543-000019e7" lastModified="1727927619"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 18.xml" loadImmediate="false" itemID="66fa758e-0000021b" lastModified="1727690126"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 19.xml" loadImmediate="false" itemID="66fa83b7-00000269" lastModified="1727888887"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 20.xml" loadImmediate="false" itemID="66fb73e5-00000220" lastModified="1727775646"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 27.xml" loadImmediate="false" itemID="66fb743b-00000239" lastModified="1727779782"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 32.xml" loadImmediate="false" itemID="66fb7b75-000002c1" lastModified="1727757173"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 35.xml" loadImmediate="false" itemID="66fb8048-000002f1" lastModified="1727890367"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 40.xml" loadImmediate="false" itemID="66fbba2d-00000238" lastModified="1727773472"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 41.xml" loadImmediate="false" itemID="66fbbca4-0000026a" lastModified="1727773860"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 47.xml" loadImmediate="false" itemID="66fbc184-00000294" lastModified="1727775108"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 48.xml" loadImmediate="false" itemID="66fbc634-00000246" lastModified="1727776923"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 49.xml" loadImmediate="false" itemID="66fbc677-00000257" lastModified="1727776399"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 53.xml" loadImmediate="false" itemID="66fbe1e0-00000247" lastModified="1727890401"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 54.xml" loadImmediate="false" itemID="66fbe3f7-0000024c" lastModified="1727784400"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 55.xml" loadImmediate="false" itemID="66fbe4a4-0000025c" lastModified="1727784295"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 56.xml" loadImmediate="false" itemID="66fbe51f-0000026d" lastModified="1727784264"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 57.xml" loadImmediate="false" itemID="66fbe627-00000280" lastModified="1727785616"/>
+          <Include href="黑铁长枪兵/乱八糟七的玩意儿/元件 59.xml" loadImmediate="false" itemID="66fbead4-0000029f" lastModified="1727888899"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 254.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ff9" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 259.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ffb" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 263.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ff3" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 287.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000feb" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 291.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ff6" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 299.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ff7" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 300.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ff8" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 304.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ffa" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ff2" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/蛙型仿生僵尸/杂项素材/Symbol 311.xml" itemIcon="1" loadImmediate="false" itemID="67b9e118-00000ff5" lastModified="1702098593"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 777.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001582" lastModified="1727693737"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 778.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001583" lastModified="1727786527"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 787.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000158c" lastModified="1701508661"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 788.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000158d" lastModified="1701508661"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 789.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000158e" lastModified="1727757220"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 790.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000158f" lastModified="1701508661"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 792.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001591" lastModified="1727929270"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 793.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001592" lastModified="1701508661"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 796.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001595" lastModified="1701508661"/>
+          <Include href="黑铁长枪兵/未命名文件夹 1/Symbol 797.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001596" lastModified="1701508661"/>
+          <Include href="黑铁长枪兵/阴影.xml" loadImmediate="false" itemID="67b9e118-00000ffc" lastModified="1705744649"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/腰部.xml" loadImmediate="false" itemID="66fe150e-000019c4" lastModified="1727927566"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/右臂上.xml" loadImmediate="false" itemID="66fe14f2-000019ac" lastModified="1727929288"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/右臂下.xml" loadImmediate="false" itemID="66fe14fc-000019b6" lastModified="1727927548"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/右手.xml" loadImmediate="false" itemID="66fe1502-000019be" lastModified="1727927554"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/长枪兵身体.xml" loadImmediate="false" itemID="66fe149b-00001948" lastModified="1727927451"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/长枪兵头部.xml" loadImmediate="false" itemID="66fe147b-0000193d" lastModified="1727927420"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/长枪兵左臂.xml" loadImmediate="false" itemID="66fe14b3-0000194f" lastModified="1727927475"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/左臂下.xml" loadImmediate="false" itemID="66fe14c6-00001955" lastModified="1727927494"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/左大腿.xml" loadImmediate="false" itemID="66fe151f-000019cb" lastModified="1727927583"/>
+          <Include href="黑铁长枪兵/长枪兵身体零件/左手.xml" loadImmediate="false" itemID="66fe14d8-0000195d" lastModified="1727927512"/>
+          <Include href="劫掠少女/敌人-劫掠少女.xml" itemID="663e521c-000000c3" lastModified="1745319069"/>
+          <Include href="劫掠少女/基础部件/部件1/头1.xml" loadImmediate="false" itemID="65ef46a5-0000155d" lastModified="1715233550"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 6.xml" loadImmediate="false" itemID="663b861f-0000021d" lastModified="1715231980"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 10.xml" loadImmediate="false" itemID="663b9074-00000307" lastModified="1715325479"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 11.xml" loadImmediate="false" itemID="663b9302-00000629" lastModified="1715255152"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 12.xml" loadImmediate="false" itemID="663b9501-0000017f" lastModified="1715256577"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 13.xml" loadImmediate="false" itemID="663ba8b7-00000180" lastModified="1715359156"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 15.xml" loadImmediate="false" itemID="663c58d3-00000190" lastModified="1715230931"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 19.xml" loadImmediate="false" itemID="663c5aeb-000001b5" lastModified="1715231555"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 24.xml" loadImmediate="false" itemID="663c5f5d-000001e9" lastModified="1715232605"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 38.xml" loadImmediate="false" itemID="663dbfb4-00000259" lastModified="1715322804"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 39.xml" loadImmediate="false" itemID="663dc009-00000263" lastModified="1715322889"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 40.xml" loadImmediate="false" itemID="663dc01d-0000026c" lastModified="1715322909"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 41.xml" loadImmediate="false" itemID="663dc03a-00000273" lastModified="1715324272"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 42.xml" loadImmediate="false" itemID="663dc04f-0000027a" lastModified="1715322959"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 43.xml" loadImmediate="false" itemID="663dc09c-00000284" lastModified="1715324330"/>
+          <Include href="劫掠少女/基础部件/部件1/元件 44.xml" loadImmediate="false" itemID="663dc0c2-00000292" lastModified="1715323074"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 2.xml" loadImmediate="false" itemID="6577faef-000013b3" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="663e23ca-00000836" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 25.xml" loadImmediate="false" itemID="663e23ca-00000835" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 39.xml" itemIcon="1" loadImmediate="false" itemID="655b3573-0000022c" lastModified="1699803847"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 45.xml" loadImmediate="false" itemID="655b3573-0000022e" lastModified="1712672663"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 46.xml" loadImmediate="false" itemID="663e23ca-0000083c" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 369.xml" loadImmediate="false" itemID="6577faef-0000146f" lastModified="1715359090"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 370.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001470" lastModified="1715323542"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 371.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001471" lastModified="1715449307"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 372.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001472" lastModified="1715324215"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 373.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001473" lastModified="1715323553"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 374.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001474" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 375.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001475" lastModified="1715323693"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001476" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 377.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001477" lastModified="1715323102"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 378.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001478" lastModified="1715323062"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 379.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001479" lastModified="1715322952"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 380.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000147a" lastModified="1715324250"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 381.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000147b" lastModified="1715323685"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 384.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000147e" lastModified="1715325477"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 385.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000147f" lastModified="1715323812"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 386.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001480" lastModified="1715325408"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 387.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001481" lastModified="1715324193"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 388.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001482" lastModified="1715323775"/>
+          <Include href="劫掠少女/基础部件/部件2/Symbol 396.xml" loadImmediate="false" itemID="6577faef-00001489" lastModified="1715484479"/>
+          <Include href="劫掠少女/基础部件/部件2/近战子弹.xml" loadImmediate="false" itemID="663e23ca-00000832" lastModified="1707308093"/>
+          <Include href="劫掠少女/基础部件/部件2/头1/Symbol 44.xml" loadImmediate="false" itemID="655b3573-0000022d" lastModified="1746523947"/>
+          <Include href="劫掠少女/基础部件/部件2/头1/头测试.xml" loadImmediate="false" itemID="663dc410-000002b0" lastModified="1715323920"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 19.xml" loadImmediate="false" itemID="6577faef-000013c3" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000013c5" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 23.xml" loadImmediate="false" itemID="6577faef-000013c6" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000013c7" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 25.xml" loadImmediate="false" itemID="6577faef-000013c8" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 27.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000013ca" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 29.xml" loadImmediate="false" itemID="6577faef-000013cb" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 30.xml" loadImmediate="false" itemID="6577faef-000013cc" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 32.xml" loadImmediate="false" itemID="6577faef-000013cd" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 38.xml" loadImmediate="false" itemID="6577faef-000013ce" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 46.xml" loadImmediate="false" itemID="6577faef-000013d2" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 55.xml" loadImmediate="false" itemID="6577faef-000013d8" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 58.xml" loadImmediate="false" itemID="6577faef-000013db" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 366.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000146c" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 367.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000146d" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 368.xml" loadImmediate="false" itemID="6577faef-0000146e" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 382.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000147c" lastModified="1715325631"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 383.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000147d" lastModified="1715325635"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 389.xml" loadImmediate="false" itemID="6577faef-00001483" lastModified="1715348382"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 390.xml" itemIcon="0" loadImmediate="false" itemID="6577faef-00001484" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 391.xml" loadImmediate="false" itemID="6577faef-00001485" lastModified="1715348321"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 392.xml" loadImmediate="false" itemID="6577faef-00001486" lastModified="1715348321"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 394.xml" loadImmediate="false" itemID="6577faef-00001487" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 395.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001488" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 397.xml" loadImmediate="false" itemID="6577faef-0000148a" lastModified="1715450938"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 398.xml" loadImmediate="false" itemID="6577faef-0000148b" lastModified="1715348321"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 399.xml" loadImmediate="false" itemID="6577faef-0000148c" lastModified="1715348321"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 400.xml" loadImmediate="false" itemID="6577faef-0000148d" lastModified="1715348321"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 401.xml" loadImmediate="false" itemID="6577faef-0000148e" lastModified="1715348321"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 402.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000148f" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 406.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001490" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 411.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001491" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 422.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001492" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 423.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001493" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 425.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001494" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 430.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001495" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 431.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001496" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 432.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001497" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001498" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 434.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001499" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 435.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000149a" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 436.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000149b" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 437.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000149c" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 438.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000149d" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 441.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000149e" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 442.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000149f" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 444.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014a0" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 451.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014a1" lastModified="1701508661"/>
+          <Include href="劫掠少女/基础部件/部件3/Symbol 456.xml" loadImmediate="false" itemID="6577faef-000014a2" lastModified="1715348457"/>
+          <Include href="劫掠少女/基础部件/部件3/近战子弹.xml" loadImmediate="false" itemID="65c3743d-000024bd" lastModified="1707308093"/>
+          <Include href="劫掠少女/基础部件/部件3/拾取.xml" loadImmediate="false" itemID="66a916ab-00002d84" lastModified="1743072098"/>
+          <Include href="劫掠少女/基础部件/部件3/元件 1.xml" loadImmediate="false" itemID="663dc52f-000002bf" lastModified="1715324207"/>
+          <Include href="绳索.xml" itemIcon="1" loadImmediate="false" itemID="67ea7145-00000696" lastModified="1743417670"/>
+          <Include href="思考标签（与旧思考块）/拾取思考块（弃用）.xml" loadImmediate="false" itemID="67e51b53-00000f3c" lastModified="1743067987"/>
+          <Include href="思考标签（与旧思考块）/思考标签.xml" loadImmediate="false" itemID="67e50bd8-00000c0a" lastModified="1743064061"/>
+          <Include href="特警僵尸/代码层/敌人-特警僵尸.xml" itemID="671dbe5f-00000783" lastModified="1743068796"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="671dc7ff-00000a61" lastModified="1705929059"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="671dc7ff-00000a3c" lastModified="1700337299"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="671dc7ff-00000a58" lastModified="1705929037"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="671dc7ff-00000a63" lastModified="1705929009"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="671dc7ff-00000a7b" lastModified="1701884437"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="671dc7ff-00000a65" lastModified="1743064014"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="671dc7ff-00000a74" lastModified="1716387345"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="671dc7ff-00000a76" lastModified="1701884437"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="671dc7ff-00000a75" lastModified="1701884437"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="671dc7ff-00000a3b" lastModified="1701582054"/>
+          <Include href="特警僵尸/代码层/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="671dc7ff-00000a57" lastModified="1714404428"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/被击.xml" loadImmediate="false" itemID="671dc7ff-00000a78" lastModified="1730002164"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作.xml" loadImmediate="false" itemID="671dc7ff-00000a69" lastModified="1730206980"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/击飞.xml" loadImmediate="false" itemID="671dc7ff-00000a79" lastModified="1731606891"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/静止动作.xml" loadImmediate="false" itemID="671dc7ff-00000a7c" lastModified="1730009298"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/跑步动作.xml" loadImmediate="false" itemID="671dc7ff-00000a68" lastModified="1730008171"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="671dc7ff-00000a70" lastModified="1730206933"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/起身.xml" loadImmediate="false" itemID="671dc7ff-00000a7a" lastModified="1731606867"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/死亡.xml" loadImmediate="false" itemID="671dc7ff-00000a7d" lastModified="1731607104"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/动画合集/走路.xml" loadImmediate="false" itemID="671dc7ff-00000a67" lastModified="1730008959"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/大腿.xml" loadImmediate="false" itemID="65ab84c8-000003ba" lastModified="1705739470"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/屁股.xml" loadImmediate="false" itemID="65ab84b3-000003b8" lastModified="1705841122"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/上半身.xml" loadImmediate="false" itemID="65ab821c-000002ed" lastModified="1705841380"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/上肢.xml" loadImmediate="false" itemID="65ab845f-000003af" lastModified="1705739363"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/手爪子.xml" loadImmediate="false" itemID="65ab84a5-000003b6" lastModified="1705739432"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/头.xml" loadImmediate="false" itemID="65ab8449-000003ac" lastModified="1705739341"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/腿爪.xml" loadImmediate="false" itemID="65ab7fd4-00000223" lastModified="1705738196"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/下肢.xml" loadImmediate="false" itemID="65ab8494-000003b3" lastModified="1705739415"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/小腿.xml" loadImmediate="false" itemID="65ab84ee-000003bf" lastModified="1705739506"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/右上肢.xml" itemIcon="1" loadImmediate="false" itemID="65ab85b4-0000045f" lastModified="1705739700"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/元件 1.xml" loadImmediate="false" itemID="65aaba70-00000061" lastModified="1705687664"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/元件 2.xml" loadImmediate="false" itemID="65aac13c-000000c3" lastModified="1705689570"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/元件 84.xml" itemIcon="1" loadImmediate="false" itemID="65a6517f-00000288" lastModified="1705398655"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/元件 89.xml" itemIcon="1" loadImmediate="false" itemID="65a6517f-0000028d" lastModified="1705841365"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/人物素材/中腿.xml" loadImmediate="false" itemID="65ab84e1-000003bd" lastModified="1705739493"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 254.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002fc" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 259.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002fe" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 263.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000301" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 287.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000030d" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 290.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000030f" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 291.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000310" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 299.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000318" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 300.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000319" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 304.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000031d" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000321" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 311.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000324" lastModified="1702098593"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/Symbol 1072.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-0000114b" lastModified="1705841016"/>
+          <Include href="特警僵尸/代码层/蛙型仿生僵尸/杂项素材/刀光1.xml" loadImmediate="false" itemID="65abae4a-000008c3" lastModified="1705750090"/>
+          <Include href="特警僵尸/代码层/阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
+          <Include href="特警僵尸/做的动画/EDAPT objects/Center Marker.xml" itemIcon="1" loadImmediate="false" itemID="670fed0b-00000168" lastModified="1729184233"/>
+          <Include href="特警僵尸/做的动画/EDAPT objects/Magnet Target.xml" itemIcon="1" loadImmediate="false" itemID="670fed0a-0000015f" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/动画/Symbol 148.xml" itemIcon="1" loadImmediate="false" itemID="66bf5472-00001c52" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/动画/Symbol 154.xml" itemIcon="1" loadImmediate="false" itemID="66bf5472-00001c58" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/动画/Symbol 175.xml" itemIcon="1" loadImmediate="false" itemID="66bf5472-00001c6c" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/动画/Symbol 180.xml" itemIcon="1" loadImmediate="false" itemID="66bf5472-00001c70" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/其他/元件 2.xml" loadImmediate="false" itemID="67094fc8-00000150" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/其他/元件 3.xml" loadImmediate="false" itemID="67095039-00000162" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/其他/元件 8.xml" loadImmediate="false" itemID="65e9df24-000001bd" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/人物身体的部件/头.xml" loadImmediate="false" itemID="67095397-00000172" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/身体.xml" loadImmediate="false" itemID="670a9d06-00000326" lastModified="1729096430"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 1.xml" loadImmediate="false" itemID="670a9d06-00000327" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制.xml" loadImmediate="false" itemID="670a9d06-00000332" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 5.xml" loadImmediate="false" itemID="670a9d06-00000322" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 7.xml" loadImmediate="false" itemID="670a9d06-0000031c" lastModified="1729184244"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 9.xml" loadImmediate="false" itemID="670a9d06-0000032a" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 10.xml" loadImmediate="false" itemID="670a9d06-0000031b" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 11.xml" loadImmediate="false" itemID="670a9d06-00000324" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 14.xml" loadImmediate="false" itemID="670a9d06-0000031d" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 17.xml" loadImmediate="false" itemID="670a9d06-00000323" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 18.xml" loadImmediate="false" itemID="670a9d06-00000318" lastModified="1729184273"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 19.xml" loadImmediate="false" itemID="670a9d06-00000319" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 20.xml" loadImmediate="false" itemID="670a9d06-0000032b" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/军阀人物1/元件 22.xml" loadImmediate="false" itemID="670a9d06-00000325" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 1.xml" loadImmediate="false" itemID="670fea96-00000229" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 2.xml" loadImmediate="false" itemID="670fec9b-00000146" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 8.xml" loadImmediate="false" itemID="6709ee13-00000203" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 17.xml" loadImmediate="false" itemID="6709f9ef-0000028e" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 18.xml" loadImmediate="false" itemID="6709fa19-00000295" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 19.xml" loadImmediate="false" itemID="6709faa1-0000029c" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 20.xml" loadImmediate="false" itemID="6709fb1f-000002a1" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/身体/元件 21.xml" loadImmediate="false" itemID="6709fbb3-000002ae" lastModified="1729184234"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 2.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c7e" lastModified="1729955657"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 3.xml" loadImmediate="false" itemID="671ced3d-00000c7d" lastModified="1729955651"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 129.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c4b" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 134.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c39" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 138.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c3b" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 140.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c48" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 141.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c3c" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 142.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c25" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 143.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c32" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 144.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c2e" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 145.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c2f" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 146.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c26" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 149.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c30" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 150.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c18" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 151.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c0d" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 152.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c1d" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 155.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c0b" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 156.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c1e" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 157.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c19" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 158.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c05" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 160.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c1f" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 161.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c1a" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 162.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c04" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 163.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c20" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 165.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c15" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 166.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c06" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 169.xml" loadImmediate="false" itemID="671ced3d-00000c43" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 171.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c17" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 172.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c09" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 174.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c4a" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 178.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c0c" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 181.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c27" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 183.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c23" lastModified="1717613400"/>
+          <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 184.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c07" lastModified="1717613400"/>
+          <Include href="未命名文件夹 1/元件 1.xml" loadImmediate="false" itemID="663f0413-00001167" lastModified="1715405844"/>
+          <Include href="未命名文件夹 1/原来的参考.xml" itemID="663ef7ba-0000081e" lastModified="1715405903"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+          <PD n="DebugMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="805365" publishTime="1745318915"/>
+          <PublishItem publishSize="810957" publishTime="1743506832"/>
+          <PublishItem publishSize="802550" publishTime="1743068429"/>
+          <PublishItem publishSize="802545" publishTime="1743068383"/>
+          <PublishItem publishSize="803080" publishTime="1743068037"/>
+          <PublishItem publishSize="808109" publishTime="1741080085"/>
+          <PublishItem publishSize="814769" publishTime="1740245510"/>
+          <PublishItem publishSize="814768" publishTime="1740245495"/>
+          <PublishItem publishSize="814715" publishTime="1740244808"/>
+          <PublishItem publishSize="814711" publishTime="1740244361"/>
+          <PublishItem publishSize="814705" publishTime="1740244225"/>
+          <PublishItem publishSize="814599" publishTime="1740243940"/>
+          <PublishItem publishSize="814599" publishTime="1740243546"/>
+          <PublishItem publishSize="693323" publishTime="1740237422"/>
+          <PublishItem publishSize="693339" publishTime="1740237279"/>
+          <PublishItem publishSize="693335" publishTime="1740236873"/>
+          <PublishItem publishSize="693321" publishTime="1740236779"/>
+          <PublishItem publishSize="693366" publishTime="1740236525"/>
+          <PublishItem publishSize="693415" publishTime="1740236292"/>
+          <PublishItem publishSize="464289" publishTime="1730009054"/>
+     </publishHistory>
+</DOMDocument>

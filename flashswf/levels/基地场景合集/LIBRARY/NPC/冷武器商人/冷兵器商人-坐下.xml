@@ -1,0 +1,675 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/冷武器商人/冷兵器商人-坐下" itemID="6665864b-00001af0" lastModified="1717930913" lastUniqueIdentifier="36">
+  <timeline>
+    <DOMTimeline name="冷兵器商人-坐下" currentFrame="99">
+      <layers>
+        <DOMLayer name="冷兵商人肢体-右手" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-右手" symbolType="graphic" centerPoint3DX="-20.1" centerPoint3DY="86.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363052368164063" b="-0.0888519287109375" c="-0.0888519287109375" d="0.363052368164063" tx="-11.7" ty="79.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.9" y="23.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-右小臂" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小臂" symbolType="graphic" centerPoint3DX="-20.55" centerPoint3DY="69.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.328094482421875" b="-0.191665649414063" c="-0.191665649414063" d="0.328094482421875" tx="-7" ty="64.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.15" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-右大臂" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="-16.15" centerPoint3DY="42" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.361282348632813" b="-0.119720458984375" c="-0.119720458984375" d="0.361282348632813" tx="-1.45" ty="25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.8" y="16.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="-16.15" centerPoint3DY="42" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.361282348632813" b="-0.119720458984375" c="-0.119720458984375" d="0.361282348632813" tx="-1.45" ty="25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.8" y="16.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="-16.15" centerPoint3DY="40.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.361282348632813" b="-0.119720458984375" c="-0.119720458984375" d="0.361282348632813" tx="-1.45" ty="23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.8" y="16.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="-16.15" centerPoint3DY="42" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.361282348632813" b="-0.119720458984375" c="-0.119720458984375" d="0.361282348632813" tx="-1.45" ty="25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.8" y="16.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-脑袋" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-脑袋" centerPoint3DX="9.85" centerPoint3DY="5.35">
+                  <matrix>
+                    <Matrix a="0.997268676757813" b="0.0738525390625" c="-0.0738525390625" d="0.997268676757813" tx="-0.7" ty="-11.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="15.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-腰刀" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-腰刀" centerPoint3DX="-2.9" centerPoint3DY="68.8">
+                  <matrix>
+                    <Matrix a="0.99627685546875" b="-0.0861968994140625" c="0.0861968994140625" d="0.99627685546875" tx="-26.9" ty="53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.35" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-上身" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-上身" symbolType="graphic" centerPoint3DX="4.8" centerPoint3DY="34.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.364181518554688" b="-0.0269622802734375" c="-0.0269622802734375" d="0.364181518554688" tx="23.25" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-上身" symbolType="graphic" centerPoint3DX="4.8" centerPoint3DY="32.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.364181518554688" b="-0.0269622802734375" c="-0.0269622802734375" d="0.364181518554688" tx="23.25" ty="11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-上身" symbolType="graphic" centerPoint3DX="4.8" centerPoint3DY="34.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.364181518554688" b="-0.0269622802734375" c="-0.0269622802734375" d="0.364181518554688" tx="23.25" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-腰腹" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-腰腹" symbolType="graphic" centerPoint3DX="6.15" centerPoint3DY="61.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363815307617188" b="0.0314788818359375" c="0.0314788818359375" d="0.363815307617188" tx="22.85" ty="43.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀-消防斧" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-消防斧" centerPoint3DX="-53.9" centerPoint3DY="92.5">
+                  <matrix>
+                    <Matrix a="0.0416717529296875" b="0.236343383789063" c="-0.236343383789063" d="0.0416717529296875" tx="-25.45" ty="91.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.1" y="-25.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-玳瑁长柄剑" centerPoint3DX="-8.95" centerPoint3DY="51.7">
+                  <matrix>
+                    <Matrix a="0.194793701171875" b="0.156723022460938" c="-0.156723022460938" d="0.194793701171875" tx="14.65" ty="22.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-右大腿" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大腿" symbolType="graphic" centerPoint3DX="11.15" centerPoint3DY="87.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.32818603515625" b="0.28118896484375" c="0.2938232421875" d="0.218399047851563" tx="2.6" ty="67.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.5" y="113.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-右鞋子" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="27.75" centerPoint3DY="145.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37750244140625" b="0.00543212890625" c="0.0082244873046875" d="0.377838134765625" tx="40.25" ty="135.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.7" y="25.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="27.75" centerPoint3DY="145.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37750244140625" b="0.00543212890625" c="0.0082244873046875" d="0.377838134765625" tx="40.25" ty="135.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.7" y="25.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="22.8" centerPoint3DY="146" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.375564575195313" b="-0.038665771484375" c="-0.0359344482421875" d="0.376220703125" tx="36.45" ty="136.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.65" y="25.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="27.75" centerPoint3DY="145.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37750244140625" b="0.00543212890625" c="0.0082244873046875" d="0.377838134765625" tx="40.25" ty="135.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.7" y="25.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="43.7" centerPoint3DY="141.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34222412109375" b="0.159408569335938" c="0.16131591796875" d="0.341751098632813" tx="51.75" ty="127.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.55" y="25.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="27.75" centerPoint3DY="145.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37750244140625" b="0.00543212890625" c="0.0082244873046875" d="0.377838134765625" tx="40.25" ty="135.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.7" y="25.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-右小腿" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="23" centerPoint3DY="120.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36004638671875" b="0.0355224609375" c="0.040283203125" d="0.375091552734375" tx="30.45" ty="99.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="23" centerPoint3DY="120.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36004638671875" b="0.0355224609375" c="0.040283203125" d="0.375091552734375" tx="30.45" ty="99.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="20.95" centerPoint3DY="120.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.361740112304688" b="-0.006744384765625" c="-0.0037689208984375" d="0.377227783203125" tx="30.95" ty="99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="23" centerPoint3DY="120.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36004638671875" b="0.0355224609375" c="0.040283203125" d="0.375091552734375" tx="30.45" ty="99.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="29.95" centerPoint3DY="120.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.314041137695313" b="0.179428100585938" c="0.18994140625" d="0.3258056640625" tx="28" ty="98.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="23" centerPoint3DY="120.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36004638671875" b="0.0355224609375" c="0.040283203125" d="0.375091552734375" tx="30.45" ty="99.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-左大腿" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大腿" symbolType="graphic" centerPoint3DX="21.95" centerPoint3DY="77.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.14801025390625" b="0.308700561523438" c="0.314910888671875" d="0.161514282226563" tx="7.6" ty="58.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.3" y="121.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-左手" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-左手" symbolType="graphic" centerPoint3DX="32.25" centerPoint3DY="78.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34552001953125" b="0.0126495361328125" c="0.0126495361328125" d="0.34552001953125" tx="39.35" ty="70.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="0.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-左鞋子" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="42.65" centerPoint3DY="129.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.340362548828125" b="0.0227508544921875" c="0.0258636474609375" d="0.354934692382813" tx="53" ty="120.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" selected="true" symbolType="graphic" centerPoint3DX="42.65" centerPoint3DY="129.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.340362548828125" b="0.0227508544921875" c="0.0258636474609375" d="0.354934692382813" tx="53" ty="120.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="52.55" centerPoint3DY="127.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3228759765625" b="0.110061645507813" c="0.116836547851563" d="0.336135864257813" tx="60.1" ty="116.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="42.65" centerPoint3DY="129.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.340362548828125" b="0.0227508544921875" c="0.0258636474609375" d="0.354934692382813" tx="53" ty="120.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="36.4" centerPoint3DY="129.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.339508056640625" b="-0.0322265625" c="-0.031951904296875" d="0.354354858398438" tx="48.25" ty="121.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子" symbolType="graphic" centerPoint3DX="42.65" centerPoint3DY="129.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.340362548828125" b="0.0227508544921875" c="0.0258636474609375" d="0.354934692382813" tx="53" ty="120.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-左小腿" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="38.1" centerPoint3DY="106.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.330154418945313" b="0.035888671875" c="0.0393524169921875" d="0.353668212890625" tx="44.35" ty="87.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" selected="true" symbolType="graphic" centerPoint3DX="38.1" centerPoint3DY="106.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.330154418945313" b="0.035888671875" c="0.0393524169921875" d="0.353668212890625" tx="44.35" ty="87.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="42.2" centerPoint3DY="106.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.309616088867188" b="0.1201171875" c="0.129547119140625" d="0.331436157226563" tx="43.25" ty="86.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="38.1" centerPoint3DY="106.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.330154418945313" b="0.035888671875" c="0.0393524169921875" d="0.353668212890625" tx="44.35" ty="87.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="35.65" centerPoint3DY="105.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.33148193359375" b="-0.0181732177734375" c="-0.018096923828125" d="0.355255126953125" tx="44.9" ty="88.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小腿" symbolType="graphic" centerPoint3DX="38.1" centerPoint3DY="106.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.330154418945313" b="0.035888671875" c="0.0393524169921875" d="0.353668212890625" tx="44.35" ty="87.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-左小臂" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-小臂" symbolType="graphic" centerPoint3DX="23.8" centerPoint3DY="65.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347335815429688" b="0.016510009765625" c="0.016510009765625" d="0.347335815429688" tx="31.65" ty="54.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.55" y="49.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-左大臂" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="17.9" centerPoint3DY="43.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347976684570313" b="0.007232666015625" c="-0.007232666015625" d="0.347976684570313" tx="10.3" ty="24.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.85" y="12.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="17.9" centerPoint3DY="43.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347976684570313" b="0.007232666015625" c="-0.007232666015625" d="0.347976684570313" tx="10.3" ty="24.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.85" y="12.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="17.9" centerPoint3DY="41.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347976684570313" b="0.007232666015625" c="-0.007232666015625" d="0.347976684570313" tx="10.3" ty="22.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.85" y="12.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/肢体/冷兵商人肢体-大臂" symbolType="graphic" centerPoint3DX="17.9" centerPoint3DY="43.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.347976684570313" b="0.007232666015625" c="-0.007232666015625" d="0.347976684570313" tx="10.3" ty="24.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.85" y="12.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/阴影" centerPoint3DX="155.75" centerPoint3DY="200.6">
+                  <matrix>
+                    <Matrix a="0.244125366210938" b="-0.140945434570313" c="0.109115600585938" d="0.188980102539063" tx="37.75" ty="169.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵商人肢体-背武" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-虎彻" centerPoint3DX="3.75" centerPoint3DY="44.85">
+                  <matrix>
+                    <Matrix a="0.241348266601563" b="-0.06121826171875" c="0.0687103271484375" d="0.271041870117188" tx="-5.4" ty="3.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="149.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-唐朝直刀" centerPoint3DX="-0.75" centerPoint3DY="57.85">
+                  <matrix>
+                    <Matrix a="0.231781005859375" b="-0.0621490478515625" c="0.0621490478515625" d="0.231781005859375" tx="-7.75" ty="20.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.9" y="160.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-CF手斧" centerPoint3DX="-7.95" centerPoint3DY="32.5">
+                  <matrix>
+                    <Matrix a="0.19329833984375" b="-0.157913208007813" c="-0.157928466796875" d="-0.193328857421875" tx="5.45" ty="45.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.85" y="72.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

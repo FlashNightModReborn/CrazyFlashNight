@@ -1,0 +1,541 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- 无限过图数据结构文档-以摇滚公园为例 -->
+<GameStage>
+        <!-- 
+StageInfo描述场景基本信息。
+必要参数：
+    Type：分为初期关卡，无限过图和外交地图
+    Name：场景名称
+    FadeTransitionFrame：跳转帧的帧标签。无限过图默认为wuxianguotu_1
+    UnlockCondition：开启关卡所需的主线任务进度。副本关卡不使用
+    Description：关卡描述。副本关卡不使用
+    MaterialDetail：奖励品描述。副本关卡不使用
+-->
+    <!-- 
+Rewards描述奖励品列表。每个Reward描述一种奖励品
+Reward的必要参数：
+    Name：奖励品名称
+    AcquisitionProbability：填写n则生成概率为1/n
+    QuantityMax：最大生成数量
+-->
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>锌棒</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>增效剂</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>摇滚公园通关证明</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <!-- 每个SubStage描述无限过图一关的信息。具体参数详见SubStage id="4" -->
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Fearless Highway</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1120</x>
+                <y>500</y>
+                <BiasX>20</BiasX>
+                <BiasY>100</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>919</x>
+                        <y>488</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>1409</x>
+                        <y>518</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种43</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>1001</x>
+                        <y>415</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>1409</x>
+                        <y>518</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种43</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_3_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1841</x>
+                <y>474</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1841</x>
+                <y>765</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>973</x>
+                        <y>465</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种43</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>1324</x>
+                        <y>675</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种260</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_4_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1754</x>
+                <y>496</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1763</x>
+                <y>699</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>632</x>
+                        <y>580</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种259</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>910</x>
+                        <y>432</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种43</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种46</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种353</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                        <DifficultyMin>地狱</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <!-- 
+BasicInformation描述地图基本配置。
+必要参数：
+    Background：地图背景路径
+可选参数：
+    Animation：进入关卡时加载动画。
+    Animation的必要参数：
+        Path：动画路径
+        Pause：是否暂停游戏
+        Load：设置为1时在进图时播放动画，设置为0时在关卡结束时播放动画
+    PlayerX：重设玩家的出生x坐标
+    PlayerY：重设玩家的出生y坐标
+    Environment：重设环境数据。该参数优先于Environment.xml的设置。
+    Environment的可选参数：
+        Xmin、Xmax、Ymin、Ymax、背景长、背景高：描述地图边缘与显示的背景边缘。6个参数均填写时才会同时启用
+        Default：填写true则重设环境数据为无限过图默认值（Xmax = 1750, Xmin = 50, Ymax = 600, Ymin = 330, 背景长 = 1750, 背景高 = 600）
+            注意：上述两项均填写时优先应用Default
+    -->
+        <BasicInformation>
+            <Animation>
+                <Path>flashswf/movies/movie_gk_15_5.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <Background>flashswf/backgrounds/gk15_5_BG.swf</Background>
+            <PlayerX>1114</PlayerX>
+            <PlayerY>561</PlayerY>
+        </BasicInformation>
+        <!-- 
+Instances描述额外加载的影片剪辑实例。
+必要参数：
+    x：x坐标
+    y：y坐标
+    Identifier：标识符，通过标识符从库中加载对应的影片剪辑
+    url：swf文件路径，直接将swf加载到地图
+        注意：Identifier与url为两种完全不同的加载方式，不可同时使用，均填写时优先使用url
+可选参数：
+    depth：固定影片剪辑的深度
+    Parameters：影片剪辑的额外参数。填写方法详见敌人的Parameters标签
+    -->
+        <Instances>
+            <Instance id="0">
+                <x>900</x>
+                <y>264</y>
+                <Identifier>跳动的火焰</Identifier>
+            </Instance>
+            <Instance id="1">
+                <x>1313</x>
+                <y>265</y>
+                <Identifier>跳动的火焰</Identifier>
+            </Instance>
+            <Instance id="2">
+                <x>1681</x>
+                <y>462</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <最小主线进度>27</最小主线进度>
+                    <最大主线进度>27</最大主线进度>
+                    <内部物>黑暗吉他</内部物>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+        </Instances>
+        
+        <!-- 
+SpawnPoint描述敌人出生点。
+必要参数：
+    x：出生点x坐标
+    y：出生点y坐标
+可选参数：
+    Identifier：加载对应影片剪辑的标识符。若加载则会在每次刷怪时调用影片剪辑的开门动画
+    BiasX：每次刷怪的x坐标在(x-BiasX, x+BiasX)内取随机值
+    BiasY：每次刷怪的y坐标在(y-BiasY, y+BiasY)内取随机值
+        注意：BiasX与BiasY需要同时填写才能生效
+    QuantityMax：填写正整数时生效，从该出生点生成的敌人同时在场数到达QuantityMax时停止刷怪
+    NoCount：填写true则该出生点产生的敌人不计入剩余敌人计数
+    -->
+        <SpawnPoint>
+            <Point id="0">
+                <x>50</x>
+                <y>490</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1300</x>
+                <y>550</y>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <!-- 
+Dialogue描述关卡对话。依次加载SubDialogue中的所有对话。
+若Dialogue放在SubStage目录下则在进图时加载对话，放在SubWave目录下则在对应波次结束后加载对话。
+SubDialogue的数据结构与任务的json文件相同。必要参数包括：
+    Name：角色名字
+    Title：角色称号
+    Char：头像的帧标签与头像自身时间轴的帧标签
+    Text：对话内容
+    -->
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>我是接受黑铁会的委托来清理你们这些叛变的盗贼组织的。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>我们才不是什么叛变组织，我们只是看不惯黑铁会和自由革命军狼狈为奸屠杀难民抢劫资源，所以脱离了黑铁会的管制！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>......嗯！</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>你们居然是非不分，今晚我一定扎小人诅咒死你。</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>即使你这么说，我也要完成上面给我的任务！</Text>
+            </SubDialogue>
+            <SubDialogue id="5">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>看来你是说不听啦，让你感受一下我们的演唱会吧！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <!-- 
+Wave描述关卡波次信息。每个SubWave为一波
+SubWave的必要参数：
+    WaveInformation：描述波次结束方式。以下是可选参数：
+        Duration：计时刷新下一波的时间。默认为0（不计时）
+        FinishRequirement：剩余敌人数小等于该值时完成波次
+        MapNoCount：填写true则本波内产生源为地图的敌人不计入剩余敌人计数
+    EnemyGroup：敌人信息表。每个Enemy代表一组敌人
+    Enemy的必要参数：
+        Type：敌人编号，对应的敌人详见units.json
+        Interval：每次刷新尝试的间隔时间，单位为毫秒（会被帧计时器转换为帧数）。以下是注意事项
+            1. 填0或者负数的话我也不知道会出什么恐怖问题，大伙可以自己试试
+            2. 默认从地图两边刷新的敌人可能会直接生成在玩家脸上，建议填写500以上。
+            3. 若敌人需要在进图时就在固定位置生成（如配合进图对话等），可以填写100。
+            4. 若设置了带QuantityMax的出生点，出于性能考虑建议填写1000以上。
+        Quantity：生成总数量
+        Level：敌人等级
+    Enemy的可选参数：
+        SpawnIndex：描述绑定的出生点。
+        SpawnIndex的参数细节：
+            -1：未填写时的默认值，从地图两侧刷新，刷新在右侧的概率为2/3
+            自然数：从该数字对应编号的出生点刷新
+            left：从地图左侧刷新
+            right：从地图右侧刷新
+            front：用于生成进图出现在近处的敌人，刷新在主角面前的随机位置，并避免与主角在同一条直线上。
+                在x∈(PlayerX+150,PlayerX+700)，y∈(Ymin+30,PlayerY-30)∪(PlayerY+30,Ymax-30)的位置范围内随机刷新
+                填写此参数的敌人默认方向为左
+            back：用于生成进图出现在屏幕外的敌人，在x∈(900,Xmax-200)，y∈(Ymin+30,Ymax-30)的位置范围内随机刷新
+            door：在关卡出口处刷新
+        x：出生x坐标
+        y：出生y坐标
+            注意：x与y需要同时填写才能生效，优先于出生点的刷怪位置
+        Parameters：敌人的额外参数。支持两种填写方式
+            1.如同as2中Object内的键值对格式填写字符串。只支持Number，Boolean和String等基础类型。
+            例：<Parameters>身高:185,免疫击退:true,称号:菜鸟</Parameters>
+            2.通过xml标签获取对象和数组。
+            例：填写箱子的内部物数据如下
+            <Parameters>
+                <内部物>牛肉罐头</内部物>
+                <数量>1</数量>
+                <等级>1</等级>
+                <名字>木箱</名字>
+            </Parameters>
+        DifficultyMin：生成敌人所需最低难度
+        DifficultyMax：生成敌人所需最高难度
+    Enemy计划在未来实装的参数：
+        Union：待补充
+    -->
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种50</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>1007</x>
+                        <y>434</y>
+                        <Parameters>
+                            <不掉钱>true</不掉钱>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种51</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>1200</x>
+                        <y>437</y>
+                        <Parameters>
+                            <不掉钱>true</不掉钱>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种52</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>1105</x>
+                        <y>452</y>
+                        <Parameters>
+                            <不掉钱>true</不掉钱>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>10</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种160</Type>
+                        <Interval>210000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMax>地狱</DifficultyMax>
+                        <!-- 以下对话现在没用，触发不了-->
+						<Dialogue>
+							<SubDialogue id="0">
+								<Name>King</Name>
+								<Title>BPK战队-左前锋</Title>
+								<Char>king#愤怒</Char>
+								<Text>啥子哦，搞这么慢？</Text>
+							</SubDialogue>
+						</Dialogue>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

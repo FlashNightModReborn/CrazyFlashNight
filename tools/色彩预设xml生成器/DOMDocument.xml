@@ -1,0 +1,2048 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#3E3D38" width="1920" height="980" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="122.353661987282" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+     <fonts>
+          <DOMFontItem name="字体 1" itemID="673ed41c-000034ca" font="TimesNewRomanPSMT" size="0" id="1" sourceLastImported="1732170780"/>
+     </fonts>
+     <media>
+          <DOMBitmapItem name="位图 1" itemID="673e9141-00003337" sourceExternalFilepath="./LIBRARY/位图 1" sourceLastImported="1732153665" originalCompressionType="lossless" quality="50" href="位图 1" bitmapDataHRef="M 1 1732153665.dat" frameRight="25520" frameBottom="14800"/>
+     </media>
+     <symbols>
+          <Include href="容器.xml" loadImmediate="false" itemID="673e903d-00003322" lastModified="1732153746"/>
+          <Include href="容器边框.xml" loadImmediate="false" itemID="673e9024-0000331d" lastModified="1732153380"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;191&lt;/guideline&gt;&lt;guideline direction="v"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;959&lt;/guideline&gt;&lt;guideline direction="v"&gt;1344&lt;/guideline&gt;&lt;guideline direction="v"&gt;1728&lt;/guideline&gt;&lt;/guidelines&gt;'>
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" duration="2" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[// 导入必要的库
+import flash.filters.ColorMatrixFilter;
+import flash.geom.ColorTransform;
+
+
+// 常量定义
+var TOTAL_CONTAINERS:Number = 10; // 总共的容器数量
+
+// 自定义 toFixed 函数：格式化数字到指定小数位数
+_root.toFixed = function(num:Number, precision:Number):String {
+    // 默认精度为1位
+    if (precision == undefined) {
+        precision = 1;
+    }
+
+    // 计算10的精度次方
+    var multiplier:Number = Math.pow(10, precision);
+
+    // 四舍五入到指定小数位数
+    var roundedValue:Number = Math.round(num * multiplier) / multiplier;
+
+    // 将数值转换为字符串
+    var valueString:String = roundedValue.toString();
+
+    // 确保结果包含指定的小数位数
+    if (precision > 0) {
+        var decimalIndex:Number = valueString.indexOf(".");
+        if (decimalIndex == -1) {
+            // 没有小数点，补充小数部分
+            valueString += ".";
+            for (var i:Number = 0; i < precision; i++) {
+                valueString += "0";
+            }
+        } else {
+            // 有小数点，补充不足的小数位
+            var decimals:Number = valueString.length - decimalIndex - 1;
+            while (decimals < precision) {
+                valueString += "0";
+                decimals++;
+            }
+        }
+    }
+
+    return valueString;
+};
+
+// 正确实现的 ColorMatrix 分解函数
+_root.decomposeColorMatrix = function(matrix:Array):Object {
+    var params:Object = {
+        brightness: 0,
+        contrast: 0,
+        saturation: 0,
+        hue: 0
+    };
+    
+    // Luminance coefficients for RGB
+    var lumaR:Number = 0.2126;
+    var lumaG:Number = 0.7152;
+    var lumaB:Number = 0.0722;
+
+    // Extract scale factors from the diagonal elements
+    var scaleR:Number = matrix[0];     // m00
+    var scaleG:Number = matrix[6];     // m11
+    var scaleB:Number = matrix[12];    // m22
+
+    // Estimate contrast (average scale factor)
+    var avgScale:Number = (scaleR + scaleG + scaleB) / 3;
+    params.contrast = (avgScale - 1) * 100; // Convert to percentage
+
+    // Extract offsets from the last column
+    var offsetR:Number = matrix[4];     // m04
+    var offsetG:Number = matrix[9];     // m14
+    var offsetB:Number = matrix[14];    // m24
+
+    // Estimate brightness
+    // Adjust for contrast offset: offset = scale * brightness + 128 * (1 - scale)
+    var avgOffset:Number = (offsetR + offsetG + offsetB) / 3;
+    var brightnessValue:Number = (avgOffset - 128 * (1 - avgScale)) / avgScale;
+    params.brightness = (brightnessValue / 255) * 100; // Convert to percentage
+
+    // Estimate saturation
+    // Based on the difference between the adjusted scale factors and luminance coefficients
+    var satR:Number = (scaleR - lumaR * (1 - avgScale)) / avgScale;
+    var satG:Number = (scaleG - lumaG * (1 - avgScale)) / avgScale;
+    var satB:Number = (scaleB - lumaB * (1 - avgScale)) / avgScale;
+    var saturationAvg:Number = ((satR + satG + satB) / 3 - 1) * 100;
+    params.saturation = saturationAvg;
+
+    // Estimate hue (complex due to trigonometric functions)
+    // Use off-diagonal elements to approximate hue angle
+    var hueNumerator:Number = matrix[1] - matrix[5];  // m01 - m10
+    var hueDenominator:Number = matrix[0] + matrix[6] - 2 * avgScale;  // m00 + m11 - 2 * avgScale
+    var hueAngle:Number = Math.atan2(hueNumerator, hueDenominator);
+    params.hue = hueAngle * (180 / Math.PI); // Convert to degrees
+
+    // Adjust hue value to be within -180 to 180 degrees
+    if (params.hue > 180) params.hue -= 360;
+    if (params.hue < -180) params.hue += 360;
+
+    return params;
+};
+
+
+// 提取 ColorMatrixFilter 参数
+_root.extractColorMatrixParams = function(target:MovieClip):Object {
+    var params:Object = {
+        brightness: 0,
+        contrast: 0,
+        saturation: 0,
+        hue: 0
+    };
+    
+    if (!target) {
+        trace("Error: Target MovieClip is undefined.");
+        return params;
+    }
+
+    var filters:Array = target.filters;
+    for (var i:Number = 0; i < filters.length; i++) {
+        if (filters[i] instanceof ColorMatrixFilter) {
+            var matrix:Array = filters[i].matrix;
+            var decomposedParams:Object = _root.decomposeColorMatrix(matrix);
+            params.brightness = decomposedParams.brightness;
+            params.contrast = decomposedParams.contrast;
+            params.saturation = decomposedParams.saturation;
+            params.hue = decomposedParams.hue;
+        }
+    }
+
+    return params;
+};
+
+// 提取 ColorTransform 参数
+_root.extractColorTransformParams = function(target:MovieClip):Object {
+    var params:Object = {
+        redMultiplier: 1,
+        greenMultiplier: 1,
+        blueMultiplier: 1,
+        alphaMultiplier: 1,
+        redOffset: 0,
+        greenOffset: 0,
+        blueOffset: 0,
+        alphaOffset: 0
+    };
+    
+    if (!target) {
+        trace("Error: Target MovieClip is undefined.");
+        return params;
+    }
+
+    var colorTransform:ColorTransform = target.transform.colorTransform;
+    params.redMultiplier = colorTransform.redMultiplier;
+    params.greenMultiplier = colorTransform.greenMultiplier;
+    params.blueMultiplier = colorTransform.blueMultiplier;
+    params.alphaMultiplier = colorTransform.alphaMultiplier;
+    params.redOffset = colorTransform.redOffset;
+    params.greenOffset = colorTransform.greenOffset;
+    params.blueOffset = colorTransform.blueOffset;
+    params.alphaOffset = colorTransform.alphaOffset;
+
+    return params;
+};
+
+// 格式化参数为 XML，使用 toFixed 函数限制到1位小数
+_root.formatParamsToXML = function(level:Number, params:Object):String {
+    var xml:String = "<Preset>\n";
+    xml += "  <level>" + _root.toFixed(level, 0) + "</level>\n"; // level 为整数，不需要小数
+    xml += "  <Brightness>" + _root.toFixed(params.brightness, 1) + "</Brightness>\n";
+    xml += "  <Contrast>" + _root.toFixed(params.contrast, 1) + "</Contrast>\n";
+    xml += "  <Saturation>" + _root.toFixed(params.saturation, 1) + "</Saturation>\n";
+    xml += "  <Hue>" + _root.toFixed(params.hue, 1) + "</Hue>\n";
+    xml += "  <redMultiplier>" + _root.toFixed(params.redMultiplier, 1) + "</redMultiplier>\n";
+    xml += "  <greenMultiplier>" + _root.toFixed(params.greenMultiplier, 1) + "</greenMultiplier>\n";
+    xml += "  <blueMultiplier>" + _root.toFixed(params.blueMultiplier, 1) + "</blueMultiplier>\n";
+    xml += "  <alphaMultiplier>" + _root.toFixed(params.alphaMultiplier, 1) + "</alphaMultiplier>\n";
+    xml += "  <redOffset>" + _root.toFixed(params.redOffset, 1) + "</redOffset>\n";
+    xml += "  <greenOffset>" + _root.toFixed(params.greenOffset, 1) + "</greenOffset>\n";
+    xml += "  <blueOffset>" + _root.toFixed(params.blueOffset, 1) + "</blueOffset>\n";
+    xml += "  <alphaOffset>" + _root.toFixed(params.alphaOffset, 1) + "</alphaOffset>\n";
+    xml += "</Preset>";
+    return xml;
+};
+
+// 计算插值参数
+_root.interpolateParams = function(startParams:Object, endParams:Object, ratio:Number):Object {
+    var interpolatedParams:Object = {};
+    for (var key in startParams) {
+        interpolatedParams[key] = startParams[key] + (endParams[key] - startParams[key]) * ratio;
+    }
+    return interpolatedParams;
+};
+
+// 生成单个 MovieClip 的预设 XML
+_root.generatePresetXML = function(target:MovieClip, level:Number):String {
+    if (!target) {
+        trace("Error: Target MovieClip is undefined.");
+        return "";
+    }
+
+    var params:Object = {};
+
+    // 特殊处理容器7
+    if (level == 7) {
+        // 移除所有滤镜和颜色变换
+        target.filters = [];
+        target.transform.colorTransform = new ColorTransform();
+        // 参数视为0
+        params = {
+            brightness: 0,
+            contrast: 0,
+            saturation: 0,
+            hue: 0,
+            redMultiplier: 1,
+            greenMultiplier: 1,
+            blueMultiplier: 1,
+            alphaMultiplier: 1,
+            redOffset: 0,
+            greenOffset: 0,
+            blueOffset: 0,
+            alphaOffset: 0
+        };
+    } else {
+        // 检查是否有滤镜或颜色变换
+        var hasColorMatrix:Boolean = false;
+        var hasColorTransform:Boolean = false;
+
+        var filters:Array = target.filters;
+        for (var i:Number = 0; i < filters.length; i++) {
+            if (filters[i] instanceof ColorMatrixFilter) {
+                hasColorMatrix = true;
+                break;
+            }
+        }
+
+        var ct:ColorTransform = target.transform.colorTransform;
+        if (ct.redMultiplier != 1 || ct.greenMultiplier != 1 || ct.blueMultiplier != 1 || ct.alphaMultiplier != 1 ||
+            ct.redOffset != 0 || ct.greenOffset != 0 || ct.blueOffset != 0 || ct.alphaOffset != 0) {
+            hasColorTransform = true;
+        }
+
+        if (hasColorMatrix || hasColorTransform) {
+            // 提取参数
+            var colorMatrixParams:Object = _root.extractColorMatrixParams(target);
+            var colorTransformParams:Object = _root.extractColorTransformParams(target);
+
+            // 合并参数
+            params = {};
+            for (var key1 in colorMatrixParams) {
+                params[key1] = colorMatrixParams[key1];
+            }
+            for (var key2 in colorTransformParams) {
+                params[key2] = colorTransformParams[key2];
+            }
+        } else {
+            // 未配置滤镜或颜色变换，需要进行插值计算
+            params = _root.calculateInterpolatedParams(level);
+            // 应用计算得到的滤镜和颜色变换
+            _root.applyParamsToTarget(target, params);
+        }
+    }
+
+    // 格式化为 XML
+    var xml:String = _root.formatParamsToXML(level, params);
+    return xml;
+};
+
+// 计算插值参数的函数
+_root.calculateInterpolatedParams = function(level:Number):Object {
+    var prevLevel:Number = -1;
+    var nextLevel:Number = -1;
+    var prevParams:Object = null;
+    var nextParams:Object = null;
+
+    // 向前寻找有配置的容器
+    for (var i:Number = level - 1; i >= 0; i--) {
+        var containerName:String = "容器" + i;
+        var container:MovieClip = _root[containerName];
+        if (_root.isContainerConfigured(container, i)) {
+            prevLevel = i;
+            prevParams = _root.getContainerParams(container, i);
+            break;
+        }
+    }
+
+    // 向后寻找有配置的容器
+    for (var j:Number = level + 1; j < TOTAL_CONTAINERS; j++) {
+        var containerNameNext:String = "容器" + j;
+        var containerNext:MovieClip = _root[containerNameNext];
+        if (_root.isContainerConfigured(containerNext, j)) {
+            nextLevel = j;
+            nextParams = _root.getContainerParams(containerNext, j);
+            break;
+        }
+    }
+
+    // 如果前后都没有配置，则参数为0
+    if (prevParams == null && nextParams == null) {
+        return {
+            brightness: 0,
+            contrast: 0,
+            saturation: 0,
+            hue: 0,
+            redMultiplier: 1,
+            greenMultiplier: 1,
+            blueMultiplier: 1,
+            alphaMultiplier: 1,
+            redOffset: 0,
+            greenOffset: 0,
+            blueOffset: 0,
+            alphaOffset: 0
+        };
+    }
+
+    // 如果只有前面有配置
+    if (prevParams != null && nextParams == null) {
+        return prevParams;
+    }
+
+    // 如果只有后面有配置
+    if (prevParams == null && nextParams != null) {
+        return nextParams;
+    }
+
+    // 进行插值计算
+    var ratio:Number = (level - prevLevel) / (nextLevel - prevLevel);
+    var interpolatedParams:Object = _root.interpolateParams(prevParams, nextParams, ratio);
+
+    return interpolatedParams;
+};
+
+// 判断容器是否有配置
+_root.isContainerConfigured = function(target:MovieClip, level:Number):Boolean {
+    if (level == 7) {
+        return false; // 容器7不算配置
+    }
+
+    var hasColorMatrix:Boolean = false;
+    var hasColorTransform:Boolean = false;
+
+    var filters:Array = target.filters;
+    for (var i:Number = 0; i < filters.length; i++) {
+        if (filters[i] instanceof ColorMatrixFilter) {
+            hasColorMatrix = true;
+            break;
+        }
+    }
+
+    var ct:ColorTransform = target.transform.colorTransform;
+    if (ct.redMultiplier != 1 || ct.greenMultiplier != 1 || ct.blueMultiplier != 1 || ct.alphaMultiplier != 1 ||
+        ct.redOffset != 0 || ct.greenOffset != 0 || ct.blueOffset != 0 || ct.alphaOffset != 0) {
+        hasColorTransform = true;
+    }
+
+    return hasColorMatrix || hasColorTransform;
+};
+
+// 获取容器的参数
+_root.getContainerParams = function(target:MovieClip, level:Number):Object {
+    var colorMatrixParams:Object = _root.extractColorMatrixParams(target);
+    var colorTransformParams:Object = _root.extractColorTransformParams(target);
+
+    // 合并参数
+    var params:Object = {};
+    for (var key1 in colorMatrixParams) {
+        params[key1] = colorMatrixParams[key1];
+    }
+    for (var key2 in colorTransformParams) {
+        params[key2] = colorTransformParams[key2];
+    }
+
+    return params;
+};
+
+// 应用参数到目标
+// 优化后的 applyParamsToTarget 函数，集成了初级调整颜色的逻辑
+_root.applyParamsToTarget = function(target:MovieClip, params):Void {
+    if (!target) {
+        trace("目标 MovieClip 未定义");
+        return;
+    }
+
+    // 如果参数是 ColorTransform 对象，直接应用并返回
+    if (params instanceof ColorTransform) {
+        target.transform.colorTransform = params;
+        return;
+    }
+
+    // 如果没有传入任何参数，移除当前的 ColorTransform
+    if (!params) {
+        target.transform.colorTransform = new ColorTransform();
+        return;
+    }
+
+    // 创建一个新的 ColorTransform 对象
+    var colorTransform:ColorTransform = new ColorTransform();
+
+    // 解析基础颜色乘数和偏移
+    colorTransform.redMultiplier = params.hasOwnProperty('redMultiplier') ? params['redMultiplier'] : 1;
+    colorTransform.greenMultiplier = params.hasOwnProperty('greenMultiplier') ? params['greenMultiplier'] : 1;
+    colorTransform.blueMultiplier = params.hasOwnProperty('blueMultiplier') ? params['blueMultiplier'] : 1;
+    colorTransform.alphaMultiplier = params.hasOwnProperty('alphaMultiplier') ? params['alphaMultiplier'] : 1;
+
+    colorTransform.redOffset = params.hasOwnProperty('redOffset') ? params['redOffset'] : 0;
+    colorTransform.greenOffset = params.hasOwnProperty('greenOffset') ? params['greenOffset'] : 0;
+    colorTransform.blueOffset = params.hasOwnProperty('blueOffset') ? params['blueOffset'] : 0;
+    colorTransform.alphaOffset = params.hasOwnProperty('alphaOffset') ? params['alphaOffset'] : 0;
+
+    // 高级调整参数
+    var brightness:Number = params.hasOwnProperty('brightness') ? params['brightness'] : 0;
+    var contrast:Number = params.hasOwnProperty('contrast') ? params['contrast'] : 0;
+    var saturation:Number = params.hasOwnProperty('saturation') ? params['saturation'] : 0;
+    var hue:Number = params.hasOwnProperty('hue') ? params['hue'] : 0;
+
+    // 色相调整：冷暖（正值增加红色，负值增加蓝绿色）
+    if (hue !== 0) {
+        // 色相旋转，将色相值限制在0-360度范围内
+        var newHue:Number = (colorTransform.redOffset + hue) % 360;
+        if (newHue < 0) newHue += 360; // 如果新色相为负值，转换为正值
+
+        // 计算色相差值
+        var hueDifference:Number = newHue - colorTransform.redOffset;
+        if (hueDifference > 180) hueDifference -= 360; // 如果差值大于180度，则减去360度以找到最短路径
+        if (hueDifference < -180) hueDifference += 360; // 如果差值小于-180度，则加上360度以找到最短路径
+
+        // 映射色相差值到RGB偏移
+        // 假设整个色环可以映射到255的RGB值范围内
+        var rgbDifference:Number = hueDifference / 360 * 255 / 3;
+
+        // 更新RGB偏移值以模拟色相旋转
+        colorTransform.redOffset += rgbDifference;
+        colorTransform.greenOffset -= rgbDifference / 2;
+        colorTransform.blueOffset -= rgbDifference / 2;
+    }
+
+    // 对比度调整
+    if (contrast !== 0) {
+        var contrastMultiplier:Number = 1 + contrast / 100;
+        var contrastOffset:Number = 128 * (1 - contrastMultiplier);
+
+        // 应用对比度乘数和偏移
+        colorTransform.redMultiplier *= contrastMultiplier;
+        colorTransform.greenMultiplier *= contrastMultiplier;
+        colorTransform.blueMultiplier *= contrastMultiplier;
+
+        colorTransform.redOffset += contrastOffset;
+        colorTransform.greenOffset += contrastOffset;
+        colorTransform.blueOffset += contrastOffset;
+    }
+
+    // 亮度调整
+    if (brightness !== 0) {
+        colorTransform.redOffset += brightness;
+        colorTransform.greenOffset += brightness;
+        colorTransform.blueOffset += brightness;
+    }
+
+    // 饱和度调整
+    if (saturation !== 0) {
+        // 计算灰度平均乘数
+        var grayMultiplier:Number = (colorTransform.redMultiplier + colorTransform.greenMultiplier + colorTransform.blueMultiplier) / 3;
+
+        // 调整每个颜色通道的乘数以增加或减少饱和度
+        colorTransform.redMultiplier = grayMultiplier + (colorTransform.redMultiplier - grayMultiplier) * (1 + saturation / 100);
+        colorTransform.greenMultiplier = grayMultiplier + (colorTransform.greenMultiplier - grayMultiplier) * (1 + saturation / 100);
+        colorTransform.blueMultiplier = grayMultiplier + (colorTransform.blueMultiplier - grayMultiplier) * (1 + saturation / 100);
+    }
+
+    // 应用修改后的 ColorTransform
+    target.transform.colorTransform = colorTransform;
+};
+
+// 矩阵相乘函数
+_root.multiplyMatrices = function(matrix1:Array, matrix2:Array):Array {
+    var result:Array = [];
+    for (var i:Number = 0; i < 4; i++) {
+        for (var j:Number = 0; j < 5; j++) {
+            var value:Number = 0;
+            for (var k:Number = 0; k < 4; k++) {
+                value += matrix1[i * 5 + k] * matrix2[k * 5 + j];
+            }
+            if (j == 4) {
+                value += matrix1[i * 5 + 4];
+            }
+            result[i * 5 + j] = value;
+        }
+    }
+    return result;
+};
+
+// 生成所有预设的 XML
+_root.generateAllPresetsXML = function():String {
+    var xml:String = "<PresetSet>\n    <name>" + 预设名.text + "</name>\n";
+
+    for (var i:Number = 0; i < TOTAL_CONTAINERS; i++) {
+        var containerName:String = "容器" + i;
+        var container:MovieClip = _root[containerName];
+        var presetXML:String = _root.generatePresetXML(container, i);
+
+        if (presetXML != "") {
+            // 缩进每个预设的 XML 以提高可读性
+            var indentedXML:String = presetXML.split("\n").join("\n    ");
+            xml += "    " + indentedXML + "\n";
+        }
+    }
+
+    xml += "  </PresetSet>\n";
+    return xml;
+};
+
+// 可选地，生成所有预设的 XML
+var allPresetsXML:String = _root.generateAllPresetsXML();
+trace(allPresetsXML);
+
+stop();
+]]></script>
+                                   </Actionscript>
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器0" centerPoint3DX="192" centerPoint3DY="158">
+                                             <matrix>
+                                                  <Matrix tx="192" ty="158"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <AdjustColorFilter brightness="-30" saturation="-30"/>
+                                             </filters>
+                                             <color>
+                                                  <Color redOffset="50"/>
+                                             </color>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器1" centerPoint3DX="575.95" centerPoint3DY="158">
+                                             <matrix>
+                                                  <Matrix tx="575.95" ty="158"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器3" centerPoint3DX="1343.85" centerPoint3DY="158">
+                                             <matrix>
+                                                  <Matrix tx="1343.85" ty="158"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器4" centerPoint3DX="1727.8" centerPoint3DY="158">
+                                             <matrix>
+                                                  <Matrix tx="1727.8" ty="158"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器2" centerPoint3DX="959.9" centerPoint3DY="158">
+                                             <matrix>
+                                                  <Matrix tx="959.9" ty="158"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器5" centerPoint3DX="192" centerPoint3DY="821.3">
+                                             <matrix>
+                                                  <Matrix tx="192" ty="821.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <AdjustColorFilter/>
+                                             </filters>
+                                             <color>
+                                                  <Color redOffset="26"/>
+                                             </color>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器6" centerPoint3DX="575.95" centerPoint3DY="821.3">
+                                             <matrix>
+                                                  <Matrix tx="575.95" ty="821.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器8" centerPoint3DX="1343.85" centerPoint3DY="821.3">
+                                             <matrix>
+                                                  <Matrix tx="1343.85" ty="821.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器9" centerPoint3DX="1727.8" centerPoint3DY="821.3">
+                                             <matrix>
+                                                  <Matrix tx="1727.8" ty="821.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <AdjustColorFilter brightness="33" contrast="20" saturation="14" hue="15"/>
+                                             </filters>
+                                             <color>
+                                                  <Color redMultiplier="0.71875" blueMultiplier="0.8515625" greenMultiplier="0.87890625"/>
+                                             </color>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器" name="容器7" selected="true" centerPoint3DX="959.9" centerPoint3DY="821.3">
+                                             <matrix>
+                                                  <Matrix tx="959.9" ty="821.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="80.5" ty="289.95"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:0</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="80.5" ty="651.9"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>5</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="464.6" ty="289.95"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>1</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="464.6" ty="651.9"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>6</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="847.75" ty="289.95"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>2</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="847.75" ty="651.9"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>7</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="1232.75" ty="289.95"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>3</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="1232.75" ty="651.9"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>8</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="1615.9" ty="289.95"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>4</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMDynamicText fontRenderingMode="standard" width="221.5" height="42.4">
+                                             <matrix>
+                                                  <Matrix tx="1615.9" ty="651.9"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>9</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMStaticText fontRenderingMode="standard" width="328.85" height="39.9" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="683.15" ty="461.4"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>光照</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>预设</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>名</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>:</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMDynamicText name="预设名" fontRenderingMode="standard" width="328.85" height="39.9" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="907.75" ty="461.4"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>红</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>夜</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>视仪</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                        <DOMStaticText fontRenderingMode="standard" width="911" height="1251.1" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="1999.6" ty="-189.65"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>### **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色彩</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>预设</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>教程</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>**&#xD;&#xD;1. **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>替</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>换预览图</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>**  &#xD;   </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>容器是一个</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>影片剪</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>辑</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>**</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>，可以双</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>击进</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>入容器内部，通</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>过</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>替</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>换图</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>片来更新其</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>预览</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>效果。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;&#xD;2. **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>设</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>置</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色方案</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>**  &#xD;   - **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>容器外</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>层设</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>置</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>**</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>：在属性面板中，使用</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色彩效果</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> - </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>高</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>级</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>** </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>或</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>滤镜</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> - </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>整</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>颜</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>** </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>来配置亮度、</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>对</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>比度、</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>饱</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>和度和色相等</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色方案。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>  &#xD;   - **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>注意</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>**</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>：容器</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>7</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>为</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>默</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>认</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>容器，无法配置</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色效果，系</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>统</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>会自</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>动</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>清除并重置其参数</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>为</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> `0`</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;&#xD;3. **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>生成</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> XML**  &#xD;   - </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>编译项</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>目生成</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> SWF </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>文件</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>时</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>，系</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>统</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>会将所有</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色效果</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>转换为纯</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色彩效果方案并</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>应</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>用到容器中。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>  &#xD;   - </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>编译</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>后，在</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>输</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>出窗口中生成包含所有容器</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色配置的</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> XML </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>文件。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;&#xD;4. **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>保存</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> XML**  &#xD;   </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>在</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>输</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>出窗口中找到生成的</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> XML </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>文件，将其</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>复</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>制下来，用于保存和管理</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>您</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>的</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色方案。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;&#xD;5. **</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>注意事</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>项</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>**  &#xD;   - </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>编译</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>生成的</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> SWF </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>文件中，</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色效果可能与</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> FLA </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>中的</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>预览</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>表</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>现</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>略有不同，</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>请</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>以</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> SWF </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>中的最</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>终</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>效果</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>为</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>准。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>  &#xD;   - </characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>若某容器未配置任何</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色方案，</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>则</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>系</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>统</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>会根据前后配置的容器参数自</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>动</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>插</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>值计</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>算其</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>调</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>色效果；前后均无配置</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>时</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>，</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>视为</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>默</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>认值</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters> `0`</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" size="36" bitmapSize="720" face="TimesNewRomanPSMT"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="199949" publishTime="1732171768"/>
+          <PublishItem publishSize="199969" publishTime="1732171733"/>
+          <PublishItem publishSize="165393" publishTime="1732170845"/>
+          <PublishItem publishSize="162122" publishTime="1732170783"/>
+          <PublishItem publishSize="162125" publishTime="1732170759"/>
+          <PublishItem publishSize="159940" publishTime="1732170451"/>
+          <PublishItem publishSize="159921" publishTime="1732170402"/>
+          <PublishItem publishSize="159922" publishTime="1732170239"/>
+          <PublishItem publishSize="156750" publishTime="1732170221"/>
+          <PublishItem publishSize="160222" publishTime="1732161275"/>
+          <PublishItem publishSize="159604" publishTime="1732161068"/>
+          <PublishItem publishSize="159605" publishTime="1732160982"/>
+          <PublishItem publishSize="159811" publishTime="1732160972"/>
+          <PublishItem publishSize="159813" publishTime="1732160959"/>
+          <PublishItem publishSize="159605" publishTime="1732160385"/>
+          <PublishItem publishSize="159484" publishTime="1732160352"/>
+          <PublishItem publishSize="156750" publishTime="1732160336"/>
+          <PublishItem publishSize="156750" publishTime="1732160313"/>
+          <PublishItem publishSize="160279" publishTime="1732160137"/>
+          <PublishItem publishSize="156749" publishTime="1732160115"/>
+     </publishHistory>
+</DOMDocument>

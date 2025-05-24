@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/绳子1" itemID="65a3d998-000001e5" lastModified="1705236898">
+  <timeline>
+    <DOMTimeline name="绳子1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.0015716552734375" b="0.001708984375" c="-0.00244140625" d="0.0026397705078125" tx="24.45" ty="3.1"/>
+                        </matrix>
+                        <GradientEntry color="#6E5038" ratio="0"/>
+                        <GradientEntry color="#8E6F58" ratio="0.611764705882353"/>
+                        <GradientEntry color="#6E5038" ratio="1"/>
+                        <GradientEntry color="#6E5038" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!942 45[489 202 36 45!36 45|36 0!36 0[489 157 942 0!942 0|942 45"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

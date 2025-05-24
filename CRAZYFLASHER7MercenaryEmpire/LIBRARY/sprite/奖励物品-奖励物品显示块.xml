@@ -1,0 +1,194 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/奖励物品-奖励物品显示块" itemID="67bb1f9a-0000045a" linkageExportForAS="true" linkageIdentifier="奖励物品-奖励物品显示块" lastModified="1745730739">
+  <timeline>
+    <DOMTimeline name="奖励物品-奖励物品显示块">
+      <layers>
+        <DOMLayer name="Layer 1" color="#78FA63">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2072" symbolType="button">
+                  <matrix>
+                    <Matrix tx="11.5" ty="10.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (rollOver) {
+	/*if (物品名 == "金钱")
+	{
+		_root.注释(150,_root.获得翻译("金钱"));
+	}
+	if (物品名 == "经验值")
+	{
+		_root.注释(150,_root.获得翻译("经验值"));
+	}
+	if (物品名 == "K点")
+	{
+		_root.注释(150,_root.获得翻译("K点"));
+	}*/
+	_root.物品图标注释(物品名,1);
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#0399EF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" selected="true" centerPoint3DX="173.1" centerPoint3DY="12.75">
+                  <matrix>
+                    <Matrix tx="127.3" ty="1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.物品名 == "经验")
+	{
+		_root.经验值 += _parent.数量;
+		_parent._visible = 0;
+		_parent._parent.奖励品[_parent.数组id] = [];
+		_parent._parent.刷新();
+	}
+	else if (_parent.物品名 == "金钱")
+	{
+		_root.金钱 += _parent.数量;
+		_parent._visible = 0;
+		_parent._parent.奖励品[_parent.数组id] = [];
+		_parent._parent.刷新();
+	}
+	else if (_root.itemAcquire([{name:_parent.物品名, value:_parent.数量}]))
+	{
+		_root.发布消息("获得:" + _root.getItemData(_parent.物品名).displayname + " X " + _parent.数量 + "");
+		_root.播放音效("ammopickup1.wav");
+		_parent._visible = 0;
+		_parent._parent.奖励品[_parent.数组id] = [];
+		_parent._parent.刷新();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("背包已满，无法领取！"));
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("领取");
+}
+on (rollOver) {
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#75A2E7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="7.95" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="36.55" ty="3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>X</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E1529C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="59" height="15.85" isSelectable="false" variableName="数量">
+                  <matrix>
+                    <Matrix tx="58.5" ty="3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#E578B8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/图标壳" name="图标壳" centerPoint3DX="24" centerPoint3DY="24">
+                  <matrix>
+                    <Matrix tx="12" ty="12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.attachMovie("图标-" + _root.getItemData(_parent.物品名).icon,"图标",this.getNextHighestDepth());
+   if(this.图标._x != undefined)
+   {
+      this.基本款._visible = 0;
+   }
+   else
+   {
+      this.基本款._visible = 1;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#3FE962">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.136688232421875" d="0.01953125" tx="109.25" ty="12.15"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-54 -77|4425 -77!4425 -77|4425 563!4425 563|-54 563!-54 563|-54 -77"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

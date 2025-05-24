@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/09.黑铁书法/黑铁索命" itemID="6552343c-000006a7" linkageExportForAS="true" linkageIdentifier="黑铁索命" lastModified="1730486910" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="黑铁索命">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/09.黑铁书法/铁字" centerPoint3DX="-0.2" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix tx="-24" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.8" y="23.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/09.黑铁书法/铁字" centerPoint3DX="-0.2" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix tx="-24" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.8" y="23.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/09.黑铁书法/铁字" centerPoint3DX="3.55" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="1.19999694824219" d="1.19999694824219" tx="-25" ty="-28.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.8" y="23.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF3300"/>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/09.黑铁书法/铁字" centerPoint3DX="3.55" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-32.15" ty="-36.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.8" y="23.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <BlurFilter blurX="20" blurY="20"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

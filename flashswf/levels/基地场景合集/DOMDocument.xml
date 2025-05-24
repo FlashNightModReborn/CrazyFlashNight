@@ -1,0 +1,1181 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="image" itemID="65976161-00000eac"/>
+          <DOMFolderItem name="NPC" itemID="665f15da-000008f3"/>
+          <DOMFolderItem name="NPC/格格巫" itemID="668aa418-000052d6"/>
+          <DOMFolderItem name="NPC/格格巫/未命名文件夹 1" itemID="668aa428-000052d9"/>
+          <DOMFolderItem name="NPC/黑铁会外交部长-部件" itemID="665b5cec-00001fa7"/>
+          <DOMFolderItem name="NPC/冷武器商人" itemID="666550f9-00000a1c"/>
+          <DOMFolderItem name="NPC/冷武器商人/冷兵" itemID="663cdc89-00003660"/>
+          <DOMFolderItem name="NPC/冷武器商人/冷兵/冷兵构件" itemID="666555c7-00001364"/>
+          <DOMFolderItem name="NPC/冷武器商人/肢体" itemID="66655683-00001380"/>
+          <DOMFolderItem name="NPC/冷武器商人/肢体/细分" itemID="66655761-000013e4"/>
+          <DOMFolderItem name="NPC/莉莉丝" itemID="668aa1d8-00005290"/>
+          <DOMFolderItem name="NPC/莉莉丝/未命名文件夹 1" itemID="668aa21e-00005294"/>
+          <DOMFolderItem name="NPC/前治安官" itemID="668a9a94-00004f32"/>
+          <DOMFolderItem name="NPC/前治安官/图形" itemID="668a9aa2-00004f37"/>
+          <DOMFolderItem name="NPC/文天" itemID="668aacb4-000061eb"/>
+          <DOMFolderItem name="NPC/杂项" itemID="66631720-00001160"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sound" itemID="6597612c-00000e9d"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
+          <DOMFolderItem name="sprite/理发师" itemID="668aace0-0000626a"/>
+          <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4"/>
+          <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa"/>
+          <DOMFolderItem name="UI重构/商店相关" itemID="6689822f-000044fa"/>
+          <DOMFolderItem name="UI重构/书架系统" itemID="66519f17-00003cc9"/>
+          <DOMFolderItem name="UI重构/文天彩蛋UI所用素材" itemID="660ce453-00000ed0"/>
+          <DOMFolderItem name="地图" itemID="668a9fac-00004fc9"/>
+          <DOMFolderItem name="房间摆件" itemID="66328e0c-00001565"/>
+          <DOMFolderItem name="房间摆件/乐器" itemID="66328ec2-0000158b"/>
+          <DOMFolderItem name="房间摆件/乐器/话筒" itemID="66329217-000015cd"/>
+          <DOMFolderItem name="房间摆件/乐器/吉他" itemID="66328e9c-0000157c"/>
+          <DOMFolderItem name="房间摆件/乐器/键盘" itemID="66329061-000015a4"/>
+          <DOMFolderItem name="房间摆件/十文字大剑" itemID="66329706-00002134"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="image/bitmap2252.jpg" itemID="6597607b-00000456" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2252.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2252.jpg" bitmapDataHRef="M 6 1736924415.dat" frameRight="15120" frameBottom="4280" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2255.jpg" itemID="6597607b-0000045b" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2255.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2255.jpg" bitmapDataHRef="M 5 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2259.jpg" itemID="6597607b-00000460" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2259.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2259.jpg" bitmapDataHRef="M 4 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2261.png" itemID="6597607b-00000465" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2261.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap2261.png" bitmapDataHRef="M 3 1736924415.dat" frameRight="1140" frameBottom="1480"/>
+          <DOMBitmapItem name="image/bitmap2314.png" itemID="6597607b-0000046a" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2314.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2314.png" bitmapDataHRef="M 11 1736924415.dat" frameRight="1260" frameBottom="540"/>
+          <DOMBitmapItem name="image/bitmap2316.png" itemID="6597607b-0000046f" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2316.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2316.png" bitmapDataHRef="M 13 1736924415.dat" frameRight="1040" frameBottom="1780"/>
+          <DOMBitmapItem name="image/bitmap2319.png" itemID="6597607b-00000474" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2319.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2319.png" bitmapDataHRef="M 12 1736924415.dat" frameRight="680" frameBottom="460"/>
+          <DOMBitmapItem name="image/bitmap2321.png" itemID="6597607b-00000479" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2321.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2321.png" bitmapDataHRef="M 2 1736924415.dat" frameRight="2760" frameBottom="500"/>
+          <DOMBitmapItem name="image/bitmap2324.png" itemID="6597607b-0000047e" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2324.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2324.png" bitmapDataHRef="M 7 1736924415.dat" frameRight="2880" frameBottom="3520"/>
+          <DOMBitmapItem name="image/bitmap2505.jpg" itemID="6597607b-0000048d" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2505.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2505.jpg" bitmapDataHRef="M 17 1736924415.dat" frameRight="5160" frameBottom="5000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2537.png" itemID="6597607b-000004ab" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2537.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2537.png" bitmapDataHRef="M 16 1736924415.dat" frameRight="3620" frameBottom="1080"/>
+          <DOMBitmapItem name="image/bitmap2982.jpg" itemID="6597607d-00000504" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2982.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap2982.jpg" bitmapDataHRef="M 23 1736924415.dat" frameRight="6480" frameBottom="6000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2985.png" itemID="6597607d-00000509" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2985.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2985.png" bitmapDataHRef="M 21 1736924415.dat" frameRight="2360" frameBottom="1000"/>
+          <DOMBitmapItem name="image/bitmap2986.png" itemID="6597607d-0000050e" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2986.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2986.png" bitmapDataHRef="M 20 1736924415.dat" frameRight="3000" frameBottom="1120"/>
+          <DOMBitmapItem name="image/bitmap2993.png" itemID="6597607d-00000513" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2993.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2993.png" bitmapDataHRef="M 22 1736924415.dat" frameRight="3000" frameBottom="1040"/>
+          <DOMBitmapItem name="image/bitmap3077.png" itemID="6597607d-0000051d" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap3077.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap3077.png" bitmapDataHRef="M 24 1736924415.dat" frameRight="3400" frameBottom="1500"/>
+          <DOMBitmapItem name="image/bitmap3078.png" itemID="6597607d-00000522" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap3078.png" sourceLastImported="1704419453" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap3078.png" bitmapDataHRef="M 25 1736924415.dat" frameRight="3280" frameBottom="1140"/>
+          <DOMBitmapItem name="image/bitmap3451.png" itemID="6597607e-000006fd" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap3451.png" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3451.png" bitmapDataHRef="M 18 1736924415.dat" frameRight="1040" frameBottom="2280"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 14 1736924415.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 15 1736924415.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound2342.wav" itemID="6597607b-0000047f" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2342.wav" sourceLastImported="1704196122" href="sound/sound2342.wav" soundDataHRef="M 8 1736924415.dat" format="11kHz 16bit Mono" sampleCount="11908" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound2343.mp3" itemID="6597607b-00000483" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2343.mp3" sourceLastImported="1704419451" href="sound/sound2343.mp3" soundDataHRef="M 9 1736924415.dat" format="44kHz 16bit Mono" sampleCount="52992" exportFormat="5" exportBits="7" dataLength="19226" exportNative="true" cachedSampleCount="6624"/>
+          <DOMSoundItem name="sound/sound2344.mp3" itemID="6597607b-00000487" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2344.mp3" sourceLastImported="1704419451" href="sound/sound2344.mp3" soundDataHRef="M 10 1736924415.dat" format="44kHz 16bit Mono" sampleCount="93312" exportFormat="5" exportBits="7" dataLength="33854" exportNative="true" cachedSampleCount="11664"/>
+          <DOMSoundItem name="sound/sound2390.wav" itemID="6597607b-00000488" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2390.wav" sourceLastImported="1704196122" href="sound/sound2390.wav" soundDataHRef="M 1 1736924415.dat" format="11kHz 16bit Mono" sampleCount="9576" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound2609.wav" itemID="6597607c-000004b1" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2609.wav" sourceLastImported="1704196122" href="sound/sound2609.wav" soundDataHRef="M 19 1736924415.dat" format="11kHz 16bit Mono" sampleCount="35267" exportFormat="5" exportBits="7"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 2361.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b20" lastModified="1704196122"/>
+          <Include href="button/Symbol 2384.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b36" lastModified="1704196122"/>
+          <Include href="button/Symbol 2427.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b54" lastModified="1704196122"/>
+          <Include href="button/Symbol 2431.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b57" lastModified="1704196122"/>
+          <Include href="button/Symbol 2437.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b5b" lastModified="1704196122"/>
+          <Include href="button/Symbol 2445.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b5e" lastModified="1704196122"/>
+          <Include href="button/Symbol 2546.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000bc6" lastModified="1704196122"/>
+          <Include href="button/Symbol 2588.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c00" lastModified="1704196122"/>
+          <Include href="button/Symbol 2606.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c1a" lastModified="1704196122"/>
+          <Include href="button/Symbol 2652.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c58" lastModified="1704196122"/>
+          <Include href="button/Symbol 2663.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c67" lastModified="1704196122"/>
+          <Include href="button/Symbol 2698.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cab" lastModified="1704196122"/>
+          <Include href="button/Symbol 2704.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cb8" lastModified="1704196122"/>
+          <Include href="button/Symbol 2710.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cc9" lastModified="1704196122"/>
+          <Include href="button/Symbol 2712.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cce" lastModified="1704196122"/>
+          <Include href="button/Symbol 2715.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cd5" lastModified="1704196122"/>
+          <Include href="button/Symbol 2812.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d8e" lastModified="1704196122"/>
+          <Include href="button/Symbol 2817.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d92" lastModified="1704196122"/>
+          <Include href="button/Symbol 3039.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e02" lastModified="1704196122"/>
+          <Include href="button/Symbol 3045.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e08" lastModified="1704196122"/>
+          <Include href="button/Symbol 35553.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d6b" lastModified="1704196122"/>
+          <Include href="button/Symbol 51651.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b8f" lastModified="1704196122"/>
+          <Include href="NPC/985女-NPC.xml" loadImmediate="false" itemID="668aad0c-000062ea" lastModified="1724850094"/>
+          <Include href="NPC/Andy-NPC.xml" loadImmediate="false" itemID="668a8cfe-000031c4" lastModified="1740678517"/>
+          <Include href="NPC/Blue-NPC.xml" loadImmediate="false" itemID="668a8cf4-00003141" lastModified="1740678532"/>
+          <Include href="NPC/Boy-NPC.xml" loadImmediate="false" itemID="668aa688-0000543a" lastModified="1740634167"/>
+          <Include href="NPC/King-NPC.xml" loadImmediate="false" itemID="668aa67d-000053b0" lastModified="1740678564"/>
+          <Include href="NPC/ShopGirl-NPC.xml" loadImmediate="false" itemID="668a8ce5-000030f4" lastModified="1740678504"/>
+          <Include href="NPC/爱国青年-NPC.xml" loadImmediate="false" itemID="668a9be5-00004f7b" lastModified="1732205606"/>
+          <Include href="NPC/宝石线人-NPC.xml" loadImmediate="false" itemID="668a9bc7-00004f42" lastModified="1740633500"/>
+          <Include href="NPC/格格巫/格格巫-NPC.xml" loadImmediate="false" itemID="668aa42e-000052db" lastModified="1740634045"/>
+          <Include href="NPC/格格巫/未命名文件夹 1/Symbol 2946.xml" loadImmediate="false" itemID="6597607e-00000dbd" lastModified="1704196122"/>
+          <Include href="NPC/格格巫/未命名文件夹 1/Symbol 2947.xml" loadImmediate="false" itemID="6597607e-00000dbe" lastModified="1704196122"/>
+          <Include href="NPC/格格巫/未命名文件夹 1/Symbol 2948.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000dbf" lastModified="1704196122"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-脑袋.xml" loadImmediate="false" itemID="665acb6b-00000dd3" lastModified="1717770260"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-屁股.xml" loadImmediate="false" itemID="665ae13e-00000e2c" lastModified="1717255995"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-上身.xml" loadImmediate="false" itemID="665ad015-00000de3" lastModified="1717599888"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-小腿.xml" loadImmediate="false" itemID="665ae188-00000e37" lastModified="1717257051"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-鞋子.xml" loadImmediate="false" itemID="665adfa6-00000e19" lastModified="1717255535"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-腰部.xml" loadImmediate="false" itemID="665b1c61-00000136" lastModified="1717247073"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-腰挂刀串.xml" loadImmediate="false" itemID="665b5a40-00001f8a" lastModified="1717264064"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-右大臂.xml" loadImmediate="false" itemID="665ac856-00000dca" lastModified="1717255030"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-右大腿.xml" loadImmediate="false" itemID="665ae16f-00000e34" lastModified="1717257276"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-右手.xml" loadImmediate="false" itemID="665ad982-00000e0e" lastModified="1717229954"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-右小臂.xml" loadImmediate="false" itemID="665ae02f-00000e1f" lastModified="1717241896"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-左大臂.xml" loadImmediate="false" itemID="665ad63a-00000df4" lastModified="1717243041"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-左大腿.xml" loadImmediate="false" itemID="665ae14c-00000e30" lastModified="1717257211"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-左手.xml" loadImmediate="false" itemID="665adf22-00000e16" lastModified="1717231394"/>
+          <Include href="NPC/黑铁会外交部长-部件/外交部长-左小臂.xml" loadImmediate="false" itemID="665ae04c-00000e24" lastModified="1717240916"/>
+          <Include href="NPC/黑铁会外交部长-待机.xml" loadImmediate="false" itemID="665b5cc6-00001fa3" lastModified="1717769725"/>
+          <Include href="NPC/蓝发女-NPC.xml" loadImmediate="false" itemID="668a9beb-00004f7c" lastModified="1740678523"/>
+          <Include href="NPC/冷武器商人/冷兵/刀-CF手斧.xml" loadImmediate="false" itemID="65bdbe01-00000077" lastModified="1717917073"/>
+          <Include href="NPC/冷武器商人/冷兵/刀-玳瑁长柄剑.xml" loadImmediate="false" itemID="660e4567-000005f8" lastModified="1717917097"/>
+          <Include href="NPC/冷武器商人/冷兵/刀-虎彻.xml" loadImmediate="false" itemID="660ab19d-00004319" lastModified="1717916770"/>
+          <Include href="NPC/冷武器商人/冷兵/刀-唐朝直刀.xml" loadImmediate="false" itemID="65bdbdaa-0000006d" lastModified="1717916767"/>
+          <Include href="NPC/冷武器商人/冷兵/刀-消防斧.xml" loadImmediate="false" itemID="65bdbbda-000002b5" lastModified="1717916848"/>
+          <Include href="NPC/冷武器商人/冷兵/冷兵构件/元件 1.xml" loadImmediate="false" itemID="66098f67-000001ae" lastModified="1711977312"/>
+          <Include href="NPC/冷武器商人/冷兵/冷兵构件/元件 3.xml" loadImmediate="false" itemID="660ab66f-0000012e" lastModified="1712096182"/>
+          <Include href="NPC/冷武器商人/冷兵器商人-交互.xml" loadImmediate="false" itemID="66655386-00000ae6" lastModified="1746457278"/>
+          <Include href="NPC/冷武器商人/冷兵器商人-静态.xml" loadImmediate="false" itemID="66654ab3-000002d7" lastModified="1717917829"/>
+          <Include href="NPC/冷武器商人/冷兵器商人-坐下.xml" loadImmediate="false" itemID="6665864b-00001af0" lastModified="1717930913"/>
+          <Include href="NPC/冷武器商人/阴影.xml" loadImmediate="false" itemID="66655610-0000136b" lastModified="1717917200"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-背武.xml" itemIcon="1" loadImmediate="false" itemID="666557d5-00001459" lastModified="1717917653"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-大臂.xml" itemIcon="1" loadImmediate="false" itemID="6665566c-00001375" lastModified="1717917292"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-大腿.xml" itemIcon="1" loadImmediate="false" itemID="6665564e-00001370" lastModified="1717917262"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-脑袋.xml" itemIcon="1" loadImmediate="false" itemID="6665573b-000013d9" lastModified="1717917563"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-上身.xml" itemIcon="1" loadImmediate="false" itemID="666555f7-00001368" lastModified="1717917175"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-小臂.xml" itemIcon="1" loadImmediate="false" itemID="66655666-00001374" lastModified="1717917286"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-小腿.xml" itemIcon="1" loadImmediate="false" itemID="6665565e-00001373" lastModified="1717917278"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-鞋子.xml" itemIcon="1" loadImmediate="false" itemID="66655659-00001372" lastModified="1717917273"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-腰刀.xml" itemIcon="1" loadImmediate="false" itemID="66655798-0000141b" lastModified="1717917609"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-腰腹.xml" itemIcon="1" loadImmediate="false" itemID="666555fc-00001369" lastModified="1717917180"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-右手.xml" itemIcon="1" loadImmediate="false" itemID="666555f1-00001367" lastModified="1717917169"/>
+          <Include href="NPC/冷武器商人/肢体/冷兵商人肢体-左手.xml" itemIcon="1" loadImmediate="false" itemID="66655655-00001371" lastModified="1717917269"/>
+          <Include href="NPC/冷武器商人/肢体/细分/冷兵商人肢体-表情.xml" itemIcon="1" loadImmediate="false" itemID="6665567b-0000137f" lastModified="1717917307"/>
+          <Include href="NPC/冷武器商人/肢体/细分/冷兵商人肢体-刀套.xml" itemIcon="1" loadImmediate="false" itemID="66655640-0000136f" lastModified="1717917248"/>
+          <Include href="NPC/冷武器商人/肢体/细分/冷兵商人肢体-头颅.xml" itemIcon="1" loadImmediate="false" itemID="6665560d-0000136a" lastModified="1717922822"/>
+          <Include href="NPC/冷武器商人/肢体/细分/冷兵商人肢体-小刀.xml" itemIcon="1" loadImmediate="false" itemID="6665563c-0000136e" lastModified="1717917244"/>
+          <Include href="NPC/莉莉丝/莉莉丝-NPC.xml" loadImmediate="false" itemID="668aa22d-00005297" lastModified="1740634049"/>
+          <Include href="NPC/莉莉丝/未命名文件夹 1/Symbol 2891.xml" loadImmediate="false" itemID="6597607e-00000db4" lastModified="1704196122"/>
+          <Include href="NPC/莉莉丝/未命名文件夹 1/Symbol 2892.xml" loadImmediate="false" itemID="6597607e-00000db5" lastModified="1704196122"/>
+          <Include href="NPC/莉莉丝/未命名文件夹 1/Symbol 2893.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000db6" lastModified="1704196122"/>
+          <Include href="NPC/前治安官/前治安官-NPC.xml" loadImmediate="false" itemID="668a9aac-00004f39" lastModified="1740633376"/>
+          <Include href="NPC/前治安官/图形/Symbol 2700.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000caf" lastModified="1704196122"/>
+          <Include href="NPC/前治安官/图形/Symbol 2701.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb1" lastModified="1704196122"/>
+          <Include href="NPC/前治安官/图形/Symbol 2702.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb3" lastModified="1704196122"/>
+          <Include href="NPC/前治安官/图形/Symbol 2703.xml" loadImmediate="false" itemID="6597607e-00000cb5" lastModified="1704196122"/>
+          <Include href="NPC/圣诞树.xml" loadImmediate="false" itemID="668aad1c-0000632a" lastModified="1720364316"/>
+          <Include href="NPC/文天/Symbol 35500.xml" loadImmediate="false" itemID="6597607e-00000cf4" lastModified="1704196122"/>
+          <Include href="NPC/文天/Symbol 35501.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf6" lastModified="1704196122"/>
+          <Include href="NPC/杂项/武器-大剑.xml" loadImmediate="false" itemID="66631721-0000116c" lastModified="1717769623"/>
+          <Include href="NPC/杂项/武器-飞刀.xml" loadImmediate="false" itemID="66631721-0000116a" lastModified="1717263913"/>
+          <Include href="NPC/杂项/武器-砍刀.xml" loadImmediate="false" itemID="66631721-00001172" lastModified="1717263568"/>
+          <Include href="NPC/杂项/细铁.xml" loadImmediate="false" itemID="66631721-0000116b" lastModified="1717237580"/>
+          <Include href="NPC/杂项/阴影.xml" loadImmediate="false" itemID="66631721-00001174" lastModified="1717242795"/>
+          <Include href="NPC/杂项/斩夜.xml" loadImmediate="false" itemID="66631710-0000015c" lastModified="1717770070"/>
+          <Include href="NPC/杂项/斩夜-刀.xml" loadImmediate="false" itemID="66631714-0000015d" lastModified="1717770004"/>
+          <Include href="NPC/杂项/斩夜-刀鞘.xml" loadImmediate="false" itemID="66631716-0000015e" lastModified="1717770006"/>
+          <Include href="shape/Symbol 284.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000078f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000797" lastModified="1704196122"/>
+          <Include href="shape/Symbol 321.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 534.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007bf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 977.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000826" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1137.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000087e" lastModified="1704704797"/>
+          <Include href="shape/Symbol 1521.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000094f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1524.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000951" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1546.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000095d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1547.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000095e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1548.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000095f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1549.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000960" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1550.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000961" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1551.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000962" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1552.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000963" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1553.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000964" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1554.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000965" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1555.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000966" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1556.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000967" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1557.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000968" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1558.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000969" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1559.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1560.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1561.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1562.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1563.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096e" lastModified="1714921269"/>
+          <Include href="shape/Symbol 1564.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1565.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000970" lastModified="1714921546"/>
+          <Include href="shape/Symbol 1566.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000971" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1567.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000972" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1568.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000973" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1569.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000974" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1570.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000975" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1571.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000976" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1572.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000977" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1573.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000978" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1574.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000979" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1575.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1576.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1577.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1578.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1579.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1581.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000980" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1582.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000981" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1583.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000982" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1584.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000983" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1585.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000984" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1586.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000985" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1587.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000986" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1588.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000987" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1590.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000988" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1591.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000989" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1592.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1593.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1594.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1595.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1596.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1597.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1598.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000990" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1599.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000991" lastModified="1706112971"/>
+          <Include href="shape/Symbol 1600.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000992" lastModified="1706112917"/>
+          <Include href="shape/Symbol 1601.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000993" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1602.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000994" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1603.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000995" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1604.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000996" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1605.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000997" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1606.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000998" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1607.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000999" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1608.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000099a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1609.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000099b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1610.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000099c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1611.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000099d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1612.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000099e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1613.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000099f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1614.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1615.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1616.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1617.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1618.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1619.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1620.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1621.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1622.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1623.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a9" lastModified="1706113051"/>
+          <Include href="shape/Symbol 1624.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009aa" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1625.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ab" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1626.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ac" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1627.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ad" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1628.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ae" lastModified="1717509440"/>
+          <Include href="shape/Symbol 1629.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009af" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1851.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a28" lastModified="1714822147"/>
+          <Include href="shape/Symbol 1908.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a42" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1909.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a43" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1910.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a44" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1911.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a45" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1912.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a46" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1913.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a47" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1914.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1915.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a49" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1916.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1917.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1918.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1919.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1920.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1921.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1922.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a50" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1923.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a51" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1924.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a52" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1925.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a53" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1926.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a54" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1927.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a55" lastModified="1714723787"/>
+          <Include href="shape/Symbol 2256.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000adc" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2257.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000add" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2258.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ade" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2262.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000adf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2263.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2264.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2265.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2268.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2269.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2270.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2275.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2277.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2278.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2279.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aea" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2280.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aeb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2281.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aec" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2282.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aed" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2283.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aee" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2284.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aef" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2285.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2286.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2287.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2289.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2290.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2291.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2292.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2293.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2294.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2295.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2296.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000afa" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2297.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000afb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2298.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000afc" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2299.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000afd" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2300.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000afe" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2301.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aff" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2302.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b00" lastModified="1705822862"/>
+          <Include href="shape/Symbol 2303.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b01" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2304.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b02" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2305.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b03" lastModified="1714725069"/>
+          <Include href="shape/Symbol 2306.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b04" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2307.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b05" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2308.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b06" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2309.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b07" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2310.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b08" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2311.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b09" lastModified="1714723880"/>
+          <Include href="shape/Symbol 2312.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2313.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2315.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2318.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2320.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2322.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2323.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b10" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2328.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b12" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2334.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b16" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2339.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b19" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2340.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b1a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2341.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b1b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2365.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b23" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2366.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b24" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2368.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b26" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2369.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b27" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2370.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b28" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2371.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b29" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2372.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b2a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2373.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b2b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2374.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b2c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2375.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b2d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2376.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b2e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2377.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b2f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2378.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b30" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2379.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b31" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2380.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b32" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2381.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b33" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2382.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b34" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2383.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b35" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2386.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b38" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2388.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b3a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2389.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b3b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2404.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b43" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2413.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2415.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2416.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2417.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2418.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2419.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2420.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2421.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b50" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2430.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b56" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2440.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b5d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2485.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b78" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2486.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2487.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2488.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2489.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2490.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b80" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2491.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b81" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2492.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b83" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2494.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b86" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2495.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b87" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2496.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b89" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2497.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2498.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2499.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2506.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b99" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2508.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b9c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2509.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b9d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2510.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b9f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2511.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ba1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2512.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ba3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2516.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ba6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2524.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bab" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2525.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bac" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2526.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bad" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2527.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bae" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2530.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2532.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2533.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2534.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2535.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2536.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2538.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2539.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bba" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2543.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bc0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2581.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bf2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2582.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bf4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2583.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bf6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2585.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bfa" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2594.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c09" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2595.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c0b" lastModified="1723056467"/>
+          <Include href="shape/Symbol 2598.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c0e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2599.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c10" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2607.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c1c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2620.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c2a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2621.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c2c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2622.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c2e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2623.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c30" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2624.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c32" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2625.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c34" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2626.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c36" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2627.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c38" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2628.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c3a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2629.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c3c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2630.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c3e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2631.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c40" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2632.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c41" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2633.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c42" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2634.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c43" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2635.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c44" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2636.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c45" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2637.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c46" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2638.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c47" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2640.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c49" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2644.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c4c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2645.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c4d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2665.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c6b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2666.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c6d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2667.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c6f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2668.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c71" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2669.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c73" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2670.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c75" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2671.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c77" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2672.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c79" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2673.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c7a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2674.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c7c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2675.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c7e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2676.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c80" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2677.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c82" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2678.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c84" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2679.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c86" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2680.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c88" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2681.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c8a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2682.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c8c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2683.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c8e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2684.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c90" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2686.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c94" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2687.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c96" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2688.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c98" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2689.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c9a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2691.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c9e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2693.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ca2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2706.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cbd" lastModified="1717509639"/>
+          <Include href="shape/Symbol 2707.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc0" lastModified="1717509853"/>
+          <Include href="shape/Symbol 2708.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc3" lastModified="1717509942"/>
+          <Include href="shape/Symbol 2718.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cd9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2719.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cdb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2721.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cde" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2722.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cdf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2724.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ce4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2725.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ce6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2727.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cea" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2728.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cec" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2758.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d2b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2759.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d2e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2760.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d31" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2767.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d43" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2769.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2770.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2771.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2772.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d51" lastModified="1717919484"/>
+          <Include href="shape/Symbol 2773.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d54" lastModified="1717918031"/>
+          <Include href="shape/Symbol 2774.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d56" lastModified="1717919196"/>
+          <Include href="shape/Symbol 2775.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d58" lastModified="1717919177"/>
+          <Include href="shape/Symbol 2778.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d5d" lastModified="1717919154"/>
+          <Include href="shape/Symbol 2780.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d61" lastModified="1717919137"/>
+          <Include href="shape/Symbol 2781.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d63" lastModified="1717919142"/>
+          <Include href="shape/Symbol 2782.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d65" lastModified="1717919132"/>
+          <Include href="shape/Symbol 2783.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d67" lastModified="1717919151"/>
+          <Include href="shape/Symbol 2784.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d69" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2785.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6a" lastModified="1717919229"/>
+          <Include href="shape/Symbol 2786.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6c" lastModified="1717919212"/>
+          <Include href="shape/Symbol 2787.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2788.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d70" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2790.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d74" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2791.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d75" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2792.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d77" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2793.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d79" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2794.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d7a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2795.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d7c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2796.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d7e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2797.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d80" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2798.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d81" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2799.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d82" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2800.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d83" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2801.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d84" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2802.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d85" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2803.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d86" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2804.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d87" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2809.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d8b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2814.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d90" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2827.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d96" lastModified="1704645394"/>
+          <Include href="shape/Symbol 2829.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d97" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2835.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d9b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2840.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d9e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2841.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d9f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2843.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000da1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2850.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000da5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2851.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000da6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2865.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dac" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2866.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dad" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2867.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dae" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2874.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000daf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2875.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000db0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2877.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000db1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2879.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000db2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2883.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000db3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2895.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000db8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2896.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000db9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2910.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dbb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2975.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2976.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcc" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2977.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcd" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2978.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dce" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2979.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2980.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2981.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2987.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2988.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2989.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2990.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2992.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2994.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2995.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2996.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dda" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2997.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ddb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2998.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ddc" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2999.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ddd" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3002.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ddf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3003.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3004.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3005.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3006.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3007.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3008.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3009.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3010.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3011.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3012.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3013.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dea" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3014.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000deb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3015.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dec" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3016.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ded" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3017.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dee" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3018.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000def" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3020.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3021.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3023.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3025.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3026.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3027.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3028.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3029.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3030.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dfa" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3031.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dfb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3032.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dfc" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3037.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e00" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3038.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e01" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3041.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e04" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3050.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e0b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3051.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e0c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3052.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e0d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3053.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e0e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3054.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e0f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3055.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e10" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3056.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e11" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3057.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e12" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3058.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e13" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3059.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e14" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3060.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e15" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3062.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e17" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3063.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e18" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3064.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e19" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3065.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e1a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3066.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e1b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3067.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e1c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3076.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e20" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3079.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e21" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3080.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e22" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3082.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e23" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3083.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e24" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3085.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e25" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3086.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e26" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3087.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e27" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35471.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35472.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cbb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35475.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35477.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc7" lastModified="1704196122"/>
+          <Include href="shape/爱国青年.xml" itemIcon="1" loadImmediate="false" itemID="65f80264-00000b6d" lastModified="1712045693"/>
+          <Include href="shape/东亚病夫牌.xml" itemIcon="1" loadImmediate="false" itemID="65f80210-00000b6b" lastModified="1710752364"/>
+          <Include href="shape/通用背景.xml" itemIcon="1" loadImmediate="false" itemID="659d3fae-00003178" lastModified="1710752365"/>
+          <Include href="sprite/bpk的车.xml" loadImmediate="false" itemID="68187599-00000d31" lastModified="1746433446"/>
+          <Include href="sprite/deadbody.xml" loadImmediate="false" itemID="67d7d95e-0000142c" lastModified="1742199883"/>
+          <Include href="sprite/Symbol 292.xml" loadImmediate="false" itemID="6597607e-00000792" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 477.xml" loadImmediate="false" itemID="6597607e-000007a6" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1523.xml" loadImmediate="false" itemID="6597607e-00000950" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1525.xml" loadImmediate="false" itemID="6597607e-00000952" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1527.xml" loadImmediate="false" itemID="6597607e-00000953" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1529.xml" loadImmediate="false" itemID="6597607e-00000954" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1531.xml" loadImmediate="false" itemID="6597607e-00000955" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1533.xml" loadImmediate="false" itemID="6597607e-00000956" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1535.xml" loadImmediate="false" itemID="6597607e-00000957" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1537.xml" loadImmediate="false" itemID="6597607e-00000958" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1539.xml" loadImmediate="false" itemID="6597607e-00000959" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1541.xml" loadImmediate="false" itemID="6597607e-0000095a" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1543.xml" loadImmediate="false" itemID="6597607e-0000095b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1545.xml" loadImmediate="false" itemID="6597607e-0000095c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2254.xml" loadImmediate="false" itemID="6597607e-00000adb" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2276.xml" loadImmediate="false" itemID="6597607e-00000ae7" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2330.xml" loadImmediate="false" itemID="6597607e-00000b13" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2336.xml" loadImmediate="false" itemID="6597607e-00000b17" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2337.xml" loadImmediate="false" itemID="6597607e-00000b18" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2345.xml" loadImmediate="false" itemID="6597607e-00000b1c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2351.xml" loadImmediate="false" itemID="6597607e-00000b1e" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2360.xml" loadImmediate="false" itemID="6597607e-00000b1f" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1720343543"/>
+          <Include href="sprite/Symbol 2364.xml" itemID="6597607e-00000b22" lastModified="1740678556"/>
+          <Include href="sprite/Symbol 2385.xml" loadImmediate="false" itemID="6597607e-00000b37" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2391.xml" loadImmediate="false" itemID="6597607e-00000b3c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2392.xml" loadImmediate="false" itemID="6597607e-00000b3d" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2393.xml" loadImmediate="false" itemID="6597607e-00000b3e" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2406.xml" loadImmediate="false" itemID="6597607e-00000b44" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2408.xml" loadImmediate="false" itemID="6597607e-00000b45" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2410.xml" loadImmediate="false" itemID="6597607e-00000b46" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2412.xml" loadImmediate="false" itemID="6597607e-00000b47" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2414.xml" loadImmediate="false" itemID="6597607e-00000b49" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2423.xml" loadImmediate="false" itemID="6597607e-00000b51" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2426.xml" loadImmediate="false" itemID="6597607e-00000b53" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2429.xml" loadImmediate="false" itemID="6597607e-00000b55" lastModified="1737284313"/>
+          <Include href="sprite/Symbol 2433.xml" loadImmediate="false" itemID="6597607e-00000b58" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2434.xml" loadImmediate="false" itemID="6597607e-00000b59" lastModified="1736954137"/>
+          <Include href="sprite/Symbol 2436.xml" loadImmediate="false" itemID="6597607e-00000b5a" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2439.xml" loadImmediate="false" itemID="6597607e-00000b5c" lastModified="1737283936"/>
+          <Include href="sprite/Symbol 2447.xml" loadImmediate="false" itemID="6597607e-00000b5f" lastModified="1714894879"/>
+          <Include href="sprite/Symbol 2448.xml" itemID="6597607e-00000b60" lastModified="1737284275"/>
+          <Include href="sprite/Symbol 2493.xml" loadImmediate="false" itemID="6597607e-00000b84" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2500.xml" loadImmediate="false" itemID="6597607e-00000b90" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2515.xml" loadImmediate="false" itemID="6597607e-00000ba5" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2517.xml" loadImmediate="false" itemID="6597607e-00000ba7" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2519.xml" loadImmediate="false" itemID="6597607e-00000ba8" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2521.xml" loadImmediate="false" itemID="6597607e-00000ba9" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2522.xml" loadImmediate="false" itemID="6597607e-00000baa" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2540.xml" loadImmediate="false" itemID="6597607e-00000bbb" lastModified="1704645473"/>
+          <Include href="sprite/Symbol 2541.xml" loadImmediate="false" itemID="6597607e-00000bbc" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2542.xml" loadImmediate="false" itemID="6597607e-00000bbe" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2544.xml" loadImmediate="false" itemID="6597607e-00000bc2" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2545.xml" loadImmediate="false" itemID="6597607e-00000bc4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2547.xml" loadImmediate="false" itemID="6597607e-00000bc7" lastModified="1740634401"/>
+          <Include href="sprite/Symbol 2577.xml" loadImmediate="false" itemID="6597607e-00000beb" lastModified="1723056257"/>
+          <Include href="sprite/Symbol 2578.xml" loadImmediate="false" itemID="6597607e-00000bed" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2584.xml" loadImmediate="false" itemID="6597607e-00000bf8" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2586.xml" loadImmediate="false" itemID="6597607e-00000bfc" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2587.xml" loadImmediate="false" itemID="6597607e-00000bfe" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2605.xml" loadImmediate="false" itemID="6597607e-00000c18" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2610.xml" loadImmediate="false" itemID="6597607e-00000c1f" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2619.xml" loadImmediate="false" itemID="6597607e-00000c28" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2639.xml" loadImmediate="false" itemID="6597607e-00000c48" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2642.xml" loadImmediate="false" itemID="6597607e-00000c4a" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2643.xml" loadImmediate="false" itemID="6597607e-00000c4b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2647.xml" loadImmediate="false" itemID="6597607e-00000c50" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2648.xml" loadImmediate="false" itemID="6597607e-00000c52" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2649.xml" loadImmediate="false" itemID="6597607e-00000c54" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2658.xml" loadImmediate="false" itemID="6597607e-00000c5f" lastModified="1717510811"/>
+          <Include href="sprite/Symbol 2661.xml" loadImmediate="false" itemID="6597607e-00000c63" lastModified="1717512172"/>
+          <Include href="sprite/Symbol 2662.xml" loadImmediate="false" itemID="6597607e-00000c65" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2664.xml" loadImmediate="false" itemID="6597607e-00000c69" lastModified="1740633514"/>
+          <Include href="sprite/Symbol 2685.xml" loadImmediate="false" itemID="6597607e-00000c92" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2690.xml" loadImmediate="false" itemID="6597607e-00000c9c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2692.xml" loadImmediate="false" itemID="6597607e-00000ca0" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2694.xml" loadImmediate="false" itemID="6597607e-00000ca4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2695.xml" loadImmediate="false" itemID="6597607e-00000ca6" lastModified="1717510728"/>
+          <Include href="sprite/Symbol 2696.xml" loadImmediate="false" itemID="6597607e-00000ca8" lastModified="1717510663"/>
+          <Include href="sprite/Symbol 2697.xml" loadImmediate="false" itemID="6597607e-00000caa" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2699.xml" loadImmediate="false" itemID="6597607e-00000cad" lastModified="1740633524"/>
+          <Include href="sprite/Symbol 2709.xml" loadImmediate="false" itemID="6597607e-00000cc6" lastModified="1717508284"/>
+          <Include href="sprite/Symbol 2711.xml" loadImmediate="false" itemID="6597607e-00000ccc" lastModified="1740633533"/>
+          <Include href="sprite/Symbol 2716.xml" loadImmediate="false" itemID="6597607e-00000cd7" lastModified="1740633527"/>
+          <Include href="sprite/Symbol 2726.xml" loadImmediate="false" itemID="6597607e-00000ce8" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2762.xml" loadImmediate="false" itemID="6597607e-00000d36" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2764.xml" loadImmediate="false" itemID="6597607e-00000d3b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2766.xml" loadImmediate="false" itemID="6597607e-00000d40" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2777.xml" loadImmediate="false" itemID="6597607e-00000d5b" lastModified="1717919201"/>
+          <Include href="sprite/Symbol 2779.xml" loadImmediate="false" itemID="6597607e-00000d5f" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2789.xml" loadImmediate="false" itemID="6597607e-00000d72" lastModified="1717919352"/>
+          <Include href="sprite/Symbol 2805.xml" loadImmediate="false" itemID="6597607e-00000d88" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2808.xml" loadImmediate="false" itemID="6597607e-00000d8a" lastModified="1714920884"/>
+          <Include href="sprite/Symbol 2810.xml" loadImmediate="false" itemID="6597607e-00000d8c" lastModified="1714923806"/>
+          <Include href="sprite/Symbol 2811.xml" loadImmediate="false" itemID="6597607e-00000d8d" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2813.xml" loadImmediate="false" itemID="6597607e-00000d8f" lastModified="1740634058"/>
+          <Include href="sprite/Symbol 2815.xml" loadImmediate="false" itemID="6597607e-00000d91" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2830.xml" loadImmediate="false" itemID="6597607e-00000d98" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2832.xml" loadImmediate="false" itemID="6597607e-00000d99" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2834.xml" loadImmediate="false" itemID="6597607e-00000d9a" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2837.xml" loadImmediate="false" itemID="6597607e-00000d9c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2839.xml" loadImmediate="false" itemID="6597607e-00000d9d" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2842.xml" loadImmediate="false" itemID="6597607e-00000da0" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2845.xml" loadImmediate="false" itemID="6597607e-00000da2" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2848.xml" loadImmediate="false" itemID="6597607e-00000da3" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2849.xml" loadImmediate="false" itemID="6597607e-00000da4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2853.xml" loadImmediate="false" itemID="6597607e-00000da7" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2854.xml" loadImmediate="false" itemID="6597607e-00000da8" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2856.xml" loadImmediate="false" itemID="6597607e-00000da9" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2857.xml" loadImmediate="false" itemID="6597607e-00000daa" lastModified="1705079728"/>
+          <Include href="sprite/Symbol 2858.xml" loadImmediate="false" itemID="6597607e-00000dab" lastModified="1706113020"/>
+          <Include href="sprite/Symbol 2897.xml" loadImmediate="false" itemID="6597607e-00000dba" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2930.xml" loadImmediate="false" itemID="6597607e-00000dbc" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2952.xml" loadImmediate="false" itemID="6597607e-00000dc1" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2984.xml" loadImmediate="false" itemID="6597607e-00000dd2" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3001.xml" loadImmediate="false" itemID="6597607e-00000dde" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3019.xml" loadImmediate="false" itemID="6597607e-00000df0" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3024.xml" loadImmediate="false" itemID="6597607e-00000df4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3033.xml" loadImmediate="false" itemID="6597607e-00000dfd" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3036.xml" loadImmediate="false" itemID="6597607e-00000dff" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3040.xml" loadImmediate="false" itemID="6597607e-00000e03" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3047.xml" loadImmediate="false" itemID="6597607e-00000e09" lastModified="1720344338"/>
+          <Include href="sprite/Symbol 3061.xml" loadImmediate="false" itemID="6597607e-00000e16" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3089.xml" loadImmediate="false" itemID="6597607e-00000e28" lastModified="1714551053"/>
+          <Include href="sprite/Symbol 3090.xml" loadImmediate="false" itemID="6597607e-00000e29" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3092.xml" loadImmediate="false" itemID="6597607e-00000e2a" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 35474.xml" loadImmediate="false" itemID="6597607e-00000cbe" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 35476.xml" loadImmediate="false" itemID="6597607e-00000cc4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 35478.xml" loadImmediate="false" itemID="6597607e-00000cca" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 35482.xml" loadImmediate="false" itemID="6597607e-00000cd3" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 35498.xml" loadImmediate="false" itemID="6597607e-00000cef" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 35499.xml" loadImmediate="false" itemID="6597607e-00000cf1" lastModified="1704196122"/>
+          <Include href="sprite/场景门.xml" loadImmediate="false" itemID="663d92b0-0000167f" lastModified="1723567257"/>
+          <Include href="sprite/场景门 废弃.xml" loadImmediate="false" itemID="67d7c804-0000057c" lastModified="1742194692"/>
+          <Include href="sprite/车库背景.xml" loadImmediate="false" itemID="682c0cbc-000006b5" lastModified="1747717308"/>
+          <Include href="sprite/车轮.xml" loadImmediate="false" itemID="68187f90-00000e04" lastModified="1746435984"/>
+          <Include href="sprite/地图碰撞箱 地下1层.xml" loadImmediate="false" itemID="67d7de51-000014c8" lastModified="1742200401"/>
+          <Include href="sprite/地图碰撞箱 房间.xml" loadImmediate="false" itemID="67d7c6a6-00000571" lastModified="1742200619"/>
+          <Include href="sprite/地图碰撞箱 基地1层.xml" loadImmediate="false" itemID="67d7c55b-00000548" lastModified="1742194642"/>
+          <Include href="sprite/地图碰撞箱 基地车库.xml" loadImmediate="false" itemID="67d7dd59-000014c5" lastModified="1746436841"/>
+          <Include href="sprite/地图碰撞箱 基地房顶.xml" loadImmediate="false" itemID="67d7dec3-000014cb" lastModified="1742200515"/>
+          <Include href="sprite/地图碰撞箱 基地门口.xml" loadImmediate="false" itemID="67d7c9ac-00000584" lastModified="1742195116"/>
+          <Include href="sprite/地图碰撞箱 健身房.xml" loadImmediate="false" itemID="67d7c916-0000057f" lastModified="1742194966"/>
+          <Include href="sprite/地图碰撞箱 武器库.xml" loadImmediate="false" itemID="67d7df02-000014ce" lastModified="1742200578"/>
+          <Include href="sprite/地图碰撞箱 医务室.xml" loadImmediate="false" itemID="67d7c6c8-00000579" lastModified="1742200658"/>
+          <Include href="sprite/地图碰撞箱 佣兵酒吧.xml" loadImmediate="false" itemID="67d7c5ec-00000551" lastModified="1742200704"/>
+          <Include href="sprite/地下1层背景.xml" loadImmediate="false" itemID="682c0cf8-000006c0" lastModified="1747717368"/>
+          <Include href="sprite/地下2层地图碰撞箱.xml" loadImmediate="false" itemID="65d0b4f2-000014ce" lastModified="1742200453"/>
+          <Include href="sprite/基地1层背景.xml" loadImmediate="false" itemID="682c0cd1-000006b9" lastModified="1747717329"/>
+          <Include href="sprite/健身房背景.xml" loadImmediate="false" itemID="682c108e-000006cb" lastModified="1747718286"/>
+          <Include href="sprite/健身房沙袋.xml" loadImmediate="false" itemID="66a8ed03-0000125e" lastModified="1722346755"/>
+          <Include href="sprite/健身房沙袋 强制移动.xml" loadImmediate="false" itemID="66a8ed0d-00001267" lastModified="1722347298"/>
+          <Include href="sprite/理发师/理发师-NPC.xml" loadImmediate="false" itemID="668aace8-0000626b" lastModified="1736955547"/>
+          <Include href="sprite/男变装-沙漠军装皮鞋.xml" loadImmediate="false" itemID="67d7c60f-00000559" lastModified="1742194191"/>
+          <Include href="sprite/男变装-沙漠军装头盔.xml" loadImmediate="false" itemID="67d7c603-00000558" lastModified="1742194179"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
+          <Include href="sprite/通用背景mc.xml" loadImmediate="false" itemID="659d46f5-000039c6" lastModified="1704806133"/>
+          <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
+          <Include href="sprite/越野车.xml" loadImmediate="false" itemID="65b71fd0-00000156" lastModified="1746438222"/>
+          <Include href="sprite/越野车素材.xml" loadImmediate="false" itemID="681886d4-00000f78" lastModified="1746438193"/>
+          <Include href="sprite/越野摩托车.xml" loadImmediate="false" itemID="68188140-00000e15" lastModified="1746438306"/>
+          <Include href="sprite/越野摩托车素材.xml" loadImmediate="false" itemID="6818813e-00000e14" lastModified="1746438241"/>
+          <Include href="sprite/主角/Symbol 1106.xml" loadImmediate="false" itemID="6597607e-00000867" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1107.xml" loadImmediate="false" itemID="6597607e-00000868" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1110.xml" loadImmediate="false" itemID="6597607e-0000086a" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1111.xml" loadImmediate="false" itemID="6597607e-0000086b" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1114.xml" loadImmediate="false" itemID="6597607e-0000086d" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1115.xml" loadImmediate="false" itemID="6597607e-0000086e" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1118.xml" loadImmediate="false" itemID="6597607e-00000870" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1119.xml" loadImmediate="false" itemID="6597607e-00000871" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1122.xml" loadImmediate="false" itemID="6597607e-00000873" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1123.xml" loadImmediate="false" itemID="6597607e-00000874" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1126.xml" loadImmediate="false" itemID="6597607e-00000876" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1127.xml" loadImmediate="false" itemID="6597607e-00000877" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1130.xml" loadImmediate="false" itemID="6597607e-00000879" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1131.xml" loadImmediate="false" itemID="6597607e-0000087a" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1134.xml" loadImmediate="false" itemID="6597607e-0000087c" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1135.xml" loadImmediate="false" itemID="6597607e-0000087d" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1143.xml" loadImmediate="false" itemID="6597607e-00000880" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1144.xml" loadImmediate="false" itemID="6597607e-00000881" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1147.xml" loadImmediate="false" itemID="6597607e-00000883" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1148.xml" loadImmediate="false" itemID="6597607e-00000884" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1151.xml" loadImmediate="false" itemID="6597607e-00000886" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1152.xml" loadImmediate="false" itemID="6597607e-00000887" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1155.xml" loadImmediate="false" itemID="6597607e-00000889" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1156.xml" loadImmediate="false" itemID="6597607e-0000088a" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1159.xml" loadImmediate="false" itemID="6597607e-0000088c" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1160.xml" loadImmediate="false" itemID="6597607e-0000088d" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1161.xml" loadImmediate="false" itemID="6597607e-0000088e" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1164.xml" loadImmediate="false" itemID="6597607e-00000890" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1165.xml" loadImmediate="false" itemID="6597607e-00000891" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1168.xml" loadImmediate="false" itemID="6597607e-00000893" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1169.xml" loadImmediate="false" itemID="6597607e-00000894" lastModified="1704196122"/>
+          <Include href="sprite/主角/刀-新手刀.xml" loadImmediate="false" itemID="67d7c628-0000055f" lastModified="1742194216"/>
+          <Include href="sprite/主角/男变装-基本脸型.xml" loadImmediate="false" itemID="67d7c62f-00000562" lastModified="1742194223"/>
+          <Include href="sprite/主角/男变装-裸体脚.xml" loadImmediate="false" itemID="67d7c634-00000564" lastModified="1742194228"/>
+          <Include href="sprite/主角/男变装-裸体屁股.xml" loadImmediate="false" itemID="67d7c632-00000563" lastModified="1742194226"/>
+          <Include href="sprite/主角/男变装-裸体上臂.xml" loadImmediate="false" itemID="67d7c618-0000055a" lastModified="1742194201"/>
+          <Include href="sprite/主角/男变装-裸体身体.xml" loadImmediate="false" itemID="67d7c62c-00000561" lastModified="1742194220"/>
+          <Include href="sprite/主角/男变装-裸体小腿.xml" loadImmediate="false" itemID="67d7c638-00000565" lastModified="1742194232"/>
+          <Include href="sprite/主角/男变装-裸体右大腿.xml" loadImmediate="false" itemID="67d7c63a-00000566" lastModified="1742194234"/>
+          <Include href="sprite/主角/男变装-裸体右手.xml" loadImmediate="false" itemID="67d7c63e-00000568" lastModified="1742194238"/>
+          <Include href="sprite/主角/男变装-裸体右下臂.xml" loadImmediate="false" itemID="67d7c63c-00000567" lastModified="1742194236"/>
+          <Include href="sprite/主角/男变装-裸体左大腿.xml" loadImmediate="false" itemID="67d7c62b-00000560" lastModified="1742194219"/>
+          <Include href="sprite/主角/男变装-裸体左手.xml" loadImmediate="false" itemID="67d7c621-0000055d" lastModified="1742194210"/>
+          <Include href="sprite/主角/男变装-裸体左下臂.xml" loadImmediate="false" itemID="67d7c61d-0000055c" lastModified="1742194207"/>
+          <Include href="sprite/主角/枪-手枪-m9.xml" loadImmediate="false" itemID="67d7c624-0000055e" lastModified="1742194212"/>
+          <Include href="sprite/主角/枪-长枪-G36.xml" loadImmediate="false" itemID="67d7c61b-0000055b" lastModified="1742194204"/>
+          <Include href="sprite/自行车.xml" loadImmediate="false" itemID="681880b5-00000e12" lastModified="1746438386"/>
+          <Include href="sprite/自行车素材.xml" loadImmediate="false" itemID="68188672-00000f75" lastModified="1746437746"/>
+          <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1744224634"/>
+          <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720356537"/>
+          <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
+          <Include href="UI重构/商店相关/技能教学图标UI.xml" loadImmediate="false" itemID="6735005d-000008cc" lastModified="1731528994"/>
+          <Include href="UI重构/商店相关/技能教学图标UI背景.xml" loadImmediate="false" itemID="673504cc-000008e1" lastModified="1731527884"/>
+          <Include href="UI重构/书架系统/书架.xml" loadImmediate="false" itemID="66519f17-00003cc7" lastModified="1716631965"/>
+          <Include href="UI重构/文天彩蛋UI所用素材/文天.xml" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1707198663"/>
+          <Include href="UI重构/文天彩蛋UI所用素材/元件 1.xml" loadImmediate="false" itemID="65c1c94d-00000c97" lastModified="1720345000"/>
+          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1747717311"/>
+          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1747717349"/>
+          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1747718602"/>
+          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1743585946"/>
+          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1747718294"/>
+          <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1742200440"/>
+          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1747717252"/>
+          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1747718297"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1742200609"/>
+          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1747717315"/>
+          <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1747718311"/>
+          <Include href="房间摆件/摆件茶壶.xml" loadImmediate="false" itemID="663347f0-000017f6" lastModified="1714636784"/>
+          <Include href="房间摆件/摆件初始床.xml" loadImmediate="false" itemID="66363eaa-00000d76" lastModified="1714831225"/>
+          <Include href="房间摆件/摆件初始梯子.xml" loadImmediate="false" itemID="66363ec7-00000dc5" lastModified="1714831047"/>
+          <Include href="房间摆件/摆件床垫.xml" loadImmediate="false" itemID="66348582-00002c3f" lastModified="1714718082"/>
+          <Include href="房间摆件/摆件黑铁剑.xml" loadImmediate="false" itemID="66329c51-0000285e" lastModified="1714592849"/>
+          <Include href="房间摆件/摆件精制床.xml" loadImmediate="false" itemID="66363da2-00000d0b" lastModified="1720344989"/>
+          <Include href="房间摆件/摆件精制梯子.xml" loadImmediate="false" itemID="66363c00-00000cbb" lastModified="1714830336"/>
+          <Include href="房间摆件/摆件砍刀.xml" loadImmediate="false" itemID="6634a042-000034bc" lastModified="1714724931"/>
+          <Include href="房间摆件/摆件空调.xml" loadImmediate="false" itemID="6633494e-00001846" lastModified="1714637135"/>
+          <Include href="房间摆件/摆件忍者佩剑.xml" loadImmediate="false" itemID="663298da-0000215c" lastModified="1714591962"/>
+          <Include href="房间摆件/摆件尸斧.xml" loadImmediate="false" itemID="66329392-00001a02" lastModified="1714591061"/>
+          <Include href="房间摆件/摆件收伞.xml" loadImmediate="false" itemID="66334ac7-0000189f" lastModified="1714637511"/>
+          <Include href="房间摆件/摆件枕头.xml" loadImmediate="false" itemID="66348586-00002c40" lastModified="1714718086"/>
+          <Include href="房间摆件/定情信物.xml" loadImmediate="false" itemID="66373cab-00000f0a" lastModified="1714896685"/>
+          <Include href="房间摆件/乐器/摆件话筒.xml" loadImmediate="false" itemID="66329235-000015d7" lastModified="1714592483"/>
+          <Include href="房间摆件/乐器/摆件吉他.xml" loadImmediate="false" itemID="66328ead-0000157e" lastModified="1714589357"/>
+          <Include href="房间摆件/乐器/摆件键盘.xml" loadImmediate="false" itemID="66329049-0000159b" lastModified="1714589769"/>
+          <Include href="房间摆件/乐器/话筒/Symbol 646.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001538" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/话筒/Symbol 647.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001539" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/吉他/Symbol 470.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b0" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/吉他/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b3" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/吉他/Symbol 474.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b4" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/吉他/Symbol 475.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b5" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/吉他/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014b6" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/键盘/Symbol 567.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014fd" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/键盘/Symbol 569.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000014ff" lastModified="1701508661"/>
+          <Include href="房间摆件/乐器/键盘/Symbol 570.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001500" lastModified="1701508661"/>
+          <Include href="房间摆件/马桶.xml" loadImmediate="false" itemID="66bb48ca-0000251d" lastModified="1723549975"/>
+          <Include href="房间摆件/马桶按钮.xml" itemIcon="0" loadImmediate="false" itemID="66bb48d3-00002522" lastModified="1723550082"/>
+          <Include href="房间摆件/生活设施.xml" loadImmediate="false" itemID="663494f0-00002dfe" lastModified="1716536223"/>
+          <Include href="房间摆件/生活设施升级版.xml" loadImmediate="false" itemID="663498e5-0000326f" lastModified="1716536051"/>
+          <Include href="房间摆件/十文字大剑/光刃.xml" itemIcon="1" loadImmediate="false" itemID="6632974b-00002143" lastModified="1714591563"/>
+          <Include href="房间摆件/十文字大剑/十文字摆件.xml" loadImmediate="false" itemID="66329745-00002142" lastModified="1714592200"/>
+          <Include href="房间摆件/睡觉-高级床.xml" itemIcon="0" loadImmediate="false" itemID="66503816-000010db" lastModified="1716535982"/>
+          <Include href="房间摆件/睡觉-普通床.xml" itemIcon="0" loadImmediate="false" itemID="66503821-000010e7" lastModified="1716536184"/>
+          <Include href="健身房沙袋.xml" loadImmediate="false" itemID="65a79007-00000b58" lastModified="1722347259"/>
+          <Include href="素材库-基地场景.xml" itemID="67877067-00002014" lastModified="1746453357"/>
+          <Include href="梯子1.xml" loadImmediate="false" itemID="67ed053a-00000733" lastModified="1743587297"/>
+          <Include href="梯子2.xml" loadImmediate="false" itemID="67ed0cd9-00000ec1" lastModified="1743588724"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <swatchLists>
+          <swatchList>
+               <swatches>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330000" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#660000" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663333" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990000" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC0000" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993333" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3333" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3333" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996666" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6666" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6666" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9999" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9999" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem color="#979797" brightness="142"/>
+                    <SolidSwatchItem color="#545454" brightness="79"/>
+                    <SolidSwatchItem color="#C09600" hue="31" saturation="239" brightness="91"/>
+                    <SolidSwatchItem color="#EE9966" hue="15" saturation="192" brightness="160"/>
+                    <SolidSwatchItem color="#EEAA88" hue="13" saturation="180" brightness="176"/>
+                    <SolidSwatchItem color="#CC9977" hue="16" saturation="109" brightness="152"/>
+               </swatches>
+          </swatchList>
+     </swatchLists>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="2073301" publishTime="1747718511"/>
+          <PublishItem publishSize="2452922" publishTime="1747718308"/>
+          <PublishItem publishSize="1043162" publishTime="1746453387"/>
+          <PublishItem publishSize="1043144" publishTime="1746453113"/>
+          <PublishItem publishSize="1043149" publishTime="1746453082"/>
+          <PublishItem publishSize="1042953" publishTime="1746452490"/>
+          <PublishItem publishSize="1042956" publishTime="1746443006"/>
+          <PublishItem publishSize="1043040" publishTime="1746441892"/>
+          <PublishItem publishSize="1042901" publishTime="1746441425"/>
+          <PublishItem publishSize="1042901" publishTime="1746441384"/>
+          <PublishItem publishSize="1042894" publishTime="1746441234"/>
+          <PublishItem publishSize="1042562" publishTime="1746438401"/>
+          <PublishItem publishSize="1042536" publishTime="1746438041"/>
+          <PublishItem publishSize="1041786" publishTime="1746437402"/>
+          <PublishItem publishSize="1041773" publishTime="1746437110"/>
+          <PublishItem publishSize="1042394" publishTime="1746436962"/>
+          <PublishItem publishSize="975751" publishTime="1746433994"/>
+          <PublishItem publishSize="975712" publishTime="1746433900"/>
+          <PublishItem publishSize="970591" publishTime="1744224581"/>
+          <PublishItem publishSize="970590" publishTime="1744224512"/>
+     </publishHistory>
+</DOMDocument>

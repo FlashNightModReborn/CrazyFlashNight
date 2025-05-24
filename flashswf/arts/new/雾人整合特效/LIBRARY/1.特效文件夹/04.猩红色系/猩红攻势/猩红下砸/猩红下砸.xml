@@ -1,0 +1,182 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/04.猩红色系/猩红攻势/猩红下砸/猩红下砸" itemID="6546522b-00000618" linkageExportForAS="true" linkageIdentifier="猩红下砸" lastModified="1710856348" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="猩红下砸" currentFrame="4">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#BB6D6E" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="157.9" centerPoint3DY="-82.55">
+                  <matrix>
+                    <Matrix a="1.93185424804688" b="-0.517608642578125" c="0.401153564453125" d="1.4971923828125" tx="110.65" ty="-102.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="157.65" centerPoint3DY="8.75">
+                  <matrix>
+                    <Matrix a="2.77928161621094" b="0.744720458984375" c="-0.613113403320313" d="2.28814697265625" tx="112.65" ty="-69.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.8" y="41.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="157.65" centerPoint3DY="8.75">
+                  <matrix>
+                    <Matrix a="2.677490234375" b="0.717453002929688" c="-0.518508911132813" d="1.93511962890625" tx="114.05" ty="-44.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F55D7C">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红下砸/Symbol 438" centerPoint3DX="382.7" centerPoint3DY="9.15">
+                  <matrix>
+                    <Matrix a="-0.319992065429688" d="0.319992065429688" tx="213.2" ty="-139.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红下砸/Symbol 441" centerPoint3DX="357.15" centerPoint3DY="198.8">
+                  <matrix>
+                    <Matrix a="-0.319992065429688" d="0.319992065429688" tx="204.2" ty="-197.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10"/>
+                    <BlurFilter blurX="0" blurY="30"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红下砸/Symbol 446" centerPoint3DX="481.4" centerPoint3DY="78.85">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="243.65" ty="-78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红下砸/Symbol 449" centerPoint3DX="562.15" centerPoint3DY="68.35">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="272.65" ty="-62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红下砸/Symbol 451" centerPoint3DX="606.15" centerPoint3DY="-10.45">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="271.65" ty="-85.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#908283" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728" soundName="1.特效文件夹/04.猩红色系/猩红攻势/随机组合/sound2385.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,176 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1747717172" lastUniqueIdentifier="20">
+  <timeline>
+    <DOMTimeline name="联络列表">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*起始x = 30;
+起始y = 70;
+距离y = 30;*/
+NPC列表 = ["Andy Law", "The Girl", "Blue", "Shop Girl", "Boy", "King", "Pig", "格格巫", "丽丽丝"];
+列数 = 8;
+
+function 刷新NPC列表()
+{
+	this.npcindex = 0;
+	this.onEnterFrame = function()
+	{
+		if (this.npcindex >= this.列数)
+		{
+			delete this.onEnterFrame;
+			return;
+		}
+		this["列表" + this.npcindex].初始化(NPC列表[this.npcindex]);
+		this.npcindex++;
+	};
+}
+
+刷新NPC列表();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.631866455078125" d="0.515579223632813" tx="360.3" ty="232.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.购买物品界面._x = 43.5;
+	_root.购买物品界面._y = 101.5;
+	_root.物品UI函数.刷新商店图标(_root.getNPCShop(this.NPC头像.名字));
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="进入商店文字" blendMode="add" centerPoint3DX="391.55" centerPoint3DY="242.45">
+                  <matrix>
+                    <Matrix tx="360.3" ty="232.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!7993 4644|7997 5200!7997 5200|5000 5200!5000 5200|5000 1800!5000 1800|7969 1800!7969 1800|7992.5 4644!7992.5 4644|7993 4644"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头像" color="#FF800A" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC头像" name="NPC头像" centerPoint3DX="325" centerPoint3DY="185">
+                  <matrix>
+                    <Matrix tx="250" ty="90"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75" y="95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="列表" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表0" centerPoint3DX="112" centerPoint3DY="75.5">
+                  <matrix>
+                    <Matrix tx="50" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表1" centerPoint3DX="112" centerPoint3DY="100.5">
+                  <matrix>
+                    <Matrix tx="50" ty="90"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表2" centerPoint3DX="112" centerPoint3DY="125.5">
+                  <matrix>
+                    <Matrix tx="50" ty="115"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表3" centerPoint3DX="112" centerPoint3DY="150.5">
+                  <matrix>
+                    <Matrix tx="50" ty="140"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表4" centerPoint3DX="112" centerPoint3DY="175.5">
+                  <matrix>
+                    <Matrix tx="50" ty="165"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表5" centerPoint3DX="112" centerPoint3DY="200.5">
+                  <matrix>
+                    <Matrix tx="50" ty="190"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表6" centerPoint3DX="112" centerPoint3DY="225.5">
+                  <matrix>
+                    <Matrix tx="50" ty="215"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC名字" name="列表7" centerPoint3DX="112" centerPoint3DY="250.5">
+                  <matrix>
+                    <Matrix tx="50" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,308 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="拖拽动画2" itemID="67aca57c-0000214d" lastModified="1739367882">
+  <timeline>
+    <DOMTimeline name="拖拽动画2" currentFrame="39">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 144|435 553!435 553|57 553!57 553|57 144!57 144|435 144"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 144|435 553!435 553|57 553!57 553|57 144!57 144|435 144"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFFF.6F, -0.3203125" startPointB="#1.93, -0.3203125" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFF.E3, -0.3203125" anchorPointA="#0.56, -0.3203125" controlPointB="#2.07, -0.3203125" anchorPointB="#2.7A, -0.3203125" isLine="true"/>
+                    <MorphCurves controlPointA="#0.56, #0.32" anchorPointA="#0.56, #0.B5" controlPointB="#2.7A, #0.32" anchorPointB="#2.7A, #0.B5" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFFF.E3, #0.B5" anchorPointA="#FFFFFF.6F, #0.B5" controlPointB="#2.07, #0.B5" anchorPointB="#1.93, #0.B5" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFFF.6F, #0.32" anchorPointA="#FFFFFF.6F, -0.3203125" controlPointB="#1.93, #0.32" anchorPointB="#1.93, -0.3203125" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!86 -82S2|86 181!86 181|-145 181!-145 181|-145 -82!-145 -82|86 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!634 -82|634 181!634 181|403 181!403 181|403 -82!403 -82|634 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 144S2|435 553!435 553|57 553!57 553|57 144!57 144|435 144"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 553|57 553!57 553|57 144!57 144|435 144!435 144|435 553"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" parentLayerIndex="2" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFFF.6F, #2.03" startPointB="#FFFFFF.6F, -0.3203125" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFF.E3, #2.03" anchorPointA="#0.56, #2.03" controlPointB="#FFFFFF.E3, -0.3203125" anchorPointB="#0.56, -0.3203125" isLine="true"/>
+                    <MorphCurves controlPointA="#0.56, #2.87" anchorPointA="#0.56, #3.0A" controlPointB="#0.56, #0.32" anchorPointB="#0.56, #0.B5" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFFF.E3, #3.0A" anchorPointA="#FFFFFF.6F, #3.0A" controlPointB="#FFFFFF.E3, #0.B5" anchorPointB="#FFFFFF.6F, #0.B5" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFFF.6F, #2.87" anchorPointA="#FFFFFF.6F, #2.03" controlPointB="#FFFFFF.6F, #0.32" anchorPointB="#FFFFFF.6F, -0.3203125" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!86 778S2|-145 778!-145 778|-145 515!-145 515|86 515!86 515|86 778"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="shape" keyMode="17922">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!86 -82|86 181!86 181|-145 181!-145 181|-145 -82!-145 -82|86 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 144S2|435 553!435 553|57 553!57 553|57 144!57 144|435 144"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 553|57 553!57 553|57 144!57 144|435 144!435 144|435 553"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 6" color="#808080" parentLayerIndex="4" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#1.93, -0.3203125" startPointB="#1.93, #1.ED" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#2.07, -0.3203125" anchorPointA="#2.7A, -0.3203125" controlPointB="#2.07, #1.ED" anchorPointB="#2.7A, #1.ED" isLine="true"/>
+                    <MorphCurves controlPointA="#2.7A, #0.32" anchorPointA="#2.7A, #0.B5" controlPointB="#2.7A, #2.71" anchorPointB="#2.7A, #2.F4" isLine="true"/>
+                    <MorphCurves controlPointA="#2.07, #0.B5" anchorPointA="#1.93, #0.B5" controlPointB="#2.07, #2.F4" anchorPointB="#1.93, #2.F4" isLine="true"/>
+                    <MorphCurves controlPointA="#1.93, #0.32" anchorPointA="#1.93, -0.3203125" controlPointB="#1.93, #2.71" anchorPointB="#1.93, #1.ED" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!634 -82S2|634 181!634 181|403 181!403 181|403 -82!403 -82|634 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!634 493|634 756!634 756|403 756!403 756|403 493!403 493|634 493"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 7" color="#4F80FF" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 144S2|435 553!435 553|57 553!57 553|57 144!57 144|435 144"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!435 553|57 553!57 553|57 144!57 144|435 144!435 144|435 553"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 8" color="#FF4F4F" parentLayerIndex="6" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#1.93, #1.ED" startPointB="#FFFFFF.6F, #2.03" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#2.07, #1.ED" anchorPointA="#2.7A, #1.ED" controlPointB="#FFFFFF.E3, #2.03" anchorPointB="#0.56, #2.03" isLine="true"/>
+                    <MorphCurves controlPointA="#2.7A, #2.71" anchorPointA="#2.7A, #2.F4" controlPointB="#0.56, #2.87" anchorPointB="#0.56, #3.0A" isLine="true"/>
+                    <MorphCurves controlPointA="#2.07, #2.F4" anchorPointA="#1.93, #2.F4" controlPointB="#FFFFFF.E3, #3.0A" anchorPointB="#FFFFFF.6F, #3.0A" isLine="true"/>
+                    <MorphCurves controlPointA="#1.93, #2.71" anchorPointA="#1.93, #1.ED" controlPointB="#FFFFFF.6F, #2.87" anchorPointB="#FFFFFF.6F, #2.03" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!403 493S2|634 493!634 493|634 756!634 756|403 756!403 756|403 493"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="shape" keyMode="17922">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!86 778|-145 778!-145 778|-145 515!-145 515|86 515!86 515|86 778"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

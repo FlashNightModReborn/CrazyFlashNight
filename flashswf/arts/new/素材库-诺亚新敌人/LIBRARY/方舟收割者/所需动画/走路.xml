@@ -1,0 +1,2952 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/所需动画/走路" itemID="664b29a7-000000ee" lastModified="1716304722">
+  <timeline>
+    <DOMTimeline name="走路" currentFrame="14">
+      <layers>
+        <DOMLayer name="MergedLayer_1" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1209716796875" b="0.490646362304688" c="-0.4906005859375" d="1.1212158203125" tx="-449.9" ty="-278.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="33.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347503662109375" b="-1.17356872558594" c="-1.17362976074219" d="0.347579956054688" tx="-441.5" ty="-89.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.20428466796875" b="-1.205322265625" c="-1.205322265625" d="0.204376220703125" tx="-464.9" ty="-37.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.35" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21835327148438" tx="-436.55" ty="-278.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22064208984375" b="-0.2027587890625" c="-0.202804565429688" d="1.2205810546875" tx="-450.4" ty="-202.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.85" y="44.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21672058105469" b="-0.20513916015625" c="-0.205184936523438" d="1.21672058105469" tx="-425" ty="-338.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.25" y="52.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9556884765625" b="0.778564453125" c="0.778564453125" d="0.9556884765625" tx="-475.8" ty="-119.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.25" y="13.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.05078125" b="-0.649688720703125" c="-0.649688720703125" d="1.05078125" tx="-404.15" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.7" y="15.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-494.25" centerPoint3DY="62.9">
+                  <matrix>
+                    <Matrix a="0.758056640625" b="0.648040771484375" c="-0.648040771484375" d="0.758056640625" tx="-479.6" ty="-5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="58.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22074890136719" b="-0.20654296875" c="-0.206573486328125" d="1.22076416015625" tx="-457.85" ty="-139.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2359619140625" b="-0.077392578125" c="-0.077392578125" d="1.23590087890625" tx="-501.55" ty="-106.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.184814453125" b="-0.35693359375" c="-0.35693359375" d="1.184814453125" tx="-518.25" ty="-10.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.05" y="13.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-577" centerPoint3DY="89.7">
+                  <matrix>
+                    <Matrix a="0.990509033203125" b="0.130722045898438" c="-0.130722045898438" d="0.990509033203125" tx="-609.5" ty="27.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.3" y="62.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.571273803710938" b="0.812240600585938" c="0.812240600585938" d="-0.571273803710938" tx="-564.6" ty="-45.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2154541015625" b="0.20684814453125" c="0.20672607421875" d="1.21556091308594" tx="-534.1" ty="-295.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.1" y="37.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.890960693359375" b="-0.83685302734375" c="-0.8369140625" d="0.89093017578125" tx="-506.15" ty="-75.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.6" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21429443359375" b="0.170440673828125" c="0.17034912109375" d="1.21427917480469" tx="-531.55" ty="-179.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.9" y="10.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-455.7" centerPoint3DY="-198.45" loop="loop">
+                  <matrix>
+                    <Matrix a="1.09861755371094" b="0.53875732421875" c="-0.538742065429688" d="1.09884643554688" tx="-446.3" ty="-274.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="33.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-479.15" centerPoint3DY="-119" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397369384765625" b="-1.1578369140625" c="-1.15788269042969" d="0.397430419921875" tx="-440.45" ty="-87.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.95" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-484.5" centerPoint3DY="-53.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.256088256835938" b="-1.1954345703125" c="-1.1954345703125" d="0.25616455078125" tx="-461.7" ty="-35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.35" y="12.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-496.6" centerPoint3DY="-230" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.216064453125" b="-0.23150634765625" c="-0.2315673828125" d="1.216064453125" tx="-434.2" ty="-275"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-499.95" centerPoint3DY="-161.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21844482421875" b="-0.215057373046875" c="-0.215087890625" d="1.21842956542969" tx="-448.9" ty="-199"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="44.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-443.8" centerPoint3DY="-295.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21453857421875" b="-0.2174072265625" c="-0.217453002929688" d="1.21453857421875" tx="-422.1" ty="-334.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.2" y="52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-457.85" centerPoint3DY="-52.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.93609619140625" b="0.80169677734375" c="0.80169677734375" d="0.93609619140625" tx="-476.35" ty="-116.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.15" y="13.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-446.05" centerPoint3DY="24" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1695556640625" b="-0.393798828125" c="-0.393798828125" d="1.1695556640625" tx="-403.8" ty="-26.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.6" y="15.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-472.45" centerPoint3DY="76.5">
+                  <matrix>
+                    <Matrix a="0.883056640625" b="0.46112060546875" c="-0.46112060546875" d="0.883056640625" tx="-473.65" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="58.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-511.95" centerPoint3DY="-107.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21856689453125" b="-0.218841552734375" c="-0.2188720703125" d="1.21855163574219" tx="-457.15" ty="-136.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.35" y="41.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-536.7" centerPoint3DY="-44.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2303466796875" b="-0.139816284179688" c="-0.139801025390625" d="1.23028564453125" tx="-500.65" ty="-102.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.05" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-565.45" centerPoint3DY="42.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.16563415527344" b="-0.4150390625" c="-0.4150390625" d="1.16563415527344" tx="-522.25" ty="-7.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19" y="13.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-585.85" centerPoint3DY="89.5">
+                  <matrix>
+                    <Matrix a="0.98272705078125" b="0.179489135742188" c="-0.179489135742188" d="0.98272705078125" tx="-615.15" ty="25.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.15" y="62.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-546.65" centerPoint3DY="-40.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.634262084960938" b="0.76171875" c="0.76171875" d="-0.634262084960938" tx="-546.75" ty="-40.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-542.5" centerPoint3DY="-215.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.19578552246094" b="0.29986572265625" c="0.299789428710938" d="1.19590759277344" tx="-535.8" ty="-293.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.1" y="37.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-518.25" centerPoint3DY="-72.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.955352783203125" b="-0.76171875" c="-0.761749267578125" d="0.955307006835938" tx="-490.85" ty="-76.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.6" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-534.75" centerPoint3DY="-127.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.197265625" b="0.26385498046875" c="0.2637939453125" d="1.197265625" tx="-524.3" ty="-177.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.95" y="10.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-455.3" centerPoint3DY="-195.6" loop="loop">
+                  <matrix>
+                    <Matrix a="1.07426452636719" b="0.585845947265625" c="-0.5858154296875" d="1.074462890625" tx="-442.65" ty="-271.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="33.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-479.4" centerPoint3DY="-116.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.450286865234375" b="-1.1385498046875" c="-1.13859558105469" d="0.4503173828125" tx="-439.45" ty="-87.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-482.05" centerPoint3DY="-51.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.307373046875" b="-1.18345642089844" c="-1.1834716796875" d="0.307479858398438" tx="-458.5" ty="-33.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="12.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-494.75" centerPoint3DY="-227.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.213623046875" b="-0.243759155273438" c="-0.243820190429688" d="1.21366882324219" tx="-431.9" ty="-271.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-498.9" centerPoint3DY="-159.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2161865234375" b="-0.227294921875" c="-0.227340698242188" d="1.2161865234375" tx="-447.45" ty="-195.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.85" y="44.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-441.25" centerPoint3DY="-292.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21224975585938" b="-0.2296142578125" c="-0.2296142578125" d="1.21221923828125" tx="-419.15" ty="-331.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.2" y="52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-456.7" centerPoint3DY="-50.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.916015625" b="0.824447631835938" c="0.824447631835938" d="0.916015625" tx="-476.7" ty="-113.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.25" y="13.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-434.35" centerPoint3DY="27.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2271728515625" b="-0.117919921875" c="-0.117919921875" d="1.2271728515625" tx="-404.85" ty="-31.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.6" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-448.35" centerPoint3DY="84.75">
+                  <matrix>
+                    <Matrix a="0.963165283203125" b="0.251388549804688" c="-0.251388549804688" d="0.963165283203125" tx="-465.2" ty="16.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.75" y="58.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-511.3" centerPoint3DY="-104.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21624755859375" b="-0.2310791015625" c="-0.231124877929688" d="1.21627807617188" tx="-456.25" ty="-133.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="41.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-538.65" centerPoint3DY="-42.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22164916992188" b="-0.20184326171875" c="-0.201828002929688" d="1.22161865234375" tx="-499.75" ty="-98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.05" y="8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-571.85" centerPoint3DY="43.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1435546875" b="-0.47210693359375" c="-0.47210693359375" d="1.1435546875" tx="-526.15" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.05" y="13.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-594.4" centerPoint3DY="88.9">
+                  <matrix>
+                    <Matrix a="0.97259521484375" b="0.227813720703125" c="-0.227813720703125" d="0.97259521484375" tx="-620.55" ty="23.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.3" y="62.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-528.95" centerPoint3DY="-37.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690536499023438" b="0.709213256835938" c="0.709213256835938" d="-0.690536499023438" tx="-529" ty="-37.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-538.2" centerPoint3DY="-213.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.16903686523438" b="0.39117431640625" c="0.391082763671875" d="1.16917419433594" tx="-537.45" ty="-290.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.05" y="37.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-503.05" centerPoint3DY="-71.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.01133728027344" b="-0.68524169921875" c="-0.685287475585938" d="1.01132202148438" tx="-476.05" ty="-77.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.6" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-523.7" centerPoint3DY="-125.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.17327880859375" b="0.355758666992188" c="0.35565185546875" d="1.1732177734375" tx="-517.2" ty="-176.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.9" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" selected="true" symbolType="graphic" centerPoint3DX="-454.8" centerPoint3DY="-193.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.04794311523438" b="0.6318359375" c="-0.6318359375" d="1.04814147949219" tx="-439.05" ty="-268.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="33.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" selected="true" symbolType="graphic" centerPoint3DX="-479.5" centerPoint3DY="-114.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4986572265625" b="-1.11862182617188" c="-1.11865234375" d="0.498687744140625" tx="-438.35" ty="-87.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56" y="6.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" selected="true" symbolType="graphic" centerPoint3DX="-479.65" centerPoint3DY="-49.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358154296875" b="-1.16947937011719" c="-1.16949462890625" d="0.358245849609375" tx="-455.4" ty="-32.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.1" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" selected="true" symbolType="graphic" centerPoint3DX="-492.9" centerPoint3DY="-224.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21116638183594" b="-0.2559814453125" c="-0.25604248046875" d="1.21115112304688" tx="-429.65" ty="-268.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" selected="true" symbolType="graphic" centerPoint3DX="-497.65" centerPoint3DY="-156.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2138671875" b="-0.23956298828125" c="-0.23956298828125" d="1.21380615234375" tx="-445.95" ty="-193.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="44.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" selected="true" symbolType="graphic" centerPoint3DX="-438.7" centerPoint3DY="-289.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20988464355469" b="-0.241790771484375" c="-0.241851806640625" d="1.20989990234375" tx="-416.4" ty="-328.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.1" y="51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" selected="true" symbolType="graphic" centerPoint3DX="-455.9" centerPoint3DY="-49" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8953857421875" b="0.846771240234375" c="0.846771240234375" d="0.8953857421875" tx="-477.7" ty="-111.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.35" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" selected="true" symbolType="graphic" centerPoint3DX="-423.55" centerPoint3DY="28.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22140502929688" b="0.159515380859375" c="0.159515380859375" d="1.22140502929688" tx="-408.1" ty="-36.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.35" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" selected="true" centerPoint3DX="-424.55" centerPoint3DY="86.25">
+                  <matrix>
+                    <Matrix a="0.994354248046875" b="0.0326995849609375" c="-0.0326995849609375" d="0.994354248046875" tx="-455.95" ty="23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.9" y="58.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" selected="true" symbolType="graphic" centerPoint3DX="-511" centerPoint3DY="-102.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2138671875" b="-0.243331909179688" c="-0.243377685546875" d="1.2138671875" tx="-455.55" ty="-131.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.2" y="41.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" selected="true" symbolType="graphic" centerPoint3DX="-540.7" centerPoint3DY="-41.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20989990234375" b="-0.263458251953125" c="-0.263427734375" d="1.2098388671875" tx="-499.15" ty="-95.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="8.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" selected="true" symbolType="graphic" centerPoint3DX="-578.4" centerPoint3DY="42.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.118896484375" b="-0.528045654296875" c="-0.528045654296875" d="1.118896484375" tx="-530.4" ty="-3.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="13.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" selected="true" centerPoint3DX="-603" centerPoint3DY="86.4">
+                  <matrix>
+                    <Matrix a="0.960205078125" b="0.27557373046875" c="-0.27557373046875" d="0.960205078125" tx="-626.15" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.5" y="62.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" selected="true" symbolType="graphic" centerPoint3DX="-511.05" centerPoint3DY="-37.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.742645263671875" b="0.653121948242188" c="0.653121948242188" d="-0.742645263671875" tx="-511.25" ty="-37.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.5" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" selected="true" symbolType="graphic" centerPoint3DX="-533.65" centerPoint3DY="-210.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1353759765625" b="0.480148315429688" c="0.480072021484375" d="1.13554382324219" tx="-539" ty="-288.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.15" y="37.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" selected="true" symbolType="graphic" centerPoint3DX="-487.85" centerPoint3DY="-72.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.06138610839844" b="-0.604904174804688" c="-0.604949951171875" d="1.06134033203125" tx="-461.6" ty="-81.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.45" y="4.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" selected="true" symbolType="graphic" centerPoint3DX="-512.6" centerPoint3DY="-124.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.142333984375" b="0.445541381835938" c="0.445465087890625" d="1.14231872558594" tx="-510.2" ty="-176.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.85" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-455.25" centerPoint3DY="-193.35" loop="loop">
+                  <matrix>
+                    <Matrix a="1.07347106933594" b="0.5872802734375" c="-0.5872802734375" d="1.07366943359375" tx="-442.7" ty="-269.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="33.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-476.95" centerPoint3DY="-113.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.543746948242188" b="-1.09716796875" c="-1.09721374511719" d="0.54376220703125" tx="-434.7" ty="-87.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56" y="6.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-474.3" centerPoint3DY="-48.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.405487060546875" b="-1.1536865234375" c="-1.1536865234375" d="0.40557861328125" tx="-449.4" ty="-32.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.1" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-494.7" centerPoint3DY="-225.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.213623046875" b="-0.243759155273438" c="-0.24383544921875" d="1.213623046875" tx="-431.9" ty="-269.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24" y="80.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-498.95" centerPoint3DY="-157" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21623229980469" b="-0.227325439453125" c="-0.22735595703125" d="1.21617126464844" tx="-447.6" ty="-193.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.7" y="44.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-441.2" centerPoint3DY="-290.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21224975585938" b="-0.229598999023438" c="-0.2296142578125" d="1.21221923828125" tx="-419.3" ty="-329.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.1" y="51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-460.85" centerPoint3DY="-45.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.996063232421875" b="0.7254638671875" c="0.7254638671875" d="0.996063232421875" tx="-474.4" ty="-110.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.45" y="14.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-436.05" centerPoint3DY="34.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23016357421875" b="0.0712738037109375" c="0.0712738037109375" d="1.23016357421875" tx="-416.1" ty="-28.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.3" y="15.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-440.8" centerPoint3DY="92.95">
+                  <matrix>
+                    <Matrix a="0.994781494140625" b="0.012237548828125" c="-0.012237548828125" d="0.994781494140625" tx="-473.4" ty="30.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.85" y="58.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-511.8" centerPoint3DY="-102.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2161865234375" b="-0.2310791015625" c="-0.23114013671875" d="1.21624755859375" tx="-456.75" ty="-131.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.15" y="41.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-543.05" centerPoint3DY="-41.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20219421386719" b="-0.29644775390625" c="-0.29644775390625" d="1.20213317871094" tx="-500" ty="-95.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.8" y="8.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-584.55" centerPoint3DY="40" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.08232116699219" b="-0.598907470703125" c="-0.598907470703125" d="1.08232116699219" tx="-533.75" ty="-2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="13.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-612.25" centerPoint3DY="82.45">
+                  <matrix>
+                    <Matrix a="0.9400634765625" b="0.33673095703125" c="-0.33673095703125" d="0.9400634765625" tx="-631" ty="14.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.5" y="62.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-520.85" centerPoint3DY="-36.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.718780517578125" b="0.68017578125" c="0.68017578125" d="-0.718780517578125" tx="-521" ty="-36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.45" y="-0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-537" centerPoint3DY="-210.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.15257263183594" b="0.4371337890625" c="0.437057495117188" d="1.1527099609375" tx="-539.5" ty="-288.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.1" y="37.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-496.3" centerPoint3DY="-71.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0382080078125" b="-0.64312744140625" c="-0.6431884765625" d="1.0382080078125" tx="-469.85" ty="-78.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.4" y="4.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-519.05" centerPoint3DY="-123.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1580810546875" b="0.402023315429688" c="0.401947021484375" d="1.15802001953125" tx="-514.75" ty="-175.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.75" y="10.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-455.6" centerPoint3DY="-193.9" loop="loop">
+                  <matrix>
+                    <Matrix a="1.09715270996094" b="0.541717529296875" c="-0.541717529296875" d="1.097412109375" tx="-446.15" ty="-270.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="33.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-474" centerPoint3DY="-113.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.591522216796875" b="-1.07206726074219" c="-1.07211303710938" d="0.591552734375" tx="-430.6" ty="-89.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.9" y="6.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-468.15" centerPoint3DY="-48.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.459640502929688" b="-1.13311767578125" c="-1.13310241699219" d="0.459747314453125" tx="-442.55" ty="-34.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.15" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-496.55" centerPoint3DY="-225.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21604919433594" b="-0.23150634765625" c="-0.2315673828125" d="1.216064453125" tx="-434.2" ty="-270.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.95" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-500.05" centerPoint3DY="-157.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21844482421875" b="-0.215087890625" c="-0.215087890625" d="1.2183837890625" tx="-449.1" ty="-194.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.7" y="44.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-443.8" centerPoint3DY="-291.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21453857421875" b="-0.2174072265625" c="-0.217437744140625" d="1.21452331542969" tx="-422.3" ty="-330.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.1" y="51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-466.1" centerPoint3DY="-43" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.08050537109375" b="0.592437744140625" c="0.592437744140625" d="1.08050537109375" tx="-471.2" ty="-109.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.35" y="14.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-449.35" centerPoint3DY="39.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23277282714844" b="-0.017181396484375" c="-0.017181396484375" d="1.23277282714844" tx="-424.85" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.35" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-457.7" centerPoint3DY="97.6">
+                  <matrix>
+                    <Matrix a="0.994873046875" b="-0.01153564453125" c="0.01153564453125" d="0.994873046875" tx="-491.85" ty="36.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="58.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.4" centerPoint3DY="-102.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21855163574219" b="-0.218856811523438" c="-0.2188720703125" d="1.21856689453125" tx="-457.65" ty="-132.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.15" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-545.1" centerPoint3DY="-42.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.193603515625" b="-0.329269409179688" c="-0.329269409179688" d="1.19352722167969" tx="-500.65" ty="-94.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="8.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-590.4" centerPoint3DY="37.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.04118347167969" b="-0.667266845703125" c="-0.667266845703125" d="1.04118347167969" tx="-536.9" ty="-2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="13.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-620.85" centerPoint3DY="77.45">
+                  <matrix>
+                    <Matrix a="0.915863037109375" b="0.39642333984375" c="-0.39642333984375" d="0.915863037109375" tx="-635.25" ty="8.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.45" y="62.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-530.25" centerPoint3DY="-36.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.694015502929688" b="0.707061767578125" c="0.707061767578125" d="-0.694015502929688" tx="-530.5" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-540.3" centerPoint3DY="-210.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.16818237304688" b="0.393478393554688" c="0.393402099609375" d="1.1683349609375" tx="-539.8" ty="-288.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.05" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-504.75" centerPoint3DY="-70.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.01385498046875" b="-0.680816650390625" c="-0.680877685546875" d="1.0137939453125" tx="-477.9" ty="-76.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.4" y="4.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-525.35" centerPoint3DY="-123.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.17108154296875" b="0.361862182617188" c="0.36175537109375" d="1.1710205078125" tx="-519.25" ty="-174.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.9" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-456.1" centerPoint3DY="-194.7" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1190185546875" b="0.49517822265625" c="-0.49517822265625" d="1.11920166015625" tx="-449.85" ty="-271.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="33.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-471.35" centerPoint3DY="-113.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.634765625" b="-1.0469970703125" c="-1.04704284667969" d="0.63482666015625" tx="-426.95" ty="-91.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.1" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-462.35" centerPoint3DY="-49.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.505538940429688" b="-1.1134033203125" c="-1.1134033203125" d="0.505615234375" tx="-436.05" ty="-35.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.3" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-498.5" centerPoint3DY="-225.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21835327148438" tx="-436.55" ty="-271.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-501.15" centerPoint3DY="-157.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22064208984375" b="-0.2027587890625" c="-0.202804565429688" d="1.2205810546875" tx="-450.5" ty="-195.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.95" y="44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-446.3" centerPoint3DY="-292.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21672058105469" b="-0.20513916015625" c="-0.205184936523438" d="1.21672058105469" tx="-425" ty="-331.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.3" y="52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-470.85" centerPoint3DY="-41.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1473388671875" b="0.44970703125" c="0.44970703125" d="1.1473388671875" tx="-467.55" ty="-107.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.25" y="14.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-462.2" centerPoint3DY="43.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22869873046875" b="-0.105560302734375" c="-0.105560302734375" d="1.22869873046875" tx="-433.35" ty="-16.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-474.15" centerPoint3DY="100.7">
+                  <matrix>
+                    <Matrix a="0.99432373046875" b="-0.032196044921875" c="0.032196044921875" d="0.99432373046875" tx="-509.55" ty="39.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.75" y="58.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.55" centerPoint3DY="-102.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22074890136719" b="-0.20654296875" c="-0.206573486328125" d="1.22076416015625" tx="-458" ty="-133.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-546.45" centerPoint3DY="-43.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1842041015625" b="-0.361862182617188" c="-0.361846923828125" d="1.18414306640625" tx="-500.5" ty="-93.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.9" y="8.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-595.05" centerPoint3DY="34.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.995773315429688" b="-0.732879638671875" c="-0.732879638671875" d="0.995773315429688" tx="-539.3" ty="-1.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.95" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-628.3" centerPoint3DY="72.85">
+                  <matrix>
+                    <Matrix a="0.88800048828125" b="0.454452514648438" c="-0.454452514648438" d="0.88800048828125" tx="-638.15" ty="3.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.3" y="62.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-539.9" centerPoint3DY="-36.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.665863037109375" b="0.73583984375" c="0.73583984375" d="-0.665863037109375" tx="-539.95" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" selected="true" symbolType="graphic" centerPoint3DX="-543.7" centerPoint3DY="-211" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.18222045898438" b="0.349334716796875" c="0.3492431640625" d="1.18234252929688" tx="-540.2" ty="-288.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.85" y="37.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-513" centerPoint3DY="-68.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.98590087890625" b="-0.72119140625" c="-0.72125244140625" d="0.98590087890625" tx="-485.85" ty="-73.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.65" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-531.8" centerPoint3DY="-123.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.18377685546875" b="0.317428588867188" c="0.31732177734375" d="1.18376159667969" tx="-523.65" ty="-173.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-453" centerPoint3DY="-194.65" loop="loop">
+                  <matrix>
+                    <Matrix a="1.13461303710938" b="0.458038330078125" c="-0.4580078125" d="1.13481140136719" tx="-449.3" ty="-271.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.3" y="33.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-465.5" centerPoint3DY="-113" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6654052734375" b="-1.02751159667969" c="-1.02755737304688" d="0.66546630859375" tx="-420.55" ty="-92.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.05" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-454.6" centerPoint3DY="-48.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5382080078125" b="-1.09771728515625" c="-1.09770202636719" d="0.538299560546875" tx="-427.9" ty="-36.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.35" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-496.3" centerPoint3DY="-226.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2156982421875" b="-0.2333984375" c="-0.233444213867188" d="1.21568298339844" tx="-433.85" ty="-271.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-500" centerPoint3DY="-157.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.215576171875" c="-0.21563720703125" d="1.21835327148438" tx="-448.95" ty="-195.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.85" y="44.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-443.4" centerPoint3DY="-291.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21441650390625" b="-0.21795654296875" c="-0.218002319335938" d="1.21441650390625" tx="-421.75" ty="-330.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.25" y="51.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-475.85" centerPoint3DY="-39.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.19662475585938" b="0.29400634765625" c="0.29400634765625" d="1.19662475585938" tx="-463.85" ty="-104.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.3" y="14.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-478.75" centerPoint3DY="45.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20329284667969" b="-0.26678466796875" c="-0.26678466796875" d="1.20329284667969" tx="-442.25" ty="-9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.6" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-498" centerPoint3DY="100.9">
+                  <matrix>
+                    <Matrix a="0.99420166015625" b="0.0105438232421875" c="-0.0105438232421875" d="0.99420166015625" tx="-530.65" ty="38.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.75" y="58.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-511.85" centerPoint3DY="-103.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21844482421875" b="-0.219390869140625" c="-0.21942138671875" d="1.21844482421875" tx="-457.05" ty="-132.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="41.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-539.1" centerPoint3DY="-40.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22381591796875" b="-0.187728881835938" c="-0.187744140625" d="1.2237548828125" tx="-501" ty="-97.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-579.65" centerPoint3DY="41.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0323486328125" b="-0.6787109375" c="-0.6787109375" d="1.0323486328125" tx="-525.85" ty="2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.95" y="13.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-610.3" centerPoint3DY="81.35">
+                  <matrix>
+                    <Matrix a="0.8699951171875" b="0.485137939453125" c="-0.485137939453125" d="0.8699951171875" tx="-617.7" ty="11.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.25" y="62.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-557.8" centerPoint3DY="-37.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.59283447265625" b="0.79400634765625" c="0.79400634765625" d="-0.59283447265625" tx="-557.95" ty="-37.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-544.25" centerPoint3DY="-212.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2105712890625" b="0.232177734375" c="0.23211669921875" d="1.210693359375" tx="-533.3" ty="-289.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.95" y="37.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-527.7" centerPoint3DY="-68.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.911773681640625" b="-0.81341552734375" c="-0.813461303710938" d="0.911773681640625" tx="-500.2" ty="-70.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-541.05" centerPoint3DY="-123.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.208984375" b="0.199951171875" c="0.199859619140625" d="1.20892333984375" tx="-528" ty="-173.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-449.9" centerPoint3DY="-194.65" loop="loop">
+                  <matrix>
+                    <Matrix a="1.14767456054688" b="0.424179077148438" c="-0.424118041992188" d="1.14787292480469" tx="-448.5" ty="-271.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="33.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-459.8" centerPoint3DY="-112.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.695480346679688" b="-1.0072021484375" c="-1.00726318359375" d="0.695541381835938" tx="-414.25" ty="-93.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.05" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-447.15" centerPoint3DY="-48.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.56683349609375" b="-1.08294677734375" c="-1.08294677734375" d="0.56689453125" tx="-420.15" ty="-36.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.3" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-494.25" centerPoint3DY="-226.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.212890625" b="-0.247543334960938" c="-0.247604370117188" d="1.21287536621094" tx="-431.3" ty="-271.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-498.85" centerPoint3DY="-158.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21527099609375" b="-0.232421875" c="-0.232452392578125" d="1.2152099609375" tx="-447.25" ty="-195"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.95" y="44.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-440.65" centerPoint3DY="-291.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21127319335938" b="-0.234725952148438" c="-0.2347412109375" d="1.21127319335938" tx="-418.45" ty="-330.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.25" y="52"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-481.4" centerPoint3DY="-37.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.225341796875" b="0.129150390625" c="0.129150390625" d="1.225341796875" tx="-460.65" ty="-100.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.35" y="14.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-495.75" centerPoint3DY="46.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.15678405761719" b="-0.423324584960938" c="-0.423324584960938" d="1.15678405761719" tx="-452.3" ty="-3.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.65" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-521.6" centerPoint3DY="98.35">
+                  <matrix>
+                    <Matrix a="0.9921875" b="0.0532989501953125" c="-0.0532989501953125" d="0.9921875" tx="-551.6" ty="34.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.75" y="58.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-511.2" centerPoint3DY="-103.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21527099609375" b="-0.2362060546875" c="-0.236251831054688" d="1.21527099609375" tx="-456.05" ty="-132.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-531.75" centerPoint3DY="-39.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23797607421875" b="-0.0138092041015625" c="-0.013824462890625" d="1.2379150390625" tx="-502" ty="-101.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.8" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-563.9" centerPoint3DY="45.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0653076171875" b="-0.62225341796875" c="-0.62225341796875" d="1.0653076171875" tx="-512.35" ty="4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.9" y="13.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-592.1" centerPoint3DY="87.25">
+                  <matrix>
+                    <Matrix a="0.850448608398438" b="0.514739990234375" c="-0.514739990234375" d="0.850448608398438" tx="-596.95" ty="17.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.35" y="62.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-576.3" centerPoint3DY="-42.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.505172729492188" b="0.8509521484375" c="0.8509521484375" d="-0.505172729492188" tx="-576.35" ty="-42.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-544.95" centerPoint3DY="-214.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.227783203125" b="0.108810424804688" c="0.10870361328125" d="1.2279052734375" tx="-526.3" ty="-290.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.9" y="37.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-543.1" centerPoint3DY="-69.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.82196044921875" b="-0.903976440429688" c="-0.904052734375" d="0.82196044921875" tx="-515.5" ty="-68.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-550.65" centerPoint3DY="-126.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.222900390625" b="0.076568603515625" c="0.0764617919921875" d="1.222900390625" tx="-532.7" ty="-174.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-446.85" centerPoint3DY="-195" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1610107421875" b="0.386138916015625" c="-0.386093139648438" d="1.16123962402344" tx="-448.15" ty="-272.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.6" y="33.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-454.05" centerPoint3DY="-112.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.72821044921875" b="-0.983749389648438" c="-0.983734130859375" d="0.728240966796875" tx="-408.05" ty="-95.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.95" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-439.45" centerPoint3DY="-49.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.602142333984375" b="-1.06369018554688" c="-1.06365966796875" d="0.602203369140625" tx="-412.15" ty="-38.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.2" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-492.2" centerPoint3DY="-227.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2099609375" b="-0.26165771484375" c="-0.26171875" d="1.20994567871094" tx="-428.7" ty="-271"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-497.55" centerPoint3DY="-159.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2127685546875" b="-0.245223999023438" c="-0.245285034179688" d="1.21270751953125" tx="-445.8" ty="-195.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="44.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-438" centerPoint3DY="-291.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.208740234375" b="-0.247482299804688" c="-0.247528076171875" d="1.20872497558594" tx="-415.4" ty="-330.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.2" y="52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-487.05" centerPoint3DY="-38.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23167419433594" b="-0.034027099609375" c="-0.034027099609375" d="1.23167419433594" tx="-458.35" ty="-98.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.95" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-512.85" centerPoint3DY="42.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.09019470214844" b="-0.57244873046875" c="-0.57244873046875" d="1.09019470214844" tx="-463.15" ty="-1.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-544.75" centerPoint3DY="90.8">
+                  <matrix>
+                    <Matrix a="0.988555908203125" b="0.0960693359375" c="-0.0960693359375" d="0.988555908203125" tx="-572.1" ty="25.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="58.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-510.45" centerPoint3DY="-104.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21273803710938" b="-0.2490234375" c="-0.249069213867188" d="1.21275329589844" tx="-455.05" ty="-133.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.35" y="41.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-524.05" centerPoint3DY="-40.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22709655761719" b="0.1644287109375" c="0.164413452148438" d="1.22705078125" tx="-503.55" ty="-105.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.5" y="9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-547.1" centerPoint3DY="46.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.097412109375" b="-0.560577392578125" c="-0.560577392578125" d="1.097412109375" tx="-498.15" ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.65" y="13.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-572.55" centerPoint3DY="89.5">
+                  <matrix>
+                    <Matrix a="0.83184814453125" b="0.54083251953125" c="-0.54083251953125" d="0.83184814453125" tx="-575.4" ty="19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.65" y="62.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-593.5" centerPoint3DY="-49" loop="loop">
+                  <matrix>
+                    <Matrix a="0.41851806640625" b="0.895004272460938" c="0.895004272460938" d="-0.41851806640625" tx="-593.55" ty="-49.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-545.5" centerPoint3DY="-217.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2325439453125" b="-0.0115966796875" c="-0.011749267578125" d="1.232666015625" tx="-519.7" ty="-290.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="38.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-558.15" centerPoint3DY="-72.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.729644775390625" b="-0.9781494140625" c="-0.978179931640625" d="0.7296142578125" tx="-530.75" ty="-69.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-560" centerPoint3DY="-129.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.224609375" b="-0.04351806640625" c="-0.043609619140625" d="1.224609375" tx="-537.5" ty="-175.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.9" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-445.35" centerPoint3DY="-191.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1776123046875" b="0.332138061523438" c="-0.332061767578125" d="1.17779541015625" tx="-450.15" ty="-267.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.6" y="33.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-449" centerPoint3DY="-108.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.770660400390625" b="-0.95062255859375" c="-0.95062255859375" d="0.770721435546875" tx="-402.2" ty="-92.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56" y="6.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-431.65" centerPoint3DY="-45.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.651657104492188" b="-1.0338134765625" c="-1.0338134765625" d="0.651763916015625" tx="-403.8" ty="-36.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.15" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-492.15" centerPoint3DY="-223.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2095947265625" b="-0.26312255859375" c="-0.263214111328125" d="1.20956420898438" tx="-428.65" ty="-266.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-497.6" centerPoint3DY="-155.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21275329589844" b="-0.24542236328125" c="-0.2454833984375" d="1.21269226074219" tx="-445.8" ty="-191.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.7" y="44.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-437.9" centerPoint3DY="-287.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20872497558594" b="-0.2476806640625" c="-0.24774169921875" d="1.20870971679688" tx="-415.35" ty="-326.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.2" y="52"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-488.9" centerPoint3DY="-34.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22935485839844" b="-0.0824432373046875" c="-0.0824432373046875" d="1.22935485839844" tx="-457.9" ty="-93.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.95" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-517.75" centerPoint3DY="45.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.06661987304688" b="-0.614654541015625" c="-0.614654541015625" d="1.06661987304688" tx="-466.4" ty="3.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="15.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-551.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix a="0.983612060546875" b="0.13580322265625" c="-0.13580322265625" d="0.983612060546875" tx="-576.2" ty="26.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.75" y="58.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-510.65" centerPoint3DY="-101.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21270751953125" b="-0.249252319335938" c="-0.249267578125" d="1.21270751953125" tx="-455.25" ty="-129.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.35" y="41.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-514.45" centerPoint3DY="-40.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.16075134277344" b="0.430267333984375" c="0.430221557617188" d="1.16070556640625" tx="-508.9" ty="-108.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-516.2" centerPoint3DY="49.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.203857421875" b="-0.256622314453125" c="-0.256622314453125" d="1.203857421875" tx="-480.45" ty="-5.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.7" y="13.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-529.45" centerPoint3DY="97.85">
+                  <matrix>
+                    <Matrix a="0.942184448242188" b="0.303497314453125" c="-0.303497314453125" d="0.942184448242188" tx="-550.45" ty="31.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.7" y="62.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-610.65" centerPoint3DY="-51.25" loop="loop">
+                  <matrix>
+                    <Matrix a="0.339080810546875" b="0.92962646484375" c="0.92962646484375" d="-0.339080810546875" tx="-610.75" ty="-51.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-547.7" centerPoint3DY="-214.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.226806640625" b="-0.119110107421875" c="-0.1192626953125" d="1.2269287109375" tx="-515.65" ty="-285.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.7" y="38"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-573.2" centerPoint3DY="-71.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.640731811523438" b="-1.04034423828125" c="-1.0404052734375" d="0.640731811523438" tx="-546.2" ty="-66"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-569.95" centerPoint3DY="-128.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21615600585938" b="-0.150634765625" c="-0.15069580078125" d="1.21612548828125" tx="-543.4" ty="-172.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18" y="10.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-443.75" centerPoint3DY="-187.25" loop="loop">
+                  <matrix>
+                    <Matrix a="1.19169616699219" b="0.27740478515625" c="-0.277313232421875" d="1.19183349609375" tx="-452.15" ty="-263.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.65" y="33.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-443.8" centerPoint3DY="-104.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.81170654296875" b="-0.91571044921875" c="-0.915740966796875" d="0.811752319335938" tx="-396.45" ty="-90.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.95" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-423.95" centerPoint3DY="-42.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.69647216796875" b="-1.00408935546875" c="-1.0040283203125" d="0.696533203125" tx="-395.65" ty="-34.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.15" y="12.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-492.2" centerPoint3DY="-219.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.209228515625" b="-0.2646484375" c="-0.26470947265625" d="1.20921325683594" tx="-428.6" ty="-262.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-497.55" centerPoint3DY="-151.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21270751953125" b="-0.245590209960938" c="-0.245635986328125" d="1.212646484375" tx="-445.8" ty="-187.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="44.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-437.75" centerPoint3DY="-283.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20867919921875" b="-0.24786376953125" c="-0.2479248046875" d="1.20867919921875" tx="-415.15" ty="-322.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.2" y="52.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-490.6" centerPoint3DY="-30.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22514343261719" b="-0.130767822265625" c="-0.130767822265625" d="1.22514343261719" tx="-457.3" ty="-88.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.9" y="14.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-522.55" centerPoint3DY="47.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.04144287109375" b="-0.655853271484375" c="-0.655853271484375" d="1.04144287109375" tx="-469.6" ty="8.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="15.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-558.35" centerPoint3DY="93.2">
+                  <matrix>
+                    <Matrix a="0.9771728515625" b="0.17529296875" c="-0.17529296875" d="0.9771728515625" tx="-580.25" ty="26.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="58.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-510.75" centerPoint3DY="-97.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21261596679688" b="-0.249435424804688" c="-0.24945068359375" d="1.212646484375" tx="-455.3" ty="-125.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.25" y="41.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-505.3" centerPoint3DY="-42.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.03756713867188" b="0.6749267578125" c="0.67486572265625" d="1.0374755859375" tx="-514.85" ty="-110.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.5" y="9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-485.7" centerPoint3DY="45.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.228271484375" b="0.06439208984375" c="0.06439208984375" d="1.228271484375" tx="-465.5" ty="-17.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.65" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-485.8" centerPoint3DY="95.35">
+                  <matrix>
+                    <Matrix a="0.9866943359375" b="0.045989990234375" c="-0.045989990234375" d="0.9866943359375" tx="-523.4" ty="36.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.75" y="62.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-626.65" centerPoint3DY="-55.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2574462890625" b="0.9583740234375" c="0.9583740234375" d="-0.2574462890625" tx="-626.8" ty="-55.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-549.65" centerPoint3DY="-212.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21173095703125" b="-0.225692749023438" c="-0.225830078125" d="1.2117919921875" tx="-511.55" ty="-279.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.7" y="38"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-587.6" centerPoint3DY="-72.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5472412109375" b="-1.09478759765625" c="-1.09483337402344" d="0.547225952148438" tx="-561.15" ty="-64.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.45" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-579.45" centerPoint3DY="-128.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.198486328125" b="-0.256591796875" c="-0.25665283203125" d="1.19847106933594" tx="-549.15" ty="-170.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="10.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-442.25" centerPoint3DY="-183.45" loop="loop">
+                  <matrix>
+                    <Matrix a="1.2025146484375" b="0.226058959960938" c="-0.2259521484375" d="1.20269775390625" tx="-454" ty="-259.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.65" y="33.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-438.75" centerPoint3DY="-101.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8511962890625" b="-0.879150390625" c="-0.879196166992188" d="0.85125732421875" tx="-390.6" ty="-89.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-415.9" centerPoint3DY="-40.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.739959716796875" b="-0.972518920898438" c="-0.972457885742188" d="0.740036010742188" tx="-387.35" ty="-32.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.2" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-492.35" centerPoint3DY="-215.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20896911621094" b="-0.26617431640625" c="-0.2662353515625" d="1.20895385742188" tx="-428.7" ty="-258.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-497.65" centerPoint3DY="-147.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2119140625" b="-0.249786376953125" c="-0.249801635742188" d="1.21185302734375" tx="-445.6" ty="-183"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.8" y="44.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-437.45" centerPoint3DY="-279.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2078857421875" b="-0.25201416015625" c="-0.252059936523438" d="1.20787048339844" tx="-414.65" ty="-317.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.3" y="52.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-492.55" centerPoint3DY="-26.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21847534179688" b="-0.182861328125" c="-0.182861328125" d="1.21847534179688" tx="-456.9" ty="-82.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.9" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-527.5" centerPoint3DY="50.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0147705078125" b="-0.69610595703125" c="-0.69610595703125" d="1.0147705078125" tx="-473.25" ty="13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="15.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-565.15" centerPoint3DY="94.35">
+                  <matrix>
+                    <Matrix a="0.96917724609375" b="0.21453857421875" c="-0.21453857421875" d="0.96917724609375" tx="-584.45" ty="26.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.85" y="58.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-510.75" centerPoint3DY="-93.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21183776855469" b="-0.253570556640625" c="-0.253631591796875" d="1.21185302734375" tx="-455.2" ty="-121.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-497.65" centerPoint3DY="-47.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8665771484375" b="0.8836669921875" c="0.883636474609375" d="0.866561889648438" tx="-521.95" ty="-112.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.65" y="10.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-457.75" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.17037963867188" b="0.37677001953125" c="0.37677001953125" d="1.17037963867188" tx="-454.3" ty="-32.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.9" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-444.85" centerPoint3DY="81.2">
+                  <matrix>
+                    <Matrix a="0.963348388671875" b="-0.210494995117188" c="0.210494995117188" d="0.963348388671875" tx="-496.1" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.6" y="62.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-642.25" centerPoint3DY="-60.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.169677734375" b="0.97991943359375" c="0.97991943359375" d="-0.169677734375" tx="-642.2" ty="-60.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-551.4" centerPoint3DY="-210.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.18632507324219" b="-0.334564208984375" c="-0.334716796875" d="1.1864013671875" tx="-507.25" ty="-274"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.9" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-601.95" centerPoint3DY="-73.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.448944091796875" b="-1.13932800292969" c="-1.13934326171875" d="0.44891357421875" tx="-576.2" ty="-63.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-588.6" centerPoint3DY="-129.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1705322265625" b="-0.364425659179688" c="-0.364471435546875" d="1.1705322265625" tx="-554.7" ty="-168.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.95" y="10.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-445.2" centerPoint3DY="-185.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.197509765625" b="0.250900268554688" c="-0.250823974609375" d="1.19767761230469" tx="-455.35" ty="-261.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.6" y="33.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-443.45" centerPoint3DY="-102.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.83258056640625" b="-0.8963623046875" c="-0.896392822265625" d="0.8326416015625" tx="-395.55" ty="-90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="6.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-421.8" centerPoint3DY="-41.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.71954345703125" b="-0.98736572265625" c="-0.9873046875" d="0.7196044921875" tx="-393.45" ty="-33.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.2" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-494.4" centerPoint3DY="-216.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2122802734375" b="-0.25054931640625" c="-0.250640869140625" d="1.21224975585938" tx="-431.35" ty="-260.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.9" y="80.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-499" centerPoint3DY="-148.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2152099609375" b="-0.232818603515625" c="-0.23284912109375" d="1.21519470214844" tx="-447.45" ty="-185.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="44.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-440.45" centerPoint3DY="-281.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21124267578125" b="-0.235107421875" c="-0.235137939453125" d="1.21124267578125" tx="-418.25" ty="-320.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.25" y="52.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-494.2" centerPoint3DY="-28.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21408081054688" b="-0.2095947265625" c="-0.2095947265625" d="1.21408081054688" tx="-457.4" ty="-83.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.8" y="14.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-532.2" centerPoint3DY="47.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.97320556640625" b="-0.75244140625" c="-0.75244140625" d="0.97320556640625" tx="-476" ty="13.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-572.7" centerPoint3DY="89.2">
+                  <matrix>
+                    <Matrix a="0.928497314453125" b="0.349349975585938" c="-0.349349975585938" d="0.928497314453125" tx="-582.2" ty="19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.85" y="58.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-511.5" centerPoint3DY="-94.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2152099609375" b="-0.236602783203125" c="-0.236663818359375" d="1.2152099609375" tx="-456.45" ty="-122.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.3" y="41.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-501.65" centerPoint3DY="-46.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.930999755859375" b="0.8154296875" c="0.815353393554688" d="0.930953979492188" tx="-521.05" ty="-112.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.65" y="10.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-469.8" centerPoint3DY="37.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20603942871094" b="0.237152099609375" c="0.237152099609375" d="1.20603942871094" tx="-458.75" ty="-27.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="13.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-462.85" centerPoint3DY="87.1">
+                  <matrix>
+                    <Matrix a="0.98126220703125" b="-0.092926025390625" c="0.092926025390625" d="0.98126220703125" tx="-508.1" ty="34.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.65" y="62.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-633.95" centerPoint3DY="-54.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.23187255859375" b="0.9664306640625" c="0.9664306640625" d="-0.23187255859375" tx="-633.95" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-552.4" centerPoint3DY="-209.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20465087890625" b="-0.26055908203125" c="-0.2607421875" d="1.20475769042969" tx="-512.35" ty="-276.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.85" y="38"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-594.55" centerPoint3DY="-70.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5205078125" b="-1.10752868652344" c="-1.1075439453125" d="0.520492553710938" tx="-568.25" ty="-61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-584.65" centerPoint3DY="-126.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1904296875" b="-0.291412353515625" c="-0.291427612304688" d="1.19039916992188" tx="-553.2" ty="-167.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.9" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-447.95" centerPoint3DY="-186.75" loop="loop">
+                  <matrix>
+                    <Matrix a="1.19200134277344" b="0.275665283203125" c="-0.27557373046875" d="1.19219970703125" tx="-456.55" ty="-263.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="33.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-447.85" centerPoint3DY="-104.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.813705444335938" b="-0.9132080078125" c="-0.913238525390625" d="0.81378173828125" tx="-400.3" ty="-90.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.1" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-427.65" centerPoint3DY="-42.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6988525390625" b="-1.001953125" c="-1.001953125" d="0.698944091796875" tx="-399.5" ty="-34"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.15" y="12.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-496.45" centerPoint3DY="-218.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21539306640625" b="-0.23492431640625" c="-0.2349853515625" d="1.21539306640625" tx="-434" ty="-262.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.95" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-500.15" centerPoint3DY="-149.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.215805053710938" c="-0.215850830078125" d="1.21832275390625" tx="-449.15" ty="-187.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="44.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-443.4" centerPoint3DY="-283.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21444702148438" b="-0.2181396484375" c="-0.218185424804688" d="1.21444702148438" tx="-421.75" ty="-322.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.3" y="52.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-495.15" centerPoint3DY="-29.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20919799804688" b="-0.23626708984375" c="-0.23626708984375" d="1.20919799804688" tx="-457.1" ty="-84.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.7" y="14.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-536" centerPoint3DY="44.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9259033203125" b="-0.809432983398438" c="-0.809432983398438" d="0.9259033203125" tx="-477.8" ty="13.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="15.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-579.2" centerPoint3DY="83.35">
+                  <matrix>
+                    <Matrix a="0.867645263671875" b="0.479843139648438" c="-0.479843139648438" d="0.867645263671875" tx="-578.55" ty="13.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.9" y="58.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-511.9" centerPoint3DY="-95.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21844482421875" b="-0.219573974609375" c="-0.2196044921875" d="1.21844482421875" tx="-457.2" ty="-124.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-505.5" centerPoint3DY="-45.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.990142822265625" b="0.742523193359375" c="0.742477416992188" d="0.9901123046875" tx="-519.75" ty="-113.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="10.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-482.05" centerPoint3DY="41" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22528076171875" b="0.0943450927734375" c="0.0943450927734375" d="1.22528076171875" tx="-463.4" ty="-22.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="13.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-480.95" centerPoint3DY="90.9">
+                  <matrix>
+                    <Matrix a="0.985153198242188" b="0.022674560546875" c="-0.022674560546875" d="0.985153198242188" tx="-519.7" ty="33.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.65" y="62.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-625.45" centerPoint3DY="-49.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.286895751953125" b="0.951095581054688" c="0.951095581054688" d="-0.286895751953125" tx="-625.5" ty="-49.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-553.4" centerPoint3DY="-209.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21844482421875" b="-0.185638427734375" c="-0.185775756835938" d="1.21855163574219" tx="-517.5" ty="-278"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.85" y="38"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-587.1" centerPoint3DY="-67.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.582992553710938" b="-1.07525634765625" c="-1.0753173828125" d="0.582931518554688" tx="-560.35" ty="-60.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-580.45" centerPoint3DY="-124.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20526123046875" b="-0.221237182617188" c="-0.221282958984375" d="1.2052001953125" tx="-551.4" ty="-167"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.95" y="10.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-450.9" centerPoint3DY="-188.4" loop="loop">
+                  <matrix>
+                    <Matrix a="1.18510437011719" b="0.30419921875" c="-0.304122924804688" d="1.18524169921875" tx="-457.75" ty="-265.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="33.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-453" centerPoint3DY="-105.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.794525146484375" b="-0.92974853515625" c="-0.92974853515625" d="0.7945556640625" tx="-405.65" ty="-91.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.25" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-433.9" centerPoint3DY="-43.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.677902221679688" b="-1.01611328125" c="-1.01611328125" d="0.677978515625" tx="-405.8" ty="-34.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.35" y="12.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-498.5" centerPoint3DY="-219.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21835327148438" tx="-436.55" ty="-265.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-501.05" centerPoint3DY="-151.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22064208984375" b="-0.2027587890625" c="-0.202804565429688" d="1.2205810546875" tx="-450.4" ty="-188.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.85" y="44.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-446.3" centerPoint3DY="-285.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21672058105469" b="-0.20513916015625" c="-0.205184936523438" d="1.21672058105469" tx="-425" ty="-324.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.3" y="52.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-496.3" centerPoint3DY="-31.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20281982421875" b="-0.266830444335938" c="-0.266830444335938" d="1.20281982421875" tx="-456.85" ty="-84.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.65" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-540" centerPoint3DY="40.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.878158569335938" b="-0.86065673828125" c="-0.86065673828125" d="0.878158569335938" tx="-480" ty="12.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.4" y="15.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-585.3" centerPoint3DY="77">
+                  <matrix>
+                    <Matrix a="0.790618896484375" b="0.5975341796875" c="-0.5975341796875" d="0.790618896484375" tx="-574.7" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.75" y="58.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.3" centerPoint3DY="-96.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22074890136719" b="-0.20654296875" c="-0.206573486328125" d="1.22076416015625" tx="-457.75" ty="-126.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-508.9" centerPoint3DY="-44.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0457763671875" b="0.661956787109375" c="0.66192626953125" d="1.04576110839844" tx="-517.85" ty="-113.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.65" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-494.25" centerPoint3DY="43.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22764587402344" b="-0.0537109375" c="-0.0537109375" d="1.22764587402344" tx="-468.2" ty="-17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.6" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-499.45" centerPoint3DY="92.9">
+                  <matrix>
+                    <Matrix a="0.97515869140625" b="0.14111328125" c="-0.14111328125" d="0.97515869140625" tx="-530.85" ty="30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.6" y="62.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-616.45" centerPoint3DY="-45.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.340866088867188" b="0.932662963867188" c="0.932662963867188" d="-0.340866088867188" tx="-616.5" ty="-45.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-554.35" centerPoint3DY="-208.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22726440429688" b="-0.11395263671875" c="-0.1141357421875" d="1.22734069824219" tx="-522.65" ty="-279.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.6" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-579.6" centerPoint3DY="-65.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6434326171875" b="-1.03955078125" c="-1.03961181640625" d="0.643402099609375" tx="-552.45" ty="-60.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-576.2" centerPoint3DY="-123.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2159423828125" b="-0.150314331054688" c="-0.150390625" d="1.21588134765625" tx="-549.75" ty="-166.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-452.45" centerPoint3DY="-188" loop="loop">
+                  <matrix>
+                    <Matrix a="1.17071533203125" b="0.35528564453125" c="-0.355224609375" d="1.1708984375" tx="-456" ty="-265.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.75" y="33.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-458.25" centerPoint3DY="-105.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.753219604492188" b="-0.963134765625" c="-0.963134765625" d="0.7532958984375" tx="-411.65" ty="-89.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-441.95" centerPoint3DY="-42.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.632965087890625" b="-1.0443115234375" c="-1.0443115234375" d="0.633026123046875" tx="-414.25" ty="-32.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.3" y="13"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-498.5" centerPoint3DY="-219.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21835327148438" tx="-436.55" ty="-265.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-501.05" centerPoint3DY="-151.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2205810546875" b="-0.2027587890625" c="-0.202789306640625" d="1.2205810546875" tx="-450.45" ty="-189"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.9" y="44.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-446.3" centerPoint3DY="-285.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21673583984375" b="-0.20513916015625" c="-0.2052001953125" d="1.21673583984375" tx="-425" ty="-324.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.3" y="52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-492.85" centerPoint3DY="-30.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.221435546875" b="-0.1610107421875" c="-0.1610107421875" d="1.221435546875" tx="-458.25" ty="-87.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.65" y="14.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-533" centerPoint3DY="42.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.878448486328125" b="-0.8603515625" c="-0.8603515625" d="0.878448486328125" tx="-472.95" ty="14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.45" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-578.35" centerPoint3DY="78.6">
+                  <matrix>
+                    <Matrix a="0.790557861328125" b="0.5972900390625" c="-0.5972900390625" d="0.790557861328125" tx="-567.8" ty="9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.75" y="58.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.4" centerPoint3DY="-96.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.220703125" b="-0.206527709960938" c="-0.206588745117188" d="1.22076416015625" tx="-457.9" ty="-126.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.45" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-511.85" centerPoint3DY="-44.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.08148193359375" b="0.601806640625" c="0.601806640625" d="1.0814208984375" tx="-516.9" ty="-112.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.65" y="9.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-503.55" centerPoint3DY="44.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21713256835938" b="-0.16253662109375" c="-0.16253662109375" d="1.21713256835938" tx="-472.2" ty="-13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.7" y="13.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-513.35" centerPoint3DY="93.95">
+                  <matrix>
+                    <Matrix a="0.97357177734375" b="0.14154052734375" c="-0.14154052734375" d="0.97357177734375" tx="-544.6" ty="32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.55" y="62.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-608.4" centerPoint3DY="-42" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3809814453125" b="0.916671752929688" c="0.916671752929688" d="-0.3809814453125" tx="-608.45" ty="-42.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-553.35" centerPoint3DY="-208" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2310791015625" b="-0.0589141845703125" c="-0.0590667724609375" d="1.23117065429688" tx="-524.85" ty="-280.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.6" y="37.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-572.3" centerPoint3DY="-64.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.687744140625" b="-1.010009765625" c="-1.01005554199219" d="0.68768310546875" tx="-545" ty="-59.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-571.6" centerPoint3DY="-121.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22100830078125" b="-0.0969390869140625" c="-0.097015380859375" d="1.220947265625" tx="-547" ty="-166.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="10.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-453.85" centerPoint3DY="-187.7" loop="loop">
+                  <matrix>
+                    <Matrix a="1.15422058105469" b="0.405792236328125" c="-0.40570068359375" d="1.15435791015625" tx="-454.05" ty="-264.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="33.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-463.3" centerPoint3DY="-105.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.710540771484375" b="-0.994720458984375" c="-0.9947509765625" d="0.71063232421875" tx="-417.4" ty="-87.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.15" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-449.7" centerPoint3DY="-42.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.586898803710938" b="-1.070556640625" c="-1.070556640625" d="0.58697509765625" tx="-422.45" ty="-30.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="13.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-498.5" centerPoint3DY="-219.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21835327148438" tx="-436.55" ty="-265.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-501.15" centerPoint3DY="-151.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22064208984375" b="-0.2027587890625" c="-0.202804565429688" d="1.22064208984375" tx="-450.5" ty="-189"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.95" y="44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-446.15" centerPoint3DY="-285.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21673583984375" b="-0.20513916015625" c="-0.2052001953125" d="1.21673583984375" tx="-424.85" ty="-325.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.3" y="52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-489.2" centerPoint3DY="-30.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23081970214844" b="-0.053955078125" c="-0.053955078125" d="1.23081970214844" tx="-459.7" ty="-90.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.65" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-525.6" centerPoint3DY="43.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.878829956054688" b="-0.860153198242188" c="-0.860153198242188" d="0.878829956054688" tx="-465.65" ty="15.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.35" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-571.2" centerPoint3DY="79.6">
+                  <matrix>
+                    <Matrix a="0.790496826171875" b="0.597091674804688" c="-0.597091674804688" d="0.790496826171875" tx="-560.6" ty="10.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="58.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.6" centerPoint3DY="-96.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22076416015625" b="-0.20654296875" c="-0.20660400390625" d="1.22076416015625" tx="-458.1" ty="-126.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.4" y="41.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-514.85" centerPoint3DY="-43.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.11370849609375" b="0.539794921875" c="0.539779663085938" d="1.1136474609375" tx="-516.05" ty="-112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-512.9" centerPoint3DY="45.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.19708251953125" b="-0.269927978515625" c="-0.269927978515625" d="1.19708251953125" tx="-476.6" ty="-9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.65" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-527.45" centerPoint3DY="94.15">
+                  <matrix>
+                    <Matrix a="0.9715576171875" b="0.145187377929688" c="-0.145187377929688" d="0.9715576171875" tx="-558.45" ty="32.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.5" y="62.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-599.85" centerPoint3DY="-39.25" loop="loop">
+                  <matrix>
+                    <Matrix a="0.420806884765625" b="0.900070190429688" c="0.900070190429688" d="-0.420806884765625" tx="-600" ty="-39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-552.2" centerPoint3DY="-207.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23248291015625" b="-0.00372314453125" c="-0.0038604736328125" d="1.2325439453125" tx="-527" ty="-280.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.55" y="38"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-564.8" centerPoint3DY="-62.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.731552124023438" b="-0.979736328125" c="-0.97979736328125" d="0.73150634765625" tx="-537.25" ty="-59.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-566.55" centerPoint3DY="-119.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.223876953125" b="-0.0434112548828125" c="-0.043487548828125" d="1.22381591796875" tx="-544" ty="-165.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="10.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-455.5" centerPoint3DY="-187.8" loop="loop">
+                  <matrix>
+                    <Matrix a="1.13555908203125" b="0.45550537109375" c="-0.455474853515625" d="1.13571166992188" tx="-452.3" ty="-264.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.85" y="33.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-468.3" centerPoint3DY="-106.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.669967651367188" b="-1.02232360839844" c="-1.0223388671875" d="0.670013427734375" tx="-423.2" ty="-85.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="6.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-457.3" centerPoint3DY="-42.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.54339599609375" b="-1.0931396484375" c="-1.09312438964844" d="0.54345703125" tx="-430.6" ty="-29.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.3" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-498.5" centerPoint3DY="-219.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21835327148438" tx="-436.55" ty="-265.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-501.15" centerPoint3DY="-151.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22068786621094" b="-0.2027587890625" c="-0.20281982421875" d="1.22064208984375" tx="-450.45" ty="-189.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.95" y="44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-446.15" centerPoint3DY="-285.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21678161621094" b="-0.20513916015625" c="-0.2052001953125" d="1.21678161621094" tx="-424.8" ty="-325.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.4" y="52.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-485.4" centerPoint3DY="-30.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23092651367188" b="0.0535125732421875" c="0.0535125732421875" d="1.23092651367188" tx="-461.2" ty="-92.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.75" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-518" centerPoint3DY="43.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.87921142578125" b="-0.860107421875" c="-0.860107421875" d="0.87921142578125" tx="-458.1" ty="15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.35" y="15.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-563.5" centerPoint3DY="79.65">
+                  <matrix>
+                    <Matrix a="0.79052734375" b="0.597091674804688" c="-0.597091674804688" d="0.79052734375" tx="-552.95" ty="10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.85" y="58.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.45" centerPoint3DY="-96.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22080993652344" b="-0.20654296875" c="-0.20660400390625" d="1.22080993652344" tx="-457.9" ty="-126.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.55" y="41.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-517.65" centerPoint3DY="-42.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1424560546875" b="0.476058959960938" c="0.47601318359375" d="1.14244079589844" tx="-514.95" ty="-111.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="9.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-521.8" centerPoint3DY="45.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.16893005371094" b="-0.371261596679688" c="-0.371261596679688" d="1.16893005371094" tx="-481.05" ty="-5.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.6" y="13.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-540.85" centerPoint3DY="93">
+                  <matrix>
+                    <Matrix a="0.97015380859375" b="0.14556884765625" c="-0.14556884765625" d="0.97015380859375" tx="-571.7" ty="31"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.4" y="62.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-591.45" centerPoint3DY="-36.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.46087646484375" b="0.882049560546875" c="0.882049560546875" d="-0.46087646484375" tx="-591.45" ty="-36.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-551" centerPoint3DY="-206.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2314453125" b="0.0514678955078125" c="0.0513458251953125" d="1.23155212402344" tx="-529.1" ty="-281.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.55" y="38"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-557.15" centerPoint3DY="-61.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.77520751953125" b="-0.947738647460938" c="-0.94781494140625" d="0.77520751953125" tx="-529.5" ty="-59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.7" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-561.45" centerPoint3DY="-118.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22441101074219" b="0.0102081298828125" c="0.0101165771484375" d="1.224365234375" tx="-540.95" ty="-165.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="10.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-455.7" centerPoint3DY="-192.2" loop="loop">
+                  <matrix>
+                    <Matrix a="1.13079833984375" b="0.46722412109375" c="-0.46722412109375" d="1.13092041015625" tx="-451.7" ty="-269.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="33.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-472.05" centerPoint3DY="-110.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.565216064453125" b="-1.08432006835938" c="-1.08433532714844" d="0.565292358398438" tx="-429.2" ty="-86.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-467.45" centerPoint3DY="-45.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.431747436523438" b="-1.14237976074219" c="-1.142333984375" d="0.431808471679688" tx="-442.1" ty="-30.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.3" y="12.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-498.4" centerPoint3DY="-223.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21832275390625" tx="-436.45" ty="-269.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-501.15" centerPoint3DY="-155.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22062683105469" b="-0.2027587890625" c="-0.202804565429688" d="1.22062683105469" tx="-450.5" ty="-193.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.95" y="44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-446" centerPoint3DY="-290.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21673583984375" b="-0.20513916015625" c="-0.205184936523438" d="1.21673583984375" tx="-424.7" ty="-329.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.35" y="52.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-476.3" centerPoint3DY="-37.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1917724609375" b="0.313018798828125" c="0.313018798828125" d="1.1917724609375" tx="-465.8" ty="-103.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.7" y="14.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-497.35" centerPoint3DY="38.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.942840576171875" b="-0.793548583984375" c="-0.793548583984375" d="0.942840576171875" tx="-439.55" ty="6.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.35" y="15.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-540.45" centerPoint3DY="78">
+                  <matrix>
+                    <Matrix a="0.779815673828125" b="0.615158081054688" c="-0.615158081054688" d="0.779815673828125" tx="-528.4" ty="8.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.9" y="58.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.45" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22076416015625" b="-0.20654296875" c="-0.206588745117188" d="1.22076416015625" tx="-457.95" ty="-131.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.55" y="41.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-523.45" centerPoint3DY="-42.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20166015625" b="0.297088623046875" c="0.297042846679688" d="1.20162963867188" tx="-510.3" ty="-110.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-534.6" centerPoint3DY="46.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.17401123046875" b="-0.366607666015625" c="-0.366607666015625" d="1.17401123046875" tx="-493.95" ty="-5.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.6" y="13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-553.5" centerPoint3DY="93.6">
+                  <matrix>
+                    <Matrix a="0.976730346679688" b="0.140609741210938" c="-0.140609741210938" d="0.976730346679688" tx="-584.9" ty="31.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.4" y="62.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-582.8" centerPoint3DY="-38.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.498077392578125" b="0.86004638671875" c="0.86004638671875" d="-0.498077392578125" tx="-582.8" ty="-38.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-549.7" centerPoint3DY="-210.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.228271484375" b="0.10345458984375" c="0.10333251953125" d="1.22833251953125" tx="-530.95" ty="-286.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.55" y="38.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-549.6" centerPoint3DY="-65.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.814605712890625" b="-0.9122314453125" c="-0.91229248046875" d="0.8145751953125" tx="-521.9" ty="-64.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-556.45" centerPoint3DY="-122.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.2232666015625" b="0.0637054443359375" c="0.0636138916015625" d="1.22323608398438" tx="-538" ty="-170.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="10.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-455.85" centerPoint3DY="-196.95" loop="loop">
+                  <matrix>
+                    <Matrix a="1.12594604492188" b="0.478927612304688" c="-0.478927612304688" d="1.1260986328125" tx="-451.1" ty="-273.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="33.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左下臂" symbolType="graphic" centerPoint3DX="-475.65" centerPoint3DY="-116.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.458480834960938" b="-1.13412475585938" c="-1.1341552734375" d="0.45855712890625" tx="-435.45" ty="-87.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左手" symbolType="graphic" centerPoint3DX="-477.5" centerPoint3DY="-51.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.319549560546875" b="-1.17924499511719" c="-1.17919921875" d="0.319625854492188" tx="-453.7" ty="-33.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.35" y="12.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/胸口" symbolType="graphic" centerPoint3DX="-498.4" centerPoint3DY="-228.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21836853027344" b="-0.21923828125" c="-0.21929931640625" d="1.21832275390625" tx="-436.45" ty="-273.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/腹部" symbolType="graphic" centerPoint3DX="-501.1" centerPoint3DY="-159.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22062683105469" b="-0.2027587890625" c="-0.202804565429688" d="1.2205810546875" tx="-450.45" ty="-197.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.95" y="44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/头部" symbolType="graphic" centerPoint3DX="-446.15" centerPoint3DY="-294.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21672058105469" b="-0.20513916015625" c="-0.205184936523438" d="1.21672058105469" tx="-424.85" ty="-333.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.35" y="52.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/左大腿" symbolType="graphic" centerPoint3DX="-467.45" centerPoint3DY="-45.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0986328125" b="0.558395385742188" c="0.558395385742188" d="1.0986328125" tx="-471.1" ty="-112.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.7" y="14.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-477.25" centerPoint3DY="29.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9986572265625" b="-0.7257080078125" c="-0.7257080078125" d="0.9986572265625" tx="-421.8" ty="-6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.35" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-517.75" centerPoint3DY="71.95">
+                  <matrix>
+                    <Matrix a="0.768417358398438" b="0.633270263671875" c="-0.633270263671875" d="0.768417358398438" tx="-504.2" ty="2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.95" y="58.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/屁股" symbolType="graphic" centerPoint3DX="-512.25" centerPoint3DY="-105.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22074890136719" b="-0.206512451171875" c="-0.206573486328125" d="1.22076416015625" tx="-457.75" ty="-135.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.55" y="41.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右大腿" symbolType="graphic" centerPoint3DX="-529.25" centerPoint3DY="-44.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.23307800292969" b="0.11114501953125" c="0.11114501953125" d="1.2330322265625" tx="-505.9" ty="-109.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.6" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/小腿" symbolType="graphic" centerPoint3DX="-547.15" centerPoint3DY="44.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.1793212890625" b="-0.36181640625" c="-0.36181640625" d="1.1793212890625" tx="-506.7" ty="-7.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.55" y="13.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/鞋子" centerPoint3DX="-565.85" centerPoint3DY="91.9">
+                  <matrix>
+                    <Matrix a="0.983551025390625" b="0.135650634765625" c="-0.135650634765625" d="0.983551025390625" tx="-597.85" ty="29.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.5" y="62.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/1.特效文件夹/补间 23" symbolType="graphic" centerPoint3DX="-573.9" centerPoint3DY="-41.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.534942626953125" b="0.836700439453125" c="0.836700439453125" d="-0.534942626953125" tx="-573.95" ty="-41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/上臂" symbolType="graphic" centerPoint3DX="-548.45" centerPoint3DY="-214.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22296142578125" b="0.155303955078125" c="0.155181884765625" d="1.2230224609375" tx="-532.9" ty="-290.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.5" y="38"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右手" symbolType="graphic" centerPoint3DX="-542.05" centerPoint3DY="-69.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.853256225585938" b="-0.8751220703125" c="-0.87518310546875" d="0.85321044921875" tx="-514.3" ty="-69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.65" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/零件/右下臂" symbolType="graphic" centerPoint3DX="-551.4" centerPoint3DY="-126.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.21990966796875" b="0.11712646484375" c="0.117050170898438" d="1.21989440917969" tx="-535.05" ty="-174.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="10.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

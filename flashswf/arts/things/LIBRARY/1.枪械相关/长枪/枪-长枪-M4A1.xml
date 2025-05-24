@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/枪-长枪-M4A1" itemID="66b4675d-000011e7" linkageExportForAS="true" linkageIdentifier="枪-长枪-M4A1" lastModified="1723098973">
+  <timeline>
+    <DOMTimeline name="枪-长枪-M4A1">
+      <layers>
+        <DOMLayer name="Layer 1" color="#DA8E97">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="259.45" centerPoint3DY="-22.05">
+                  <matrix>
+                    <Matrix tx="246.95" ty="-34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7DF767">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3788" centerPoint3DX="317.75" centerPoint3DY="-9.6">
+                  <matrix>
+                    <Matrix a="-0.658218383789063" d="0.658218383789063" tx="170.05" ty="-45.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BD94E7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3787" centerPoint3DX="107.95" centerPoint3DY="91.6">
+                  <matrix>
+                    <Matrix a="-0.658218383789063" d="0.658218383789063" tx="21.85" ty="-7.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#54E57C" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3785" centerPoint3DX="3.75" centerPoint3DY="29.35">
+                  <matrix>
+                    <Matrix a="-0.658218383789063" d="0.658218383789063" tx="-74.45" ty="-15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,1537 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1747836992">
+  <timeline>
+    <DOMTimeline name="Symbol 923">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#FB7118" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" name="佣兵管理" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="7" name="查找佣兵" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="9" name="佣兵报名" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#CEF873" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 排列佣兵图标()
+{
+	删除佣兵图标();
+	删除可雇用佣兵图标();
+	gotoAndStop("佣兵管理");
+	var _loc3_ = 0;
+	var 同伴最大数量 = Math.max(_root.同伴数, _root.同伴数据.length);
+	//while (_loc3_ < _root.同伴数)
+	while (_loc3_ < 同伴最大数量)
+	{
+		if (_root.同伴数据[_loc3_][0] != undefined)
+		{
+			this.attachMovie("佣兵信息显示框","佣兵信息显示框" + _loc3_,this.getNextHighestDepth(),{_x:8, _y:31 + _loc3_ * 70, 同伴数据数组号:_loc3_, 佣兵数据:_root.同伴数据[_loc3_], 是否出战:_root.佣兵是否出战信息[_loc3_], 名字:_root.同伴数据[_loc3_][1], 等级:_root.同伴数据[_loc3_][0]});
+
+			var 计算强化度 = _root.主角函数.获取人形怪强化等级(_root.同伴数据[_loc3_][0], _root.同伴数据[_loc3_][1]);
+			if (isNaN(计算强化度))
+			{
+				计算强化度 = 1;
+			}
+			var _loc4_ = 6;
+			while (_loc4_ < 17)
+			{
+				当前强化度 = 计算强化度;
+				if(_root.同伴数据[_loc3_][19].装备强化度){
+					当前强化度 = _root.同伴数据[_loc3_][19].装备强化度[_root.佣兵装备位映射数组[_loc4_]];
+				}
+				var 当前物品名 = _root.同伴数据[_loc3_][_loc4_];
+				if (当前物品名 != "" and 当前物品名 != undefined)
+				{
+					var itemData = _root.getItemData(当前物品名);
+					this["佣兵信息显示框" + _loc3_].attachMovie("图标-" + itemData.icon,"物品图标" + _loc4_,this["佣兵信息显示框" + _loc3_].getNextHighestDepth(),{_x:(_loc4_ - 6) * 28 + 15.5, _y:44, 物品名:当前物品名, 数量:1, 强化度:当前强化度, 图标:"图标-" + itemData.icon});
+					this["佣兵信息显示框" + _loc3_]["物品图标" + _loc4_].onRollOver = function()
+					{
+						_root.物品图标注释(this.物品名,{level:this.强化度});
+					};
+					this["佣兵信息显示框" + _loc3_]["物品图标" + _loc4_].onRollOut = function()
+					{
+						_root.注释结束();
+					};
+				}
+				_loc4_ += 1;
+			}
+		}
+		_loc3_ += 1;
+	}
+}
+function 删除佣兵图标()
+{
+	var _loc2_ = 0;
+	while (_loc2_ < 10)
+	{
+		this["佣兵信息显示框" + _loc2_].removeMovieClip();
+		_loc2_ += 1;
+	}
+}
+function 读取佣兵列表信息(页数)
+{
+	总页数 = Math.ceil((_root.可雇佣兵.length - _root.隐藏的可雇佣兵.length) / 5);
+	可雇用佣兵列表数据 = [];
+	var i = 5 * Number(页数) - 5;
+	var j = 0;
+	var 隐藏佣兵数 = 0;
+	while (i < _root.可雇佣兵.length && j < 5)
+	{
+		if(!_root.可雇佣兵[i][19].隐藏){
+			可雇用佣兵列表数据[j] = _root.可雇佣兵[i];
+			j++;
+		}
+		i++;
+	}
+	排列可雇用佣兵图标(页数);
+}
+function 排列可雇用佣兵图标(页数值)
+{
+	gotoAndStop("查找佣兵");
+	删除佣兵图标();
+	删除可雇用佣兵图标();
+	当前页数 = Number(页数值);
+	页数显示 = 当前页数 + " / " + 总页数;
+	//下一页按钮._visible = 0;
+	//上一页按钮._visible = 0;
+	下一页._visible = 0;
+	下十页._visible = 0;
+	上一页._visible = 0;
+	上十页._visible = 0;
+	if (当前页数 < 总页数)
+	{
+		下一页._visible = 1;
+		下十页._visible = 1;
+	}
+	if (当前页数 > 1)
+	{
+		上一页._visible = 1;
+		上十页._visible = 1;
+	}
+	var _loc4_ = 0;
+	//var _loc4_ = 5 * 当前页数 - 5;
+	//var 当前位数 = 0;
+	while (_loc4_ < 5)
+	{
+		if (可雇用佣兵列表数据[_loc4_][1] != undefined)
+		{
+			if(可雇用佣兵列表数据[_loc4_][19].隐藏){
+				_loc4_ += 1;
+				continue;
+			}
+			var 当前佣兵等级 = Number(可雇用佣兵列表数据[_loc4_][0]);
+
+			var 所需金币 = 可雇用佣兵列表数据[_loc4_][18] * 1.5;
+			var 所需K点 = _root.isEasyMode() ? 0 : 可雇用佣兵列表数据[_loc4_][0] >= 50 ? (可雇用佣兵列表数据[_loc4_][0] - 50) * 100 : 0;
+			if(可雇用佣兵列表数据[_loc4_][19].价格倍率){
+				所需金币 = Math.floor(所需金币 * 可雇用佣兵列表数据[_loc4_][19].价格倍率/500) * 500;
+				所需K点 = Math.floor(所需K点 * 可雇用佣兵列表数据[_loc4_][19].价格倍率/100) * 100;
+			}
+			this.attachMovie("佣兵列表信息显示框","佣兵列表信息显示框" + _loc4_,this.getNextHighestDepth(),{_x:8, _y:31 + _loc4_ * 60, 可雇用佣兵列表数据:可雇用佣兵列表数据[_loc4_], 名字:可雇用佣兵列表数据[_loc4_][1], 等级:可雇用佣兵列表数据[_loc4_][0], 身价:所需K点, 金币身价:所需金币, 热度:可雇用佣兵列表数据[_loc4_][18], 鲜度:0});
+
+			var 计算强化度 = _root.主角函数.获取人形怪强化等级(当前佣兵等级, 可雇用佣兵列表数据[_loc4_][1]);
+			if (isNaN(计算强化度))
+			{
+				计算强化度 = 1;
+			}
+			var _loc5_ = 6;
+			while (_loc5_ < 17)
+			{
+				当前强化度 = 计算强化度;
+				if(可雇用佣兵列表数据[_loc4_][19].装备强化度){
+					当前强化度 = 可雇用佣兵列表数据[_loc4_][19].装备强化度[_root.佣兵装备位映射数组[_loc5_]];
+				}
+				if (可雇用佣兵列表数据[_loc4_][_loc5_] != "" and 可雇用佣兵列表数据[_loc4_][_loc5_] != undefined)
+				{
+					this["佣兵列表信息显示框" + _loc4_].attachMovie("图标-" + _root.getItemData(可雇用佣兵列表数据[_loc4_][_loc5_]).icon,"物品图标" + _loc5_,this["佣兵列表信息显示框" + _loc4_].getNextHighestDepth(),{_x:(_loc5_ - 6) * 28 + 15.5, _y:44, 物品名:可雇用佣兵列表数据[_loc4_][_loc5_], 数量:1, 强化度:当前强化度, 图标:"图标-" + _root.getItemData(可雇用佣兵列表数据[_loc4_][_loc5_]).icon});
+					this["佣兵列表信息显示框" + _loc4_]["物品图标" + _loc5_].onRollOver = function()
+					{
+						var temp_name = this.物品名 == "角斗高手项链" ? "战斗专家军牌" : this.物品名 ==  "角斗王者项链" ? "战斗狂人军牌" : this.物品名;
+						//_root.物品图标注释(this.物品名,{level:this.强化度});
+						_root.物品图标注释(temp_name,{level:this.强化度});
+					};
+					this["佣兵列表信息显示框" + _loc4_]["物品图标" + _loc5_].onRollOut = function()
+					{
+						_root.注释结束();
+					};
+				}
+				_loc5_ += 1;
+			}
+		}
+		_loc4_ += 1;
+		//当前位数++;
+	}
+}
+function 删除可雇用佣兵图标()
+{
+	var _loc2_ = 0;
+	while (_loc2_ < 10)
+	{
+		this["佣兵列表信息显示框" + _loc2_].removeMovieClip();
+		_loc2_ += 1;
+	}
+}
+/*function 读取佣兵列表信息(页数)
+{
+var _loc2_ = "http://" + _root.address + "/crazyflashercom/k5_yblist.action?k=" + random(100);
+var lv = new LoadVars();
+lv.page = 页数;
+lv.sendAndLoad(_loc2_,lv,"POST");
+lv.onLoad = function(b)
+{
+if (b)
+{
+if (lv.content + "" == "-1")
+{
+_root.发布消息("获取佣兵列表失败");
+}
+else if (lv.content + "" == "-2")
+{
+_root.发布消息("目前还没有玩家报名");
+}
+else
+{
+总页数 = Number(lv.sumpage);
+可雇用佣兵列表数据 = [];
+var _loc3_ = lv.content.split("\r");
+var _loc4_ = 0;
+while (_loc4_ < _loc3_.length)
+{
+tmp_aaa = _loc3_[_loc4_].split(" ");
+可雇用佣兵列表数据.push(tmp_aaa);
+_loc4_ += 1;
+}
+_loc4_ = 0;
+while (_loc4_ < 可雇用佣兵列表数据.length - 1)
+{
+可雇用佣兵列表数据[_loc4_][4] = _root.脸型库[Number(可雇用佣兵列表数据[_loc4_][4])];
+可雇用佣兵列表数据[_loc4_][5] = _root.发型库[Number(可雇用佣兵列表数据[_loc4_][5])];
+var _loc5_ = 6;
+while (_loc5_ < 17)
+{
+if (可雇用佣兵列表数据[_loc4_][_loc5_] == "-1")
+{
+可雇用佣兵列表数据[_loc4_][_loc5_] = "";
+}
+else
+{
+可雇用佣兵列表数据[_loc4_][_loc5_] = _root.parseXMLs2(可雇用佣兵列表数据[_loc4_][_loc5_])[0];
+}
+_loc5_ += 1;
+}
+if (可雇用佣兵列表数据[_loc4_][17] == "1")
+{
+可雇用佣兵列表数据[_loc4_][17] = "男";
+}
+else
+{
+可雇用佣兵列表数据[_loc4_][17] = "女";
+}
+_loc4_ += 1;
+}
+排列可雇用佣兵图标(页数);
+_loc4_ = 0;
+while (_loc4_ < 可雇用佣兵列表数据.length)
+{
+_loc4_ += 1;
+}
+}
+}
+};
+}*/
+function 佣兵报名()
+{
+	k点价格 = 10;
+	if (_root.虚拟币 >= k点价格)
+	{
+		var _loc2_ = "http://" + _root.address + "/crazyflashercom/k5_ybenroll.action?k=" + random(100);
+		var lv = new LoadVars();
+		lv.accId = _root.accId;
+		lv.moneyvip = k点价格;
+		lv.fkey = CF7_PAY_UTL.md5(_root.accId + "&" + lv.moneyvip + "ANZJFGJJ@8*2!^%@&^$@&(&(..)@&#JFJxx");
+		lv.sendAndLoad(_loc2_,lv,"POST");
+		lv.onLoad = function(b)
+		{
+			if (b)
+			{
+				_root.佣兵信息界面.加载图标._visible = 0;
+				_root.佣兵信息界面.报名按钮._visible = 1;
+				if (lv.content + "" == "-1")
+				{
+					_root.发布消息("报名失败,请重新报名");
+				}
+				else if (lv.content + "" == "-2")
+				{
+					_root.发布消息("您已经报名,无需重复报名");
+				}
+				else if (lv.content + "" == "-3")
+				{
+					_root.发布消息("数据异常,不能报名");
+				}
+				else if (lv.content + "" == "-4")
+				{
+					_root.发布消息("价格异常,不能报名");
+				}
+				else if (lv.content + "" == "-5")
+				{
+					_root.发布消息("k点不足,请先充值");
+				}
+				else if (lv.content + "" == "-6")
+				{
+					_root.发布消息("数据有误,报名失败");
+				}
+				else if (lv.content + "" == "-7")
+				{
+					_root.发布消息("角色等级不足，请10级再来。");
+				}
+				else if (lv.content + "" == "0")
+				{
+					_root.发布消息("恭喜您报名成功");
+					_root.最上层发布文字提示("恭喜您报名成功");
+					_root.获取虚拟币值();
+				}
+				else
+				{
+					_root.发布消息("数据有误,请重新报名");
+				}
+			}
+		};
+	}
+	else
+	{
+		_root.佣兵信息界面.加载图标._visible = 0;
+		_root.佣兵信息界面.报名按钮._visible = 1;
+		_root.发布消息("k点不足,请先充值");
+	}
+}
+function 佣兵赚取K点记录()
+{
+	var _loc2_ = "http://" + _root.address + "/crazyflashercom/k5_yblog.action?k=" + random(100);
+	var lv = new LoadVars();
+	lv.accId = _root.accId;
+	lv.sendAndLoad(_loc2_,lv,"POST");
+	lv.onLoad = function(b)
+	{
+		if (b)
+		{
+			if (lv.content + "" == "-1")
+			{
+				_root.发布消息("报名失败,请重新报名");
+			}
+			else if (lv.content + "" == "-2")
+			{
+				被雇佣日志 = "暂时还没有人雇佣你！";
+			}
+			else if (lv.content + "" == "-3")
+			{
+				被雇佣日志 = "你还没有报名！快报名赚取k点吧！";
+			}
+			else
+			{
+				var _loc3_ = lv.content.split("_");
+				var _loc4_ = _loc3_[_loc3_.length - 1].split(",");
+				被雇佣日志 = "您一共被雇佣了" + (_loc3_.length - 1) + "次，一共赚取了佣金" + _loc4_[0] + "k点！\r";
+				var _loc5_ = 0;
+				var _loc6_ = _loc3_.length - 1;
+				while (_loc5_ < _loc6_)
+				{
+					var _loc7_ = _loc3_[_loc5_].split(",");
+					被雇佣日志 += _loc7_[0] + " 雇佣了你，获得佣金" + _loc7_[1] + "k点\r";
+					_loc5_ += 1;
+				}
+			}
+		}
+	};
+}
+function 佣兵删除记录(佣兵Id)
+{
+	var _loc3_ = "http://" + _root.address + "/crazyflashercom/k5_ybdeletelog.action?k=" + random(100);
+	var lv = new LoadVars();
+	lv.accId = _root.accId;
+	lv.ybid = 佣兵Id;
+	lv.fkey = CF7_PAY_UTL.md5(lv.accId + "&" + lv.ybid + "ANZJFGJJ@8*2!^%@&^$@&(&(..)@&#JFJxx");
+	lv.sendAndLoad(_loc3_,lv,"POST");
+	lv.onLoad = function(b)
+	{
+		if (b)
+		{
+			if (lv.content + "" == "-1")
+			{
+				_root.发布消息("删除记录失败！");
+			}
+			else if (lv.content + "" == "-6")
+			{
+				_root.发布消息("数据异常，删除记录失败！");
+			}
+			else if (lv.content + "" == "0")
+			{
+				_root.发布消息("佣兵删除记录成功！");
+			}
+			else
+			{
+				_root.发布消息("删除记录失败2！");
+			}
+		}
+	};
+}
+function 取消佣兵报名()
+{
+	var _loc2_ = "http://" + _root.address + "/crazyflashercom/k5_ybclose.action?k=" + random(100);
+	var lv = new LoadVars();
+	lv.accId = _root.accId;
+	lv.fkey = CF7_PAY_UTL.md5(_root.accId + "ANZJFGJJ@8*2!^%@&^$@&(&(..)@&#JFJxx");
+	lv.sendAndLoad(_loc2_,lv,"POST");
+	lv.onLoad = function(b)
+	{
+		if (b)
+		{
+			if (lv.content + "" == "-1")
+			{
+				_root.发布消息("取消失败");
+			}
+			else if (lv.content + "" == "-2")
+			{
+				_root.发布消息("没有报名");
+			}
+			else if (lv.content + "" == "-3")
+			{
+				_root.发布消息("验证失败");
+			}
+			else if (lv.content + "" == "0")
+			{
+				_root.发布消息("佣兵报名取消成功！");
+			}
+			else
+			{
+				_root.发布消息("取消失败");
+			}
+		}
+	};
+}
+排列佣兵图标firstRun = true;
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(排列佣兵图标firstRun == true)
+{
+   排列佣兵图标();
+}
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//总页数 = Math.ceil(_root.可雇佣兵.length / 5);
+//排列可雇用佣兵图标(1);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[佣兵赚取K点记录();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#A61FE8">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="16" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="155.05" ty="5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>佣兵报名</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="155.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>佣兵报名</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#51C3B0">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 911" symbolType="button">
+                  <matrix>
+                    <Matrix tx="177.2" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 913" symbolType="button">
+                  <matrix>
+                    <Matrix tx="177.2" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   删除佣兵图标();
+   删除可雇用佣兵图标();
+   gotoAndStop("佣兵报名");
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#96A7C2" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="93.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>查找佣兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="93.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>查找佣兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="93.05" ty="5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>查找佣兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="93.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>查找佣兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C471BA">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 920" symbolType="button">
+                  <matrix>
+                    <Matrix tx="115.2" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   读取佣兵列表信息(1);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 911" symbolType="button">
+                  <matrix>
+                    <Matrix tx="115.2" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 920" symbolType="button">
+                  <matrix>
+                    <Matrix tx="115.2" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   读取佣兵列表信息(1);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#10B0C1">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>佣兵管理</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="29" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>佣兵管理</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#A0E787">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 911" symbolType="button">
+                  <matrix>
+                    <Matrix tx="54.4" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 909" symbolType="button">
+                  <matrix>
+                    <Matrix tx="54.8" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   排列佣兵图标();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1750" name="下一页" symbolType="button">
+                  <matrix>
+                    <Matrix tx="311.6" ty="359.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (当前页数 + 1 >= 总页数)
+	{
+		读取佣兵列表信息(总页数);
+	}else{
+		读取佣兵列表信息(当前页数 + 1);
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1751" name="上一页" symbolType="button">
+                  <matrix>
+                    <Matrix a="-1" tx="202.85" ty="359.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (当前页数 - 1 <= 1)
+	{
+		读取佣兵列表信息(1);
+	}else{
+		读取佣兵列表信息(当前页数 - 1);
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1755" name="下十页" symbolType="button">
+                  <matrix>
+                    <Matrix tx="348.4" ty="359.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (当前页数 + 10 >= 总页数)
+	{
+		读取佣兵列表信息(总页数);
+	}else{
+		读取佣兵列表信息(当前页数 + 10);
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1756" name="上十页" symbolType="button">
+                  <matrix>
+                    <Matrix a="-1" tx="166.05" ty="359.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (当前页数 - 10 <= 1)
+	{
+		读取佣兵列表信息(1);
+	}else{
+		读取佣兵列表信息(当前页数 - 10);
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#BDED82">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="57" height="20.45" isSelectable="false" variableName="页数显示">
+                  <matrix>
+                    <Matrix tx="229" ty="350.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#9D93E9">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="上一页按钮" centerPoint3DX="174.05" centerPoint3DY="359.95">
+                  <matrix>
+                    <Matrix tx="128.25" ty="348.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.读取佣兵列表信息(_parent.当前页数 - 1);
+}
+onClipEvent(load){
+   显示文字 = "上一页";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#26BDE3">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="下一页按钮" centerPoint3DX="343.05" centerPoint3DY="359.95">
+                  <matrix>
+                    <Matrix tx="297.25" ty="348.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.读取佣兵列表信息(_parent.当前页数 + 1);
+}
+onClipEvent(load){
+   显示文字 = "下一页";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#FDD5F6">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="305.95" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31.05" ty="5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>我的佣兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#32E2C2" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" fontRenderingMode="device" width="451.05" height="96.4" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="31.9" ty="42.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>您还没有任何佣兵，快去雇佣一个吧！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#4F98EB">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 314" name="加载图标" centerPoint3DX="419.9" centerPoint3DY="154.6">
+                  <matrix>
+                    <Matrix tx="404.5" ty="139.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#5973BC">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/通用按钮2" centerPoint3DX="400.05" centerPoint3DY="332.95">
+                  <matrix>
+                    <Matrix tx="354.25" ty="321.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.取消佣兵报名();
+}
+onClipEvent(load){
+   显示文字 = "取消报名";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#81C93A">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="212.1" height="50.65" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="310.9" ty="183.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>为了能赚取</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>K</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>点，最好是穿上最好的装备后报名，这样其他玩家才更愿意选择支付</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>K</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>点雇佣你！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#D6B3E4">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/通用按钮2" name="报名按钮" centerPoint3DX="406.05" centerPoint3DY="150">
+                  <matrix>
+                    <Matrix tx="360.25" ty="138.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.加载图标._visible = 1;
+   this._visible = 0;
+   _parent.佣兵报名();
+}
+onClipEvent(load){
+   显示文字 = "10k点报名";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#CCC6DE">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="272.85" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31.9" ty="112.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>被雇佣日志</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#E6D94F">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#6F93AE">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="InstanceName_1" fontRenderingMode="device" width="246" height="202.95" isSelectable="false" variableName="被雇佣日志" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="30" ty="136"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#9F9BA4">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 906" centerPoint3DX="259.7" centerPoint3DY="427.35">
+                  <matrix>
+                    <Matrix tx="10.95" ty="396.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 861" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.00291442871094" d="3.11392211914063" tx="160.45" ty="345"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#24E282">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 889" centerPoint3DX="260.75" centerPoint3DY="427.7">
+                  <matrix>
+                    <Matrix tx="12" ty="396.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="273.95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31.9" ty="42.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>暂时没有可雇佣的佣兵。</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="19" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="518.1" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31.9" ty="42.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>报名参加佣兵团，有机会被其他玩家雇佣，您将获得雇佣金额</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>1K</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>点！快报名赚</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>K</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>点吧！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#04CCCC">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/关闭按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="500.05" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.自动存盘();
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#FD66E4">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 728" symbolType="button">
+                  <matrix>
+                    <Matrix tx="14.6" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#27EB6E">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="408.15" centerPoint3DY="28.75">
+                  <matrix>
+                    <Matrix a="0.999984741210938" tx="305.65" ty="27.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#A78A99">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="311.15" centerPoint3DY="28.75">
+                  <matrix>
+                    <Matrix a="0.999984741210938" tx="208.65" ty="27.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#E064A6">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="108.15" centerPoint3DY="28.75">
+                  <matrix>
+                    <Matrix a="0.999984741210938" tx="5.65" ty="27.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#9FA8CB">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#F758CD" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="228.45" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix a="1.12353515625" d="1.12353515625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#B0CF40">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#9DE582">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

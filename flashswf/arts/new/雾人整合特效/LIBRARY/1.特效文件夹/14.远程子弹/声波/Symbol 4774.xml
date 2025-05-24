@@ -1,0 +1,183 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/声波/Symbol 4774" itemID="657afec4-000026e5" linkageExportForAS="true" linkageIdentifier="声波" lastModified="1702560530" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 4774">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#52F55C">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#479DC5">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4DD2AD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 13" name="area" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 13" name="area" selected="true" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 13" name="area" selected="true" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 13" name="area" selected="true" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 13" name="area" selected="true" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#74D6E6" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 13" name="area" centerPoint3DX="16.75" centerPoint3DY="-11.55">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="4.25" ty="-24.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#C19155" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 4752">
+                  <matrix>
+                    <Matrix tx="4" ty="-26.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0" quality="3"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 4752">
+                  <matrix>
+                    <Matrix a="4.17800903320313" d="4.17800903320313" tx="-20.35" ty="-112.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="10" quality="3"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/声波/Symbol 4752">
+                  <matrix>
+                    <Matrix a="6.65240478515625" d="6.65240478515625" tx="-39.35" ty="-179.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="10" quality="3"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-240"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

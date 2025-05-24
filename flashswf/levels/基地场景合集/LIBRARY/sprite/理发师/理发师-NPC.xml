@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/理发师/理发师-NPC" itemID="668aace8-0000626b" lastModified="1736955547">
+  <timeline>
+    <DOMTimeline name="理发师-NPC">
+      <layers>
+        <DOMLayer name="Layer 1" color="#EAD9C6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="-17" centerPoint3DY="-96.75">
+                  <matrix>
+                    <Matrix tx="-69" ty="-120.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F380ED" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2652" selected="true" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.93096923828125" d="0.93096923828125" tx="-20.65" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.是否达成任务检测();
+	if (_root.点击npc后检测任务(名字) == "路过")
+	{
+		_root.从库中加载外部UI("理发店界面");
+		_root.NPC功能菜单._visible = 1;
+		_root.NPC功能菜单._x = _root._xmouse;
+		_root.NPC功能菜单._y = _root._ymouse;
+		_root.NPC功能菜单.当前NPC = this._name;
+		_root.NPC功能菜单.刷新显示();
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

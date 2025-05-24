@@ -1,0 +1,1639 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1747818700" lastUniqueIdentifier="42">
+  <timeline>
+    <DOMTimeline name="新版物品栏界面" currentFrame="49">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#23D4A1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" name="空" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" name="物品栏" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" name="物品栏刷新" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="9" name="个人信息" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="6" name="技能" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" name="材料" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" name="情报" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#894BAD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 关闭()
+{
+	this.gotoAndStop("空");
+}
+
+this.originalDepth = this.getDepth();
+
+界面 = "物品栏";
+gotoAndStop("空");
+this._visible = false;
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[界面 = "物品栏";]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("物品栏");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[界面 = "个人信息";
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[界面 = "技能";]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[界面 = "材料";]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[界面 = "情报";]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="顶栏文字" color="#D2E48D" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="52" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="48.2" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="21.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>物品装备</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="31.45" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="81.05" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>技能</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="48.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="208" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>个人信息</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="27.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="167.35" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>情报</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="31.45" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="123.3" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>材料</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="顶栏按钮" color="#98BB66" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="52" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="81.65" centerPoint3DY="28.75">
+                  <matrix>
+                    <Matrix a="1.41879272460938" tx="-20.85" ty="27.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1963" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.666656494140625" tx="96.85" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("技能");
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("技能"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1964" symbolType="button">
+                  <matrix>
+                    <Matrix tx="232.4" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("个人信息");
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("个人信息"));
+}
+on(rollOut){
+   _root.注释结束();
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1964" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.666671752929688" tx="181.05" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("情报");
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1965" symbolType="button">
+                  <matrix>
+                    <Matrix tx="44.8" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("物品栏");
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("物品装备"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1963" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.666656494140625" tx="139.05" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("材料");
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="已装备" color="#7CE74D" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="长枪" centerPoint3DX="118" centerPoint3DY="64.7">
+                  <matrix>
+                    <Matrix tx="104.7" ty="50.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="手枪" centerPoint3DX="122.15" centerPoint3DY="151.95">
+                  <matrix>
+                    <Matrix tx="108.85" ty="137.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="刀" centerPoint3DX="191.25" centerPoint3DY="64.7">
+                  <matrix>
+                    <Matrix tx="177.95" ty="50.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="手雷" centerPoint3DX="186.25" centerPoint3DY="151.95">
+                  <matrix>
+                    <Matrix tx="172.95" ty="137.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="手部装备" centerPoint3DX="222.9" centerPoint3DY="127.75">
+                  <matrix>
+                    <Matrix tx="209.6" ty="113.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="颈部装备" centerPoint3DX="222.9" centerPoint3DY="96.5">
+                  <matrix>
+                    <Matrix tx="209.6" ty="82.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="上装装备" centerPoint3DX="85.85" centerPoint3DY="64.7">
+                  <matrix>
+                    <Matrix tx="72.55" ty="50.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="下装装备" centerPoint3DX="85.85" centerPoint3DY="96.5">
+                  <matrix>
+                    <Matrix tx="72.55" ty="82.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="脚部装备" centerPoint3DX="85.85" centerPoint3DY="127.75">
+                  <matrix>
+                    <Matrix tx="72.55" ty="113.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="头部装备" centerPoint3DX="222.9" centerPoint3DY="64.7">
+                  <matrix>
+                    <Matrix tx="209.6" ty="50.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="手枪2" centerPoint3DX="154.4" centerPoint3DY="151.95">
+                  <matrix>
+                    <Matrix tx="141.1" ty="137.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="未装备" color="#C3D7F3" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="物品图标" centerPoint3DX="28.15" centerPoint3DY="185.15">
+                  <matrix>
+                    <Matrix tx="14.85" ty="171"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+	_root.物品UI函数.创建背包图标();
+}
+onClipEvent (unload) {
+	_root.物品UI函数.删除背包图标();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="技能图标" centerPoint3DX="55.45" centerPoint3DY="62.7">
+                  <matrix>
+                    <Matrix tx="42.7" ty="48.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = 0;
+	_root.排列技能图标();
+}
+onClipEvent (unload) {
+	_root.删除技能图标();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮组" color="#B4F015" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1953" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="41.15" ty="47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (rollOver) {
+	_root.注释(150,_root.获得翻译("上装"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1954" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="41.15" ty="79.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("下装"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1955" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="41.15" ty="108.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("鞋子"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1956" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="104.55" ty="75.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("长枪"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1957" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="108.9" ty="111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("手枪"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1957" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="141.15" ty="111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("手枪"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1958" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="173" ty="111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("手雷"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1959" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="241.4" ty="110.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("手部"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1960" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="241.4" ty="79.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("颈部"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1961" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="241.4" ty="47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("头部"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1962" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.10406494140625" d="0.802032470703125" tx="178.05" ty="75.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("刀棒"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#E3D96D" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="18" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="30.05" ty="39.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>上装</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="30.05" ty="72.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>下装</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="30.05" ty="101.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>鞋子</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="230.3" ty="39.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>头部</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="230.3" ty="72.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>颈部</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="230.3" ty="103.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>手部</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="93.45" ty="68.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>长枪</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="166.95" ty="68.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>刀棒</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="97.8" ty="104.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>手枪</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="130.05" ty="104.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>手枪</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="22.2" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="161.9" ty="104.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>手雷</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="排序图标" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" centerPoint3DX="252.5" centerPoint3DY="312.15">
+                  <matrix>
+                    <Matrix tx="252.5" ty="312.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (rollOver) {
+	_root.注释(100,_root.获得翻译("一键整理，保持紧密原序"));
+	//_root.注释(100,_root.获得翻译("点击一键排序，长按自选方式（默认保持紧密原序）"));
+}
+on (rollOut) {
+	_root.注释结束();
+}
+
+onClipEvent (load) {
+	// 初始化长按参数
+	var pressFrames = 0;
+	var isPressing = false;
+	var checkLongPress = false;// 控制enterFrame检测开关
+
+	// 帧数阈值
+	var LONG_PRESS_FRAMES = 30;
+
+	// 定义处理函数
+	this.resetPressState = function()
+	{
+		isPressing = false;
+		pressFrames = 0;
+		checkLongPress = false;
+	};
+	
+	this.methodName = "default";
+
+	this.clickAction = function()
+	{
+		_root.帧计时器.eventBus.publish("物品栏排序图标点击", this.methodName);
+	};
+
+	this.longPressAction = function()
+	{
+		_root.帧计时器.eventBus.publish("物品栏排序图标长按", this.methodName);
+	};
+}
+
+onClipEvent (mouseDown) {
+	if (this.area.hitTest(_root._xmouse, _root._ymouse, true))
+	{
+		isPressing = true;
+		pressFrames = 0;
+		checkLongPress = true;// 激活enterFrame检测
+	}
+}
+
+onClipEvent (mouseUp) {
+	if (isPressing)
+	{
+		// 短按触发判断
+		if (pressFrames < LONG_PRESS_FRAMES)
+		{
+			this.clickAction();
+		}
+		this.resetPressState();
+	}
+}
+
+onClipEvent (enterFrame) {
+	if (!checkLongPress)
+	{
+		return;
+	}
+	// 非检测状态直接退出 
+	if (isPressing)
+	{
+		// 持续区域检测
+		if (!this.area.hitTest(_root._xmouse, _root._ymouse, true))
+		{
+			this.resetPressState();
+			return;
+		}
+		// 帧数累加 
+		pressFrames++;
+
+		// 长按触发
+		if (pressFrames >= LONG_PRESS_FRAMES)
+		{
+			this.longPressAction();
+			this.resetPressState();// 完成后立即关闭检测
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" centerPoint3DX="265.05" centerPoint3DY="326.7">
+                  <matrix>
+                    <Matrix tx="265.05" ty="326.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (rollOver) {
+	if(this.methodNameNumber < 0)
+	{
+		_root.注释(100,_root.获得翻译("按总价顺序整理"));		
+	}
+	else
+	{
+		_root.注释(100,_root.获得翻译("按默认顺序整理"));
+	}
+
+	//_root.注释(100,_root.获得翻译("点击一键排序，长按自选方式（默认保持紧密原序）"));
+}
+on (rollOut) {
+	_root.注释结束();
+}
+
+onClipEvent (load) {
+	// 初始化长按参数
+	var pressFrames = 0;
+	var isPressing = false;
+	var checkLongPress = false;// 控制enterFrame检测开关
+
+	// 帧数阈值
+	var LONG_PRESS_FRAMES = 30;
+
+	// 定义处理函数
+	this.resetPressState = function()
+	{
+		isPressing = false;
+		pressFrames = 0;
+		checkLongPress = false;
+	};
+	
+	this.methodNameNumber = -1;
+	
+	this["methodName" + "-1"] = "default";
+	this["methodName" + "1"] = "byPrice";
+	
+	this.getMethodName = function()
+	{
+		this.methodNameNumber *= -1;
+		
+		return "methodName" + this.methodNameNumber;
+	}
+
+	this.clickAction = function()
+	{
+		_root.帧计时器.eventBus.publish("材料栏排序图标点击", this[this.getMethodName()]);
+	};
+
+	this.longPressAction = function()
+	{
+		_root.帧计时器.eventBus.publish("材料栏排序图标长按", this[this.getMethodName()]);
+	};
+}
+
+onClipEvent (mouseDown) {
+	if (this.area.hitTest(_root._xmouse, _root._ymouse, true))
+	{
+		isPressing = true;
+		pressFrames = 0;
+		checkLongPress = true;// 激活enterFrame检测
+	}
+}
+
+onClipEvent (mouseUp) {
+	if (isPressing)
+	{
+		// 短按触发判断
+		if (pressFrames < LONG_PRESS_FRAMES)
+		{
+			this.clickAction();
+		}
+		this.resetPressState();
+	}
+}
+
+onClipEvent (enterFrame) {
+	if (!checkLongPress)
+	{
+		return;
+	}
+	// 非检测状态直接退出 
+	if (isPressing)
+	{
+		// 持续区域检测
+		if (!this.area.hitTest(_root._xmouse, _root._ymouse, true))
+		{
+			this.resetPressState();
+			return;
+		}
+		// 帧数累加 
+		pressFrames++;
+
+		// 长按触发
+		if (pressFrames >= LONG_PRESS_FRAMES)
+		{
+			this.longPressAction();
+			this.resetPressState();// 完成后立即关闭检测
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="垃圾箱" color="#12C3CF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 847" name="垃圾箱" centerPoint3DX="280.95" centerPoint3DY="325.85">
+                  <matrix>
+                    <Matrix tx="268.45" ty="312.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(100,_root.获得翻译("将物品拖入垃圾箱，永久丢弃物品！无法恢复！"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="204.85" ty="306.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>丢弃</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="整理" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="163.2" ty="306.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>整理</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="163.2" ty="322.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>整理</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="金币" color="#DBBC42" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="48.5" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="5.4" ty="306.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>金币</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="78.5" height="14.25" isSelectable="false" variableName="_root.金钱">
+                  <matrix>
+                    <Matrix tx="50.2" ty="306.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.75" ty="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人影&amp;信息文字" color="#A1DFA7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1952" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="129.45" ty="30.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="情报信息界面" name="情报信息界面" centerPoint3DX="-506.95" centerPoint3DY="33.9">
+                  <matrix>
+                    <Matrix tx="-520" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="14.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="装备栏位" color="#BDF8E3" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="72.85" ty="50.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="72.85" ty="82.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="72.85" ty="113.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="209.9" ty="50.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="209.9" ty="82.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="209.9" ty="113.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="108.9" ty="137.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="141.15" ty="137.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="173" ty="137.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="104.75" ty="50.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="178" ty="50.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="材料图标" centerPoint3DX="27.3" centerPoint3DY="63.15">
+                  <matrix>
+                    <Matrix tx="14" ty="49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+	_root.物品UI函数.创建材料图标();
+}
+onClipEvent (unload) {
+	_root.物品UI函数.删除材料图标();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="情报物品图标" centerPoint3DX="27.3" centerPoint3DY="63.15">
+                  <matrix>
+                    <Matrix tx="14" ty="49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+	_root.物品UI函数.创建情报图标();
+}
+onClipEvent (unload) {
+	_root.物品UI函数.删除情报图标();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="格子" color="#E66AA8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1935" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-4.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人信息界面" centerPoint3DX="140" centerPoint3DY="180">
+                  <matrix>
+                    <Matrix ty="30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="140" y="150"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2006" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="24.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/材料背景网格" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="拖拽" color="#EF9205" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="52" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="6.1" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="关闭" color="#8EC1E5" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="52" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 729" symbolType="button">
+                  <matrix>
+                    <Matrix tx="275" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.自动存盘();
+	this.关闭();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="45" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="-334" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix a="2.2882080078125" d="0.999847412109375" tx="-550"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#F2FFEA" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="108.85" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix a="1.25048828125" d="0.999847412109375" tx="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="108.85" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix a="1.25048828125" d="1.02847290039063" tx="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="108.85" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix a="1.25048828125" d="0.999847412109375" tx="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

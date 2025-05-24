@@ -1,0 +1,851 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2658" itemID="6597607e-00000c5f" lastModified="1717510811">
+  <timeline>
+    <DOMTimeline name="Symbol 2658" currentFrame="32">
+      <layers>
+        <DOMLayer name="Script Layer" color="#7CFDDD">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(random(8) == 0)
+{
+   _parent.gotoAndStop(random(2) + 2);
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#E2E208">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1521" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999" alpha="0.501960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!920 2379[1033 2429 1291 2429!1291 2429[1416 2429 1574 2389!1574 2389[1775 2338 1874 2249!1874 2249[1850 2195 1800 2196!1800 2196|1574 2208!1574 2208[1449 2208 1251 2133!1251 2133[1140 2091 1076 2073!1076 2073[783 1893 533 1954!533 1954
+[438 1996 438 2071!438 2071[438 2159 564 2262!564 2262[706 2379 877 2379!877 2379|920 2379"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999" alpha="0.501960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!336 1785[312 1818 308 1871!308 1871|310 1918!310 1918|299 1918!299 1918[60 1923 60 2053!60 2053[60 2131 132 2189!132 2189|40 2216!40 2216|15 2190!15 2190[-72 2103 -91 2103!-91 2103[-169 2103 -167 2179!-167 2179[-167 2230 -114 2304!-114
+ 2304[-57 2384 -1 2384!-1 2384[53 2384 80 2366!80 2366|98 2366!98 2366|410 2297!410 2297[602 2334 895 2334!895 2334|980 2316!980 2316|1066 2298!1066 2298|1251 2334!1251 2334[1419 2370 1536 2370!1536 2370[1611 2370 1679 2325!1679 2325
+[1741 2284 1770 2226!1770 2226|1757 2220!1757 2220|1707 2277!1707 2277[1678 2303 1601 2303!1601 2303[1369 2303 1216 2236!1216 2236[1138 2202 994 2092!994 2092[865 1994 750 1957!750 1957[638 1922 484 1916!484 1916|512 1878!512 1878|659
+ 1864!659 1864[985 1911 1016 1932!1016 1932[980 1945 976 1959!976 1959[991 1974 1075 1995!1075 1995[1120 1981 1120 1925!1120 1925[1120 1829 827 1760!827 1760[600 1707 452 1707!452 1707[382 1707 352 1747!352 1747[338 1766 336 1785"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999" alpha="0.501960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!23 1621[-32 1684 -32 1729!-32 1729[-32 1834 17 1915!17 1915|51 1959!51 1959[-23 1968 -51 1996!-51 1996[-64 2010 -64 2044!-64 2044[-64 2063 -38 2106!-38 2106[-12 2149 -12 2168!-12 2168[-12 2210 -61 2254!-61 2254[-135 2319 -177 2383!-177
+ 2383|-280 2361!-280 2361|-311 2369!-311 2369[-325 2376 -325 2404!-325 2404[-325 2440 -284 2464!-284 2464[-246 2487 -199 2487!-199 2487[-114 2487 -97 2454!-97 2454[-88 2437 -95 2411!-95 2411|-112 2404!-112 2404|3 2310!3 2310[80 2240 69
+ 2208!69 2208|461 2208!461 2208[495 2212 530 2268!530 2268[562 2321 641 2321!641 2321[722 2321 772 2290!772 2290[821 2258 913 2258!913 2258[974 2258 1075 2328!1075 2328[1175 2397 1282 2397!1282 2397|1545 2352!1545 2352|1228 2251!1228
+ 2251[935 2157 868 2157!868 2157[845 2157 775 2178!775 2178|683 2199!683 2199|536 2088!536 2088[364 1974 245 1963!245 1963|171 1955!171 1955|157 1938!157 1938|120 1887!120 1887|121 1887!121 1887|213 1797!213 1797[535 1968 677 1968!677
+ 1968[836 1968 872 1914!872 1914[824 1832 719 1807!719 1807|587 1792!587 1792[451 1777 367 1712!367 1712[320 1677 286 1663!286 1663[388 1665 486 1689!486 1689[598 1716 623 1716!623 1716[744 1716 777 1697!777 1697|809 1666!809 1666[795
+ 1639 556 1584!556 1584[323 1531 236 1531!236 1531[102 1531 23 1621!-500 1961[-500 2016 -424 2146!-424 2146[-331 2303 -235 2303!-235 2303|-104 2285!-104 2285|-68 2258!-68 2258[-195 2226 -306 2047!-306 2047|-379 1930!-379 1930[-414 1878
+ -442 1878!-442 1878[-518 1878 -500 1961"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999" alpha="0.501960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!500 1411|281 1394!281 1394[170 1404 109 1431!109 1431|-10 1486!-10 1486|47 1551!47 1551[70 1581 119 1581!119 1581[197 1551 280 1526!280 1526[443 1475 555 1497!555 1497|559 1496!559 1496[564 1495 564 1468!564 1468[564 1425 500 1411!420
+ 1961[416 1954 389 1954!389 1954[377 1954 281 1995!281 1995[185 2035 123 2035!123 2035[77 2035 -22 1972!-22 1972[-120 1909 -253 1909!-253 1909|-414 1923!-414 1923[-446 1934 -446 1970!-446 1970[-446 1990 -385 1995!-385 1995[-272 2004 -149
+ 2044!-149 2044|62 2157!62 2157[187 2157 304 2085!304 2085[403 2024 425 1968!425 1968|420 1961!979 2290[987 2283 998 2280!998 2280|1012 2253!1012 2253[976 2231 956 2209!956 2209[942 2195 931 2193!931 2193[909 2188 668 2193!668 2193|497
+ 2148!497 2148|468 2153!468 2153[456 2156 456 2184!456 2184[456 2272 605 2290!605 2290[642 2294 949 2294!949 2294|979 2290!-694 1882[-729 1903 -737 1938!-737 1938|-739 1999!-739 1999[-739 2015 -719 2070!-719 2070[-693 2140 -659 2195!-659
+ 2195[-553 2361 -419 2303!-419 2303|-410 2260!-410 2260[-410 2253 -504 2182!-504 2182[-603 2108 -617 2071!-617 2071|-644 1968!-644 1968[-659 1908 -694 1882"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="4" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999" alpha="0.501960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!51 1374[51 1341 46 1338!46 1338|8 1335!8 1335[-43 1335 -87 1358!-87 1358[-136 1383 -136 1421!-136 1421|-127 1459!-127 1459[-127 1468 -82 1468!-82 1468[-13 1468 23 1433!23 1433[51 1407 51 1374!281 2355[281 2424 461 2424!461 2424[492 2424
+ 526 2409!526 2409[556 2396 564 2384!564 2384[517 2294 371 2298!371 2298|290 2307!290 2307[281 2310 281 2355!-718 2289|-711 2281!-711 2281[-703 2276 -703 2249!-703 2249[-703 2235 -773 2165!-773 2165[-846 2091 -876 2091!-876 2091[-925
+ 2091 -930 2154!-930 2154[-930 2178 -886 2235!-886 2235[-833 2303 -784 2303!-784 2303|-718 2289"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#3BC3ED">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1545" centerPoint3DX="246.1" centerPoint3DY="365.35">
+                  <matrix>
+                    <Matrix tx="177.05" ty="166.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1545" centerPoint3DX="246.1" centerPoint3DY="361.7">
+                  <matrix>
+                    <Matrix tx="177.05" ty="163.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1545" centerPoint3DX="246.1" centerPoint3DY="358.05">
+                  <matrix>
+                    <Matrix tx="177.05" ty="159.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1545" selected="true" centerPoint3DX="246.1" centerPoint3DY="361.7">
+                  <matrix>
+                    <Matrix tx="177.05" ty="163.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1545" centerPoint3DX="246.1" centerPoint3DY="365.35">
+                  <matrix>
+                    <Matrix tx="177.05" ty="166.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#9CBBDE">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1543" centerPoint3DX="98.65" centerPoint3DY="133.4">
+                  <matrix>
+                    <Matrix tx="85.3" ty="114.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1543" centerPoint3DX="98.65" centerPoint3DY="129.75">
+                  <matrix>
+                    <Matrix tx="85.3" ty="110.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1543" centerPoint3DX="98.65" centerPoint3DY="126.1">
+                  <matrix>
+                    <Matrix tx="85.3" ty="107.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1543" selected="true" centerPoint3DX="98.65" centerPoint3DY="129.75">
+                  <matrix>
+                    <Matrix tx="85.3" ty="110.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1543" centerPoint3DX="98.65" centerPoint3DY="133.4">
+                  <matrix>
+                    <Matrix tx="85.3" ty="114.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#60E14E">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1541" centerPoint3DX="137.5" centerPoint3DY="203.75">
+                  <matrix>
+                    <Matrix tx="24.5" ty="109"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1541" centerPoint3DX="137.5" centerPoint3DY="200.1">
+                  <matrix>
+                    <Matrix tx="24.5" ty="105.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1541" centerPoint3DX="137.5" centerPoint3DY="196.45">
+                  <matrix>
+                    <Matrix tx="24.5" ty="101.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1541" selected="true" centerPoint3DX="137.5" centerPoint3DY="200.1">
+                  <matrix>
+                    <Matrix tx="24.5" ty="105.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1541" centerPoint3DX="137.5" centerPoint3DY="203.75">
+                  <matrix>
+                    <Matrix tx="24.5" ty="109"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C5A6FB">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1539" centerPoint3DX="190.6" centerPoint3DY="398.1">
+                  <matrix>
+                    <Matrix tx="167.4" ty="373.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1539" centerPoint3DX="190.6" centerPoint3DY="394.45">
+                  <matrix>
+                    <Matrix tx="167.4" ty="370.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1539" centerPoint3DX="190.6" centerPoint3DY="390.8">
+                  <matrix>
+                    <Matrix tx="167.4" ty="366.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1539" selected="true" centerPoint3DX="190.6" centerPoint3DY="394.45">
+                  <matrix>
+                    <Matrix tx="167.4" ty="370.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1539" centerPoint3DX="190.6" centerPoint3DY="398.1">
+                  <matrix>
+                    <Matrix tx="167.4" ty="373.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#FEB7A9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1537" centerPoint3DX="208.8" centerPoint3DY="322.5">
+                  <matrix>
+                    <Matrix tx="176.65" ty="260.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1537" centerPoint3DX="208.8" centerPoint3DY="318.85">
+                  <matrix>
+                    <Matrix tx="176.65" ty="256.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1537" centerPoint3DX="208.8" centerPoint3DY="315.2">
+                  <matrix>
+                    <Matrix tx="176.65" ty="253.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1537" selected="true" centerPoint3DX="208.8" centerPoint3DY="318.85">
+                  <matrix>
+                    <Matrix tx="176.65" ty="256.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1537" centerPoint3DX="208.8" centerPoint3DY="322.5">
+                  <matrix>
+                    <Matrix tx="176.65" ty="260.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#2EFE85">
+          <frames>
+            <DOMFrame index="0" duration="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1535" centerPoint3DX="131.25" centerPoint3DY="505">
+                  <matrix>
+                    <Matrix tx="5.9" ty="296.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#B124C3">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1533" centerPoint3DX="197.95" centerPoint3DY="211.4">
+                  <matrix>
+                    <Matrix tx="163.3" ty="143.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1533" centerPoint3DX="197.95" centerPoint3DY="207.75">
+                  <matrix>
+                    <Matrix tx="163.3" ty="139.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1533" centerPoint3DX="197.95" centerPoint3DY="204.1">
+                  <matrix>
+                    <Matrix tx="163.3" ty="135.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1533" selected="true" centerPoint3DX="197.95" centerPoint3DY="207.75">
+                  <matrix>
+                    <Matrix tx="163.3" ty="139.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1533" centerPoint3DX="197.95" centerPoint3DY="211.4">
+                  <matrix>
+                    <Matrix tx="163.3" ty="143.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#EA5946">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1531" centerPoint3DX="109.3" centerPoint3DY="80.6">
+                  <matrix>
+                    <Matrix tx="59" ty="27.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1531" centerPoint3DX="109.3" centerPoint3DY="76.95">
+                  <matrix>
+                    <Matrix tx="59" ty="23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1531" centerPoint3DX="109.3" centerPoint3DY="73.3">
+                  <matrix>
+                    <Matrix tx="59" ty="19.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1531" selected="true" centerPoint3DX="109.3" centerPoint3DY="76.95">
+                  <matrix>
+                    <Matrix tx="59" ty="23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1531" centerPoint3DX="109.3" centerPoint3DY="80.6">
+                  <matrix>
+                    <Matrix tx="59" ty="27.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#FBB9F5">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1529" centerPoint3DX="137.2" centerPoint3DY="203.05">
+                  <matrix>
+                    <Matrix tx="62.1" ty="99.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1529" centerPoint3DX="137.2" centerPoint3DY="199.4">
+                  <matrix>
+                    <Matrix tx="62.1" ty="96.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1529" centerPoint3DX="137.2" centerPoint3DY="195.75">
+                  <matrix>
+                    <Matrix tx="62.1" ty="92.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1529" selected="true" centerPoint3DX="137.2" centerPoint3DY="199.4">
+                  <matrix>
+                    <Matrix tx="62.1" ty="96.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1529" centerPoint3DX="137.2" centerPoint3DY="203.05">
+                  <matrix>
+                    <Matrix tx="62.1" ty="99.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#C3E5FD">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1527" centerPoint3DX="65.2" centerPoint3DY="194.6">
+                  <matrix>
+                    <Matrix tx="51.6" ty="153.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1527" centerPoint3DX="65.2" centerPoint3DY="190.95">
+                  <matrix>
+                    <Matrix tx="51.6" ty="150.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1527" centerPoint3DX="65.2" centerPoint3DY="187.3">
+                  <matrix>
+                    <Matrix tx="51.6" ty="146.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1527" selected="true" centerPoint3DX="65.2" centerPoint3DY="190.95">
+                  <matrix>
+                    <Matrix tx="51.6" ty="150.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1527" centerPoint3DX="65.2" centerPoint3DY="194.6">
+                  <matrix>
+                    <Matrix tx="51.6" ty="153.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#CCED34">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1525" centerPoint3DX="557.2" centerPoint3DY="325.7">
+                  <matrix>
+                    <Matrix a="-0.167022705078125" b="0.519882202148438" c="0.519882202148438" d="0.167022705078125" tx="186.4" ty="211.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1525" centerPoint3DX="557.2" centerPoint3DY="322.05">
+                  <matrix>
+                    <Matrix a="-0.167022705078125" b="0.519882202148438" c="0.519882202148438" d="0.167022705078125" tx="186.4" ty="207.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1525" centerPoint3DX="557.2" centerPoint3DY="318.4">
+                  <matrix>
+                    <Matrix a="-0.167022705078125" b="0.519882202148438" c="0.519882202148438" d="0.167022705078125" tx="186.4" ty="204.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1525" selected="true" centerPoint3DX="557.2" centerPoint3DY="322.05">
+                  <matrix>
+                    <Matrix a="-0.167022705078125" b="0.519882202148438" c="0.519882202148438" d="0.167022705078125" tx="186.4" ty="207.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1525" centerPoint3DX="557.2" centerPoint3DY="325.7">
+                  <matrix>
+                    <Matrix a="-0.167022705078125" b="0.519882202148438" c="0.519882202148438" d="0.167022705078125" tx="186.4" ty="211.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#F88230">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1523" centerPoint3DX="155.4" centerPoint3DY="344">
+                  <matrix>
+                    <Matrix ty="95.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1523" centerPoint3DX="155.4" centerPoint3DY="340.35">
+                  <matrix>
+                    <Matrix ty="92.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1523" centerPoint3DX="155.4" centerPoint3DY="336.7">
+                  <matrix>
+                    <Matrix ty="88.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1523" selected="true" centerPoint3DX="155.4" centerPoint3DY="340.35">
+                  <matrix>
+                    <Matrix ty="92.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1523" centerPoint3DX="155.4" centerPoint3DY="344">
+                  <matrix>
+                    <Matrix ty="95.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

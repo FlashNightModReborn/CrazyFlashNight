@@ -1,0 +1,473 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>战术导轨</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>资料</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>地铁站通关证明</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk10_1_BG.swf</Background>
+            <PlayerX>84</PlayerX>
+            <PlayerY>450</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>dyingsociety</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>778</x>
+                <y>440</y>
+                <Identifier>出生点-钻头</Identifier>
+                <BiasX>20</BiasX>
+                <BiasY>20</BiasY>
+            </Point>
+            <Point id="1">
+                <x>919</x>
+                <y>758</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+            <Point id="2">
+                <x>1439</x>
+                <y>775</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+            <Point id="3">
+                <x>1515</x>
+                <y>427</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>4</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种10</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>18</Level>
+                        <x>1140</x>
+                        <y>374</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种5</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种2</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种6</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种4</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种400</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>18</Level>
+                        <x>1140</x>
+                        <y>374</y>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种293</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk10_2_BG.swf</Background>
+            <PlayerX>84</PlayerX>
+            <PlayerY>450</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>930</x>
+                <y>400</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+            <Point id="1">
+                <x>1240</x>
+                <y>744</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+            <Point id="2">
+                <x>1539</x>
+                <y>537</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种39</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种7</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种7</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种7</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk10_3_BG.swf</Background>
+            <PlayerX>90</PlayerX>
+            <PlayerY>645</PlayerY>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>1050</x>
+                <y>420</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>普通手雷</内部物>
+                    <数量>3</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+        </Instances>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1125</x>
+                <y>426</y>
+            </Point>
+            <Point id="1">
+                <x>1104</x>
+                <y>755</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+            <Point id="2">
+                <x>1435</x>
+                <y>665</y>
+                <Identifier>出生点-钻头</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种10</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种7</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种5</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种400</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk10_4_BG.swf</Background>
+            <PlayerX>275</PlayerX>
+            <PlayerY>430</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1604</x>
+                <y>415</y>
+                <QuantityMax>4</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1695</x>
+                <y>443</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1767</x>
+                <y>670</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1815</x>
+                <y>710</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>同伴A</Name>
+                <Title>被困的同伴</Title>
+                <Char>主角模板#愤怒</Char>
+                <Text>不行啦，快撑不住啦！</Text>
+                <FaceType>女变装-基本脸型</FaceType>
+                <HairStyle>发型-女式-银色清爽直发</HairStyle>
+                <HeadEquipment>防毒面具1号</HeadEquipment>
+                <BodyArmor>新手衣服</BodyArmor>
+                <LegArmor>新手裤子</LegArmor>
+                <HandGear />
+                <FootGear>新手皮鞋</FootGear>
+                <NeckGear>新手军牌</NeckGear>
+                <Gender>女</Gender>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>同伴B</Name>
+                <Title>被困的同伴</Title>
+                <Char>主角模板#愤怒</Char>
+                <Text>坚持住，基地已经派人来支援我们了！</Text>
+                <FaceType>男变装-基本脸型</FaceType>
+                <HairStyle>发型-男式-黑蓬头</HairStyle>
+                <HeadEquipment>红外夜视仪</HeadEquipment>
+                <BodyArmor>军绿防弹衣</BodyArmor>
+                <LegArmor>墨绿军用下装</LegArmor>
+                <HandGear />
+                <FootGear>墨绿军用鞋</FootGear>
+                <NeckGear>新手军牌</NeckGear>
+                <Gender>男</Gender>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>顶住！我来了！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>22</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>10</Level>
+                        <x>615</x>
+                        <y>324</y>
+                        <spritename>主角-男</spritename>
+                        <Name>同伴A</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>170</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>G36</PrimaryWeapon>
+                        <SecondaryWeapon>M1911</SecondaryWeapon>
+                        <SecondaryWeapon2>m9</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>女变装-基本脸型</FaceType>
+                        <HairStyle>发型-女式-银色清爽直发</HairStyle>
+                        <HeadEquipment>防毒面具1号</HeadEquipment>
+                        <BodyArmor>新手衣服</BodyArmor>
+                        <LegArmor>新手裤子</LegArmor>
+                        <HandGear />
+                        <FootGear>新手皮鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>女</Gender>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>10</Level>
+                        <x>679</x>
+                        <y>388</y>
+                        <spritename>主角-男</spritename>
+                        <Name>同伴B</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon />
+                        <SecondaryWeapon>Mossberg500</SecondaryWeapon>
+                        <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-黑蓬头</HairStyle>
+                        <HeadEquipment>红外夜视仪</HeadEquipment>
+                        <BodyArmor>军绿防弹衣</BodyArmor>
+                        <LegArmor>墨绿军用下装</LegArmor>
+                        <HandGear />
+                        <FootGear>墨绿军用鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种39</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>18</Level>
+                        <x>818</x>
+                        <y>628</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种39</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>18</Level>
+                        <x>923</x>
+                        <y>367</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种3</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种39</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种39</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种7</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种400</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

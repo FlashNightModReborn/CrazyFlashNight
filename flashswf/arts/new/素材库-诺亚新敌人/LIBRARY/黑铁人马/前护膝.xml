@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁人马/前护膝" itemID="660e903c-00001a6d" lastModified="1712547757" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="前护膝">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 3" centerPoint3DX="35.95" centerPoint3DY="35.7">
+                  <transformationPoint>
+                    <Point x="35.95" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.561981201171875" b="-0.47015380859375" c="0.47015380859375" d="0.561981201171875" tx="3.45" ty="14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="31.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

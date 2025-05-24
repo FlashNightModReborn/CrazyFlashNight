@@ -1,0 +1,259 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/Symbol 3325" itemID="6597607e-00000e46" lastModified="1712292066" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="Symbol 3325" currentFrame="48">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#3C7DFD">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="5" name="锁定" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="6" name="展开16" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="6" name="展开10" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#5EBD7D">
+          <frames>
+            <DOMFrame index="0" duration="34" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(1);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+function 组装副本任务(对象)
+{
+	delete _root.委托任务界面.NPC任务_任务_起始帧;
+	_root.委托任务界面.NPC任务_任务 = 对象.NPC任务_任务;
+	_root.委托任务界面.NPC任务_任务_动画 = 对象.NPC任务_任务_动画;
+	_root.委托任务界面.NPC任务_任务_契约金 = 对象.NPC任务_任务_契约金;
+	_root.委托任务界面.NPC任务_任务_等级限制 = 对象.NPC任务_任务_等级限制;
+	_root.委托任务界面.NPC任务_任务_K点 = 对象.NPC任务_任务_K点;
+	_root.委托任务界面.显示任务明细(对象.NPC任务_任务);
+	_root.SetDialogue(_root.getTaskData(对象.NPC任务_任务[0]).get_conversation);
+	_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
+	_root.委托任务界面._visible = true;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+function 组装副本任务(对象)
+{
+	delete _root.委托任务界面.NPC任务_任务_起始帧;
+	_root.委托任务界面.NPC任务_任务 = 对象.NPC任务_任务;
+	_root.委托任务界面.NPC任务_任务_动画 = 对象.NPC任务_任务_动画;
+	_root.委托任务界面.NPC任务_任务_契约金 = 对象.NPC任务_任务_契约金;
+	_root.委托任务界面.NPC任务_任务_等级限制 = 对象.NPC任务_任务_等级限制;
+	_root.委托任务界面.NPC任务_任务_K点 = 对象.NPC任务_任务_K点;
+	_root.委托任务界面.显示任务明细(对象.NPC任务_任务);
+	_root.SetDialogue(_root.getTaskData(对象.NPC任务_任务[0]).get_conversation);
+	_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
+	_root.委托任务界面._visible = true;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EE3490">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 60" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.44943237304688" d="1.44943237304688" tx="-0.5" ty="-9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B3DFAC">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="91.75" height="15.85" isSelectable="false" variableName="显示文字">
+                  <matrix>
+                    <Matrix tx="-46.2" ty="22.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" blurX="3" blurY="3" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#AE8390" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3323" blendMode="screen" centerPoint3DX="50" centerPoint3DY="50">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3323" blendMode="screen" centerPoint3DX="50" centerPoint3DY="50">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="36" saturation="45" hue="-180"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3323" blendMode="screen" centerPoint3DX="50" centerPoint3DY="50">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="28" saturation="36" hue="-180"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3323" blendMode="screen" centerPoint3DX="50" centerPoint3DY="50">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="21" saturation="27" hue="-180"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3323" blendMode="screen" centerPoint3DX="50" centerPoint3DY="50">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="14" saturation="18" hue="-180"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3323" blendMode="screen" centerPoint3DX="50" centerPoint3DY="50">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="8" saturation="9" hue="-180"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3323" blendMode="screen" centerPoint3DX="50" centerPoint3DY="50">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" centerPoint3DX="51" centerPoint3DY="104.75">
+                  <matrix>
+                    <Matrix a="0.520553588867188" d="0.520477294921875" tx="-67" ty="-61.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" selected="true" centerPoint3DX="64.35" centerPoint3DY="73.7">
+                  <matrix>
+                    <Matrix a="0.520553588867188" d="0.520477294921875" tx="-53.65" ty="-92.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

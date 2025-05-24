@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/翠绿增幅/Symbol 6" itemID="653dff55-000016ca" lastModified="1698427802">
+  <timeline>
+    <DOMTimeline name="Symbol 6">
+      <layers>
+        <DOMLayer name="Layer 1" color="#7F42FB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/00.增幅系列/翠绿增幅/Symbol 5" selected="true" centerPoint3DX="391.35" centerPoint3DY="553.55">
+                  <matrix>
+                    <Matrix tx="157.9" ty="239.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="-49"/>
+                    <GlowFilter blurX="20" blurY="8" color="#6600FF" quality="3" strength="2.63"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#1CAFD9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.370101928710938" b="-0.189743041992188" c="-0.245880126953125" d="0.524139404296875" tx="155.85" ty="242.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFEEFF" ratio="0.243137254901961"/>
+                        <GradientEntry color="#FF0047" alpha="0.101960784313725" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!6943 -267|7407 -840!7407 -840|6968 -255!6968 -255|6943 -267"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/拘束棍" itemID="65a3da98-000001f1" lastModified="1705237162">
+  <timeline>
+    <DOMTimeline name="拘束棍">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#7F6049"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0034637451171875" d="0.104736328125" tx="13.75" ty="37.95"/>
+                        </matrix>
+                        <GradientEntry color="#A2836C" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#8E6F58" ratio="0.611764705882353"/>
+                        <GradientEntry color="#6E5038" ratio="1"/>
+                        <GradientEntry color="#6E5038" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!206 -956[204 -962 204 -971!204 -971[204 -998 226 -1017!226 -1017[247 -1036 278 -1036!278 -1036[308 -1036 330 -1017!330 -1017[351 -998 351 -971!351 -971[351 -957 345 -946"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!345 -946|345 2421!345 2421[338 2448 328 2458!328 2458[306 2477 276 2477!276 2477[245 2477 224 2458!224 2458[213 2448 208 2439!208 2439[207 2436 206 2433!206 2433|206 -956"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!345 -946[340 -935 330 -926!330 -926[308 -906 278 -906!278 -906[247 -906 226 -926!226 -926[210 -939 206 -956"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

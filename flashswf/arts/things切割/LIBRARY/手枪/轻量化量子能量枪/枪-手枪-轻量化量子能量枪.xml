@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手枪/轻量化量子能量枪/枪-手枪-轻量化量子能量枪" itemID="66670b1b-0000124f" linkageExportForAS="true" linkageIdentifier="枪-手枪-轻量化量子能量枪" lastModified="1720536821">
+  <timeline>
+    <DOMTimeline name="枪-手枪-轻量化量子能量枪">
+      <layers>
+        <DOMLayer name="枪口" color="#850FED" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" selected="true" centerPoint3DX="117.35" centerPoint3DY="-7.15">
+                  <matrix>
+                    <Matrix tx="104.85" ty="-19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#D8843C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手枪/轻量化量子能量枪/轻量化量子能量枪" symbolType="graphic" centerPoint3DX="70.7" centerPoint3DY="1.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.719985961914063" d="0.719985961914063" tx="2" ty="3.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

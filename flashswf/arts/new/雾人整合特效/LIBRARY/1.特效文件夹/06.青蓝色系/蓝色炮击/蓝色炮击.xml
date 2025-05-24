@@ -1,0 +1,209 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/蓝色炮击/蓝色炮击" itemID="6554cd6f-0000302c" linkageExportForAS="true" linkageIdentifier="蓝色炮击" lastModified="1741591000" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="蓝色炮击">
+      <layers>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较明亮 01.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="4.15" centerPoint3DY="-18.5">
+                  <matrix>
+                    <Matrix a="3.32499694824219" d="1.89250183105469" tx="-62.35" ty="-74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="4.15" centerPoint3DY="-18.5">
+                  <matrix>
+                    <Matrix a="3.76556396484375" d="2.7086181640625" tx="-71.15" ty="-106.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="4.15" centerPoint3DY="-18.5">
+                  <matrix>
+                    <Matrix a="3.76556396484375" d="4.28302001953125" tx="-71.15" ty="-169.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#EEA0F0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 66" blendMode="add" centerPoint3DX="146" centerPoint3DY="-42.65">
+                  <matrix>
+                    <Matrix a="-1.25067138671875" d="1.25067138671875" tx="80.75" ty="-74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 68" blendMode="add" centerPoint3DX="179" centerPoint3DY="-77.65">
+                  <matrix>
+                    <Matrix a="-1.25067138671875" d="1.25067138671875" tx="100.15" ty="-132.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 70" blendMode="add" centerPoint3DX="173.95" centerPoint3DY="-99.9">
+                  <matrix>
+                    <Matrix a="-1.25067138671875" d="1.25067138671875" tx="97" ty="-169.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 72" blendMode="add" centerPoint3DX="106.55" centerPoint3DY="-148.9">
+                  <matrix>
+                    <Matrix a="-1.25067138671875" d="1.25067138671875" tx="59.55" ty="-253.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 74" blendMode="add" centerPoint3DX="132.15" centerPoint3DY="-219.45">
+                  <matrix>
+                    <Matrix a="-0.972640991210938" d="1.59866333007813" tx="63.5" ty="-324.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 74" blendMode="add" centerPoint3DX="114.15" centerPoint3DY="-237.4">
+                  <matrix>
+                    <Matrix a="-0.70684814453125" d="1.68731689453125" tx="45.5" ty="-342.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 74" blendMode="add" centerPoint3DX="96.15" centerPoint3DY="-291.45">
+                  <matrix>
+                    <Matrix a="-0.44091796875" d="1.95391845703125" tx="27.5" ty="-396.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝色炮击/Symbol 74" blendMode="add" centerPoint3DX="78.15" centerPoint3DY="-237.4">
+                  <matrix>
+                    <Matrix a="-0.175491333007813" d="1.68719482421875" tx="9.5" ty="-342.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FF3300" strength="1.2"/>
+                    <AdjustColorFilter contrast="1" hue="132"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

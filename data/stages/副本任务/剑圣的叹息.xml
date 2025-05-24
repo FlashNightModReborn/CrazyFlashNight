@@ -1,0 +1,459 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>上色涂料</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>弹簧</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>战术导轨</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="7">
+            <Name>防沙皮革</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>螺丝套件</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>烈性火药</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="10">
+            <Name>可塑式钢板</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="11">
+            <Name>增效剂</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="12">
+            <Name>不锈钢材</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="13">
+            <Name>生物催化剂</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="14">
+            <Name>小型液晶屏</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="15">
+            <Name>枪械内构强化套件</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="16">
+            <Name>高强度合金</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="17">
+            <Name>石英磨刀石</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="18">
+            <Name>复合式军用塑料</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="19">
+            <Name>高耐力橡胶</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="20">
+            <Name>军用帆布</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="21">
+            <Name>战术背带</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="22">
+            <Name>强力胶</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="23">
+            <Name>镭射瞄准具</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="24">
+            <Name>不锈钢材</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="25">
+            <Name>战术握把</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="26">
+            <Name>水冷机构</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="27">
+            <Name>碳纤维布料</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="28">
+            <Name>动力液压杆</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="29">
+            <Name>突击型光学瞄具</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="30">
+            <Name>电脑芯片</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="31">
+            <Name>加长弹匣</Name>
+            <AcquisitionProbability>20</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="32">
+            <Name>剑圣碎片</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>12</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种22</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种23</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种22</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种23</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种22</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种23</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>500</y>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种22</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种23</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种24</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_4_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>100</x>
+                <y>500</y>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>1600</x>
+                <y>400</y>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>door</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种22</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>door</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种23</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>door</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种24</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种24</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种237</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种41</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种21</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种22</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种23</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种24</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

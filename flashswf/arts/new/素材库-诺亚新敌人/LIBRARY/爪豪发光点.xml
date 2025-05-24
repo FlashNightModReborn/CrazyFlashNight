@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爪豪发光点" itemID="68039ded-0000390c" lastModified="1745068556">
+  <timeline>
+    <DOMTimeline name="爪豪发光点">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// -------- 第一帧脚本 --------
+
+// 当剪辑被加载到舞台时，会触发 onLoad
+this.onLoad = function():Void {
+    _root.绘图引擎.渲染残影(this);
+};
+
+// 每帧都调用 onEnterFrame，不断提交残影数据
+this.onEnterFrame = function():Void {
+    _root.绘图引擎.渲染残影(this, "爪豪闪光");
+};
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCA4D"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!32 0[51 -1 70 32!70 32[89 64 96 111!96 111[101 150 96 182!96 182[95 188 93 195!93 195[93 196 93 197!93 197[85 224 71 230!71 230[68 232 65 232!65 232[46 235 28 203!28 203[18 186 12 164!12 164[5 146 2 124!2 124[-4 76 5 40!5 40[13 2 32
+ 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

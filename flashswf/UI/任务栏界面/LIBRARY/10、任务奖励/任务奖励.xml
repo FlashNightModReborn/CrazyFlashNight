@@ -1,0 +1,243 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="10、任务奖励/任务奖励" itemID="67cd5715-000004f1" lastModified="1742023801" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="任务奖励" currentFrame="25">
+      <layers>
+        <DOMLayer name="代码" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function refresh()
+{
+	gotoAndPlay(2);
+}
+
+this.创建任务奖励图标 = _root.任务栏UI函数.创建任务奖励图标;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.创建任务奖励图标();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光效" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/光效 复制" centerPoint3DX="62.05" centerPoint3DY="25.35">
+                  <matrix>
+                    <Matrix a="0.570785522460938" d="0.716415405273438" tx="-0.95" ty="7.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="110.35" y="25.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/滑块-图形" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2" ty="9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="16"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务奖励" color="#00FFFF" parentLayerIndex="2" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/任务奖励-图形" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-120.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.1" y="23.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/任务奖励-图形" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="62.1" y="23.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="滑块" color="#9933CC" parentLayerIndex="2" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/滑块-图形" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="122.3" ty="9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="16"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/滑块-图形" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="122.3" ty="9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="16"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/滑块-图形" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2" ty="9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="16"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="奖励物品" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标0" centerPoint3DX="95" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="140" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标1" centerPoint3DX="135" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="180" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标2" centerPoint3DX="175" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="220" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标3" centerPoint3DX="215" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="260" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标4" centerPoint3DX="255" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="300" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标5" centerPoint3DX="295" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="340" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标6" centerPoint3DX="335" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="380" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标7" centerPoint3DX="375" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="420" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标8" centerPoint3DX="415" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="460" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标9" centerPoint3DX="455" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="500" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框-渐出" name="奖励图标10" centerPoint3DX="495" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix tx="540" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

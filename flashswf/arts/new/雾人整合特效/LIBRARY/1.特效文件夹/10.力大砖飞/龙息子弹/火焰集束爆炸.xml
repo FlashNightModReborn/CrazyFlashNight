@@ -1,0 +1,192 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/龙息子弹/火焰集束爆炸" itemID="66687b5d-0000221b" linkageExportForAS="true" linkageIdentifier="火焰集束爆炸" lastModified="1718430272" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="火焰集束爆炸" currentFrame="14">
+      <layers>
+        <DOMLayer name="音效" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728" soundName="2.音效文件夹/M1014火焰.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="判定" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="43.05" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="2.91539001464844" d="1.725830078125" tx="-15.25" ty="-45.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="46.7" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="6.16595458984375" d="3.37017822265625" tx="-76.6" ty="-78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="46.7" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="6.66696166992188" d="4.010498046875" tx="-76.6" ty="-90.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2  复制 2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/火焰喷射2/MovieClip/火焰喷射2" centerPoint3DX="65.4" centerPoint3DY="-11.55">
+                  <matrix>
+                    <Matrix a="0.846771240234375" b="0.0711822509765625" c="-0.0711822509765625" d="0.846771240234375" tx="60.55" ty="-6.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="-6.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸1" centerPoint3DX="28.2" centerPoint3DY="20.9">
+                  <matrix>
+                    <Matrix a="0.129409790039063" b="0.482955932617188" c="-0.482955932617188" d="0.129409790039063" tx="26.85" ty="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.3" y="1.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" centerPoint3DX="7.5" centerPoint3DY="-14.45">
+                  <matrix>
+                    <Matrix tx="12.6" ty="-20.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.3" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸1" centerPoint3DX="79.35" centerPoint3DY="2.45">
+                  <matrix>
+                    <Matrix a="0.3466796875" b="0.600494384765625" c="-0.600494384765625" d="0.3466796875" tx="74.45" ty="-8.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.3" y="1.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" centerPoint3DX="56.4" centerPoint3DY="2.95">
+                  <matrix>
+                    <Matrix a="1.286376953125" d="1.22219848632813" tx="63.6" ty="-4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.3" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2 复制" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸1" centerPoint3DX="28.2" centerPoint3DY="20.9">
+                  <matrix>
+                    <Matrix a="0.129409790039063" b="0.482955932617188" c="-0.482955932617188" d="0.129409790039063" tx="26.85" ty="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.3" y="1.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" centerPoint3DX="7.5" centerPoint3DY="-14.45">
+                  <matrix>
+                    <Matrix tx="12.6" ty="-20.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.3" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸1" centerPoint3DX="-6.15" centerPoint3DY="-16.5">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="-15.25" ty="-17.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.2" y="1.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" centerPoint3DX="-30.25" centerPoint3DY="4.85">
+                  <matrix>
+                    <Matrix tx="-25.15" ty="-1.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.3" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸1" centerPoint3DX="41.15" centerPoint3DY="-38.3">
+                  <matrix>
+                    <Matrix a="0.476028442382813" b="-0.664962768554688" c="0.221221923828125" d="0.383163452148438" tx="29.3" ty="-31.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰喷射/MovieClip/火焰喷射" centerPoint3DX="9.85" centerPoint3DY="-10.7">
+                  <matrix>
+                    <Matrix a="0.982620239257813" b="0.185623168945313" c="-0.185623168945313" d="0.982620239257813" tx="-168.9" ty="19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="122.2" y="-50.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,336 @@
+{
+    "tasks": [
+        {
+            "id": 30001,
+            "title": "$SIDE_TITLE_30001",
+            "description": "$SIDE_DESCRIPTION_30001",
+
+            "get_requirements": [76],
+            "get_conversation": "$SIDE_GET_30001",
+            "get_npc": "general",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30001",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#1"
+        },
+        {
+            "id": 30002,
+            "title": "$SIDE_TITLE_30002",
+            "description": "$SIDE_DESCRIPTION_30002",
+
+            "get_requirements": [30001],
+            "get_conversation": "$SIDE_GET_30002",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30002",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#2"
+        },
+        {
+            "id": 30003,
+            "title": "$SIDE_TITLE_30003",
+            "description": "$SIDE_DESCRIPTION_30003",
+
+            "get_requirements": [30002],
+            "get_conversation": "$SIDE_GET_30003",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30003",
+            "finish_npc": "前治安官",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#3"
+        },
+        {
+            "id": 30004,
+            "title": "$SIDE_TITLE_30004",
+            "description": "$SIDE_DESCRIPTION_30004",
+
+            "get_requirements": [30003],
+            "get_conversation": "$SIDE_GET_30004",
+            "get_npc": "前治安官",
+
+            "finish_requirements": [
+                "僵尸逆袭#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_30004",
+            "finish_npc": "前治安官",
+            "rewards": [
+                "金币#100000",
+                "经验值#100000",
+                "强力胶#50",
+                "增效剂#20",
+                "防沙皮革#100"
+            ],
+            
+            "chain":"将军#4"
+        },
+        {
+            "id": 30005,
+            "title": "$SIDE_TITLE_30005",
+            "description": "$SIDE_DESCRIPTION_30005",
+
+            "get_requirements": [30004],
+            "get_conversation": "$SIDE_GET_30005",
+            "get_npc": "前治安官",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30005",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#5"
+        },
+        {
+            "id": 30006,
+            "title": "$SIDE_TITLE_30006",
+            "description": "$SIDE_DESCRIPTION_30006",
+
+            "get_requirements": [30005],
+            "get_conversation": "$SIDE_GET_30006",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_submit_items": [
+                "强力胶#50",
+                "增效剂#20",
+                "防沙皮革#100"
+            ],
+            "finish_conversation": "$SIDE_FINISH_30006",
+            "finish_npc": "general",
+            "rewards": [
+                "金币#10000",
+                "经验值#300000",
+                "加强抗生素药剂#10",
+                "加强mp药剂#10"
+            ],
+            
+            "chain":"将军#6"
+        },
+        {
+            "id": 30007,
+            "title": "$SIDE_TITLE_30007",
+            "description": "$SIDE_DESCRIPTION_30007",
+
+            "get_requirements": [30006],
+            "get_conversation": "$SIDE_GET_30007",
+            "get_npc": "general",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30007",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#7"
+        },
+        {
+            "id": 30008,
+            "title": "$SIDE_TITLE_30008",
+            "description": "$SIDE_DESCRIPTION_30008",
+
+            "get_requirements": [30007],
+            "get_conversation": "$SIDE_GET_30008",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30008",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1",
+                "红酒#20",
+                "啤酒#20",
+                "酒保线报：军阀内部形势#1"
+            ],
+            
+            "chain":"将军#8"
+        },
+        {
+            "id": 30009,
+            "title": "$SIDE_TITLE_30009",
+            "description": "$SIDE_DESCRIPTION_30009",
+
+            "get_requirements": [30008],
+            "get_conversation": "$SIDE_GET_30009",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_submit_items": [
+                "红酒#20",
+                "啤酒#20"
+            ],
+            "finish_conversation": "$SIDE_FINISH_30009",
+            "finish_npc": "general",
+            "rewards": [
+                "金币#15000",
+                "经验值#30000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#9"
+        },
+        {
+            "id": 30010,
+            "title": "$SIDE_TITLE_30010",
+            "description": "$SIDE_DESCRIPTION_30010",
+
+            "get_requirements": [30009],
+            "get_conversation": "$SIDE_GET_30010",
+            "get_npc": "general",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30010",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#10"
+        },
+        {
+            "id": 30011,
+            "title": "$SIDE_TITLE_30011",
+            "description": "$SIDE_DESCRIPTION_30011",
+
+            "get_requirements": [30010],
+            "get_conversation": "$SIDE_GET_30011",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30011",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#11"
+        },
+        {
+            "id": 30012,
+            "title": "$SIDE_TITLE_30012",
+            "description": "$SIDE_DESCRIPTION_30012",
+
+            "get_requirements": [30011],
+            "get_conversation": "$SIDE_GET_30012",
+            "get_npc": "Boy",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30012",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#12"
+        },
+        {
+            "id": 30013,
+            "title": "$SIDE_TITLE_30013",
+            "description": "$SIDE_DESCRIPTION_30013",
+
+            "get_requirements": [30012],
+            "get_conversation": "$SIDE_GET_30013",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30013",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#13"
+        },
+        {
+            "id": 30014,
+            "title": "$SIDE_TITLE_30014",
+            "description": "$SIDE_DESCRIPTION_30014",
+
+            "get_requirements": [30013],
+            "get_conversation": "$SIDE_GET_30014",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_30014",
+            "finish_npc": "general",
+            "rewards": [
+                "金币#10000",
+                "经验值#20000",
+                "加强抗生素药剂#1",
+                "加强mp药剂#1"
+            ],
+            
+            "chain":"将军#14"
+        },
+        {
+            "id": 30015,
+            "title": "$SIDE_TITLE_30015",
+            "description": "$SIDE_DESCRIPTION_30015",
+
+            "get_requirements": [30014],
+            "get_conversation": "$SIDE_GET_30015",
+            "get_npc": "general",
+
+            "finish_requirements": [
+                "深入禁区#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_30015",
+            "finish_npc": "general",
+            "rewards": [
+                "金币#100000",
+                "经验值#500000",
+                "加强抗生素药剂#5",
+                "加强mp药剂#5"
+            ],
+            
+            "chain":"将军#15"
+        }
+        ]
+}

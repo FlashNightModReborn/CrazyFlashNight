@@ -1,0 +1,63 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1、我的任务/组件/我的任务-动态" itemID="67cc054d-000001ce" lastModified="1747036204" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="我的任务-动态" currentFrame="89">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="89" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/A兵团标志">
+                  <matrix>
+                    <Matrix ty="15.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="21.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1、我的任务/组件/A兵团标志">
+                  <matrix>
+                    <Matrix ty="15.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="21.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="90" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="160.2" height="57.5" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="49.3" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>我的任务</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="40" bitmapSize="800" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="40" bitmapSize="800" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/脚架2" itemID="65548749-000060e0" lastModified="1700038473">
+  <timeline>
+    <DOMTimeline name="脚架2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1B1B1B"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FEFEFE"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!444 46S6|450 25!450 25|515 0!515 0[555 3 541 67!541 67|473 96!473 96|464 93"/>
+                    <Edge fillStyle1="1" edges="!464 93S2|466 87"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!466 87S7[486 44 454 42!454 42|444 46"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!444 46S5|0 214"/>
+                    <Edge fillStyle0="2" edges="!0 214S1|15 268"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!15 268S5|457 91"/>
+                    <Edge fillStyle0="2" edges="!457 91S1|466 87"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

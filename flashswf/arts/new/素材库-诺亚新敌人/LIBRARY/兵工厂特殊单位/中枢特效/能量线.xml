@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/中枢特效/能量线" itemID="66bb0346-00001899" lastModified="1723532624">
+  <timeline>
+    <DOMTimeline name="能量线" currentFrame="59">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 游戏世界 = _root.gameworld;
+var 雕像列表 = [游戏世界.雕像0, 游戏世界.雕像1, 游戏世界.雕像2, 游戏世界.雕像3];
+var 能量线列表 = [this.能量线0, this.能量线1, this.能量线2, this.能量线3];
+for (var i = 0; i < 4; i++)
+{
+	if (雕像列表[i].hp > 0)
+	{
+		能量线列表[i].gotoAndPlay(1);
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/能量线3" name="能量线3" centerPoint3DX="26" centerPoint3DY="169.85">
+                  <transformationPoint>
+                    <Point x="26" y="169.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/能量线2" name="能量线2" centerPoint3DX="61.1" centerPoint3DY="188.6">
+                  <matrix>
+                    <Matrix tx="16.75" ty="90"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.35" y="98.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/能量线0" name="能量线0" centerPoint3DX="-62.25" centerPoint3DY="253.1">
+                  <matrix>
+                    <Matrix tx="-111.25" ty="214.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49" y="38.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/能量线1" name="能量线1" centerPoint3DX="-27.4" centerPoint3DY="126.85">
+                  <matrix>
+                    <Matrix tx="-54.75" ty="7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.35" y="119.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan颈饰3" itemID="66c0a538-0000040e" lastModified="1723901240">
+  <timeline>
+    <DOMTimeline name="lo-chan颈饰3">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0099945068359375" b="-0.0074920654296875" c="0.0059967041015625" d="0.00799560546875" tx="13.1" ty="2.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFDADD" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#FEBEFC" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!306 0S1[96 104 0 222!0 222[61 317 149 322!149 322[198 161 306 0"/>
+                    <Edge cubics="!306 0(;166,69 64,143 0,222q306 0Q96 104q0 222);"/>
+                    <Edge cubics="!0 222(;41,285 90,319 149,322q0 222Q61 317q149 322);"/>
+                    <Edge cubics="!149 322(;182,215 234,107 306,0q149 322Q198 161q306 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

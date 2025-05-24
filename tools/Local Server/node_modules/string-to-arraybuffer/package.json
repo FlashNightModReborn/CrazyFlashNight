@@ -1,0 +1,39 @@
+{
+  "name": "string-to-arraybuffer",
+  "version": "1.0.2",
+  "description": "Convert base64/datauri/plain string to ArrayBuffer",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dy/string-to-arraybuffer.git"
+  },
+  "keywords": [
+    "arraybuffer",
+    "array-buffer",
+    "array",
+    "buffer",
+    "string",
+    "base64",
+    "data-uri",
+    "data url",
+    "uint8"
+  ],
+  "author": "Dima Yv <dfcreative@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dy/string-to-arraybuffer/issues"
+  },
+  "homepage": "https://github.com/dy/string-to-arraybuffer#readme",
+  "dependencies": {
+    "atob-lite": "^2.0.0",
+    "is-base64": "^0.1.0"
+  },
+  "devDependencies": {
+    "arraybuffer-to-string": "^1.0.0",
+    "is-browser": "^2.0.1",
+    "tape": "^4.7.0"
+  }
+}

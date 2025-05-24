@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/烈焰子弹/烈焰轨迹" itemID="666723be-00002125" lastModified="1718035573">
+  <timeline>
+    <DOMTimeline name="烈焰轨迹">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.5" d="1.27499389648438" tx="47.1" ty="4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.1" y="-0.4"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.06671142578125" d="0.005126953125" tx="21.45" ty="-0.45"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.101960784313725"/>
+                        <GradientEntry color="#FFCC00" alpha="0.847058823529412" ratio="0.262745098039216"/>
+                        <GradientEntry color="#FF6600" alpha="0.498039215686275" ratio="0.533333333333333"/>
+                        <GradientEntry color="#FF0000" alpha="0.247058823529412" ratio="0.83921568627451"/>
+                        <GradientEntry color="#FF6600" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="square" joints="miter">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.03717041015625" d="0.00335693359375" tx="-0.95" ty="-0.45"/>
+                            </matrix>
+                            <GradientEntry color="#FF3300" alpha="0" ratio="0"/>
+                            <GradientEntry color="#FFCC00" alpha="0.650980392156863" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!525 46|-628 -9!-628 -9|525 -64!525 -64[#28E.5F #FFFFF6.F3 525 46"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,300 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>黄铜</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>石英磨刀石</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>玻璃</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>By Peace Or By Power</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>友军应该已经撤出了，得尽快突围了！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种247</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>方钢锤</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种248</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>苍面银牙</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种249</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>战术狗腿刀</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种250</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>长墨白铁</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_3_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种251</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>虎彻</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种252</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>黑铁巨斧</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种253</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>黑铁重剑枪</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种254</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>西洋重剑枪</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种270</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>黑铁会的秘密情报书</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <称号>坛主</称号>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

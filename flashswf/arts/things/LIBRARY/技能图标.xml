@@ -1,0 +1,468 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能图标" itemID="682f6f68-00000bf6" linkageExportForAS="true" linkageIdentifier="技能图标" lastModified="1747939198">
+  <timeline>
+    <DOMTimeline name="技能图标" currentFrame="12">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#D9EA58">
+          <frames>
+            <DOMFrame index="0" name="空" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" name="默认图标" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#1BBED2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 装备槽对应物品类别(类别)
+{
+   if(_parent._name == "物品栏界面")
+   {
+      if(_root.物品栏界面[eval("each")].装备槽类别 == 类别)
+      {
+         temp类别 = _root.根据物品名查找属性(_root.物品栏[this.对应数组号][0],3);
+         if(temp类别 == 类别)
+         {
+            if(_root.物品栏界面[eval("each")].是否装备 == 0)
+            {
+               _root.物品栏界面[eval("each")].是否装备 = 1;
+               _root.物品栏[this.对应数组号][2] = 1;
+            }
+            else if(_root.物品栏界面[eval("each")].是否装备 == 1)
+            {
+               _root.物品栏[_root.物品栏界面[eval("each")].对应数组号][2] = 0;
+               _root.物品栏[this.对应数组号][2] = 1;
+            }
+            _root[_root.物品栏界面[eval("each")].对应装备] = _root.物品栏[this.对应数组号][0];
+            _root[_root.物品栏界面[eval("each")].数量] = _root.物品栏[this.对应数组号][1];
+            _root.物品栏界面[eval("each")].对应数组号 = this.对应数组号;
+            _root.物品栏界面[eval("each")].数量 = _root[_root.物品栏界面[eval("each")].数量];
+            if(_root.物品栏[this.对应数组号][0] == "空")
+            {
+               _root.物品栏界面[eval("each")].gotoAndStop(_root.物品栏[this.对应数组号][0]);
+            }
+            else
+            {
+               _root.物品栏界面[eval("each")].图标 = "图标-" + _root.物品栏[this.对应数组号][0];
+               _root.物品栏界面[eval("each")].gotoAndStop("默认图标");
+            }
+            _root.发布消息("成功装备" + 类别 + _root.物品栏[this.对应数组号][0] + "!");
+            if(类别 == "长枪")
+            {
+               _root.长枪配置("man1",_root.物品栏[this.对应数组号][0]);
+            }
+            else if(类别 == "手枪")
+            {
+               if(对应装备 == "手枪")
+               {
+                  _root.手枪配置("man1",_root.物品栏[this.对应数组号][0]);
+               }
+               else if(对应装备 == "手枪2")
+               {
+                  _root.手枪2配置("man1",_root.物品栏[this.对应数组号][0]);
+               }
+            }
+            else if(类别 == "手雷")
+            {
+               _root.手雷配置("man1",_root.物品栏[this.对应数组号][0]);
+            }
+            else if(类别 == "刀")
+            {
+               _root.刀配置("man1",_root.物品栏[this.对应数组号][0]);
+            }
+            _root.刷新人物装扮("man1");
+         }
+      }
+   }
+   else if(_parent._name == "购买物品界面")
+   {
+   }
+}
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#AA5AE5">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="14" height="10.05" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0035400390625" tx="-16" ty="-13"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>lv.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="9" bitmapSize="180" face="Dialog.bold" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="9" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="14" height="10.05" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0035400390625" tx="-15.75" ty="-13"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>lv.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="9" bitmapSize="180" face="Dialog.bold" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#DEBD9B">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" fontRenderingMode="device" width="10.25" height="10.3" isSelectable="false" variableName="数量">
+                  <matrix>
+                    <Matrix d="1.0035400390625" tx="-4" ty="-13"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="9" bitmapSize="180" face="_sans" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="9" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" fontRenderingMode="device" width="10.25" height="10.3" isSelectable="false" variableName="数量">
+                  <matrix>
+                    <Matrix d="1.0035400390625" tx="-3.75" ty="-13"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="9" bitmapSize="180" face="_sans" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#E4AF75">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 21" name="已装备显示块" centerPoint3DX="3.8" centerPoint3DY="11.15">
+                  <matrix>
+                    <Matrix ty="8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = 0;
+   if(_parent._parent._name == "物品栏界面")
+   {
+      if(_root.主角技能表[_parent.对应数组号][2] == "true" or _root.主角技能表[_parent.对应数组号][2] == true)
+      {
+         this._visible = 1;
+         switch(_root.主角技能表[_parent.对应数组号][0])
+         {
+            case _root.快捷技能栏1:
+            case _root.快捷技能栏2:
+            case _root.快捷技能栏3:
+            case _root.快捷技能栏4:
+            case _root.快捷技能栏5:
+            case _root.快捷技能栏6:
+               break;
+            default:
+               _root.主角技能表[_parent.对应数组号][2] = "false";
+               this._visible = 0;
+         }
+      }
+      else if(_root.主角技能表[_parent.对应数组号][2] == "true" or _root.主角技能表[_parent.对应数组号][2] == true)
+      {
+         this._visible = 0;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#8A86A8">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="图标壳" centerPoint3DX="12" centerPoint3DY="12">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.attachMovie(_parent.图标,"图标",this.getNextHighestDepth());
+   if(this.图标._x != undefined)
+   {
+      this.基本款._visible = 0;
+   }
+   else
+   {
+      this.基本款._visible = 1;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#DEEA98">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area">
+                  <matrix>
+                    <Matrix tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#6538F5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 11" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 529" symbolType="button">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   if(_parent._name == "物品栏界面")
+   {
+      tmp_sz = _root.根据技能名查找全部属性(_root.主角技能表[this.对应数组号][0]);
+      _root.注释(150,"<B>" + tmp_sz[0] + "</B><BR>" + tmp_sz[1] + "<BR>" + tmp_sz[2] + "<BR>需要技能点数:" + tmp_sz[4] + "<BR>冷却时间：" + tmp_sz[5] + "<BR>消耗MP：" + tmp_sz[6]);
+      if(_root.主角技能表[this.对应数组号][2] == "false" or _root.主角技能表[this.对应数组号][2] == false)
+      {
+         _root.鼠标.gotoAndStop("手型准备抓取");
+      }
+   }
+   else if(_parent._name == "学习技能界面")
+   {
+      tmp_sz = _root.根据技能名查找全部属性(_root.技能表[this.对应数组号][0]);
+      _root.注释(150,"<B>" + tmp_sz[0] + "</B><BR>" + tmp_sz[1] + "<BR>" + tmp_sz[2] + "<BR>需要技能点数:" + tmp_sz[4] + "<BR>冷却时间：" + tmp_sz[5] + "<BR>消耗MP：" + tmp_sz[6]);
+   }
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+   _root.注释结束();
+}
+on(press){
+   _root.注释结束();
+   if(_parent._name == "物品栏界面")
+   {
+      if(_root.主角技能表[this.对应数组号][2] == "false" or _root.主角技能表[this.对应数组号][2] == false)
+      {
+         this.图标壳.图标.gotoAndStop(2);
+         startDrag(this,1);
+         _root.鼠标.gotoAndStop("手型抓取");
+         this.swapDepths(500 + random(100));
+      }
+   }
+}
+on(release){
+   this.图标壳.图标.gotoAndStop(1);
+   if(_parent._name == "物品栏界面")
+   {
+      for(each in _root.物品栏界面)
+      {
+         if(_root.物品栏界面[each].area.hitTest(_root._xmouse,_root._ymouse,true) and _root.物品栏界面[each].图标是否可对换位置 == 1 and _root.主角技能表[_root.物品栏界面[each].对应数组号][2] != "true")
+         {
+            if(_root.物品栏界面[each]._name != this._name)
+            {
+               temp_h = _root.物品栏界面[each].对应数组号;
+               temp_s = _root.主角技能表[temp_h];
+               _root.主角技能表[temp_h] = _root.主角技能表[this.对应数组号];
+               _root.主角技能表[this.对应数组号] = temp_s;
+            }
+         }
+         if(_root.物品栏界面[each].area.hitTest(_root._xmouse,_root._ymouse,true) and _root.快捷技能界面.hitTest(_root._xmouse,_root._ymouse,true))
+         {
+            if(_root.快捷技能界面.快捷技能栏1.hitTest(_root._xmouse,_root._ymouse,true) and _root.快捷技能界面.快捷技能栏1.是否装备 == 0)
+            {
+               _root.快捷技能界面.快捷技能栏1.对应数组号 = this.对应数组号;
+               _root.快捷技能界面.快捷技能栏1.已装备名 = _root.主角技能表[this.对应数组号][0];
+               _root.快捷技能界面.快捷技能栏1.是否装备 = 1;
+               _root.快捷技能栏1 = _root.主角技能表[this.对应数组号][0];
+               该技能全部属性 = _root.根据技能名查找全部属性(_root.主角技能表[this.对应数组号][0]);
+               _root.快捷技能界面.快捷技能栏1.冷却时间 = 该技能全部属性[5];
+               _root.快捷技能界面.快捷技能栏1.消耗mp = 该技能全部属性[6];
+               _root.快捷技能界面.快捷技能栏1.图标 = "图标-" + _root.快捷技能栏1;
+               _root.快捷技能界面.快捷技能栏1.gotoAndStop("默认图标");
+               _root.快捷技能界面.快捷技能栏1.数量 = _root.主角技能表[this.对应数组号][1];
+               _root.主角技能表[this.对应数组号][2] = "true";
+            }
+            else if(_root.快捷技能界面.快捷技能栏2.hitTest(_root._xmouse,_root._ymouse,true) and _root.快捷技能界面.快捷技能栏2.是否装备 == 0)
+            {
+               _root.快捷技能界面.快捷技能栏2.对应数组号 = this.对应数组号;
+               _root.快捷技能界面.快捷技能栏2.已装备名 = _root.主角技能表[this.对应数组号][0];
+               _root.快捷技能界面.快捷技能栏2.是否装备 = 1;
+               _root.快捷技能栏2 = _root.主角技能表[this.对应数组号][0];
+               该技能全部属性 = _root.根据技能名查找全部属性(_root.主角技能表[this.对应数组号][0]);
+               _root.快捷技能界面.快捷技能栏2.冷却时间 = 该技能全部属性[5];
+               _root.快捷技能界面.快捷技能栏2.消耗mp = 该技能全部属性[6];
+               _root.快捷技能界面.快捷技能栏2.图标 = "图标-" + _root.快捷技能栏2;
+               _root.快捷技能界面.快捷技能栏2.gotoAndStop("默认图标");
+               _root.快捷技能界面.快捷技能栏2.数量 = _root.主角技能表[this.对应数组号][1];
+               _root.主角技能表[this.对应数组号][2] = "true";
+            }
+            else if(_root.快捷技能界面.快捷技能栏3.hitTest(_root._xmouse,_root._ymouse,true) and _root.快捷技能界面.快捷技能栏3.是否装备 == 0)
+            {
+               _root.快捷技能界面.快捷技能栏3.对应数组号 = this.对应数组号;
+               _root.快捷技能界面.快捷技能栏3.已装备名 = _root.主角技能表[this.对应数组号][0];
+               _root.快捷技能界面.快捷技能栏3.是否装备 = 1;
+               _root.快捷技能栏3 = _root.主角技能表[this.对应数组号][0];
+               该技能全部属性 = _root.根据技能名查找全部属性(_root.主角技能表[this.对应数组号][0]);
+               _root.快捷技能界面.快捷技能栏3.冷却时间 = 该技能全部属性[5];
+               _root.快捷技能界面.快捷技能栏3.消耗mp = 该技能全部属性[6];
+               _root.快捷技能界面.快捷技能栏3.图标 = "图标-" + _root.快捷技能栏3;
+               _root.快捷技能界面.快捷技能栏3.gotoAndStop("默认图标");
+               _root.快捷技能界面.快捷技能栏3.数量 = _root.主角技能表[this.对应数组号][1];
+               _root.主角技能表[this.对应数组号][2] = "true";
+            }
+            else if(_root.快捷技能界面.快捷技能栏4.hitTest(_root._xmouse,_root._ymouse,true) and _root.快捷技能界面.快捷技能栏4.是否装备 == 0)
+            {
+               _root.快捷技能界面.快捷技能栏4.对应数组号 = this.对应数组号;
+               _root.快捷技能界面.快捷技能栏4.已装备名 = _root.主角技能表[this.对应数组号][0];
+               _root.快捷技能界面.快捷技能栏4.是否装备 = 1;
+               _root.快捷技能栏4 = _root.主角技能表[this.对应数组号][0];
+               该技能全部属性 = _root.根据技能名查找全部属性(_root.主角技能表[this.对应数组号][0]);
+               _root.快捷技能界面.快捷技能栏4.冷却时间 = 该技能全部属性[5];
+               _root.快捷技能界面.快捷技能栏4.消耗mp = 该技能全部属性[6];
+               _root.快捷技能界面.快捷技能栏4.图标 = "图标-" + _root.快捷技能栏4;
+               _root.快捷技能界面.快捷技能栏4.gotoAndStop("默认图标");
+               _root.快捷技能界面.快捷技能栏4.数量 = _root.主角技能表[this.对应数组号][1];
+               _root.主角技能表[this.对应数组号][2] = "true";
+            }
+            else if(_root.快捷技能界面.快捷技能栏5.hitTest(_root._xmouse,_root._ymouse,true) and _root.快捷技能界面.快捷技能栏5.是否装备 == 0)
+            {
+               _root.快捷技能界面.快捷技能栏5.对应数组号 = this.对应数组号;
+               _root.快捷技能界面.快捷技能栏5.已装备名 = _root.主角技能表[this.对应数组号][0];
+               _root.快捷技能界面.快捷技能栏5.是否装备 = 1;
+               _root.快捷技能栏5 = _root.主角技能表[this.对应数组号][0];
+               该技能全部属性 = _root.根据技能名查找全部属性(_root.主角技能表[this.对应数组号][0]);
+               _root.快捷技能界面.快捷技能栏5.冷却时间 = 该技能全部属性[5];
+               _root.快捷技能界面.快捷技能栏5.消耗mp = 该技能全部属性[6];
+               _root.快捷技能界面.快捷技能栏5.图标 = "图标-" + _root.快捷技能栏5;
+               _root.快捷技能界面.快捷技能栏5.gotoAndStop("默认图标");
+               _root.快捷技能界面.快捷技能栏5.数量 = _root.主角技能表[this.对应数组号][1];
+               _root.主角技能表[this.对应数组号][2] = "true";
+            }
+            else if(_root.快捷技能界面.快捷技能栏6.hitTest(_root._xmouse,_root._ymouse,true) and _root.快捷技能界面.快捷技能栏6.是否装备 == 0)
+            {
+               _root.快捷技能界面.快捷技能栏6.对应数组号 = this.对应数组号;
+               _root.快捷技能界面.快捷技能栏6.已装备名 = _root.主角技能表[this.对应数组号][0];
+               _root.快捷技能界面.快捷技能栏6.是否装备 = 1;
+               _root.快捷技能栏6 = _root.主角技能表[this.对应数组号][0];
+               该技能全部属性 = _root.根据技能名查找全部属性(_root.主角技能表[this.对应数组号][0]);
+               _root.快捷技能界面.快捷技能栏6.冷却时间 = 该技能全部属性[5];
+               _root.快捷技能界面.快捷技能栏6.消耗mp = 该技能全部属性[6];
+               _root.快捷技能界面.快捷技能栏6.图标 = "图标-" + _root.快捷技能栏6;
+               _root.快捷技能界面.快捷技能栏6.gotoAndStop("默认图标");
+               _root.快捷技能界面.快捷技能栏6.数量 = _root.主角技能表[this.对应数组号][1];
+               _root.主角技能表[this.对应数组号][2] = "ture";
+            }
+         }
+      }
+      stopDrag();
+      _root.排列技能图标();
+      this.removeMovieClip();
+   }
+   else if(_parent._name == "学习技能界面")
+   {
+      技能名 = _root.学习技能界面.可学的技能[this.对应数组号][0];
+      _root.学习技能界面.准备购买的物品 = 技能名;
+      _root.学习技能界面.准备购买的物品单价 = _root.根据技能名查找属性(技能名,4);
+      _root.学习技能界面.准备购买的物品等级限制 = _root.根据技能名查找属性(技能名,3);
+      _root.学习技能界面.准备购买的技能等级 = this.数量;
+      _root.学习技能界面.gotoAndStop("结算");
+   }
+   else if(_parent._name == "快捷技能界面" and _root.全鼠标控制 == true)
+   {
+      if(this.已装备名 != "" and _root.快捷技能界面[进度条].冷却 == true)
+      {
+         _parent[this.控制器].gotoAndStop("已扣扳机");
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,541 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>加强mp药剂</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>加强抗生素药剂</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>复活币</Name>
+            <AcquisitionProbability>3</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>材料盒子</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>异形龙骨碎片</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_7_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种144</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种146</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_5_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种144</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种146</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种144</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种146</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_4_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种144</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种146</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种136</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_8_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种144</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种138</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种146</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种148</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种150</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种154</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种156</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种149</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种151</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种153</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

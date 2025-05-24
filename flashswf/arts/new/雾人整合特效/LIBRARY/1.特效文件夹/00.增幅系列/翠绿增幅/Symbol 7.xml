@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/翠绿增幅/Symbol 7" itemID="653dff55-000016cb" lastModified="1698427802">
+  <timeline>
+    <DOMTimeline name="Symbol 7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B16AAD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/00.增幅系列/翠绿增幅/Symbol 6" selected="true" blendMode="add" centerPoint3DX="239.9" centerPoint3DY="317.85">
+                  <matrix>
+                    <Matrix a="0.0081634521484375" b="0.036590576171875" c="0.0058746337890625" d="-0.0617218017578125" tx="6.45" ty="4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#6600FF" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

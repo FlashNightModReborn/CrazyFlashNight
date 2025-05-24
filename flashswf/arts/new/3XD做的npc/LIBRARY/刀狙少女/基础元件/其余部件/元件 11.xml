@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/基础元件/其余部件/元件 11" itemID="663dc8fc-000002f8" lastModified="1715255152">
+  <timeline>
+    <DOMTimeline name="元件 11">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 12">
+                  <matrix>
+                    <Matrix a="0.233383178710938" b="-0.013153076171875" c="0.01220703125" d="0.216476440429688" tx="1.1" ty="3.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.05" y="39.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/Symbol 45" name="头" centerPoint3DX="35.1" centerPoint3DY="53.55">
+                  <matrix>
+                    <Matrix a="0.244537353515625" b="0.0300445556640625" c="-0.0289459228515625" d="0.23565673828125" tx="8.85" ty="9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

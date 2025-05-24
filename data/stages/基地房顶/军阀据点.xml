@@ -1,0 +1,532 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>枪械内构强化套件</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward id="10">
+            <Name>军阀前线基地通关证明</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk21_1_BG.swf</Background>
+            <PlayerX>261</PlayerX>
+            <PlayerY>483</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Schwarzflammen</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1716</x>
+                <y>712</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1717</x>
+                <y>564</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>70</Level>
+                        <x>440</x>
+                        <y>470</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Andy Law</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M4A1改</PrimaryWeapon>
+                        <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
+                        <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
+                        <MeleeWeapon>镜之虎彻</MeleeWeapon>
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle />
+                        <HeadEquipment>Andy领子-NPC</HeadEquipment>
+                        <BodyArmor>Andy上装-NPC</BodyArmor>
+                        <LegArmor>Andy下装-NPC</LegArmor>
+                        <HandGear>牛皮手套</HandGear>
+                        <FootGear>黑色板鞋</FootGear>
+                        <NeckGear>东区最强战士项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1333</x>
+                        <y>487</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1093</x>
+                        <y>635</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk21_2_BG.swf</Background>
+            <PlayerX>193</PlayerX>
+            <PlayerY>516</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1813</x>
+                <y>825</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1812</x>
+                <y>723</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1813</x>
+                <y>540</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1812</x>
+                <y>626</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>70</Level>
+                        <x>380</x>
+                        <y>510</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Andy Law</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M4A1改</PrimaryWeapon>
+                        <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
+                        <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
+                        <MeleeWeapon>镜之虎彻</MeleeWeapon>
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle />
+                        <HeadEquipment>Andy领子-NPC</HeadEquipment>
+                        <BodyArmor>Andy上装-NPC</BodyArmor>
+                        <LegArmor>Andy下装-NPC</LegArmor>
+                        <HandGear>牛皮手套</HandGear>
+                        <FootGear>黑色板鞋</FootGear>
+                        <NeckGear>东区最强战士项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1455</x>
+                        <y>701</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>975</x>
+                        <y>495</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>780</x>
+                        <y>633</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk21_3_BG.swf</Background>
+            <PlayerX>196</PlayerX>
+            <PlayerY>563</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1779</x>
+                <y>753</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1790</x>
+                <y>549</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1790</x>
+                <y>523</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1790</x>
+                <y>806</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="4">
+                <x>1790</x>
+                <y>657</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>70</Level>
+                        <x>400</x>
+                        <y>560</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Andy Law</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M4A1改</PrimaryWeapon>
+                        <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
+                        <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
+                        <MeleeWeapon>镜之虎彻</MeleeWeapon>
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle />
+                        <HeadEquipment>Andy领子-NPC</HeadEquipment>
+                        <BodyArmor>Andy上装-NPC</BodyArmor>
+                        <LegArmor>Andy下装-NPC</LegArmor>
+                        <HandGear>牛皮手套</HandGear>
+                        <FootGear>黑色板鞋</FootGear>
+                        <NeckGear>东区最强战士项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1029</x>
+                        <y>487</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>1237</x>
+                        <y>699</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>754</x>
+                        <y>630</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种265</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种266</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种264</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种267</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk21_4_BG.swf</Background>
+            <PlayerX>705</PlayerX>
+            <PlayerY>425</PlayerY>
+            <Animation>
+                <Path>flashswf/movies/movie_gk_21_4.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <CallbackFunction>
+                <Name>军阀据点_4</Name>
+                <Parameter>军阀据点-将军</Parameter>
+                <Parameter>flashswf/movies/movie_gk_21_5.swf</Parameter>
+            </CallbackFunction>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>270</x>
+                <y>355</y>
+                <BiasX>100</BiasX>
+                <BiasY>20</BiasY>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>977</x>
+                <y>356</y>
+                <BiasX>100</BiasX>
+                <BiasY>20</BiasY>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="2">
+                <x>1750</x>
+                <y>357</y>
+                <BiasX>100</BiasX>
+                <BiasY>20</BiasY>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="3">
+                <x>1850</x>
+                <y>700</y>
+                <QuantityMax>3</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>将军，为你的所作所为付出代价吧！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>看来是我低估了你们的能力啊，A兵团！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>受死吧！</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>想要杀我还没那么容易！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>70</Level>
+                        <x>800</x>
+                        <y>400</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Andy Law</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M4A1改</PrimaryWeapon>
+                        <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
+                        <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
+                        <MeleeWeapon>镜之虎彻</MeleeWeapon>
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle />
+                        <HeadEquipment>Andy领子-NPC</HeadEquipment>
+                        <BodyArmor>Andy上装-NPC</BodyArmor>
+                        <LegArmor>Andy下装-NPC</LegArmor>
+                        <HandGear>牛皮手套</HandGear>
+                        <FootGear>黑色板鞋</FootGear>
+                        <NeckGear>东区最强战士项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种53</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <InstanceName>军阀据点-将军</InstanceName>
+                        <x>1070</x>
+                        <y>446</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种265</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

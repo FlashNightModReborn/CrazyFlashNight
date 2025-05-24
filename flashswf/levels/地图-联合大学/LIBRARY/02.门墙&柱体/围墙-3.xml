@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="02.门墙&amp;柱体/围墙-3" itemID="66e6d5a3-00000c74" lastModified="1726404003">
+  <timeline>
+    <DOMTimeline name="围墙-3">
+      <layers>
+        <DOMLayer name="Layer_1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="纹理-1" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-1196.5" ty="-350.65"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <BitmapFill bitmapPath="纹理-2" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-802.35" ty="-272"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#2E2E2E"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.05" solidStyle="hairline">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.05" solidStyle="hairline">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-4546 -2412|4154 -2412!4154 -2412|4472 -2039"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!4472 -2039|-4168 -2039"/>
+                    <Edge fillStyle0="2" fillStyle1="4" strokeStyle="2" edges="!-4168 -2039|-4154 -1866"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!-4154 -1866|4546 -1866"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!4546 -1866|4472 -2039"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="2" edges="!-4546 -2412|-4168 -2039"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!-4154 2413|-4546 1867!-4546 1867|-4546 -2412"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!4546 -1866|4546 2413!4546 2413|-4154 2413"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="2" edges="!-4154 2413|-4154 -1866"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

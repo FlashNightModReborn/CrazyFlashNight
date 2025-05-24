@@ -1,0 +1,745 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>30</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>30</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地兵工厂入口_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Tetrriture</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种11</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种357</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <x>400</x>
+                        <y>350</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种360</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <x>250</x>
+                        <y>450</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种263</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <x>350</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <spritename>敌人-军阀精英弹药兵</spritename>
+                        <Name>弹药兵</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地兵工厂_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>700</x>
+                <y>490</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+            <Point id="1">
+                <x>1100</x>
+                <y>490</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>4</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种12</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种72</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种72</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种70</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种360</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <x>250</x>
+                        <y>450</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种98</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Interval>1500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <spritename>敌人-军阀精英突击兵</spritename>
+                        <Name>突击兵</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种11</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <spritename>敌人-军阀精英重装兵</spritename>
+                        <Name>重装兵</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>210</Height>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地兵工厂_2_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>400</x>
+                <y>330</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>600</x>
+                <y>470</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>900</x>
+                <y>360</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1200</x>
+                <y>440</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="4">
+                <x>1500</x>
+                <y>400</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="5">
+                <x>1120</x>
+                <y>290</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>4</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种72</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种11</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种90</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <spritename>敌人-黑铁死士精英</spritename>
+                        <Name>黑铁游侠</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种71</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种71</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种12</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <spritename>敌人-黑铁死士精英</spritename>
+                        <Name>黑铁游侠</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Interval>10000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <spritename>敌人-黑铁精英流锤兵</spritename>
+                        <Name>黑铁流锤</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地兵工厂_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>400</x>
+                <y>280</y>
+                <Identifier>出生点-改造僵尸管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>1400</x>
+                <y>281</y>
+                <Identifier>出生点-改造僵尸管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="2">
+                <x>900</x>
+                <y>270</y>
+                <Identifier>出生点-大机关门</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种72</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种72</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>999</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种72</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>999</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种89</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种355</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR</Char>
+                        <Text>僵尸源源不断地从管道里输送过来，根本杀不完啊……</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>那是什么怪物？</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种372</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种11</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种358</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种356</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>管道里的僵尸无穷无尽，这样下去不是办法……得赶紧找到控制中枢！</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>摇滚学姐</Name>
+                        <Title> </Title>
+                        <Char>摇滚学姐</Char>
+                        <Text>我们来对付这些管道，干掉那几个大家伙之后你赶快前进吧！</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种11</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种357</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地兵工厂_2_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>300</x>
+                <y>280</y>
+                <Identifier>出生点-改造僵尸管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>900</x>
+                <y>281</y>
+                <Identifier>出生点-改造僵尸管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="2">
+                <x>1200</x>
+                <y>440</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种72</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>999</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种72</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>999</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种70</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种372</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>550</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种373</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地兵工厂中枢_BG.swf</Background>
+            <PlayerX>200</PlayerX>
+            <PlayerY>500</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>700</x>
+                <y>450</y>
+            </Point>
+            <Point id="1">
+                <x>1300</x>
+                <y>400</y>
+                <Identifier>出生点-侧向大机关门</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>这应该就是中枢了！它在……不断生长吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>？？？</Name>
+                <Title>？？？</Title>
+                <Char>忍者BOSS</Char>
+                <Text>……</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <MapNoCount>true</MapNoCount>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <spritename>特殊敌人-兵工厂中枢</spritename>
+                        <InstanceName>兵工厂中枢</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>420</x>
+                        <y>451</y>
+                        <InstanceName>雕像0</InstanceName>
+                        <Parameters>方向:右,登场动画:a1,死亡动画:a0</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>560</x>
+                        <y>310</y>
+                        <spritename>特殊敌人-雕像</spritename>
+                        <InstanceName>雕像1</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>980</x>
+                        <y>449</y>
+                        <spritename>特殊敌人-雕像</spritename>
+                        <InstanceName>雕像2</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>840</x>
+                        <y>590</y>
+                        <spritename>特殊敌人-雕像</spritename>
+                        <InstanceName>雕像3</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种357</Type>
+                        <Interval>90000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种360</Type>
+                        <Interval>180000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

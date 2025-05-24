@@ -1,0 +1,57 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="ZEROSABER" itemID="6672e80d-000001fe" lastModified="1718806716">
+  <timeline>
+    <DOMTimeline name="ZEROSABER">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.01751708984375" c="-0.018280029296875" d="0" tx="50.25" ty="14.95"/>
+                            </matrix>
+                            <GradientEntry color="#97BCD4" alpha="0.6" ratio="0"/>
+                            <GradientEntry color="#54B0ED" alpha="0.729411764705882" ratio="0.494117647058824"/>
+                            <GradientEntry color="#94B5CB" alpha="0.607843137254902" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor color="#63A3E0" alpha="0.631372549019608"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!96 212|96 228!96 228[97 246 111 257!111 257|191 275!191 275|192 324!192 324|111 342!111 342[97 353 95 373!95 373|95 389!95 389|0 599!0 599|2011 303!2011 303|3 0!3 0|96 212"/>
+                        <Edge cubics="!96 228(;96,228 96,212 96,212q96 228 96 212);"/>
+                        <Edge cubics="!111 257(;101,250 96,241 96,228q111 257Q97 246q96 228);"/>
+                        <Edge cubics="!191 275(191,275;191,275 111,257 111,257q191 275 111 257)111,257;"/>
+                        <Edge cubics="!96 212(96,212;96,212 3,0 3,0q96 212 3 0)3,0;"/>
+                        <Edge cubics="!3 0(;3,0 2011,303 2011,303q3 0 2011 303);"/>
+                        <Edge cubics="!95 373(;95,373 95,389 95,389q95 373 95 389);"/>
+                        <Edge cubics="!111 342(;101,349 96,360 95,373q111 342Q97 353q95 373);"/>
+                        <Edge cubics="!192 324(192,324;192,324 111,342 111,342q192 324 111 342)111,342;"/>
+                        <Edge cubics="!95 389(95,389;95,389 0,599 0,599q95 389 0 599)0,599;"/>
+                        <Edge cubics="!0 599(;0,599 2011,303 2011,303q0 599 2011 303);"/>
+                        <Edge cubics="!191 275(;191,275 192,324 192,324q191 275 192 324);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

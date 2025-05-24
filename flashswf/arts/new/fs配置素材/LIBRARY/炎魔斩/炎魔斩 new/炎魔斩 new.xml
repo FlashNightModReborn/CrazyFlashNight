@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="炎魔斩/炎魔斩 new/炎魔斩 new" itemID="6558c61f-00000344" linkageExportForAS="true" linkageIdentifier="刀-炎魔斩new" lastModified="1721580680" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="炎魔斩 new">
+      <layers>
+        <DOMLayer name="Layer 6" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FFFF00" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置1" centerPoint3DX="-2.5" centerPoint3DY="111.7">
+                  <matrix>
+                    <Matrix d="6.78507995605469" tx="-15" ty="99.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置2" centerPoint3DX="-2.5" centerPoint3DY="281.45">
+                  <matrix>
+                    <Matrix d="5.47634887695313" tx="-15" ty="268.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置3" centerPoint3DX="-2.5" centerPoint3DY="587.95">
+                  <matrix>
+                    <Matrix a="3.19999694824219" d="-6.78472900390625" tx="-42.5" ty="575.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩 new/炎魔斩new动画" name="动画" centerPoint3DX="-2.3" centerPoint3DY="212.4">
+                  <matrix>
+                    <Matrix a="1.402587890625" d="1.402587890625" tx="-75.3" ty="-153.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52.05" y="261.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

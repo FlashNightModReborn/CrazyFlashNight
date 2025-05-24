@@ -1,0 +1,1143 @@
+{
+  "tasks": [
+    {
+      "id": 20000,
+      "title": "通缉任务之李小龙coser",
+      "description": "解决堕落城的威胁。李小龙coser是很厉害的。",
+      "imageurl": "flashswf/images/wanted_lixiaolong_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_LEE_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之李小龙coser#简单"],
+      "finish_conversation": "$MERC_LEE_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "16-22",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#80000",
+        "经验值#10000",
+        "复活币#5",
+        "普通hp药剂#10",
+        "普通mp药剂#10"
+      ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "limitations": ["DisableCompanion"]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20001,
+      "title": "通缉任务之武士铁血",
+      "description": "干掉厉害的武士铁血战士。外星人是很厉害的。",
+      "imageurl": "flashswf/images/wanted_tiexue_index.swf",
+      
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_SAMURAI_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之武士铁血#简单"],
+      "finish_conversation": "$MERC_SAMURAI_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "16-22",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#80000",
+        "经验值#10000",
+        "复活币#5",
+        "普通hp药剂#10",
+        "普通mp药剂#10"
+      ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "limitations": ["DisableCompanion"]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20002,
+      "title": "通缉任务之硬化僵尸",
+      "description": "干掉厉害的硬化僵尸。",
+      "imageurl": "flashswf/images/wanted_yinghuajiangshi_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_HAZARDZOMBIE_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之硬化僵尸#简单"],
+      "finish_conversation": "$MERC_HAZARDZOMBIE_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "13-18",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#10000",
+        "复活币#5",
+        "普通hp药剂#10",
+        "普通mp药剂#10"
+      ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "limitations": ["DisableCompanion"],
+        "rewards_disabled":[
+          "损坏的小型录像设备#1"
+        ]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20003,
+      "title": "通缉任务之牛仔",
+      "description": "干掉厉害的神枪手牛仔。",
+      "imageurl": "flashswf/images/wanted_niuzai_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_COWBOY_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之牛仔#简单"],
+      "finish_conversation": "$MERC_COWBOY_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "15-20",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#10000",
+        "复活币#5",
+        "普通hp药剂#3",
+        "普通mp药剂#3"
+      ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "limitations": ["DisableCompanion"]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20004,
+      "title": "通缉任务之魔女",
+      "description": "干掉厉害的超能力魔女。",
+      "imageurl": "flashswf/images/wanted_monv_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_WITCH_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之魔女#简单"],
+      "finish_conversation": "$MERC_WITCH_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "20",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#60000",
+        "经验值#10000",
+        "复活币#5",
+        "普通hp药剂#3",
+        "普通mp药剂#3"
+      ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "limitations": ["DisableCompanion"]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20005,
+      "title": "通缉任务之浮士德兄弟",
+      "description": "干掉厉害的浮士德兄弟。",
+      "imageurl": "flashswf/images/wanted_fushidexiongdi_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_FAUST_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之浮士德兄弟#简单"],
+      "finish_conversation": "$MERC_FAUST_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "15-20",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#10000",
+        "复活币#5",
+        "普通hp药剂#3",
+        "普通mp药剂#3"
+      ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "limitations": ["DisableCompanion"],
+        "rewards_disabled":[
+          "关于通缉令1#1"
+        ]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20006,
+      "title": "百兽之王副本",
+      "description": "通关【百兽之王副本】，可获得兽王碎片用来合成兽王套装。",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_WERETIGER_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["百兽之王副本#简单"],
+      "finish_conversation": "$MERC_WERETIGER_FINISH",
+      "finish_npc": "Andy Law",
+      "recommended_level": "40-50",
+      "restricted_level": 30,
+      "deposit": 1000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#200000",
+        "金币#100000",
+        "加强抗生素药剂#80",
+        "加强mp药剂#80",
+        "复活币#20",
+        "压缩胶囊之硬化僵尸#1",
+        "兽王碎片#100",
+        "压缩胶囊之兽王#1"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20032,
+      "title": "搜寻诺亚前线战场补给",
+      "description": "搜寻各个诺亚前线战场补给，消灭残余僵尸",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOA_SCAVENGE_GET",
+      "get_npc": "A兵团士兵",
+
+      "finish_requirements": ["搜寻诺亚前线战场补给#简单"],
+      "finish_conversation": "$NOA_SCAVENGE_FINISH",
+      "finish_npc": "A兵团士兵",
+      "deposit": 1000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#100000",
+        "经验值#300000",
+        "加强抗生素药剂#10",
+        "加强mp药剂#10",
+        "强化石#1800",
+        "压缩胶囊之61套士兵#1",
+        "压缩胶囊之boss大僵尸#1",
+        "压缩胶囊之A兵团士兵#1",
+        "压缩胶囊之驯化僵尸#1"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20033,
+      "title": "AVP",
+      "description": "丛林里发现了一艘外星飞船，对此展开调查。外星人是很厉害的。",
+      "imageurl": "flashswf/images/PVAindex.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$AVP_GET",
+      "get_npc": "幸存老兵",
+
+      "finish_requirements": ["AVP#简单"],
+      "finish_conversation": "$AVP_FINISH",
+      "finish_npc": "幸存老兵",
+      "recommended_level": "13-18",
+      "restricted_level": 8,
+      "deposit": 1000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#100000",
+        "经验值#300000",
+        "复活币#50",
+        "抗生素#50",
+        "肾上腺素#50",
+        "战队药箱#50",
+        "机枪通用弹药#20",
+        "地球卫士项链#1"
+      ],
+
+      "challenge": {
+        "difficulty":"修罗",
+        "description":"天黑了。"
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20034,
+      "title": "生存战",
+      "description": "你能战胜这一波波的敌人吗？敌人很多的哦！",
+      "imageurl": "flashswf/images/Survival_mode_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$SURVIVE_MODE_GET",
+      "get_npc": "迷之盔甲君",
+
+      "finish_requirements": ["生存战#简单"],
+      "finish_conversation": "$SURVIVE_MODE_FINISH",
+      "finish_npc": "迷之盔甲君",
+      "recommended_level": "15-25",
+      "restricted_level": 12,
+      "deposit": 500,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#200000",
+        "经验值#3000000",
+        "复活币#20",
+        "普通hp药剂#20",
+        "普通mp药剂#20",
+        "生存者军牌#1"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20035,
+      "title": "僵尸逆袭",
+      "description": "抵挡僵尸潮的进攻。",
+
+      "get_requirements": [-1],
+      "get_conversation": "$ZOMBIE_INVASION_GET",
+      "get_npc": "前治安官",
+
+      "finish_requirements": ["僵尸逆袭#简单"],
+      "finish_conversation": "$ZOMBIE_INVASION_FINISH",
+      "finish_npc": "前治安官",
+      "recommended_level": "11-15",
+      "restricted_level": 10,
+      "deposit": 1000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#60000",
+        "经验值#150000",
+        "复活币#30",
+        "抗生素#30",
+        "普通hp粉尘#50",
+        "普通mp药剂#100",
+        "火焰喷射器燃料罐#20",
+        "屠戮者项链#1"
+      ],
+
+      "challenge": {
+        "difficulty":"修罗",
+        "description":"这些大家伙是从哪冒出来的？",
+        "recommended_level": "20-25",
+        "rewards": [
+          "对前治安官的采访#1"
+        ]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20036,
+      "title": "二战亡灵",
+      "description": "抵挡二战日寇潮的进攻。",
+      "imageurl": "flashswf/images/erzhanwangling_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$WW2_JAPAN_GET",
+      "get_npc": "爱国青年",
+
+      "finish_requirements": ["二战亡灵#简单"],
+      "finish_conversation": "$WW2_JAPAN_FINISH",
+      "finish_npc": "爱国青年",
+      "recommended_level": "5-10",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#20000",
+        "经验值#20000",
+        "普通hp药剂#30",
+        "普通mp药剂#30",
+        "复活币#20",
+        "爱国者军牌#1"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20037,
+      "title": "堕落城的骚动",
+      "description": "阻止演唱会的进行。盗贼是很厉害的。",
+
+      "get_requirements": [-1],
+      "get_conversation": "$SMASHING_GIG_GET",
+      "get_npc": "学生妹",
+
+      "finish_requirements": ["堕落城的骚动#简单"],
+      "finish_conversation": "$SMASHING_GIG_FINISH",
+      "finish_npc": "学生妹",
+      "recommended_level": "25-30",
+      "restricted_level": 10,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#80000",
+        "经验值#800000",
+        "复活币#80",
+        "加强抗生素药剂#100",
+        "加强mp药剂#100",
+        "金牌打手项链#1"
+      ],
+
+      "challenge": {
+        "difficulty":"修罗",
+        "description":"新的打手来到了会场。",
+        "recommended_level": "30-35",
+        "rewards": [
+          "学校与摇滚敌对的缘由？#1"
+        ]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20038,
+      "title": "夺取材料",
+      "description": "帮宝石线人击退军阀，并在途中搜集强化石",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_HUNT_REVOLUTIONISTS_GET",
+      "get_npc": "宝石线人",
+
+      "finish_requirements": ["夺取材料#简单"],
+      "finish_conversation": "$GEM_HUNT_REVOLUTIONISTS_FINISH",
+      "finish_npc": "宝石线人",
+      "recommended_level": "20-30",
+      "restricted_level": 8,
+      "deposit": 1000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#60000",
+        "强化石#100",
+        "抗生素#10",
+        "肾上腺素#10"
+      ],
+        
+      "challenge": {
+        "difficulty":"修罗",
+        "description":"但是，军阀强者不会眼睁睁看着你得手的。",
+        "recommended_level": "30-40",
+        "rewards_text":"掉落的强化石数量大幅提升",
+        "rewards": [
+          "从宝石线人视角一窥新经济野望#1"
+        ]
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20039,
+      "title": "制霸黑铁会",
+      "description": "参加黑铁会强者称霸赛",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_HUNT_BLACKIRON_GET",
+      "get_npc": "黑铁会外交部长",
+
+      "finish_requirements": ["制霸黑铁会#简单"],
+      "finish_conversation": "$GEM_HUNT_BLACKIRON_FINISH",
+      "finish_npc": "黑铁会外交部长",
+      "recommended_level": "30-40",
+      "restricted_level": 30,
+      "deposit": 5000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#100000",
+        "经验值#100000",
+        "普通hp药剂#100",
+        "普通mp药剂#100",
+        "强化石#1000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20040,
+      "title": "调查雪女获强化石",
+      "description": "调查雪女为什么出现在诺亚雪山山顶",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_HUNT_WITCH_2_GET",
+      "get_npc": "被改造的方舟无人机",
+
+      "finish_requirements": ["调查雪女获强化石#简单"],
+      "finish_conversation": "$GEM_HUNT_WITCH_2_FINISH",
+      "finish_npc": "被改造的方舟无人机",
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#120000",
+        "经验值#500000",
+        "加强抗生素药剂#20",
+        "加强mp药剂#20",
+        "普通hp粉尘#20",
+        "普通mp粉尘#20",
+        "复活币#20",
+        "材料盒子#1",
+        "压缩胶囊之李小龙#1",
+        "强化石#1800"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20041,
+      "title": "古战场",
+      "description": "面对古代士兵",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_HUNT_WITCH_GET",
+      "get_npc": "长生军战士",
+
+      "finish_requirements": ["古战场#简单"],
+      "finish_conversation": "$GEM_HUNT_WITCH_FINISH",
+      "finish_npc": "长生军战士",
+      "recommended_level": "30-35",
+      "restricted_level": 25,
+      "deposit": 30000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#10000",
+        "经验值#10000",
+        "加强抗生素药剂#25",
+        "加强mp药剂#25",
+        "复活币#25",
+        "强化石#1800"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20042,
+      "title": "通关远古铁血的试验",
+      "description": "60分钟内只可挑战一次。挑战一次后，再次挑战需要等待60分钟。",
+
+      "get_requirements": [-1],
+      "get_conversation": "$TRIAL_OF_SAMURAI_GET",
+      "get_npc": "远古武士铁血使者",
+
+      "finish_requirements": ["通关远古铁血的试验#简单"],
+      "finish_conversation": "$TRIAL_OF_SAMURAI_FINISH",
+      "finish_npc": "远古武士铁血使者",
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#120000",
+        "经验值#1000000",
+        "加强抗生素药剂#40",
+        "加强mp药剂#40",
+        "普通hp粉尘#20",
+        "普通mp粉尘#20",
+        "复活币#20",
+        "材料盒子#5",
+        "强化石#5000",
+        "战宠灵石#5000",
+        "压缩胶囊之武士铁血#5"
+      ],
+      
+      "chain": "委托"
+    },
+    {
+      "id": 20043,
+      "title": "剑圣的叹息",
+      "description": "通关【剑圣的叹息】，赢取剑圣碎片奖励！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$SWORDMASTER_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["剑圣的叹息#简单"],
+      "finish_conversation": "$SWORDMASTER_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "18-27",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#50000",
+        "剑圣碎片#25",
+        "普通hp药剂#10",
+        "普通mp药剂#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20044,
+      "title": "BOSS大乱斗",
+      "description": "通关【BOSS大乱斗】，找刺激！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$BOSSRUSH_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["BOSS大乱斗#简单"],
+      "finish_conversation": "$BOSSRUSH_FINISH",
+      "finish_npc": "Andy Law",
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#28888",
+        "金币#28888",
+        "加强抗生素药剂#288",
+        "复活币#50",
+        "突击步枪钨芯穿甲弹#288",
+        "加强mp药剂#288",
+        "压缩胶囊之硬化僵尸#30",
+        "压缩胶囊之武士铁血#30",
+        "普通hp粉尘#288",
+        "普通mp粉尘#288",
+        "材料盒子#20",
+        "鼠年碎片#188"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20045,
+      "title": "92式装甲副本",
+      "description": "通关【92式装甲副本】，获取全套92式装甲！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$92_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["92式装甲副本#简单"],
+      "finish_conversation": "$92_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "28-32",
+      "restricted_level": 8,
+      "deposit": 1000,
+      "Kdeposit": 100,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#80000",
+        "普通hp药剂#10",
+        "普通mp药剂#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20046,
+      "title": "圣诞副本",
+      "description": "通关【圣诞副本】，可获得圣诞糖果",
+
+      "get_requirements": [-1],
+      "get_conversation": "$CHRISTMAS_GET",
+      "get_npc": "杰克霜精",
+
+      "finish_requirements": ["圣诞副本#简单"],
+      "finish_conversation": "$CHRISTMAS_FINISH",
+      "finish_npc": "杰克霜精",
+      "recommended_level": "25-35",
+      "restricted_level": 15,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#100000",
+        "圣诞糖果#100",
+        "战队药箱#50",
+        "战宠灵石#50",
+        "加强mp药剂#50"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20047,
+      "title": "中秋国庆副本",
+      "description": "通关【中秋国庆副本】，赢取奖励！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MIDAUTUMN_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["中秋国庆副本#简单"],
+      "finish_conversation": "$MIDAUTUMN_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "12-18",
+      "restricted_level": 8,
+      "deposit": 1000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#50000",
+        "经验值#30000",
+        "月之碎片#15",
+        "国庆纪念币#10",
+        "月饼#50",
+        "普通hp药剂#50",
+        "普通mp药剂#50"
+      ],
+      
+      "chain": "委托"
+    },
+    {
+      "id": 20048,
+      "title": "通缉任务之尾上世莉架",
+      "description": "解决尾上世莉架。",
+      "imageurl": "flashswf/images/wanted_serika_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_serika_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之尾上世莉架#简单"],
+      "finish_conversation": "$MERC_serika_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "18-30",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#20000",
+        "经验值#10000",
+        "复活币#5",
+        "普通hp药剂#10",
+        "普通mp药剂#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20050,
+      "title": "挑战Blue",
+      "description": "和Blue进行对决",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_BLUE_GET",
+      "get_npc": "Blue",
+
+      "finish_requirements": ["挑战Blue#简单"],
+      "finish_conversation": "$GEM_PK_BLUE_FINISH",
+      "finish_npc": "Blue",
+      "recommended_level": "25-30",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#5000",
+        "经验值#200000",
+        "拳击特制绷带#1",
+        "复活币#10",
+        "技能点#15"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20051,
+      "title": "挑战Andylaw",
+      "description": "和Andy Law进行对决",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_ANDY_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["挑战Andylaw#简单"],
+      "finish_conversation": "$GEM_PK_ANDY_FINISH",
+      "finish_npc": "Andy Law",
+      "recommended_level": "40-50",
+      "restricted_level": 20,
+      "deposit": 0,
+      "Kdeposit": 0,
+      
+
+      "rewards": [
+        "金币#50000",
+        "经验值#500000",
+        "K点#1000",
+        "复活币#20",
+        "技能点#30"
+      ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "description":"Andylaw拿出了往日的武器……以及手段。"
+      },
+
+      "chain": "委托"
+    },
+    {
+      "id": 20052,
+      "title": "挑战BPK",
+      "description": "和BPK进行角斗",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_BPK_GET",
+      "get_npc": "Boy",
+
+      "finish_requirements": ["挑战BPK#简单"],
+      "finish_conversation": "$GEM_PK_BPK_FINISH",
+      "finish_npc": "Boy",
+      "recommended_level": "30-40",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "金币#30000",
+        "经验值#300000",
+        "K点#500",
+        "复活币#20"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20053,
+      "title": "挑战战斗天才",
+      "description": "和成长到最终阶段的武装JK进行切磋",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_JK_GET",
+      "get_npc": "武装JK",
+
+      "finish_requirements": ["挑战战斗天才#地狱"],
+      "finish_conversation": "$GEM_PK_JK_FINISH",
+      "finish_npc": "武装JK",
+      "recommended_level": "100",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#5000000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20054,
+      "title": "与Tomboy切磋",
+      "description": "和Tomboy进行切磋",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_Tomboy_GET",
+      "get_npc": "Tomboy",
+
+      "finish_requirements": ["与Tomboy切磋#地狱"],
+      "finish_conversation": "$GEM_PK_Tomboy_FINISH",
+      "finish_npc": "Tomboy",
+      "recommended_level": "15-20",
+      "restricted_level": 1,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#300000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20055,
+      "title": "挑战黑白女仆（白）",
+      "description": "接受白女仆的邀请，与黑白女仆切磋",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_MaidWhite_GET",
+      "get_npc": "女仆（白）",
+
+      "finish_requirements": ["挑战黑白女仆（白）#地狱"],
+      "finish_conversation": "$GEM_PK_MaidWhite_FINISH",
+      "finish_npc": "女仆（白）",
+      "recommended_level": "30-40",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#1200000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20056,
+      "title": "挑战黑白女仆（黑）",
+      "description": "接受黑女仆的邀请，与黑白女仆切磋",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_MaidDark_GET",
+      "get_npc": "女仆（黑）",
+
+      "finish_requirements": ["挑战黑白女仆（黑）#地狱"],
+      "finish_conversation": "$GEM_PK_MaidDark_FINISH",
+      "finish_npc": "女仆（黑）",
+      "recommended_level": "30-40",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#1200000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20057,
+      "title": "菲尼克斯Lv16",
+      "description": "挑战菲尼克斯魔神Lv16及其眷属",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_PHENEX16_GET",
+      "get_npc": "迷之盔甲君",
+
+      "finish_requirements": ["菲尼克斯Lv16#冒险"],
+      "finish_conversation": "$GEM_PK_PHENEX16_FINISH",
+      "finish_npc": "迷之盔甲君",
+      "recommended_level": "50-60",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#20000000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20058,
+      "title": "菲尼克斯Lv10",
+      "description": "挑战菲尼克斯魔神Lv10及其眷属",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_PHENEX10_GET",
+      "get_npc": "迷之盔甲君",
+
+      "finish_requirements": ["菲尼克斯Lv10#简单"],
+      "finish_conversation": "$GEM_PK_PHENEX10_FINISH",
+      "finish_npc": "迷之盔甲君",
+      "recommended_level": "50",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#8000000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20059,
+      "title": "密林深处",
+      "description": "放轻松，没那么难的。或者说···你怕了？",
+
+      "get_requirements": [-1],
+      "get_conversation": "",
+      "get_npc": "文天",
+
+      "finish_requirements": ["密林深处#简单"],
+      "finish_conversation": "",
+      "finish_npc": "文天",
+      "recommended_level": "25",
+
+      "rewards": [
+        "金币#20000",
+        "经验值#80000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20060,
+      "title": "锡蒙利Lv16",
+      "description": "挑战锡蒙利魔神Lv16及其军团",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_Cimejes16_GET",
+      "get_npc": "迷之盔甲君",
+
+      "finish_requirements": ["锡蒙利Lv16#修罗"],
+      "finish_conversation": "$GEM_PK_Cimejes16_FINISH",
+      "finish_npc": "迷之盔甲君",
+      "recommended_level": "80-100",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#35000000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20061,
+      "title": "锡蒙利Lv10",
+      "description": "挑战锡蒙利魔神Lv10及其军团",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_Cimejes10_GET",
+      "get_npc": "迷之盔甲君",
+
+      "finish_requirements": ["锡蒙利Lv10#冒险"],
+      "finish_conversation": "$GEM_PK_Cimejes10_FINISH",
+      "finish_npc": "迷之盔甲君",
+      "recommended_level": "50",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#15000000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20062,
+      "title": "挑战surveyor",
+      "description": "与surveyor切磋",
+
+      "get_requirements": [ -1 ],
+      "get_conversation": "$GEM_PK_surveyor_GET",
+      "get_npc": "surveyor",
+
+      "finish_requirements": [ "挑战surveyor#地狱" ],
+      "finish_conversation": "$GEM_PK_surveyor_FINISH",
+      "finish_npc": "surveyor",
+      "recommended_level": "28-35",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#1000000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20063,
+      "title": "挑战gazer",
+      "description": "与gazer切磋",
+
+      "get_requirements": [ -1 ],
+      "get_conversation": "$GEM_PK_gazer_GET",
+      "get_npc": "gazer",
+
+      "finish_requirements": [ "挑战gazer#地狱" ],
+      "finish_conversation": "$GEM_PK_gazer_FINISH",
+      "finish_npc": "gazer",
+      "recommended_level": "20-30",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#500000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20065,
+      "title": "挑战Itinerant",
+      "description": "与Itinerant切磋",
+
+      "get_requirements": [ -1 ],
+      "get_conversation": "$GEM_PK_Itinerant_GET",
+      "get_npc": "Itinerant",
+
+      "finish_requirements": [ "挑战Itinerant#地狱" ],
+      "finish_conversation": "$GEM_PK_Itinerant_FINISH",
+      "finish_npc": "Itinerant",
+      "recommended_level": "25-30",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#800000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20066,
+      "title": "挑战诺艾尔",
+      "description": "与诺艾尔切磋",
+
+      "get_requirements": [ -1 ],
+      "get_conversation": "$GEM_PK_noelle_GET",
+      "get_npc": "诺艾尔",
+
+      "finish_requirements": [ "挑战诺艾尔#地狱" ],
+      "finish_conversation": "$GEM_PK_noelle_FINISH",
+      "finish_npc": "诺艾尔",
+      "recommended_level": "35-45",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#1500000"
+      ],
+
+      "chain": "委托"
+    }
+  ]
+}

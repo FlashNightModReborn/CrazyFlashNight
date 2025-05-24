@@ -1,0 +1,732 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>30</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>30</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>高耐力橡胶</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>8</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>复合式军用塑料</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>8</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>强力胶</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>8</QuantityMax>
+        </Reward>
+        <Reward id="7">
+            <Name>战术背带</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>8</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>石英磨刀石</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>8</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>军用帆布</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>8</QuantityMax>
+        </Reward>
+        <Reward id="10">
+            <Name>电脑芯片</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>8</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk12_5_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>By Peace Or By Power</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种270</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>32</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种261</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>34</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种268</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>34</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种47</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>34</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>34</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种261</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>34</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种268</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种269</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>36</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种270</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种261</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种409</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种410</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthcftnb_5_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种247</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种248</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种249</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种250</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种251</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种252</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种253</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种254</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthhftnb_5_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种66</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种270</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>36</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种67</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种268</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种68</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthhltnb_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种73</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种269</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthzt_4_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种66</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种67</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种261</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种268</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种269</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种270</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种410</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthzt_4_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种66</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种68</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种261</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种268</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种410</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthzt_4_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种67</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种68</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种261</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种268</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种269</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种270</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种410</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="7">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthzt_4_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种66</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种67</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种68</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种261</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="8">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthzt_5_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>50</x>
+                <y>600</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1700</x>
+                <y>600</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种69</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:黑铁会教主</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种261</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种261</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种409</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种410</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>50</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

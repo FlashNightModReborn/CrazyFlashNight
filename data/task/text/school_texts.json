@@ -1,0 +1,437 @@
+{
+    "$SIDE_TITLE_40001": "钉子",
+    "$SIDE_DESCRIPTION_40001": "（该支线要求先通过主线任务“狂野的玫瑰”）找Bat谈谈。Bat在堕落城联合大学大门口，可通过基地车库前往堕落城找到对应地图",
+    "$SIDE_GET_40001": [
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "我们要面对的敌人恐怕会比我们想象的还要强大。为了确保战事顺利进行，我们要拉拢其他势力。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "尘都联合大学，我们一般管它叫大学，它是现在整个堕落城最依赖我们的势力。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "在末日里也能保持住一座大学吗？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "如果只是念书教课，这座大学肯定早就灭亡了。它能成为我们插进堕落城的钉子，当然有几分本事。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "钉子？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "嘛，我们不可能坐视堕落城统一的。摇滚和黑铁会各自维持敌意当然是好的，而他们也不能自相残杀到让军阀能够进城。因此，让堕落城的势力保持零碎，维持一种平衡，同时抗拒军阀，对我们是有好处的。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "一座统一的堕落城，短期可动员人数已经十几倍于我们这里的总人口了。我们总不可能拖家带口上去打仗，那样的话我们的生产贸易工作就彻底崩溃了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "总之，为了我们的利益，这颗阻止摇滚和黑铁会相互统一对方，又妨碍军阀入城的钉子是我们需要保住的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "看来，我们得长期算计这几个大势力。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "我们或许可以因为强敌在前，而联合他们。当然，也可以因为利益对他们下手，无非是手段是否直接，是否见血。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "维持学校的存在，是一个对我们有好处，也不必见血的手段。大家都会有所不满，但不至于立刻掀桌子。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "至于说那个学校···关于它的情报，我们这里的很多也有点过时。因此，你需要出使大学，和他们打好关系的同时，了解他们的情况。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "看来我得在几乎不了解情况的前提上行动了···这算是考验我吧？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "当然，做成了给你奖励。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "另外，学校那边本来有个对接人员负责我们与学校的外交工作，不过她最近很忙，因此只能你自己前去学校了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "到了地方后，去找一个叫Bat的人。据说他最近因为什么事情不得不出来站岗，算是方便你和他对话了。"
+        }
+    ],
+    "$SIDE_FINISH_40001": [
+    ],
+    "$SIDE_TITLE_40002": "边界冲突",
+    "$SIDE_DESCRIPTION_40002": "通关简单难度“大学城周边”，然后找Bat谈谈。",
+    "$SIDE_GET_40002": [
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "呦，是A兵团派来的人吧？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是的。"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "我特地出来迎接你来了，刚从教学楼出来没多久。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "···"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "诶，骗不到吗？好吧，实际上我是犯事了被罚出来站岗。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "方便问一问是什么事情吗？"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "这个不提也罢。说正事，shopgirl和我也算有点交情，如果你们的诚意到位了，我会帮你们打通关系的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "诚意？"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "可不是给我红包啊。想让学校高层进一步信任你们，并且让亲近你们的派系上位，就需要你们表达出诚意。学校一直在和周边的盗贼战斗，虽然规模不大，但是疲于奔命，可不好受。"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "学校这边也是启用了旧型号机器人来防范盗贼，不过对方人数众多，这么下去也不是办法。"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "tomboy决定亲自带队去讨伐盗贼，你能在战斗中途杀入，帮到他们，对于两组织之间的关系自然是大大的好。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "看起来，我还不能立刻去和那个tomboy对话，所以为什么叫这个名字呢？"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "当然是那娘们看起来比一般男人壮多了。行了不多说，你去应付下那边的盗贼吧。"
+        }
+    ],
+    "$SIDE_FINISH_40002": [
+        
+    ],
+    "$SIDE_TITLE_40003": "复杂时局",
+    "$SIDE_DESCRIPTION_40003": "找Tomboy谈谈。",
+    "$SIDE_GET_40003": [
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "干的不错，学校这边你们放心，我会帮你们拉关系的。“A兵团高手为陷入苦战的学校安保队解围”，这算是分量足够的舆论。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "还需要我做什么吗？"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "哦，那个tomboy承认了你的实力，似乎想要委托你去处理下水道那边的事情。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "下水道吗···"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "下水道联通了整个堕落城，甚至根据一些工程师的说法，通过下水道前往废城是可能的。这就意味着下水道很有战略价值，我们占据的一个下水道大型入口也就不能让人随便进入。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "所以这就是为什么要测试我的实力。不过，既然是有这么重要的战略价值，恐怕其他势力也会盯上吧。"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "那当然了，我们这个入口是末世前的新城区新建的，相对宽敞容易进。而占据老城区的摇滚和黑铁那边的下水道入口拥挤危险，所以他们都想把手伸过来。黑铁会倒是不会直接动手抢，但是会扶持些他们的人，在学校里给他们争取利益。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这么说，帮助tomboy似乎可以削弱黑铁会那边人的话语权。"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "聪明。Tomboy不属于任何派别，但是掌握了一部分安保权限。如果你帮助她扫清下水道入口的敌人，也就意味着那里的守卫更可能由我来安排，毕竟我把你引荐给她了嘛。"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "这也是shopgirl那边需要我做的，不然也没必要找我了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不过···听你这么说，摇滚不像黑铁会那样安插人手在你们这，而是打算直接抢吗？"
+        },
+        {
+            "name": "Bat",
+            "title": "球棒少年",
+            "char": "Bat",
+            "text": "未必会直接来抢，但是她们不可能安排人到我们这，我们毕竟彻底撕破脸了。具体的原因嘛，我因为之前在校外负责其他事，所以对此了解不多。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我知道了，那就先说到这，我这就去找tomboy。"
+        }
+    ],
+    "$SIDE_FINISH_40003": [
+        
+    ],
+    "$SIDE_TITLE_40004": "雇佣清扫",
+    "$SIDE_DESCRIPTION_40004": "通关简单难度“堕落城下水道入口”，然后找tomboy谈谈。【注意】请佩戴夜视设备后尝试此关卡。",
+    "$SIDE_GET_40004": [
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "你好。你就是那位A兵团的战士吗？你的实力的确很强，bat建议我雇佣你去清扫下水道，看起来确实是没问题。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "你说雇佣··意味着需要给我报酬？"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "是，毕竟下水道危险，而且我们无法派人协助你。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "为什么？"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "学校内部气氛非常紧张，我们的安保人员暂时不适合出动，否则难以压制可能发生的内部冲突。我们的安保部队吓唬人还可以，战斗能力实在有限，如果只派几个人前往，恐怕不但帮不到你，还会成为累赘。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我从bat那里听说，你们这内部有黑铁会的代理人，没错吧？"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "远不止如此。学校毕竟是弱小的势力，如果想存活下来，就不得不向多个势力表达忠诚。黑铁会、军阀、A兵团都有些人安插在这里，那个bat，虽然看起来大大咧咧，不过他完全是A兵团的线人了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "顺带问一句，摇滚为什么和你们撕破脸了。"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "我们学校内部有重要的项目在迭代，需要大量特殊矿石，而摇滚那边就有不少。末世初期摇滚那边多次劫掠我们，再加上你们A兵团之前和摇滚冲突，我们就趁这个机会回击，抢了些矿石。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "还是经济问题啊。"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "也许还有其他原因，不过这就不是我值得操心的事情了。现在说回正事，下水道的方位我会给你标好，你需要自行前去清理下水道入口。"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "我们很难确认里面具体有什么，但是根据巡逻队提供的情报，里面有数量不在少数的丧尸，以及一些变异生物。里面环境昏暗，你可能需要照明或者夜视设备。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "看来我得小心点了。完成后我会告知你的。"
+        }
+    ],
+    "$SIDE_FINISH_40004": [
+        
+    ],
+    "$SIDE_TITLE_40005": "交差",
+    "$SIDE_DESCRIPTION_40005": "找shopgirl谈谈。",
+    "$SIDE_GET_40005": [
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "干得好，我会按照bat那边的建议，安排合适的人去看守下水道入口的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好的。"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "···不过我也提醒一句，如果你们A兵团想要进一步干涉学校，恐怕会出很多问题。学校内部围绕各派利益纠纷，气氛已经非常紧张了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "看来你那边也不容易啊。"
+        },
+        {
+            "name": "Tomboy",
+            "title": "荒漠猎手",
+            "char": "Tomboy",
+            "text": "只是安保工作的话，也没那么复杂，不过我可不擅长政治方面的事情。总之，如果出了什么无法处理的事，我会通过bat那边联系你们A兵团的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没问题。我先回去汇报情况了。"
+        }
+    ],
+    "$SIDE_FINISH_40005": [
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "呒···看来学校内部的混乱情况超出我的想象，或许我们要考虑在堕落城边缘维持一支机动队，随时准备干涉学校。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这样不会引起反对吗？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "那是当然，不过这是底牌，迫不得已才能用。其他时候，如果局势可控，只要通过bat逐步增加我们在学校的影响力就行。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "总之，经过这次战斗，你以后去新城区的下水道入口就更容易了，没必要争取学校那边同意，守卫会放你过去的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "呃···那看来我得干更多活了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "收益不会少的。"
+        }
+    ]
+}

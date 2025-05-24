@@ -1,0 +1,1947 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/动画合集/死亡自爆" itemID="65a7e40a-00000ff8" lastModified="1705738974" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="死亡自爆" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;172&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹 = _root.子弹属性初始化(this.攻击点);
+子弹.声音 = "";
+子弹.霰弹值 = 1;
+子弹.子弹散射度 = 0;
+子弹.子弹种类 = "透明子弹";
+子弹.子弹威力 = _parent.空手攻击力 * 10;
+子弹.子弹速度 = 0;
+子弹.击中地图效果 = "";
+子弹.Z轴攻击范围 = 30;
+子弹.击倒率 = 1;
+子弹.击中后子弹的效果 = "";
+子弹.水平击退速度 = 15;
+子弹.垂直击退速度 = 10;
+子弹.区域定位area = this.攻击点;
+_root.子弹区域shoot传递(子弹);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹 = _root.子弹属性初始化(this.攻击点);
+子弹.声音 = "";
+子弹.霰弹值 = 1;
+子弹.子弹散射度 = 0;
+子弹.子弹种类 = "透明子弹";
+子弹.子弹威力 = _parent.空手攻击力 * 10;
+子弹.子弹速度 = 0;
+子弹.击中地图效果 = "";
+子弹.Z轴攻击范围 = 50;
+子弹.击倒率 = 1;
+子弹.击中后子弹的效果 = "";
+子弹.水平击退速度 = 15;
+子弹.垂直击退速度 = 10;
+子弹.区域定位area = this.攻击点;
+_root.子弹区域shoot传递(子弹);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹 = _root.子弹属性初始化(this.攻击点);
+子弹.声音 = "";
+子弹.霰弹值 = 1;
+子弹.子弹散射度 = 0;
+子弹.子弹种类 = "透明子弹";
+子弹.子弹威力 = _parent.空手攻击力 * 10;
+子弹.子弹速度 = 0;
+子弹.击中地图效果 = "";
+子弹.Z轴攻击范围 = 50;
+子弹.击倒率 = 1;
+子弹.击中后子弹的效果 = "";
+子弹.水平击退速度 = 15;
+子弹.垂直击退速度 = 10;
+子弹.区域定位area = this.攻击点;
+_root.子弹区域shoot传递(子弹);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹 = _root.子弹属性初始化(this.攻击点);
+子弹.声音 = "";
+子弹.霰弹值 = 1;
+子弹.子弹散射度 = 0;
+子弹.子弹种类 = "透明子弹";
+子弹.子弹威力 = _parent.空手攻击力 * 10;
+子弹.子弹速度 = 0;
+子弹.击中地图效果 = "";
+子弹.Z轴攻击范围 = 80;
+子弹.击倒率 = 1;
+子弹.击中后子弹的效果 = "";
+子弹.水平击退速度 = 15;
+子弹.垂直击退速度 = 10;
+子弹.区域定位area = this.攻击点;
+_root.子弹区域shoot传递(子弹);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_parent.hp <= 0)
+{
+	if (!_parent.已加经验值)
+	{
+		if (_parent.是否为敌人)
+		{
+			++_root.敌人死亡计数;
+			--_root.gameworld[_parent.产生源].僵尸型敌人场上实际人数;
+			--_root.gameworld[_parent.产生源].僵尸型敌人总个数;
+			_parent[计算经验值]();
+		}
+		_parent.人物文字信息._visible = 0;
+		_root.add2map(_parent,2);
+		_parent.removeMovieClip();
+	}
+}
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="近战子弹区域" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/透明控件" name="攻击点" centerPoint3DX="96" centerPoint3DY="73">
+                  <matrix>
+                    <Matrix a="3.66537475585938" d="12.7595367431641" tx="96.25" ty="29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/透明控件" name="攻击点" centerPoint3DX="96" centerPoint3DY="73">
+                  <matrix>
+                    <Matrix a="5.32000732421875" d="12.7595367431641" tx="96" ty="29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/透明控件" name="攻击点" centerPoint3DX="96" centerPoint3DY="73">
+                  <matrix>
+                    <Matrix a="6.00003051757813" d="12.7595367431641" tx="96" ty="29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/透明控件" name="攻击点" centerPoint3DX="95.05" centerPoint3DY="73">
+                  <matrix>
+                    <Matrix a="8.00198364257813" d="12.7595367431641" tx="94.75" ty="29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 18" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 71" centerPoint3DX="258.1" centerPoint3DY="17.7">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="185" ty="-97.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 73" centerPoint3DX="295.1" centerPoint3DY="-108.55">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="206.75" ty="-306.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 75" centerPoint3DX="289.5" centerPoint3DY="-190">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="203.2" ty="-443.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 77" centerPoint3DX="214" centerPoint3DY="-366.95">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="161.25" ty="-747.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 79" centerPoint3DX="263.6" centerPoint3DY="-366.95">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="186.75" ty="-747.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 81" centerPoint3DX="292.85" centerPoint3DY="-366.95">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="204.6" ty="-747.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 83" centerPoint3DX="240.65" centerPoint3DY="-375.15">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="178.35" ty="-745.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 85" centerPoint3DX="245.3" centerPoint3DY="-392.45">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="179.05" ty="-773.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 87" centerPoint3DX="256.95" centerPoint3DY="-398.55">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="189.05" ty="-788.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 89" centerPoint3DX="257.5" centerPoint3DY="-418.8">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="187.25" ty="-813.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 91" centerPoint3DX="264.9" centerPoint3DY="-437.5">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="190.5" ty="-845.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 93" centerPoint3DX="259.85" centerPoint3DY="-417.75">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="196.35" ty="-814.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 95" centerPoint3DX="267.2" centerPoint3DY="-414.7">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="195.45" ty="-808.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 97" centerPoint3DX="226.25" centerPoint3DY="-379.1">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="173.35" ty="-715.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 99" selected="true" centerPoint3DX="127" centerPoint3DY="-382.45">
+                  <matrix>
+                    <Matrix a="-1.40158081054688" d="4.53044128417969" tx="106.1" ty="-687.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="15" color="#FFFF00"/>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFCA4D"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="鞋子" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369293212890625" b="-0.065185546875" c="-0.0635223388671875" d="0.393417358398438" tx="23.05" ty="147.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.25" y="6.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369293212890625" b="-0.065185546875" c="-0.0635223388671875" d="0.393417358398438" tx="47.8" ty="149.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.25" y="6.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.212661743164063" b="-0.308868408203125" c="-0.32489013671875" d="0.230789184570313" tx="56.35" ty="158.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.1" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225601196289063" b="-0.299530029296875" c="-0.321807861328125" d="-0.235061645507813" tx="47.55" ty="176.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="7.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225601196289063" b="-0.299530029296875" c="-0.321807861328125" d="-0.235061645507813" tx="47.55" ty="176.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="7.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225601196289063" b="-0.299530029296875" c="-0.321807861328125" d="-0.235061645507813" tx="47.55" ty="176.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="7.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="鞋子" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37530517578125" b="-0.0081024169921875" c="-0.01800537109375" d="0.397384643554688" tx="96.25" ty="150.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.55" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37530517578125" b="-0.0081024169921875" c="-0.01800537109375" d="0.397384643554688" tx="96.25" ty="150.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.55" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37530517578125" b="-0.0081024169921875" c="-0.01800537109375" d="0.397384643554688" tx="130.5" ty="149.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.55" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37530517578125" b="-0.0081024169921875" c="-0.01800537109375" d="0.397384643554688" tx="130.5" ty="149.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.55" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37530517578125" b="-0.0081024169921875" c="-0.01800537109375" d="0.397384643554688" tx="130.5" ty="149.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.55" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.37530517578125" b="-0.0081024169921875" c="-0.01800537109375" d="0.397384643554688" tx="130.5" ty="149.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.55" y="7.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小腿" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.387832641601563" b="0.097015380859375" c="0.09283447265625" d="0.414794921875" tx="85.2" ty="113.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397964477539063" b="-0.03668212890625" c="-0.0485687255859375" d="0.422119140625" tx="99.65" ty="116.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36328125" b="-0.166885375976563" c="-0.187026977539063" d="0.381698608398438" tx="109.45" ty="123.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="88.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397598266601563" b="-0.041595458984375" c="-0.0547332763671875" d="0.421493530273438" tx="132.8" ty="116.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="88.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397598266601563" b="-0.041595458984375" c="-0.0547332763671875" d="0.421493530273438" tx="132.8" ty="116.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="88.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397598266601563" b="-0.041595458984375" c="-0.0547332763671875" d="0.421493530273438" tx="132.8" ty="116.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="88.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.397598266601563" b="-0.041595458984375" c="-0.0547332763671875" d="0.421493530273438" tx="132.8" ty="116.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="88.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右手" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.377044677734375" b="0.130767822265625" c="0.127532958984375" d="0.404098510742188" tx="36.8" ty="80.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.172821044921875" b="0.359695434570313" c="0.376632690429688" d="0.19415283203125" tx="88" ty="62.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.263900756835938" b="0.299331665039063" c="0.309860229492188" d="0.289031982421875" tx="111.75" ty="74.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.150726318359375" b="0.369491577148438" c="0.3876953125" d="0.170974731445313" tx="100.3" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.150726318359375" b="0.369491577148438" c="0.3876953125" d="0.170974731445313" tx="100.3" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.150726318359375" b="0.369491577148438" c="0.3876953125" d="0.170974731445313" tx="100.3" ty="95.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右下臂" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3974609375" b="0.015625" c="0.015625" d="0.3974609375" tx="34.1" ty="55.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.268890380859375" b="0.2930908203125" c="0.2930908203125" d="0.268890380859375" tx="68.55" ty="47.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.338302612304688" b="0.20916748046875" c="0.20916748046875" d="0.338302612304688" tx="97.2" ty="54.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.250656127929688" b="0.308837890625" c="0.308837890625" d="0.250656127929688" tx="79.95" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.250656127929688" b="0.308837890625" c="0.308837890625" d="0.250656127929688" tx="79.95" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.250656127929688" b="0.308837890625" c="0.308837890625" d="0.250656127929688" tx="79.95" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小腿" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.29779052734375" b="-0.26666259765625" c="-0.276596069335938" d="0.323196411132813" tx="42.5" ty="125.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.5" y="8.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.29779052734375" b="-0.26666259765625" c="-0.276596069335938" d="0.323196411132813" tx="67.25" ty="126.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.5" y="8.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.241424560546875" b="-0.318603515625" c="-0.333175659179688" d="0.26446533203125" tx="83.8" ty="135.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.65" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013397216796875" b="-0.399520874023438" c="-0.424728393554688" d="0.023834228515625" tx="93.15" ty="171.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013397216796875" b="-0.399520874023438" c="-0.424728393554688" d="0.023834228515625" tx="93.15" ty="171.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013397216796875" b="-0.399520874023438" c="-0.424728393554688" d="0.023834228515625" tx="93.15" ty="171.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右大腿" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.391433715820313" b="-0.0782318115234375" c="-0.08038330078125" d="0.418670654296875" tx="54.55" ty="86.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.45" y="14.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388473510742188" b="-0.0918426513671875" c="-0.0949249267578125" d="0.415603637695313" tx="78.8" ty="89.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.5" y="14.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.38592529296875" b="-0.102066040039063" c="-0.105865478515625" d="0.4129638671875" tx="95.05" ty="95.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.65" y="14.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.393600463867188" b="0.0666961669921875" c="0.0744171142578125" d="0.419769287109375" tx="90.65" ty="119.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.6" y="14.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.393600463867188" b="0.0666961669921875" c="0.0744171142578125" d="0.419769287109375" tx="90.65" ty="119.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.6" y="14.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.393600463867188" b="0.0666961669921875" c="0.0744171142578125" d="0.419769287109375" tx="90.65" ty="119.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.6" y="14.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.38671875" b="-0.097686767578125" c="-0.097686767578125" d="0.38671875" tx="70.8" ty="77.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3321533203125" b="-0.220840454101563" c="-0.220840454101563" d="0.3321533203125" tx="97.7" ty="90.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.259796142578125" b="-0.302642822265625" c="-0.302642822265625" d="0.259796142578125" tx="113.65" ty="103.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34490966796875" b="-0.2003173828125" c="-0.2003173828125" d="0.34490966796875" tx="111.6" ty="122.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34490966796875" b="-0.2003173828125" c="-0.2003173828125" d="0.34490966796875" tx="111.6" ty="122.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34490966796875" b="-0.2003173828125" c="-0.2003173828125" d="0.34490966796875" tx="111.6" ty="122.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左大腿" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.325576782226563" b="0.231674194335938" c="0.238632202148438" d="0.35198974609375" tx="65.25" ty="83.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.9" y="8.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.316207885742188" b="0.244308471679688" c="0.252304077148438" d="0.342330932617188" tx="87.65" ty="90.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.85" y="8.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.189605712890625" b="0.351760864257813" c="0.369674682617188" d="0.210220336914063" tx="97.15" ty="96.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.05" y="8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.142288208007813" b="0.373397827148438" c="0.400726318359375" d="-0.142379760742188" tx="88.2" ty="123.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.95" y="7.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.142288208007813" b="0.373397827148438" c="0.400726318359375" d="-0.142379760742188" tx="88.2" ty="123.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.95" y="7.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.142288208007813" b="0.373397827148438" c="0.400726318359375" d="-0.142379760742188" tx="88.2" ty="123.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.95" y="7.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.38629150390625" b="0.0288238525390625" c="0.0289764404296875" d="0.3857421875" tx="70.85" ty="9.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.1" y="16.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.321426391601563" b="-0.216171264648438" c="-0.215713500976563" d="0.321090698242188" tx="135.75" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.1" y="16.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.250732421875" b="-0.295257568359375" c="-0.294723510742188" d="0.250534057617188" tx="162.85" ty="69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.1" y="16.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.33392333984375" b="-0.196319580078125" c="-0.195892333984375" d="0.33355712890625" tx="146.8" ty="73.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.15" y="16.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3873291015625" b="-0.0032501220703125" c="-0.0030670166015625" d="0.386810302734375" tx="139.35" ty="64.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.1" y="48.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3873291015625" b="-0.0032501220703125" c="-0.0030670166015625" d="0.386810302734375" tx="139.35" ty="64.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.1" y="48.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上臂" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347305297851563" b="-0.193878173828125" c="-0.193878173828125" d="0.347305297851563" tx="57.55" ty="30.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.118560791015625" b="-0.379684448242188" c="-0.379684448242188" d="0.118560791015625" tx="113.15" ty="54.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.25" y="48.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.011138916015625" b="-0.397613525390625" c="-0.397613525390625" d="0.011138916015625" tx="138.15" ty="73.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.2" y="48.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.141342163085938" b="-0.371810913085938" c="-0.371810913085938" d="0.141342163085938" tx="124.85" ty="85.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="48.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.141342163085938" b="-0.371810913085938" c="-0.371810913085938" d="0.141342163085938" tx="124.85" ty="85.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="48.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.141342163085938" b="-0.371810913085938" c="-0.371810913085938" d="0.141342163085938" tx="124.85" ty="85.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="48.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="腹部" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/腹部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392242431640625" b="-0.0718536376953125" c="-0.0718536376953125" d="0.392242431640625" tx="72.8" ty="54.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/腹部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.263870239257813" b="-0.298980712890625" c="-0.298980712890625" d="0.263870239257813" tx="109.55" ty="80.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/腹部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.172882080078125" b="-0.359344482421875" c="-0.359344482421875" d="0.172882080078125" tx="127.75" ty="97.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/腹部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.281494140625" b="-0.282455444335938" c="-0.282455444335938" d="0.281494140625" tx="122.85" ty="111.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/腹部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.281494140625" b="-0.282455444335938" c="-0.282455444335938" d="0.281494140625" tx="122.85" ty="111.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/腹部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.281494140625" b="-0.282455444335938" c="-0.282455444335938" d="0.281494140625" tx="122.85" ty="111.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="胸口" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/胸口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3984375" b="-0.009185791015625" c="-0.009185791015625" d="0.3984375" tx="72.4" ty="29"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/胸口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3074951171875" b="-0.253555297851563" c="-0.253555297851563" d="0.3074951171875" tx="124.75" ty="60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/胸口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.227188110351563" b="-0.32745361328125" c="-0.32745361328125" d="0.227188110351563" tx="147.75" ty="82"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/胸口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.322280883789063" b="-0.234466552734375" c="-0.234466552734375" d="0.322280883789063" tx="136.75" ty="90.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/胸口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.322280883789063" b="-0.234466552734375" c="-0.234466552734375" d="0.322280883789063" tx="136.75" ty="90.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/胸口" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.322280883789063" b="-0.234466552734375" c="-0.234466552734375" d="0.322280883789063" tx="136.75" ty="90.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3585205078125" b="-0.171035766601563" c="-0.171035766601563" d="0.3585205078125" tx="103.95" ty="91.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.373291015625" b="-0.135757446289063" c="-0.135757446289063" d="0.373291015625" tx="137.55" ty="117.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.322479248046875" b="-0.231918334960938" c="-0.231918334960938" d="0.322479248046875" tx="144.45" ty="141"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.380828857421875" b="-0.112899780273438" c="-0.112899780273438" d="0.380828857421875" tx="153.05" ty="147.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.272323608398438" b="0.288284301757813" c="0.288284301757813" d="0.272323608398438" tx="177.15" ty="95.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1343994140625" b="0.373779296875" c="0.373779296875" d="-0.1343994140625" tx="148.65" ty="51.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200439453125" b="0.342269897460938" c="0.342269897460938" d="0.200439453125" tx="173.7" ty="78.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.391830444335938" b="0.0638580322265625" c="0.0638580322265625" d="0.391830444335938" tx="175" ty="114.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2998046875" b="-0.260574340820313" c="-0.260574340820313" d="0.2998046875" tx="150.05" ty="146.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左下臂" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.334121704101563" b="-0.214874267578125" c="-0.214874267578125" d="0.334121704101563" tx="102.75" ty="78"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.353240966796875" b="-0.181777954101563" c="-0.181777954101563" d="0.353240966796875" tx="135.1" ty="104.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.290695190429688" b="-0.270767211914063" c="-0.270767211914063" d="0.290695190429688" tx="145.65" ty="127.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363601684570313" b="-0.160049438476563" c="-0.160049438476563" d="0.363601684570313" tx="149.85" ty="134.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.306686401367188" b="0.251541137695313" c="0.251541137695313" d="0.306686401367188" tx="163.25" ty="92.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.086212158203125" b="0.387802124023438" c="0.387802124023438" d="-0.086212158203125" tx="140.3" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.242141723632813" b="0.314132690429688" c="0.314132690429688" d="0.242141723632813" tx="160.5" ty="77.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396957397460938" b="0.013885498046875" c="0.013885498046875" d="0.396957397460938" tx="168.85" ty="106.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.264572143554688" b="-0.29632568359375" c="-0.29632568359375" d="0.264572143554688" tx="152.45" ty="133.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上臂" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.397171020507813" b="-0.0151214599609375" c="0.0151214599609375" d="0.397171020507813" tx="64" ty="29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.1" y="35.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372772216796875" b="0.137893676757813" c="-0.137893676757813" d="0.372772216796875" tx="113.25" ty="54.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.25" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.321395874023438" b="0.23382568359375" c="-0.23382568359375" d="0.321395874023438" tx="138.3" ty="73.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.3" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.38043212890625" b="0.115066528320313" c="-0.115066528320313" d="0.38043212890625" tx="124.9" ty="85.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.25" y="35.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.273818969726563" b="-0.287185668945313" c="0.287185668945313" d="0.273818969726563" tx="110.3" ty="97"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.2" y="35.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.132431030273438" b="-0.374740600585938" c="0.374740600585938" d="-0.132431030273438" tx="115.35" ty="110.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.35" y="35.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.111312866210938" b="-0.381179809570313" c="0.381179809570313" d="0.111312866210938" tx="109.3" ty="101.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.4" y="35.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.313247680664063" b="-0.243576049804688" c="0.243576049804688" d="0.313247680664063" tx="109.6" ty="89.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.35" y="35.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.39715576171875" b="-0.01507568359375" c="0.01507568359375" d="0.39715576171875" tx="116.45" ty="79.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.35" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手刀" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375808715820313" b="0.650772094726563" c="0.553482055664063" d="-0.319656372070313" tx="77.15" ty="64.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.436614990234375" b="0.611648559570313" c="0.52020263671875" d="-0.371337890625" tx="108.25" ty="93.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="1.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25433349609375" b="0.707138061523438" c="0.601425170898438" d="-0.216323852539063" tx="122.85" ty="109.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.47283935546875" b="0.584091186523438" c="0.496749877929688" d="-0.402175903320313" tx="122.35" ty="125.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="1.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.683349609375" b="-0.31146240234375" c="-0.264907836914063" d="-0.5811767578125" tx="150.35" ty="115.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="1.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.19091796875" b="-0.726837158203125" c="-0.618179321289063" d="-0.162353515625" tx="148.85" ty="89.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="1.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.680007934570313" b="-0.317657470703125" c="-0.270187377929688" d="-0.578338623046875" tx="148.55" ty="99.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="1.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.734481811523438" b="0.154373168945313" c="0.13128662109375" d="-0.624679565429688" tx="146.1" ty="116.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.188247680664063" b="0.727523803710938" c="0.618743896484375" d="-0.160140991210938" tx="131.35" ty="113.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 19" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="29" keyMode="9728" soundName="方舟指挥官/2.音效文件夹/sound321.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 20" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="18" keyMode="9728" soundName="方舟指挥官/2.音效文件夹/sound328.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,749 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1743587731">
+  <timeline>
+    <DOMTimeline name="asLoader" currentFrame="77">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" name="锁定root" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="引擎" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" name="通信" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" name=" 逻辑系统分区" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" name="逻辑" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="6" name="展现" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" duration="13" name="加载运行2" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="13" name="实验新xmlloader" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" duration="17" name="新jsonloader" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="97" duration="11" name="卸载影片剪辑" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="label2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" name=" init" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" name="systems" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" name="preload" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="6" name="load" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" name="kill" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="66" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
+        <DOMLayer name="load脚本1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//所有_root字段指向主文件的_root
+this._lockroot = false;
+_root.stop();
+
+function 打印加载内容(str){
+	_root.加载内容文本.text = str;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[打印加载内容("加载游戏代码……");
+
+#include "../引擎/引擎_aka_作弊码.as"
+#include "../引擎/引擎_fs_eval解析器.as"
+#include "../引擎/引擎_fs_常用工具函数.as"
+#include "../引擎/引擎_fs_调试模式.as"
+#include "../引擎/引擎_fs_随机数引擎.as"
+#include "../引擎/引擎_lsy_层级管理器.as"
+#include "../引擎/引擎_lsy_常数.as"
+#include "../引擎/引擎_lsy_等级与经验值.as"
+#include "../引擎/引擎_lsy_技能系统.as"
+#include "../引擎/引擎_lsy_战宠系统.as"
+#include "../引擎/引擎_鸡蛋_lsy_物品系统.as"
+#include "../引擎/引擎_lsy_声音系统.as"
+#include "../引擎/引擎_lsy_基建系统.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[打印加载内容("加载通信代码……");
+
+#include "../通信/通信_fs_lsy_XML数据解析.as"
+#include "../通信/通信_fs_本地服务器.as"
+#include "../通信/通信_fs_帧计时器.as"
+#include "../通信/通信_lsy_存档迁移.as"
+#include "../通信/通信_lsy_原版存档系统.as"
+#include "../通信/通信_鸡蛋_XML与JSON解析.as"
+#include "../通信/通信_鸡蛋_任务系统.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//用新版jsonLoader加载任务数据
+打印加载内容("加载任务数据……");
+
+import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
+
+//暂停外置大脑以等待任务数据加载完毕
+this.stop();
+var asloader = this;
+
+var taskloader = TaskDataLoader.getInstance();
+taskloader.loadTaskData(
+    function(data:Object):Void {
+        trace("主程序：任务数据加载成功！");
+		asloader.rawTaskData = data;
+		asloader.play();
+    },
+    function():Void {
+        trace("主程序：任务数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
+
+//暂停外置大脑以等待任务数据加载完毕
+this.stop();
+var asloader = this;
+
+var textloader = TaskTextLoader.getInstance();
+textloader.loadTaskText(
+    function(data:Object):Void {
+        trace("主程序：任务文本加载成功！");
+		asloader.rawTextData = data;
+		asloader.play();
+    },
+    function():Void {
+        trace("主程序：任务文本加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//在任务数据和任务文本皆加载完成后配置数据
+org.flashNight.arki.task.TaskUtil.ParseTaskData(this.rawTaskData, this.rawTextData);
+this.rawTaskData = null;
+this.rawTextData = null;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[打印加载内容("加载佣兵数据……");
+
+#include "../逻辑系统分区/系统文件/逻辑系统分区_初始化.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//#include "../逻辑系统分区/任务系统_兼容.as"
+#include "../逻辑系统分区/佣兵系统_兼容.as"
+//#include "../逻辑系统分区/关卡系统_兼容.as"
+#include "../逻辑系统分区/兵种系统_兼容.as"
+#include "../逻辑系统分区/商城系统_兼容.as"
+#include "../逻辑系统分区/商店系统_兼容.as"
+//#include "../逻辑系统分区/物品系统_兼容.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("preload");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化1.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("load");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化2.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("kill");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[打印加载内容("加载逻辑代码……");
+
+#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化3.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="12" name="单位函数" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[打印加载内容("加载逻辑代码……");
+
+#include "../逻辑/单位函数/单位函数_aka_lsy_使用药剂.as"
+#include "../逻辑/单位函数/单位函数_aka_升空函数.as"
+#include "../逻辑/单位函数/单位函数_fs_ai与特效通用函数.as"
+#include "../逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as"
+#include "../逻辑/单位函数/单位函数_fs_玩家装备配置.as"
+#include "../逻辑/单位函数/单位函数_fs_装备生命周期配置.as"
+#include "../逻辑/单位函数/单位函数_fs_装备引用配置.as"
+#include "../逻辑/单位函数/单位函数_fs_佣兵ai.as"
+#include "../逻辑/单位函数/单位函数_fs_佣兵缓存.as"
+#include "../逻辑/单位函数/单位函数_fs_佣兵加血加蓝.as"
+#include "../逻辑/单位函数/单位函数_lsy_敌人ai.as"
+#include "../逻辑/单位函数/单位函数_lsy_敌人模板迁移.as"
+#include "../逻辑/单位函数/单位函数_lsy_敌人特殊函数.as"
+#include "../逻辑/单位函数/单位函数_lsy_主角射击函数.as"
+#include "../逻辑/单位函数/单位函数_lsy_主角行走状态机.as"
+#include "../逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as"
+#include "../逻辑/单位函数/单位函数_lsy_主角技能.as"
+#include "../逻辑/单位函数/单位函数_aka_战宠进阶.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[打印加载内容("加载杂项数据……");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置战队信息("data/hybrid_mercenaries/teams.xml");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载随机名称库("data/hybrid_mercenaries/name.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置佣兵随机对话("data/hybrid_mercenaries/dialogues.xml");
+_root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues.xml");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置NPC对话("data/dialogues/npc_dialogues.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置子弹映射("data/items/bullets_cases.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置发型库("data/items/hairstyle.xml");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.色彩引擎.加载并配置色彩预设("data/environment/color_engine_preset.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置宠物信息("data/merc/pets.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="64" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置技能表("data/skills/skills.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="65" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载过场背景与文本("data/stages/loading_data.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
+
+打印加载内容("加载物品数据……");
+
+// 获取 ItemDataLoader 实例
+var ItemDataLoader:ItemDataLoader = ItemDataLoader.getInstance();
+
+// 加载物品数据
+ItemDataLoader.loadItemData(
+    function(combinedData:Object):Void {
+        trace("主程序：物品数据加载成功！");
+        // 在此处处理合并后的物品数据
+		var itemDataDict = new Object();
+		var itemDataArray = new Array();
+		var itemNamesByID = new Object();
+		var maxID = 0;
+		var informationMaxValueDict = new Object();
+		for(var i in combinedData){
+			var itemData = combinedData[i];
+			itemDataDict[itemData.name] = itemData;
+			itemNamesByID[itemData.id] = itemData.name;
+			itemDataArray.push(itemData);
+			if(itemData.id > maxID) maxID = itemData.id;
+			if(itemData.use =="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
+		}
+		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
+            return a.id - b.id; // Numeric comparison
+        });
+		org.flashNight.arki.item.ItemUtil.itemDataDict = itemDataDict;
+		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
+		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
+		org.flashNight.arki.item.ItemUtil.maxID = maxID;
+		org.flashNight.arki.item.ItemUtil.informationMaxValueDict = informationMaxValueDict;
+		_root.物品属性列表 = itemDataDict;
+		_root.物品属性数组 = itemDataArray;
+		_root.id物品名对应表 = itemNamesByID;
+		_root.物品最大id = maxID;
+		_root.物品总数 = _root.itemDataDict.length;
+    },
+    function():Void {
+        trace("主程序：物品数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
+//import org.flashNight.gesh.object.ObjectUtil;
+
+// 获取 EnemyPropertiesLoader 实例
+var enemyPropertiesLoader:EnemyPropertiesLoader = EnemyPropertiesLoader.getInstance();
+
+// 加载敌人属性数据
+enemyPropertiesLoader.loadEnemyProperties(
+    function(combinedData:Object):Void {
+        trace("主程序：敌人属性数据加载成功！");
+        //trace("合并后的数据: " + ObjectUtil.toString(combinedData));
+        // 在此处处理合并后的敌人属性数据
+		_root.敌人属性表 = combinedData;
+    },
+    function():Void {
+        trace("主程序：敌人属性数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="70" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader;
+
+var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getInstance();
+
+材料大全loader.loadMaterialDictionary(
+    function(data:Object):Void {
+        trace("主程序：材料大全数据加载成功！");
+		if(!_root.图鉴信息) _root.图鉴信息 = new Object();
+		_root.图鉴信息.材料大全 = data.Material;
+    },
+    function():Void {
+        trace("主程序：材料大全数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.InformationDictionaryLoader;
+
+var 情报信息loader:InformationDictionaryLoader = InformationDictionaryLoader.getInstance();
+
+情报信息loader.loadInformationDictionary(
+    function(data:Object):Void {
+        trace("主程序：情报信息数据加载成功！");
+		if(!_root.图鉴信息) _root.图鉴信息 = new Object();
+		_root.图鉴信息.情报信息 = new Object();
+		_root.图鉴信息.情报显示位置表 = new Object();
+		for(var i = 0; i < data.Item.length; i++){
+			var item = data.Item[i];
+			var info = item.Information;
+			if(isNaN(info.length)){
+				item.Information = [info];
+			}
+			_root.图鉴信息.情报信息[item.Name] = item;
+			_root.图鉴信息.情报显示位置表[item.Index] = item.Name;
+		}
+    },
+    function():Void {
+        trace("主程序：情报信息数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.StageInfoLoader;
+import org.flashNight.gesh.object.ObjectUtil;
+
+// 获取 StageInfoLoader 实例
+var StageInfoLoader:StageInfoLoader = StageInfoLoader.getInstance();
+
+// 加载关卡信息
+StageInfoLoader.loadStageInfo(
+    function(combinedData:Object):Void {
+        trace("主程序：关卡信息加载成功！");
+        _root.StageInfoDict = combinedData;
+    },
+    function():Void {
+        trace("主程序：关卡信息加载失败！");
+    }
+);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.StageEnvironmentLoader;
+var stage_env_loader:StageEnvironmentLoader = StageEnvironmentLoader.getInstance();
+
+stage_env_loader.loadStageEnvironment(
+    function(data:Object):Void {
+        trace("主程序：关卡环境数据加载成功！");
+		_root.配置关卡环境数据(data);
+    },
+    function():Void {
+        trace("主程序：关卡环境数据加载失败！");
+    }
+);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="74" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.SceneEnvironmentLoader;
+var scene_env_loader:SceneEnvironmentLoader = SceneEnvironmentLoader.getInstance();
+
+scene_env_loader.loadSceneEnvironment(
+    function(data:Object):Void {
+        trace("主程序：场景环境数据加载成功！");
+		_root.配置场景环境数据(data);
+    },
+    function():Void {
+        trace("主程序：场景环境数据加载失败！");
+    }
+);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var infra_loader = org.flashNight.gesh.xml.LoadXml.InfrastructureLoader.getInstance();
+
+infra_loader.loadInfrastructure(
+    function(data:Object):Void {
+		trace("主程序：基建项目数据加载成功！");
+		var infrastructureDict = {};
+		var infrastructureList = [];
+		for(var i=0; i<data.Infrastructure.length; i++){
+			var project = data.Infrastructure[i];
+			if(project.Level != null){
+				if(!project.Level.length){
+					project.Level = [project.Level];
+				}
+				for(var i = 0; i < project.Level.length; i++){
+					var lvl = project.Level[i];
+					if(lvl.Material != null && !lvl.Material.length){
+						lvl.Material = [lvl.Material];
+					}
+				}
+			}
+			infrastructureDict[project.Name] = project;
+			infrastructureList.push(project.Name);
+		}
+		if(_root.基建系统 == null) _root.基建系统 = new Object();
+		_root.基建系统.dict = infrastructureDict;
+		_root.基建系统.nameList = infrastructureList;
+    },
+    function():Void {
+        trace("主程序：基建项目数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var npcskillloader = org.flashNight.gesh.json.LoadJson.NPCSkillLoader.getInstance();
+npcskillloader.loadNPCSkills(
+    function(data:Object):Void {
+		trace("主程序：NPC技能数据加载成功！");
+		_root.NPC技能表 = data;
+    },
+    function():Void {
+        trace("主程序：NPC技能数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="81" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var craftinglistloader = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
+
+//暂停外置大脑以等待任务数据加载完毕
+this.stop();
+var asloader = this;
+
+craftinglistloader.loadCraftingList(
+    function(data:Object):Void {
+		trace("主程序：合成表数据加载成功！");
+		var carftingDict = {};
+		for(var category in data){
+			var list = data[category];
+			for(var i = 0; i < list.length; i++){
+				carftingDict[list[i].name] = list[i];
+			}
+		}
+		_root.改装清单 = data;
+		_root.改装清单对象 = carftingDict;
+		asloader.play();
+    },
+    function():Void {
+        trace("主程序：合成表数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="97" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.play();
+this.stop();
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本1.5" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" duration="65" name="装备函数" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/装备函数/通用装备函数.as"
+#include "../逻辑/装备函数/装备函数列表.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本2" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="64" name="功能函数" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/功能函数/功能函数_fs_兵器攻击检测.as"
+#include "../逻辑/功能函数/功能函数_fs_状态机用函数.as"
+#include "../逻辑/功能函数/功能函数_fs_导弹模板.as"
+#include "../逻辑/功能函数/功能函数_fs_新弹壳系统.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本3" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="63" name="关卡系统" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/关卡系统/关卡系统_fs_佣兵刷新系统.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_场景转换.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_地图元件.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_后景.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_限制系统.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本4" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="62" name="战斗系统" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/战斗系统/战斗系统_aka_特殊闪避计算函数.as"
+#include "../逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"
+#include "../逻辑/战斗系统/战斗系统_fs_lsy_抽象碰撞检测.as"
+#include "../逻辑/战斗系统/战斗系统_fs_冲击力系统.as"
+#include "../逻辑/战斗系统/战斗系统_fs_减伤系统.as"
+#include "../逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+#include "../逻辑/战斗系统/战斗系统_lsy_消弹判定.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本5" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="61" name="UI交互" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../展现/UI交互/UI交互_fs_按键设定.as"
+#include "../展现/UI交互/UI交互_fs_个人信息.as"
+#include "../展现/UI交互/UI交互_fs_玩家信息界面.as"
+#include "../展现/UI交互/UI交互_fs_经济面板.as"
+#include "../展现/UI交互/UI交互_lsy_UI管理.as"
+#include "../展现/UI交互/UI交互_lsy_对话文本.as"
+#include "../展现/UI交互/UI交互_lsy_商城系统.as"
+#include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
+#include "../展现/UI交互/UI交互_lsy_任务栏UI.as"
+#include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
+#include "../展现/UI交互/UI交互_无名氏_改造系统.as"
+#include "../展现/UI交互/UI交互_aka_健身房训练.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本6" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="60" name="视觉系统" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../展现/视觉系统/视觉系统_fs_打击数字池.as"
+#include "../展现/视觉系统/视觉系统_fs_画面效果控制生成.as"
+#include "../展现/视觉系统/视觉系统_fs_天气系统.as"
+#include "../展现/视觉系统/视觉系统_fs_绘图处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_效果处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_光照处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_刀光处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_显示列表引擎.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

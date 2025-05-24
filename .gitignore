@@ -1,0 +1,27 @@
+# Build and Release Folders
+bin-debug/
+bin-release/
+[Oo]bj/
+# [Bb]in/
+
+# Other files and folders
+.settings/
+
+# Executables
+# *.swf
+*.air
+*.ipa
+*.apk
+恢复_*.fla
+~$*.xlsx
+~$*.docx
+~*.tmp
+
+# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
+# should NOT be excluded as they contain compiler settings and other important
+# information for Eclipse / Flash Builder.
+tools/Local Server/logs
+/.vs
+/新建文件
+恢复*/
+flashswf/arts/new/阿特拉斯素材.swd

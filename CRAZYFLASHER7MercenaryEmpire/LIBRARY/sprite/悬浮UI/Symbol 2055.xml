@@ -1,0 +1,292 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2055" itemID="6597607e-00000a89" lastModified="1739633802">
+  <timeline>
+    <DOMTimeline name="Symbol 2055" currentFrame="1">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#ADC239">
+          <frames>
+            <DOMFrame index="0" duration="10" name="初始化" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="50" name="开始计时" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#B4A4D3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 是否复活初始化()
+{
+	this._visible = 1;
+	this.gotoAndStop("开始计时");
+}
+function 消耗一个物品(名称)
+{
+	iii = 0;
+	while (iii < _root.物品栏总数)
+	{
+		if (_root.物品栏[iii][0] == 名称)
+		{
+			if (_root.物品栏[iii][1] > 1)
+			{
+				使用复活币();
+				_root.排列物品图标();
+				return true;
+			}
+			if (_root.物品栏[iii][1] == 1)
+			{
+				使用复活币();
+				解除物品栏装备();
+				_root.排列物品图标();
+				return true;
+			}
+			_root.发布消息(_root.获得翻译("没有复活币！"));
+			解除物品栏装备();
+			_root.排列物品图标();
+			return false;
+		}
+		iii++;
+	}
+}
+function 使用复活币()
+{
+	_root.gameworld[_root.控制目标].hp = _root.gameworld[_root.控制目标].hp满血值;
+	_root.gameworld[_root.控制目标].mp = _root.gameworld[_root.控制目标].mp满血值;
+	_root.gameworld[_root.控制目标].动画完毕();
+	_root.玩家信息界面.刷新hp显示();
+	_root.玩家信息界面.刷新mp显示();
+	if (_root.关卡结束界面.mytext == _root.获得翻译("你受了重伤……"))
+	{
+		_root.关卡结束界面._visible = 0;
+	}
+	this.gotoAndStop("消失");
+	_root.物品栏[iii][1]--;
+	_root.效果("药剂动画",_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,100);
+}
+function 解除物品栏装备()
+{
+	_root.发布消息(_root.物品栏[iii][0] + _root.获得翻译("耗尽！"));
+	_root.物品栏[iii] = ["空", 0, 0];
+}
+stop();
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+_root.全部翻译(_root.关卡结束界面);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = false;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F9A24E">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2054" centerPoint3DX="177.85" centerPoint3DY="150.7">
+                  <matrix>
+                    <Matrix tx="124.7" ty="70.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#67819F">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2039" centerPoint3DX="123.45" centerPoint3DY="168.4">
+                  <matrix>
+                    <Matrix tx="84.45" ty="155.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	gotoAndStop(1);
+	if(_root.限制系统.DisableResurrection){
+		_root.发布消息("无法使用复活币！");
+		_parent.gotoAndStop("消失");
+		return;
+	}
+	if (_root.itemAcquire("复活币", 1))
+	{
+		_parent.使用复活币();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("没有复活币！"));
+	}
+}
+on (press) {
+	gotoAndStop(3);
+}
+on (rollOver) {
+	gotoAndStop(2);
+}
+on (rollOut) {
+	gotoAndStop(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#6457FA">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2037" symbolType="button">
+                  <matrix>
+                    <Matrix tx="218" ty="15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   if(_root.物品栏界面._visible)
+   {
+      _root.储存数据库存盘();
+   }
+   _root.保存仓库数据();
+   _root.自动存盘();
+   _root.存储金钱界面._visible = 0;
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#AED88D">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="167.1" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="33.9" ty="6.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>是否使用复活币复活？</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#AF8F5E">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="17.05" ty="16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#997880">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1894" centerPoint3DX="118" centerPoint3DY="103.45">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

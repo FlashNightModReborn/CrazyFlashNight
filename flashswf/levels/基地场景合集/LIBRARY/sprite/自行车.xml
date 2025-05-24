@@ -1,0 +1,128 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/自行车" itemID="681880b5-00000e12" lastModified="1746438386" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="自行车">
+      <layers>
+        <DOMLayer name="Script Layer" color="#C29BBA" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*
+function 非主角外观刷新()
+{
+}
+击中效果 = "飙血";
+身高转换值 = _root.身高百分比转换(this.身高);
+this._xscale = 身高转换值;
+this._yscale = 身高转换值;
+if(方向 == "左")
+{
+   this._xscale = - 身高转换值;
+   this.文字信息._xscale = - 身高转换值;
+}
+*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+Z轴坐标 = this._y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(2);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" name="描边" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/自行车素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-143.65" ty="-185.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="151.65" y="92.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/自行车素材" centerPoint3DX="7.95" centerPoint3DY="-92.7">
+                  <matrix>
+                    <Matrix tx="-143.65" ty="-185.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="151.65" y="92.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMGroup selected="true">
+                      <members>
+                        <DOMGroup selected="true">
+                          <members>
+                            <DOMGroup selected="true">
+                              <members>
+                                <DOMShape selected="true" isDrawingObject="true">
+                                  <matrix>
+                                    <Matrix a="1.3570556640625" d="1.060302734375" tx="-151.75" ty="-241.75"/>
+                                  </matrix>
+                                  <fills>
+                                    <FillStyle index="1">
+                                      <SolidColor alpha="0.301960784313725"/>
+                                    </FillStyle>
+                                  </fills>
+                                  <edges>
+                                    <Edge fillStyle1="1" edges="!771 4350[1419 4298 2347 4298!2347 4298[3278 4298 3923 4350!3923 4350[4576 4401 4576 4474!4576 4474[4576 4546 3923 4597!3923 4597[3259 4649 2347 4649!2347 4649[1438 4649 771 4597!771 4597[120 4546 120 4474!120 4474[120 4401 771 4350"/>
+                                    <Edge cubics="!2347 4298(;2963,4298 3489,4315 3923,4350q2347 4298Q3278 4298q3923 4350);"/>
+                                    <Edge cubics="!3923 4350(;4358,4384 4576,4425 4576,4474q3923 4350Q4576 4401q4576 4474);"/>
+                                    <Edge cubics="!4576 4474(;4576,4522 4358,4563 3923,4597q4576 4474Q4576 4546q3923 4597);"/>
+                                    <Edge cubics="!3923 4597(;3489,4631 2963,4649 2347,4649q3923 4597Q3259 4649q2347 4649);"/>
+                                    <Edge cubics="!2347 4649(;1732,4649 1207,4631 771,4597q2347 4649Q1438 4649q771 4597);"/>
+                                    <Edge cubics="!771 4597(;337,4563 120,4522 120,4474q771 4597Q120 4546q120 4474);"/>
+                                    <Edge cubics="!120 4474(;120,4425 337,4384 771,4350q120 4474Q120 4401q771 4350);"/>
+                                    <Edge cubics="!771 4350(;1207,4315 1732,4298 2347,4298q771 4350Q1419 4298q2347 4298);"/>
+                                  </edges>
+                                </DOMShape>
+                              </members>
+                            </DOMGroup>
+                          </members>
+                        </DOMGroup>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

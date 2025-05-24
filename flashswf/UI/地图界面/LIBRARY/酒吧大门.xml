@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="酒吧大门" itemID="67496c74-0000035e" symbolType="graphic" lastModified="1732865140">
+  <timeline>
+    <DOMTimeline name="酒吧大门">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2726" name="双开门" selected="true" centerPoint3DX="439.25" centerPoint3DY="672.35">
+                  <matrix>
+                    <Matrix a="2.11851501464844" d="2.11851501464844" tx="253.05" ty="473.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2727" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.4857177734375" b="0.137481689453125" c="-0.137481689453125" d="1.4857177734375" tx="5.5" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2728" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.48638916015625" b="0.130294799804688" c="-0.130294799804688" d="1.48638916015625" tx="138.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2111" itemID="6597607e-00000aa0" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 2111">
+      <layers>
+        <DOMLayer name="Layer 1" color="#9DAEA9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.0220947265625" c="0.006561279296875" d="0" tx="-0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FBF800" ratio="0"/>
+                        <GradientEntry color="#FF7A00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!107 -197|65 134!65 134|-67 134!-67 134|-108 -197!-108 -197|-108 -362!-108 -362|107 -362!107 -362|107 -197!100 362|-100 362!-100 362|-100 185!-100 185|100 185!100 185|100 362"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

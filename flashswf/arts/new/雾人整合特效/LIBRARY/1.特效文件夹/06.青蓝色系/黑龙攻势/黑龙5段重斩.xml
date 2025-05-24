@@ -1,0 +1,231 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/黑龙攻势/黑龙5段重斩" itemID="65470931-00000bdd" linkageExportForAS="true" linkageIdentifier="黑龙5段重斩" lastModified="1730486904" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="黑龙5段重斩" currentFrame="10">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#ADCD68" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+   if(_parent.方向 == "右")
+   {
+      _parent.移动("右",快速度);
+   }
+   else if(_parent.方向 == "左")
+   {
+      _parent.移动("左",快速度);
+   }
+}
+if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;
+_root.播放音效("sound669.mp3");]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="127.25" centerPoint3DY="-99.45">
+                  <matrix>
+                    <Matrix a="3.84062194824219" b="1.52587890625e-005" c="0.109512329101563" d="5.40185546875" tx="46.3" ty="-207.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.15" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="131.25" centerPoint3DY="-74.25">
+                  <matrix>
+                    <Matrix a="3.81997680664063" b="1.52587890625e-005" c="0.085662841796875" d="4.22515869140625" tx="51.6" ty="-158.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.2" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#C68FCC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.180816650390625" b="-0.098846435546875" c="-0.06451416015625" d="0.105804443359375" tx="59.05" ty="-150.6"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" ratio="0"/>
+                        <GradientEntry color="#99CCFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!2163 -1591[1785 -1034 976 -969!976 -969[1852 -286 2796 168!2796 168[3358 -103 3689 -646!3689 -646[4315 -1672 3883 -2876!3883 -2876[3451 -4082 2213 -4759!2213 -4759[976 -5435 -342 -5187!-342 -5187[-572 -5144 -781 -5077!-781 -5077[-906
+ -5037 -1023 -4988!-1023 -4988[-1178 -4924 -1319 -4847!-1319 -4847[-1674 -4648 -1948 -4359!-1948 -4359[-1593 -4580 -1295 -4612!-1295 -4612|-1250 -4616!-1250 -4616[-1012 -4621 -1193 -4345!-1193 -4345[-720 -4611 -527 -4596!-527 -4596[-334
+ -4581 -446 -4454!-446 -4454[-400 -4459 -351 -4463!-351 -4463|-330 -4464!-330 -4464[468 -4521 1225 -4061!1225 -4061[1990 -3595 2266 -2872!2266 -2872[2541 -2147 2163 -1591"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.21824645996094" b="0.036865234375" c="-0.0241851806640625" d="0.799179077148438" tx="82.15" ty="-341"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" alpha="0" ratio="0.227450980392157"/>
+                        <GradientEntry color="#6666FF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.100631713867188" b="-0.0654144287109375" c="-0.0704498291015625" d="0.0971527099609375" tx="126.15" ty="-113.45"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" ratio="0"/>
+                        <GradientEntry color="#99CCFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="
+!2453 -4539[2788 -4229 2927 -3933!2927 -3933[3066 -3639 3052 -3445!3052 -3445[3038 -3251 2961 -3132!2961 -3132|2962 -3121!2962 -3121[2955 -3131 2896 -3255!2896 -3255[2826 -3396 2763 -3484!2763 -3484[2684 -3595 2592 -3703!2592 -3703|2503
+ -3805!2503 -3805|2498 -3804!2498 -3804[2502 -3794 2514 -3765!2514 -3765[2534 -3719 2545 -3682!2545 -3682[2581 -3560 2545 -3510!2545 -3510[2530 -3516 2506 -3534!2506 -3534|2375 -3629!2375 -3629[2408 -3472 2414 -3343!2414 -3343[2427 -3083
+ 2372 -2932!2372 -2932[2349 -2874 2330 -2829!2330 -2829[2343 -2792 2353 -2753!2353 -2753[2569 -2005 2143 -1473!2143 -1473[1758 -992 1054 -942!1054 -942[1821 -335 2785 201!2785 201[3234 95 3599 -408!3599 -408[4315 -1395 3980 -2639!3980
+ -2639[3646 -3883 2457 -4655!2457 -4655[2237 -4798 2011 -4909!2011 -4909[2118 -4850 2453 -4539"/>
+                    <Edge fillStyle0="1" edges="
+!-1732 -13405|-1707 -13423!-1707 -13423|-1747 -13424!-1747 -13424|-1732 -13405"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0672454833984375" b="-0.0367584228515625" c="-0.04071044921875" d="0.0667724609375" tx="132.15" ty="-66.95"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" ratio="0"/>
+                        <GradientEntry color="#99CCFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!2539 -1013[2448 -967 2400 -971!2400 -971[2352 -979 2324 -978!2324 -978|2296 -993!2296 -993[2342 -1025 2395 -1164!2395 -1164[2332 -1083 2246 -1049!2246 -1049[2161 -1017 2159 -1035!2159 -1035|2132 -1050!2132 -1050[2151 -1131 2205 -1300
+!2205 -1300[2257 -1462 2272 -1485!2272 -1485[2203 -1405 2131 -1409!2131 -1409[2059 -1413 2072 -1480!2072 -1480[1634 -1021 947 -967!947 -967[1830 -275 2785 182!2785 182[3351 -92 3685 -639!3685 -639[4085 -1295 4057 -2025!4057 -2025[4052
+ -1974 3995 -1820!3995 -1820[3938 -1666 3734 -1388!3734 -1388[3531 -1110 3141 -794!3141 -794[2750 -478 2753 -591!2753 -591[2758 -705 2492 -545!2492 -545|2478 -553!2478 -553|2552 -672!2552 -672[2607 -762 2687 -958!2687 -958[2767 -1154
+ 2769 -1183!2769 -1183|2808 -1293!2808 -1293[2756 -1162 2692 -1110!2692 -1110[2629 -1061 2539 -1013"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix d="0.946868896484375" tx="-12.05" ty="12.65"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0613555908203125" b="-0.035430908203125" c="-0.0154266357421875" d="0.0267181396484375" tx="119.95" ty="-50.1"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" ratio="0"/>
+                        <GradientEntry color="#99CCFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.37652587890625" b="-0.07135009765625" c="-0.0467987060546875" d="0.24700927734375" tx="333.45" ty="-116.75"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" alpha="0" ratio="0.227450980392157"/>
+                        <GradientEntry color="#6666FF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1223 -1288S1[1520 -980 2662 -266!2662 -266[2970 -95 3038 -91!3038 -91[3446 -320 3614 -885!3614 -885[3114 -346 2731 -353!2731 -353[2700 -411 2730 -523!2730 -523[2745 -581 2776 -645!2776 -645[2796 -689 2814 -720!2814 -720[2793 -688 2737
+ -648!2737 -648[2677 -603 2601 -566!2601 -566[2522 -527 2456 -513!2456 -513[2409 -502 2377 -506!2377 -506|2321 -519!2321 -519[2245 -563 2196 -750!2196 -750[2178 -822 2170 -890!2170 -890[2165 -937 2171 -978!2171 -978|2163 -980!2163 -980
+[2101 -890 2014 -875!2014 -875[1931 -861 1841 -914!1841 -914|1816 -929!1816 -929[1924 -1006 2046 -1157!2046 -1157[2140 -1274 2206 -1397!2206 -1397[2178 -1372 2110 -1333!2110 -1333[2046 -1295 1970 -1258!1970 -1258[1789 -1170 1734 -1174
+!1734 -1174|1756 -1188!1756 -1188[1771 -1198 1812 -1245!1812 -1245|1745 -1236!1745 -1236[1679 -1227 1615 -1225!1615 -1225[1412 -1221 1223 -1288"/>
+                    <Edge fillStyle1="2" edges="
+!4543 598S2|4573 547!4573 547[4565 574 4561 603!4561 603|4543 598"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0482940673828125" b="-0.02789306640625" c="-0.0044708251953125" d="0.0077362060546875" tx="116.65" ty="-32.75"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" ratio="0"/>
+                        <GradientEntry color="#99CCFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.37652587890625" b="-0.07135009765625" c="-0.0467987060546875" d="0.24700927734375" tx="333.45" ty="-116.75"/>
+                        </matrix>
+                        <GradientEntry color="#6666FF" alpha="0" ratio="0.227450980392157"/>
+                        <GradientEntry color="#6666FF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1592 -1020[2227 -547 3016 -93!3016 -93[3116 -158 3188 -317!3188 -317[2922 -227 2656 -375!2656 -375[2646 -390 2646 -436!2646 -436[2646 -480 2654 -494!2654 -494[2632 -471 2570 -470!2570 -470[2509 -466 2142 -731!2142 -731[2138 -734 2129
+ -786!2129 -786[2120 -841 2122 -855!2122 -855[2110 -833 2068 -817!2068 -817[2025 -798 1810 -963!1810 -963[1851 -1001 1873 -1028!1873 -1028[1896 -1056 1901 -1070!1901 -1070|1897 -1076!1897 -1076[1854 -1038 1779 -1041!1779 -1041[1733 -1044
+ 1694 -1057!1694 -1057[1705 -1063 1719 -1077!1719 -1077[1729 -1088 1752 -1118!1752 -1118[1715 -1088 1649 -1102!1649 -1102[1592 -1114 1560 -1144!1560 -1144|1592 -1020"/>
+                    <Edge fillStyle1="2" edges="
+!3974 403|3964 389!3964 389[3980 376 3993 360!3993 360[3986 372 3974 403"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 1" color="#72DCFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

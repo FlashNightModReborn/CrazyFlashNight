@@ -1,0 +1,149 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务列表" itemID="67cc5739-0000079e" lastModified="1747638930" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="任务列表" currentFrame="34">
+      <layers>
+        <DOMLayer name="代码层" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="34" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="当前任务标志" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/当前任务标志" name="当前任务标志" centerPoint3DX="7.85" centerPoint3DY="60">
+                  <matrix>
+                    <Matrix tx="16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="132.8" y="123.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="首个任务出现_主线_动效" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标0">
+                  <matrix>
+                    <Matrix tx="16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="132.8" y="123.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标0" centerPoint3DX="7.85" centerPoint3DY="60">
+                  <matrix>
+                    <Matrix tx="16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="132.8" y="123.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="其它任务出现_主线_动效" color="#009999" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="24" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标1" centerPoint3DX="89.9" centerPoint3DY="184.2">
+                  <matrix>
+                    <Matrix tx="-30.1" ty="124.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标1" centerPoint3DX="136.45" centerPoint3DY="184.2">
+                  <matrix>
+                    <Matrix tx="16.45" ty="124.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="其它任务出现_主线_动效" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标2" centerPoint3DX="43.55" centerPoint3DY="308.4">
+                  <matrix>
+                    <Matrix tx="-76.45" ty="248.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标2" centerPoint3DX="136.45" centerPoint3DY="308.4">
+                  <matrix>
+                    <Matrix tx="16.45" ty="248.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="其它任务出现_主线_动效" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="34" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标3" centerPoint3DX="-2.8" centerPoint3DY="432.6">
+                  <matrix>
+                    <Matrix tx="-122.8" ty="372.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标3" centerPoint3DX="136.45" centerPoint3DY="432.6">
+                  <matrix>
+                    <Matrix tx="16.45" ty="372.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

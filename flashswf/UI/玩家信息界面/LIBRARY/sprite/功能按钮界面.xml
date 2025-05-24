@@ -1,0 +1,159 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/功能按钮界面" itemID="665210a6-00002497" lastModified="1741596805" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="功能按钮界面">
+      <layers>
+        <DOMLayer name="装备" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮" centerPoint3DX="-5.5" centerPoint3DY="12">
+                  <matrix>
+                    <Matrix a="1.07708740234375" d="1.07708740234375" tx="-19.15" ty="-7.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	控制窗体 = "物品栏界面";
+	x位置 = 344;
+	y位置 = 8;
+	注释文字 = _root.获得翻译("装备栏");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="20.2" height="14.35" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-29.25" ty="-15.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>装备</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮 任务" centerPoint3DX="-6.55" centerPoint3DY="29">
+                  <matrix>
+                    <Matrix a="1.07708740234375" d="1.07708740234375" tx="-19.15" ty="9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	注释文字 = _root.获得翻译("任务栏");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音乐" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮（临时屏蔽点歌器用）" centerPoint3DX="32" centerPoint3DY="11.9">
+                  <matrix>
+                    <Matrix a="1.07708740234375" d="1.07708740234375" tx="19.5" ty="-7.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	控制窗体 = "音乐播放界面";
+	x位置 = 8;
+	y位置 = 8;
+	注释文字 = _root.获得翻译("音乐");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="20.2" height="14.35" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="9.4" ty="-15.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>音乐</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="设置" color="#FF51A1" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮" centerPoint3DX="33.1" centerPoint3DY="29">
+                  <matrix>
+                    <Matrix a="1.07708740234375" d="1.07708740234375" tx="19.5" ty="9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   控制窗体 = "系统设置界面";
+   x位置 = 8;
+   y位置 = 8;
+   注释文字 = _root.获得翻译("系统设置");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="20.2" height="14.35" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="9.4" ty="1.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>设置</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/天蓝增幅/Symbol 351" itemID="653d644e-00000cdc" symbolType="graphic" lastModified="1698427550">
+  <timeline>
+    <DOMTimeline name="Symbol 351">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.009368896484375" d="0.009368896484375" tx="10.6" ty="10.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.341176470588235"/>
+                        <GradientEntry color="#66FFFF" ratio="0.541176470588235"/>
+                        <GradientEntry color="#66FFFF" alpha="0.4" ratio="0.635294117647059"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.823529411764706"/>
+                        <GradientEntry color="#66FFCC" alpha="0.301960784313725" ratio="0.937254901960784"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!365 205[365 268 320 313!320 313[276 357 212 357!212 357[149 357 105 313!105 313[60 268 60 205!60 205[60 142 105 98!105 98[149 53 212 53!212 53[276 53 320 98!320 98[365 142 365 205"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!213 194|410 198!410 198|492 207!492 207|410 216!410 216|213 220!213 220|16 216!16 216|-66 207!-66 207|16 198!16 198|213 194"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!222 404[218 486 213 486!213 486[207 486 203 404!203 404[200 323 200 207!200 207[200 92 203 10!203 10[207 -71 213 -71!213 -71[218 -71 222 10!222 10|225 207!225 207|222 404"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

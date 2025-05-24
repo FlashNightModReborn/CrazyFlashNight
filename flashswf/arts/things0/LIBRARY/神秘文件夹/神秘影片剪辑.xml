@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="神秘文件夹/神秘影片剪辑" itemID="66530531-00000d80" linkageExportForAS="true" linkageIdentifier="_loc119_" lastModified="1716719800">
+  <timeline>
+    <DOMTimeline name="神秘影片剪辑">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.stop();
+var _loc1_ = new LoadVars();
+_loc1_.onLoad = function(success)
+{
+	if (success)
+	{
+		_root.gotoAndStop("多语言");
+		delete _loc1_;
+	}
+	else
+	{
+		_root.unloadMovie();
+		_root.loadMovie("flashswf/UI/验证失败界面.swf")
+	}
+};
+_loc1_.load('../CrazyFlasher7StandAloneStarter.exe');]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/混沌系列素材包/尾上世莉架/人物组件/鼻子" itemID="654fb2a0-00000018" symbolType="graphic" lastModified="1728926419">
+  <timeline>
+    <DOMTimeline name="鼻子">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#D2BBAC"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!99 173S7|121 105"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!77 241S5|99 173"/>
+                    <Edge fillStyle0="1" edges="!99 173S1|193 133!193 133[218 102 193 77!193 77[175 23 125 17!125 17[43 -37 9 85!9 85[-9 127 9 169!9 169[30 234 77 241"/>
+                    <Edge cubics="!121 105(;121,105 99,173 99,173q121 105 99 173);"/>
+                    <Edge cubics="!99 173(;99,173 77,241 77,241q99 173 77 241);"/>
+                    <Edge cubics="!193 77(;210,94 210,112 193,133q193 77Q218 102q193 133);"/>
+                    <Edge cubics="!9 169(;-3,141 -3,113 9,85q9 169Q-9 127q9 85);"/>
+                    <Edge cubics="!9 85(;32,4 70,-19 125,17q9 85Q43 -37q125 17);"/>
+                    <Edge cubics="!125 17(;158,21 181,41 193,77q125 17Q175 23q193 77);"/>
+                    <Edge cubics="!77 241(;46,236 23,212 9,169q77 241Q30 234q9 169);"/>
+                    <Edge cubics="!193 133(;193,133 99,173 99,173q193 133 99 173);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

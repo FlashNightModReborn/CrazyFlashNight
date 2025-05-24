@@ -1,0 +1,1941 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/动画合集/登场动作" itemID="67ea6b3f-000005d3" lastModified="1747387268" lastUniqueIdentifier="157">
+  <timeline>
+    <DOMTimeline name="登场动作" currentFrame="1">
+      <layers>
+        <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="45" name="索降" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(_parent.登场动画);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("索降.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右臂2" color="#A5BE95" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-9.4" ty="-421.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-6.4" ty="-65.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-16.95" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-16.65" ty="-45.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477859497070313" b="-0.0395965576171875" c="-0.0395965576171875" d="0.477859497070313" tx="-23.9" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477859497070313" b="-0.0395965576171875" c="-0.0395965576171875" d="0.477859497070313" tx="-22.4" ty="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.300323486328125" b="0.373779296875" c="0.373779296875" d="0.300323486328125" tx="-9.7" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 388" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-9.4" ty="-21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右手" color="#C6E81B" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-8.7" centerPoint3DY="-393.5">
+                  <matrix>
+                    <Matrix a="0.393157958984375" d="0.39990234375" tx="-13.85" ty="-398.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.75" y="24.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-5.7" centerPoint3DY="-37.4">
+                  <matrix>
+                    <Matrix a="0.393157958984375" d="0.39990234375" tx="-10.85" ty="-42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.75" y="24.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-16.25" centerPoint3DY="-41.65">
+                  <matrix>
+                    <Matrix a="0.393157958984375" d="0.39990234375" tx="-21.4" ty="-46.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.75" y="24.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-15.95" centerPoint3DY="-17.35">
+                  <matrix>
+                    <Matrix a="0.393157958984375" d="0.39990234375" tx="-21.1" ty="-22.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.75" y="24.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-23.7" centerPoint3DY="9.4">
+                  <matrix>
+                    <Matrix a="0.393157958984375" d="0.39990234375" tx="-28.85" ty="4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.75" y="24.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-25.95" centerPoint3DY="19.9">
+                  <matrix>
+                    <Matrix a="0.393157958984375" d="0.39990234375" tx="-31.1" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.75" y="24.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-10.05" centerPoint3DY="12.35">
+                  <matrix>
+                    <Matrix a="0.36456298828125" b="-0.146011352539063" c="0.148513793945313" d="0.370819091796875" tx="-16.65" ty="9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.85" y="24.8"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="12.8" centerPoint3DY="-6.6">
+                  <matrix>
+                    <Matrix a="0.246246337890625" b="-0.306472778320313" c="0.311737060546875" d="0.250473022460938" tx="5.85" ty="-6.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="24.8"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 40" centerPoint3DX="-8.7" centerPoint3DY="6.5">
+                  <matrix>
+                    <Matrix a="0.393157958984375" d="0.39990234375" tx="-13.85" ty="1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.75" y="24.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="-100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右臂1" color="#BBCEB1" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-8.45" ty="-444.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-5.45" ty="-88.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479141235351563" b="-0.016845703125" c="-0.016845703125" d="0.479141235351563" tx="-15.25" ty="-92.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.474578857421875" b="-0.0684356689453125" c="-0.0684356689453125" d="0.474578857421875" tx="-12.75" ty="-68.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.444808959960938" b="-0.17901611328125" c="-0.17901611328125" d="0.444808959960938" tx="-13.45" ty="-40.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.444808959960938" b="-0.17901611328125" c="-0.17901611328125" d="0.444808959960938" tx="-11.95" ty="-33.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.453353881835938" b="0.1561279296875" c="0.1561279296875" d="0.453353881835938" tx="-11.5" ty="-44.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 385" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-8.45" ty="-44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="独立刀" color="#C6E81B" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-13.6" centerPoint3DY="-391.15">
+                  <matrix>
+                    <Matrix a="-0.083221435546875" b="0.110244750976563" c="0.121200561523438" d="0.091461181640625" tx="-14.45" ty="-418.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.1" y="52.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-10.6" centerPoint3DY="-35.05">
+                  <matrix>
+                    <Matrix a="-0.083221435546875" b="0.110244750976563" c="0.121200561523438" d="0.091461181640625" tx="-11.45" ty="-62"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.1" y="52.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-21.15" centerPoint3DY="-39.3">
+                  <matrix>
+                    <Matrix a="-0.083160400390625" b="0.110031127929688" c="0.120941162109375" d="0.091400146484375" tx="-21.95" ty="-66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.15" y="53.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-20.85" centerPoint3DY="-15">
+                  <matrix>
+                    <Matrix a="-0.083221435546875" b="0.110244750976563" c="0.121200561523438" d="0.091461181640625" tx="-21.7" ty="-41.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.1" y="52.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-28.6" centerPoint3DY="14.85">
+                  <matrix>
+                    <Matrix a="-0.083221435546875" b="0.110244750976563" c="0.121200561523438" d="0.091461181640625" tx="-29.45" ty="-12.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.1" y="52.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-27.1" centerPoint3DY="22.35">
+                  <matrix>
+                    <Matrix a="-0.083221435546875" b="0.110244750976563" c="0.121200561523438" d="0.091461181640625" tx="-27.95" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.1" y="52.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-22.4" centerPoint3DY="22.85">
+                  <matrix>
+                    <Matrix a="-0.137451171875" b="-0.011199951171875" c="-0.0123138427734375" d="0.151107788085938" tx="-0.55" ty="7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.45" y="52.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="4.3" centerPoint3DY="6.35">
+                  <matrix>
+                    <Matrix a="-0.126724243164063" b="0.0549468994140625" c="0.0604248046875" d="0.139297485351563" tx="18.15" ty="-17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52.55" y="53.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/元件 37" centerPoint3DX="-21.75" centerPoint3DY="16.85">
+                  <matrix>
+                    <Matrix a="-0.138031005859375" b="0.005340576171875" c="0.005889892578125" d="0.1517333984375" tx="-0.7" ty="-0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53" y="53.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#4C81EF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="-0.124099731445313" c="-0.124099731445313" d="0.463150024414063" tx="11.65" ty="-468.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="-0.124099731445313" c="-0.124099731445313" d="0.463150024414063" tx="14.65" ty="-112.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.458038330078125" b="-0.140289306640625" c="-0.140289306640625" d="0.458038330078125" tx="5.7" ty="-116.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.440689086914063" b="-0.188934326171875" c="-0.188934326171875" d="0.440689086914063" tx="10.7" ty="-90.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.383331298828125" b="-0.288040161132813" c="-0.288040161132813" d="0.383331298828125" tx="14.4" ty="-56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.444808959960938" b="-0.17901611328125" c="-0.17901611328125" d="0.444808959960938" tx="12.9" ty="-52.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 386" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="7.05" ty="-72.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#7791D2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="5.1" ty="-454.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="8.1" ty="-98.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479141235351563" b="-0.016845703125" c="-0.016845703125" d="0.479141235351563" tx="-1.4" ty="-102.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.474578857421875" b="-0.0684356689453125" c="-0.0684356689453125" d="0.474578857421875" tx="2.15" ty="-76.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.444808959960938" b="-0.17901611328125" c="-0.17901611328125" d="0.444808959960938" tx="2.95" ty="-45.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.444808959960938" b="-0.17901611328125" c="-0.17901611328125" d="0.444808959960938" tx="4.45" ty="-37.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 384" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="5.1" ty="-54.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股" color="#E2F9DA" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="7.5" ty="-418.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="10.5" ty="-62"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-0.05" ty="-66.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="0.25" ty="-41.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-7.5" ty="-12.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-6" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 381" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="7.5" ty="-18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="腰部" color="#EF9B1C" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="4.1" ty="-428.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="7.1" ty="-71.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-3.45" ty="-76.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-3.15" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477859497070313" b="-0.0395965576171875" c="-0.0395965576171875" d="0.477859497070313" tx="-9.9" ty="-21.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477859497070313" b="-0.0395965576171875" c="-0.0395965576171875" d="0.477859497070313" tx="-8.4" ty="-14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 380" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="4.1" ty="-28.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右腿2" color="#78CC3D" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-2.25" ty="-371.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="6.5" ty="-16.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478469848632813" b="-0.0297698974609375" c="-0.0297698974609375" d="0.478469848632813" tx="-2.5" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="-0.124099731445313" c="-0.124099731445313" d="0.463150024414063" tx="2.5" ty="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.463150024414063" b="-0.124099731445313" c="-0.124099731445313" d="0.463150024414063" tx="-10.5" ty="30.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.415252685546875" b="-0.239730834960938" c="-0.239730834960938" d="0.415252685546875" tx="-2.25" ty="37.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-8.6" ty="23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右脚" color="#B0F30B" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.449874877929688" b="-0.1658935546875" c="-0.1658935546875" d="0.449874877929688" tx="-2.4" ty="-339.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.449874877929688" b="-0.1658935546875" c="-0.1658935546875" d="0.449874877929688" tx="6.35" ty="16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.449859619140625" b="-0.164459228515625" c="-0.164459228515625" d="0.449859619140625" tx="-4.6" ty="10.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.449874877929688" b="-0.1658935546875" c="-0.1658935546875" d="0.449874877929688" tx="-5.4" ty="30.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47747802734375" b="-0.0438232421875" c="-0.0438232421875" d="0.47747802734375" tx="-19.65" ty="57.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47747802734375" b="-0.0438232421875" c="-0.0438232421875" d="0.47747802734375" tx="-19.65" ty="57.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-9.85" ty="53.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右腿1" color="#80CAB1" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.467758178710938" b="0.10540771484375" c="0.10540771484375" d="0.467758178710938" tx="1.65" ty="-409.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.443313598632813" b="0.182708740234375" c="0.182708740234375" d="0.443313598632813" tx="3.4" ty="-53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.43011474609375" b="0.210479736328125" c="0.210479736328125" d="0.43011474609375" tx="-8.25" ty="-58.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.38092041015625" b="0.291213989257813" c="0.291213989257813" d="0.38092041015625" tx="-11.35" ty="-33.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.381195068359375" b="0.290863037109375" c="0.290863037109375" d="0.381195068359375" tx="-23.7" ty="-7.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.381195068359375" b="0.290863037109375" c="0.290863037109375" d="0.381195068359375" tx="-15.45" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 379" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="1.65" ty="-9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左腿2" color="#3EE69A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478607177734375" b="0.027587890625" c="0.027587890625" d="0.478607177734375" tx="7.1" ty="-377.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4779052734375" b="0.037841796875" c="0.037841796875" d="0.4779052734375" tx="12.75" ty="-19.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479110717773438" b="0.014984130859375" c="0.014984130859375" d="0.479110717773438" tx="17.15" ty="-29.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476821899414063" b="-0.049652099609375" c="-0.049652099609375" d="0.476821899414063" tx="22.75" ty="-8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476821899414063" b="-0.049652099609375" c="-0.049652099609375" d="0.476821899414063" tx="15" ty="18.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.447723388671875" b="-0.171356201171875" c="-0.171356201171875" d="0.447723388671875" tx="21.5" ty="23"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 378" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4693603515625" b="0.09759521484375" c="0.09759521484375" d="0.4693603515625" tx="3.7" ty="18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左脚" color="#995CD6" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45245361328125" b="-0.1578369140625" c="-0.1578369140625" d="0.45245361328125" tx="9" ty="-345.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45245361328125" b="-0.1578369140625" c="-0.1578369140625" d="0.45245361328125" tx="16.3" ty="14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.452438354492188" b="-0.156463623046875" c="-0.156463623046875" d="0.452438354492188" tx="19.2" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45245361328125" b="-0.1578369140625" c="-0.1578369140625" d="0.45245361328125" tx="20.05" ty="22.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477890014648438" b="-0.035369873046875" c="-0.035369873046875" d="0.477890014648438" tx="11.05" ty="46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477890014648438" b="-0.035369873046875" c="-0.035369873046875" d="0.477890014648438" tx="11.05" ty="46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47076416015625" b="0.0895233154296875" c="0.0895233154296875" d="0.47076416015625" tx="9.25" ty="46.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股2" color="#FBD424" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="6.75" ty="-417.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="9.75" ty="-61.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-0.8" ty="-65.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="-0.5" ty="-41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477859497070313" b="-0.0395965576171875" c="-0.0395965576171875" d="0.477859497070313" tx="-8.15" ty="-10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477859497070313" b="-0.0395965576171875" c="-0.0395965576171875" d="0.477859497070313" tx="-6.65" ty="-3.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 376" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="6.75" ty="-17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左腿1" color="#1AC0D6" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.478302001953125" b="0.0335693359375" c="0.0335693359375" d="0.478302001953125" tx="6.75" ty="-412.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.471084594726563" b="0.089324951171875" c="0.089324951171875" d="0.471084594726563" tx="8.6" ty="-56.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.391647338867188" b="0.27532958984375" c="0.27532958984375" d="0.391647338867188" tx="-2.45" ty="-60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.330429077148438" b="0.347457885742188" c="0.347457885742188" d="0.330429077148438" tx="-3.65" ty="-36.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.295761108398438" b="0.377395629882813" c="0.377395629882813" d="0.295761108398438" tx="-13.4" ty="-6.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188018798828125" b="0.441070556640625" c="0.441070556640625" d="0.188018798828125" tx="-11.4" ty="1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 375" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="6.75" ty="-12.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左臂1" color="#EF68BF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.415252685546875" b="0.239730834960938" c="0.239730834960938" d="-0.415252685546875" tx="0.2" ty="-458.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.438034057617188" b="0.195037841796875" c="0.195037841796875" d="-0.438034057617188" tx="2.75" ty="-100.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.373977661132813" b="0.298873901367188" c="0.298873901367188" d="-0.373977661132813" tx="-2.45" ty="-103.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0590057373046875" b="0.475860595703125" c="0.475860595703125" d="-0.0590057373046875" tx="14" ty="-76.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.280197143554688" b="0.388198852539063" c="0.388198852539063" d="0.280197143554688" tx="17.85" ty="-45.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4700927734375" b="0.0945281982421875" c="0.0945281982421875" d="0.4700927734375" tx="10.05" ty="-18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4700927734375" b="0.0945281982421875" c="0.0945281982421875" d="0.4700927734375" tx="11.55" ty="-10.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 373" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="13.9" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手" color="#2686F1" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.415252685546875" b="0.239730834960938" c="0.239730834960938" d="-0.415252685546875" tx="8.25" ty="-477.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.438034057617188" b="0.195037841796875" c="0.195037841796875" d="-0.438034057617188" tx="8.75" ty="-120.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.373977661132813" b="0.298873901367188" c="0.298873901367188" d="-0.373977661132813" tx="7.05" ty="-119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0590057373046875" b="0.475860595703125" c="0.475860595703125" d="-0.0590057373046875" tx="33.95" ty="-81.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.280197143554688" b="0.388198852539063" c="0.388198852539063" d="0.280197143554688" tx="34.65" ty="-35.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4700927734375" b="0.0945281982421875" c="0.0945281982421875" d="0.4700927734375" tx="16.65" ty="1.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4700927734375" b="0.0945281982421875" c="0.0945281982421875" d="0.4700927734375" tx="18.15" ty="9.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 372" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="16.4" ty="-4.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左臂2" color="#D8F09D" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.415252685546875" b="0.239730834960938" c="0.239730834960938" d="-0.415252685546875" tx="-4.55" ty="-436.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.438034057617188" b="0.195037841796875" c="0.195037841796875" d="-0.438034057617188" tx="0.3" ty="-78.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.373977661132813" b="0.298873901367188" c="0.298873901367188" d="-0.373977661132813" tx="-9.35" ty="-84.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0590057373046875" b="0.475860595703125" c="0.475860595703125" d="-0.0590057373046875" tx="-6.4" ty="-66.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4700927734375" b="0.0945281982421875" c="0.0945281982421875" d="0.4700927734375" tx="-0.85" ty="-37.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4700927734375" b="0.0945281982421875" c="0.0945281982421875" d="0.4700927734375" tx="0.65" ty="-30.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 370" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4794921875" d="0.4794921875" tx="6.75" ty="-44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="gun" color="#57BBBA" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 369" centerPoint3DX="276.65" centerPoint3DY="-567.65">
+                  <matrix>
+                    <Matrix a="0.0435333251953125" b="0.134170532226563" c="0.134170532226563" d="-0.0435333251953125" tx="-4.5" ty="-426.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 369" centerPoint3DX="279.65" centerPoint3DY="-211.55">
+                  <matrix>
+                    <Matrix a="0.0435333251953125" b="0.134170532226563" c="0.134170532226563" d="-0.0435333251953125" tx="-1.5" ty="-70.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 369" centerPoint3DX="274.1" centerPoint3DY="-204.9">
+                  <matrix>
+                    <Matrix a="0.03839111328125" b="0.135604858398438" c="0.135604858398438" d="-0.03839111328125" tx="-11.95" ty="-74.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 369" centerPoint3DX="287.1" centerPoint3DY="-150">
+                  <matrix>
+                    <Matrix a="0.0239410400390625" b="0.139007568359375" c="0.139007568359375" d="-0.0239410400390625" tx="-11.4" ty="-50.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 369" centerPoint3DX="297.1" centerPoint3DY="-48.95">
+                  <matrix>
+                    <Matrix a="-0.0096893310546875" b="0.140716552734375" c="0.140716552734375" d="0.0096893310546875" tx="-16.45" ty="-22.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 369" centerPoint3DX="298.6" centerPoint3DY="-41.45">
+                  <matrix>
+                    <Matrix a="-0.0096893310546875" b="0.140716552734375" c="0.140716552734375" d="0.0096893310546875" tx="-14.95" ty="-15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 369" centerPoint3DX="300.65" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="-0.0640869140625" b="0.125656127929688" c="0.125656127929688" d="0.0640869140625" tx="2" ty="-26.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="绳索" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-650"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-390"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-390"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999862670898438" b="-0.016571044921875" c="0.016571044921875" d="0.999862670898438" tx="10.5" ty="-380"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="绳索" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="14.5" ty="-650"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="影子" color="#408DB9" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 2" centerPoint3DX="75.6" centerPoint3DY="151.1">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-11.05" ty="64.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 2" centerPoint3DX="75.6" centerPoint3DY="151.1">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-11.05" ty="64.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

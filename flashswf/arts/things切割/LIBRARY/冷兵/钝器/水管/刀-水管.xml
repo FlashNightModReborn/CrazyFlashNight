@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/钝器/水管/刀-水管" itemID="660f68be-000018ab" linkageExportForAS="true" linkageIdentifier="刀-水管" lastModified="1718619680">
+  <timeline>
+    <DOMTimeline name="刀-水管">
+      <layers>
+        <DOMLayer name="Layer 1" color="#42E3A9" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="3.55" centerPoint3DY="242.55">
+                  <matrix>
+                    <Matrix a="1.56600952148438" d="2.447998046875" tx="-10.6" ty="206.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#E9E659" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="-9.55" centerPoint3DY="211.35">
+                  <matrix>
+                    <Matrix a="1.04100036621094" d="2.91960144042969" tx="-10.55" ty="163.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.1" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#9970E4" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="-4.7" centerPoint3DY="-34.05">
+                  <matrix>
+                    <Matrix a="0.7130126953125" d="8.39425659179688" tx="-6.8" ty="-46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#77FAF5" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/钝器/水管/水管" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

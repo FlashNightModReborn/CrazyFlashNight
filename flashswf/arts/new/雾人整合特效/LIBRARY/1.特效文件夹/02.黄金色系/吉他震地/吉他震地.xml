@@ -1,0 +1,365 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/吉他震地/吉他震地" itemID="65467407-0000073d" linkageExportForAS="true" linkageIdentifier="吉他震地" lastModified="1699117127" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="吉他震地">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#D428BA" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="126.35" centerPoint3DY="-33.6">
+                  <matrix>
+                    <Matrix a="3.36749267578125" d="1.89190673828125" tx="59" ty="-84.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.3" y="38.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="127.1" centerPoint3DY="-27.75">
+                  <matrix>
+                    <Matrix a="8.68365478515625" d="1.89190673828125" tx="-48.2" ty="-78.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.3" y="38.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="127.1" centerPoint3DY="-27.75">
+                  <matrix>
+                    <Matrix a="8.68365478515625" d="1.89190673828125" tx="-48.2" ty="-78.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.3" y="38.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="127.1" centerPoint3DY="-27.75">
+                  <matrix>
+                    <Matrix a="8.68365478515625" d="1.89190673828125" tx="-48.2" ty="-78.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.3" y="38.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="127.1" centerPoint3DY="-27.75">
+                  <matrix>
+                    <Matrix a="8.68365478515625" d="1.89190673828125" tx="-48.2" ty="-78.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.3" y="38.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#5976C3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 525" centerPoint3DX="196.1" centerPoint3DY="63.05">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="144.4" ty="-157.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="22" blurY="22" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 533" centerPoint3DX="820.3" centerPoint3DY="41.6">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="299.2" ty="-81.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#F5D8AB">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 527" centerPoint3DX="433.2" centerPoint3DY="30.75">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="193.7" ty="-66.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 531" centerPoint3DX="321.25" centerPoint3DY="7.25">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="179.15" ty="-21.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 537" centerPoint3DX="1215.75" centerPoint3DY="66.65">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="399.95" ty="-127.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 541" centerPoint3DX="1583.3" centerPoint3DY="87.2">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="498.4" ty="-146.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 543" centerPoint3DX="2031.5" centerPoint3DY="130.05">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="654.55" ty="-185.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#49F6E9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 523" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="146.8" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 523" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479080200195313" d="0.479080200195313" tx="152.4" ty="-35.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 529" centerPoint3DX="247.9" centerPoint3DY="25.1">
+                  <matrix>
+                    <Matrix a="-0.330245971679688" d="0.330245971679688" tx="157.8" ty="-81.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="47" blurY="47" color="#FFCC00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 535" centerPoint3DX="434.35" centerPoint3DY="-17.05">
+                  <matrix>
+                    <Matrix a="-1.06369018554688" d="1.06369018554688" tx="292.25" ty="-46.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 539" centerPoint3DX="443.75" centerPoint3DY="-17">
+                  <matrix>
+                    <Matrix a="-1.13442993164063" d="1.13442993164063" tx="301.65" ty="-44.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 539" centerPoint3DX="478.55" centerPoint3DY="-19.15">
+                  <matrix>
+                    <Matrix a="-1.38406372070313" d="1.38406372070313" tx="336.45" ty="-46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 545" centerPoint3DX="501.35" centerPoint3DY="-20.1">
+                  <matrix>
+                    <Matrix a="-1.56573486328125" d="1.48735046386719" tx="359.25" ty="-51.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 547" centerPoint3DX="538.4" centerPoint3DY="-8.25">
+                  <matrix>
+                    <Matrix a="-1.19517517089844" d="1.19517517089844" tx="332.3" ty="-52"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/吉他震地/Symbol 549" centerPoint3DX="581.05" centerPoint3DY="5.9">
+                  <matrix>
+                    <Matrix a="-0.977157592773438" d="0.977157592773438" tx="305.5" ty="-47.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#5D9CBC">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728" soundName="1.特效文件夹/02.黄金色系/吉他震地/sound522.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

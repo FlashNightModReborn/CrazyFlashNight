@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀-超合金战刀刃" itemID="667452ac-00000a05" linkageExportForAS="true" linkageIdentifier="刀-超合金战刀刃" lastModified="1718899519" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="刀-超合金战刀刃">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8ADE35" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置3" centerPoint3DX="-25.7" centerPoint3DY="-66.4">
+                  <matrix>
+                    <Matrix a="1.51217651367188" d="14.2964019775391" tx="-38.2" ty="-78.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#56949D" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置2" centerPoint3DX="-19.95" centerPoint3DY="46.55">
+                  <matrix>
+                    <Matrix a="1.80284118652344" d="10.6809539794922" tx="-32.45" ty="34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#7AF9F8" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置1" centerPoint3DX="-2.05" centerPoint3DY="-53">
+                  <matrix>
+                    <Matrix a="1.16571044921875" d="14.9158935546875" tx="-14.55" ty="-65.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="超合金战术刀刃" selected="true" centerPoint3DX="-12.6" centerPoint3DY="114.95">
+                  <matrix>
+                    <Matrix a="0" b="3.42767333984375" c="-3.42767333984375" d="0" tx="12.6" ty="-78.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.7" y="7.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

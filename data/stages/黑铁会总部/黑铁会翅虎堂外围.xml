@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>明矾</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>复合式军用塑料</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>醋</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk12_5_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>By Peace Or By Power</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk13_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk13_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>32</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>翅虎堂徽章</名字>
+                                <概率>25</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

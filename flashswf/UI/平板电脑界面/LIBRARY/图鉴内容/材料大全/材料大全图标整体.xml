@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图鉴内容/材料大全/材料大全图标整体" itemID="66fd9538-000002cb" lastModified="1727895092" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="材料大全图标整体">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/材料大全/材料大全文字透明" centerPoint3DX="88.5" centerPoint3DY="24">
+                  <matrix>
+                    <Matrix a="0.965988159179688" d="0.965988159179688" tx="30.1" ty="10.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="13.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/材料大全/材料大全图标透明" centerPoint3DX="15.45" centerPoint3DY="23.85">
+                  <matrix>
+                    <Matrix a="0.598556518554688" d="0.696273803710938" tx="4.55" ty="10.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.95" y="18.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/材料大全/材料大全图标" centerPoint3DX="14.85" centerPoint3DY="27.3">
+                  <matrix>
+                    <Matrix a="0.598556518554688" d="0.696273803710938" tx="3.6" ty="13.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="18.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/材料大全/材料大全文字" centerPoint3DX="86.1" centerPoint3DY="26">
+                  <matrix>
+                    <Matrix a="0.965988159179688" d="0.965988159179688" tx="28.05" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.05" y="13.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

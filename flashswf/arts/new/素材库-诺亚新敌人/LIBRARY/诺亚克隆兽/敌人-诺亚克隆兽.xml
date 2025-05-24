@@ -1,0 +1,718 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚克隆兽/敌人-诺亚克隆兽" itemID="661d26ec-00000697" linkageExportForAS="true" linkageIdentifier="敌人-诺亚克隆兽" lastModified="1747144538" lastUniqueIdentifier="43">
+  <timeline>
+    <DOMTimeline name="敌人-诺亚克隆兽" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-45&lt;/guideline&gt;&lt;guideline direction="h"&gt;11&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#B5F5B0" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="7" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="6" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="3" name="近战" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="7" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="6" name="躲闪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="4" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="5" name="击倒" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="4" name="倒地" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="5" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="100" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="8" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#A4EFED" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[起跳速度 = -3;
+
+停止机率 = 500;
+随机移动机率 = 500;
+
+攻击欲望 = 3;
+x轴攻击范围 = 100;
+y轴攻击范围 = 30;
+x轴保持距离 = 100;
+
+近战技能库 = [];
+中程技能库 = [];
+远程技能库 = [];
+超远程技能库 = [];
+横向技能库 = [];
+高空技能库 = [];
+范围外技能库 = [];
+身后技能库 = [];
+残血技能库 = [];
+斩杀技能库 = [];
+受击技能库 = [];
+
+近战技能库.push("撕裂嘶吼");
+中程技能库.push("跳跃撕咬");
+远程技能库.push("跑动捕杀");
+
+近战技能随机数 = 近战技能库.length;
+中程技能随机数 = 中程技能库.length;
+远程技能随机数 = 远程技能库.length;
+超远程技能随机数 = 超远程技能库.length;
+横向技能随机数 = 横向技能库.length;
+高空技能随机数 = 高空技能库.length;
+范围外技能随机数 = 范围外技能库.length;
+身后技能随机数 = 身后技能库.length;
+残血技能随机数 = 残血技能库.length;
+斩杀技能随机数 = 斩杀技能库.length;
+受击技能随机数 = 受击技能库.length;
+
+
+
+男_攻击呐喊_库 = [];
+男_中招呐喊_库 = [];
+男_击倒呐喊_库 = [];
+
+
+
+初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#5AD2ED" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/血条与名称/新版血条位置示意" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-126.9">
+                  <matrix>
+                    <Matrix tx="1" ty="-156.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_4" color="#CDB6B4" outline="true" useOutlineView="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" name="area" centerPoint3DX="-72.75" centerPoint3DY="-27.5">
+                  <matrix>
+                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-85.25" ty="-40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="索敌层" color="#AE8C5A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/索敌框载体" centerPoint3DX="18.95" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix a="5.33341979980469" d="0.738861083984375" ty="-122.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (this._currentframe == 1 and _root.gameworld[_parent.攻击目标].hp > 0)
+	{
+		距离X = Math.abs(_parent._x - _root.gameworld[_parent.攻击目标]._x);
+		距离Z = Math.abs(_parent.Z轴坐标 - _root.gameworld[_parent.攻击目标].Z轴坐标);
+		距离Y = 距离Z;
+		//有高空招式时激活下列内容
+		//敌方高度 = _root.gameworld[_parent.攻击目标].Z轴坐标 - _root.gameworld[_parent.攻击目标]._y;
+		if (this.hitTest(_root.gameworld[_parent.攻击目标].area) and 距离Z <= _parent.y轴攻击范围)
+		{
+			play();
+			if (random(_parent.攻击欲望) == 0)
+			{
+				/*有残血技能时激活下方内容，注意调整触发的距离X的范围
+				if(_parent.hp <  _parent.hp满血值*0.3 && 距离X >= 0 && 距离X < 500  && _parent.残血技能随机数 > 0)
+            	{
+					_parent.近战招式 =  _parent.残血技能库[random(_parent.残血技能随机数)];
+					_parent.状态改变("近战");
+				}else 
+				*/
+				/*有斩杀技能时激活下方内容，注意调整触发的距离X的范围
+				if(_root.gameworld[_parent.攻击目标].hp <  _root.gameworld[_parent.攻击目标].hp满血值*0.3  && 距离X < 600 && _parent.残血技能随机数 > 0)
+            	{
+					_parent.近战招式 =   _parent.斩杀技能库[random(_parent.斩杀技能随机数)];
+					_parent.状态改变("近战");
+				}else 
+				*/
+				if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("左");
+				}
+				else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("右");
+				}
+
+				if (距离X < 150)
+				{
+					if (_parent.近战技能随机数 > 0)
+					{
+						_parent.近战招式 = _parent.近战技能库[random(_parent.近战技能随机数)];
+						_parent.状态改变("近战");
+					}else{
+						_parent.状态改变("空手攻击");
+					}
+				}
+				else if (距离X < 230 and _parent.中程技能随机数 > 0)
+				{
+
+					_parent.近战招式 = _parent.中程技能库[random(_parent.中程技能随机数)];
+					_parent.状态改变("近战");
+				}
+				else if (_parent.远程技能随机数 > 0 and 距离X < 500 )
+				{
+					_parent.近战招式 = _parent.远程技能库[random(_parent.远程技能随机数)];
+					_parent.状态改变("近战");
+				}
+				else if (_parent.超远程技能随机数 > 0 and 距离X >= 500 )
+				{
+					_parent.近战招式 = _parent.超远程技能库[random(_parent.超远程技能随机数)];
+					_parent.状态改变("近战");
+				}
+			}
+
+		}
+		/*有高空招式时激活下方内容
+		else if (敌方高度 > 80 and _parent.高空技能随机数 > 0 and 距离Z <= _parent.y轴攻击范围 * 5)
+		{
+
+			if (random(_parent.攻击欲望) == 0)
+			{
+				if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("左");
+				}
+				else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("右");
+				}
+				//可以调整触发的距离X
+				if (距离X < 200 && 距离Z <= _parent.y轴攻击范围)
+				{
+					_parent.高空招式 = _parent.高空技能库[random(_parent.高空技能随机数)];
+					if (敌方高度 > 200 and _parent.等级 >= 50 and _parent.高空招式 == "中空连招")
+					{
+						_parent.高空招式 = "高空连招";
+					}
+					_parent.状态改变("空手跳");
+				}
+			}
+		}
+		*/
+		/*有身后招式时激活下列内容
+		else if (距离X < 130 and 距离Z <= _parent.y轴攻击范围)
+		{
+			if (_parent.身后技能随机数 > 0 and random(_parent.攻击欲望) == 0)
+			{
+				_parent.近战招式 = _parent.身后技能库[random(_parent.身后技能随机数)];
+				_parent.状态改变("近战");
+			}
+		}
+		*/
+		/*有横向招式时激活下列内容
+		else if (距离X < 220 and _parent.横向技能随机数 > 0 and 距离Z <= 90 and random(_parent.攻击欲望 * 2) == 0)
+		{
+
+			if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+			{
+				_parent.方向改变("左");
+			}
+			else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+			{
+				_parent.方向改变("右");
+			}
+			_parent.近战招式 = _parent.横向技能库[random(_parent.横向技能随机数)];
+			_parent.状态改变("近战");
+		}
+		*/
+		/*有范围外招式时激活下列内容
+		else
+		{
+			if (_parent.范围外技能随机数 > 0 and random(_parent.攻击欲望 * 15) == 0)
+			{
+				if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("左");
+				}
+				else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+				{
+					_parent.方向改变("右");
+				}
+				_parent.近战招式 = _parent.范围外技能库[random(_parent.范围外技能随机数)];
+				_parent.状态改变("近战");
+			}
+		}
+		*/
+
+	}
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="3" centerPoint3DY="2.95">
+                  <matrix>
+                    <Matrix tx="0.5" ty="0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="行走ai层" color="#A5D8F2" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="通用ai元件/行走ai载体" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/静止动作" name="man" centerPoint3DX="46.35" centerPoint3DY="-1.05">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="3.1" ty="-61.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/走路" name="man" centerPoint3DX="70.8" centerPoint3DY="-5.8">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="11.55" ty="-66"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/跑步" name="man" centerPoint3DX="57.2" centerPoint3DY="17">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-2.05" ty="-44.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/攻击动作" name="man" centerPoint3DX="-170.7" centerPoint3DY="8.9">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-7.9" ty="-54.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.刚体 = true;
+}
+onClipEvent (unload) {
+	_parent.刚体 = false;
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/普通攻击动作" name="man" centerPoint3DX="76.9" centerPoint3DY="52">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="0.95" ty="-60.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	if(_parent.等级>=65){
+		_parent.刚体 = true;
+	}
+   _parent.背枪 = true;
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+   _parent.背枪 = false;
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/静止动作" name="man" centerPoint3DX="46.55" centerPoint3DY="-1">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="3.3" ty="-61.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/被击" name="man" centerPoint3DX="65.9" centerPoint3DY="22.1">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="7.1" ty="-51.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/击飞" name="man" centerPoint3DX="61.1" centerPoint3DY="12.2">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="0.05" ty="-48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/起身" name="man" centerPoint3DX="82.6" centerPoint3DY="30.45">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="11.65" ty="-46.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/静止动作" name="man" centerPoint3DX="46.3" centerPoint3DY="-1.05">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="3.05" ty="-61.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/死亡" name="man" centerPoint3DX="135.8" centerPoint3DY="67.4">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-7.4" ty="-53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(3));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/阴影" centerPoint3DX="73.15" centerPoint3DY="88.15">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="-13.5" ty="1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="42" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

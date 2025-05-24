@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1038" itemID="6597607e-0000083e" lastModified="1720343943">
+  <timeline>
+    <DOMTimeline name="Symbol 1038">
+      <layers>
+        <DOMLayer name="Script Layer" color="#3E7CF2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+//aaa.text = "2023年7月27日\r\n优化游戏内容，修复BUG。\r\nBy Hierophantx/x TheHermit x";
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8FD34D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#51E3D4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="aaa" fontRenderingMode="device" width="736.95" height="381.95" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>2023年7月27日&#xD;优化游戏内容，修复BUG。——Hierophantx/x TheHermit x&#xD;&#xD;2023年8月11日&#xD;重置组建群，命运的齿轮开始转动。黑月雾人作为这时的唯一美术，基本每天都在画素材以替换原版过于粗糙的产物。&#xD;&#xD;2023年11月21日&#xD;重置计划1.0正式公布，无名氏接手修改游戏剧情。新的代码成员阿卡入组，四五个人开始持续发力。&#xD;&#xD;2024年2月9日&#xD;重置计划2.0正式公布。虽然人手依旧不太充裕，但还算是壮大许多，交流群人数过千，3XD，屑鱼，蓝环等人在这段时期左右先后入组。</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

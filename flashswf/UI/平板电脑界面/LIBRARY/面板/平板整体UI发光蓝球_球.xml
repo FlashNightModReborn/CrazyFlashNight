@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="面板/平板整体UI发光蓝球_球" itemID="66c49d7d-00001727" lastModified="1724161405">
+  <timeline>
+    <DOMTimeline name="平板整体UI发光蓝球_球">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#03A6FF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!117 20S2[138 40 138 69!138 69[138 98 117 117!117 117[98 137 69 137!69 137[40 137 20 117!20 117[0 98 0 69!0 69[0 40 20 20!20 20[40 0 69 0!69 0[97 0 117 20"/>
+                    <Edge cubics="!69 0(;107,0 138,32 138,69q69 0Q97 0q117 20Q138 40q138 69);"/>
+                    <Edge cubics="!138 69(;138,107 107,137 69,137q138 69Q138 98q117 117Q98 137q69 137);"/>
+                    <Edge cubics="!69 137(;30,137 0,107 0,69q69 137Q40 137q20 117Q0 98q0 69);"/>
+                    <Edge cubics="!0 69(;0,32 30,0 69,0q0 69Q0 40q20 20Q40 0q69 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

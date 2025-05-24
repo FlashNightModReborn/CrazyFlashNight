@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人信息界面素材/滑块" itemID="66dd6a74-0000091b" lastModified="1725786931">
+  <timeline>
+    <DOMTimeline name="滑块">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!0 0|0 200"/>
+                    <Edge fillStyle0="2" edges="!0 200[14 200 24 192!24 192|40 160!40 160|40 0!40 0|0 0"/>
+                    <Edge fillStyle1="1" edges="!0 200[-13 200 -23 193!-23 193|-40 160!-40 160|-40 0!-40 0|0 0"/>
+                    <Edge cubics="!0 0(;0,0 40,0 40,0q0 0 40 0);"/>
+                    <Edge cubics="!-40 0(;-40,0 0,0 0,0q-40 0 0 0);"/>
+                    <Edge cubics="!40 160(;40,160 24,192 24,192q40 160 24 192);"/>
+                    <Edge cubics="!24 192(;17,197 9,200 0,200q24 192Q14 200q0 200);"/>
+                    <Edge cubics="!-23 193(;-23,193 -40,160 -40,160q-23 193 -40 160);"/>
+                    <Edge cubics="!0 200(;-9,200 -16,198 -23,193q0 200Q-13 200q-23 193);"/>
+                    <Edge cubics="!0 0(;0,0 0,200 0,200q0 0 0 200);"/>
+                    <Edge cubics="!40 0(;40,0 40,160 40,160q40 0 40 160);"/>
+                    <Edge cubics="!-40 0(;-40,0 -40,160 -40,160q-40 0 -40 160);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

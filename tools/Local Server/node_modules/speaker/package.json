@@ -1,0 +1,44 @@
+{
+  "name": "speaker",
+  "version": "0.5.5",
+  "license": "(MIT AND LGPL-2.1-only)",
+  "description": "Output PCM audio data to the speakers",
+  "author": "Nathan Rajlich <nathan@tootallnate.net> (http://tootallnate.net)",
+  "repository": "TooTallNate/node-speaker",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "standard && node-gyp rebuild --mpg123-backend=dummy && mocha --reporter spec"
+  },
+  "dependencies": {
+    "bindings": "^1.3.0",
+    "buffer-alloc": "^1.1.0",
+    "debug": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.14",
+    "mocha": "^6.2.2",
+    "standard": "^14.3.1"
+  },
+  "engines": {
+    "node": ">=8.6"
+  },
+  "keywords": [
+    "pcm",
+    "audio",
+    "sound",
+    "music",
+    "output",
+    "speaker",
+    "headphone",
+    "alsa",
+    "coreaudio",
+    "openal",
+    "sdl",
+    "portaudio",
+    "jack",
+    "oss",
+    "pulse",
+    "mpg123"
+  ]
+}

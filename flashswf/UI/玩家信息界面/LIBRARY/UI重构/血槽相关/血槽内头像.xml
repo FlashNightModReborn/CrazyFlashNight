@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/血槽相关/血槽内头像" itemID="6649a8eb-00001122" lastModified="1716126540" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="血槽内头像" currentFrame="1">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#5D68BC">
+          <frames>
+            <DOMFrame index="0" name="男" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="女" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8F66E5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/血槽相关/血槽内头像-男" name="man" centerPoint3DX="60.55" centerPoint3DY="64.8">
+                  <matrix>
+                    <Matrix a="0.599990844726563" d="0.599990844726563" tx="-5.2" ty="-78.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/血槽相关/血槽内头像-女" name="man" centerPoint3DX="61.2" centerPoint3DY="68.15">
+                  <matrix>
+                    <Matrix a="0.599990844726563" d="0.599990844726563" tx="-4.55" ty="-74.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

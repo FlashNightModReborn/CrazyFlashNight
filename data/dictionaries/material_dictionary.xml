@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <Material>
+    <Name>军用帆布</Name>
+    <Description>用于改装的低级材料。
+军用帆布耐用廉价，阻燃防霉，是搭建临时建筑的优秀材料。末世之中的聪明人会意识到军用帆布的多重优势。
+它不仅能用来加固帐篷、简易栅栏等基础设施，还能用来修补装备、遮蔽视线、制作防护装置等。
+也因此成为了一种相对“稳定”的交换媒介。</Description>
+    <Information>【掉落单位】军人僵尸(15%)
+【掉落关卡】黑铁会黑龙堂外围(100%)
+【掉落副本】制霸黑铁会(12.5%)</Information>
+  </Material>
+  <Material>
+    <Name>上色涂料</Name>
+    <Description>用于改装的低级材料。
+为装备上色是必需的：赋予表面色彩，便于敌我识别。
+涂料配方还能提供防火、抗菌、耐磨及物理/热防护等额外功能，增强装备在恶劣环境下的性能与耐久度。
+在末世，恰当的涂装不仅关乎生存，有时也承载着使用者对特定身份的认同或过往经历的印记。</Description>
+    <Information>【掉落关卡】深入禁区(12.5%) 第三集结点(100%)</Information>
+  </Material>
+  <Material>
+    <Name>弹簧</Name>
+    <Description>用于改装的低级材料。
+基于胡克定律利用弹性形变储存和释放能量，是机械结构中的核心部件，广泛用于枪械以及各种自制装备中。
+末世后，弹簧作为消耗品，经常因频繁使用和环境恶劣而磨损，需定期更换和修复。
+合适尺寸的弹簧更是珍贵资源。</Description>
+    <Information>【掉落单位】盗贼侏儒(15%)
+【掉落关卡】深入禁区(12.5%) 贫民窟(100%)</Information>
+  </Material>
+  <Material>
+    <Name>增效剂</Name>
+    <Description>用于改装的低级材料。
+一类能附加表面涂层的强化药剂总称，广泛应用于各种表面处理工艺，增强其耐磨性、抗腐蚀性和强度。
+部分增效剂甚至具备自修复和自适应能力，可以在遭受损伤后自动修复表面微裂纹，恢复原有的结构强度。
+现在主要用在护甲与兵器的强化提升上。</Description>
+    <Information>【掉落关卡】深入禁区(12.5%) 摇滚公园(100%)</Information>
+  </Material>
+  <Material>
+    <Name>可塑式钢板</Name>
+    <Description>用于改装的低级材料。
+战前大规模生产的高性能预制标准件，采用纳米粉末颗粒工艺将晶体结构改性为类奥氏体相。
+工艺上几乎没有限制，只需要简单的热处理即可迅速达到所需的机械性能和形状稳定性。
+易于获取，加工便捷，机械师们永远不会嫌它们多的。</Description>
+    <Information>【掉落单位】黑铁大叔(15%) 终结者(20%)
+【掉落关卡】深入禁区(12.5%) 黑铁会(100%)</Information>
+  </Material>
+  <Material>
+    <Name>战术导轨</Name>
+    <Description>用于改装的低级材料。
+这种模块化的接口系统基于New Optimized Adaptable Harmonization 协议。
+允许快速、精准地安装各种战术配件，并最大限度地兼容各类旧有导轨标准。
+虽然其起源不明，但不妨碍它成为幸存者间的事实标准。</Description>
+    <Information>【掉落单位】辫子姑娘(15%)
+【掉落关卡】深入禁区(12.5%) 闹市区(100%)</Information>
+  </Material>
+  <Material>
+    <Name>螺丝套件</Name>
+    <Description>用于改装的低级材料。
+广泛应用于机械连接中的标准化紧固件，能在高频振动、温度波动和外力冲击下提供稳固连接。
+长期使用后，磨损、疲劳及环境因素将导致紧固性能逐步衰减，其失效先兆包括：预紧力降低、界面微动、异响增加。
+规范强制周期更换，执行视资源权衡。</Description>
+    <Information>【掉落单位】终结者(25%)
+【掉落关卡】深入禁区(12.5%) 堕落城区、大学城周边、堕落城下水道入口(100%)</Information>
+  </Material>
+  <Material>
+    <Name>可充锂电池</Name>
+    <Description>用于改装的中等材料。
+基于锂离子在正负极间可逆嵌入脱嵌的电化学反应，能量密度高、循环寿命长、倍率性能好，是电气设备的理想电源。
+在末日降临带来的emp风暴中，少量锂电池没有因此损毁，因而在末日中极其抢手。
+据说联合大学在回收和修复损坏的电池单体及电路板。</Description>
+    <Information>暂无</Information>
+  </Material>
+  <Material>
+    <Name>小型液晶屏</Name>
+    <Description>用于改装的中等材料。
+末日前走入千家万户的液晶屏大多因为灾难而损坏，电子产业的消失也使得液晶屏无法再大规模生产。
+尽管如此，液晶屏的核心部件——如显示控制板、背光源、连接线等，依然具有重要的可利用价值。
+来收集并且拆解他们吧，这就是最新世代的电子扭蛋游戏。</Description>
+    <Information>【掉落单位】黑铁游锤(25%)
+【掉落关卡】深入禁区(3.5%) 基地(100%)</Information>
+  </Material>
+  <Material>
+    <Name>战术背带</Name>
+    <Description>用于改装的中等材料。
+模块化装备接口的战场适应性改造样本。通过材料替代与结构拓扑优化实现去工业化生产。
+战前采用航天级钛合金框架与选择性激光熔融技术，专为特种作战定制。
+现利用汽车安全带与金属残件即可通过热压-缝纫复合工艺重构。</Description>
+    <Information>【掉落关卡】黑铁会翅虎堂内部(100%)
+【掉落副本】制霸黑铁会(12.5%)</Information>
+  </Material>
+  <Material>
+    <Name>防沙皮革</Name>
+    <Description>用于改装的中等材料。
+现存72%为统合生产批号，灰色事件后转为民用配额，沙漠防护装备改造基材，末日后的稀缺改装资源。
+碳化硅/自修复聚合物复合结构（含锆镀膜残余）能够有效阻隔细微砂砾侵蚀并减少沙暴摩擦电荷积累。
+某些幸存者发现该材料能够通过XMAS-12-25弹道防护基准测试。</Description>
+    <Information>【掉落单位】军人僵尸、士兵奔跑僵尸(3%)
+【掉落关卡】深入禁区(3.5%) 地铁站(100%)</Information>
+  </Material>
+  <Material>
+    <Name>烈性火药</Name>
+    <Description>用于改装的中等材料。
+原材料来源广泛，通过爆轰参数整定工艺，将异构化含能材料调配成标准化输出的烈性火药单元。
+能在手工作坊环境下，通过可控爆轰波诱导枪管金属发生相变。
+也可以用于制造弹药，但子弹可没好枪稀缺。
+    </Description>
+    <Information>【掉落单位】军阀弹药兵(15%)
+【掉落关卡】深入禁区(3.5%) 游寇基地(100%)</Information>
+  </Material>
+  <Material>
+    <Name>生物催化剂</Name>
+    <Description>用于改装的中等材料。
+能极大程度降低反应能量门槛，让许多在末世条件下难以实现的化学改造变得可行。
+固定化酶载体虽具理论半衰期，但随着热力学熵增，构象漂移依旧让催化活性呈对数衰减。
+联合大学的周报显示，变异菌株比研究生早8小时适应黑暗环境。</Description>
+    <Information>【掉落关卡】深入禁区(3.5%) 断垣残壁(100%)</Information>
+  </Material>
+  <Material>
+    <Name>护手</Name>
+    <Description>用于改装的中等材料。
+贴合掌形的护手能优化握持控制，提高换势速率，并在劈、刺、格挡中提供精准反馈。
+末世之中，标准化制式护手早已消失，取而代之的是战士们因地制宜的改造产物。
+维护周期终止于使用者生物信号消失后氧化层形成阶段。</Description>
+    <Information>【掉落单位】黑铁武士(25%)</Information>
+  </Material>
+  <Material>
+    <Name>石英磨刀石</Name>
+    <Description>用于改装的中等材料。
+文明崩溃后，标准化高精度磨刀石几近绝迹，其空缺由手工筛选与拼配的残存工艺填补。
+不同目数的石英磨刀石分别用于各阶段加工：低目数用于粗磨修型，高目数专注于精磨抛光。
+每套磨具的粒度分布谱线，都是匠人独有的工艺指纹。</Description>
+    <Information>【掉落单位】黑铁刺客(15%)
+【掉落关卡】黑铁会总部边缘(100%)
+【掉落副本】制霸黑铁会(12.5%)</Information>
+  </Material>
+  <Material>
+    <Name>不锈钢材</Name>
+    <Description>用于改装的中等材料。
+曾是撑起文明穹顶的钢铁骨架，屈服强度始终高于文明重建的迫切指数。
+现今只能从废墟中搜寻到一些残留的废钢，尝试重新冶炼和锻造的过程复杂且耗时。
+炼成则钢，炼金成账单。</Description>
+    <Information>【掉落单位】黑铁重锤(25%)
+【掉落关卡】深入禁区(3.5%) 军阀临时补给点(100%)</Information>
+  </Material>
+  <Material>
+    <Name>高耐力橡胶</Name>
+    <Description>用于改装的中等材料。
+机械、载具与装备的关键柔性部件来源，广泛用于轮胎、履带、密封件与各类缓冲结构。
+这种历经末世严苛环境考验的弹性体聚合物，即使经历了严重的热氧老化，依然能在极端温差和磨损下保持结构完整性。
+经热氧老化逆转工艺，可以勉强恢复部分性能。</Description>
+    <Information>【掉落关卡】黑铁会火凤堂外围(100%)
+【掉落副本】制霸黑铁会(12.5%)</Information>
+  </Material>
+  <Material>
+    <Name>强化金属管</Name>
+    <Description>用于改装的中等材料。
+回收自旧日设备，无全新供应。经过二次强化处理以提升屈服强度和抗疲劳极限。
+是构建高负载液压或支撑结构的必需品，也是机械师用来制造高膛压武器的核心部件。
+最终是性能的爆发，还是生命的消逝，取决于它，也取决于使用者。</Description>
+    <Information>【掉落单位】精英弹药兵(25%)</Information>
+  </Material>
+  <Material>
+    <Name>复合式军用塑料</Name>
+    <Description>用于改装的中等材料。
+由多种聚合物基体与纤维/颗粒增强相复合而成，具备预设的轻质、高强、耐腐蚀以及可接受的冲击韧性。
+从步枪护木到无人机框架，从防弹插板到便携式通讯设备外壳，这种材料忠实地记录了人类将一切事物武器化的天赋。
+这或许是下一代文明能找到的，关于人类最持久的时空胶囊。</Description>
+    <Information>【掉落单位】摇滚学姐(25%)
+【掉落关卡】黑铁会翅虎堂外围(100%)
+【掉落副本】制霸黑铁会(12.5%)</Information>
+  </Material>
+  <Material>
+    <Name>透镜</Name>
+    <Description>用于改装的中等材料。
+利用材料折射率差异对光线进行汇聚或发散的精密光学元件，常被用于武器瞄准镜、侦察设备或简易聚能装置。
+末世中，完好无瑕的透镜比幸存者的希望还稀缺，机械师们的手艺决定了使用者究竟是在窥探目标，还是在提前预览自己的终点。
+清晰的视野？那不过是死亡的另一种滤镜。</Description>
+    <Information>【掉落单位】黑铁游侠(25%)</Information>
+  </Material>
+  <Material>
+    <Name>高强度合金</Name>
+    <Description>用于改装的中等材料。
+回收自战前高应力部件——工业框架、装甲底盘、机械残骸的关节节点，其设计初衷即为抵抗结构性破坏。
+由多相组织与析出相强化构成，原始性能优异，但经历末世高温冲刷与粗暴重铸后，成分比与晶粒走向已难以溯源。
+内部残余应力已是既定事实，让冲击成了统计学幻觉。</Description>
+    <Information>【掉落单位】终结者半身(10%) 终结者、黑铁重锤(15%)
+【掉落关卡】深入禁区(3.5%) 军阀前线基地(100%)</Information>
+  </Material>
+  <Material>
+    <Name>强力胶</Name>
+    <Description>用于改装的中等材料。
+高分子粘结剂的统称，依靠链间缠结、氢键与范德华力完成异质材料间的强制耦合。
+在缺乏精密机加工设备的末世，它是将工业废墟的分子碎片强制重塑为功能性实体的关键介质。
+忠诚度仅限于当前分子键的稳定，持久性？一个高分子笑话。</Description>
+    <Information>【掉落关卡】黑铁会火凤堂内部(100%)
+【掉落副本】制霸黑铁会(12.5%)</Information>
+  </Material>
+  <Material>
+    <Name>枪械内构强化套件</Name>
+    <Description>用于改装的中等材料。
+模块化的内部改造组件，通过替换关键受力部件、植入能量管线与反馈回路，构建一套集成化的运作控制结构。
+依托末世技术接口，这些更新令老旧装备获得与时代脱节的杀伤力，其运作精度与响应速率达到令人不安的高度。
+这个时代，会思考的不一定是人，有时甚至不是活物。</Description>
+    <Information>【掉落单位】军阀突击兵(15%)
+【掉落关卡】深入禁区(3.5%) 军阀据点(100%)</Information>
+  </Material>
+  <Material>
+    <Name>高级木料</Name>
+    <Description>用于改装的中等材料。
+旧时代的生态木材，经解构、重压与聚合物填充形成的复合木料。可持续设计的噱头，高强度废土应用的硬材。
+通过分子层面的重塑与压缩，其制造工艺将木质纤维的物理潜能压榨至极限，赋予其近乎钢铁的硬度和可疑的弹道防护效能。
+为绿色未来而生，却只对现在的物理定律负责。</Description>
+    <Information>暂无</Information>
+  </Material>
+  <Material>
+    <Name>动力液压杆</Name>
+    <Description>用于改装的高等材料。
+由强化合金与超高压流体精密封装的线性作动单元，一种将输入能量转化为可控超常推拉力的废土罕有组件。
+将流体压力转化为超规格推力，驱动武器在战场瞬息完成构型切换，并强硬吸收重型弹药对结构的破坏性冲击。
+向量无方向歧视，阈值无道德判断——液压系统只关心压强，崩坏交由人类承担。</Description>
+    <Information>暂无</Information>
+  </Material>
+  <Material>
+    <Name>碳纤维布料</Name>
+    <Description>用于改装的高等材料。
+由高模量碳素纤维束精密编织而成的工程结构基材。以极致的比强度与比模量，承担轻量化高应力结构的载荷。
+表层常经等离子体活化与化学接枝处理，便于与柔性导电层复合，构建可嵌入感测、控制、数据流转的装备神经。
+结构完美，化学惰性，对定义其价值的文明崩解无动于衷。</Description>
+    <Information>【掉落单位】牛仔(25%) 魔女、浮士德兄弟、lee(50%)
+【掉落关卡】深入禁区(2%)</Information>
+  </Material>
+  <Material>
+    <Name>电脑芯片</Name>
+    <Description>用于改装的高等材料。
+封装在抗干扰合金壳体内的现场可编程门阵列系统模块，具备高性能可重构处理与多协议接口能力。
+其核心资源池于军用级物理安防与多层级加密协议验证后，允许系统强制接驳并驱动近乎所有个人级设备接口。
+设计理念已不可考据，只剩使用说明在区块链中反复自我更新。</Description>
+    <Information>【掉落关卡】黑铁会黑龙堂内部(100%)
+【掉落副本】制霸黑铁会(12.5%)</Information>
+  </Material>
+  <Material>
+    <Name>传感器</Name>
+    <Description>用于改装的高等材料。
+负责采集并精密量化微幅光热声振等物理扰动，生成处理单元可解逻辑信号流的硬件前端。
+多模敏感阵列同步执行模数转换及数据封装，以通用协议送往主控链路，以支撑战术决策闭环。
+致命威胁下精度即解释权，系统基于误差完成最终的现实构建。</Description>
+    <Information>暂无</Information>
+  </Material>
+  <Material>
+    <Name>传动装置</Name>
+    <Description>用于改装的高等材料。
+巴别塔时期标准化的可重构机械能接口模块，集成智能功率分配与多协议接口。
+其设计意图是抹平一切动力差异，理论上能解析任意输入，强制匹配目标输出，并实时自适应负载。
+但复杂的系统总有复杂的崩溃方式。 </Description>
+    <Information>【掉落单位】精英重装兵(15%)</Information>
+  </Material>
+  <Material>
+    <Name>水冷机构</Name>
+    <Description>用于改装的高等材料。
+WP企业统一供应统合东区的模块化温控系统，依靠微通道与相变技术实现极端工况下的稳定控温。
+其精密部件未按抗战损或低维护环境设计，但所设冗余结构在计划失效后维持了核心功能的持续运作。
+设计寿命之外的长存被视作天网工程学的成功案例。</Description>
+    <Information>【掉落关卡】深入禁区(2%)</Information>
+  </Material>
+  <Material>
+    <Name>突击型光学瞄具</Name>
+    <Description>用于改装的高等材料。
+集成多传感器融合、AI辅助目标识别及半自主跟踪系统，专为高速突击接战设计。
+制造商破产后认证及密钥体系崩溃，其核心AI与高级功能长期处于锁定状态，仅作为性能增强型常规瞄具被使用。
+研究院专员仍在尝试将固件移植伪装成升级。</Description>
+    <Information>【掉落单位】牛仔(10%) 精英战术少女(15%)
+【掉落关卡】深入禁区(2%)</Information>
+  </Material>
+  <Material>
+    <Name>战术鱼骨零件</Name>
+    <Description>用于改装的高等材料。
+作为早期NOAH协议的激进扩展，理论上支持向下兼容所有历史标准。
+集成神经链路控制、能源微通道与自适应纳米接口阵列，支持模块化热插拔与多协议自适应。
+标准只剩下能接上就算成功。</Description>
+    <Information>【掉落单位】牛仔(10%)</Information>
+  </Material>
+  <Material>
+    <Name>KM型消声器</Name>
+    <Description>用于改装的高等材料。
+武器的隐蔽性是刺客高效处理业务的保证。</Description>
+    <Information>【掉落单位】牛仔(10%)</Information>
+  </Material>
+  <Material>
+    <Name>镭射瞄准具</Name>
+    <Description>用于改装的高等材料。
+用镭射标记射击目标大大提升了武器命中率，尽管这会牺牲一定的隐蔽性。</Description>
+    <Information>【掉落单位】军阀狙击兵(10%) 精英狙击兵(15%) 牛仔(20%)
+【掉落关卡】深入禁区(2%)</Information>
+  </Material>
+  <Material>
+    <Name>加长弹匣</Name>
+    <Description>用于改装的高等材料。
+简单粗暴的改装，使得武器弹匣扩容，持久力增强。</Description>
+    <Information>【掉落单位】军阀重装兵(10%)
+【掉落关卡】黑铁会总堂外围(100%)</Information>
+  </Material>
+  <Material>
+    <Name>战术握把</Name>
+    <Description>用于改装的高等材料。
+舒适的武器握把让优秀的射手将武器的威力发挥到极致。</Description>
+    <Information>【掉落单位】牛仔(10%) 精英突击兵(15%)
+【掉落关卡】深入禁区(2%)</Information>
+  </Material>
+  <Material>
+    <Name>非栓式机构</Name>
+    <Description>用于改装的高等材料。
+通常这种材料用于武器的击发模式改造。</Description>
+    <Information>暂无</Information>
+  </Material>
+  <Material>
+    <Name>锌棒</Name>
+    <Description>用于建筑与炼金的材料。
+锌被广泛用于金属镀层防锈、建筑工艺与化学生产工作中。</Description>
+    <Information>【掉落关卡】摇滚公园(33%) A兵团试炼场、黑铁会总堂外围(50%)</Information>
+  </Material>
+  <Material>
+    <Name>砒霜</Name>
+    <Description>用于炼金的材料。
+三氧化二砷，即砒霜，是参与金属冶炼的重要药剂。尽管可以被用于农药制作和医疗，但其剧毒性不容忽视。</Description>
+    <Information>【掉落关卡】堕落城下水道入口、黑铁会火凤堂内部(50%)</Information>
+  </Material>
+  <Material>
+    <Name>铝粉</Name>
+    <Description>用于建筑、炼金与合成的材料。
+铝粉是重要的工业制品，其在化学领域内可以充当燃料添加剂、金属填充剂，同时又可以参与混凝土制作，并在电子领域起到重要作用。</Description>
+    <Information>【掉落关卡】黑铁会翅虎堂内部(50%)</Information>
+  </Material>
+  <Material>
+    <Name>蜡</Name>
+    <Description>用于炼金与合成的材料。
+蜡具有防锈与润滑的作用，在日用品中非常常见。</Description>
+    <Information>【掉落关卡】第三集结点(20%) 压制摇滚公园、被攻击的黑铁会(50%)</Information>
+  </Material>
+  <Material>
+    <Name>醋</Name>
+    <Description>用于炼金与烹饪的材料。
+醋酸是良好的化学溶剂，并且可以用于烹饪调味。</Description>
+    <Information>【掉落关卡】超市废墟、黑铁会翅虎堂外围(50%)</Information>
+  </Material>
+  <Material>
+    <Name>硫酸盐</Name>
+    <Description>用于炼金、建筑与合成的材料。
+硫酸盐是一类由金属离子与硫酸根离子组成的化合物的统称，随金属阳离子种类不同，硫酸盐在化肥、冶炼、建筑、工艺等方面的作用也有所不同。</Description>
+    <Information>【掉落关卡】第三集结点(20%) 压制摇滚公园、黑铁会翅虎堂内部(50%)</Information>
+  </Material>
+  <Material>
+    <Name>明矾</Name>
+    <Description>用于炼金的材料。
+十二水合硫酸铝钾，即明矾，是用于净水与合成缓冲剂的材料。</Description>
+    <Information>【掉落关卡】第三集结点(20%) 压制摇滚公园、黑铁会翅虎堂外围(50%)</Information>
+  </Material>
+  <Material>
+    <Name>汞合金</Name>
+    <Description>用于炼金、合成的材料。
+汞合金，也称汞齐，是常用的合金添加剂，在医疗、电子领域有所应用。</Description>
+    <Information>【掉落关卡】摇滚内战、军阀秘密基地、被攻击的黑铁会(50%)</Information>
+  </Material>
+  <Material>
+    <Name>硼砂</Name>
+    <Description>用于炼金、建筑和合成的材料。
+硼砂常用于玻璃制造、农业施肥与材料合成领域。</Description>
+    <Information>【掉落关卡】黑铁会、摇滚内战、袭杀与圈套、黑铁会黑龙堂内部(50%)</Information>
+  </Material>
+  <Material>
+    <Name>黄铜</Name>
+    <Description>用于炼金的材料。
+黄铜是由铜、锌以及其他金属组成的合金，在建筑与机械制作领域具有重要作用。</Description>
+    <Information>【掉落关卡】郊区(20%) 游寇基地(33%) 摇滚内战、大学城周边、黑铁会总部边缘、被攻击的黑铁会(50%)</Information>
+  </Material>
+  <Material>
+    <Name>王水</Name>
+    <Description>用于炼金的材料。
+由浓盐酸与浓硝酸按3：1体积混合得到的试剂，常用于金属冶炼。</Description>
+    <Information>【掉落关卡】黑铁会总堂外围、黑铁会总堂(50%)</Information>
+  </Material>
+  <Material>
+    <Name>玻璃</Name>
+    <Description>用于建筑的材料。
+玻璃被广泛用于建筑领域中，是最重要的建筑材料之一。</Description>
+    <Information>【掉落关卡】商业区、贫民窟(20%) 游寇基地(33%) 黑铁会总部边缘(50%)</Information>
+  </Material>
+  <Material>
+    <Name>精油</Name>
+    <Description>用于合成与烹饪的材料。
+精油是一类从香料植物或泌香动物中提取而来的，加工得到的挥发性香味物质。精油具有杀菌消毒、熏香、调味的作用。</Description>
+    <Information>【掉落关卡】商业区(20%) 黑铁会火凤堂内部(50%)</Information>
+  </Material>
+  <Material>
+    <Name>粘土</Name>
+    <Description>用于建筑的材料。
+粘土是具有黏性的，粒度较小的土壤。粘土是制作陶瓷、仪器耐高温材料的重要原料。</Description>
+    <Information>【掉落关卡】堕落城区、黑铁会黑龙堂内部(50%)</Information>
+  </Material>
+  <Material>
+    <Name>铅</Name>
+    <Description>用于建筑、强化与合成的材料。
+铅常用于电子元件制作与建筑领域，并具有较强的抗辐射能力。</Description>
+    <Information>【掉落关卡】地铁站(20%) 堕落城深处、黑铁会黑龙堂外围(50%)</Information>
+  </Material>
+  <Material>
+    <Name>碱液</Name>
+    <Description>用于合成与炼金的材料。
+碱液具有强腐蚀性，常用于化学反应。</Description>
+    <Information>【掉落关卡】革命军哨所(20%) 袭杀与圈套、黑铁会黑龙堂外围、黑铁会总堂(50%)</Information>
+  </Material>
+  <Material>
+    <Name>石灰</Name>
+    <Description>用于建筑的材料。
+石灰以氧化钙为主要成分，是重要的建筑材料。</Description>
+    <Information>【掉落关卡】第一防线(20%) 堕落城区、黑铁会黑龙堂内部(50%)</Information>
+  </Material>
+  <Material>
+    <Name>硫磺</Name>
+    <Description>用于合成与炼金的材料。
+硫磺常用于农药等杀菌药物的制作。</Description>
+    <Information>【掉落关卡】袭杀与圈套(50%)</Information>
+  </Material>
+  <Material>
+    <Name>异形龙骨碎片</Name>
+    <Description>用于合成特定装备的材料。</Description>
+    <Information>【掉落单位】肉色异形、蓝色异形、黑色异形(25%) 球体异形、女王异形(100%)</Information>
+  </Material>
+</root>

@@ -1,0 +1,182 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 952" itemID="6597607e-0000081e" lastModified="1704646960">
+  <timeline>
+    <DOMTimeline name="Symbol 952">
+      <layers>
+        <DOMLayer name="Layer 1" color="#EC7CFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="109.25" height="14.25" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="8" ty="4.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>PLAY LIST</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" leftMargin="58" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#990000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FC96C1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 538" symbolType="button">
+                  <matrix>
+                    <Matrix tx="195.7" ty="10.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E0AE83">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="my_txt" fontRenderingMode="device" width="172" height="107.25" isSelectable="false" variableName="myDynamicText" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="8" ty="21.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#955FC2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 949" name="barbottom" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.660385131835938" d="0.664382934570313" tx="195" ty="108.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.音乐播放界面.列表.my_txt.scroll++;
+   var count = _root.音乐播放界面.mp3id.length;
+   var length = _root.音乐播放界面.列表.barbottom._y - _root.音乐播放界面.列表.bartop._y - _root.音乐播放界面.列表.bar._height;
+   var lengthPerSong = length / count;
+   _root.音乐播放界面.列表.bar._y = _root.音乐播放界面.列表.bartop._y + _root.音乐播放界面.列表.my_txt.scroll * lengthPerSong;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#E4D452">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 947" name="bar" centerPoint3DX="208.3" centerPoint3DY="132.9">
+                  <matrix>
+                    <Matrix a="0.660415649414063" d="0.130645751953125" tx="195" ty="37.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._x = _parent.bartop._x;
+   var count = _root.音乐播放界面.mp3id.length;
+   var length = _parent.barbottom._y - _parent.bartop._y;
+   var lengthPerSong = int(length / count);
+}
+onClipEvent(enterFrame){
+   if(开始刷新 == true)
+   {
+      var count = _root.音乐播放界面.mp3id.length;
+      var length = _parent.barbottom._y - _parent.bartop._y - this._height;
+      var lengthPerSong = length / count;
+      _root.音乐播放界面.列表.my_txt.scroll = int((this._y - _parent.bartop._y) / lengthPerSong);
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C2B127" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 944" name="bartop" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.660385131835938" d="0.66229248046875" tx="195" ty="38.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.音乐播放界面.列表.my_txt.scroll--;
+   var count = _root.音乐播放界面.mp3id.length;
+   var length = _root.音乐播放界面.列表.barbottom._y - _root.音乐播放界面.列表.bartop._y - _root.音乐播放界面.列表.bar.height;
+   var lengthPerSong = length / count;
+   _root.音乐播放界面.列表.bar._y = _root.音乐播放界面.列表.bartop._y + _root.音乐播放界面.列表.my_txt.scroll * lengthPerSong;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#D5566D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#10100E"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!4020 0|160 0!160 0[0 0 0 160!0 160|0 2539!0 2539[0 2699 160 2699!160 2699|4020 2699!4020 2699[4180 2699 4180 2539!4180 2539|4180 160!4180 160[4180 0 4020 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

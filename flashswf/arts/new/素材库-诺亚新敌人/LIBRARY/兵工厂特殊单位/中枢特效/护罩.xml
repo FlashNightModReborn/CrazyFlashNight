@@ -1,0 +1,201 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/中枢特效/护罩" itemID="66baf4e0-00000f73" lastModified="1723531193" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="护罩">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" name="复活" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[正常 = true;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[正常 = false;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[正常 = true;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("正常");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩单体" centerPoint3DX="1.3" centerPoint3DY="191.6">
+                  <matrix>
+                    <Matrix tx="-42.5" ty="180"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩单体" centerPoint3DX="1.3" centerPoint3DY="131.6">
+                  <matrix>
+                    <Matrix tx="-42.5" ty="120"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩单体" centerPoint3DX="1.3" centerPoint3DY="71.6">
+                  <matrix>
+                    <Matrix tx="-42.5" ty="60"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩单体" centerPoint3DX="1.3" centerPoint3DY="11.6">
+                  <matrix>
+                    <Matrix tx="-42.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="191.6">
+                  <matrix>
+                    <Matrix ty="180"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="131.6">
+                  <matrix>
+                    <Matrix ty="120"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="71.6">
+                  <matrix>
+                    <Matrix ty="60"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="11.6">
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="191.6">
+                  <matrix>
+                    <Matrix ty="180"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="131.6">
+                  <matrix>
+                    <Matrix ty="120"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="71.6">
+                  <matrix>
+                    <Matrix ty="60"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩消失单体" centerPoint3DX="43.8" centerPoint3DY="11.6">
+                  <transformationPoint>
+                    <Point x="43.8" y="11.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

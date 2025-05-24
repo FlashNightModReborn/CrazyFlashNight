@@ -1,0 +1,262 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/佣兵NPC思考块留档" itemID="67e68763-000009eb" lastModified="1743161187">
+  <timeline>
+    <DOMTimeline name="佣兵NPC思考块留档" currentFrame="131">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#21B2C3">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" name="停止" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="131" name="跟随" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="132" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="156" name="左移" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="157" duration="55" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="212" name="右移" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="213" duration="70" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="283" name="不思考" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#E507C2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 思考()
+{
+   目标名单 = [];
+   for(each in _root.gameworld)
+   {
+      if(_root.gameworld[each].是否从门加载主角 == true and each != "出生地")
+      {
+         目标名单.push(_root.gameworld[each]._name);
+      }
+   }
+   _parent.移动目标 = 目标名单[random(目标名单.length)];
+   aaa = random(5);
+   switch(aaa)
+   {
+      case 0:
+         _parent.命令 = "停止";
+         break;
+      case 1:
+         _parent.命令 = "跟随";
+         break;
+      case 2:
+      case 3:
+         break;
+      case 4:
+         _parent.命令 = "不思考";
+   }
+   gotoAndPlay(_parent.命令);
+}
+_parent.命令 = "停止";
+_parent.攻击目标 = "无";
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.左行 = 0;
+_parent.右行 = 0;
+_parent.上行 = 0;
+_parent.下行 = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="130" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="131" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[X距离 = 10;
+X目标 = _root.gameworld[_parent.移动目标]._x;
+if(Math.abs(_parent._x - X目标) > X距离)
+{
+   Y目标 = _root.gameworld[_parent.移动目标]._y;
+   Y距离 = 10;
+   if(_parent._x > X目标)
+   {
+      _parent.左行 = 1;
+      _parent.右行 = 0;
+   }
+   else
+   {
+      _parent.左行 = 0;
+      _parent.右行 = 1;
+   }
+}
+else
+{
+   _parent.左行 = 0;
+   _parent.右行 = 0;
+   在跟随范围内 = true;
+}
+if(Math.abs(_parent._y - Y目标) > Y距离)
+{
+   if(_parent._y > Y目标)
+   {
+      _parent.上行 = 1;
+      _parent.下行 = 0;
+   }
+   else
+   {
+      _parent.上行 = 0;
+      _parent.下行 = 1;
+   }
+}
+else
+{
+   _parent.上行 = 0;
+   _parent.下行 = 0;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="132" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="155" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(random(20) == 0)
+{
+   思考();
+}
+else
+{
+   gotoAndStop("跟随");
+   play();
+}
+if(_root.gameworld[_parent.移动目标].hitTest(_parent.area) == true)
+{
+   _parent.removeMovieClip();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="156" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.暂停 == false)
+{
+   _parent.左行 = 1;
+   _parent.右行 = 0;
+}
+else
+{
+   _parent.左行 = 0;
+   _parent.右行 = 0;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="157" duration="54" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="211" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="212" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.暂停 == false)
+{
+   _parent.左行 = 0;
+   _parent.右行 = 1;
+}
+else
+{
+   _parent.左行 = 0;
+   _parent.右行 = 0;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="213" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="282" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="283" duration="66" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="349" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#0399EF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 75" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="349" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

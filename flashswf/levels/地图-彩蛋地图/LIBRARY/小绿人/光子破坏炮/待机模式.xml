@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="小绿人/光子破坏炮/待机模式" itemID="64e8c135-00000406" lastModified="1703250415" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="待机模式">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="小绿人/光子破坏炮/大炮组件1" centerPoint3DX="132.2" centerPoint3DY="129.3">
+                  <matrix>
+                    <Matrix a="-0.4532470703125" d="-0.388275146484375" tx="259.7" ty="169.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="283.05" y="103.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="小绿人/光子破坏炮/光子破坏炮尾部" centerPoint3DX="120.6" centerPoint3DY="61.65">
+                  <matrix>
+                    <Matrix a="0.4532470703125" d="0.388275146484375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="266.3" y="158.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

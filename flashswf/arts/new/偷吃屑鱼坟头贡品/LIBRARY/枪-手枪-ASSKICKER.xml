@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-手枪-ASSKICKER" itemID="666eef2a-000012af" linkageExportForAS="true" linkageIdentifier="枪-手枪-ASSKICKER" lastModified="1718546275" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="枪-手枪-ASSKICKER">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="99.85" centerPoint3DY="-32.4">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="71.05" ty="-60.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0ASSKICKER" centerPoint3DX="23.8" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="3.11932373046875" d="3.11932373046875" tx="-35.25" ty="-55.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.95" y="13.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

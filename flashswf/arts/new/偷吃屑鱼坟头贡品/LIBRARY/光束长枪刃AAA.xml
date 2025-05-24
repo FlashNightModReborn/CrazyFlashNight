@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="光束长枪刃AAA" itemID="6674423e-000002d8" lastModified="1719055500" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="光束长枪刃AAA" currentFrame="3">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂粒子A" centerPoint3DX="24.05" centerPoint3DY="29.45">
+                  <matrix>
+                    <Matrix a="1.87022399902344" d="1.27220153808594" tx="-22.25" ty="26.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.75" y="2.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="3" blurY="0" quality="3"/>
+                    <GlowFilter blurX="20" quality="3" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂剑刃" centerPoint3DX="24.25" centerPoint3DY="29.45">
+                  <matrix>
+                    <Matrix a="1.87022399902344" d="1.27220153808594" tx="-22.25" ty="26.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.85" y="2.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="1" blurY="0" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

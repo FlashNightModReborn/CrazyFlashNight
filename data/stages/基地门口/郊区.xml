@@ -1,0 +1,521 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>黄铜</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>资料</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>地铁站通关证明</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_1_BG.swf</Background>
+            <PlayerX>137</PlayerX>
+            <PlayerY>461</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>BloodRidge</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>486</x>
+                        <y>511</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1376</x>
+                        <y>350</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1385</x>
+                        <y>550</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>815</x>
+                        <y>638</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种6</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1512</x>
+                        <y>427</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种5</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>679</x>
+                        <y>331</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1109</x>
+                        <y>418</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_2_BG.swf</Background>
+            <PlayerX>137</PlayerX>
+            <PlayerY>461</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <CaseSwitch expression="_root.随机整数" params="0,3">
+                        <Case casevalue="0">
+                            <Enemy>
+                                <Type>
+                                    <CaseSwitch expression="_root.随机整数" params="0,7">
+                                        <Case casevalue="0">兵种415</Case>
+                                        <Case casevalue="1">兵种416</Case>
+                                        <Case casevalue="2">兵种417</Case>
+                                        <Case casevalue="3">兵种418</Case>
+                                        <Case casevalue="4">兵种419</Case>
+                                        <Case casevalue="5">兵种420</Case>
+                                        <Case casevalue="6">兵种421</Case>
+                                        <Case casevalue="default">兵种422</Case>
+                                    </CaseSwitch>
+                                </Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>10</Level>
+                                <x>1500</x>
+                                <y>500</y>
+                            </Enemy>
+                        </Case>
+                        <Case casevalue="default">
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>929</x>
+                                <y>448</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1287</x>
+                                <y>520</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种1</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>474</x>
+                                <y>520</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种6</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1006</x>
+                                <y>309</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种5</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1545</x>
+                                <y>351</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种4</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1039</x>
+                                <y>570</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>745</x>
+                                <y>322</y>
+                            </Enemy>
+                        </Case>
+                    </CaseSwitch>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_3_BG.swf</Background>
+            <PlayerX>152</PlayerX>
+            <PlayerY>461</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <CaseSwitch expression="_root.随机整数" params="0,3">
+                        <Case casevalue="0">
+                            <Enemy>
+                                <Type>
+                                    <CaseSwitch expression="_root.随机整数" params="0,7">
+                                        <Case casevalue="0">兵种415</Case>
+                                        <Case casevalue="1">兵种416</Case>
+                                        <Case casevalue="2">兵种417</Case>
+                                        <Case casevalue="3">兵种418</Case>
+                                        <Case casevalue="4">兵种419</Case>
+                                        <Case casevalue="5">兵种420</Case>
+                                        <Case casevalue="6">兵种421</Case>
+                                        <Case casevalue="default">兵种422</Case>
+                                    </CaseSwitch>
+                                </Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>10</Level>
+                                <x>1500</x>
+                                <y>500</y>
+                            </Enemy>
+                        </Case>
+                        <Case casevalue="default">
+                            <Enemy>
+                                <Type>兵种6</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1609</x>
+                                <y>586</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种5</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>628</x>
+                                <y>321</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1046</x>
+                                <y>564</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>839</x>
+                                <y>427</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种6</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>977</x>
+                                <y>267</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种5</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1386</x>
+                                <y>387</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种4</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1600</x>
+                                <y>297</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>382</x>
+                                <y>557</y>
+                            </Enemy>
+                        </Case>
+                    </CaseSwitch>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_4_BG.swf</Background>
+            <PlayerX>131</PlayerX>
+            <PlayerY>481</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>229</x>
+                <y>299</y>
+                <QuantityMax>4</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1434</x>
+                <y>331</y>
+                <QuantityMax>4</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <CaseSwitch expression="_root.随机整数" params="0,3">
+                        <Case casevalue="0">
+                            <Enemy>
+                                <Type>
+                                    <CaseSwitch expression="_root.随机整数" params="0,7">
+                                        <Case casevalue="0">兵种415</Case>
+                                        <Case casevalue="1">兵种416</Case>
+                                        <Case casevalue="2">兵种417</Case>
+                                        <Case casevalue="3">兵种418</Case>
+                                        <Case casevalue="4">兵种419</Case>
+                                        <Case casevalue="5">兵种420</Case>
+                                        <Case casevalue="6">兵种421</Case>
+                                        <Case casevalue="default">兵种422</Case>
+                                    </CaseSwitch>
+                                </Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>10</Level>
+                                <x>1500</x>
+                                <y>500</y>
+                            </Enemy>
+                        </Case>
+                        <Case casevalue="default">
+                            <Enemy>
+                                <Type>兵种8</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>414</x>
+                                <y>468</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种2</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1290</x>
+                                <y>567</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种6</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>837</x>
+                                <y>431</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>1000</Interval>
+                                <Quantity>4</Quantity>
+                                <Level>10</Level>
+                                <SpawnIndex>0</SpawnIndex>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>1000</Interval>
+                                <Quantity>4</Quantity>
+                                <Level>10</Level>
+                                <SpawnIndex>1</SpawnIndex>
+                            </Enemy>
+                        </Case>
+                    </CaseSwitch>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_5_BG.swf</Background>
+            <PlayerX>152</PlayerX>
+            <PlayerY>461</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1220</x>
+                        <y>386</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>389</x>
+                        <y>403</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种8</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>930</x>
+                        <y>605</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种8</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1023</x>
+                        <y>448</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种8</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>566</x>
+                        <y>532</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1560</x>
+                        <y>365</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1646</x>
+                        <y>613</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种6</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>577</x>
+                        <y>357</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1204</x>
+                        <y>673</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>6</Level>
+                        <x>1372</x>
+                        <y>503</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

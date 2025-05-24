@@ -1,0 +1,15 @@
+flashPlayerPath = "Adobe Flash Player 20.exe"
+swfPath = "CRAZYFLASHER7MercenaryEmpire.swf"
+
+# 启动参数设置
+quality = "medium"       # 设置为中等质量，进一步降低性能负担
+fullscreen = false       # 默认不全屏，以窗口模式启动
+loop = -1                # 无限循环播放，适用于持续游戏环境
+scale = "default"        # 默认缩放模式，保持原始宽高比
+nodx = true              # 禁用 DirectX 硬件加速，避免兼容性问题
+disabledebugger = true   # 禁用调试器，提升游戏运行性能
+
+# 自定义分辨率和帧率
+resolution_width = 1024  # 宽度
+resolution_height = 576  # 高度
+fps = 30                 # 帧率

@@ -1,0 +1,4268 @@
+{
+    "$MAIN_TITLE_0": "AndyLaw的基地",
+    "$MAIN_DESCRIPTION_0": "到地下室找Andy谈谈。走楼梯可到地下室。",
+    "$MAIN_GET_0": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不知不觉间我走进了这里。虽然的确想过进来后可能就会被绑起来杀了之类，但是当时已经是快死了，又能有多少损失呢？反倒是这里的确秩序井然，让我感到意外。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "总之，按那个女孩说的，先去找他们的老大吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "画面右下角的红色图标表示有任务可以提交。",
+            "imageurl": "flashswf/images/task_images/感叹号提示.png"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "也可以点击画面下方的任务栏按钮查看当前任务信息。",
+            "imageurl": "flashswf/images/task_images/任务栏提示.png"
+        },
+        {
+            "name": "重置组",
+            "title": "重置组",
+            "char": "",
+            "text": "你正在游玩闪客快打7重置版，该改版无需任何购买，请千万不要上当受骗被倒卖的骗了。具体改版内容请自己体验或查阅改动说明文档。",
+            "imageurl": "close"
+        }
+    ],
+    "$MAIN_FINISH_0": [
+    ],
+    "$MAIN_TITLE_1": "新手试炼",
+    "$MAIN_DESCRIPTION_1": "通关简单难度“废城-新手练习场”后，找Andy谈谈。",
+    "$MAIN_GET_1": [
+         {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "独行者，在基地的感觉还不错吧？这里是A兵团，我是这里的负责人，你可以叫我Andy。这里的补给你先拿上吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "感谢，我首先需要抱歉，面对那位女士时，我有太多质疑······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不必道歉，你的想法是合理的。末日下对陌生人保持警惕是必要的，我们对你同样如此，实际上，我们已经跟踪你有段时间了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "跟踪我？为什么？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们的确急需人手，但是不能要没有原则的人。试想，如果我以后招来嗜血如命或者丧尽天良的人，对今天才到这里的你也不是好事吧？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "的确······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不说这个了。你的能力的确很强，但是长时间的疲劳和营养不足让你身体损失极大。我在这种时候会选择复健，对你来说，目前的复健好地方就是废城的新手练习场。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "那可不是什么室内健身场所，是我们在废城郊区围起来的一块地，引入少数丧尸来作为战斗对象。",
+            "imageurl": "flashswf/images/task_images/新手练习场提示.png"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "消灭它们，展示你的实力，获得相应的奖励，这是我们A兵团的规矩。",
+            "imageurl": "close"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白了！"
+        }
+    ],
+    "$MAIN_FINISH_1": [  
+    ],
+    "$MAIN_TITLE_2": "军火商Shop Girl",
+    "$MAIN_DESCRIPTION_2": "找Shop Girl谈谈。Shop Girl在地下室装甲门的房间。",
+    "$MAIN_GET_2": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "回来的挺快，果然这对你来说太简单了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "实话实说，赤手空拳对付它们其实压力很大。我之前有武器，但是因为缺乏给养，为了节省体力被迫都丢掉了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "的确。你去旁边的军火库里找shopgirl，她会给你指条明路的。",
+            "imageurl": "flashswf/images/task_images/军火库提示.png"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "她负责我们这里的一部分后勤与外交工作，和她打好关系，你以后不会吃亏的。",
+            "imageurl": "close"
+        }
+    ],
+    "$MAIN_FINISH_2": [
+    ],
+    "$MAIN_TITLE_3": "给教官的贿赂",
+    "$MAIN_DESCRIPTION_3": "通关简单难度“废城-超市废墟”。牛肉罐头可能是用木箱包装的。结束后找Blue谈谈。",
+    "$MAIN_GET_3": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不得了······名副其实的军火库。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "是的是的菜鸟，不过按照规矩我现在能给你的只有这把匕首和一些补给。你要是有钱，倒是能够在我这买到各种你想要的武器。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "末世之后钱已经不通用了吧。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "在用到钱之前，人类就懂得以物易物了，我们这不过是返祖。只要你能提供人们当下急需的东西，比如说食物，那么你会发现它们比钱好用多了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不过我也没有这些，实际上我以为现在还能用贵金属，末日前也的确存了一点，可惜都丢了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "不错，贵金属在现在也有价值。不过，如果你肯努力的话，很快就会有价比贵金属的食物了。我们把废城外围的商业街称作超市废墟，在那总是能找到有价值的东西。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#思考",
+            "text": "不过随着废城逐渐变得危险，那里去的人也没以前多了。先前转运的食物在丧尸和盗贼袭击中也流散在那里，你现在去应该还可以找到些牛肉罐头。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "之后去找那个对着沙袋打拳的教官blue吧，把牛肉罐头给他，他会介绍给你工作，你就可以用贵金属本位的钱来跟我换武器了。",
+            "imageurl": "flashswf/images/task_images/blue提示.png"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "但是，为什么不能直接用牛肉罐头找你换武器呢？",
+            "imageurl": "close"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#思考",
+            "text": "尽量收钱是我的作风，另外维持货币流通也是我这里的工作，不然要是一直没人用钱的话，也就不奢谈维持或者重建社会了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "另外，超市里翻找补给是很费事的，你最好去雇一条幸存者养的狗，能够帮到你很多。（点击上方的【战宠】按钮进行雇佣）",
+            "imageurl": "flashswf/images/task_images/战宠提示.png"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "战宠在战斗过程中可以不断积累经验。此外，很多战宠拥有“进阶方案”，在一定条件下可以显著提升自己的实力，比如花一些钱进行专业的战斗训练与体质锻炼。",
+            "imageurl": "flashswf/images/task_images/战宠进阶提示.png"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "末世里单打独斗风险不低，要更讲究策略才对。",
+            "imageurl": "close"
+        }
+    ],
+    "$MAIN_FINISH_3": [
+    ],
+    "$MAIN_TITLE_4": "学习技能",
+    "$MAIN_DESCRIPTION_4": "通关冒险难度“废城-超市废墟”。抗生素会在通关后获得。",
+    "$MAIN_GET_4": [
+         {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#微笑",
+            "text": "小鬼头，这可是好东西，就不用给我了。看你是个新人，有适合你的工作我会告诉你的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "Blue大哥人真好！"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "奉承的话先放一边，我看你似乎像是练过武的？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "审判日之前我学过一些自由格斗，Blue哥应该是练过泰拳吧？体格一流呢！"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#微笑",
+            "text": "不错，站立式格斗我有所了解。这样吧，你再去超市废墟找点抗生素，我就教你格斗术，如何？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "谢谢Blue哥！"
+        }
+    ],
+    "$MAIN_FINISH_4": [
+    ],
+    "$MAIN_TITLE_5": "找把枪来",
+    "$MAIN_DESCRIPTION_5": "通关简单难度“废城-废墟武器店”。",
+    "$MAIN_GET_5": [
+         {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "你可以在我这里学习格斗技能，其他基地内的高手也有各自擅长的技能。",
+             "imageurl": "flashswf/images/task_images/blue技能提示.png"
+        },
+        {
+           "name": "Blue",
+           "title": "格斗教练",
+           "char": "Blue",
+           "text": "学会技能之后，按住拖动并装备在下方技能栏即可。升级可以获得技能点，等级越高时获得的技能点也可能会增多，已有的技能点数也在下方的SP栏标注。",
+            "imageurl": "flashswf/images/task_images/SP栏.png"
+       },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "现在多了被动技能可以学习，之后可以向Andy请教一下。",
+            "imageurl": "close"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "你现在格斗技能不熟练还没有枪，这样很危险。这样吧，有自信的话先去废墟武器店找把枪，它就在超市废墟附近。那边几个盗贼的身手很烂，但是不要在枪口前冒险，随机应变！"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "把那群狗东西解决了，拿到枪后找shopgirl买点子弹。"
+        }
+    ],
+    "$MAIN_FINISH_5": [
+    ],
+    "$MAIN_TITLE_6": "诺亚方舟？",
+    "$MAIN_DESCRIPTION_6": "找Andy Law谈谈。",
+    "$MAIN_GET_6": [
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "不错啊，这么快就得到枪了。这里一些弹药送你了，以后可要多多惠顾~"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "我有一个问题······这里的人战斗能力和意识都很强，但是似乎不是职业军人。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "料到你会这么问了，这个问题我建议你去和andy本人聊，他能给你想要的答案。"
+        }
+    ],
+    "$MAIN_FINISH_6": [
+    ],
+    "$MAIN_TITLE_7": "战队BPK",
+    "$MAIN_DESCRIPTION_7": "找Boy谈谈。",
+    "$MAIN_GET_7": [
+         {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "菜鸟，过的不错吧？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "托你的福·····我想请教一下，A兵团这个组织究竟是为何成立，你们又是什么人？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们这些高层都是审判日前认识的，彼此对对方的战斗能力都心里有数。成立A兵团也是为了在末世里自保，顺便维持一定的秩序。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "我想我们的目的和你一样，毕竟据我了解，你之前在野外提到过诺亚方舟。能否请你解释一下，诺亚方舟是什么？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "······据我了解，它是个传言中能够拯救人类的计划。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#普通",
+            "text": "无论你是真的不了解还是刻意隐瞒，我都不想逼着你回答。能够干好A兵团的工作，就是我们的优秀战友。但是如果你对我们足够信任，一定要坦白你所知道的一切，诺亚方舟是众多幸存者的最后希望了······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不说这个了，基地朝着堕落城方向那一侧的停车场那边，有BPK战队坐镇。你去找首领Boy，他能够帮你找到提升自己和赚钱的方法。"
+        }
+    ],
+    "$MAIN_FINISH_7": [
+    ],
+    "$MAIN_TITLE_8": "DEATH MATCH入门赛",
+    "$MAIN_DESCRIPTION_8": "通关简单难度“堕落城-DEATH MATCH入门赛”，在基地的左边！",
+    "$MAIN_GET_8": [
+         {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "你好，我是boy，BPK战队队长。这位是King。"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king",
+            "text": "······嗨！"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "这位是pig。"
+        },
+        {
+            "name": "Pig",
+            "title": "BPK战队-右前锋",
+            "char": "pig",
+            "text": "……吭！"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "听说你想赚钱和锻炼自己，那你最适合去打DEATH MATCH角斗场。不过你现在缺乏和人的作战经验，跟盗贼打跟打擂台赛可不一样。先去打打入门赛吧，就在堕落城外围。"
+        }
+    ],
+    "$MAIN_FINISH_8": [
+    ],
+    "$MAIN_TITLE_9": "DEATH MATCH角斗场",
+    "$MAIN_DESCRIPTION_9": "通关简单难度“堕落城-DEATH MATCH角斗场”。",
+    "$MAIN_GET_9": [
+         {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy#微笑",
+            "text": "不错，看来你的确有实力，去打角斗场吧，不过记住不要选择太强的敌人。"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "不要太指望对手仁慈，角斗场是不太允许出人命，但是末世里受重伤有时候就是被宣判死刑了。"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "看你在用手枪，可以和King交流交流。"
+        }
+    ],
+    "$MAIN_FINISH_9": [
+    ],
+    "$MAIN_TITLE_10": "普通幸存者",
+    "$MAIN_DESCRIPTION_10": "和The Girl谈谈。",
+    "$MAIN_GET_10": [
+         {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy#微笑",
+            "text": "不错，以后想打角斗场直接来就行。还有The girl似乎有事找你。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "来了这么久还没拜访她呢，要是当初没有她我可能现在已经死了。"
+        }
+    ],
+    "$MAIN_FINISH_10": [
+    ],
+    "$MAIN_TITLE_11": "BLUE的委托",
+    "$MAIN_DESCRIPTION_11": "和Blue谈谈。",
+    "$MAIN_GET_11": [
+         {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "你好！"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl#微笑",
+            "text": "很热情啊，基地里的生活还适应吗？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "很适应。我很抱歉当初怀疑你，现在来看无论是救命还是带我来这里，都是对我的大恩。"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl#微笑",
+            "text": "职责所在。还有，以后叫我the girl就好。我救过无数幸存者，他们的样子让我想起自己以前经历困难时的狼狈。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "girl姐你还有这种经历吗？"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl",
+            "text": "末日前的工业东区可不太平，我当年也不过在叉叉重工······或者用你应该也熟悉的称呼，3xf军工的压迫下苟活而已。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我听说过，似乎是很强大的巨型企业。"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl#严肃",
+            "text": "又何止企业呢，官商勾结一直是尘都东区的老毛病，只不过末日前我们没太多办法，末日后世界却也随着他们一起崩溃了。"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl#普通",
+            "text": "andy跟我提过他和你的对话。说实话，我们彼此都有不了解的地方，可能也都有相互隐瞒的地方，至少你的确不了解andy。"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl#微笑",
+            "text": "不过不管怎么说，你在A兵团内干得很好。这不，Blue找你办事，快去吧。"
+        }
+    ],
+    "$MAIN_FINISH_11": [
+    ],
+    "$MAIN_TITLE_12": "防患于未然",
+    "$MAIN_DESCRIPTION_12": "通关简单难度“废城-郊区”后，找Andy Law谈谈。",
+    "$MAIN_GET_12": [
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "闲话少说，你去清理废城郊区的丧尸。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "废城郊区丧尸很少吧，为什么突然要清理？"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "丧尸有集群的现象，不可轻视。现在看起来郊区丧尸少，聚集起来就麻烦了。而且我们之后要尝试收复防线，郊区那里不能出岔子。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "另外也要小心郊区的盗贼，那群狗东西不敢在市区闯荡，但是在郊区杀幸存者还是敢的。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "做好任务后找andy汇报就行了。"
+        }
+    ],
+    "$MAIN_FINISH_12": [
+    ],
+    "$MAIN_TITLE_13": "尸群",
+    "$MAIN_DESCRIPTION_13": "通关简单难度“废城-第一防线”后，找Andy Law谈谈。",
+    "$MAIN_GET_13": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "郊区清理完了吧？我之后派人去搜集物资。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "据我观察，那边已经被洗劫一空了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "（叹气）哪怕找到几颗钉子也不差。另外，在你清理郊区的同时，废城的“第一防线”聚集了大量丧尸，你也去处理一下吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "要深入市区了吗······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#坏笑",
+            "text": "哈，别担心，别忘了我们可是A兵团，以佣兵生意为本。拿上这笔钱，雇几个人跟你一起去。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不少钱啊······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你要是能通过消灭丧尸成长为团队新骨干，能够获得的东西会很多，这点钱相比之下就微不足道了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "借助【查找佣兵】可以快速查阅所有已经在a兵团登记过的空闲佣兵，这也是我们对外佣兵业务使用的指定窗口。不过，通过这种正式途径雇佣会额外收取一笔手续费，好处则是快速、稳定且提供佣兵详细信息。",
+            "imageurl": "flashswf/images/task_images/佣兵查找.png"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "但实际上，内部组队时只要你们私下能谈好就行，路上遇到的所有佣兵你都可以试着去雇佣。一些战队所属的佣兵现在已经不以个人为单位接受公开窗口的委托了，但仍然可以自行联系并组队。",
+            "imageurl": "flashswf/images/task_images/佣兵雇佣.png"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "高等级的佣兵往往青睐更加重要的任务，如果你等级太低，可能无法雇佣他们。不过只要你也成长到能参与重要任务的程度，就可以雇佣任何等级的佣兵了。",
+            "imageurl": "close"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "当面雇佣时就没有雇佣窗口为你准备的详细资料了，至于如何识人和讲价，就看你自己了。"
+        }
+    ],
+    "$MAIN_FINISH_13": [
+    ],
+    "$MAIN_TITLE_14": "狂暴来袭",
+    "$MAIN_DESCRIPTION_14": "通关简单难度“废城-商业区”后，找Andy Law谈谈。",
+    "$MAIN_GET_14": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不错，看来你已经是处理丧尸的高手了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "之后的任务会困难一些，但A兵团会给你配备后勤支持，可以通过【后勤战备箱】来帮助你携带战备物资，并运送战利品。如果你取得了更高的成就，后勤支持也会更多。",
+            "imageurl": "flashswf/images/task_images/后勤战备箱.png"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "现在，根据情报，商业街附近有一些看起来很暴躁的丧尸。他们大部分穿着游击队服，似乎有很强的攻击性。",
+            "imageurl": "close"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "想办法获取一手情报，这对我们把握废城情况很重要。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "在以前我完全不敢想自己会重回市区······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "毕竟你已经成长为优秀战士了。"
+        }
+    ],
+    "$MAIN_FINISH_14": [
+    ],
+    "$MAIN_TITLE_15": "shopgirl的请求",
+    "$MAIN_DESCRIPTION_15": "找Shop Girl谈谈。",
+    "$MAIN_GET_15": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "这些丧尸跑得很快，简直就像癫狂的疯子，我差点就回不来了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "是我考虑不周，这些丧尸或许是病毒变异的产物，之前应该通知士兵们做好准备的。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "另外，shopgirl有事找你，快去吧。"
+        }
+    ],
+    "$MAIN_FINISH_15": [
+    ],
+    "$MAIN_TITLE_16": "回收物资",
+    "$MAIN_DESCRIPTION_16": "通关简单难度“废城-第三集结点”后，找Shop Girl谈谈。",
+    "$MAIN_GET_16": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "有什么事要吩咐我吗？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "不是吩咐，而是交易。我们在废城的第三集结点的物资需要你保护，完事后你的奖励少不了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "为什么要我去呢？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "虽然可能比较为难你·····你应该是A兵团里目前少有的和暴躁的丧尸战斗过的人。我们的护送人手不多且缺乏经验，最近又听说第三集结点有暴躁丧尸出没，出动积极性很低。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白了。"
+        }
+    ],
+    "$MAIN_FINISH_16": [
+    ],
+    "$MAIN_TITLE_17": "异化之影",
+    "$MAIN_DESCRIPTION_17": "通关简单难度“废城-贫民窟”后，找Shop Girl谈谈。",
+    "$MAIN_GET_17": [
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "我听说了，物资被保护得很好。做的很棒。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "你们这批货物里有很多耐用的军用物资，真难想象废城里能找到这些。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "商人存活的秘诀是不透露自己的商业手段，你就不要多想了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "比起这个，我更想说的是废城的钻头。来到A兵团前我就见过类似的东西，但是我还是在这次任务里见到这么多，还不断往外释放丧尸。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "andy也注意到这件事了，之后应该会推出相关的对策。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "还有件事，我派去贫民窟调查的搜索队失联了。他们可能有查到一些重要资料，所以需要你去找到他们，至少找到调查结果。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没问题。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "你也不再担心风险了？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "回报基地义不容辞，更何况我也有所成长了。"
+        }
+    ],
+    "$MAIN_FINISH_17": [
+    ],
+    "$MAIN_TITLE_18": "广而告之",
+    "$MAIN_DESCRIPTION_18": "找Andy Law谈谈。",
+    "$MAIN_GET_18": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "的确是我疏忽了······贫民窟有四脚爬行的变异丧尸，有些是从人形的丧尸直接变的。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "看来之前流传的病毒变异说法可能是真的，搜索队可能也已经变成怪物了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "我注意到变异丧尸都穿着类似的服装，像是军服一类的制服。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "与其说是军服，不如更进一步，说是雇佣军服。废城原先也是尘都东区的一部分，这里最不缺的就是大企业和雇佣军。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我听说末世前就有大企业做过人体实验，会不会和这个有关。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "也许是，而且3xf之前就出现过产业区的病毒泄露事件。"
+        },
+         {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "总而言之，这些新丧尸的情报很重要，你赶紧找andylaw汇报吧，把这个消息告知所有人。"
+        }
+    ],
+    "$MAIN_FINISH_18": [
+    ],
+    "$MAIN_TITLE_19": "“我们是同伴”",
+    "$MAIN_DESCRIPTION_19": "通关简单难度“废城-闹市区”后，找Andy Law谈谈",
+    "$MAIN_GET_19": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "andy哥，我有情报需要汇报。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "关于四足爬行的怪物丧尸的情报吧······从暴躁丧尸到爬行丧尸，还有那种放丧尸出来的钻头，我感觉到废城对我们的威胁越来越大了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "它们看起来不像是地球生物·····"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl#严肃",
+            "text": "andy大人，刚刚收到无线电求救情报！"
+        },
+        {
+            "name": "短波无线电",
+            "title": "短波无线电",
+            "char": "短波无线电",
+            "text": "（沙沙沙）·······这里是闹市区，我们被（沙沙沙）······丧尸围攻了······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "他们是我们派出去的搜查队！时间不等人，我们得去救他们。你去找点人，闹市区太大，我们得分头行动。我们是同伴，决不能放弃彼此，不然A兵团也就没法存在了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "找到他们后不要管我在不在，立刻行动，消灭丧尸。"
+        }
+    ],
+    "$MAIN_FINISH_19": [  
+    ],
+    "$MAIN_TITLE_20": "boy的情报",
+    "$MAIN_DESCRIPTION_20": "找找Boy谈谈",
+    "$MAIN_GET_20": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "好在最后活着回来了。这些丧尸的情报我之后会想办法查清楚，boy那里应该也有不少消息，你去找他问一问。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "Boy那边发来请求，希望你尽快处理完手头的事情后去找他。他那边有关于废城的行动需要你的参与，在那之前你最好完成废城区域的其他任务，比如和Blue、Shop Girl交流交流。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "找其他人谈谈吧，如果万事具备了就去找Boy。"
+        }
+    ],
+    "$MAIN_FINISH_20": [  
+    ],
+    "$MAIN_TITLE_21": "一劳永逸",
+    "$MAIN_DESCRIPTION_21": "通关简单难度“废城-地铁站”后，找Andy Law谈谈。",
+    "$MAIN_GET_21": [
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "你来的正好。最近废城附近的人类定居点伤亡情报不少，我开了那直升机去调查废城，发现地铁站附近有大动静，估计要么是尸群要么是大块头丧尸。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "居然有直升机！"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy#微笑",
+            "text": "要不是这些重火力，我们可不敢在堕落城附近建立营地。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不过，我从来没见过这玩意开火啊，是因为缺少弹药吗？"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy#普通",
+            "text": "算是一部分原因，还有就是科技限制了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "科技限制？"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy#普通",
+            "text": "具体的你还是有空问andy比较好。好了，根据我的经验，这里大概就是废城丧尸的老巢。端掉它，废城能安全很多。"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "不过地铁站相互连通，地形错综复杂，就算这次清理干净，难保以后不会再有丧尸出没。你这次先处理一下，完事了找老大汇报。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "能争一时是一时了。"
+        }
+    ],
+    "$MAIN_FINISH_21": [  
+    ],
+    "$MAIN_TITLE_22": "弱肉强食",
+    "$MAIN_DESCRIPTION_22": "通关简单难度“堕落城-堕落城区”后，找Andy Law谈谈。",
+    "$MAIN_GET_22": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "boy也是够疯狂，居然直接派你去干这种危险活。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没事，最后还是解决问题了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "可能是这小子大张旗鼓坐直升机闹出来的祸，堕落城方向已经能够观察到盗贼群体接近我们了。他们可能只是游荡，也可能是想调查我们基地，还可能是之前被我们打击的盗贼群体来寻仇。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "这群人无恶不作，无论是出于自保还是维护秩序，干掉他们都很重要。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白了，我去对付他们。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "你的成长真是出乎我的意料，无论是能力还是胆识。"
+        }
+    ],
+    "$MAIN_FINISH_22": [  
+    ],
+    "$MAIN_TITLE_23": "人若犯我",
+    "$MAIN_DESCRIPTION_23": "通关简单难度“堕落城-游寇基地”后，找Andy Law谈谈。",
+    "$MAIN_GET_23": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "末世里的规则就是弱肉强食，A兵团再怎么维护秩序也不能脱离末世规则。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我也看出你们比堕落城的人更热衷于维护秩序。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "其实我们这些人在末世前大多时候是破坏秩序的一方，杀过的人也不少。只不过末世和末世里的疯子杀的人比我们过去杀的多太多了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "即使如此，如果你们以前是破坏秩序的人，又为什么会在这建立起纪律严明的兵团呢？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "告诉你也无妨，在末世前不久我就开始为联合国服务了，参与消灭了恐怖组织C&T。这样的“洗白”是我们现在组织正经的原因之一，如果是更早之前开始末日，那时以打斗杀人为业的我们也不过是现在堕落城的众生而已。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "更何况，就算是以前的罪犯，在末世里想要维持统治也得建立起秩序。土匪的经济不是佣兵的经济，是不可能维持的。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "说正事吧，你干掉的那些土匪应该只是那个群体的一部分，很可能和你在废城有接触过的零散盗贼有联系。放任他们不管对我们不利。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "而且就我了解，似乎这群盗贼也劫掠过我们的一部分农业设施，之前勒紧腰包过了一段日子，就是拜他们所赐。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "堕落城里盗贼群聚的地方只有一个，我们在地图上标注过，叫“游寇基地”，你去解决他们。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "地图上也不饶人啊。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#坏笑",
+            "text": "对纯粹的破坏者没必要嘴下留情。"
+        }
+    ],
+    "$MAIN_FINISH_23": [  
+    ],
+    "$MAIN_TITLE_24": "终结者占领区",
+    "$MAIN_DESCRIPTION_24": "通关简单难度“禁区-禁区边缘”后，找Andy Law谈谈。",
+    "$MAIN_GET_24": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "他们不成气候了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "实话实说，虽然我在末世游荡已久，但还是第一次短时间内杀这么多人。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们这里是由监狱改造的，末世前这里的工作人员也有兼任处刑员的。我们收编他们之后，据他们的说法，即使是行刑者也对末世的杀戮感到不适。你对这些事感到不舒服也很正常，尽力克服吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "好消息是，这批盗贼之前劫掠过一支商队，我们这次为他们报仇，得到了他们的一个重要情报：西北边，也就是我们基地地下通道通向的区域，那边的终结者占领区有一批货物，他们回收不了，就做个顺水人情送我们了，只要我们拿的回来。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "终结者？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "是我们照着电影情节对这种机器人的称呼。不过，这种机器人似乎是“天网”计划的产物，或许一开始就有电影色彩吧，你知道的，项目起名总是比较俏皮的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我听说他们很危险。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "是的······末世前“天网”计划似乎破产，然后因为各种原因这些机器人和军队交火，双方都损失惨重，具体细节我就不太清楚了。本地的军队就溃散到了荒漠区。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白了，数量少但单兵战斗力强。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "没看错你啊，那么去处理一下吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "等等，我还有个问题。之前我听boy哥说，不去用直升机开火的一大原因是科技限制，但是这些机器人一看就很高科技，难道仅仅是a兵团缺少技术人才？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "看来你还是很善于观察的，那我解释一下吧。所谓禁区就是天网机器人的活动范围，实际上是末世前危险处理范围衍生而来。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "末世前的暴力混乱不少，于是联合政府就通过能量审查的方式，以卫星为观察点，以天网机器人为执行者，将能量异常波动的地区划分为危险地区并进行镇压。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "嗯···也不瞒你，我这是从联合国相关人员那里得知的消息，毕竟我给他们干过活，算是得到了不小的信任。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "总之，审判日后这套检测方式出了问题，原先被标记为安全的白名单，例如军队训练场所也被划分为危险区域，逐步成为禁区。同时能量波动异常的判定范围也出了问题。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "现在据说是火炮这种级别的火力不被允许使用，否则天网机器人会把这片区域设定为危险区域。不过很多势力都在尝试破解卫星权限，虽然进展缓慢，但也许以后就能用更强大的火力了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "这就是所谓科技限制了。不过也得说现在这种烈度的人类内战也不小了，真的破解了权限之后，估计会打的更惨烈吧。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "好了，先去应付一下那边的天网机器人吧，熟悉一下对手。将来人类肯定会和他们决战的···"
+        }
+    ],
+    "$MAIN_FINISH_24": [  
+    ],
+    "$MAIN_TITLE_25": "息事宁人",
+    "$MAIN_DESCRIPTION_25": "通关简单难度“堕落城-黑铁会”后，找Andy Law谈谈。",
+    "$MAIN_GET_25": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你回来得正好。上次那批盗贼是黑铁会的半附属部队，你可以理解为黑道之间的隶属关系。他们小弟损失惨重，黑铁会就出面要和我们谈判。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "黑铁会？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "一群善用冷兵器而耻用枪的蠢货。不过也不要小看他们，他们可是大规模配备了夜视仪和电器，在末世里也是很有威胁的势力。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不用枪，他们是怎么在堕落城站住脚跟的？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "据说末世前生物科技的发展就很夸张了，当时有什么“生理科技大进步时代”，你存着的药剂就是那次变革的产物。黑铁会应该是有相关生物科技的储备，所以医疗能力远强于其他势力，这才让他们用冷兵也不占下风。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我还是不明白为什么不用枪······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "所谓末世，不仅仅需要科技，还需要人心和信仰。末世里的冷兵器军团是一种象征，有了它就能像宗教一样凝聚人心。我们A兵团的佣兵原则也和这有相通之处。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "当然，我猜还有一个原因是他们在堕落城初期的大战中没有控制任何军火工业，只能一边维持均势，一边放弃对自己基本没太大用的热兵器，来用迷信团结自己人了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "没有稳定的军火产业，他们连训练都组织不了，战场上用枪也是活靶子。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "总之，这一次你去谈判比较合适，他们也点名你了，好像是因为你之前打那群盗贼出了名。如果他们试图对你不利，就立刻动手，不要犹豫。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白！"
+        }
+    ],
+    "$MAIN_FINISH_25": [  
+    ],
+    "$MAIN_TITLE_26": "女性组织？",
+    "$MAIN_DESCRIPTION_26": "找King谈谈。",
+    "$MAIN_GET_26": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "厉害，一战成名！缴获的装备你也拿一套吧，黑铁会的装备不那么看重防御能力，但侵略性十足，也很灵活。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "刚开始他们叫我收佣金的，结束的时候就叫我A兵团的了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "之前别人称呼我们为雇佣军团，以后就得叫A兵团了，你为我们打响了名头。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不过，为什么是我打响的呢，之前我们兵团和黑铁会没有冲突吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "······堕落城在末世初期的流血后，进入了沉闷的脆弱秩序的控制下，我们先前和他们也只有小打小闹而已。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "对了，黑铁会的人在战后给我个口信，说他们和我们敌对是因为怀疑我们支持他们的叛徒摇滚公园。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我没这么做过。不过摇滚公园我有所耳闻，她们是一个由女性组成的团体，为首的摇滚乐团三姐妹都是用改装乐器战斗的人。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "也是一种凝聚人心的符号？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "不错，而且据说大受欢迎，虽说很扰民，但是现在已经没太多秩序可言。哦，也的确有人抱怨过他们太吵了，说不定愿意给钱让你教训她们还有那群堕落城观众。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "好吧，我猜他们又想雇佣我们来处理那群搞音乐的？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是，真想不到前脚还在打斗，后脚就开始合作了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "这就是佣兵风格。顺便，搞清楚为什么摇滚公园要背叛吧，这对我们了解堕落城形势很重要。你去找king，她会教你怎么做的。"
+        }
+    ],
+    "$MAIN_FINISH_26": [  
+    ],
+    "$MAIN_TITLE_27": "狂野的玫瑰",
+    "$MAIN_DESCRIPTION_27": "通关简单难度“堕落城-摇滚公园”后，找King谈谈。",
+    "$MAIN_GET_27": [
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#被雷",
+            "text": "这个组织全是······女的？操，老娘有点想去了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "king姐，我们现在去处理吗？"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king",
+            "text": "这种事你自己去就行了，我开车带你去门口，你进去把那群女的搞定，用手里的枪也行，用下面的·····"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "啊不不······只有我吗？"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "带什么人？blue那个用枪还不如撒尿准的，还是andy那个一天到晚坐椅子上的？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好好··"
+        }
+    ],
+    "$MAIN_FINISH_27": [
+    ],
+    "$MAIN_TITLE_28": "莱昂里亚自由革命党",
+    "$MAIN_DESCRIPTION_28": "通关简单难度“堕落城-革命军哨所”后，找Andy Law谈谈。",
+    "$MAIN_GET_28": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "据她们的首领所说，她们背叛黑铁会是因为黑铁会袖手旁观，看着她们被军阀侵吞领地。那个军阀叫莱昂里亚自由革命军，主要在荒漠活动，最近才渗透进堕落城。"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king",
+            "text": "老娘不是很了解这些，总之只要给的佣金够，就去把这群丘八突突了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好好······"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king",
+            "text": "完事后别找老娘了，向andy汇报去。"
+        }
+    ],
+    "$MAIN_FINISH_28": [
+    ],
+    "$MAIN_TITLE_29": "自诩正义",
+    "$MAIN_DESCRIPTION_29": "通关简单难度“荒漠-难民营地”后，找Andy Law谈谈。",
+    "$MAIN_GET_29": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "所以，你们招惹了这个叫莱昂里亚军的组织？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是，他们很厉害吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "是的，不过你做的对。一来收钱办事是我们的准则，二来这个军队也不是什么好东西。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "shopgirl之前去找他们交易过军火，他们的确有一些军工产业。不过大多时候他们不过是火力更强的盗贼而已，早晚会完蛋，我们不过惹到了将死之人。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "就像你以前说的，土匪经济不长久吧。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不错。以及，虽然他们名叫自由革命军，不过杀人不眨眼，抓人去工厂工作的时候可不手软。已经惹到他们了就先下手为强，你去屋顶找飞行员，去他们的难民营地解决他们。那里有大批被他们抓到的难民，注意别误伤了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "军阀火力强劲，我们的佣兵不是很擅长应付，想办法运用特殊的战术吧，或许招降落单的军阀士兵是个好主意。"
+        }
+    ],
+    "$MAIN_FINISH_29": [  
+    ],
+    "$MAIN_TITLE_30": "“出于道义和怜悯”",
+    "$MAIN_DESCRIPTION_30": "通关简单难度“荒漠-军阀临时补给点”后，找Andy Law谈谈。",
+    "$MAIN_GET_30": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "每个年代都有对手无寸铁的人亮刀子的人。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "他们这么搞居然还能在荒漠站住脚？！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "别太愤怒，听我说。这些军队其实是溃军，当初和东区的终结者打了几场遭遇战，的确让现在禁区的终结者变少了，但是自己也损失惨重。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "在末世前，各国政府已经开始互派军队，用各国政府的整体权威稳定局势，但是最后还是免不了军队混乱。这群溃军和其他外国军队合流，就成了现在的军阀。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "另外，这群难民不能放任不管，但我们也没有太多资源储备。军阀在附近有一个补给点，把它端了，让难民拿回属于他们的东西！"
+        }
+    ],
+    "$MAIN_FINISH_30": [  
+    ],
+    "$MAIN_TITLE_31": "冲动的king",
+    "$MAIN_DESCRIPTION_31": "找King谈谈。",
+    "$MAIN_GET_31": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#坏笑",
+            "text": "他们可得过一段勒紧裤腰带的日子了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "king在找你，快去吧。她很冲动，你可别学她···"
+        }
+    ],
+    "$MAIN_FINISH_31": [  
+    ],
+    "$MAIN_TITLE_32": "圈套",
+    "$MAIN_DESCRIPTION_32": "通关简单难度“荒漠-残垣断壁”后，找King谈谈。",
+    "$MAIN_GET_32": [
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "妈的，你小子跑哪去了？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "来了，king姐有何吩咐？"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "狗日的军阀设了一个圈套，把摇滚乐团里那个键盘抓了！你快和老娘一起去救人，妈的要是被撕票了我们就失信了草！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "先冷静一下，我们去哪里救人？"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "分头找，就在那个一片水泥渣子的地方。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是断壁残垣吧，我们现在就去。"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#愤怒",
+            "text": "妈的到底谁定的兵团保护雇主原则，而且这女的也没点提防心！。"
+        }
+    ],
+    "$MAIN_FINISH_32": [
+    ],
+    "$MAIN_TITLE_33": "真正的圈套",
+    "$MAIN_DESCRIPTION_33": "找Andy Law谈谈。",
+    "$MAIN_GET_33": [
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#大笑",
+            "text": "我说什么，狗日的军阀没什么战斗力吧。搞一个抓我们的圈套，不如把自己瞎抖的腿绑起来。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我先去找Andy哥汇报了，姐你注意一下军阀动向吧。"
+        }
+    ],
+    "$MAIN_FINISH_33": [
+    ],
+    "$MAIN_TITLE_34": "基地崩溃",
+    "$MAIN_DESCRIPTION_34": "通关简单难度“荒漠-基地”后，找Andy Law谈谈。",
+    "$MAIN_GET_34": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#愤怒",
+            "text": "这疯婆子······那里不是真的圈套，真正的圈套是你们，他们已经找人跟踪你们发现我们基地的位置了！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#愤怒",
+            "text": "别道歉，我们A兵团是一体的，你们的事也是我的事，我们一起对付军阀。你上直升机观察情况，如果军阀来围攻了就迫降到他们后方，我们前后夹击！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是！"
+        }
+    ],
+    "$MAIN_FINISH_34": [  
+    ],
+    "$MAIN_TITLE_35": "十倍奉还",
+    "$MAIN_DESCRIPTION_35": "通关简单难度“荒漠-军阀据点”后，找Andy Law谈谈。",
+    "$MAIN_GET_35": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "这就是团结的力量。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#愤怒",
+            "text": "好了，妈的逼军阀敢在老子头上动土。你现在和我去杀进他们基地！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "andy哥，这是不是··"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#坏笑",
+            "text": "太疯了？别担心，给你看一看我的实力，用他们的血！给我们的损失，我要他们十倍奉还！"
+        }
+    ],
+    "$MAIN_FINISH_35": [  
+    ],
+    "$MAIN_TITLE_36": "不安之影",
+    "$MAIN_DESCRIPTION_36": "通关简单难度“荒漠-军阀前线基地”后，找Andy Law谈谈。",
+    "$MAIN_GET_36": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "这军阀的老窝里还藏了不少钱，这是你的那份，拿好。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "里面还有一种新型货币，价值更高，流通范围也广，而且据说还是什么高科技原材料，可以去小F那看看能不能用上。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "现在他们不成气候了。他们应该还有一个前线基地，里面有他们的特种部队分部，你去解决了吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "andy哥，我担心我实力不够。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "别担心，你的实力我通过之前的战斗了解到了，你可以的。另外，我们这次动作太大，之前被袭击又导致元气大伤，其他势力对我们虎视眈眈，我还需要在这坐镇。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "把他们搞定吧，觉得缺人就去招几个佣兵。"
+        }
+    ],
+    "$MAIN_FINISH_36": [  
+    ],
+    "$MAIN_TITLE_37": "来自堕落城的酒保",
+    "$MAIN_DESCRIPTION_37": "找Andy Law谈谈。",
+    "$MAIN_GET_37": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "我们的后续部队缴获了军阀的装备，这套重装兵套装应该很适合你。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "谢了。然后，andy哥，我觉得已经到我说实话的时候了。之前因为证据不足和对你们不够信任，我有所隐瞒。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我不介意，继续说吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "在加入A兵团前，我在名为AVP的森林里见过奇特外形的生物混战，而他们居然有飞船！我认为那就是诺亚方舟，所以对这个传说的信任破灭了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "在加入你们后，我一方面不是很信任你们，一方面证据不足，而且担心说出实话组织会混乱，所以保持沉默了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "废城的放丧尸钻头，在禁区也有类似的·······地铁站的兽化丧尸和大丧尸的服装与我在这次军阀基地见到的神秘人一样，我觉得这一切应该是有人在当幕后黑手，而且应该就是所谓“诺亚方舟”！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "实不相瞒，我们在这次之前也的确对你有所保留，比如，在堕落城和荒漠行动期间，我会尽量派人监视你。这次的事情我已经知道了，那个机器武士很难对付，很神秘。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们现在可以坦诚相待了对吧？那么，关于这个神秘的标志，还有这一切，解决这些难题的可能的突破口是那个神秘酒保。"
+        }
+    ],
+    "$MAIN_FINISH_37": [  
+    ],
+    "$MAIN_TITLE_38": "最新情报",
+    "$MAIN_DESCRIPTION_38": "找酒保谈谈。",
+    "$MAIN_GET_38": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "前些日子，我们的大厅来了个酒保。据说他是原堕落城“盗贼兄弟会”的情报人员。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "几个星期内，他就把我们这的酒吧搞得生意红火，让shopgirl头疼很久的积压的酒品就这样轻易卖了出去。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "他能力不凡，情报来源也众多，你去他那问问情况，掌握更多有关机器武士的线索吧。"
+        }
+    ],
+    "$MAIN_FINISH_38": [  
+    ],
+    "$MAIN_TITLE_39": "浮士德兄弟的情报",
+    "$MAIN_DESCRIPTION_39": "酒保告诉你堕落城有线索，让你亲自去查看一番，通关简单难度“堕落城深处”并获得浮士德的情报书。",
+    "$MAIN_GET_39": [
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保#微笑",
+            "text": "年轻人，想来点什么吗？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不用，谢了。我是andy哥派来的，想从你这里了解一些情报，关于屠杀了军阀的神秘机器武士的。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "关于这个机器，我已经掌握了一些线索，不过你可能需要亲自去堕落城获取更多情报。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "什么意思？"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "这些情报是浮士德兄弟给我的，很零碎，不能真的帮到你。如果你要进一步调查那个机器人，还是需要去找浮士德兄弟当面谈话的。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "当然，考虑到难度，你也可以先等一段时间，我会尝试从浮士德兄弟那里套取情报。不然的话······堕落城的规矩是：打赢了才能从通缉犯手里拿情报。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不了。这两人我有所耳闻，似乎是堕落城有名的通缉犯。我知道他们很危险，但是直觉告诉我这个调查不能再拖了。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "好吧，那不要忘了向他们索取情报书，这是我们堕落城的规矩，情报会用特殊编码方式规定的密码写成，需要给专人解码才能获取信息。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "另外，和堕落城通缉犯打交道的方式还是武力，考虑到对手的威胁，你下手的时候还是尽全力吧。"
+        }
+    ],
+    "$MAIN_FINISH_39": [  
+    ],
+    "$MAIN_TITLE_40": "神秘的医疗人员",
+    "$MAIN_DESCRIPTION_40": "你得到了浮士德的情报，现在去找丽丽丝调查一下，到医务室找丽丽丝谈话。",
+    "$MAIN_GET_40": [
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保#微笑",
+            "text": "你果然厉害，这么快就拿到了情报书。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "浮士德兄弟就这么死了？真是不可思议。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "没那么简单。浮士德兄弟怎么说也是堕落城一股可利用的力量，会有势力帮助他们的。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "实际上他们也的确有注射过特殊的肉体增强剂，再加上一些审判日后保存的医疗设备，救活还是不太难的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那么，情报书大概多久可以解码完成？"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "这份情报书不长，很快就可以。不过也是因为它不长，所以估计信息也不那么充足。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "我看看·······情报书里提到了牛仔，他也是个堕落城通缉犯。根据荒漠传来的消息，牛仔在将军死后收拢了军阀的部分势力，现在正在领导军阀从损失中恢复过来。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "牛仔和将军关系紧密，这我们早有听闻。考虑到这次神秘机器人屠杀对象就是军阀，你去找牛仔获取情报也是必要的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "荒漠的牛仔是吧？我这就去找他。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "不用那么着急。关于这个机器人，情报书上提到它身上的奇特标志，似乎还与废城的一些特殊丧尸有关。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "基地里还有人身上有类似的标志。这份解密后的情报你拿好，去找他们吧，然后你就知道为什么我不让你现在就去找牛仔了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "（我在哪见过那个武士身上的图案...是医务室吗？再确认一下情报内容之后去问问医生和护士吧。已经获得的情报物品可以在物品栏的【情报】界面查看详细信息）"
+        }
+    ],
+    "$MAIN_FINISH_40": [  
+    ],
+    "$MAIN_TITLE_41": "牛仔的情报书",
+    "$MAIN_DESCRIPTION_41": "丽丽丝让你去荒漠找牛仔要情报书，通关简单难度“军阀秘密基地”并获得牛仔的情报书。",
+    "$MAIN_GET_41": [
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "你又没受伤，进来干嘛？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我是来请教你们问题的，似乎你们的服装和最近传的沸沸扬扬的屠杀军阀的机器人有一些相似处。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "······到那边角落里谈吧。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "虽然我们没有刻意隐瞒，不过能够意识到我们和方舟武士的服装相似··是酒保告诉你的吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是的。我在调查军阀被屠杀事件，酒保告诉我可以从牛仔那里获取情报，不过还是先让我来和你们会面。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "我和格格巫是从诺亚逃出来的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "什么？"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "不用太惊讶，诺亚和审判日前的“诺亚方舟”已经不是一个东西了，现在的他们不过是科学疯子和贪恋权力的人的组合。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "我和格格巫是“诺亚方舟”计划的医疗部门人员，这个计划后来草草收场，我们也被裹挟进新组建的诺亚组织里了。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "他们不过是痴迷人体实验的败类，我和格格巫忍受不了高压氛围，趁着一次天网机器人袭击逃了出来。那次逃出来的人不少，最后只有我们从禁区到了A兵团。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "你的意思是，方舟武士是诺亚的产物。那么，你肯定知道诺亚基地在哪吧？"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "不······禁区到诺亚基地那里地形复杂，我和格格巫光是逃出来就费尽力气了，没法记住路线细节。何况诺亚也不可能想不到出来的人会告密，再加上天网的破坏，应该已经搬迁基地了。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "说的话有点多了·······我为我一开始的冒犯道歉。但是，既然你想从牛仔那获取情报，还请先把情报书交给我吧。你是代表A兵团去的，他一定知道这一点，我想他的情报书会提到我······"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "······好吧，我知道了。"
+        }
+    ],
+    "$MAIN_FINISH_41": [  
+    ],
+    "$MAIN_TITLE_42": "利其器",
+    "$MAIN_DESCRIPTION_42": "格格巫让你去找Shop Girl询问一下最新装备的问题，去找Shop Girl问问。",
+    "$MAIN_GET_42": [
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "好的，请把情报书交给我。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "······还是没有提到我啊。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "好吧，格格巫先生，这则情报书的编码比较特殊，酒保应该不熟悉，请你看一下。"
+        },
+        {
+            "name": "格格巫",
+            "title": "医生",
+            "char": "格格巫",
+            "text": "嗯·····牛仔认为，诺亚的下一个目标就是其他人类大势力了，看来我们得做好准备。"
+        },
+        {
+            "name": "格格巫",
+            "title": "医生",
+            "char": "格格巫",
+            "text": "你最好去找shopgirl，接下来可就是苦战了，强力的装备不可或缺。"
+        }
+    ],
+    "$MAIN_FINISH_42": [  
+    ],
+    "$MAIN_TITLE_43": "A兵团试练场",
+    "$MAIN_DESCRIPTION_43": "去堕落城通关简单难度“A兵团试炼场”，然后找小F谈谈。",
+    "$MAIN_GET_43": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "shop姐，现在不明机器人的传闻已经在基地传开了，它的下一个目标可能就是我们A兵团。我现在急需更强力的武器。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "我理解，不过即使如此，我们基地内的规则也不能轻易打破，你需要做一些事情来换取武器。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好，需要我做什么？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "你有没有听过一个叫“A兵团试炼场”的地方？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "似乎听到过····"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "其实那是我们强加给它的名字。那个地方实际上是堕落城的藏宝库和血腥角斗场。末日前那里是尘都最大的产业园区，是巨型企业联合体力量的象征，3xf在它面前也略显弱小。 "
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "末日到来后，那里的安保条件却依然凭借末日前储备的防核战争级别的电力系统维持自动运作。无论是天网“民用版”还是生化改造人，亦或者前去碰运气的盗贼、军阀甚至通缉犯，可以说什么人都有了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "那里的资源可谓取之不尽，我们到现在都不清楚巨型企业在里面藏了多少东西。只不过这么强大的力量却被弃置不用，原因令人疑惑。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "这岂不是很危险？万一试炼场被利用了，堕落城就危险了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "一方面，这个试炼场是黑铁会和其他堕落城势力一起维护的，他们的武力维持了试练场本身的稳定，却也不能让任何势力抛开其他势力乱来，维持了脆弱和平。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "另一方面，这个试炼场资源丰富，探险时再多死一点人，对堕落城的人均资源量也有提升·······"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "末世也就这样，如果黑铁会他们不做这种有风险的事情，堕落城的饥荒可能早就把城市掀翻了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "更不必说，末世后很多人都有变态的爱好，这也算是一个发泄场所了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "哦·····说回来，现在军阀被沉重打击，堕落城也山雨欲来风满楼。按照我们的情报人员所说，黑铁会有意利用试炼场这个定时炸弹来搅乱堕落城局势，为自己进一步扩张做准备。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "不过他们还不能立刻打破规矩，换句话说，现在外人还是可以进去杀敌的。趁着这个窗口期，你进去尽量消灭一些危险分子。为了末世秩序，必须清除不稳定因素。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白！"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "小心点，里面可是有通缉犯出没的。担心火力不够的话，就买个火箭筒，这玩意可是连堕落城的通缉犯都怕的。办好后去找小F，他会给你装备的。"
+        }
+    ],
+    "$MAIN_FINISH_43": [
+    ],
+    "$MAIN_TITLE_44": "Andy的规划",
+    "$MAIN_DESCRIPTION_44": "找Andy Law谈谈。",
+    "$MAIN_GET_44": [
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "喔，你就是那个新晋的基地骨干吧？这把武器拿好了，还有那边放着的装备。"
+        },
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "此前给你的军阀套还缺手套和鞋吧？当时老大让我给你修整一下，结果正好碰上我研究新技术，耽搁了几天。"
+        },
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "最近外边流通的强化石你有听说过吧？我要了一批研究了下，这玩意可以让装备性能超级提升，你的手套和鞋我已经强化过了。"
+        },
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "这可不是拿来练手的，是完美的成功品，正好配你这样的高手。不过我拿到的强化石也消耗的差不多了，现在只能整这两件，以后要是有更多强化石可以再找我捣腾捣腾。",
+            "imageurl": "flashswf/images/task_images/强化页面.png"
+        },
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "还有这把刀。",
+            "imageurl": "close"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这是？"
+        },
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "可不要因为它外表特殊，就认为它只是工艺品。3xf很久以前就开始打造新兵器了，用的可是新型合金。这种武器的特殊外貌是他们为了方便卖给富商而加的，有历史底蕴嘛！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这么说，它很厉害？"
+        },
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "那当然，你自己找人砍下试试。如果不满意，我还给了你一张图纸，只要你有材料，可以来我这用它合成格外强大的刀具！",
+            "imageurl": "flashswf/images/task_images/合成页面.png"
+        },
+        {
+            "name": "小F",
+            "title": "机械师",
+            "char": "小F",
+            "text": "材料没收集齐的话可以去外面大厅找商人买，需要图纸则来找我就行。哦对，老大找你，赶紧去吧。",
+            "imageurl": "close"
+        }
+    ],
+    "$MAIN_FINISH_44": [  
+    ],
+    "$MAIN_TITLE_45": "无后顾之忧",
+    "$MAIN_DESCRIPTION_45": "通关冒险难度“废城-地铁站”后，找Andy Law谈谈。",
+    "$MAIN_GET_45": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "闲话少说，现在情况不稳定，黑铁会蠢蠢欲动，那个神秘机器的组织，按照我从格格巫那里听到的，也就是诺亚对我们抱有敌意。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "为了应对威胁，我们要扫清后患。废城地铁站地形真够复杂的，不知道从哪源源不断冒出丧尸。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "那个大丧尸又出现了，恐怕是诺亚的试探。我们之前就怀疑过这大块头有指挥丧尸的能力，现在来看的确如此。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "地铁站里丧尸集群游荡也不可能短时间内聚集这么多丧尸，这大丧尸估计有搭载什么吸引丧尸的特殊装置，我已经派小F去研究了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "总之，你去把大丧尸解决了，同时我派人把基地附近的盗贼势力干掉。之后我们考虑黑铁会的问题，他们可不比诺亚安分。"
+        }
+    ],
+    "$MAIN_FINISH_45": [  
+    ],
+    "$MAIN_TITLE_46": "边衅始开",
+    "$MAIN_DESCRIPTION_46": "通关简单难度“黑铁会总部边缘”，然后找Andy Law谈谈",
+    "$MAIN_GET_46": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#愤怒",
+            "text": "你来了，现在有个问题，我们往黑铁会总部外围派出了几名斥候侦察情况。刚刚基地上的哨兵看见了他们放出的遇险的红色烟雾。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "看来他们遇到麻烦了，事不宜迟，你立刻出发前去支援，切记，营救才是主要目的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "收到，交给我吧。"
+        }
+    ],
+    "$MAIN_FINISH_46": [  
+    ],
+    "$MAIN_TITLE_47": "刺探黑铁会",
+    "$MAIN_DESCRIPTION_47": "似乎有新的进攻黑铁会的盟友，找酒保谈谈",
+    "$MAIN_GET_47": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "很好。缴获装备里的这一套你也可以试试，还是一样的，黑铁会的装备很轻，防御能力弱一些，但侵略性很强，也更灵活。不过重甲也有重甲的好处，有些时候保命才是装备的第一要务。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "只是看来与黑铁会的一战不可避免了。黑铁会势力庞大，虽然进攻能力有限，但是堂口戒备森严，想闯进去绝非易事。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "事情变得麻烦起来了啊······那接下来怎么办？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#坏笑",
+            "text": "我回去安排人与堕落城的盗贼团联络，他们都是见利忘义之徒，许诺推翻黑铁会后的利益，他们面对这么大的蛋糕不可能不心动。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "听说堕落城一个通缉犯与黑铁会有旧恩怨，你去找酒保打听一下这个人。"
+        }
+    ],
+    "$MAIN_FINISH_47": [  
+    ],
+    "$MAIN_TITLE_48": "敌人的敌人是朋友",
+    "$MAIN_DESCRIPTION_48": "找Andy Law谈谈",
+    "$MAIN_GET_48": [
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "今天怎么有空来喝酒了？难得你有闲下来的时间。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "Andy大哥让我来的，我们打算跟黑铁会全面开战了。听说堕落城有个通缉犯，和黑铁会有些恩怨？"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "嗯······你这么一说，确实有这号人物。不过，你问这个干嘛？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "黑铁会是块硬骨头，光靠A兵团的实力很难啃开，我们打算集结对黑铁会不满的那些人，然后一起对黑铁会发起进攻！"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保#微笑",
+            "text": "这样啊……这人曾经也是黑铁会的成员，但因为一些原因脱离出来了，它是个彻头彻尾的武疯子。不过嘛……这件事交给我办吧，你回去和Andy说，这件事儿包在我身上。"
+        }
+    ],
+    "$MAIN_FINISH_48": [  
+    ],
+    "$MAIN_TITLE_49": "全面开战",
+    "$MAIN_DESCRIPTION_49": "通关简单难度“黑铁会翅虎堂外围”，然后找Andy Law谈谈。",
+    "$MAIN_GET_49": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "现在，各路力量已经集结完毕做好准备了。堕落城也是时候该换主人了，推翻黑铁会的独裁统治就在今天！"
+        },
+        {
+            "name": "Andy Law",
+            "title" :"东区最强战士",
+            "char": "Andy Law",
+            "text": "你是我们A兵团最锋利的一把尖刀，你要闯入三大堂口，击败堂主，杀一杀他们的锐气！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "可是三大帮众甚多，又个个骁勇善战，悍不畏死，要怎么······"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不用担心，每一堂都有人配合你的行动。堕落城的贼团会拖住翅虎堂的帮众，我们A兵团会拖住火凤堂。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "至于黑龙堂，就交给lee那个疯子。大部分帮众会被吸引到外围，你的任务就是闯入堂内。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "好的，我一定不会辜负外面的友军！我这就先去给翅虎点颜色瞧瞧。"
+        }
+    ],
+    "$MAIN_FINISH_49": [  
+    ],
+    "$MAIN_TITLE_50": "折断獠牙之虎",
+    "$MAIN_DESCRIPTION_50": "通关修罗难度“黑铁会翅虎堂内部”，然后找Andy Law谈谈。",
+    "$MAIN_GET_50": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你回来了，战况如何？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "我遇到的只是杂兵，不过据其他人的情报，翅虎这家伙可不单单是黑铁会的情报部长啊，一手暗器神出鬼没，防不胜防，像一道抓不住的影子一样，哪怕被击倒了也能从身上飞出一把把飞刀，他们差点就没命了！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "不过好在是把翅虎堂外围肃清了！翅虎已经带着剩下的那些乌合之众退回总堂了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "干得不错。翅虎堂专攻情报，这次损失惨重，短期内很难对我们发动准备充分的突袭了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不过不清楚他们的外交部门是怎么回事，似乎陷入了一定的混乱。根据情报，黑铁会外交部门首领似乎有事外出，而黑铁会外交部门内部似乎派系林立，也不是所有人都想与我们为敌。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "但是，他们短期内也不能阻止黑铁会对我们的敌意吧？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "是这样，不过只要给他们造成的损失更大，他们的外交部门鸽派早晚会发挥作用的。继续吧，解决翅虎堂！"
+        }
+    ],
+    "$MAIN_FINISH_50": [  
+    ],
+    "$MAIN_TITLE_51": "黑铁其人",
+    "$MAIN_DESCRIPTION_51": "找Blue谈谈。",
+    "$MAIN_GET_51": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "做得好！看来斩首行动对这种大组织是最划算的办法。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "另外，根据线报，黑铁会的那群外交部门鸽派似乎都被清理了，估计是黑铁的政治手段，不过政治手段真的可以这么快吗·····"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "话说，虽然黑铁会名声很大，但我从来没听过黑铁本人的来历啊。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "这种组织的领头者当然会选择埋葬过去的自己的情报，免得影响了自己在外人眼里的神秘感。不过，不管怎么说他做的也太干净了点，我们确实对他没什么了解，除了他在堕落城的一些行动。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "他在堕落城干过什么事情吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "按照我们这边的情报，黑铁在审判日前就开始在堕落城行动了，他那时所在的组织叫黑铁教，而他也应该不是那边的最高领袖，算是中层管理吧。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "但是后来他不知道怎么，变得很强，通过武力和政治手段清洗了内部敌人，还在黑铁教的改革中驱逐极端保守派，引入了现代元素，例如夜视仪之类的。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "政治变革、武力加护以及引入新科技带来的对外作战优势，让黑铁威望大增，他随后以黑铁教为基础，建立了世俗的战斗组织黑铁会，成为了宗教世俗的双重领导者。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "上次酒保说的那个lee，根据我们现在整理的情报，似乎就是在审判日前受不了黑铁的举动，最终脱离了黑铁会。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这个黑铁教是信什么的？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我也只知道一些情报上的内容，不知是否准确。你去问问blue吧，他多年前在尘都西区打拳，对那里比较了解。"
+        }
+    ],
+    "$MAIN_FINISH_51": [  
+    ],
+    "$MAIN_TITLE_52": "黑铁教",
+    "$MAIN_DESCRIPTION_52": "找酒保谈谈。",
+    "$MAIN_GET_52": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "blue大哥，我想向您请教关于黑铁教的事情。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "也是，组织内对于当前大敌的情报应该保持畅通了。我当年在尘都西区打黑拳，参加过死亡竞赛，也认识一些混混之类的人物，当时唯独对黑铁教避之不及。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "这倒不是因为他们非常强，而是因为他们真的是众志成城，自己人被杀了，其他人还是继续冲锋。当时的尘都虽然混乱，但是警察也不是完全吃干饭的，我们打架的遇到这种事可就倒了霉了，只能溜了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "他们为什么会这样呢？"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "···说真的，我怀疑是药物作用。黑铁教早期那些人主要来自农村，他们的领导人，当时还不是黑铁那些人，似乎并不是那么草根。他们如果与什么巨型企业联合，让人喝下特殊药物，然后宣称自己有神迹，就可以吸引人信奉自己了。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "那些农民当然不懂这些，就被他们蒙骗了。黑铁教的领袖就可以和狗日的巨型企业合伙当土皇帝了，有了人和科技，他们还有什么干不成？"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "老实讲，虽然黑铁本人也不是个东西，但是他搞下去的那些人和他比起来，恐怕也就半斤八俩。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue",
+            "text": "啊，我只是了解一些基本情况，也有一些猜测，具体的你不如问问酒保，他才是真情报员。"
+        }
+    ],
+    "$MAIN_FINISH_52": [
+    ],
+    "$MAIN_TITLE_53": "酒保的看法",
+    "$MAIN_DESCRIPTION_53": "找Andy Law谈谈",
+    "$MAIN_GET_53": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "你好，我想来请教关于黑铁教的情况。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "嗯···那个教会扎根农村，也比较封闭，再加上黑铁本人似乎有意隐瞒这些情报，总之，我了解表象多，实际情况少。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "不过，我还是有关于黑铁教早年打出的旗号的情报的。早些年尘都和C国非常混乱，政治改革导致的社会矛盾爆发，加上全球经济凋敝，上面对下面的征税也非常苛刻。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "很多农民就跟过去一样，不断跟官方作对，但是没有组织成不了事。再之后就是黑铁教出现了。其实他们早些年的诉求应该是自治，在尘都周围的农村建立自治领地，减少税收之类的。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "结果后来却因为不畏死的神话而越来越壮大，甚至发展成了C国西南信徒人数首屈一指的大宗教，这背后估计是有人刻意和C国作对。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "很可能就是试图架空政府的巨型企业在背后资助，他们只要权力和钱，可不管社会成什么样子，只要维持赚钱状态就行了。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "哦对，说的有点多了，有情报表示黑铁会还在集结，你去找andy讨论一下对策吧。详细的资料我会交给你，你之后有空可以慢慢看。"
+        }
+    ],
+    "$MAIN_FINISH_53": [  
+    ],
+    "$MAIN_TITLE_54": "再入演唱会",
+    "$MAIN_DESCRIPTION_54": "通关简单难度“压制摇滚公园”，然后找Andy Law谈谈。",
+    "$MAIN_GET_54": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你应该得到消息了，黑铁会正在集结部队，可能是想对我们发起进攻。不过你不知道的可能是：这之中有不少盗贼和摇滚公园的部队。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "摇滚公园？她们还在服从于黑铁会吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "她们的态度恐怕比较投机，不想受黑铁会统治，但也不想我们彻底击败黑铁会进而一家独大。我猜她们会在我们和黑铁会交战时利用远程火力给我们来一下。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "又要对付这群摇滚人了。上次接受黑铁会委托去打击她们只不过小打小闹，这次可是大仗了。我们暂时无力提供支援，实在没办法，你完成任务后我尽量提供好的补给品吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "不···物资不是重点，但是···真的就要和她们翻脸吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "她们现在不过是另一个潜在的黑铁会而已，而且考虑到我们和黑铁会目前都损失惨重，她们的局势前所未有地好。只能找机会直接打击她们的气焰，让她们和其他看局势的盗贼群体踌躇不前，这样她们聚集不起力量就会没办法对付我们了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "希望你记住，我们是佣兵，我们没有永恒的雇主。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "如果你的新雇主出钱让你干掉上一任雇主，当你接受了委托的那一刻，你就要毫不犹豫的调转枪口并且扣动扳机。而当你为了生存给自己下委托时，不要对你的任何旧雇主太多同情心。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "趁着她们的部队和一些盗贼杂兵集结在市区而不是她们的大本营，立刻动手吧！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "···我知道了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "而且你也听小F提到过吧，现在强化石这种高科技产物也成为一种战略物资了。摇滚公园是堕落城最擅长使用科技武器的势力，她们的强化石储量也很充足，如果你能缴获一些，可以拿来增强你的战斗力。"
+        }
+    ],
+    "$MAIN_FINISH_54": [  
+    ],
+    "$MAIN_TITLE_55": "斩断凤凰的羽翼",
+    "$MAIN_DESCRIPTION_55": "通关简单难度“黑铁会火凤堂外围”，然后找Andy Law谈谈。",
+    "$MAIN_GET_55": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#愤怒",
+            "text": "你来的正好，这群黑铁会的人居然对我们打了一个突击，把我们在堕落城临时设立的几个据点拔了，杀了我们少说十几个人。必须给他们进一步打击。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#愤怒",
+            "text": "接下来你去拿下火凤堂。A兵团的人已经在外围跟他们的帮众对峙了，冲进去，拿下堂主！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "是！"
+        }
+    ],
+    "$MAIN_FINISH_55": [  
+    ],
+    "$MAIN_TITLE_56": "坠下梧桐之凤",
+    "$MAIN_DESCRIPTION_56": "通关修罗难度“黑铁会火凤堂内部”，然后找Andy Law谈谈。",
+    "$MAIN_GET_56": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#愤怒",
+            "text": "下一步就是火凤堂内部了。但你要小心，经我们的情报人员确定，据说火凤为黑铁会中唯一的女性，人如其名，有涅槃重生之力。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "什么涅槃重生，我管她怎样，打趴下就完事了。"
+        }
+    ],
+    "$MAIN_FINISH_56": [  
+    ],
+    "$MAIN_TITLE_57": "战线稳定",
+    "$MAIN_DESCRIPTION_57": "找Andy Law谈谈。",
+    "$MAIN_GET_57": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "干得漂亮。我看到绿色烟雾就知道你一定打赢了火凤堂主。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "早就听说火凤堂主是个漂亮女人。今天见到果然是不一般。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "呃······不要误会，这女人杀起人来可是不眨眼的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没想到她一个女人力气却这么大，一枚流星锤转得呼呼响，我动作稍微慢一点都要被她把脑壳砸烂了。也多亏了队友掩护，我才能不费劲地进入火凤堂内部，不然若是受大伤入内，结果恐怕不好说。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "她是真拼啊，比翅虎疯多了，被打倒了还强撑着站起来了好几次，最后实在没力气站不起来了，手里还死死握着武器呢。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我走上去，她还拼命挣扎着要再站起来，还说什么不能让我碰她最重要的人。结果还是被手下拖走了，不得不说黑铁会的医疗真厉害，伤成那样都能不死。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "末世前的医疗发展就很夸张了，估计是黑铁会占据的堕落城医学院发挥的作用。也可能他们事先有进行有限度的肉体改造，类似注射兴奋剂，不过能维持很久，损害也不高。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "黑铁会不是那种保守氛围浓厚的组织吗，为什么会接受这种改造，虽然程度也不深。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "之前也跟你说过黑铁改革的事情，黑铁本人拿保守当工具而已，只是为了鼓舞人心，给不用自己所剩无几的军火找个借口。真面对这种生死攸关的大事，他可不会因为什么政治口号就让手下都去送死。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "说回来吧，打败了火凤之后你的打算是什么。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "打败她，我也是累的不行了，她的帮众们拼死要把她抢回去撤退，我孤身一人没有后援也就没追。"
+        }
+    ],
+    "$MAIN_FINISH_57": [  
+    ],
+    "$MAIN_TITLE_58": "僵持",
+    "$MAIN_DESCRIPTION_58": "找酒保谈谈。",
+    "$MAIN_GET_58": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "黑龙堂士兵众多，而lee突然不知所踪，我们恐怕得和黑铁会僵持一阵子。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "现在怎么办？应该找别的组织合作吧。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不错，至少让别的组织不至于倒向黑铁会。目前只能分出小股力量，通过委托来获取其他组织的信任了。现在不得不低头了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "去问问酒保吧，他应该有门路。"
+        }
+    ],
+    "$MAIN_FINISH_58": [  
+    ],
+    "$MAIN_TITLE_59": "委托？",
+    "$MAIN_DESCRIPTION_59": "找格格巫谈谈",
+    "$MAIN_GET_59": [
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "你来了？你们最近都没来接活，我这里的委托都堆成山了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "让我看看有什么委托吧，或者你有什么建议？"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "我可不敢妄言太多建议，这对情报员可不是什么好事···嘛，不过这次还得跟上次一样破例，我得建议你去找格格巫要硬化僵尸的情报。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那是什么？"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "据说是什么实验失败品，具体的我不太清楚。不过据说它实力很强，又与诺亚有联系，你找格格巫他们要情报是非常合适的。"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "而且A兵团也有禁区的粮食贸易路线，这个硬化僵尸在那活动占着位置。对你们长远来说也不是好事。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "所以委托就是消灭硬化僵尸？"
+        },
+        {
+            "name": "酒保",
+            "title": "前情报员",
+            "char": "酒保",
+            "text": "准确来说是护送车队，这个车队没有护送必然会被硬化僵尸袭击。你们就类似于诱饵，吸引硬化僵尸并且战胜它，这样商队就安全了。这个商队也是服务于一些堕落城势力的，帮他们一把确实能给你们的外交加分。"
+        }
+    ],
+    "$MAIN_FINISH_59": [  
+    ],
+    "$MAIN_TITLE_60": "硬化僵尸",
+    "$MAIN_DESCRIPTION_60": "找boy谈谈",
+    "$MAIN_GET_60": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "格格巫医生。我需要向你请教一些事情。"
+        },
+        {
+            "name": "格格巫",
+            "title": "医生",
+            "char": "格格巫",
+            "text": "直接问吧，我待会得动手术了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我接到委托需要对战硬化僵尸，需要从你这里获取关于它的情报。"
+        },
+        {
+            "name": "格格巫",
+            "title": "医生",
+            "char": "格格巫",
+            "text": "嗯···我建议你不要接。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "为什么？"
+        },
+        {
+            "name": "格格巫",
+            "title": "医生",
+            "char": "格格巫",
+            "text": "就我所知，硬化僵尸最初诞生于禁区和荒漠交界处，按照诺亚的内部资料，是变异体袭击了有黑铁会背景的科技商队，然后吞食了特殊的生物试剂而产生进一步突变，最终产生了硬化僵尸。"
+        },
+        {
+            "name": "格格巫",
+            "title": "医生",
+            "char": "格格巫",
+            "text": "诺亚方面后来通过战斗获取了硬化僵尸的血液，然后经过培育试图获得新的产物，在我走之前，他们似乎已经获得了什么成果，只不过据说原理和硬化正好相反。"
+        },
+        {
+            "name": "格格巫",
+            "title": "医生",
+            "char": "格格巫",
+            "text": "总之，硬化僵尸通过角质层增生和纤维变异，使得自己的表皮异常坚固，再加上诺亚可能往那里放实验品···我不认为你只需要对付一个敌人。"
+        },
+        {
+            "name": "丽丽丝",
+            "title": "护士",
+            "char": "丽丽丝",
+            "text": "医生，boy那边传来消···啊，你在啊，那就快去找boy吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "好吧，我也了解一些内容了，格格巫先生你先忙吧。"
+        }
+    ],
+    "$MAIN_FINISH_60": [  
+    ],
+    "$MAIN_TITLE_61": "反圈套",
+    "$MAIN_DESCRIPTION_61": "通关简单难度“袭杀与圈套”，然后找Andy Law谈谈。该关卡在荒漠。",
+    "$MAIN_GET_61": [
+         {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "boy哥找我有什么事？"
+         },
+         {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "嗯，我直说吧，你这个从酒保那里接的委托应该是圈套。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "什么？"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "我不是说酒保是内鬼。因为我们最近在和黑铁会大战，我们BPK需要守卫基地，同时负责一些情报和外交工作···当然只能是我来干了。"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "andy很早就考虑到我们可能要获取堕落城势力的支持，就叫我先调查一下他们。我就发现了不少势力其实明面上独立，实际上就是黑铁会的手套而已，比如你这次的这个委托发起人。"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "我这个直升机也不是摆设，偶尔在荒漠绕一圈也能发现，那些缺乏远距离防空火力的军阀残部似乎也在集结，恐怕有所图谋，而他们的活动范围已经很接近禁区了。"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "结合这些情报，我猜是黑铁会利用这个傀儡组织发委托，诱骗我们的战士去杀硬化僵尸，顺便杀了我们派去的人，伪装成硬化僵尸所杀，这样通过“将计就计”，用委托削弱我们。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我要去拒绝委托吗？"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "我们也来一手将计就计。你还记得你在闹市区支援的那两个战士吗？现在他们可是团队精英，实力很强。你这次委托先自己去，然后军阀残部突袭的那一刻，我们一直埋伏在暗处的精英就会出来打他们一个措手不及。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "确实是不错的主意···"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy",
+            "text": "小心点吧，军阀也不是吃素的！完事了找andy报喜就是。"
+        }
+    ],
+    "$MAIN_FINISH_61": [
+    ],
+    "$MAIN_TITLE_62": "鳞甲残破之龙",
+    "$MAIN_DESCRIPTION_62": "通关简单难度“黑铁会黑龙堂外围”，然后找Andy Law谈谈。",
+    "$MAIN_GET_62": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "boy虽然疯狂，但好在主意确实不错。现在lee也就位了，黑铁会的阴谋也流产了，是时候进行下一步行动了。没有太多时间休整了，现在必须去对付黑龙。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "放心，交给我吧。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "黑龙高大魁梧而且力大无比，据说他本来只是常人体格，曾被一些邪术强化过，非常强大。此人从来没有公开露面，只是有传言说曾经看见一个身披重甲，手持大剑的人单手举起一名军阀重装兵，单手捏爆了他的脑袋，并且还把尸体扔出去近十米远。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "神仙也怕一道烟，我不信他扛得住子弹。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "他的一身重甲坚不可摧，寻常枪械还真奈何他不得。武疯子Lee已经先行出发了，以他的实力闯入堂内不成问题，但是他应该不是黑龙的对手。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那家伙恐怕会直冲堂内吧。没事，大不了我打败黑龙之后把他一起接回来。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "Lee那家伙脾气很差，你少跟他说话。记住尤其不能提“克隆人”这个词，一听这个词他就会发怒。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这小子还是个大爷啊？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "毕竟咱们是借人家之力帮你开路，还是要给人家面子的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好，我马上去会会黑龙。"
+        }
+    ],
+    "$MAIN_FINISH_62": [  
+    ],
+    "$MAIN_TITLE_63": "击溃巨龙鳞甲",
+    "$MAIN_DESCRIPTION_63": "通关修罗难度“黑铁会黑龙堂内部”，然后找Andy Law谈谈。",
+    "$MAIN_GET_63": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "如何？这位帮手很厉害吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是，他用拳头都能把人的头打碎，恐怕我这身护甲也没法在他的拳头下保全我。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "好在他是友军，现在，突入内堂吧！"
+        }
+    ],
+    "$MAIN_FINISH_63": [  
+    ],
+    "$MAIN_TITLE_64": "商人面对教徒",
+    "$MAIN_DESCRIPTION_64": "找Shop Girl谈谈。",
+    "$MAIN_GET_64": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#愤怒",
+            "text": "差点栽了，真是倒霉！黑龙远比我们想象中的还要强大数倍！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "战况怎么样，lee没能解决他吗？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "lee解决了黑龙的大部分手下，可能也是长时间作战的原因，我赶到的时候lee已经被击败了，不过还好，最后黑龙还是被我们打败了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "具体发生了什么？快跟我说说。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "黑龙远比我们掌握的情报更加恐怖，他的身高足有两米五！穿着一套重型铠甲，骑着一匹战马，那战马浑身也披满战甲，手里的大剑足有一个半正常人高！单单是他挥出一剑，那剑气就震得我胸口一阵发闷！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "lee的情况怎么样？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "lee受了很重的伤，但是已经没什么大碍了，他似乎有种自愈能力，战斗结束后也离开了。至于黑龙，他在战斗中从没落过下风，但不知道为什么，他突然像是受到了什么打击一样，突然跪在地上，大口吐着鲜血，最后也被黑铁帮众救走了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "这么看来，还是我们取得了胜利啊。辛苦你了，你先好好休整，等下我们就对黑铁会发起最后的总攻，堕落城的这跟大树，就由我们A兵团连根拔起！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "话说，在决战之前，你可得好好了解一下黑铁，去问问shopgirl吧，她的消息也很灵通。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "另外可不要掉以轻心，最好配齐你的装备，如果可以的话，也要把武器强化一下，这能让你的战斗力有显著提升。再去问问小F吧。"
+        }
+    ],
+    "$MAIN_FINISH_64": [  
+    ],
+    "$MAIN_TITLE_65": "情报整理",
+    "$MAIN_DESCRIPTION_65": "找Andy Law谈谈。",
+    "$MAIN_GET_65": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "shop姐！有段时间没好好聊聊了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "哦，看来你又有求于我了？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是···想问问你关于黑铁的事情。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "那个人啊，首先我要反问你，你知道什么是黑铁精神吗？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "完全不了解。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "这个词应该说有多重含义。最基本的含义就是前些年那些冒死冲锋的黑铁教信徒的精神，也就是不畏死亡，只求胜利。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "更深一层的含义则是，当年黑铁教还只是一个谋求地方自治的小组织的时候，打出的坚忍不拔，为同病相怜的农民谋求幸福生活而舍得一身剐的精神。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#严肃",
+            "text": "最深含义···并没有这种东西，因为一切教义最终都是世俗领袖曲解的产物。为了排外他们可以宣称教徒要保守，为了和巨企合作——当然这只是传闻，他们也可以宣称教徒就要接受一些人体上的改造。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#思考",
+            "text": "黑铁本人的这个名字，就是从黑铁教的名头来的，他不但想要永远与组织绑定，还想进一步获得解读黑铁精神的权力，从而让狂热教徒永远听他的号令，而不是各种保守或者其他什么精神的号令。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl",
+            "text": "换句话说，他可能是想成为“保守”的化身，至于保守本身是什么不重要，他说了算就是。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "还有一件事，你需要转达给Andy，事关即将到来的大战，十分重要！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是什么？快告诉我吧！"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "我的情报来源绝对真实，据说黑铁在前一阵子不知道和谁发生了一场对战，统治堕落城多年的他未尝一败，但这次战斗却落荒而逃，并且受了些不大不小，但对他有影响的伤。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "这事已经过去一阵子了，不知道他的伤是否痊愈，你要是想干掉他，最好趁现在去。要是晚了，估计你连他的影子都没看到，就人头落地了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "知道了，事不宜迟，我这就跟老大汇报！"
+        }
+    ],
+    "$MAIN_FINISH_65": [
+    ],
+    "$MAIN_TITLE_66": "困兽之斗",
+    "$MAIN_DESCRIPTION_66": "通关修罗难度“黑铁会总堂外围”，然后找Andy Law谈谈。",
+    "$MAIN_GET_66": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "结果怎么样，你掌握了多少信息。想跟黑铁对决可不是那么容易的，你需要掌握足够的情报，才能去和那群疯子对决！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "据说黑铁在前段时间受了伤，如果我们趁早出击，或许会是个机会！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "瘦死的骆驼比马大，此人既然能统治堕落城多年，就必定有其过人之处。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "关于黑龙的事情，我们也了解了十之七八了。黑龙与黑铁同根同源，本是堂兄弟，黑龙视他这个兄长为神。曾经在末日开始之前，从c国南部逃难来了一些难民，在这其中不缺乏那些巫师邪教徒，黑铁借着这个机会收编了其中掌握邪术的人。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "据说这种邪术能让人在短时间内战斗力暴涨，若是自身足够强大，甚至还会出现体型和内力上的转变，这种邪术让黑铁会在扩张初期所向披靡。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你看到的异于常人的黑龙，就是自告奋勇，并且第一个接受邪术改造的人，这也能解释为什么他的力量那么强大。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "但邪术终归是邪术，他最后口吐鲜血应该就是遭到了邪术的反噬，若不是因为如此，恐怕你和lee就永远地沉睡在黑龙堂中了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "竟然还有这样的事儿···但Shopgirl姐跟我说，黑铁会是以保守主义为主，他们怎么会接受外来人士加入啊？还有，这个邪术是不是太玄乎了？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "说是收编，不如说是奴役，黑铁本人极度厌恶外来种族，但那些降头师手中正好有他们想要的东西。这也是一种等价交换，那些外来人也没有选择的余地。比起在野外腐烂，成为野狗的食物，靠拢黑铁会是他们唯一的，也是最好的选择。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "至于说那个邪术，我们目前也不清楚其实质，也许是装神弄鬼下的科技产物，也许是什么超能力，但不论如何，它展现出了明显的副作用，黑龙就是牺牲品了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那这么说，黑铁也会受到邪术反噬了？再加上他受了伤，看来这场战斗不会太难啊！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不可轻敌！黑铁本人大概率不会接受邪术的加持，你还是需要万分小心。而且我们的线报说，三大堂主已经整合了力量守在了黑铁会总堂的外围，你需要先肃清外围才能真正的与这个神秘的人物见面。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "但那些堂主大大小小也都受了不轻的伤，总堂外围的战斗应该也不会太难。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白了，事不宜迟，我这就出发，让他们尝尝a兵团的铁拳！"
+        }
+    ],
+    "$MAIN_FINISH_66": [  
+    ],
+    "$MAIN_TITLE_67": "不败传说的破灭！",
+    "$MAIN_DESCRIPTION_67": "通关冒险难度“黑铁会总堂”，然后找Andy Law谈谈。",
+    "$MAIN_GET_67": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "过程十分惊险，但好在解决了！剩下的就是黑铁会最后的那把剑了！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你的成长真让我感到意外，黑铁会三大堂主都败在你的手上，或许在未来的某一天，你能成为我们A兵团的独当一面的人物！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们刚刚收到消息，在你进攻总堂外围的时候，黑铁的手下秘密处决了一批身材矮小、皮肤黝黑的人，按照我们所掌握的情报，这应该就是那些逃亡过来的降头师了，他们的死对我们来说也是好处，看来黑铁自己也认识到邪术不是长久之计了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "但黑铁本人受伤的消息已经得到证实，据说让他受伤的是一个一身白衣，头戴斗笠的男子，从服装特征来看，和那次袭击军阀基地的那个机械武士十分相似，可能他们属于同一个势力！但对这个势力，我们了解甚少，还是要小心行事。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "虽然黑铁大概率没有使用邪术异端，但他的武力精湛，不容小觑。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "关于他，我们知道堕落城中有传言，至今闯黑铁会总堂的人没有一个活着回来的。我们的部队在和黑铁会的战斗中损失惨重，还要提防诺亚，已经没法再出动了，靠你了！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那我将是第一个彻底击败他，并且从总堂全身而退的人！"
+        }
+    ],
+    "$MAIN_FINISH_67": [  
+    ],
+    "$MAIN_TITLE_68": "暂时的和平",
+    "$MAIN_DESCRIPTION_68": "找Andy Law谈谈。",
+    "$MAIN_GET_68": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "你做到了，你居然真的击败了黑铁！"
+        },
+        {
+            "name": "The Girl",
+            "title": "Andy的女仆",
+            "char": "the girl#微笑",
+            "text": "你真的太棒了，比我想象中还要勇猛，这次真的让我对你刮目相看了！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "黑铁，比我想象中还强大得多……现在想想都有些后怕，不过幸亏···"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "幸亏什么？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我们的情报是真的，黑铁那家伙真的受了伤，而且这伤似乎对他产生了影响，我在和他打斗的过程中，他脸上的汗珠就没断过，而且有好多次机会他可以重创我，但是他却像犹豫什么一样，而且握住剑的那只手会频繁的发抖。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "但这黑铁会的凝聚力实在让我觉得后怕，三大堂主已经被我打败数次，还是在总堂不断地阻挠我。我急于击败黑铁，又因为他们实力强劲，难以彻底杀死他们，结果就是他们拖延了我很久，直到黑铁面前才全部重伤撤退。甚至我感觉，他们的凝聚力在A兵团之上！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "这是自然，在这种末世环境下，凝聚力极为重要，黑铁不可能不意识到这一点，这也是他能统治堕落城多年的原因。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "黑铁本人的分身也是厉害，我甚至觉得那是他行动太快给我留下的视错觉，但真打起来才发现居然真的能给我造成损伤，根本想不通是怎么做到的，不过，总之是结束了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "大战结束，这次黑铁会没办法在堕落城作威作福了！我也终于可以好好休息一下了！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "在这乱世，任何事情都有可能在一瞬间发生改变，或许在不久的将来，我们和黑铁会成为了亲密的盟友也说不定。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "基地所有的人都知道了你的事迹，去和大家打声招呼，从今天起，你就真正成为A兵团的猛将了，先去看看blue吧，他对你的帮助最多。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#微笑",
+            "text": "不错啊小子，能把这么大的一颗茬子解决掉，看来平时我对你的训练还是相当有成效的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "也多亏了blue哥，要不然我可能还活不到现在呢！"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#微笑",
+            "text": "骄兵必败，以后还是得注意训练啊！shopgirl也对你这次胜利表示祝贺，你也去问个好。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "放心吧，一定！"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "不错啊，看来你真的能独当一面了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "谢谢shopgirl姐这么久以来的关照，也让我成长的更快！"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "你不必谢我，你做了该做的事，我也得到了我需要的报酬，这也是一种等价交换，不是吗？去boy那儿看看吧，他对你的期望很高，这次他应该会开心好一阵子了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#微笑",
+            "text": "是！"
+        },
+        {
+            "name": "Boy",
+            "title": "BPK战队-队长",
+            "char": "boy#微笑",
+            "text": "当年那个新兵蛋子现在也能独当一面了，祝贺你！"
+        },
+        {
+            "name": "King",
+            "title": "BPK战队-左前锋",
+            "char": "king#微笑",
+            "text": "这时候就应该来一盘番茄炒鸡蛋庆祝一下！"
+        },
+        {
+            "name": "Pig",
+            "title": "BPK战队-右前锋",
+            "char": "pig#微笑",
+            "text": "嗯哼哼，哈哈哈哈哈哈哈哈哈！"
+        }
+    ],
+    "$MAIN_FINISH_68": [  
+    ],
+    "$MAIN_TITLE_69": "庆功延后",
+    "$MAIN_DESCRIPTION_69": "找黑铁会外交部长谈谈。",
+    "$MAIN_GET_69": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "击败了黑铁会之后，堕落城应该会陷入一段时间的混乱。虽然我们应当去维护那里的秩序，让我们的控制力覆盖那里，但毕竟现在实力有限，难以做到。在那之前，或许来一场宴会是个不错的选择。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "现在庆功会不会太早了？周边局势似乎还不稳定。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你说的的确有道理，但是我们久战兵疲，伤员多到医务室已经快挤不下了，继续执行军事行动对士气有很大影响。扩张机遇也建立在内部稳定的基础上，不保证内部团结，我们再怎么对外扩张也无济于事。"
+        },
+        {
+            "name": "Blue",
+            "title": "格斗教练",
+            "char": "Blue#严肃",
+            "text": "老大，车库那边报告，有黑铁会的外交部门人员前来，好像是打算向我们求援。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "···先听听他们怎么说吧，你和我一起来。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是！"
+        }
+    ],
+    "$MAIN_FINISH_69": [  
+    ],
+    "$MAIN_TITLE_70": "前倨后恭",
+    "$MAIN_DESCRIPTION_70": "找Andy Law谈谈。",
+    "$MAIN_GET_70": [
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "各位A兵团的勇士们好，我是黑铁会的外交部长。这次奉教主之命，前来向各位求援。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "大战刚刚结束，你竟敢单枪匹马来到我们A兵团，黑铁的手下果然不是等闲之辈，不怕你这一来，再也没有回去的可能么？"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "不愧是……东区最强战士。我们黑铁会尊敬强者和英雄，何况，两军交战，不杀使臣。东区最强战士的外交头脑应该和战斗力一样强大才是。你一定能看出，现在的情况下，我们黑铁会的确自身难保，但是失去了我们，堕落城很快就有新的势力进行更彻底的统一，这对你们可不好。"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "据我的经验判断，我猜你接下来会问：要说的只有这些吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "……"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "···还有就是，我们受到了诺亚方舟的袭击。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你知道你自己在说什么吗？"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "教主表示我可以告知你们实情，那我就对此解释一下。这样，也能表现出我们的诚意。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我洗耳恭听。"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "这个诺亚方舟是原“诺亚方舟”计划失败后，剩余势力重组的结果。我们黑铁会和他们有私下联络和技术交流。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "哦，原来你们是靠科技而不是巫术和我们打仗的，还是说你们把巫术用的出神入化到诺亚方舟都被迷惑了？"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "请允许我将讨论转回正题。在当初你我两军交战之时，我便被教主派去联系军阀残部，他们和你们同样有些渊源，这点你是了解的。"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "当我带着军阀的援兵回到黑铁会的时候，大战已经结束。不久后，诺亚方舟便对我们发动了突袭，幸亏有我带来的援兵，否则我们......"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "如今诺亚方舟和我们反目，我们难以向其他堕落城趁火打劫的势力求援，只能向你们求援了。我们的探子曾经得到情报，你们那位骁勇善战的士兵曾经也和诺亚方舟交过手，说不定，在诺亚方舟的众多打击对象中，就有你们A兵团的名字。"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "更何况我们继续存在下去对你们维持堕落城稳定也有好处，我们也可以提供更多关于诺亚方舟的消息，这就是我们给出的筹码了，唇亡齿寒，相信东区最强战士不会不懂这个道理。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "到底是黑铁会的人，连求援的语气都那么坚硬，这要是让别人听了去，还以为是我们打了败仗呢！"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "我无意冒犯。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "至于你说的事情......我会派人去支援的，不过人数有限。而且作为回应，你必须留下来，我并不知道你们黑铁会在耍什么花样。"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "我同意。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们回去聊吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "是！"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "……"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "真品吗…"
+        }
+    ],
+    "$MAIN_FINISH_70": [  
+    ],
+    "$MAIN_TITLE_71": "挽救仇敌",
+    "$MAIN_DESCRIPTION_71": "通关简单难度“被攻击的黑铁会”，然后找Andy Law谈谈。",
+    "$MAIN_GET_71": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "抱歉，我插句嘴。就算留着黑铁会有好处，我们现在直接去面对诺亚方舟，难道这就不可能是黑铁会的陷阱吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "必须去。你可能不太了解，我们来捋一捋目前得到的信息。不止是我们，包括堕落城在内的很多人类势力，之中不少人都对诺亚方舟有向往，认为那个说法可以挽救世人。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "如今事实摆在眼前，无论是格格巫、丽丽丝还是黑铁会高层，他们都知道诺亚方舟是一群善用科技的疯子，而且诺亚已经开始进一步进攻人类势力了。格格巫和丽丽丝逃到A兵团的例子就已经十分明显了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "想想看，你能保证这种消息散播开来，人们不会崩溃吗？之前军阀被屠杀的时候，诺亚方舟的流言可是让好几个人都自杀了。就算不考虑别人，我们A兵团损失惨重，要是再知道还要对付曾经寄托希望的诺亚方舟，是不是就会士气大减？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "无论是丽丽丝他们的直说，还是黑铁会外交部长刚才的暗示，其实都在说明一件事：诺亚方舟的力量目前只能进行试探性攻击。如果诺亚方舟真的大举进攻，不用他来告诉我们，我们都能立刻打听到了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "也许是因为资源有限或者准备不足，总之，诺亚方舟目前只能对黑铁会进行试探进攻，可能是想趁机击杀黑铁会高层。黑铁会那边缺乏热兵器，对抗诺亚吃力也是理所当然的。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "你去帮助他们，既可以在外交角度维持黑铁会存在，防止堕落城统一进而威胁我们；又可通过战斗了解到诺亚的情况；还可以把诺亚的进攻势头打断，防止消息进一步传播。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "尤其是第三点，这样给我们在基地内，在佣兵们的头脑中将诺亚方舟祛魅争取时间，防止日后真的面对诺亚的时候我们士气衰落。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "与此相比，黑铁会的陷阱则是几乎不可能的事情，他们实力大损，而且我还留了他们一个部长，要是能够为了陷阱牺牲一个部长，他们可就再也没有什么团结可言了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我和boy他们要留下来守护基地和讨论对策，现在可用的人已经不多了，只能再麻烦你了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我明白，但是还有很多问题···诺亚进攻黑铁会的话，那其他势力怎么办，我们什么时候会受到波及？他们已经拿军阀和黑铁会开刀了，下一个会不会轮到我们？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "而且黑铁会既然已经被袭击了，为什么诺亚方舟进攻的消息没有完全走漏，还能让我们去帮他们掩盖消息？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "具体的我也难说了。总之，我先派一个小分队前去黑铁会，你稍后也前去黑铁会那边，和小分队联络，去跟诺亚碰碰，看看这群疯子到底是什么实力。"
+        }
+    ],
+    "$MAIN_FINISH_71": [  
+    ],
+    "$MAIN_TITLE_72": "再会诺亚",
+    "$MAIN_DESCRIPTION_72": "找黑铁会外交部长谈谈。",
+    "$MAIN_GET_72": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "老大！我们可能有大麻烦了！"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "快说，你看见什么了？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "僵尸，成群结队的僵尸！而且是穿着统一制服的僵尸！他们每套制服上都写着不同的编号，僵尸种类也不同，甚至有的僵尸还配备着枪械和重武器，有的僵尸甚至可以再生！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "他们不是漫无目的的僵尸，而是好像收到了某些指令！比在废城的那些僵尸要强上百倍，就好像是一支作战军队！这让我想起了地铁站的那只大怪物，那怪物的服装和这些家伙极其相似！"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "包括之前在废城里，那些从地面钻出来的钻头里面放出僵尸，这下子估计也能对的上了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#严肃",
+            "text": "竟然有这样的事儿！那黑铁会那边的状况如何？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "黑铁会损失更惨重，堂主和会主，甚至是精英都没法出战，只有少量基层部队在抵抗，那些手拿刀斧棍棒的亡命徒根本不是改造僵尸的对手，如果不是我们支援，恐怕黑铁会这次就被彻底消灭了。Lee那次大闹黑龙堂也不过如此，甚至没这惨烈。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们这边损失也很严重就是了。诺亚情况如何？"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "诺亚的部队数量不多，但全部都是改造僵尸，大部分还配备了远程武器，显然诺亚制造出了有使用枪械的能力的丧尸。虽然还不是很智能，但恐怕要不了多久就能有更强大的敌人出现在我们眼前了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们这也没什么好消息，之前军阀被屠杀的传闻就让很多人动摇，现在shopgirl他们去给佣兵们改变观念也受到了一定的抵制，再加上我们之前和黑铁会战斗损失惨重让他们心生怨气，稍微搞不好，我们就万劫不复了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "在这唉声叹气也没用，不如跟那个黑铁会的外交部长谈谈吧，说不定他有什么破局的办法。"
+        }
+    ],
+    "$MAIN_FINISH_72": [  
+    ],
+    "$MAIN_TITLE_73": "外交部长的“锦囊”",
+    "$MAIN_DESCRIPTION_73": "找Andy Law谈谈。",
+    "$MAIN_GET_73": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我们已经支援过黑铁会了。实话实说，作为敌人的诺亚很强大，对我们无论是肉体还是信仰的杀伤都很强大。"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "我们当初选择拥抱保守，实际上也是对此的回应。信仰教主总比信仰诺亚好，至少我是这么认为的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "看起来你似乎和一般的教徒不同，比较注重实用而不是虔诚。"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "不用这么套我的话，无论如何，我忠于黑铁会。至于应对诺亚，除了你们最近搞得如火如荼的祛魅教育外，不得不做的就是联合其他势力了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "摇滚和军阀？"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "显然如此。摇滚公园内部混乱不堪，尤其是吃了败仗又面临诺亚入侵风险的当下，酝酿中的内战恐怕难以避免了。她们迟早要向你们和我们求援的，借助这个机会就可以。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "···你似乎对局势很有把握，是你参与了对摇滚公园内战的煽风点火吗？"
+        },
+        {
+            "name": "黑铁会外交部长",
+            "title": "黑铁会外交部长",
+            "char": "黑铁会外交部长",
+            "text": "总之，希望你准确认识当前情况，做出对你我和两个组织有利的决策。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "···我知道了。"
+        }
+    ],
+    "$MAIN_FINISH_73": [  
+    ],
+    "$MAIN_TITLE_74": "摇滚公园内战阴影",
+    "$MAIN_DESCRIPTION_74": "通关简单难度“摇滚内战”，然后找Andy Law谈谈。",
+    "$MAIN_GET_74": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "真是巧合，我刚想联系你，你就来了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "是摇滚公园内战了吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "看来黑铁会外交部长跟你说了很多啊，当然，他也做了不少事，怪不得我们进攻黑铁会的时候他不在。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "现在摇滚那边是什么情况？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们之前怀疑过摇滚女皇和少数精锐的武器来自什么高科技组织，现在来看应该就是诺亚，诺亚也因此对摇滚公园进行了渗透。在如今的失败情绪下，她们中的很多精锐带着自己的队伍反叛，估计是和诺亚联系好了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "如果她们反叛成功，借着诺亚的力量进一步在堕落城扩张，那么黑铁会肯定没法抵抗，我们被消灭也是早晚的事情。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR#严肃",
+            "text": "我更在乎的是，为什么黑铁会外交部长会去摇滚公园那里煽风点火。如果内战提前爆发，那么被大大削弱的摇滚公园可帮不了他们来对抗我们。难道他算好了我们一定能打赢黑铁会，然后诺亚一定会进攻他们吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我也不是很清楚，看来有必要进行后续的调查。总之，摇滚公园也发来求救信了。我们不能眼睁睁看着诺亚支持的势力取胜，必须帮她们。这次少数精锐和黑铁会的一部分战士也会站在你这边。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "黑铁会居然还有可以发送到外部的战斗力吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "他们可不会放弃对堕落城局势的干预的。"
+        }
+    ],
+    "$MAIN_FINISH_74": [  
+    ],
+    "$MAIN_TITLE_75": "旧敌新友",
+    "$MAIN_DESCRIPTION_75": "找将军谈谈，可以通过直升机前往荒漠中的外交地图-军阀。",
+    "$MAIN_GET_75": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "这样就算扯平了，我们也可以和摇滚公园缔结盟约了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "算是个一波三折的故事···"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "之后你得多和她们来往，搞好关系。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "什么？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "你怎么说也是救过那个键盘的，就这一点她们就不会过分为难你。你去当外交大使可是最合适的。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "说正事，和摇滚的事务处理好之后，我们得考虑军阀的问题了。虽然之前你看见将军被诺亚杀死了，但我们的情报表明，将军还在活动。你去和他联系吧，他会乐意和我们妥协的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "牛仔呢，他之前不是收拢了军阀的势力吗？"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "本质来说，牛仔更像是我们，收钱办事。将军恐怕是用了替身，在假装被诺亚消灭后，就委托牛仔代替自己行动。至于他这段时间到底干了什么，我就不得而知了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好的，我这就去见他。"
+        }
+    ],
+    "$MAIN_FINISH_75": [  
+    ],
+    "$MAIN_TITLE_76": "老奸巨猾",
+    "$MAIN_DESCRIPTION_76": "找Andy law谈谈。",
+    "$MAIN_GET_76": [
+        {
+            "name": "general",
+            "title": "自由革命军司令",
+            "char": "general",
+            "text": "不错，一段时间不见，这位勇士已经能够代表A兵团了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "···我是代表A兵团来，与你商量两组织合作的事情的。"
+        },
+        {
+            "name": "general",
+            "title": "自由革命军司令",
+            "char": "general",
+            "text": "很好，我们这里擅长军工，而你们有不错的精英战术队伍。我们合作，一定可以让诺亚那群疯子缩在基地里。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "具体协议是什么？"
+        },
+        {
+            "name": "general",
+            "title": "自由革命军司令",
+            "char": "general",
+            "text": "在这里搬出一大堆公文来，也会让你忙不过来的。具体的协议我已经派人送给A兵团了。你来这算是表明你那边的态度，两边互派使者才显得有诚意。"
+        }
+    ],
+    "$MAIN_FINISH_76": [  
+    ],
+    "$MAIN_TITLE_77": "挫其锋芒",
+    "$MAIN_DESCRIPTION_77": "通关简单难度“深入禁区”，然后找Andy Law谈谈。",
+    "$MAIN_GET_77": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "现在，我们已经和摇滚公园、黑铁会以及军阀达成了暂时的同盟。接下来必须考虑对付诺亚的事情了。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我们和军阀的协议中有互换情报的条约，也因此我们了解到：禁区深处最近有诺亚的人员活动。我们怀疑这是诺亚试图控制那些失控的天网机器人，必须破坏他们的图谋。我们有几支小队前去探查情况，他们似乎遇到了诺亚部队，正在交火。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "不过这也意味着诺亚暂时没法进入禁区。你立刻过去破坏天网机器人，我们会有人在稍后回收科技。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "小心点，这可不是禁区边缘的小打小闹，注意避开他们的重火力。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "如果这次行动成功，随着我们这些松散势力联盟的科研人员一起发力，说不定就能够进一步破解卫星权限，进而脱离“天网”的管控，使用更强力的武器。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "我也不知道这算不算好事了，总之，眼下先把诺亚的危险行为制止了。"
+        }
+    ],
+    "$MAIN_FINISH_77": [
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law",
+            "text": "准备工作都做完了，现在是时候想办法对付诺亚了。你去找boy，由他来指导接下来的军事行动。"
+        },
+        {
+            "name": "无名氏",
+            "title": "重置组",
+            "char": "",
+            "text": "重置版2.0剧情到此就告一段落了。和1.0结尾一样，我得例行公事般写点内容。"
+        },
+        {
+            "name": "无名氏",
+            "title": "重置组",
+            "char": "",
+            "text": "从黑铁会剧情开始，主线内容就是我和老郭、净魂交替写的，也参考了fs等人的意见。因此，文风上可能不是很连贯，希望大家理解。"
+        },
+        {
+            "name": "无名氏",
+            "title": "重置组",
+            "char": "",
+            "text": "原版任务太水，往往是收集任务堆了很多。我们这里是基本没有收集任务了，所以任务数上远远小于原版，这是很自然的。"
+        },
+        {
+            "name": "无名氏",
+            "title": "重置组",
+            "char": "",
+            "text": "接下来介绍一下重置组成员和他们的工作成果。"
+        },
+        {
+            "name": "雾人",
+            "title": "重置组",
+            "char": "",
+            "text": "作为重置组组长兼主美，雾人负责了绝大部分美术素材重置和新素材绘制，同时给大量敌人加了攻击特效和新机制。"
+        },
+        {
+            "name": "鸡蛋",
+            "title": "重置组",
+            "char": "",
+            "text": "鸡蛋负责了大量系统重构以及文件搬迁，对重置组优化工作流程和重置版游戏性提升做出了重要贡献。"
+        },
+        {
+            "name": "无名氏",
+            "title": "重置组",
+            "char": "",
+            "text": "无名氏参与了大部分主线剧情写作、设定和大纲写作，部分美术素材绘制和重置，以及新地图的添加。"
+        },
+        {
+            "name": "fs",
+            "title": "重置组",
+            "char": "",
+            "text": "fs对冲击力和随机数等系统进行了开发，同时对大量底层系统、AI等领域进行了研究，极大提升了游戏性和开发深度。"
+        },
+        {
+            "name": "阿卡",
+            "title": "重置组",
+            "char": "",
+            "text": "阿卡给游戏添加了大量游戏性方面的功能，修复bug并调整了游戏平衡。"
+        },
+        {
+            "name": "lsy",
+            "title": "重置组",
+            "char": "",
+            "text": "lsy开发了部分游戏性功能，并且对主文件迁移和反编译文件进行了相当多的研究。"
+        },
+        {
+            "name": "伊恩",
+            "title": "重置组",
+            "char": "",
+            "text": "伊恩绘制了部分美术素材，包括武器、地图、怪物，还制作了玩家、敌人的部分动画。"
+        },
+        {
+            "name": "3xd",
+            "title": "重置组",
+            "char": "",
+            "text": "3xd进行了部分美术素材绘制以及大部分换皮怪的制作。"
+        },
+        {
+            "name": "净魂、老郭",
+            "title": "重置组",
+            "char": "",
+            "text": "净魂和老郭负责了黑铁会部分大量剧情的编写。"
+        },
+        {
+            "name": "其他人员",
+            "title": "重置组",
+            "char": "",
+            "text": "除此之外，x TheHermit x、克克、炀、狐狸、王道、119、逝等人也对重置组工作做出了相当大的贡献。"
+        },
+        {
+            "name": "无名氏",
+            "title": "重置组",
+            "char": "",
+            "text": "诺亚剧情将在3.0版本更新，目前后续关卡全部开放，请自行游玩。我们3.0再见。"
+        }
+    ]
+}

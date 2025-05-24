@@ -1,0 +1,85 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人/杂物/SPL1" itemID="665c1fad-000001d4" lastModified="1717313453">
+  <timeline>
+    <DOMTimeline name="SPL1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.00799560546875" d="0.00799560546875" tx="5.9" ty="5.9"/>
+                            </matrix>
+                            <GradientEntry color="#808080" ratio="0"/>
+                            <GradientEntry color="#797979" ratio="0.203921568627451"/>
+                            <GradientEntry color="#8C8C8C" ratio="0.36078431372549"/>
+                            <GradientEntry color="#727272" ratio="0.556862745098039"/>
+                            <GradientEntry color="#5B5B5B" ratio="0.670588235294118"/>
+                            <GradientEntry color="#464646" ratio="0.823529411764706"/>
+                            <GradientEntry color="#4A4A4A" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!195 118S7[195 150 172 172!172 172[150 195 118 195!118 195[86 195 63 172!63 172[41 150 41 118!41 118[41 86 63 63!63 63[86 41 118 41!118 41[150 41 172 63!172 63[195 86 195 118"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!201 34S6[236 69 236 118!236 118[236 167 201 201!201 201[167 236 118 236!118 236[69 236 34 201!34 201[0 167 0 118!0 118[0 69 34 34!34 34[69 0 118 0!118 0[167 0 201 34"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="-0.0038604736328125" b="0.0051422119140625" c="-0.0157012939453125" d="-0.0118255615234375" tx="25.3" ty="17.8"/>
+                                </matrix>
+                                <GradientEntry color="#825712" ratio="0"/>
+                                <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                                <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                                <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                                <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                                <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                                <GradientEntry color="#54370B" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!211 40[235 31 259 40!259 40|846 517!846 517[893 654 715 679!715 679|182 214!182 214[144 157 163 80!163 80|211 40"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

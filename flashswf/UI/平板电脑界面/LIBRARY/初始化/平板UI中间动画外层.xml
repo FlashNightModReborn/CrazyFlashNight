@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/平板UI中间动画外层" itemID="66fbb757-00004b6f" lastModified="1728788424" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="平板UI中间动画外层" currentFrame="19">
+      <layers>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.已关闭空闲动画 =true;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.平板UI中间动画._visible = 0;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板UI中间动画整体" blendMode="add" centerPoint3DX="-84" centerPoint3DY="-7.4">
+                  <matrix>
+                    <Matrix tx="-84" ty="-62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="55.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板UI中间动画整体" centerPoint3DX="-84" centerPoint3DY="-7.4">
+                  <matrix>
+                    <Matrix tx="-84" ty="-62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="55.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

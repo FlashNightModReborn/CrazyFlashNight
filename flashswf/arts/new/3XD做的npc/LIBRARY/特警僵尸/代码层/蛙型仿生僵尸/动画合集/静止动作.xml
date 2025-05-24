@@ -1,0 +1,3798 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/蛙型仿生僵尸/动画合集/静止动作" itemID="671dc7ff-00000a7c" lastModified="1730009298" lastUniqueIdentifier="34">
+  <timeline>
+    <DOMTimeline name="静止动作" currentFrame="88">
+      <layers>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CenterMarker" color="#0000FF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="4" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="8" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" firstFrame="11" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/EDAPT objects/Center Marker" locked="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y3" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.683837890625" b="0.729583740234375" c="-0.729583740234375" d="0.683837890625" tx="22.8" ty="75.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.589691162109375" b="0.807540893554688" c="-0.807540893554688" d="0.589691162109375" tx="45.1" ty="80.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.683837890625" b="0.729583740234375" c="-0.729583740234375" d="0.683837890625" tx="21.75" ty="77.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.633285522460938" b="0.773834228515625" c="-0.773834228515625" d="0.633285522460938" tx="3" ty="82.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.683837890625" b="0.729583740234375" c="-0.729583740234375" d="0.683837890625" tx="22.8" ty="75.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y2" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="25.65" ty="56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99249267578125" b="0.121994018554688" c="-0.121994018554688" d="0.99249267578125" tx="50.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="24.6" ty="57.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999923706054688" b="0.0123443603515625" c="-0.0123443603515625" d="0.999923706054688" tx="6.1" ty="62.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="25.65" ty="56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="qian" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.150741577148438" b="0.159774780273438" c="-0.1378173828125" d="0.130050659179688" tx="25.5" ty="83.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.03466796875" b="0.216842651367188" c="-0.18701171875" d="0.029937744140625" tx="46.85" ty="88.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.150741577148438" b="0.159774780273438" c="-0.1378173828125" d="0.130050659179688" tx="24.45" ty="84.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0721893310546875" b="0.207427978515625" c="-0.178924560546875" d="0.0623016357421875" tx="5.15" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.150741577148438" b="0.159774780273438" c="-0.1378173828125" d="0.130050659179688" tx="25.5" ty="83.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.48"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y1" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9989013671875" b="0.044647216796875" c="-0.044647216796875" d="0.9989013671875" tx="31.2" ty="34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9859619140625" b="0.166183471679688" c="-0.166183471679688" d="0.9859619140625" tx="58.5" ty="40.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9989013671875" b="0.044647216796875" c="-0.044647216796875" d="0.9989013671875" tx="30.15" ty="35.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98785400390625" b="0.15460205078125" c="-0.15460205078125" d="0.98785400390625" tx="14" ty="41.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9989013671875" b="0.044647216796875" c="-0.044647216796875" d="0.9989013671875" tx="31.2" ty="34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="head" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9927978515625" b="0.11944580078125" c="-0.11944580078125" d="0.9927978515625" tx="40.05" ty="22.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.701629638671875" b="0.71240234375" c="-0.71240234375" d="0.701629638671875" tx="73.3" ty="37.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9927978515625" b="0.11944580078125" c="-0.11944580078125" d="0.9927978515625" tx="37.3" ty="22.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.792144775390625" b="-0.610214233398438" c="0.610214233398438" d="0.792144775390625" tx="16.1" ty="26.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9927978515625" b="0.11944580078125" c="-0.11944580078125" d="0.9927978515625" tx="40.05" ty="22.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="body" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992782592773438" b="0.119857788085938" c="-0.119857788085938" d="0.992782592773438" tx="40.75" ty="43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.63677978515625" b="0.77093505859375" c="-0.77093505859375" d="0.63677978515625" tx="59.55" ty="53.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99993896484375" b="-0.008544921875" c="0.008544921875" d="0.99993896484375" tx="40.75" ty="43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.93438720703125" b="-0.356109619140625" c="0.356109619140625" d="0.93438720703125" tx="26.55" ty="44.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992782592773438" b="0.119857788085938" c="-0.119857788085938" d="0.992782592773438" tx="40.75" ty="43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ass" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992782592773438" b="0.119857788085938" c="-0.119857788085938" d="0.992782592773438" tx="40.6" ty="71.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.933700561523438" b="0.35791015625" c="-0.35791015625" d="0.933700561523438" tx="44.35" ty="75.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992782592773438" b="0.119857788085938" c="-0.119857788085938" d="0.992782592773438" tx="40.6" ty="71.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99078369140625" b="-0.135177612304688" c="0.135177612304688" d="0.99078369140625" tx="38.65" ty="71.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992782592773438" b="0.119857788085938" c="-0.119857788085938" d="0.992782592773438" tx="40.6" ty="71.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy3" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="25.7" ty="143.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.989410400390625" b="-0.1448974609375" c="0.1448974609375" d="0.989410400390625" tx="25.5" ty="144.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="25.7" ty="143.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992416381835938" b="-0.122543334960938" c="0.122543334960938" d="0.992416381835938" tx="24.85" ty="144.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="25.7" ty="143.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy2" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994720458984375" b="0.102401733398438" c="-0.102401733398438" d="0.994720458984375" tx="28.65" ty="99.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9849853515625" b="0.172286987304688" c="-0.172286987304688" d="0.9849853515625" tx="30.8" ty="101.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994720458984375" b="0.102401733398438" c="-0.102401733398438" d="0.994720458984375" tx="28.65" ty="99.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.972137451171875" b="0.2342529296875" c="-0.2342529296875" d="0.972137451171875" tx="32.75" ty="101.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994720458984375" b="0.102401733398438" c="-0.102401733398438" d="0.994720458984375" tx="28.65" ty="99.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy1" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997314453125" b="0.0723419189453125" c="-0.0723419189453125" d="0.997314453125" tx="35.3" ty="74.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.993637084960938" b="0.11138916015625" c="-0.11138916015625" d="0.993637084960938" tx="38.3" ty="77.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997314453125" b="0.0723419189453125" c="-0.0723419189453125" d="0.997314453125" tx="35.3" ty="74.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996826171875" b="-0.07830810546875" c="0.07830810546875" d="0.996826171875" tx="35.75" ty="76.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997314453125" b="0.0723419189453125" c="-0.0723419189453125" d="0.997314453125" tx="35.3" ty="74.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz2" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="49.65" ty="97.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99957275390625" b="0.027435302734375" c="-0.027435302734375" d="0.99957275390625" tx="49.5" ty="99.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="49.65" ty="97.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999923706054688" b="0.0105133056640625" c="-0.0105133056640625" d="0.999923706054688" tx="50.1" ty="97.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 2 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="49.65" ty="97.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986801147460938" b="-0.16156005859375" c="0.16156005859375" d="0.986801147460938" tx="42.7" ty="76.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999114990234375" b="-0.0399322509765625" c="0.0399322509765625" d="0.999114990234375" tx="45" ty="81"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986801147460938" b="-0.16156005859375" c="0.16156005859375" d="0.986801147460938" tx="42.7" ty="76.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98870849609375" b="-0.14935302734375" c="0.14935302734375" d="0.98870849609375" tx="43.4" ty="76.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 18" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986801147460938" b="-0.16156005859375" c="0.16156005859375" d="0.986801147460938" tx="42.7" ty="76.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="dao" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.123947143554688" b="-0.111068725585938" c="0.110946655273438" d="-0.123825073242188" tx="81.1" ty="72.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1046142578125" b="-0.12939453125" c="0.129257202148438" d="0.104476928710938" tx="77.45" ty="104.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.123947143554688" b="-0.111068725585938" c="0.110946655273438" d="-0.123825073242188" tx="79.65" ty="70.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.13079833984375" b="-0.102783203125" c="0.102691650390625" d="0.13067626953125" tx="52.8" ty="76.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/元件 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.123947143554688" b="-0.111068725585938" c="0.110946655273438" d="-0.123825073242188" tx="81.1" ty="72.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.38"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz3" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="51.35" ty="143.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998291015625" b="-0.057830810546875" c="0.057830810546875" d="0.998291015625" tx="50.6" ty="143.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="51.35" ty="143.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999923706054688" b="0.0105133056640625" c="-0.0105133056640625" d="0.999923706054688" tx="51.2" ty="143.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-0.0018157958984375" c="0.0018157958984375" d="0.999984741210938" tx="51.35" ty="143.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z3" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.040283203125" b="-0.353927612304688" c="0.353927612304688" d="1.040283203125" tx="77.5" ty="71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.01107788085938" b="0.430206298828125" c="-0.430206298828125" d="1.01107788085938" tx="75.1" ty="101.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.040283203125" b="-0.353927612304688" c="0.353927612304688" d="1.040283203125" tx="76.05" ty="70.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.09733581542969" b="-0.057159423828125" c="0.057159423828125" d="1.09733581542969" tx="49.5" ty="75.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.040283203125" b="-0.353927612304688" c="0.353927612304688" d="1.040283203125" tx="77.5" ty="71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z2" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.94647216796875" b="-0.322723388671875" c="0.322723388671875" d="0.94647216796875" tx="61.2" ty="59.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.8807373046875" b="0.47344970703125" c="-0.47344970703125" d="0.8807373046875" tx="73.1" ty="81.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.94647216796875" b="-0.322723388671875" c="0.322723388671875" d="0.94647216796875" tx="59.75" ty="57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.991851806640625" b="0.127044677734375" c="-0.127044677734375" d="0.991851806640625" tx="40.35" ty="56.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.94647216796875" b="-0.322723388671875" c="0.322723388671875" d="0.94647216796875" tx="61.2" ty="59.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z1" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9586181640625" b="-0.284469604492188" c="-0.284469604492188" d="0.9586181640625" tx="52.5" ty="32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.777984619140625" b="-0.62811279296875" c="-0.62811279296875" d="0.777984619140625" tx="75.15" ty="53.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="23" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9586181640625" b="-0.284469604492188" c="-0.284469604492188" d="0.9586181640625" tx="51.05" ty="31.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.95501708984375" b="-0.2962646484375" c="-0.2962646484375" d="0.95501708984375" tx="32" ty="30.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0239" y="0.0239"/>
+                  <Point x="0.0196" y="0.2056"/>
+                  <Point x="0.0435" y="0.2295"/>
+                  <Point x="0.0942" y="0.2802"/>
+                  <Point x="0.0618" y="0.1386"/>
+                  <Point x="0.1118" y="0.161"/>
+                  <Point x="0.1979" y="0.1998"/>
+                  <Point x="0.5156" y="0.796"/>
+                  <Point x="0.5953" y="0.8767"/>
+                  <Point x="0.6812" y="0.9637"/>
+                  <Point x="0.6893" y="1"/>
+                  <Point x="0.7826" y="1"/>
+                  <Point x="0.8244" y="0.9946"/>
+                  <Point x="0.7826" y="0.5757"/>
+                  <Point x="0.8476" y="0.774"/>
+                  <Point x="0.8943" y="0.9167"/>
+                  <Point x="0.8702" y="0.7693"/>
+                  <Point x="0.9065" y="0.8"/>
+                  <Point x="0.9087" y="0.8019"/>
+                  <Point x="0.9217" y="0.9037"/>
+                  <Point x="0.939" y="0.9418"/>
+                  <Point x="0.9646" y="0.9979"/>
+                  <Point x="0.9973" y="0.9973"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="特警僵尸/做的动画/身体/军阀人物1/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9586181640625" b="-0.284469604492188" c="-0.284469604492188" d="0.9586181640625" tx="52.5" ty="32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

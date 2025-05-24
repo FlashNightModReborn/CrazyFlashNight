@@ -1,0 +1,526 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 35561" itemID="6597607e-00000d78" lastModified="1745171020" lastUniqueIdentifier="19">
+  <timeline>
+    <DOMTimeline name="Symbol 35561">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D7E03D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2224" centerPoint3DX="448.15" centerPoint3DY="20.2">
+                  <matrix>
+                    <Matrix tx="439.05" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent._visible = 0;
+}
+onClipEvent(unload){
+}
+onClipEvent(load){
+   stop();
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(release){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9C59BD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 928" symbolType="button">
+                  <matrix>
+                    <Matrix tx="11.6" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F6F37B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="72.75" centerPoint3DY="104.45">
+                  <matrix>
+                    <Matrix tx="26.95" ty="93.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("地下室1层");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("地下室1层");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("场景NPC:蓝发女 蓝头巾 ANDY LAY"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="72.75" centerPoint3DY="159.95">
+                  <matrix>
+                    <Matrix tx="26.95" ty="148.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("基地1层");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("基地1层");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("通往基地各处"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="73.35" centerPoint3DY="202.05">
+                  <matrix>
+                    <Matrix tx="27.55" ty="190.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.关卡结束界面._visible = 0;
+	_root.场景进入位置名 = "出生地";
+	_root.淡出动画.淡出跳转帧("健身房");
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("健身房");
+}
+on (rollOver) {
+	_root.注释(100,_root.获得翻译("挂机练级"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="73.35" centerPoint3DY="251.1">
+                  <matrix>
+                    <Matrix tx="27.55" ty="239.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("地下2层");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("地下室2层");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("通往禁区"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="211.1" centerPoint3DY="105.2">
+                  <matrix>
+                    <Matrix tx="165.3" ty="94"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("武器库");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("武器库");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("场景NPC:ShopGirl 小F"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="210.45" centerPoint3DY="159.3">
+                  <matrix>
+                    <Matrix tx="164.65" ty="148.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("房间");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("主角房间");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("仓库"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="212.35" centerPoint3DY="206.45">
+                  <matrix>
+                    <Matrix tx="166.55" ty="195.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("佣兵酒吧");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("酒吧");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("场景NPC:酒保 舞女"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="214.85" centerPoint3DY="252.4">
+                  <matrix>
+                    <Matrix tx="169.05" ty="241.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("医务室");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("医务室");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("场景NPC:格格巫 莉莉丝"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="343.15" centerPoint3DY="105.2">
+                  <matrix>
+                    <Matrix tx="297.35" ty="94"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("基地房顶");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("停机坪");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("通往荒漠"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="343.15" centerPoint3DY="204.55">
+                  <matrix>
+                    <Matrix tx="297.35" ty="193.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("基地门口");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("基地入口");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("通往废城"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="343.15" centerPoint3DY="159.25">
+                  <matrix>
+                    <Matrix tx="297.35" ty="148.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("基地车库");
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("车库");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("通往堕落城"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="72.75" centerPoint3DY="291.5">
+                  <matrix>
+                    <Matrix tx="26.95" ty="280.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >=74)
+   {
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("地图-摇滚公园");
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("摇滚公园");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("通过对应主线解锁"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="214.85" centerPoint3DY="291.5">
+                  <matrix>
+                    <Matrix tx="169.05" ty="280.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >=75)
+   {
+   _root.关卡结束界面._visible = 0;
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧("地图-军阀基地");
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("军阀基地");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("通过对应主线解锁"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="343.15" centerPoint3DY="291.5">
+                  <matrix>
+                    <Matrix tx="297.35" ty="280.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("地图-靶场");
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("靶场");
+}
+on (rollOver) {
+	_root.注释(100,_root.获得翻译("通过对应主线解锁"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" selected="true" centerPoint3DX="343.15" centerPoint3DY="249.55">
+                  <matrix>
+                    <Matrix tx="297.35" ty="238.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("地图-同盟卸货站");
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("同盟卸货站");
+}
+on (rollOver) {
+	_root.注释(100,_root.获得翻译("通过对应主线解锁"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#FDD62B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="301.05" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="28.9" ty="3.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>地图传送</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#3E9EC9" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="225.45" centerPoint3DY="162.95">
+                  <matrix>
+                    <Matrix tx="-3" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#23ADD8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#DD40CB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

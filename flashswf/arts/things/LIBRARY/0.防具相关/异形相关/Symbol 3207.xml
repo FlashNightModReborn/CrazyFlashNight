@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="0.防具相关/异形相关/Symbol 3207" itemID="668e7c1e-00000dd7" linkageExportForAS="true" linkageIdentifier="男变装-异形女王鞋" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 3207">
+      <layers>
+        <DOMLayer name="Layer 1" color="#06ED8D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3206" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.4420166015625" b="0.0317535400390625" c="0.0317535400390625" d="1.4420166015625" tx="66" ty="14.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DFAB08" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3205" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.4420166015625" b="0.0317535400390625" c="0.0317535400390625" d="1.4420166015625" tx="21.8" ty="-21.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

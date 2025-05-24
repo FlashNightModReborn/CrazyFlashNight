@@ -1,0 +1,674 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/01.白净色系/镜闪/镜闪" itemID="65535a88-00002879" linkageExportForAS="true" linkageIdentifier="镜闪" lastModified="1722180043" lastUniqueIdentifier="45">
+  <timeline>
+    <DOMTimeline name="镜闪" currentFrame="7">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+this._y -= 100;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
+                  <matrix>
+                    <Matrix a="8.20109558105469" tx="-165.7" ty="-21.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
+                  <matrix>
+                    <Matrix a="10.0053100585938" tx="-201.8" ty="-21.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
+                  <matrix>
+                    <Matrix a="17.2841796875" d="1.85000610351563" tx="-347.35" ty="-38.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="已删除滤镜" color="#A170F6" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.0392303466796875" b="0.029449462890625" c="0.0555419921875" d="0.0350494384765625" tx="0.45" ty="-4.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.517647058823529"/>
+                        <GradientEntry color="#E5E9FF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!703 -607S1[295 -865 -196 -893!-196 -893[-687 -921 -974 -705!-974 -705[-1262 -489 -1177 -156!-1177 -156[-1093 178 -685 436!-685 436[-279 693 212 721!212 721[703 751 991 535!991 535[1278 319 1193 -16!1193 -16[1109 -350 703 -607"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.0235443115234375" b="0.017669677734375" c="0.0333251953125" d="0.021026611328125" tx="0.45" ty="-4.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.509803921568627"/>
+                        <GradientEntry color="#E5EBFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!426 -397[181 -552 -114 -569!-114 -569[-409 -586 -581 -457!-581 -457[-754 -327 -702 -127!-702 -127[-652 74 -407 229!-407 229[-163 383 131 400!131 400[425 418 598 288!598 288[770 159 719 -42!719 -42[670 -243 426 -397"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8B30CA" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 246" blendMode="add" centerPoint3DX="174.85" centerPoint3DY="42.9">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-24.05" ty="-93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 252" blendMode="add" centerPoint3DX="152.9" centerPoint3DY="28">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-24.05" ty="-93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 257" blendMode="add" centerPoint3DX="172.25" centerPoint3DY="40.75">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-24.05" ty="-93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 263" blendMode="add" centerPoint3DX="147.25" centerPoint3DY="17.05">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-26.2" ty="-102.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 271" blendMode="add" centerPoint3DX="110.4" centerPoint3DY="12.45">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-20.25" ty="-78.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 265" blendMode="add" centerPoint3DX="58.25" centerPoint3DY="8.25">
+                  <matrix>
+                    <Matrix a="-0.19097900390625" b="0.143142700195313" c="0.270050048828125" d="0.170761108398438" tx="-8.6" ty="-37.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="116" y="110.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#CB8AD7" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 240" blendMode="add" centerPoint3DX="89" centerPoint3DY="-17.3">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-24.05" ty="-93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 244" blendMode="add" centerPoint3DX="197.15" centerPoint3DY="-50.95">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="62.35" ty="-60.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 250" blendMode="add" centerPoint3DX="250.9" centerPoint3DY="-64.4">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="79.85" ty="-73.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#A8DFFD"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 255" blendMode="add" centerPoint3DX="302.7" centerPoint3DY="-77.7">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="97.4" ty="-86.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 261" blendMode="add" centerPoint3DX="271.75" centerPoint3DY="-69.8">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="87.85" ty="-76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#AAFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 269" blendMode="add" centerPoint3DX="236.3" centerPoint3DY="-62.7">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.11857604980469" d="0.706085205078125" tx="77.45" ty="-67.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#C7F3FE"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 275" blendMode="add" centerPoint3DX="69" centerPoint3DY="6.85">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-13" ty="-50.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 279" blendMode="add" centerPoint3DX="34.95" centerPoint3DY="2.2">
+                  <matrix>
+                    <Matrix a="-0.508529663085938" b="0.381698608398438" c="0.719757080078125" d="0.454330444335938" tx="-7.05" ty="-26.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#8D89CF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 238" blendMode="add" centerPoint3DX="57.45" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="16.85" ty="-19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 242" blendMode="add" centerPoint3DX="160.8" centerPoint3DY="-42.2">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.25071716308594" d="0.78948974609375" tx="51.05" ty="-45.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#A2EAFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 248" blendMode="add" centerPoint3DX="261.5" centerPoint3DY="-69.85">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.18157958984375" d="0.745849609375" tx="82.3" ty="-74.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#AEEBFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 254" blendMode="add" centerPoint3DX="313.2" centerPoint3DY="-79.75">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="102.1" ty="-83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#AFDFFC"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 259" blendMode="add" centerPoint3DX="361.55" centerPoint3DY="-93.4">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="118.2" ty="-95.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#9DF3FF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 267" blendMode="add" centerPoint3DX="414.8" centerPoint3DY="-103.5">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="-2.14987182617188" d="-1.3570556640625" tx="138.55" ty="-104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#CEF1FF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 273" blendMode="add" centerPoint3DX="203.2" centerPoint3DY="-55.25">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.31768798828125" d="0.831771850585938" tx="67.45" ty="-57.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#BBEEFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 277" blendMode="add" centerPoint3DX="204.4" centerPoint3DY="-54.35">
+                  <matrix>
+                    <Matrix a="-0.726470947265625" b="0.5452880859375" c="1.0281982421875" d="0.649032592773438" tx="69.55" ty="-56.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#52EEC1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-1.52587890625e-005" b="-0.00921630859375" c="0.339553833007813" d="-9.1552734375e-005" tx="6.85" ty="-1.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.8" ratio="0.0235294117647059"/>
+                        <GradientEntry color="#BCD7FF" alpha="0.529411764705882" ratio="0.392156862745098"/>
+                        <GradientEntry color="#8FB7FF" alpha="0.250980392156863" ratio="0.525490196078431"/>
+                        <GradientEntry color="#6699FF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!5316 -89|2977 118!2977 118[1743 230 -23 237!-23 237[-1788 244 -3040 167!-3040 167[-4291 87 -5336 10!-5336 10[-4291 -133 -3040 -212!-3040 -212[-1788 -293 -19 -293!-19 -293[1749 -293 3001 -215!3001 -215[4252 -136 5316 -89"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.014404296875" c="0.5679931640625" d="-0.00018310546875" tx="9.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.8" ratio="0.0235294117647059"/>
+                        <GradientEntry color="#D8E8FF" alpha="0.529411764705882" ratio="0.392156862745098"/>
+                        <GradientEntry color="#A0C2FF" alpha="0.247058823529412" ratio="0.525490196078431"/>
+                        <GradientEntry color="#6699FF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!6503 -11[#138E.41 #7D.08 3595 162!3595 162[2042 203 -106 209!-106 209[-2255 216 -3778 147!-3778 147[-5301 82 -6571 13!-6571 13[-5301 -110 -3778 -180!-3778 -180[-2255 -247 -101 -247!-101 -247[2052 -248 3575 -181!3575 -181[5098 -113 6503
+ -11"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-3.0517578125e-005" b="-0.08642578125" c="0.9459228515625" d="-0.0001678466796875" tx="7.75" ty="-3.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.0235294117647059"/>
+                        <GradientEntry color="#D8E8FF" alpha="0.968627450980392" ratio="0.392156862745098"/>
+                        <GradientEntry color="#A0C2FF" alpha="0.4" ratio="0.525490196078431"/>
+                        <GradientEntry color="#6699FF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!5470 -616[7662 -373 9525 -225!9525 -225|5428 417!5428 417[3264 760 170 781!170 781[-2923 806 -5117 562!-5117 562[-7310 318 -9140 74!-9140 74[-7311 -368 -5118 -614!-5118 -614[-2924 -858 175 -859!175 -859[3276 -861 5470 -616"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.02020263671875" c="0.6005859375" d="-0.0006866455078125" tx="14.25" ty="-1.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.8" ratio="0.0235294117647059"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.643137254901961" ratio="0.470588235294118"/>
+                        <GradientEntry color="#D8EBFF" alpha="0.529411764705882" ratio="0.525490196078431"/>
+                        <GradientEntry color="#B2CCFF" alpha="0.301960784313725" ratio="0.76078431372549"/>
+                        <GradientEntry color="#6699FF" alpha="0.2" ratio="0.905882352941176"/>
+                        <GradientEntry color="#6699FF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!9070 -18[#19FE.0C #E9.4F 3973 355!3973 355[2317 445 -51 463!-51 463[-2419 483 -4098 323!-4098 323[-5777 171 -8937 12!-8937 12[-5777 -272 -4098 -436!-4098 -436[-2419 -595 -46 -599!-46 -599[2328 -602 4006 -443!4006 -443[5685 -288 9070
+ -18"/>
+                    <Edge cubics="!4006 -443(;5125,-339 6813,-198 9070,-18q4006 -443Q5685 -288q9070 -18);"/>
+                    <Edge cubics="!9070 -18(;9070,-18 3974,224 3974,224q9070 -18 3974 224);"/>
+                    <Edge cubics="!-4098 -436(;-2979,-542 -1628,-596 -46,-599q-4098 -436Q-2419 -595q-46 -599);"/>
+                    <Edge cubics="!-51 463(;-1630,476 -2979,429 -4098,323q-51 463Q-2419 483q-4098 323);"/>
+                    <Edge cubics="!-46 -599(;1537,-600 2887,-549 4006,-443q-46 -599Q2328 -602q4006 -443);"/>
+                    <Edge cubics="!3974 224(;2869,371 1528,450 -51,463q3974 224Q2317 445q-51 463);"/>
+                    <Edge cubics="!-4098 323(;-5217,222 -6830,118 -8937,12q-4098 323Q-5777 171q-8937 12);"/>
+                    <Edge cubics="!-8937 12(;-6830,-177 -5217,-327 -4098,-436q-8937 12Q-5777 -272q-4098 -436);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 236" blendMode="add" centerPoint3DX="-377" centerPoint3DY="280.4">
+                  <matrix>
+                    <Matrix a="-0.0001068115234375" b="-0.664886474609375" c="1.39561462402344" d="-0.0001220703125" tx="-386.3" ty="4.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-23"/>
+                    <GlowFilter blurX="35" blurY="35" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 236" blendMode="add" centerPoint3DX="-402.15" centerPoint3DY="279">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.494888305664063" c="1.4949951171875" d="-0.0001220703125" tx="-413.6" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-23"/>
+                    <GlowFilter blurX="35" blurY="35" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 236" blendMode="add" centerPoint3DX="-426.75" centerPoint3DY="277.6">
+                  <matrix>
+                    <Matrix a="-4.57763671875e-005" b="-0.32489013671875" c="1.59432983398438" d="-0.0001220703125" tx="-441" ty="2.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-23"/>
+                    <GlowFilter blurX="35" blurY="35" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 236" blendMode="add" centerPoint3DX="-455.9" centerPoint3DY="276.1">
+                  <matrix>
+                    <Matrix a="-9.1552734375e-005" b="-0.154891967773438" c="1.69371032714844" d="-0.0005035400390625" tx="-468.4" ty="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-23"/>
+                    <GlowFilter blurX="35" blurY="35" color="#3366FF"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

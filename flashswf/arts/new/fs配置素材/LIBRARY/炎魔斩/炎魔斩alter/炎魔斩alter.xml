@@ -1,0 +1,210 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="炎魔斩/炎魔斩alter/炎魔斩alter" itemID="6558b0c3-000002f9" linkageExportForAS="true" linkageIdentifier="刀-炎魔斩alter" lastModified="1701854650" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="炎魔斩alter">
+      <layers>
+        <DOMLayer name="Layer 6" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置3" centerPoint3DX="-2.5" centerPoint3DY="543.95">
+                  <matrix>
+                    <Matrix d="-9.0780029296875" tx="-15" ty="531.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[
+onClipEvent (enterFrame) {
+	//_root.调试模式 = true;
+	冷却时间结束 = true;
+	冷却时间间隔 = 0.75;
+	耗蓝比例 = 1;
+	自机 = _root.获得父节点(this, 5);
+	当前时间 = getTimer();
+	if ((isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000) and _root.兵器攻击检测(自机))
+	{
+		缓存时间 = 自机.上次释放时间;
+		自机.上次释放时间 = 当前时间 + _root.随机整数(0, 冷却时间间隔 * 1000);
+		//_root.发布消息(自机.上次释放时间 + " " + 缓存时间);
+	}
+	else
+	{
+		冷却时间结束 = false;
+	}
+
+	if (冷却时间结束)
+	{
+		var 刀光数量 = _root.随机整数(1, 5);
+		//_root.发布消息(刀光数量);
+		耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例 * 刀光数量);
+		if (自机.mp >= 耗蓝量)
+		{
+			
+			
+			自机.mp -= 耗蓝量
+			for (; 刀光数量 > 0; --刀光数量)
+			{
+				var myPoint = {x:自机._x + _root.随机整数(-100, 100), y:自机._y + _root.随机整数(-100, 100)};
+				声音 = "";
+				霰弹值 = 1;
+				子弹散射度 = 360;
+				发射效果 = "";
+				子弹种类 = "炎魔刀光追踪";
+				子弹威力 = 耗蓝量 * 10 + 50;
+				子弹速度 = 20;
+				击中地图效果 = "";
+				Z轴攻击范围 = 300;
+				击倒率 = 5;
+				击中后子弹的效果 = "";
+				子弹敌我属性 = true;
+				发射者名 = 自机._name;
+				子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+				shootX = myPoint.x;
+				Z轴坐标 = shootY = myPoint.y;
+				_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+
+
+			}
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置2" centerPoint3DX="-2.5" centerPoint3DY="217.3">
+                  <matrix>
+                    <Matrix d="7.95977783203125" tx="-15" ty="204.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置1" centerPoint3DX="-2.5" centerPoint3DY="111.7">
+                  <matrix>
+                    <Matrix d="8.19450378417969" tx="-15" ty="99.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩alter/炎魔斩alter动画" selected="true" centerPoint3DX="-2.3" centerPoint3DY="212.4">
+                  <matrix>
+                    <Matrix a="1.402587890625" d="1.402587890625" tx="-75.3" ty="-153.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52.05" y="261.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 人物 = _root.获得父节点(this, 5);
+	var 动画时长 = 15;
+
+	if (人物.炎魔斩alter当前帧 == undefined)
+	{
+		人物.炎魔斩alter当前帧 = 1;
+	}
+
+	gotoAndStop(人物.炎魔斩alter当前帧);
+	this.判断是否展开 = function()
+	{
+		if (人物.攻击模式 == "兵器")
+		{
+			return true;
+		}
+		else if(人物.状态 == "技能")
+		{
+			if(人物.man._currentframe >= 326 and 人物.man._currentframe <= 369)
+			{
+				return true;
+			}//凶斩
+			else if(人物.man._currentframe >= 370 and 人物.man._currentframe <= 413)
+			{
+				if( 人物.炎魔斩alter当前帧 < Math.floor(动画时长 * 2 / 3))
+				{
+					人物.炎魔斩alter当前帧 = Math.floor(动画时长 * 2 / 3);
+				}
+				return true;
+			}//瞬步斩
+			else if(人物.man._currentframe >= 502 and 人物.man._currentframe <= 597)
+			{
+				
+				return true;
+			}//龙斩
+			else if(人物.man._currentframe >= 677 and 人物.man._currentframe <= 718)
+			{
+				return true;
+			}//拔刀术
+			else if(人物.man._currentframe >= 719 and 人物.man._currentframe <= 763)
+			{
+				return true;
+			}//拔刀术
+		}
+		else
+		{
+			return false;
+		}
+	};
+	this.展开动画 = function()
+	{
+		if (人物.炎魔斩alter当前帧 < 动画时长)
+		{
+			人物.炎魔斩alter当前帧 += 1;
+		}
+	};
+	this.折叠动画 = function()
+	{
+		if (人物.炎魔斩alter当前帧 > 1)
+		{
+			人物.炎魔斩alter当前帧 -= 1;
+		}
+	};
+	this.onEnterFrame = function()
+	{
+
+		if (this.判断是否展开())
+		{
+			this.展开动画();
+
+		}
+		else
+		{
+			this.折叠动画();
+		}
+		gotoAndStop(人物.炎魔斩alter当前帧);
+
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

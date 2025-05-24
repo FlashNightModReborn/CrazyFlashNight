@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/元件 1" itemID="66078dbd-00000693" lastModified="1711771069">
+  <timeline>
+    <DOMTimeline name="元件 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.2899169921875" d="0.15728759765625" tx="371.1" ty="128.85"/>
+                        </matrix>
+                        <GradientEntry color="#929292" alpha="0" ratio="0"/>
+                        <GradientEntry color="#666666" alpha="0.501960784313725" ratio="0.282352941176471"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!11668 0[13211 337 14317 804!14317 804[17643 2208 0 5154!0 5154|4313 2582!4313 2582[12895 2354 11775 1225!11775 1225[11357 804 10129 413!10129 413|11668 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

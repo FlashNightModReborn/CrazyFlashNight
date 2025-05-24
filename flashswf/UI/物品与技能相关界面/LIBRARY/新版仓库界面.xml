@@ -1,0 +1,367 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版仓库界面" itemID="676f9b88-0000028e" linkageExportForAS="true" linkageIdentifier="仓库界面" lastModified="1739864791">
+  <timeline>
+    <DOMTimeline name="新版仓库界面">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#299DC8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" name="空" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" name="完毕" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#ECD8FB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 关闭()
+{
+	this.gotoAndStop("空");
+}
+
+this.originalDepth = this.getDepth();
+
+stop();
+gotoAndStop("空");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = false;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FE575C" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="物品图标" centerPoint3DX="31.5" centerPoint3DY="58.5">
+                  <matrix>
+                    <Matrix tx="19" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+}
+onClipEvent (unload) {
+	_root.物品UI函数.删除仓库图标();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F9C963">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="51.8" centerPoint3DY="189.45">
+                  <matrix>
+                    <Matrix tx="6" ty="178.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.物品UI函数.刷新仓库图标(_parent.inventory,_parent.page - 1);
+}
+onClipEvent(load){
+   显示文字 = "上一页";
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#98A0F5">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="184.8" centerPoint3DY="189.45">
+                  <matrix>
+                    <Matrix tx="139" ty="178.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.物品UI函数.刷新仓库图标(_parent.inventory,_parent.page + 1);
+}
+onClipEvent (load) {
+	显示文字 = "下一页";
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#D0F207">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="46" height="15.15" variableName="仓库页数显示">
+                  <matrix>
+                    <Matrix a="0.75" tx="100.55" ty="181.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>1 / 1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#E84770">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 847" name="垃圾箱" centerPoint3DX="229.5" centerPoint3DY="240.5">
+                  <matrix>
+                    <Matrix tx="217" ty="227.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (rollOver) {
+	_root.注释(100,_root.获得翻译("将物品拖入垃圾箱，永久丢弃物品！无法恢复！"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#C85AB0">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="87.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="120.95" ty="222.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>丢弃</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#49C099" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!3460 640|2900 640!2900 640|2340 640!2340 640|1780 640!1780 640|1220 640!1220 640|660 640!660 640|100 640!100 640|100 1200!100 1200|100 1760!100 1760|100 2320!100 2320|100 2880!100 2880|102 3440!102 3440|660 3440!660 3440|1220 3440!1220
+ 3440|1780 3440!1780 3440|2340 3440!2340 3440|2900 3440!2900 3440|3460 3440!3460 3440|4020 3440!4020 3440|4580 3440!4580 3440|4580 2880!4580 2880|4580 2320!4580 2320|4580 1760!4580 1760|4580 1200!4580 1200|4580 640!4580 640|4020 640!4020
+ 640|4020 1200!4020 1200|3460 1200!3460 1200|3460 640!3460 640|4020 640!4020 1200|4020 1760!4020 1760|3460 1760!3460 1760|3460 2320!3460 2320|3460 2880!3460 2880|2900 2880!2900 2880|2900 2320!2900 2320|2340 2320!2340 2320|2340 1760!2340
+ 1760|2340 1200!2340 1200|1780 1200!1780 1200|1220 1200!1220 1200|1220 640!3460 1760|3460 1200!4580 2320|4020 2320!4020 2320|4020 1760!4020 1760|4580 1760!4580 1200|4020 1200!2900 2320|3460 2320!3460 2320|4020 2320!4020 2320|4020 2880
+!4020 2880|3460 2880!3460 2880|3460 3440!4020 3440|4020 2880!4020 2880|4580 2880!1780 640|1780 1200!1780 1200|1780 1760!1780 1760|1220 1760!1220 1760|1220 2320!1220 2320|1780 2320!1780 2320|2340 2320!2340 2320|2340 2880!2340 2880|1780
+ 2880!1780 2880|1780 2320!1780 2320|1780 1760!1780 1760|2340 1760!2340 1760|2900 1760!2900 1760|2900 2320!2340 1200|2900 1200!2900 1200|2900 1760!2900 1760|3460 1760!3460 1200|2900 1200!2900 1200|2900 640!2340 1200|2340 640!1220 1200
+|660 1200!660 1200|100 1200!1220 1760|660 1760!660 1760|660 1200!660 1200|660 640!100 1760|660 1760!660 1760|660 2320!660 2320|660 2880!660 2880|660 3440!1220 1200|1220 1760!100 2880|660 2880!660 2880|1220 2880!1220 2880|1220 2320!1220
+ 2320|660 2320!660 2320|100 2320!1220 3440|1220 2880!1220 2880|1780 2880!1780 2880|1780 3440!2340 3440|2340 2880!2340 2880|2900 2880!2900 2880|2900 3440"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#9ED68B">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 314" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="116.5" ty="91.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="105.9" centerPoint3DY="31.5">
+                  <matrix>
+                    <Matrix a="1.1195068359375" tx="3.4" ty="30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#C592F4">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1896" symbolType="button">
+                  <matrix>
+                    <Matrix tx="218" ty="15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.自动存盘();
+	_root.存储金钱界面._visible = false;
+	this.关闭();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#C58F77">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="149.05" height="15.85" isSelectable="false" variableName="_root.仓库名称">
+                  <matrix>
+                    <Matrix tx="33.9" ty="6.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#50BF85">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="17.05" ty="16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#FA27DA">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1894" name="窗体area" centerPoint3DX="118" centerPoint3DY="103.45">
+                  <matrix>
+                    <Matrix d="1.18821716308594"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 3399" itemID="6597607e-00000e5d" lastModified="1721975063">
+  <timeline>
+    <DOMTimeline name="Symbol 3399" currentFrame="59">
+      <layers>
+        <DOMLayer name="Script Layer" color="#8035D8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="49" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.gameworld && !_root.gameworld[_root.控制目标])
+{
+	play();
+}
+else
+{
+	gotoAndPlay(1);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld && !_root.gameworld[_root.控制目标] && _root.复活币系统界面._visible == 0)
+{
+   _root.加载我方人物(_root.gameworld.出生地._x,_root.gameworld.出生地._y);
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F7D0EA">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#010101"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!169 -104[200 -49 200 0!200 0[200 63 160 121!160 121[105 200 0 200!0 200[-117 200 -169 106!-169 106[-200 51 -200 0!-200 0[-200 -61 -160 -119!-160 -119[-104 -200 0 -200!0 -200[116 -200 169 -104"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

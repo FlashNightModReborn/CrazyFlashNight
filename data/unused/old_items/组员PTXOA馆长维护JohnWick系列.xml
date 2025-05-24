@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+<item>
+    <id>22000</id>
+    <name>pencil</name>
+    <displayname>pencil</displayname>
+    <icon>pencil</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>短兵</actiontype>
+    <weight>0.1</weight>
+    <price>10</price>
+    <description>我曾经见过他在一家酒吧杀了三个人，用一支铅笔，用一支他妈该死的铅笔。</description>
+    <level>1</level>
+    <data>
+      <power>25</power>
+    </data>
+    <equipped>
+      <dressup>刀-pencil</dressup>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+    </equipped>
+  </item>
+  <item>
+    <id>22001</id>
+    <name>TTI MPX</name>
+    <displayname>TTI MPX</displayname>
+    <icon>TTI MPX</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>2</weight>
+    <price>187200</price>
+    <description>TTI MPX卡宾枪由西格公司的SIG MPX冲锋枪改进而来。使用9mm子弹供弹机匣部分使用了与TR-1相同材料的航空铝制作，硬度高，重量轻。243G超高灵敏度扳机组，射击反应更快。TTI改装的弹匣井，开口更大，换弹更加迅速。</description>
+    <level>20</level>
+    <data>
+      <capacity>45</capacity>
+      <split>1</split>
+      <diffusion>8</diffusion>
+      <interval>75</interval>
+      <velocity>55</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>mpx.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>手枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>139</power>
+      <impact>25</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-TTI MPX</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22002</id>
+    <name>TTI TR1</name>
+    <displayname>TTI TR1</displayname>
+    <icon>TTI TR1</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>3</weight>
+    <price>280000</price>
+    <description>TTI TR1步枪基于AR15步枪改装其针对竞赛级步枪要求的“快速、精准”改进。下机匣运用了7075铝合金（航空铝）制作，坚固、耐磨、轻便。 </description>
+    <level>30</level>
+    <data>
+      <capacity>40</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>100</interval>
+      <velocity>45</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>TR1.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>360</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-TTI TR1</dressup>
+    </equipped>
+  </item>
+ <item>
+    <id>22003</id>
+    <name>TTI 2011 Combat Master</name>
+    <displayname>TTI 2011 Combat Master</displayname>
+    <icon>TTI 2011 Combat Master</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>1</weight>
+    <price>49000</price>
+    <description>TTI 2011 Combat Master，为塔兰战术与sti首款合作的产品，其诞生也是塔兰战术在1911系竞赛枪械中涉足的重要标杆。</description>
+    <level>15</level>
+    <data>
+      <capacity>22</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>140</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>35</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>TTI2011.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>手枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>300</power>
+      <impact>5</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-TTI 2011 Combat Master</dressup>
+    </equipped>
+  </item>
+ <item>
+    <id>22004</id>
+    <name>TTI Gen 12</name>
+    <displayname>TTI Gen 12</displayname>
+    <icon>TTI Gen 12</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>9</weight>
+    <price>673920</price>
+    <description>TTI GEN 12是一款由塔兰战术制造的高性能战术霰弹枪，专为射击运动和自卫而设计，具有高精度和可靠性。</description>
+    <level>45</level>
+    <data>
+      <capacity>14</capacity>
+      <split>5</split>
+      <diffusion>9</diffusion>
+      <interval>140</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>39</velocity>
+      <bullet>横向联弹-加强普通子弹</bullet>
+      <bulletrename>加强普通子弹</bulletrename>
+      <sound>TTIGEN12.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>00号鹿弹</clipname>
+      <bulletsize>25</bulletsize>
+      <power>295</power>
+      <impact>50</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-TTI Gen 12</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22005</id>
+    <name>TTI Benelli M4</name>
+    <displayname>TTI Benelli M4</displayname>
+    <icon>TTI Benelli M4</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>4</weight>
+    <price>327600</price>
+    <description>由塔兰战术定制改造的Benelli M4，其在原版的基础上让枪械更加轻量化和更加稳定可靠， 全新的烫纹防滑护木,提升了使用舒适性。 tti制定供弹仓更换了更柔顺的弹簧,可装入7+1发12号霰弹。</description>
+    <level>35</level>
+    <data>
+      <capacity>8</capacity>
+      <split>4</split>
+      <diffusion>10</diffusion>
+      <interval>168</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>40</velocity>
+      <bullet>横向联弹-加强普通子弹</bullet>
+      <bulletrename>加强普通子弹</bulletrename>
+      <sound>TTIBenelliM4.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>00号鹿弹</clipname>
+      <bulletsize>25</bulletsize>
+      <power>446</power>
+      <impact>12</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-TTI Benelli M4</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22006</id>
+    <name>DTA SRS</name>
+    <displayname>DTA SRS</displayname>
+    <icon>DTA SRS</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>7</weight>
+    <price>461760</price>
+    <description>SRS狙击步枪给人的初步印象就好像德国AMP公司的DSR-1狙击步枪的简化版，事实上，尼古拉斯·杨格也承认在设计SRS狙击步枪时受到DSR-1的不少启发，只是SRS狙击步枪结构更简单、重量更轻，生产和维护也更容易。DSR-1狙击步枪可能更适合警察用户，而SRS狙击步枪的立足点是满足军事用途。</description>
+    <level>37</level>
+    <data>
+      <capacity>7</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>850</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>70</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>DTASRS.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>60</bulletsize>
+      <power>2590</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-DTA SRS</dressup>
+      <accuracy>40</accuracy>
+      <criticalhit>满血暴击</criticalhit>
+    </equipped>
+  </item>
+  <item>
+    <id>22007</id>
+    <name>轰天巨炮</name>
+    <displayname>轰天巨炮</displayname>
+    <icon>轰天巨炮</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>27</weight>
+    <price>474000</price>
+    <description>来自反恐行动超级巨炮！甚至可以用史上最强来称呼它！疯狂的轰炸，威力绝伦！</description>
+    <level>40</level>
+    <data>
+      <capacity>20</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>150</interval>
+      <velocity>80</velocity>
+      <bullet>小火箭弹</bullet>
+      <sound>firerocket.wav</sound>
+      <muzzle>巴雷特枪火</muzzle>
+      <bullethit>空中爆炸1</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>395</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-轰天巨炮</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22008</id>
+    <name>土豆炮</name>
+    <displayname>土豆炮</displayname>
+    <icon>土豆炮</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>10</weight>
+    <price>58500</price>
+    <description>通过拼接pvc管简单DIY制成的土制气阀炮，可用于简单地发射榴弹炮。</description>
+    <level>10</level>
+    <data>
+      <capacity>2</capacity>
+      <split>1</split>
+      <diffusion>8</diffusion>
+      <interval>500</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>30</velocity>
+      <bullet>小榴弹</bullet>
+      <sound>airshoot.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>空中爆炸1</bullethit>
+      <clipname>榴弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>1115</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-土豆炮</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22009</id>
+    <name>TTI Glock 34</name>
+    <displayname>TTI Glock 34</displayname>
+    <icon>TTI Glock 34</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>1</weight>
+    <price>49300</price>
+    <description>glock 34是奥地利格洛克公司于1998年生产的手枪，为glock 17L 的竞赛版。 tti G34 在此基础上再作改良，使其更适于竞赛并更具现代化枪械的魅力。 改装了tti定制的轻量化套筒，采用哑光涂层，倾斜的防滑刻纹从枪管延伸到枪尾，在增大了操作性的同时装饰了枪身。</description>
+    <level>15</level>
+    <data>
+      <capacity>25</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>100</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>40</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>TTIGlock34.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>手枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>205</power>
+      <impact>15</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-TTI Glock 34</dressup>
+    </equipped>
+  </item>
+ <item>
+    <id>22010</id>
+    <name>TTI Glock 19</name>
+    <displayname>TTI Glock 19</displayname>
+    <icon>TTI Glock 19</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>1</weight>
+    <price>49400</price>
+    <description>TTI Glock 19在原版的基础上再作改良，使其更适于竞赛并更具现代化枪械的魅力。全枪高度定制，更加轻量化更加稳定，此版为银白色与Glock34搭配使用堪称一绝。</description>
+    <level>15</level>
+    <data>
+      <capacity>25</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>90</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>30</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>TTIGlock19.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>手枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>185</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-TTI Glock 19</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22011</id>
+    <name>导弹信标</name>
+    <displayname>导弹信标</displayname>
+    <icon>导弹信标</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <weight>1</weight>
+    <price>8000</price>
+    <description>投掷出即可发送坐标信息，让基地发送导弹支援。</description>
+    <level>30</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>10</velocity>
+      <bullet>导弹信标</bullet>
+      <sound>
+      </sound>
+      <muzzle>
+      </muzzle>
+      <bullethit>
+      </bullethit>
+      <clipname>导弹信标</clipname>
+      <bulletsize>50</bulletsize>
+      <power>8000</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>手雷-自制信标</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22012</id>
+    <name>退路</name>
+    <displayname>退路</displayname>
+    <icon>退路</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>2</weight>
+    <price>pirceless</price>
+    <description>退路</description>
+    <level>20</level>
+    <data>
+      <capacity>99999</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>250</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>40</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>planb.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>金币</clipname>
+      <bulletsize>25</bulletsize>
+      <power>240</power>
+      <impact>50</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-退路</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>22013</id>
+    <name>Killer 7</name>
+    <displayname>Killer 7</displayname>
+    <icon>Killer 7</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>2</weight>
+    <price>pirceless</price>
+    <description>使用K点当作子弹的手枪。</description>
+    <level>40</level>
+    <data>
+      <capacity>99999</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>220</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>40</velocity>
+      <bullet>绿色能量普通子弹</bullet>
+      <bulletrename>高能弹丸</bulletrename>
+      <sound>killer7.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>战术巴雷特击中特效</bullethit>
+      <clipname>K点</clipname>
+      <bulletsize>25</bulletsize>
+      <power>770</power>
+      <impact>50</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-Killer 7</dressup>
+    </equipped>
+  </item>
+</root>

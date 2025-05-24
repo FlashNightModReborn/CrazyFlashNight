@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基建/基建图标整体" itemID="66fbbcaa-00004ba4" lastModified="1727776070" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="基建图标整体">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基建/基建文字透明" centerPoint3DX="61.6" centerPoint3DY="23.55">
+                  <matrix>
+                    <Matrix tx="32.85" ty="11.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.75" y="11.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基建/基建图标透明" selected="true" centerPoint3DX="20.45" centerPoint3DY="17.65">
+                  <matrix>
+                    <Matrix tx="2.6" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.85" y="18.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基建/基建图标" centerPoint3DX="17.85" centerPoint3DY="19">
+                  <matrix>
+                    <Matrix a="0.539382934570313" d="0.539382934570313" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.1" y="33.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基建/基建文字" centerPoint3DX="59.1" centerPoint3DY="25.15">
+                  <matrix>
+                    <Matrix a="1.38554382324219" d="1.38554382324219" tx="30.35" ty="13.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

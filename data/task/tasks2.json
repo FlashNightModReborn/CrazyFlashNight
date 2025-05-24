@@ -1,0 +1,398 @@
+{
+    "tasks": [
+        {
+            "id": 10001,
+            "title": "$SIDE_TITLE_10001",
+            "description": "$SIDE_DESCRIPTION_10001",
+
+            "get_requirements": [4],
+            "get_conversation": "$SIDE_GET_10001",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10001",
+            "finish_npc": "∞天ㄙ★使的剪∞",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"支线#1"
+        },
+        {
+            "id": 10002,
+            "title": "$SIDE_TITLE_10002",
+            "description": "$SIDE_DESCRIPTION_10002",
+
+            "get_requirements": [10001],
+            "get_conversation": "$SIDE_GET_10002",
+            "get_npc": "∞天ㄙ★使的剪∞",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10002",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"支线#2"
+        },
+        {
+            "id": 10003,
+            "title": "$SIDE_TITLE_10003",
+            "description": "$SIDE_DESCRIPTION_10003",
+
+            "get_requirements": [10002],
+            "get_conversation": "$SIDE_GET_10003",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10003",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"支线#3"
+        },
+        {
+            "id": 10004,
+            "title": "$SIDE_TITLE_10004",
+            "description": "$SIDE_DESCRIPTION_10004",
+
+            "get_requirements": [13,10003],
+            "get_conversation": "$SIDE_GET_10004",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [
+                "郊区#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_10004",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#10000",
+                "经验值#10000",
+                "手枪通用弹药#100",
+                "突击步枪通用弹药#100"
+            ],
+            
+            "chain":"支线#4"
+        },
+        {
+            "id": 10005,
+            "title": "$SIDE_TITLE_10005",
+            "description": "$SIDE_DESCRIPTION_10005",
+
+            "get_requirements": [10004],
+            "get_conversation": "$SIDE_GET_10005",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10005",
+            "finish_npc": "格格巫",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"支线#5"
+        },
+        {
+            "id": 10010,
+            "title": "$SIDE_TITLE_10010",
+            "description": "$SIDE_DESCRIPTION_10010",
+
+            "get_requirements": [10005],
+            "get_conversation": "$SIDE_GET_10010",
+            "get_npc": "格格巫",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10010",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"支线#10"
+        },
+        {
+            "id": 10011,
+            "title": "$SIDE_TITLE_10011",
+            "description": "$SIDE_DESCRIPTION_10011",
+
+            "get_requirements": [10010],
+            "get_conversation": "$SIDE_GET_10011",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10011",
+            "finish_npc": "舞女",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"支线#11"
+        },
+        {
+            "id": 10012,
+            "title": "$SIDE_TITLE_10012",
+            "description": "$SIDE_DESCRIPTION_10012",
+
+            "get_requirements": [10011],
+            "get_conversation": "$SIDE_GET_10012",
+            "get_npc": "舞女",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10012",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#20000",
+                "经验值#5000",
+                "普通hp药剂#20",
+                "普通mp药剂#20"
+            ],
+            
+            "chain":"支线#12"
+        },
+        {
+            "id": 10013,
+            "title": "$SIDE_TITLE_10013",
+            "description": "$SIDE_DESCRIPTION_10013",
+
+            "get_requirements": [25,10012],
+            "get_conversation": "$SIDE_GET_10013",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10013",
+            "finish_npc": "格格巫",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "普通hp药剂#5",
+                "普通mp药剂#5",
+                "明矾#20"
+            ],
+            
+            "chain":"支线#13"
+        },
+        {
+            "id": 10014,
+            "title": "$SIDE_TITLE_10014",
+            "description": "$SIDE_DESCRIPTION_10014",
+
+            "get_requirements": [10013],
+            "get_conversation": "$SIDE_GET_10014",
+            "get_npc": "格格巫",
+
+            "finish_requirements": [],
+            "finish_submit_items": [
+                "明矾#20"
+            ],
+            "finish_conversation": "$SIDE_FINISH_10014",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"支线#14"
+        },
+        {
+            "id": 10015,
+            "title": "$SIDE_TITLE_10015",
+            "description": "$SIDE_DESCRIPTION_10015",
+
+            "get_requirements": [36,10014],
+            "get_conversation": "$SIDE_GET_10015",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10015",
+            "finish_npc": "幸存老兵",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "抗生素#1",
+                "肾上腺素#1"
+            ],
+            
+            "chain":"支线#15"
+        },
+        {
+            "id": 10016,
+            "title": "$SIDE_TITLE_10016",
+            "description": "$SIDE_DESCRIPTION_10016",
+
+            "get_requirements": [10015],
+            "get_conversation": "$SIDE_GET_10016",
+            "get_npc": "幸存老兵",
+
+            "finish_requirements": [
+                "AVP#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_10016",
+            "finish_npc": "幸存老兵",
+            "rewards": [
+                "金币#50000",
+                "经验值#25000",
+                "抗生素#5",
+                "肾上腺素#5",
+                "铝粉#10"
+            ],
+            
+            "chain":"支线#16"
+        },
+        {
+            "id": 10017,
+            "title": "$SIDE_TITLE_10017",
+            "description": "$SIDE_DESCRIPTION_10017",
+
+            "get_requirements": [10016],
+            "get_conversation": "$SIDE_GET_10017",
+            "get_npc": "幸存老兵",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10017",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "抗生素#1",
+                "肾上腺素#1"
+            ],
+            
+            "chain":"支线#17"
+        },
+        {
+            "id": 10018,
+            "title": "$SIDE_TITLE_10018",
+            "description": "$SIDE_DESCRIPTION_10018",
+
+            "get_requirements": [10017],
+            "get_conversation": "$SIDE_GET_10018",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10018",
+            "finish_npc": "小F",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "抗生素#1",
+                "肾上腺素#1"
+            ],
+            
+            "chain":"支线#18"
+        },
+        {
+            "id": 10019,
+            "title": "$SIDE_TITLE_10019",
+            "description": "$SIDE_DESCRIPTION_10019",
+
+            "get_requirements": [10018],
+            "get_conversation": "$SIDE_GET_10019",
+            "get_npc": "小F",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10019",
+            "finish_npc": "丽丽丝",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "抗生素#1",
+                "肾上腺素#1",
+                "碱液#10",
+                "王水#2"
+            ],
+            
+            "chain":"支线#19"
+        },
+        {
+            "id": 10020,
+            "title": "$SIDE_TITLE_10020",
+            "description": "$SIDE_DESCRIPTION_10020",
+
+            "get_requirements": [10019],
+            "get_conversation": "$SIDE_GET_10020",
+            "get_npc": "丽丽丝",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10020",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "抗生素#1",
+                "肾上腺素#1"
+            ],
+            
+            "chain":"支线#20"
+        },
+        {
+            "id": 10021,
+            "title": "$SIDE_TITLE_10021",
+            "description": "$SIDE_DESCRIPTION_10021",
+
+            "get_requirements": [10020],
+            "get_conversation": "$SIDE_GET_10021",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_submit_items": [
+                "碱液#10",
+                "王水#2"
+            ],
+            "finish_conversation": "$SIDE_FINISH_10021",
+            "finish_npc": "幸存老兵",
+            "rewards": [
+                "金币#20000",
+                "经验值#7000",
+                "抗生素#2",
+                "肾上腺素#2",
+                "精油#5"
+            ],
+            
+            "chain":"支线#21"
+        },
+        {
+            "id": 10022,
+            "title": "$SIDE_TITLE_10022",
+            "description": "$SIDE_DESCRIPTION_10022",
+
+            "get_requirements": [10021],
+            "get_conversation": "$SIDE_GET_10022",
+            "get_npc": "幸存老兵",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10022",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#6000",
+                "经验值#1500",
+                "抗生素#1",
+                "肾上腺素#1"
+            ],
+            
+            "chain":"支线#22"
+        }
+    ]
+}

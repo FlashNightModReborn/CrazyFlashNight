@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/袁望surveyor/屁股" itemID="658e8e94-00000156" lastModified="1703841428">
+  <timeline>
+    <DOMTimeline name="屁股">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/袁望surveyor/shape 322" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.663619995117188" d="0.7052001953125" tx="28.8" ty="27.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="对话框UI/袁望surveyor/shape 327" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.7979736328125" d="0.7979736328125" tx="38.9" ty="25.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

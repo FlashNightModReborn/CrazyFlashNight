@@ -1,0 +1,127 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="门动画" itemID="66057337-00001026" lastModified="1712303262" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="门动画" currentFrame="18">
+      <layers>
+        <DOMLayer name="Script Layer" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.淡出动画.gotoAndPlay(2);
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-159 2281S4|-83 2281"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-83 2281S6|-83 -117!-83 -117|2181 -117!2181 -117|2181 2281"/>
+                    <Edge strokeStyle="1" edges="!2181 2281S4|2304 2281"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2181 2281S6|-83 2281"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右边门" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="18" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="右边门" centerPoint3DX="81.3" centerPoint3DY="56.9">
+                  <matrix>
+                    <Matrix tx="57.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.3" y="56.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="右边门" centerPoint3DX="81.3" centerPoint3DY="57.25">
+                  <matrix>
+                    <Matrix a="0.618392944335938" b="0.468048095703125" tx="75.7" ty="-21.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.3" y="56.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左边门" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="18" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="左边门" centerPoint3DX="28.8" centerPoint3DY="56.9">
+                  <transformationPoint>
+                    <Point y="56.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="左边门" centerPoint3DX="28.8" centerPoint3DY="56.75">
+                  <matrix>
+                    <Matrix a="0.62445068359375" b="-0.587081909179688" ty="-0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="56.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#7134E4" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="57" keyMode="9728" soundEffect="custom" soundName="sound/sound2390.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32769" level1="32769"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,110 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 34" itemID="6655a853-00000387" symbolType="graphic" lastModified="1716889683">
+  <timeline>
+    <DOMTimeline name="补间 34">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#262626"/>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <SolidColor color="#222222"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!24 111[36 118 38 131!38 131[44 142 37 152!37 152[33 165 18 171!18 171[5 174 -4 168!-4 168[-18 162 -20 150!-20 150[-23 136 -19 124!-19 124[-13 113 0 108!0 108[10 105 24 111"/>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!3 154[-4 149 -5 144!-5 144[-6 139 -2 131!-2 131[-1 126 4 124!4 124[13 123 17 125!17 125[25 130 26 135!26 135[27 141 24 147!24 147[20 152 15 156!15 156[9 159 3 154"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                    <DOMGroup>
+                      <transformationPoint>
+                        <Point x="0.7" y="7.5"/>
+                      </transformationPoint>
+                      <members>
+                        <DOMShape>
+                          <transformationPoint>
+                            <Point x="0.7" y="7.5"/>
+                          </transformationPoint>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#2C2C2C"/>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <SolidColor color="#303030"/>
+                            </FillStyle>
+                            <FillStyle index="3">
+                              <SolidColor color="#323232"/>
+                            </FillStyle>
+                            <FillStyle index="4">
+                              <SolidColor color="#343434"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="!92 56|160 -39!160 -39|150 -98"/>
+                            <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!150 -98|83 0"/>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!83 0|92 56"/>
+                            <Edge fillStyle1="2" strokeStyle="1" edges="!92 56|51 187!51 187|33 202!33 202|5 188!5 188|-7 126!-7 126|23 33!23 33|-159 -81!-159 -81|-151 -100"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="!-151 -100|-83 -197!-83 -197|-51 -202"/>
+                            <Edge fillStyle1="3" strokeStyle="1" edges="!-51 -202|150 -98"/>
+                            <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!-151 -100|-120 -107"/>
+                            <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!-120 -107|-51 -202"/>
+                            <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!-120 -107|83 0"/>
+                            <Edge cubics="!-7 126(;-7,126 23,33 23,33q-7 126 23 33)23,33;"/>
+                            <Edge cubics="!5 188(5,188;5,188 -7,126 -7,126q5 188 -7 126);"/>
+                            <Edge cubics="!33 202(33,202;33,202 5,188 5,188q33 202 5 188);"/>
+                            <Edge cubics="!51 187(51,187;51,187 33,202 33,202q51 187 33 202);"/>
+                            <Edge cubics="!-159 -81(-159,-81;-159,-81 -151,-100 -151,-100q-159 -81 -151 -100);"/>
+                            <Edge cubics="!83 0(;83,0 92,56 92,56q83 0 92 56);"/>
+                            <Edge cubics="!-151 -100(-151,-100;-151,-100 -120,-107 -120,-107q-151 -100 -120 -107);"/>
+                            <Edge cubics="!23 33(23,33;23,33 -159,-81 -159,-81q23 33 -159 -81);"/>
+                            <Edge cubics="!150 -98(;150,-98 160,-39 160,-39q150 -98 160 -39);"/>
+                            <Edge cubics="!-83 -197(-83,-197;-83,-197 -51,-202 -51,-202q-83 -197 -51 -202);"/>
+                            <Edge cubics="!150 -98(150,-98;150,-98 -51,-202 -51,-202q150 -98 -51 -202);"/>
+                            <Edge cubics="!92 56(92,56;92,56 51,187 51,187q92 56 51 187);"/>
+                            <Edge cubics="!-120 -107(;-120,-107 83,0 83,0q-120 -107 83 0);"/>
+                            <Edge cubics="!-151 -100(-151,-100;-151,-100 -83,-197 -83,-197q-151 -100 -83 -197);"/>
+                            <Edge cubics="!-120 -107(;-120,-107 -51,-202 -51,-202q-120 -107 -51 -202);"/>
+                            <Edge cubics="!150 -98(150,-98;150,-98 83,0 83,0q150 -98 83 0);"/>
+                            <Edge cubics="!160 -39(;160,-39 92,56 92,56q160 -39 92 56);"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

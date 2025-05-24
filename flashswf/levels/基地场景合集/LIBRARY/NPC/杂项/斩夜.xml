@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/杂项/斩夜" itemID="66631710-0000015c" lastModified="1717770070" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="斩夜">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/斩夜-刀">
+                  <matrix>
+                    <Matrix tx="200.5" ty="1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-200.75" y="-2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/斩夜-刀鞘">
+                  <matrix>
+                    <Matrix tx="-332.45" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="242.75" y="25.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

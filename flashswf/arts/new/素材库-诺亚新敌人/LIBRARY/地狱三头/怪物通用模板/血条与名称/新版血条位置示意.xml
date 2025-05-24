@@ -1,0 +1,243 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地狱三头/怪物通用模板/血条与名称/新版血条位置示意" itemID="673849ac-00002026" lastModified="1714404428" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="新版血条位置示意">
+      <layers>
+        <DOMLayer name="Script Layer" color="#888BCD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[自机 = _parent;
+
+if (自机.是否为敌人 == false)
+{
+	名字 = "<FONT COLOR=\'#00FF00\'>" + 自机.名字 + "</FONT>";
+}
+else if (自机.是否为敌人 == true)
+{
+	名字 = "<FONT COLOR=\'#CC0000\'>" + 自机.名字 + "</FONT>";
+}
+else if (自机._name == _root.控制目标)
+{
+	名字 = "<FONT COLOR=\'#FFFF00\'>" + 自机.名字 + "</FONT>";
+}
+else
+{
+	名字 = "<FONT COLOR=\'#FFFFFF\'>" + 自机.名字 + "</FONT>";
+}
+血槽x = this.头顶血槽.血槽底._x;
+血槽长度 = this.头顶血槽.血槽底._width;
+this.onEnterFrame = function()
+{
+	this.头顶血槽.血槽条._width = 自机.hp / 自机.hp满血值 * 血槽长度;
+
+	//计算残余冲击力
+	var 残余冲击力 = 自机.残余冲击力;
+	if (自机.浮空 or 自机.倒地 or 残余冲击力 >= 自机.韧性上限)
+	{
+		残余冲击力 = 自机.韧性上限;
+	}
+	else
+	{
+		//照搬冲击力衰减
+		var 当前时间:Number = getTimer();
+		if (!isNaN(自机.上次受击时间))
+		{
+			var 受击间隔:Number = 当前时间 - 自机.上次受击时间;
+			if (受击间隔 > 1000 * _root.冲击残余时间)
+			{
+				残余冲击力 = Math.max(0, 自机.残余冲击力 * _root.冲击力衰减(受击间隔));
+			}
+		}
+	}
+	this.头顶血槽.韧性条._x = 血槽x - 残余冲击力 / 自机.韧性上限 * 血槽长度;
+
+	//霸体状态下改变韧性条底部颜色
+	this.头顶血槽.刚体遮罩._visible = 自机.刚体 ? true : false;
+};]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#29F9D9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="15.1" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-68.5" ty="-6.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>Lv.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" leftMargin="1" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#99E2A2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="153.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-73" ty="-24.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>称号位置</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#EABEC0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="21.25" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-47.25" ty="-6.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#DA89AB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="100" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-16" ty="-6.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>name</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#F48A15">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#FFAA33"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#99CC00"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="4" edges="!450 357|450 285"/>
+                    <Edge fillStyle0="1" edges="!450 285|450 280"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!450 280|-450 280"/>
+                    <Edge strokeStyle="1" edges="!-450 280|-455 280!-455 280|-455 410!-455 410|455 410!455 410|455 280!455 280|450 280"/>
+                    <Edge fillStyle0="2" edges="!300 405|450 405!450 405|450 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!0 405|50 357"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!50 357|0 357"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!0 357|-100 357"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!-100 357|-150 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-150 357|-200 405"/>
+                    <Edge fillStyle0="3" edges="!-200 405|-150 405"/>
+                    <Edge fillStyle0="2" edges="!-150 405|-50 405"/>
+                    <Edge fillStyle0="3" edges="!-50 405|0 405"/>
+                    <Edge fillStyle1="2" edges="!100 405|0 405"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!150 357|100 405"/>
+                    <Edge fillStyle0="3" edges="!100 405|150 405"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!150 405|200 357"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!200 357|150 357"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!150 357|50 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!300 357|250 405"/>
+                    <Edge fillStyle1="2" edges="!250 405|150 405"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!300 357|350 357"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!350 357|300 405"/>
+                    <Edge fillStyle1="3" edges="!300 405|250 405"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!200 357|300 357!350 357|450 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-300 405|-250 357"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!-250 357|-300 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-300 357|-350 405"/>
+                    <Edge fillStyle1="2" edges="!-350 405|-450 405"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-450 405|-400 357"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!-400 357|-300 357"/>
+                    <Edge fillStyle0="3" edges="!-350 405|-300 405"/>
+                    <Edge fillStyle0="2" edges="!-300 405|-200 405"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!-100 357|-150 405"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!-250 357|-150 357"/>
+                    <Edge fillStyle0="1" edges="!-450 280|-450 285"/>
+                    <Edge fillStyle0="4" edges="!-450 285|-450 357"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!-450 357|-400 357"/>
+                    <Edge fillStyle0="3" edges="!-450 357|-450 405"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!-50 405|0 357"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!450 285|-450 285"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

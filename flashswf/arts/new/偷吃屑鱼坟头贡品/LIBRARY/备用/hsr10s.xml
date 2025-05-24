@@ -1,0 +1,191 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="备用/hsr10s" itemID="65f90307-000002b9" lastModified="1710818055">
+  <timeline>
+    <DOMTimeline name="hsr10s">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="备用/BIPOD" centerPoint3DX="108.4" centerPoint3DY="33.75">
+                      <matrix>
+                        <Matrix a="0.25885009765625" b="0.965911865234375" c="0.965911865234375" d="-0.258834838867188" tx="100.45" ty="16.7"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="3.95" y="2.25"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/12.7x69mm 7round" centerPoint3DX="61.5" centerPoint3DY="25.6">
+                      <matrix>
+                        <Matrix tx="54.45" ty="17.05"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="7.05" y="8.55"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/V.I. polymer stock" centerPoint3DX="17.7" centerPoint3DY="21.25">
+                      <matrix>
+                        <Matrix ty="12.95"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="17.7" y="8.3"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/HSR boltrail" centerPoint3DX="60.9" centerPoint3DY="15.55">
+                      <matrix>
+                        <Matrix tx="53.65" ty="13.15"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="7.25" y="2.4"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/HSR bolt" centerPoint3DX="60.25" centerPoint3DY="15.05">
+                      <matrix>
+                        <Matrix tx="52.05" ty="12.8"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="8.2" y="2.25"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="-0.00054931640625" c="0.0029296875" d="0" tx="60.9" ty="15.55"/>
+                                </matrix>
+                                <GradientEntry color="#2A2A2A" ratio="0"/>
+                                <GradientEntry color="#191919" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.35">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                            <StrokeStyle index="2">
+                              <SolidStroke scaleMode="normal" weight="0.5">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle0="1" strokeStyle="2" edges="!1073 359|1363 359!1363 359|1363 263!1363 263|1073 263!1073 263|1073 359"/>
+                            <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1116 292|1116 334!1160 295|1160 329!1138 286|1138 340"/>
+                          </edges>
+                        </DOMShape>
+                        <DOMGroup>
+                          <members>
+                            <DOMShape>
+                              <fills>
+                                <FillStyle index="1">
+                                  <SolidColor color="#2B2B2B"/>
+                                </FillStyle>
+                              </fills>
+                              <strokes>
+                                <StrokeStyle index="1">
+                                  <SolidStroke scaleMode="normal" weight="0.5">
+                                    <fill>
+                                      <SolidColor/>
+                                    </fill>
+                                  </SolidStroke>
+                                </StrokeStyle>
+                              </strokes>
+                              <edges>
+                                <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1201 311|1218 311"/>
+                                <Edge fillStyle1="1" strokeStyle="1" edges="!1191 322|1191 300!1191 300|1267 300!1267 300|1267 322!1267 322|1191 322"/>
+                              </edges>
+                            </DOMShape>
+                          </members>
+                        </DOMGroup>
+                      </members>
+                    </DOMGroup>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="0.0025634765625" c="-0.0030670166015625" d="0" tx="60.25" ty="15.05"/>
+                                </matrix>
+                                <GradientEntry color="#191919" ratio="0.141176470588235"/>
+                                <GradientEntry color="#202020" ratio="0.509803921568627"/>
+                                <GradientEntry color="#171717" ratio="0.827450980392157"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.5">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!1370 271|1370 331!1370 331|1351 346!1351 346|1041 346!1041 346|1041 256!1041 256|1351 256!1351 256|1370 271"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                    <DOMSymbolInstance libraryItemName="备用/HSR-10" centerPoint3DX="79.6" centerPoint3DY="20.2">
+                      <matrix>
+                        <Matrix tx="34.05" ty="7.45"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="45.55" y="12.75"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/HSR dust cover" centerPoint3DX="61.1" centerPoint3DY="15.45">
+                      <matrix>
+                        <Matrix tx="54.55" ty="13.2"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="6.55" y="2.25"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/BipodBS" centerPoint3DX="101.65" centerPoint3DY="20.8">
+                      <matrix>
+                        <Matrix a="-1" tx="106.1" ty="16.65"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="4.45" y="4.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/BIPOD" centerPoint3DX="111.55" centerPoint3DY="32.55">
+                      <matrix>
+                        <Matrix a="0.5" b="0.866012573242188" c="0.866012573242188" d="-0.5" tx="99.75" ty="17.65"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="3.95" y="2.25"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="备用/V.I. Scope" centerPoint3DX="54.4" centerPoint3DY="4.3">
+                      <matrix>
+                        <Matrix tx="34.05"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="20.35" y="4.3"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

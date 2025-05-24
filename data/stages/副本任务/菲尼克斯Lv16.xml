@@ -1,0 +1,549 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/ciyuanta_魔神图专用.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Each Promise (エリザベートチーム)</Title>
+                <Loop>true</Loop>
+            </BGM>
+            <PlayerX>100</PlayerX>
+            <PlayerY>600</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1650</x>
+                <y>620</y>
+            </Point>
+            <Point id="1">
+                <x>1600</x>
+                <y>800</y>
+                <BiasX>50</BiasX>
+                <BiasY>30</BiasY>
+            </Point>
+            <Point id="2">
+                <x>1350</x>
+                <y>420</y>
+                <BiasX>50</BiasX>
+                <BiasY>20</BiasY>
+            </Point>
+            <Point id="3">
+                <x>900</x>
+                <y>420</y>
+                <BiasX>50</BiasX>
+                <BiasY>20</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>5</Duration>
+                    <FinishRequirement>6</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种309</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种330</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种331</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种326</Type>
+                        <Interval>10</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种318</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>3</Duration>
+                    <FinishRequirement>7</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种332</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种332</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种333</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>13</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种312</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种312</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>24</Duration>
+                    <FinishRequirement>3</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种310</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种313</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种314</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种311</Type>
+                        <Interval>7000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种326</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="4">
+                <WaveInformation>
+                    <Duration>17</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种319</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种319</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种317</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种317</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="5">
+                <WaveInformation>
+                    <Duration>18</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种315</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种316</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>11</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="6">
+                <WaveInformation>
+                    <Duration>10</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种321</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种329</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种313</Type>
+                        <Interval>900</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="7">
+                <WaveInformation>
+                    <Duration>10</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种321</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种313</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="8">
+                <WaveInformation>
+                    <Duration>10</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种321</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种329</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种310</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="9">
+                <WaveInformation>
+                    <Duration>8</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种324</Type>
+                        <Interval>800</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="10">
+                <WaveInformation>
+                    <Duration>8</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种324</Type>
+                        <Interval>800</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种319</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="11">
+                <WaveInformation>
+                    <Duration>7</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种325</Type>
+                        <Interval>800</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种319</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="12">
+                <WaveInformation>
+                    <Duration>8</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种327</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种315</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="13">
+                <WaveInformation>
+                    <Duration>15</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种316</Type>
+                        <Interval>500</Interval>
+                        <Quantity>11</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="14">
+                <WaveInformation>
+                    <Duration>5</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种323</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种322</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="15">
+                <WaveInformation>
+                    <Duration>15</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种325</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种324</Type>
+                        <Interval>800</Interval>
+                        <Quantity>12</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="16">
+                <WaveInformation>
+                    <Duration>10</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种327</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种321</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种321</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种329</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种313</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="17">
+                <WaveInformation>
+                    <Duration>10</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种317</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种320</Type>
+                        <Interval>3500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="18">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种310</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种311</Type>
+                        <Interval>3500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

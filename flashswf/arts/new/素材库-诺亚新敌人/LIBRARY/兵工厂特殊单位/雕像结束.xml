@@ -1,0 +1,383 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/雕像结束" itemID="66ba3f3a-00000c6a" lastModified="1723525948" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="雕像结束" currentFrame="33">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 效果参数 = {_x:20 - random(40), _y:-20 - random(80)};
+_parent.attachMovie("空中小火焰爆炸","空中小火焰爆炸1",_parent.getNextHighestDepth(),效果参数);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 效果参数 = {_x:20 - random(40), _y:-20 - random(80)};
+_parent.attachMovie("空中小火焰爆炸","空中小火焰爆炸2",_parent.getNextHighestDepth(),效果参数);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_parent.复活计时();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.attachMovie("猩红增幅","猩红增幅",_parent.getNextHighestDepth());]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.hp = _parent.hp满血值;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/光效2" centerPoint3DX="4" centerPoint3DY="-76.9">
+                  <matrix>
+                    <Matrix tx="-34.7" ty="-142"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.7" y="65.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/光效2" centerPoint3DX="6.75" centerPoint3DY="-82.4">
+                  <matrix>
+                    <Matrix tx="-31.95" ty="-147.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.7" y="65.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/光效1" centerPoint3DX="4.35" centerPoint3DY="-60">
+                  <matrix>
+                    <Matrix tx="-34.35" ty="-125.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.7" y="65.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/光效1" centerPoint3DX="4.35" centerPoint3DY="-60.8">
+                  <matrix>
+                    <Matrix tx="-34.35" ty="-125.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.7" y="65.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/光效2" centerPoint3DX="6.75" centerPoint3DY="-62.6">
+                  <matrix>
+                    <Matrix tx="-31.95" ty="-127.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.7" y="65.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/光效2" centerPoint3DX="6.75" centerPoint3DY="-82.4">
+                  <matrix>
+                    <Matrix tx="-31.95" ty="-147.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.7" y="65.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!830 -3540|-810 -3540!-810 -3540|-810 -168!-810 -168|-30 -10!-30 -10|830 -179!830 -179|830 -3540"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-2" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="2.25" ty="1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="1" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-1.75" ty="0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="2" ty="-4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" ty="-5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/底座" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="0.25" y="-2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

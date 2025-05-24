@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/变形薙刀镰/零件/元件 7 副本" itemID="662df829-000004c8" lastModified="1714289183" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="元件 7 副本" currentFrame="7">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="镰刀部件1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/镰刀部件1" selected="true" centerPoint3DX="117.6" centerPoint3DY="57.3">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="231.15" ty="31.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.4" y="26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/镰刀部件1" centerPoint3DX="213.25" centerPoint3DY="137.05">
+                  <matrix>
+                    <Matrix tx="186.05" ty="22.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.4" y="26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="镰刀部件2" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/镰刀部件2" centerPoint3DX="216.55" centerPoint3DY="35.25">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="153.05" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="98"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/镰刀部件2" centerPoint3DX="216.55" centerPoint3DY="35.25">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="153.05" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="98"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

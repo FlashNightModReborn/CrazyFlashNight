@@ -1,0 +1,1744 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/强烈地爆/强烈地爆" itemID="6553a239-00002ead" linkageExportForAS="true" linkageIdentifier="强烈地爆" lastModified="1702141652" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="强烈地爆">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728" soundName="2.音效文件夹/爆炸/爆炸 C-4炸药 近处 02.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#5AC970" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="3.57499694824219" d="2.27000427246094" tx="-77.15" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="5.04702758789063" d="4.2783203125" tx="-107.2" ty="-166.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.7" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="6.4349365234375" d="5.62600708007813" tx="-134.95" ty="-220.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B0DFFB">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5219" blendMode="add" centerPoint3DX="63.7" centerPoint3DY="-108.2">
+                  <matrix>
+                    <Matrix a="-2.48464965820313" b="0.331100463867188" c="0.70574951171875" d="1.3939208984375" tx="48.45" ty="-140.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#8DE1ED">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5217" blendMode="add" centerPoint3DX="10.55" centerPoint3DY="-159.65">
+                  <matrix>
+                    <Matrix a="-2.50506591796875" b="0.288360595703125" c="1.12014770507813" d="2.00926208496094" tx="-5.1" ty="-193.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B380AC">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5217" blendMode="add" centerPoint3DX="-61.65" centerPoint3DY="-111.4">
+                  <matrix>
+                    <Matrix a="2.536865234375" b="0.3304443359375" c="-0.485809326171875" d="1.39410400390625" tx="-77.3" ty="-145.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#9F9AA1">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5215" blendMode="add" centerPoint3DX="70.85" centerPoint3DY="-103.1">
+                  <matrix>
+                    <Matrix a="-2.48464965820313" b="0.331100463867188" c="0.70574951171875" d="1.3939208984375" tx="52.75" ty="-137.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5219" blendMode="add" centerPoint3DX="-97.35" centerPoint3DY="-61.8">
+                  <matrix>
+                    <Matrix a="-0.277755737304688" b="1.25653076171875" c="1.23301696777344" d="0.395370483398438" tx="-112.6" ty="-94.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#5CFFDF">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5215" blendMode="add" centerPoint3DX="18.6" centerPoint3DY="-155.55">
+                  <matrix>
+                    <Matrix a="-2.50506591796875" b="0.288360595703125" c="1.12014770507813" d="2.00926208496094" tx="0.5" ty="-190.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5217" blendMode="add" centerPoint3DX="-149.35" centerPoint3DY="-63.7">
+                  <matrix>
+                    <Matrix a="-0.315292358398438" b="1.24388122558594" c="1.7994384765625" d="0.52484130859375" tx="-165" ty="-97.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#E6DE2E">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="-61.3" centerPoint3DY="-101.35">
+                  <matrix>
+                    <Matrix a="2.536865234375" b="0.3304443359375" c="-0.485809326171875" d="1.39410400390625" tx="-77.8" ty="-136.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5217" blendMode="add" centerPoint3DX="-127.55" centerPoint3DY="-7.65">
+                  <matrix>
+                    <Matrix a="0.802139282226563" b="-0.9449462890625" c="0.97674560546875" d="0.91778564453125" tx="-143.2" ty="-41.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#5D83E9">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="66.3" centerPoint3DY="-96">
+                  <matrix>
+                    <Matrix a="-2.48464965820313" b="0.331100463867188" c="0.70574951171875" d="1.3939208984375" tx="49.8" ty="-131.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5215" blendMode="add" centerPoint3DX="-91.45" centerPoint3DY="-60.05">
+                  <matrix>
+                    <Matrix a="-0.277755737304688" b="1.25653076171875" c="1.23301696777344" d="0.395370483398438" tx="-109.55" ty="-94.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5219" blendMode="add" centerPoint3DX="97.85" centerPoint3DY="-66.35">
+                  <matrix>
+                    <Matrix a="0.443069458007813" b="1.1795654296875" c="-1.10372924804688" d="0.571121215820313" tx="82.6" ty="-98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#88BE4A">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="15.7" centerPoint3DY="-145.95">
+                  <matrix>
+                    <Matrix a="-2.50506591796875" b="0.288360595703125" c="1.12014770507813" d="2.00926208496094" tx="-0.8" ty="-181.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5215" blendMode="add" centerPoint3DX="-143.3" centerPoint3DY="-63.6">
+                  <matrix>
+                    <Matrix a="-0.315292358398438" b="1.24388122558594" c="1.7994384765625" d="0.52484130859375" tx="-161.4" ty="-98.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5217" blendMode="add" centerPoint3DX="147.15" centerPoint3DY="-76.1">
+                  <matrix>
+                    <Matrix a="0.476593017578125" b="1.16156005859375" c="-1.6182861328125" d="0.78277587890625" tx="131.5" ty="-109.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#BB73B8">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="-53.3" centerPoint3DY="-88.35">
+                  <matrix>
+                    <Matrix a="2.536865234375" b="0.3304443359375" c="-0.485809326171875" d="1.39410400390625" tx="-62.5" ty="-107.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="-120.1" centerPoint3DY="-1.65">
+                  <matrix>
+                    <Matrix a="0.802139282226563" b="-0.9449462890625" c="0.97674560546875" d="0.91778564453125" tx="-136.6" ty="-36.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5217" blendMode="add" centerPoint3DX="134.7" centerPoint3DY="-18.3">
+                  <matrix>
+                    <Matrix a="-0.891738891601563" b="-0.797210693359375" c="-0.7869873046875" d="1.04022216796875" tx="119.05" ty="-52.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#A3DC7A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="48.3" centerPoint3DY="-83">
+                  <matrix>
+                    <Matrix a="-2.48464965820313" b="0.331100463867188" c="0.70574951171875" d="1.3939208984375" tx="39.1" ty="-102.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="-88.5" centerPoint3DY="-54.85">
+                  <matrix>
+                    <Matrix a="-0.277755737304688" b="1.25653076171875" c="1.23301696777344" d="0.395370483398438" tx="-105" ty="-90.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5215" blendMode="add" centerPoint3DX="97.75" centerPoint3DY="-64.05">
+                  <matrix>
+                    <Matrix a="0.443069458007813" b="1.1795654296875" c="-1.10372924804688" d="0.571121215820313" tx="79.65" ty="-98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-20" centerPoint3DY="-122.95">
+                  <matrix>
+                    <Matrix a="-0.447616577148438" b="-0.3887939453125" c="-0.3887939453125" d="0.447616577148438" tx="-33.1" ty="-144.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#CBCF26">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="5.1" centerPoint3DY="-122">
+                  <matrix>
+                    <Matrix a="-2.50506591796875" b="0.288360595703125" c="1.12014770507813" d="2.00926208496094" tx="-4.1" ty="-141.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="-138.1" centerPoint3DY="-57.95">
+                  <matrix>
+                    <Matrix a="-0.315292358398438" b="1.24388122558594" c="1.7994384765625" d="0.52484130859375" tx="-154.6" ty="-93.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5215" blendMode="add" centerPoint3DX="146.1" centerPoint3DY="-75.45">
+                  <matrix>
+                    <Matrix a="0.476593017578125" b="1.16156005859375" c="-1.6182861328125" d="0.78277587890625" tx="128" ty="-110.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-58.95" centerPoint3DY="-115.95">
+                  <matrix>
+                    <Matrix a="-0.40264892578125" b="0.4351806640625" c="0.4351806640625" d="0.40264892578125" tx="-72.05" ty="-137.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-58.95" centerPoint3DY="-115.9">
+                  <matrix>
+                    <Matrix a="-0.402511596679688" b="0.433990478515625" c="0.433990478515625" d="0.402511596679688" tx="-72.05" ty="-137.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-58.95" centerPoint3DY="-115.95">
+                  <matrix>
+                    <Matrix a="-0.40264892578125" b="0.4351806640625" c="0.4351806640625" d="0.40264892578125" tx="-72.05" ty="-137.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#D6C3F3">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="-75.7" centerPoint3DY="-51.4">
+                  <matrix>
+                    <Matrix a="-0.277755737304688" b="1.25653076171875" c="1.23301696777344" d="0.395370483398438" tx="-84.9" ty="-70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="-101.7" centerPoint3DY="-9.55">
+                  <matrix>
+                    <Matrix a="0.802139282226563" b="-0.9449462890625" c="0.97674560546875" d="0.91778564453125" tx="-110.9" ty="-28.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="130" centerPoint3DY="-11.4">
+                  <matrix>
+                    <Matrix a="-0.891738891601563" b="-0.797210693359375" c="-0.7869873046875" d="1.04022216796875" tx="113.5" ty="-46.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-96" centerPoint3DY="-113.05">
+                  <matrix>
+                    <Matrix a="0.525909423828125" b="-0.273712158203125" c="0.273712158203125" d="0.525909423828125" tx="-109.1" ty="-135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-95.95" centerPoint3DY="-113">
+                  <matrix>
+                    <Matrix a="0.525894165039063" b="-0.272018432617188" c="0.272018432617188" d="0.525894165039063" tx="-109.05" ty="-134.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-96" centerPoint3DY="-113.05">
+                  <matrix>
+                    <Matrix a="0.525909423828125" b="-0.273712158203125" c="0.273712158203125" d="0.525909423828125" tx="-109.1" ty="-135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#76C3AF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="-115.2" centerPoint3DY="-52.2">
+                  <matrix>
+                    <Matrix a="-0.315292358398438" b="1.24388122558594" c="1.7994384765625" d="0.52484130859375" tx="-124.4" ty="-71.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="92.55" centerPoint3DY="-58.35">
+                  <matrix>
+                    <Matrix a="0.443069458007813" b="1.1795654296875" c="-1.10372924804688" d="0.571121215820313" tx="76.05" ty="-93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5181" blendMode="add" centerPoint3DX="-146.3" centerPoint3DY="-79.95">
+                  <matrix>
+                    <Matrix a="1.064453125" b="1.71563720703125" c="3.00390625" d="-0.0899810791015625" tx="-158.7" ty="-105.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.328125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5207" centerPoint3DX="-38.25" centerPoint3DY="-157.25">
+                  <matrix>
+                    <Matrix a="-0.428634643554688" b="-0.40960693359375" c="-0.40960693359375" d="0.428634643554688" tx="-53" ty="-183.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#CAD123">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="69.15" centerPoint3DY="-52.45">
+                  <matrix>
+                    <Matrix a="0.443069458007813" b="1.1795654296875" c="-1.10372924804688" d="0.571121215820313" tx="59.95" ty="-71.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5203" blendMode="add" centerPoint3DX="138.85" centerPoint3DY="-68.9">
+                  <matrix>
+                    <Matrix a="0.476593017578125" b="1.16156005859375" c="-1.6182861328125" d="0.78277587890625" tx="122.35" ty="-104.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5181" blendMode="add" centerPoint3DX="164.5" centerPoint3DY="0.1">
+                  <matrix>
+                    <Matrix a="-0.274337768554688" b="-1.62722778320313" c="-3.5054931640625" d="0.0087738037109375" tx="152.1" ty="-25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.328125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="-11.5" centerPoint3DY="-154.55">
+                  <matrix>
+                    <Matrix a="0.445281982421875" b="-0.438812255859375" c="0.399215698242188" d="0.621444702148438" tx="-24.6" ty="-176.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#EEA0F0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="106.25" centerPoint3DY="-59.2">
+                  <matrix>
+                    <Matrix a="0.476593017578125" b="1.16156005859375" c="-1.6182861328125" d="0.78277587890625" tx="97.05" ty="-78.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5193" blendMode="add" centerPoint3DX="99.7" centerPoint3DY="-15.65">
+                  <matrix>
+                    <Matrix a="-0.891738891601563" b="-0.797210693359375" c="-0.7869873046875" d="1.04022216796875" tx="90.5" ty="-35.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5213" blendMode="add" centerPoint3DX="548.4" centerPoint3DY="76.65">
+                  <matrix>
+                    <Matrix a="-0.369522094726563" b="0.001708984375" c="0.00079345703125" d="0.161941528320313" tx="160.05" ty="-39.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.328125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="27.9" centerPoint3DY="-140.6">
+                  <matrix>
+                    <Matrix a="0.412979125976563" b="0.60736083984375" c="-0.432540893554688" d="0.458084106445313" tx="14.8" ty="-162.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="27.85" centerPoint3DY="-140.6">
+                  <matrix>
+                    <Matrix a="0.411285400390625" b="0.607177734375" c="-0.431884765625" d="0.457260131835938" tx="14.75" ty="-162.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="27.9" centerPoint3DY="-140.6">
+                  <matrix>
+                    <Matrix a="0.412979125976563" b="0.60736083984375" c="-0.432540893554688" d="0.458084106445313" tx="14.8" ty="-162.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#58FD69">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5191" blendMode="add" centerPoint3DX="-29.65" centerPoint3DY="-51.4">
+                  <matrix>
+                    <Matrix a="0.798736572265625" b="1.55224609375" c="2.33171081542969" d="0.018951416015625" tx="-40" ty="-76.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5201" blendMode="add" centerPoint3DX="-127.35" centerPoint3DY="-67.7">
+                  <matrix>
+                    <Matrix a="1.210693359375" b="1.6888427734375" c="3.38249206542969" d="-0.0640411376953125" tx="-145.45" ty="-103.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="52.2" centerPoint3DY="-152.4">
+                  <matrix>
+                    <Matrix a="-0.592742919921875" b="0.0131378173828125" c="0.0795135498046875" d="0.760635375976563" tx="39.1" ty="-174.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="52.2" centerPoint3DY="-152.4">
+                  <matrix>
+                    <Matrix a="-0.59271240234375" b="0.0129852294921875" c="0.0773468017578125" d="0.760604858398438" tx="39.1" ty="-174.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="52.2" centerPoint3DY="-152.4">
+                  <matrix>
+                    <Matrix a="-0.592742919921875" b="0.0131378173828125" c="0.0795135498046875" d="0.760635375976563" tx="39.1" ty="-174.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="65.3" centerPoint3DY="-132.1">
+                  <matrix>
+                    <Matrix a="-0.534759521484375" b="-0.417068481445313" c="-0.267730712890625" d="0.63623046875" tx="52.2" ty="-154.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="65.3" centerPoint3DY="-132.05">
+                  <matrix>
+                    <Matrix a="-0.53448486328125" b="-0.415664672851563" c="-0.267120361328125" d="0.635604858398438" tx="52.2" ty="-154"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="65.3" centerPoint3DY="-132.1">
+                  <matrix>
+                    <Matrix a="-0.534759521484375" b="-0.417068481445313" c="-0.267730712890625" d="0.63623046875" tx="52.2" ty="-154.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#9C709E">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5191" blendMode="add" centerPoint3DX="42" centerPoint3DY="-23.2">
+                  <matrix>
+                    <Matrix a="-0.18719482421875" b="-1.44821166992188" c="-2.71952819824219" d="-0.107162475585938" tx="31.65" ty="-48.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5201" blendMode="add" centerPoint3DX="155.8" centerPoint3DY="5.85">
+                  <matrix>
+                    <Matrix a="-0.320220947265625" b="-1.59603881835938" c="-3.9478759765625" d="-0.01947021484375" tx="137.7" ty="-29.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5209" centerPoint3DX="36.5" centerPoint3DY="-134.2">
+                  <matrix>
+                    <Matrix a="-0.592742919921875" b="0.0131378173828125" c="0.0795135498046875" d="0.760635375976563" tx="12" ty="-171.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#266FF5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5181" blendMode="add" centerPoint3DX="-76.3" centerPoint3DY="-64.85">
+                  <matrix>
+                    <Matrix a="0.5865478515625" b="1.29478454589844" c="1.76654052734375" d="0.031097412109375" tx="-88.7" ty="-90.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5189" blendMode="add" centerPoint3DX="459" centerPoint3DY="67.95">
+                  <matrix>
+                    <Matrix a="-0.282470703125" b="0.0002288818359375" c="0.00067138671875" d="0.1429443359375" tx="97.75" ty="-22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5199" blendMode="add" centerPoint3DX="521.75" centerPoint3DY="79.3">
+                  <matrix>
+                    <Matrix a="-0.40911865234375" b="0.001068115234375" c="0.0011138916015625" d="0.158477783203125" tx="142.8" ty="-32.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5207" centerPoint3DX="26.9" centerPoint3DY="-193.05">
+                  <matrix>
+                    <Matrix a="-0.592742919921875" b="0.0131378173828125" c="0.0795135498046875" d="0.760635375976563" tx="12.15" ty="-219.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5207" centerPoint3DX="26.85" centerPoint3DY="-193.1">
+                  <matrix>
+                    <Matrix a="-0.59271240234375" b="0.0129852294921875" c="0.0773468017578125" d="0.760604858398438" tx="12.1" ty="-219.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5207" centerPoint3DX="26.9" centerPoint3DY="-193.05">
+                  <matrix>
+                    <Matrix a="-0.592742919921875" b="0.0131378173828125" c="0.0795135498046875" d="0.760635375976563" tx="12.15" ty="-219.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5207" centerPoint3DX="9.6" centerPoint3DY="-196.95">
+                  <matrix>
+                    <Matrix a="0.42584228515625" b="-0.467803955078125" c="0.419906616210938" d="0.599899291992188" tx="-5.15" ty="-223.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#D7F23B">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5181" blendMode="add" centerPoint3DX="104.45" centerPoint3DY="4">
+                  <matrix>
+                    <Matrix a="-0.124435424804688" b="-1.20433044433594" c="-2.05935668945313" d="-0.106903076171875" tx="92.05" ty="-21.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <BlurFilter blurX="3" blurY="0"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5177" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.588775634765625" b="0.0695953369140625" c="-0.0695953369140625" d="0.588775634765625" tx="108.35" ty="-14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5187" centerPoint3DX="-44.55" centerPoint3DY="-76.95">
+                  <matrix>
+                    <Matrix a="0.588775634765625" b="0.0695953369140625" c="-0.0230712890625" d="0.846694946289063" tx="-78.05" ty="-142.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="95.7" centerPoint3DY="-113.4">
+                  <matrix>
+                    <Matrix a="0.281387329101563" b="0.5218505859375" c="-0.5218505859375" d="0.281387329101563" tx="82.6" ty="-135.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="95.7" centerPoint3DY="-113.35">
+                  <matrix>
+                    <Matrix a="0.280807495117188" b="0.521240234375" c="-0.521240234375" d="0.280807495117188" tx="82.6" ty="-135.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="95.7" centerPoint3DY="-113.4">
+                  <matrix>
+                    <Matrix a="0.281387329101563" b="0.5218505859375" c="-0.5218505859375" d="0.281387329101563" tx="82.6" ty="-135.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#F03DCB">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5179" blendMode="add" centerPoint3DX="484.9" centerPoint3DY="75.1">
+                  <matrix>
+                    <Matrix a="-0.21405029296875" b="0.00018310546875" c="0.00054931640625" d="0.11883544921875" tx="97.45" ty="-19.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5187" centerPoint3DX="54.25" centerPoint3DY="-102">
+                  <matrix>
+                    <Matrix a="-0.592742919921875" b="0.0131378173828125" c="0.03668212890625" d="1.08392333984375" tx="20.75" ty="-167.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5187" centerPoint3DX="28.8" centerPoint3DY="-171.05">
+                  <matrix>
+                    <Matrix a="0.868988037109375" b="0.538528442382813" c="-0.244903564453125" d="0.791534423828125" tx="-4.7" ty="-236.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="125.55" centerPoint3DY="-118.7">
+                  <matrix>
+                    <Matrix a="-0.5875244140625" b="-0.079437255859375" c="-0.079437255859375" d="0.5875244140625" tx="112.45" ty="-140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="125.55" centerPoint3DY="-118.7">
+                  <matrix>
+                    <Matrix a="-0.587478637695313" b="-0.0778961181640625" c="-0.0778961181640625" d="0.587478637695313" tx="112.45" ty="-140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="125.55" centerPoint3DY="-118.7">
+                  <matrix>
+                    <Matrix a="-0.5875244140625" b="-0.079437255859375" c="-0.079437255859375" d="0.5875244140625" tx="112.45" ty="-140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="127.55" centerPoint3DY="-69.95">
+                  <matrix>
+                    <Matrix a="-0.323776245117188" b="-0.496658325195313" c="-0.496658325195313" d="0.323776245117188" tx="114.45" ty="-91.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="127.6" centerPoint3DY="-69.9">
+                  <matrix>
+                    <Matrix a="-0.323135375976563" b="-0.496017456054688" c="-0.496017456054688" d="0.323135375976563" tx="114.5" ty="-91.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5211" centerPoint3DX="127.55" centerPoint3DY="-69.95">
+                  <matrix>
+                    <Matrix a="-0.323776245117188" b="-0.496658325195313" c="-0.496658325195313" d="0.323776245117188" tx="114.45" ty="-91.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#F35486">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5177" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.592742919921875" b="0.0131378173828125" c="0.0795135498046875" d="0.760635375976563" tx="-165.2" ty="-28.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#B0F85A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5177" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5875244140625" b="-0.079437255859375" c="-0.079437255859375" d="0.5875244140625" tx="-119.4" ty="-61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5187" centerPoint3DX="126.3" centerPoint3DY="-72.8">
+                  <matrix>
+                    <Matrix a="-0.5875244140625" b="-0.079437255859375" c="-0.188796997070313" d="0.825698852539063" tx="92.8" ty="-137.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5187" centerPoint3DX="115.5" centerPoint3DY="-128.9">
+                  <matrix>
+                    <Matrix a="0.745559692382813" b="0.53851318359375" c="-0.405929565429688" d="0.561996459960938" tx="82" ty="-194"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5209" centerPoint3DX="109.6" centerPoint3DY="-105.25">
+                  <matrix>
+                    <Matrix a="-0.5875244140625" b="-0.079437255859375" c="-0.079437255859375" d="0.5875244140625" tx="85.1" ty="-142.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5219" blendMode="add" centerPoint3DX="-62.75" centerPoint3DY="-113.5">
+                  <matrix>
+                    <Matrix a="2.536865234375" b="0.3304443359375" c="-0.485809326171875" d="1.39410400390625" tx="-78" ty="-146"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 33" color="#F62B5F">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5176" centerPoint3DX="129.35" centerPoint3DY="-23.8">
+                  <matrix>
+                    <Matrix a="-1" tx="68.75" ty="-58.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5185" centerPoint3DX="235.35" centerPoint3DY="-140.1">
+                  <matrix>
+                    <Matrix a="-1" tx="116.7" ty="-257.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5197" centerPoint3DX="300.25" centerPoint3DY="-169.85">
+                  <matrix>
+                    <Matrix a="-1" tx="149.55" ty="-285.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5207" centerPoint3DX="109.9" centerPoint3DY="-152.5">
+                  <matrix>
+                    <Matrix a="-0.5875244140625" b="-0.079437255859375" c="-0.079437255859375" d="0.5875244140625" tx="95.15" ty="-178.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5219" blendMode="add" centerPoint3DX="-128.7" centerPoint3DY="-9.05">
+                  <matrix>
+                    <Matrix a="0.802139282226563" b="-0.9449462890625" c="0.97674560546875" d="0.91778564453125" tx="-143.95" ty="-41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 34" color="#C68FCC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="-67.45" centerPoint3DY="-105.45">
+                  <matrix>
+                    <Matrix a="6.39990234375" d="5.11991882324219" tx="-79.95" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="-176.4" centerPoint3DY="-208.2">
+                  <matrix>
+                    <Matrix a="15.3597564697266" d="8.703857421875" tx="-188.9" ty="-220.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="-176.4" centerPoint3DY="-208.2">
+                  <matrix>
+                    <Matrix a="15.3597564697266" d="8.703857421875" tx="-188.9" ty="-220.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="-123.3" centerPoint3DY="-216.3">
+                  <matrix>
+                    <Matrix a="10.9522399902344" d="6.71212768554688" tx="-135.8" ty="-228.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#8E66DD">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5174" centerPoint3DX="251.45" centerPoint3DY="-41.35">
+                  <matrix>
+                    <Matrix a="-1" tx="124" ty="-91.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5183" centerPoint3DX="496.25" centerPoint3DY="-71.4">
+                  <matrix>
+                    <Matrix a="-1" tx="245.7" ty="-146.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5195" centerPoint3DX="542.2" centerPoint3DY="-89.35">
+                  <matrix>
+                    <Matrix a="-1" tx="268.4" ty="-178.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5205" centerPoint3DX="364.5" centerPoint3DY="-195.8">
+                  <matrix>
+                    <Matrix a="-1" tx="181.45" ty="-305.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5219" blendMode="add" centerPoint3DX="135" centerPoint3DY="-19.8">
+                  <matrix>
+                    <Matrix a="-0.891738891601563" b="-0.797210693359375" c="-0.7869873046875" d="1.04022216796875" tx="119.75" ty="-52.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FF9900" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36" color="#EC4A92">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!-277 -220|-256 -210!-256 -210|-248 -220!-248 -220|-277 -220"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

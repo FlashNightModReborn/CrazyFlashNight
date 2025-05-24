@@ -1,0 +1,100 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2216" itemID="6597607e-00000aca" lastModified="1715102635" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="Symbol 2216">
+      <layers>
+        <DOMLayer name="字体" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" left="95.2" width="25" height="75.2" autoExpand="true" isSelectable="false" orientation="vertical right to left">
+                  <matrix>
+                    <Matrix tx="-85" ty="-61.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>中秋庆</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="25" bitmapSize="500" face="ChillDuanHeiSongSoft" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="25" bitmapSize="500" face="ChillDuanHeiSongSoft" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="5"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.3299560546875" d="1.16241455078125" tx="-14.85" ty="29.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.9" y="-19.4"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0364990234375" d="0.01617431640625" tx="-11.85" ty="-19.4"/>
+                        </matrix>
+                        <GradientEntry alpha="0.458823529411765" ratio="0.396078431372549"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!188 -206[12 -131 -237 -131!-237 -131[-486 -131 -663 -206!-663 -206[-839 -281 -839 -388!-839 -388[-839 -494 -663 -570!-663 -570[-486 -645 -237 -645!-237 -645[12 -645 188 -570!188 -570[364 -494 364 -388!364 -388[364 -281 188 -206"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/月光酒" centerPoint3DX="-33.5" centerPoint3DY="-20.65">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" tx="-73.65" ty="-56.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.55" y="48.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#35E572" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0535125732421875" c="-0.07568359375" d="0" tx="-11.65" ty="-25.2"/>
+                        </matrix>
+                        <GradientEntry color="#990000" alpha="0" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!847 -1381|-1313 -1381!-1313 -1381[-1473 -1381 -1473 -1002!-1473 -1002|-1473 -6!-1473 -6[-1473 373 -1313 373!-1313 373|847 373!847 373[1007 373 1007 -6!1007 -6|1007 -1002!1007 -1002[1007 -1381 847 -1381"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

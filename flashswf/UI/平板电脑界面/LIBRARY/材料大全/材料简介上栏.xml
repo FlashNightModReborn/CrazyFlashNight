@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料大全/材料简介上栏" itemID="673b5b54-00001a7e" lastModified="1743104632">
+  <timeline>
+    <DOMTimeline name="材料简介上栏">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#001E33"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3743 332|2080 332!2080 332|1888 0!1888 0|267 0!267 0|0 462!0 462|3818 462!3818 462|3743 332"/>
+                    <Edge cubics="!2080 332(;2080,332 1888,0 1888,0q2080 332 1888 0);"/>
+                    <Edge cubics="!1888 0(;1888,0 267,0 267,0q1888 0 267 0);"/>
+                    <Edge cubics="!267 0(;267,0 0,462 0,462q267 0 0 462);"/>
+                    <Edge cubics="!0 462(;0,462 3818,462 3818,462q0 462 3818 462);"/>
+                    <Edge cubics="!3818 462(;3818,462 3743,332 3743,332q3818 462 3743 332);"/>
+                    <Edge cubics="!3743 332(;3743,332 2080,332 2080,332q3743 332 2080 332);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

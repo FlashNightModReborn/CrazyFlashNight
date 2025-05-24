@@ -1,0 +1,330 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="7">
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>军阀前线基地通关证明</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk17_1_BG.swf</Background>
+            <Animation>
+                <Path>flashswf/movies/movie_gk_17_1.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <PlayerX>193</PlayerX>
+            <PlayerY>456</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>War, What Is It Good For</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1776</x>
+                <y>450</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>这个营地里没有武器的人应该就是摇滚女皇的人了吧！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>这群疯狗一样的军阀就这样对付手无寸铁的平民！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>不要放弃反抗！A兵团杀到！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>528</x>
+                        <y>452</y>
+                        <spritename>主角-男</spritename>
+                        <Name>难民</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-黑蓬头</HairStyle>
+                        <HeadEquipment />
+                        <BodyArmor>浅灰背心</BodyArmor>
+                        <LegArmor>咖啡色多包短裤</LegArmor>
+                        <HandGear />
+                        <FootGear>白色板鞋</FootGear>
+                        <NeckGear />
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>652</x>
+                        <y>513</y>
+                        <spritename>主角-男</spritename>
+                        <Name>难民</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>165</Height>
+                        <NPC>false</NPC>
+                        <FaceType>女变装-基本脸型</FaceType>
+                        <HairStyle>发型-女式-丸子头</HairStyle>
+                        <HeadEquipment />
+                        <BodyArmor>浅灰背心</BodyArmor>
+                        <LegArmor>咖啡色多包短裤</LegArmor>
+                        <HandGear />
+                        <FootGear>棕色圆头皮鞋</FootGear>
+                        <NeckGear />
+                        <Gender>女</Gender>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>690</x>
+                        <y>415</y>
+                        <spritename>主角-男</spritename>
+                        <Name>难民</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>165</Height>
+                        <NPC>false</NPC>
+                        <FaceType>女变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-黑妹妹头</HairStyle>
+                        <HeadEquipment />
+                        <BodyArmor>米色高腰背心</BodyArmor>
+                        <LegArmor>棕色带腿包短裤</LegArmor>
+                        <HandGear />
+                        <FootGear>棕色圆头皮鞋</FootGear>
+                        <NeckGear />
+                        <Gender>女</Gender>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>730</x>
+                        <y>580</y>
+                        <spritename>主角-男</spritename>
+                        <Name>难民</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-黑圆平头</HairStyle>
+                        <HeadEquipment />
+                        <BodyArmor>廉价西服</BodyArmor>
+                        <LegArmor>咖啡色多包短裤</LegArmor>
+                        <HandGear />
+                        <FootGear>白色板鞋</FootGear>
+                        <NeckGear />
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk17_2_BG.swf</Background>
+            <PlayerX>207</PlayerX>
+            <PlayerY>463</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1730</x>
+                <y>571</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk17_3_BG.swf</Background>
+            <PlayerX>205</PlayerX>
+            <PlayerY>473</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1757</x>
+                <y>454</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1757</x>
+                <y>602</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1757</x>
+                <y>739</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <x>888</x>
+                        <y>661</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <x>1198</x>
+                        <y>496</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

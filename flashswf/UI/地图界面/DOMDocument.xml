@@ -1,0 +1,564 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="00.破损" itemID="674c9092-00000694"/>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="image" itemID="65976161-00000eac"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sound" itemID="674aa104-00000222"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+          <DOMFolderItem name="UI重构" itemID="6748cf4c-0000028a"/>
+          <DOMFolderItem name="UI重构/书架系统" itemID="6748cf4c-0000028b"/>
+          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
+          <DOMFolderItem name="对话框UI/黑铁会外交部长-部件" itemID="674abef1-00001ae9"/>
+          <DOMFolderItem name="对话框UI/冷兵器商人" itemID="66656017-00001921"/>
+          <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人" itemID="6665601c-00001924"/>
+          <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人/冷兵" itemID="663cdc89-00003660"/>
+          <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人/冷兵/冷兵构件" itemID="666555c7-00001364"/>
+          <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人/肢体" itemID="674ab935-000019d8"/>
+          <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人/肢体/细分 副本" itemID="66656c51-000019d4"/>
+          <DOMFolderItem name="房间摆件" itemID="6748cf4c-00000282"/>
+          <DOMFolderItem name="风扇" itemID="6745897d-0000007d"/>
+          <DOMFolderItem name="官网壁纸" itemID="674aa074-0000020a"/>
+          <DOMFolderItem name="素材" itemID="67e695ef-000004ca"/>
+          <DOMFolderItem name="纹理图" itemID="67458b02-000000cf"/>
+          <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
+          <DOMFolderItem name="重复项目文件夹" itemID="6748cfc2-000002a5"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="纹理图/Asphalt031_1K-JPG_Color.jpg" itemID="6745b232-00000155" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/Asphalt031_1K-JPG_Color.jpg" sourceLastImported="1728359378" allowSmoothing="true" quality="50" href="纹理图/Asphalt031_1K-JPG_Color.jpg" bitmapDataHRef="M 5 1732944133.dat" frameRight="20480" frameBottom="20480" isJPEG="true"/>
+          <DOMBitmapItem name="纹理图/Asphalt031_1K-JPG_Displacement.jpg" itemID="6745b236-00000159" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/Asphalt031_1K-JPG_Displacement.jpg" sourceLastImported="1728359466" allowSmoothing="true" quality="50" href="纹理图/Asphalt031_1K-JPG_Displacement.jpg" bitmapDataHRef="M 4 1732944133.dat" frameRight="20480" frameBottom="20480" isJPEG="true"/>
+          <DOMBitmapItem name="纹理图/bitmap13.jpg" itemID="66751b8b-00000042" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap13.jpg" sourceLastImported="1718950795" quality="50" href="纹理图/bitmap13.jpg" bitmapDataHRef="M 7 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2123.jpg" itemID="6597607b-00000415" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2123.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2123.jpg" bitmapDataHRef="M 1 1732887827.dat" frameRight="16160" frameBottom="8580" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2259.jpg" itemID="6597607b-00000460" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2259.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2259.jpg" bitmapDataHRef="M 25 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2261.png" itemID="6597607b-00000465" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2261.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap2261.png" bitmapDataHRef="M 18 1732944133.dat" frameRight="1140" frameBottom="1480"/>
+          <DOMBitmapItem name="纹理图/bitmap2261.png" itemID="67458aad-000000ba" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap2261.png" sourceLastImported="1732610729" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="纹理图/bitmap2261.png" bitmapDataHRef="M 8 1732944133.dat" frameRight="1140" frameBottom="1480"/>
+          <DOMBitmapItem name="image/bitmap2314.png" itemID="6597607b-0000046a" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2314.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2314.png" bitmapDataHRef="M 17 1732944133.dat" frameRight="1260" frameBottom="540"/>
+          <DOMBitmapItem name="image/bitmap2316.png" itemID="6597607b-0000046f" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2316.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2316.png" bitmapDataHRef="M 3 1732944133.dat" frameRight="1040" frameBottom="1780"/>
+          <DOMBitmapItem name="image/bitmap2321.png" itemID="6597607b-00000479" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2321.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2321.png" bitmapDataHRef="M 9 1732944133.dat" frameRight="2760" frameBottom="500"/>
+          <DOMBitmapItem name="image/bitmap2324.png" itemID="6597607b-0000047e" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2324.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2324.png" bitmapDataHRef="M 12 1732944133.dat" frameRight="2880" frameBottom="3520"/>
+          <DOMBitmapItem name="image/bitmap2505.jpg" itemID="6597607b-0000048d" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2505.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2505.jpg" bitmapDataHRef="M 10 1732944133.dat" frameRight="5160" frameBottom="5000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2537.png" itemID="6597607b-000004ab" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2537.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2537.png" bitmapDataHRef="M 11 1732944133.dat" frameRight="3620" frameBottom="1080"/>
+          <DOMBitmapItem name="image/bitmap2985.png" itemID="6597607d-00000509" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2985.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2985.png" bitmapDataHRef="M 19 1732944133.dat" frameRight="2360" frameBottom="1000"/>
+          <DOMBitmapItem name="image/bitmap2986.png" itemID="6597607d-0000050e" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2986.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2986.png" bitmapDataHRef="M 20 1732944133.dat" frameRight="3000" frameBottom="1120"/>
+          <DOMBitmapItem name="image/bitmap2993.png" itemID="6597607d-00000513" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2993.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2993.png" bitmapDataHRef="M 21 1732944133.dat" frameRight="3000" frameBottom="1040"/>
+          <DOMBitmapItem name="image/bitmap3077.png" itemID="6597607d-0000051d" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap3077.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap3077.png" bitmapDataHRef="M 22 1732944133.dat" frameRight="3400" frameBottom="1500"/>
+          <DOMBitmapItem name="image/bitmap3078.png" itemID="6597607d-00000522" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap3078.png" sourceLastImported="1704419453" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap3078.png" bitmapDataHRef="M 23 1732944133.dat" frameRight="3280" frameBottom="1140"/>
+          <DOMBitmapItem name="image/bitmap51850.png" itemID="6597607c-000004b6" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap51850.png" sourceLastImported="1704419453" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap51850.png" bitmapDataHRef="M 108 1743165665.dat" frameRight="44400" frameBottom="20900"/>
+          <DOMBitmapItem name="纹理图/bitmap7.jpg" itemID="66751b8b-0000003d" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap7.jpg" sourceLastImported="1718950795" quality="50" href="纹理图/bitmap7.jpg" bitmapDataHRef="M 6 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="D9F29DF522C4C3257F9ED4962ADE8291.png" itemID="67b06439-00000619" sourceExternalFilepath="../地图界面/LIBRARY/D9F29DF522C4C3257F9ED4962ADE8291.png" sourceLastImported="1739612526" externalFileSize="82877" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="D9F29DF522C4C3257F9ED4962ADE8291.png" bitmapDataHRef="M 103 1739612937.dat" frameRight="20480" frameBottom="11520"/>
+          <DOMSoundItem name="sound/sound2342.wav" itemID="6597607b-0000047f" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2342.wav" sourceLastImported="1704196122" href="sound/sound2342.wav" soundDataHRef="M 13 1732944133.dat" format="11kHz 16bit Mono" sampleCount="11908" exportFormat="5" exportBits="7" dataLength="23816"/>
+          <DOMSoundItem name="sound/sound2343.mp3" itemID="6597607b-00000483" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2343.mp3" sourceLastImported="1704419451" href="sound/sound2343.mp3" soundDataHRef="M 14 1732944133.dat" format="44kHz 16bit Mono" sampleCount="52992" exportFormat="5" exportBits="7" dataLength="19226" exportNative="true" cachedSampleCount="6624"/>
+          <DOMSoundItem name="sound/sound2344.mp3" itemID="6597607b-00000487" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2344.mp3" sourceLastImported="1704419451" href="sound/sound2344.mp3" soundDataHRef="M 15 1732944133.dat" format="44kHz 16bit Mono" sampleCount="93312" exportFormat="5" exportBits="7" dataLength="33854" exportNative="true" cachedSampleCount="11664"/>
+          <DOMSoundItem name="sound/sound2390.wav" itemID="6597607b-00000488" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2390.wav" sourceLastImported="1704196122" href="sound/sound2390.wav" soundDataHRef="M 16 1732944133.dat" format="11kHz 16bit Mono" sampleCount="9576" exportFormat="5" exportBits="7" dataLength="19152"/>
+          <DOMSoundItem name="sound/sound2609.wav" itemID="6597607c-000004b1" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2609.wav" sourceLastImported="1704196122" href="sound/sound2609.wav" soundDataHRef="M 24 1732944133.dat" format="11kHz 16bit Mono" sampleCount="35267" exportFormat="5" exportBits="7" dataLength="70534"/>
+          <DOMBitmapItem name="官网壁纸/车库.jpg" itemID="66e8080c-00000265" sourceExternalFilepath="../地图界面/LIBRARY/官网壁纸/车库.jpg" sourceLastImported="1726482426" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="官网壁纸/车库.jpg" bitmapDataHRef="M 2 1732943988.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 1" itemID="67e6980a-00000563" sourceExternalFilepath="位图 1.png" sourceLastImported="1743165432" externalFileSize="49346" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 17 1743165432.dat" frameRight="860" frameBottom="1060"/>
+          <DOMBitmapItem name="位图 10" itemID="674aa622-00000aa9" sourceExternalFilepath="../地图界面/LIBRARY/位图 10.png" sourceLastImported="1732945379" externalFileCRC32="367608923" externalFileSize="423629" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 10.png" bitmapDataHRef="M 39 1732945379.dat" frameRight="41680" frameBottom="12660"/>
+          <DOMBitmapItem name="位图 11" itemID="674aa62b-00000aaf" sourceExternalFilepath="../地图界面/LIBRARY/位图 11.png" sourceLastImported="1732945449" externalFileCRC32="2667047163" externalFileSize="266732" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 11.png" bitmapDataHRef="M 42 1732945449.dat" frameRight="70780" frameBottom="14360"/>
+          <DOMBitmapItem name="位图 12" itemID="674aa6b2-00000abf" sourceExternalFilepath="../地图界面/LIBRARY/位图 12.png" sourceLastImported="1732945583" externalFileCRC32="1489464127" externalFileSize="107343" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 12.png" bitmapDataHRef="M 45 1732945583.dat" frameRight="18000" frameBottom="12400"/>
+          <DOMBitmapItem name="位图 13" itemID="674aa6c1-00000ac5" sourceExternalFilepath="../地图界面/LIBRARY/位图 13.png" sourceLastImported="1732945598" externalFileCRC32="1390810398" externalFileSize="266605" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 13.png" bitmapDataHRef="M 46 1732945598.dat" frameRight="63740" frameBottom="22540"/>
+          <DOMBitmapItem name="位图 14" itemID="674aa6cb-00000acb" sourceExternalFilepath="../地图界面/LIBRARY/位图 14.png" sourceLastImported="1732945608" externalFileCRC32="1391935479" externalFileSize="61198" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 14.png" bitmapDataHRef="M 47 1732945608.dat" frameRight="22340" frameBottom="15940"/>
+          <DOMBitmapItem name="位图 15" itemID="674aadbf-00000bdc" sourceExternalFilepath="../地图界面/LIBRARY/位图 15.png" sourceLastImported="1732947118" externalFileCRC32="3264330074" externalFileSize="3659" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 15.png" bitmapDataHRef="M 48 1732947118.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 16" itemID="674aadbf-00000bdd" sourceExternalFilepath="../地图界面/LIBRARY/位图 16.png" sourceLastImported="1732947348" externalFileCRC32="19696464" externalFileSize="3439" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 16.png" bitmapDataHRef="M 49 1732947348.dat" frameRight="900" frameBottom="940"/>
+          <DOMBitmapItem name="位图 17" itemID="674aae66-00000bf7" sourceExternalFilepath="../地图界面/LIBRARY/位图 17.png" sourceLastImported="1732947542" externalFileCRC32="2031290242" externalFileSize="7581" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 17.png" bitmapDataHRef="M 50 1732947542.dat" frameRight="1660" frameBottom="1140"/>
+          <DOMBitmapItem name="位图 18" itemID="674ab13b-00000e20" sourceExternalFilepath="../地图界面/LIBRARY/位图 18.png" sourceLastImported="1732948263" externalFileCRC32="3439046131" externalFileSize="5137" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 18.png" bitmapDataHRef="M 51 1732948263.dat" frameRight="1340" frameBottom="940"/>
+          <DOMBitmapItem name="位图 19" itemID="674ab21e-00000e38" sourceExternalFilepath="../地图界面/LIBRARY/位图 19.png" sourceLastImported="1732948501" externalFileCRC32="70558979" externalFileSize="3810" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 19.png" bitmapDataHRef="M 52 1732948501.dat" frameRight="800" frameBottom="960"/>
+          <DOMBitmapItem name="位图 2" itemID="674aa3e5-00000a69" sourceExternalFilepath="../地图界面/LIBRARY/位图 2.png" sourceLastImported="1732944860" externalFileCRC32="1187947389" externalFileSize="39502" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 30 1732944860.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 20" itemID="674ab2b6-00000e61" sourceExternalFilepath="../地图界面/LIBRARY/位图 20.png" sourceLastImported="1732948632" externalFileCRC32="1092032357" externalFileSize="3249" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 20.png" bitmapDataHRef="M 53 1732948632.dat" frameRight="800" frameBottom="1020"/>
+          <DOMBitmapItem name="位图 21" itemID="674ab57e-00000e83" sourceExternalFilepath="../地图界面/LIBRARY/位图 21.png" sourceLastImported="1732949340" externalFileCRC32="1542747713" externalFileSize="4367" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 21.png" bitmapDataHRef="M 54 1732949340.dat" frameRight="880" frameBottom="1000"/>
+          <DOMBitmapItem name="位图 22" itemID="674ab62f-00000e9b" sourceExternalFilepath="../地图界面/LIBRARY/位图 22.png" sourceLastImported="1732949545" externalFileCRC32="1781558417" externalFileSize="4617" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 22.png" bitmapDataHRef="M 55 1732949545.dat" frameRight="1300" frameBottom="1060"/>
+          <DOMBitmapItem name="位图 23" itemID="674ab81d-00000eb3" sourceExternalFilepath="../地图界面/LIBRARY/位图 23.png" sourceLastImported="1732950039" externalFileCRC32="2481595956" externalFileSize="5195" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 23.png" bitmapDataHRef="M 56 1732950039.dat" frameRight="1320" frameBottom="880"/>
+          <DOMBitmapItem name="位图 24" itemID="674ab948-000019f3" sourceExternalFilepath="../地图界面/LIBRARY/位图 24.png" sourceLastImported="1732950339" externalFileCRC32="665269024" externalFileSize="14787" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 24.png" bitmapDataHRef="M 57 1732950339.dat" frameRight="2440" frameBottom="3260"/>
+          <DOMBitmapItem name="位图 25" itemID="674abad7-00001a2d" sourceExternalFilepath="../地图界面/LIBRARY/位图 25.png" sourceLastImported="1732950737" externalFileCRC32="1219198051" externalFileSize="6142" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 25.png" bitmapDataHRef="M 58 1732950737.dat" frameRight="920" frameBottom="2040"/>
+          <DOMBitmapItem name="位图 26" itemID="674abb5d-00001a4e" sourceExternalFilepath="../地图界面/LIBRARY/位图 26.png" sourceLastImported="1732950872" externalFileCRC32="287104084" externalFileSize="5140" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 26.png" bitmapDataHRef="M 59 1732950872.dat" frameRight="1000" frameBottom="1680"/>
+          <DOMBitmapItem name="位图 27" itemID="674abc10-00001a77" sourceExternalFilepath="../地图界面/LIBRARY/位图 27.png" sourceLastImported="1732951044" externalFileCRC32="692037068" externalFileSize="3746" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 27.png" bitmapDataHRef="M 60 1732951044.dat" frameRight="860" frameBottom="920"/>
+          <DOMBitmapItem name="位图 28" itemID="674abd5c-00001a93" sourceExternalFilepath="../地图界面/LIBRARY/位图 28.png" sourceLastImported="1732951380" externalFileCRC32="3816246849" externalFileSize="3063" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 28.png" bitmapDataHRef="M 61 1732951380.dat" frameRight="800" frameBottom="960"/>
+          <DOMBitmapItem name="位图 29" itemID="674abe8e-00001ada" sourceExternalFilepath="../地图界面/LIBRARY/位图 29.png" sourceLastImported="1732951683" externalFileCRC32="1061271879" externalFileSize="4219" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 29.png" bitmapDataHRef="M 67 1732951683.dat" frameRight="1040" frameBottom="1160"/>
+          <DOMBitmapItem name="位图 3" itemID="67e69897-000005c7" sourceExternalFilepath="位图 3" sourceLastImported="1743165591" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 3" bitmapDataHRef="M 29 1743165591.dat" frameRight="980" frameBottom="1260"/>
+          <DOMBitmapItem name="位图 30" itemID="674abf2e-00001b0a" sourceExternalFilepath="../地图界面/LIBRARY/位图 30.png" sourceLastImported="1732951853" externalFileCRC32="2464677688" externalFileSize="7737" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 30.png" bitmapDataHRef="M 68 1732951853.dat" frameRight="1800" frameBottom="3340"/>
+          <DOMBitmapItem name="位图 31" itemID="674abfc2-00001b22" sourceExternalFilepath="../地图界面/LIBRARY/位图 31.png" sourceLastImported="1732951997" externalFileCRC32="4253441272" externalFileSize="2135" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 31.png" bitmapDataHRef="M 69 1732951997.dat" frameRight="880" frameBottom="940"/>
+          <DOMBitmapItem name="位图 32" itemID="674ac09c-00001b41" sourceExternalFilepath="../地图界面/LIBRARY/位图 32.png" sourceLastImported="1732952215" externalFileCRC32="2551591089" externalFileSize="3353" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 32.png" bitmapDataHRef="M 70 1732952215.dat" frameRight="880" frameBottom="920"/>
+          <DOMBitmapItem name="位图 33" itemID="674ac65e-00001e9c" sourceExternalFilepath="../地图界面/LIBRARY/位图 33.png" sourceLastImported="1732953690" externalFileCRC32="1889040826" externalFileSize="4022" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 33.png" bitmapDataHRef="M 71 1732953690.dat" frameRight="1100" frameBottom="980"/>
+          <DOMBitmapItem name="位图 34" itemID="674ac73d-00001ec6" sourceExternalFilepath="../地图界面/LIBRARY/位图 34.png" sourceLastImported="1732953913" externalFileCRC32="3821433227" externalFileSize="6014" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 34.png" bitmapDataHRef="M 72 1732953913.dat" frameRight="940" frameBottom="1740"/>
+          <DOMBitmapItem name="位图 4" itemID="67e69a63-00000674" sourceExternalFilepath="位图 4.png" sourceLastImported="1743166037" externalFileSize="3584" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 4.png" bitmapDataHRef="M 31 1743166037.dat" frameRight="1480" frameBottom="1780"/>
+          <DOMBitmapItem name="位图 5" itemID="67e69b13-00000756" sourceExternalFilepath="位图 5" sourceLastImported="1743166227" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 5" bitmapDataHRef="M 33 1743166227.dat" frameRight="780" frameBottom="1180"/>
+          <DOMBitmapItem name="位图 6" itemID="67e69b73-0000077d" sourceExternalFilepath="位图 6" sourceLastImported="1743166323" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 6" bitmapDataHRef="M 35 1743166323.dat" frameRight="1280" frameBottom="1140"/>
+          <DOMBitmapItem name="位图 7" itemID="674aa424-00000a8c" sourceExternalFilepath="../地图界面/LIBRARY/位图 7.png" sourceLastImported="1732944930" externalFileCRC32="3673117695" externalFileSize="109293" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 7.png" bitmapDataHRef="M 36 1732944930.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 8" itemID="674aa431-00000a92" sourceExternalFilepath="../地图界面/LIBRARY/位图 8.png" sourceLastImported="1732944944" externalFileCRC32="2547069633" externalFileSize="18607" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 8.png" bitmapDataHRef="M 37 1732944944.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 9" itemID="674aa43c-00000a98" sourceExternalFilepath="../地图界面/LIBRARY/位图 9.png" sourceLastImported="1732944953" externalFileCRC32="2412307290" externalFileSize="208847" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 9.png" bitmapDataHRef="M 38 1732944953.dat" frameRight="21580" frameBottom="10880"/>
+          <DOMBitmapItem name="位图 机器人厨师" itemID="67c16fc9-0000141e" sourceExternalFilepath="位图 1" sourceLastImported="1740730313" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 机器人厨师" bitmapDataHRef="M 135 1740730317.dat" frameRight="7920" frameBottom="9480"/>
+     </media>
+     <symbols>
+          <Include href="00.破损/远处下层老化.xml" loadImmediate="false" itemID="671f8373-00001003" lastModified="1730119077"/>
+          <Include href="∞天ㄙ★使的剪∞头像.xml" loadImmediate="false" itemID="674abdca-00001aac" lastModified="1732951688"/>
+          <Include href="andy头像.xml" loadImmediate="false" itemID="674aad53-00000bcd" lastModified="1732947441"/>
+          <Include href="blue头像.xml" loadImmediate="false" itemID="674ab102-00000e14" lastModified="1732948279"/>
+          <Include href="boy头像.xml" loadImmediate="false" itemID="674ab5f0-00000e8b" lastModified="1740730235"/>
+          <Include href="button/Symbol 2122.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000aa7" lastModified="1704196122"/>
+          <Include href="button/Symbol 2158.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000aaf" lastModified="1704196122"/>
+          <Include href="button/Symbol 2606.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c1a" lastModified="1704196122"/>
+          <Include href="director头像.xml" loadImmediate="false" itemID="67e69a84-00000679" lastModified="1743166084"/>
+          <Include href="gazer头像.xml" loadImmediate="false" itemID="67e6980b-00000564" lastModified="1743165451"/>
+          <Include href="general头像.xml" loadImmediate="false" itemID="67e6984d-000005ae" lastModified="1743165600"/>
+          <Include href="itinerant头像.xml" loadImmediate="false" itemID="67e69b8d-00000782" lastModified="1743166349"/>
+          <Include href="king头像.xml" loadImmediate="false" itemID="674ab7e2-00000ea3" lastModified="1732950042"/>
+          <Include href="pig头像.xml" loadImmediate="false" itemID="674ab531-00000e77" lastModified="1732949372"/>
+          <Include href="shape/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000797" lastModified="1704196122"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 977.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000826" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1565.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000970" lastModified="1714921546"/>
+          <Include href="shape/Symbol 1566.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000971" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1591.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000989" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1595.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1596.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000098e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1601.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000993" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1602.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000994" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1603.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000995" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1604.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000996" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1913.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a47" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1914.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1916.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1918.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1919.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1920.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1921.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a4f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1922.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a50" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1923.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a51" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1924.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a52" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1925.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a53" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1926.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a54" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1927.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a55" lastModified="1732797384"/>
+          <Include href="shape/Symbol 1952.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a59" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2120.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aa5" lastModified="1716486507"/>
+          <Include href="shape/Symbol 2121.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aa6" lastModified="1716486282"/>
+          <Include href="shape/Symbol 2124.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aa8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2258.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ade" lastModified="1732797919"/>
+          <Include href="shape/Symbol 2262.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000adf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2264.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae1" lastModified="1732797929"/>
+          <Include href="shape/Symbol 2265.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2268.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2269.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2270.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2275.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2278.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ae9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2279.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aea" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2280.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aeb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2281.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aec" lastModified="1732797413"/>
+          <Include href="shape/Symbol 2282.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aed" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2283.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aee" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2284.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aef" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2285.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2286.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2287.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2290.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2291.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2294.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2295.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000af9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2300.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000afe" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2301.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aff" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2302.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b00" lastModified="1705822862"/>
+          <Include href="shape/Symbol 2304.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b02" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2305.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b03" lastModified="1732792203"/>
+          <Include href="shape/Symbol 2310.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b08" lastModified="1732797325"/>
+          <Include href="shape/Symbol 2312.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2313.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2315.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2318.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2320.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0e" lastModified="1732825088"/>
+          <Include href="shape/Symbol 2322.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2323.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b10" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2339.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b19" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2340.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b1a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2341.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b1b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2388.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b3a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2389.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b3b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2413.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2415.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2416.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2418.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2419.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2420.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b4f" lastModified="1732792133"/>
+          <Include href="shape/Symbol 2421.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b50" lastModified="1732792121"/>
+          <Include href="shape/Symbol 2485.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b78" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2486.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2487.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2488.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2489.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2490.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b80" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2491.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b81" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2492.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b83" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2494.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b86" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2495.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b87" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2496.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b89" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2498.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2499.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2506.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b99" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2508.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b9c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2509.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b9d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2510.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b9f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2511.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ba1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2525.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bac" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2532.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2533.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2535.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2536.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2538.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bb9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2539.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bba" lastModified="1732798618"/>
+          <Include href="shape/Symbol 2594.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c09" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2598.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c0e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2599.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c10" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2607.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c1c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2724.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ce4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2725.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ce6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2727.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cea" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2728.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cec" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2758.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d2b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2759.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d2e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2760.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d31" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2767.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d43" lastModified="1732868154"/>
+          <Include href="shape/Symbol 2769.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2770.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4b" lastModified="1732868212"/>
+          <Include href="shape/Symbol 2771.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4e" lastModified="1732868385"/>
+          <Include href="shape/Symbol 2772.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d51" lastModified="1717919484"/>
+          <Include href="shape/Symbol 2773.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d54" lastModified="1732868120"/>
+          <Include href="shape/Symbol 2774.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d56" lastModified="1732868189"/>
+          <Include href="shape/Symbol 2775.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d58" lastModified="1732868166"/>
+          <Include href="shape/Symbol 2778.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d5d" lastModified="1717919154"/>
+          <Include href="shape/Symbol 2780.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d61" lastModified="1717919137"/>
+          <Include href="shape/Symbol 2781.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d63" lastModified="1732868176"/>
+          <Include href="shape/Symbol 2782.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d65" lastModified="1732868194"/>
+          <Include href="shape/Symbol 2783.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d67" lastModified="1732868181"/>
+          <Include href="shape/Symbol 2784.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d69" lastModified="1732868197"/>
+          <Include href="shape/Symbol 2785.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6a" lastModified="1717919229"/>
+          <Include href="shape/Symbol 2786.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6c" lastModified="1717919212"/>
+          <Include href="shape/Symbol 2787.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2788.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d70" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2829.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d97" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2835.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d9b" lastModified="1732867384"/>
+          <Include href="shape/Symbol 2840.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d9e" lastModified="1732867372"/>
+          <Include href="shape/Symbol 2841.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d9f" lastModified="1732867411"/>
+          <Include href="shape/Symbol 2850.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000da5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2851.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000da6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2975.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcb" lastModified="1732869584"/>
+          <Include href="shape/Symbol 2976.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcc" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2977.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcd" lastModified="1732869592"/>
+          <Include href="shape/Symbol 2978.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dce" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2979.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dcf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2980.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2981.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2989.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2992.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2995.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dd9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2996.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dda" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2997.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ddb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2999.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ddd" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3002.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ddf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3003.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3004.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3005.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3006.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3007.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3008.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3009.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3010.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3011.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3012.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000de9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3013.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dea" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3014.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000deb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3015.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dec" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3016.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ded" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3017.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dee" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3021.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000df2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3051.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e0c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3052.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e0d" lastModified="1732869151"/>
+          <Include href="shape/Symbol 3056.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e11" lastModified="1732869088"/>
+          <Include href="shape/Symbol 3057.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e12" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3058.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e13" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3059.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e14" lastModified="1732869081"/>
+          <Include href="shape/Symbol 3060.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e15" lastModified="1732869098"/>
+          <Include href="shape/Symbol 3062.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e17" lastModified="1732869074"/>
+          <Include href="shape/Symbol 3063.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e18" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3064.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e19" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3065.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e1a" lastModified="1732869015"/>
+          <Include href="shape/Symbol 3067.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e1c" lastModified="1732869133"/>
+          <Include href="shape/Symbol 3076.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e20" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3079.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e21" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3080.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e22" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35540.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35541.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d52" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35544.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d59" lastModified="1732951672"/>
+          <Include href="shape/Symbol 35545.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d5a" lastModified="1732951678"/>
+          <Include href="shape/Symbol 35546.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d5c" lastModified="1732951655"/>
+          <Include href="shape/Symbol 35550.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d64" lastModified="1732951661"/>
+          <Include href="shape/Symbol 35551.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d66" lastModified="1732951667"/>
+          <Include href="shape/Symbol 51851.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cac" lastModified="1743165046"/>
+          <Include href="shape/Symbol 51858.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cbc" lastModified="1704196122"/>
+          <Include href="shape/Symbol 51859.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cbf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 51860.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 51863.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ccb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 51868.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cd6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 51871.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cdc" lastModified="1704196122"/>
+          <Include href="shopgirl头像.xml" loadImmediate="false" itemID="674ab1e8-00000e2c" lastModified="1732948504"/>
+          <Include href="sprite/Symbol 1531.xml" loadImmediate="false" itemID="6597607e-00000955" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1543.xml" loadImmediate="false" itemID="6597607e-0000095b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2144.xml" loadImmediate="false" itemID="6597607e-00000aa9" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2149.xml" loadImmediate="false" itemID="6597607e-00000aaa" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2152.xml" loadImmediate="false" itemID="6597607e-00000aab" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2153.xml" loadImmediate="false" itemID="6597607e-00000aac" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2154.xml" loadImmediate="false" itemID="6597607e-00000aad" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2157.xml" loadImmediate="false" itemID="6597607e-00000aae" lastModified="1732947146"/>
+          <Include href="sprite/Symbol 2345.xml" loadImmediate="false" itemID="6597607e-00000b1c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2391.xml" loadImmediate="false" itemID="6597607e-00000b3c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2406.xml" loadImmediate="false" itemID="6597607e-00000b44" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2408.xml" loadImmediate="false" itemID="6597607e-00000b45" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2410.xml" loadImmediate="false" itemID="6597607e-00000b46" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2412.xml" loadImmediate="false" itemID="6597607e-00000b47" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2414.xml" loadImmediate="false" itemID="6597607e-00000b49" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2436.xml" loadImmediate="false" itemID="6597607e-00000b5a" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2493.xml" loadImmediate="false" itemID="6597607e-00000b84" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2605.xml" loadImmediate="false" itemID="6597607e-00000c18" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2726.xml" loadImmediate="false" itemID="6597607e-00000ce8" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2762.xml" loadImmediate="false" itemID="6597607e-00000d36" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2764.xml" loadImmediate="false" itemID="6597607e-00000d3b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2766.xml" loadImmediate="false" itemID="6597607e-00000d40" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2777.xml" loadImmediate="false" itemID="6597607e-00000d5b" lastModified="1717919201"/>
+          <Include href="sprite/Symbol 2779.xml" loadImmediate="false" itemID="6597607e-00000d5f" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2830.xml" loadImmediate="false" itemID="6597607e-00000d98" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2834.xml" loadImmediate="false" itemID="6597607e-00000d9a" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2837.xml" loadImmediate="false" itemID="6597607e-00000d9c" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2839.xml" loadImmediate="false" itemID="6597607e-00000d9d" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2842.xml" loadImmediate="false" itemID="6597607e-00000da0" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2845.xml" loadImmediate="false" itemID="6597607e-00000da2" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2848.xml" loadImmediate="false" itemID="6597607e-00000da3" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2849.xml" loadImmediate="false" itemID="6597607e-00000da4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2853.xml" loadImmediate="false" itemID="6597607e-00000da7" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2854.xml" loadImmediate="false" itemID="6597607e-00000da8" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2856.xml" loadImmediate="false" itemID="6597607e-00000da9" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3001.xml" loadImmediate="false" itemID="6597607e-00000dde" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3019.xml" loadImmediate="false" itemID="6597607e-00000df0" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3061.xml" loadImmediate="false" itemID="6597607e-00000e16" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 3090.xml" loadImmediate="false" itemID="6597607e-00000e29" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 35564.xml" loadImmediate="false" itemID="6597607e-00000d7d" lastModified="1708533681"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
+          <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
+          <Include href="surveyor头像.xml" loadImmediate="false" itemID="67e69b1f-0000075b" lastModified="1743166239"/>
+          <Include href="Symbol 169.xml" itemIcon="1" loadImmediate="false" itemID="674aabcd-00000b6d" lastModified="1460780910"/>
+          <Include href="Symbol 170.xml" itemIcon="1" loadImmediate="false" itemID="674aabcd-00000b6e" lastModified="1460780910"/>
+          <Include href="the girl头像.xml" loadImmediate="false" itemID="674aae00-00000be5" lastModified="1733361641"/>
+          <Include href="UI重构/书架系统/书架.xml" loadImmediate="false" itemID="66519f17-00003cc7" lastModified="1716631965"/>
+          <Include href="UI重构/长条按钮.xml" itemIcon="0" loadImmediate="false" itemID="664f55ad-00000fcf" lastModified="1743592292"/>
+          <Include href="靶场.xml" itemIcon="1" loadImmediate="false" itemID="67e69b9f-00000799" lastModified="1743579199"/>
+          <Include href="靶场整体.xml" itemIcon="1" loadImmediate="false" itemID="67e69c17-000007e5" lastModified="1743166491"/>
+          <Include href="宝石线人头像.xml" loadImmediate="false" itemID="674ac06b-00001b35" lastModified="1732952218"/>
+          <Include href="背景.xml" loadImmediate="false" itemID="674acfad-00001ecc" lastModified="1739643821"/>
+          <Include href="兵工厂管道1.xml" loadImmediate="false" itemID="66921ed6-0000014f" lastModified="1720853042"/>
+          <Include href="兵工厂管道1底.xml" loadImmediate="false" itemID="66921ef3-00000154" lastModified="1720852211"/>
+          <Include href="兵工厂管道污垢1.xml" loadImmediate="false" itemID="66921fbc-0000015e" lastModified="1720852412"/>
+          <Include href="兵工厂管道污垢2.xml" loadImmediate="false" itemID="66922020-00000160" lastModified="1720852518"/>
+          <Include href="兵工厂管道污垢3.xml" loadImmediate="false" itemID="669220b7-00000169" lastModified="1720852666"/>
+          <Include href="兵工厂管道污垢4.xml" loadImmediate="false" itemID="669220fa-0000016d" lastModified="1720852846"/>
+          <Include href="侧面墙.xml" itemIcon="1" loadImmediate="false" itemID="674587a4-0000004d" lastModified="1732792361"/>
+          <Include href="侧面墙完整.xml" itemIcon="1" loadImmediate="false" itemID="674587d4-00000058" lastModified="1740729398"/>
+          <Include href="车库大车.xml" itemIcon="1" loadImmediate="false" itemID="67497a41-00000680" lastModified="1732868673"/>
+          <Include href="车库墙.xml" itemIcon="1" loadImmediate="false" itemID="67497a60-00000698" lastModified="1732868749"/>
+          <Include href="厨师头像.xml" loadImmediate="false" itemID="67c16ff5-00001423" lastModified="1740730474"/>
+          <Include href="单独架子.xml" itemIcon="1" loadImmediate="false" itemID="6745aeba-0000013e" lastModified="1732619962"/>
+          <Include href="导弹堆.xml" itemIcon="1" loadImmediate="false" itemID="67497e3c-000007f7" lastModified="1732869692"/>
+          <Include href="灯管.xml" itemIcon="1" loadImmediate="false" itemID="67458a98-000000b8" lastModified="1732610754"/>
+          <Include href="地板.xml" itemIcon="1" loadImmediate="false" itemID="67484d44-0000014b" lastModified="1732944380"/>
+          <Include href="地板-new.xml" loadImmediate="false" itemID="6745b33d-0000018d" lastModified="1732957027"/>
+          <Include href="地板2.xml" itemIcon="1" loadImmediate="false" itemID="67486667-00000311" lastModified="1732798055"/>
+          <Include href="地板材质-1.xml" loadImmediate="false" itemID="6745b254-00000161" lastModified="1732620884"/>
+          <Include href="地板材质-2.xml" loadImmediate="false" itemID="6745b269-0000016e" lastModified="1732620905"/>
+          <Include href="地板块-new.xml" loadImmediate="false" itemID="6745b337-0000018b" lastModified="1732621111"/>
+          <Include href="地胶.xml" itemIcon="1" loadImmediate="false" itemID="678f5006-00000013" lastModified="1737533890"/>
+          <Include href="地胶底色.xml" itemIcon="1" loadImmediate="false" itemID="678f4f68-00000472" lastModified="1737449113"/>
+          <Include href="地胶阴影1.xml" itemIcon="1" loadImmediate="false" itemID="678f4fe4-0000000e" lastModified="1737449123"/>
+          <Include href="地胶阴影2.xml" itemIcon="1" loadImmediate="false" itemID="678f50a4-00000019" lastModified="1737449181"/>
+          <Include href="地图界面.xml" itemID="6749c50f-00000907" lastModified="1747921766"/>
+          <Include href="地下二层远景.xml" itemIcon="1" loadImmediate="false" itemID="6748ceb5-00000257" lastModified="1732824757"/>
+          <Include href="地下水整体.xml" itemIcon="1" loadImmediate="false" itemID="6748cb24-00000095" lastModified="1735607251"/>
+          <Include href="地下一层全景.xml" itemIcon="1" loadImmediate="false" itemID="6748ce9b-000001b1" lastModified="1732824850"/>
+          <Include href="地下一层整体.xml" itemIcon="1" loadImmediate="false" itemID="674864be-000002b0" lastModified="1735607211"/>
+          <Include href="地下一层正面墙.xml" itemIcon="1" loadImmediate="false" itemID="674869ef-000003f8" lastModified="1732824858"/>
+          <Include href="地下一层左侧墙.xml" itemIcon="1" loadImmediate="false" itemID="674864db-000002f5" lastModified="1740730083"/>
+          <Include href="对话框UI/黑铁会外交部长-部件/外交部长-脑袋.xml" loadImmediate="false" itemID="666080e1-000004db" lastModified="1717600548"/>
+          <Include href="对话框UI/黑铁会外交部长-部件/外交部长-上身.xml" loadImmediate="false" itemID="666080e1-000004da" lastModified="1717599888"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/冷兵/刀-CF手斧.xml" loadImmediate="false" itemID="65bdbe01-00000077" lastModified="1717917073"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/冷兵/刀-玳瑁长柄剑.xml" loadImmediate="false" itemID="660e4567-000005f8" lastModified="1717917097"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/冷兵/刀-虎彻.xml" loadImmediate="false" itemID="660ab19d-00004319" lastModified="1717916770"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/冷兵/刀-唐朝直刀.xml" loadImmediate="false" itemID="65bdbdaa-0000006d" lastModified="1717916767"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/冷兵/冷兵构件/元件 1.xml" loadImmediate="false" itemID="66098f67-000001ae" lastModified="1711977312"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/冷兵/冷兵构件/元件 3.xml" loadImmediate="false" itemID="660ab66f-0000012e" lastModified="1712096182"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/冷兵商人肢体-背武.xml" itemIcon="1" loadImmediate="false" itemID="666557d5-00001459" lastModified="1717930159"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/冷兵商人肢体-大臂.xml" itemIcon="1" loadImmediate="false" itemID="6665566c-00001375" lastModified="1717917292"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/冷兵商人肢体-脑袋.xml" itemIcon="1" loadImmediate="false" itemID="66656c42-000019d1" lastModified="1717917563"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/冷兵商人肢体-上身.xml" itemIcon="1" loadImmediate="false" itemID="666555f7-00001368" lastModified="1717917175"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/细分 副本/冷兵商人肢体-表情.xml" itemIcon="1" loadImmediate="false" itemID="66656c42-000019d3" lastModified="1717917307"/>
+          <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/细分 副本/冷兵商人肢体-头颅.xml" itemIcon="1" loadImmediate="false" itemID="66656c42-000019d2" lastModified="1717922822"/>
+          <Include href="发光灯管.xml" itemIcon="1" loadImmediate="false" itemID="67484eed-00000196" lastModified="1732792045"/>
+          <Include href="防御地带地胶整体.xml" itemIcon="1" loadImmediate="false" itemID="678f533a-00000041" lastModified="1737449542"/>
+          <Include href="房间摆件/摆件初始床.xml" loadImmediate="false" itemID="66363eaa-00000d76" lastModified="1714831225"/>
+          <Include href="房间摆件/摆件初始梯子.xml" loadImmediate="false" itemID="66363ec7-00000dc5" lastModified="1714831047"/>
+          <Include href="房间摆件/摆件空调.xml" loadImmediate="false" itemID="6633494e-00001846" lastModified="1714637135"/>
+          <Include href="房间摆件/马桶.xml" loadImmediate="false" itemID="66bb48ca-0000251d" lastModified="1723549975"/>
+          <Include href="房间摆件/马桶按钮.xml" itemIcon="0" loadImmediate="false" itemID="66bb48d3-00002522" lastModified="1723550082"/>
+          <Include href="房间摆件/生活设施.xml" loadImmediate="false" itemID="663494f0-00002dfe" lastModified="1716536223"/>
+          <Include href="房间摆件/睡觉-普通床.xml" itemIcon="0" loadImmediate="false" itemID="66503821-000010e7" lastModified="1716536184"/>
+          <Include href="风扇/风扇框.xml" loadImmediate="false" itemID="6745896d-00000078" lastModified="1732616182"/>
+          <Include href="风扇/风扇完整.xml" loadImmediate="false" itemID="67458968-00000077" lastModified="1732610408"/>
+          <Include href="风扇/风扇页.xml" itemIcon="1" loadImmediate="false" itemID="67458973-00000079" lastModified="1732610419"/>
+          <Include href="格格巫头像.xml" loadImmediate="false" itemID="674ac41f-00001cbe" lastModified="1732953693"/>
+          <Include href="柜子.xml" itemIcon="1" loadImmediate="false" itemID="67484f11-000001a5" lastModified="1732792081"/>
+          <Include href="海报集1.xml" itemIcon="1" loadImmediate="false" itemID="67484e75-00000166" lastModified="1732791925"/>
+          <Include href="海报集2.xml" itemIcon="1" loadImmediate="false" itemID="67484ea9-0000017c" lastModified="1732791977"/>
+          <Include href="海报集3.xml" itemIcon="1" loadImmediate="false" itemID="67486142-0000020c" lastModified="1732796738"/>
+          <Include href="海报集4.xml" itemIcon="1" loadImmediate="false" itemID="6748633e-00000257" lastModified="1732797246"/>
+          <Include href="海报集5.xml" itemIcon="1" loadImmediate="false" itemID="67486a7c-00000430" lastModified="1732799100"/>
+          <Include href="海报集7.xml" itemIcon="1" loadImmediate="false" itemID="67496bf9-0000032a" lastModified="1732865017"/>
+          <Include href="海报集8.xml" itemIcon="1" loadImmediate="false" itemID="67496d1c-000003a5" lastModified="1732865308"/>
+          <Include href="海报集9.xml" itemIcon="1" loadImmediate="false" itemID="67496d6d-000003cb" lastModified="1732865389"/>
+          <Include href="黑铁会外交部长头像.xml" loadImmediate="false" itemID="674abf01-00001af4" lastModified="1732951856"/>
+          <Include href="基地车库整体.xml" itemIcon="1" loadImmediate="false" itemID="67497c29-000006a9" lastModified="1735607141"/>
+          <Include href="基地大厅整体.xml" itemIcon="1" loadImmediate="false" itemID="67496dee-000003e8" lastModified="1735607162"/>
+          <Include href="基地房顶沙袋堆.xml" itemIcon="1" loadImmediate="false" itemID="67497d17-0000079e" lastModified="1732869399"/>
+          <Include href="基地门口.xml" itemIcon="1" loadImmediate="false" itemID="67496fc9-0000046c" lastModified="1735607189"/>
+          <Include href="基地门口墙.xml" itemIcon="1" loadImmediate="false" itemID="67496ffb-00000496" lastModified="1732866043"/>
+          <Include href="基地一层全景.xml" itemIcon="1" loadImmediate="false" itemID="67497c3b-000006cd" lastModified="1732946313"/>
+          <Include href="基地一层箱子堆.xml" itemIcon="1" loadImmediate="false" itemID="67496d82-000003e1" lastModified="1732865410"/>
+          <Include href="架子.xml" itemIcon="1" loadImmediate="false" itemID="6745ab79-00000108" lastModified="1732619129"/>
+          <Include href="健身房整体.xml" itemIcon="1" loadImmediate="false" itemID="67485085-000001b7" lastModified="1735607200"/>
+          <Include href="酒吧大门.xml" itemIcon="1" loadImmediate="false" itemID="67496c74-0000035e" lastModified="1732865140"/>
+          <Include href="酒吧海量元件.xml" itemIcon="1" loadImmediate="false" itemID="67497707-000005c9" lastModified="1732868372"/>
+          <Include href="酒保头像.xml" loadImmediate="false" itemID="674abaa1-00001a19" lastModified="1732950741"/>
+          <Include href="军阀基地土地.xml" itemIcon="1" loadImmediate="false" itemID="67e698da-000005de" lastModified="1743166454"/>
+          <Include href="砍刀.xml" loadImmediate="false" itemID="66099719-0000407b" lastModified="1717253609"/>
+          <Include href="擂台.xml" itemIcon="1" loadImmediate="false" itemID="67484cef-00000096" lastModified="1732791535"/>
+          <Include href="冷兵器商人头像.xml" loadImmediate="false" itemID="674ab988-000019f7" lastModified="1732950505"/>
+          <Include href="丽丽丝头像.xml" loadImmediate="false" itemID="674ac704-00001ea9" lastModified="1732953914"/>
+          <Include href="乱七八糟武器库台子.xml" itemIcon="1" loadImmediate="false" itemID="6748679e-00000353" lastModified="1732798847"/>
+          <Include href="乱七八糟武器库杂物.xml" itemIcon="1" loadImmediate="false" itemID="674867ce-00000371" lastModified="1732945214"/>
+          <Include href="木桩.xml" itemIcon="1" loadImmediate="false" itemID="67484fc0-000001b1" lastModified="1732792256"/>
+          <Include href="排气窗.xml" itemIcon="1" loadImmediate="false" itemID="67458a72-000000b4" lastModified="1733071182"/>
+          <Include href="汽车废墟.xml" itemIcon="1" loadImmediate="false" itemID="67496f93-0000045f" lastModified="1732865939"/>
+          <Include href="前治安官头像.xml" loadImmediate="false" itemID="674abf9a-00001b16" lastModified="1732952015"/>
+          <Include href="墙裂缝.xml" itemIcon="1" loadImmediate="false" itemID="674587e0-0000005e" lastModified="1732610016"/>
+          <Include href="取餐处隔断.xml" itemIcon="1" loadImmediate="false" itemID="67458f4f-0000004f" lastModified="1732612783"/>
+          <Include href="取餐处台.xml" itemIcon="1" loadImmediate="false" itemID="67458e39-00000046" lastModified="1732613079"/>
+          <Include href="取餐台.xml" itemIcon="1" loadImmediate="false" itemID="67458ec6-0000004a" lastModified="1732611782"/>
+          <Include href="拳套.xml" itemIcon="1" loadImmediate="false" itemID="67484da2-0000015b" lastModified="1732791714"/>
+          <Include href="沙发电视.xml" itemIcon="1" loadImmediate="false" itemID="674866a7-00000320" lastModified="1732798119"/>
+          <Include href="上楼.xml" itemIcon="1" loadImmediate="false" itemID="6748625e-00000244" lastModified="1732797022"/>
+          <Include href="实验室.xml" loadImmediate="false" itemID="67c16bf5-00001239" lastModified="1743165887"/>
+          <Include href="实验室整体.xml" loadImmediate="false" itemID="67c16d4d-0000128f" lastModified="1740729828"/>
+          <Include href="食堂柜台.xml" itemIcon="1" loadImmediate="false" itemID="6748cc5b-00000135" lastModified="1732824155"/>
+          <Include href="食堂架子.xml" itemIcon="1" loadImmediate="false" itemID="6748cc53-0000012e" lastModified="1732824147"/>
+          <Include href="食堂整体.xml" itemIcon="1" loadImmediate="false" itemID="6748cdb3-0000018b" lastModified="1735607222"/>
+          <Include href="试炼场走廊六边形纹路.xml" loadImmediate="false" itemID="670797c7-000000e9" lastModified="1737533512"/>
+          <Include href="素材/沙袋.xml" loadImmediate="false" itemID="65a3cf1f-00000041" lastModified="1705234572"/>
+          <Include href="素材/沙袋堆.xml" loadImmediate="false" itemID="65a3d2bb-000000c5" lastModified="1705235131"/>
+          <Include href="素材/铁丝网1.xml" loadImmediate="false" itemID="65a61d99-0000046b" lastModified="1705385369"/>
+          <Include href="素材/铁丝网2.xml" loadImmediate="false" itemID="65a61d9e-0000046f" lastModified="1705385374"/>
+          <Include href="图片容器.xml" loadImmediate="false" itemID="67b06460-0000061b" lastModified="1739613281"/>
+          <Include href="网.xml" itemIcon="1" loadImmediate="false" itemID="674866c7-00000337" lastModified="1732798151"/>
+          <Include href="文字1.xml" itemIcon="1" loadImmediate="false" itemID="6745a068-0000007e" lastModified="1732616296"/>
+          <Include href="文字3.xml" itemIcon="1" loadImmediate="false" itemID="6745a262-0000008e" lastModified="1732616802"/>
+          <Include href="卧室小柜子.xml" itemIcon="1" loadImmediate="false" itemID="6748cfd5-000002a9" lastModified="1732825045"/>
+          <Include href="卧室整体.xml" itemIcon="1" loadImmediate="false" itemID="6748d0fd-000002cd" lastModified="1735607117"/>
+          <Include href="屋顶护栏横.xml" itemIcon="1" loadImmediate="false" itemID="67497db1-000007cc" lastModified="1732869553"/>
+          <Include href="屋顶护栏竖.xml" itemIcon="1" loadImmediate="false" itemID="67497e16-000007e6" lastModified="1732869654"/>
+          <Include href="屋顶旗帜.xml" itemIcon="1" loadImmediate="false" itemID="67497d74-000007bf" lastModified="1732869493"/>
+          <Include href="屋顶入口.xml" itemIcon="1" loadImmediate="false" itemID="67497d5f-000007ae" lastModified="1732869471"/>
+          <Include href="屋顶整体.xml" itemIcon="1" loadImmediate="false" itemID="67497f89-00000880" lastModified="1735607151"/>
+          <Include href="武器库展示枪.xml" itemIcon="1" loadImmediate="false" itemID="6748692f-000003a2" lastModified="1732798767"/>
+          <Include href="武器库整体.xml" itemIcon="1" loadImmediate="false" itemID="674869bb-000003bc" lastModified="1735607435"/>
+          <Include href="舞女头像.xml" loadImmediate="false" itemID="674abb36-00001a3c" lastModified="1732950875"/>
+          <Include href="下楼.xml" itemIcon="1" loadImmediate="false" itemID="67486237-0000023e" lastModified="1732796983"/>
+          <Include href="箱子1.xml" loadImmediate="false" itemID="65dedbc1-000000bd" lastModified="1709104185"/>
+          <Include href="小F头像.xml" loadImmediate="false" itemID="674ab254-00000e40" lastModified="1732948655"/>
+          <Include href="幸存老兵头像.xml" loadImmediate="false" itemID="674abbe2-00001a65" lastModified="1732951058"/>
+          <Include href="学生妹头像.xml" loadImmediate="false" itemID="674abd1c-00001a84" lastModified="1732951383"/>
+          <Include href="医务室床.xml" itemIcon="1" loadImmediate="false" itemID="67497483-000004b6" lastModified="1732867203"/>
+          <Include href="医务室床集合.xml" itemIcon="1" loadImmediate="false" itemID="674974d0-00000501" lastModified="1732867514"/>
+          <Include href="医务室箱子.xml" itemIcon="1" loadImmediate="false" itemID="67497634-00000540" lastModified="1732867636"/>
+          <Include href="医务室整体.xml" itemIcon="1" loadImmediate="false" itemID="6749764d-0000054a" lastModified="1735607342"/>
+          <Include href="椅子精的桌子.xml" itemIcon="1" loadImmediate="false" itemID="67486116-000001f2" lastModified="1732796694"/>
+          <Include href="佣兵酒吧整体.xml" itemIcon="1" loadImmediate="false" itemID="674977ee-00000616" lastModified="1735607131"/>
+          <Include href="元件 1.xml" loadImmediate="false" itemID="674ad107-00001ed3" lastModified="1732956542"/>
+          <Include href="元件 2.xml" loadImmediate="false" itemID="674ad278-00001efb" lastModified="1732956793"/>
+          <Include href="元件 3.xml" loadImmediate="false" itemID="674ad424-00001f49" lastModified="1732957220"/>
+          <Include href="元件 4.xml" loadImmediate="false" itemID="674ad487-00001f56" lastModified="1732957319"/>
+          <Include href="元件 5.xml" loadImmediate="false" itemID="674ad4cc-00001f67" lastModified="1732957388"/>
+          <Include href="元件 6.xml" loadImmediate="false" itemID="674ad52c-00001f92" lastModified="1732957484"/>
+          <Include href="元件 7.xml" loadImmediate="false" itemID="674ad5a0-00001fa0" lastModified="1732957600"/>
+          <Include href="元件 8.xml" loadImmediate="false" itemID="674ad93f-00001fa5" lastModified="1732958527"/>
+          <Include href="元件 9.xml" loadImmediate="false" itemID="674ad9e5-000026be" lastModified="1732958693"/>
+          <Include href="元件 10.xml" loadImmediate="false" itemID="674ada2b-000026ed" lastModified="1732958763"/>
+          <Include href="元件 11.xml" loadImmediate="false" itemID="674ada6a-00002730" lastModified="1740730118"/>
+          <Include href="元件 12.xml" loadImmediate="false" itemID="674adab0-0000273d" lastModified="1732958896"/>
+          <Include href="元件 13.xml" loadImmediate="false" itemID="674adb0d-0000274a" lastModified="1732958989"/>
+          <Include href="元件 14.xml" itemIcon="0" loadImmediate="false" itemID="67ed1b8e-00000a56" lastModified="1743592434"/>
+          <Include href="杂项/细铁.xml" loadImmediate="false" itemID="666080e1-000004dc" lastModified="1717237580"/>
+          <Include href="灶台柜.xml" itemIcon="1" loadImmediate="false" itemID="6745a91a-000000e8" lastModified="1732618522"/>
+          <Include href="帐篷.xml" itemIcon="1" loadImmediate="false" itemID="67e69667-000004f7" lastModified="1743166466"/>
+          <Include href="遮盖.xml" loadImmediate="false" itemID="674ad17c-00001ef7" lastModified="1732956540"/>
+          <Include href="正面墙.xml" itemIcon="1" loadImmediate="false" itemID="67458834-00000063" lastModified="1732791857"/>
+          <Include href="正面墙整体.xml" itemIcon="1" loadImmediate="false" itemID="67458c0a-000000d9" lastModified="1740729394"/>
+          <Include href="直升机.xml" itemIcon="1" loadImmediate="false" itemID="67497f33-00000834" lastModified="1732869939"/>
+          <Include href="纸贴.xml" itemIcon="1" loadImmediate="false" itemID="67459c8b-00000048" lastModified="1732615307"/>
+          <Include href="重复项目文件夹/Symbol 2287.xml" itemIcon="1" loadImmediate="false" itemID="6748cfc2-000002a7" lastModified="1704196122"/>
+          <Include href="重复项目文件夹/Symbol 2305.xml" itemIcon="1" loadImmediate="false" itemID="6748cfc2-000002a6" lastModified="1714725069"/>
+          <Include href="装饰门.xml" itemIcon="1" loadImmediate="false" itemID="674592e4-0000008a" lastModified="1732612836"/>
+          <Include href="走廊整体.xml" itemIcon="1" loadImmediate="false" itemID="6748cc01-000000dc" lastModified="1735607235"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="地图界面" name="地图界面" selected="true" centerPoint3DX="403.95" centerPoint3DY="214.5">
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="22480898" publishTime="1747921714"/>
+          <PublishItem publishSize="22480891" publishTime="1747921565"/>
+          <PublishItem publishSize="22480897" publishTime="1747921490"/>
+          <PublishItem publishSize="22480889" publishTime="1747921430"/>
+          <PublishItem publishSize="22480799" publishTime="1747921354"/>
+          <PublishItem publishSize="22480759" publishTime="1747921310"/>
+          <PublishItem publishSize="23854493" publishTime="1746444843"/>
+          <PublishItem publishSize="23854528" publishTime="1746444503"/>
+          <PublishItem publishSize="23854566" publishTime="1746444421"/>
+          <PublishItem publishSize="23854567" publishTime="1746444326"/>
+          <PublishItem publishSize="23854533" publishTime="1746444168"/>
+          <PublishItem publishSize="23853272" publishTime="1746444139"/>
+          <PublishItem publishSize="22485123" publishTime="1743592645"/>
+          <PublishItem publishSize="22485082" publishTime="1743592509"/>
+          <PublishItem publishSize="22484604" publishTime="1743592140"/>
+          <PublishItem publishSize="22484615" publishTime="1743591716"/>
+          <PublishItem publishSize="22484491" publishTime="1743591255"/>
+          <PublishItem publishSize="22484495" publishTime="1743591089"/>
+          <PublishItem publishSize="22484495" publishTime="1743591046"/>
+          <PublishItem publishSize="22484439" publishTime="1743590957"/>
+     </publishHistory>
+</DOMDocument>

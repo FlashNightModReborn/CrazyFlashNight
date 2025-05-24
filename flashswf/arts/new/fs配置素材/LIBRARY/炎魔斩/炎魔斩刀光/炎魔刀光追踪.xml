@@ -1,0 +1,287 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="炎魔斩/炎魔斩刀光/炎魔刀光追踪" itemID="656ef176-00001d9e" linkageExportForAS="true" linkageIdentifier="炎魔刀光追踪" lastModified="1719299681" lastUniqueIdentifier="18">
+  <timeline>
+    <DOMTimeline name="炎魔刀光追踪" currentFrame="1">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#EEDFAD">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#7F42FB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2 (depth 7)" color="#1CAFD9">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3 (depth 5)" color="#B16AAD" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/Symbol 13" name="area" centerPoint3DX="-3" centerPoint3DY="-4.5">
+                  <matrix>
+                    <Matrix a="1.29107666015625" d="1.385498046875" tx="-15.5" ty="-17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/Symbol 13" name="area" centerPoint3DX="57.8" centerPoint3DY="-0.85">
+                  <matrix>
+                    <Matrix a="1.88302612304688" d="5.78152465820313" tx="26.75" ty="-72.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/Symbol 13" name="area" centerPoint3DX="50.65" centerPoint3DY="2.9">
+                  <matrix>
+                    <Matrix a="2.59857177734375" d="5.78152465820313" tx="10.65" ty="-68.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/Symbol 13" name="area" centerPoint3DX="50.65" centerPoint3DY="2.9">
+                  <matrix>
+                    <Matrix a="2.59857177734375" d="5.78152465820313" tx="10.65" ty="-68.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4 (depth 4)" color="#D4A0A9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩刀光/炎魔刀光动画" name="刀光" selected="true" blendMode="invert" centerPoint3DX="-2.35">
+                  <matrix>
+                    <Matrix a="0.395782470703125" b="-4.57763671875e-005" c="-4.57763671875e-005" d="-0.395782470703125" tx="3.2" ty="64.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	子弹名 = _parent._name;
+	基准速度 = 20;
+	加速度 = 1.25;
+	速度 = _root.basic_random() * 3;
+	旋转角度 = _parent._rotation + 15 - _root.basic_random() * 30;
+	_parent._x += 30 - _root.basic_random() * 30;
+	_parent._y += (-_root.basic_random()) * 30;
+	上抛速度 = _root.basic_random() * -5 - 5;
+	上抛阻力 = 0.4;
+	修正角度 = 0;
+	转向速度 = 36;
+	飞行阻力 = 0.02;
+	转向阻力 = 0.05;
+	速度上限 = 40;
+	转向动力 = 999;
+	转向速度下限 = 5;
+	锁定延迟 = -4;
+	锁定范围 = 2000;
+	是否为敌人 = !_root.gameworld.子弹区域[子弹名].子弹敌我属性值;
+	攻击目标 = "无";
+	瞄准许可 = false;
+	初始_x = _parent._x + _parent._parent._x;
+	初始_y = _parent._y + _parent._parent._y;
+	导弹坐标 = {x:初始_x, y:初始_y};
+	锁定坐标 = {x:初始_x, y:初始_y};
+	敌人 = null;
+	敌人_x = 0;
+	敌人_y = 0;
+	敌人_z = 0;
+	敌人名 = "无";
+	d_min = 锁定范围;
+	d = infinity;
+	敌人_敌我属性 = undefined;
+	待检测元件 = this;
+	循环记数 = 0;
+	发射速度 = Math.sqrt(Math.pow(_root.gameworld.子弹区域[子弹名].xmov, 2) + Math.pow(_root.gameworld.子弹区域[子弹名].ymov, 2));
+	_root.gameworld.子弹区域[子弹名].xmov = 0;
+	_root.gameworld.子弹区域[子弹名].ymov = 0;
+	发射者名 = _root.gameworld.子弹区域[子弹名].发射者名;
+	Z轴坐标 = _root.gameworld.子弹区域[子弹名].Z轴坐标;
+	this.转换导弹坐标 = function()
+	{
+		导弹坐标.x = _parent._x + _parent._parent._x;
+		导弹坐标.y = _parent._y + _parent._parent._y;
+		_root.gameworld.子弹区域[子弹名].Z轴坐标 = _root.gameworld.子弹区域[子弹名]._y;
+	};
+	this.寻找攻击目标 = function()
+	{
+		敌人_x = 0;
+		敌人_y = 0;
+		敌人名 = "无";
+		d_min = 锁定范围;
+		if (攻击目标 == "无")
+		{
+			for (each in _root.gameworld)
+			{
+				敌人_敌我属性 = _root.gameworld[each].是否为敌人;
+				if (是否为敌人 != 敌人_敌我属性 and _root.gameworld[each].hp > 0)
+				{
+					敌人_x = _root.gameworld[each]._x;
+					敌人_y = _root.gameworld[each]._y;
+					敌人名 = _root.gameworld[each]._name;
+					d = Math.abs(敌人_x - 导弹坐标.x) + 5 * Math.abs(敌人_y - 初始_y);
+					if (d_min > d)
+					{
+						d_min = d;
+						攻击目标 = 敌人名;
+						敌人_z = _root.gameworld[each].Z轴坐标;
+						锁定坐标.x = 敌人_x;
+						锁定坐标.y = 敌人_y - 30;
+					}
+				}
+			}
+			if (攻击目标 != "无")
+			{
+				瞄准许可 = true;
+				加速度 += 1.25;
+				速度上限 = 80;
+				上抛速度 = _root.basic_random() * -5 - 5;
+			}
+		}
+	};
+	this.onEnterFrame = function()
+	{
+		if (上抛速度 < 0)
+		{
+			上抛速度 += 上抛阻力;
+		}
+		if (上抛速度 > 0)
+		{
+			上抛速度 = 0;
+		}
+		if (速度 < 速度上限)
+		{
+			速度 = 速度 + 加速度 - 速度 * 飞行阻力;
+		}
+		旋转角度 = _parent._rotation;
+		this.转换导弹坐标();
+		锁定延迟 += 1;
+		if (锁定延迟 and 攻击目标 == "无")
+		{
+			this.寻找攻击目标();
+			锁定延迟 = -29;
+		}
+		if (瞄准许可 and 转向动力)
+		{
+			转向动力 -= 1;
+			修正角度 = (Math.atan2(锁定坐标.y - 导弹坐标.y, 锁定坐标.x - 导弹坐标.x) + 360) % 360 * (180 / Math.PI) - 旋转角度;
+			if (修正角度 > 转向速度)
+			{
+				修正角度 = 转向速度;
+			}
+			else if (修正角度 + 转向速度 < 0)
+			{
+				修正角度 = -1 * 转向速度;
+			}
+			else if (!(修正角度 <= 转向速度 and 修正角度 >= -1 * 转向速度))
+			{
+				修正角度 = 0;
+			}
+			if (速度 > 转向速度下限)
+			{
+				速度 -= Math.abs(修正角度 * 转向阻力);
+			}
+		}
+		else
+		{
+			修正角度 = 0;
+		}
+		旋转角度 = 修正角度 + 旋转角度;
+		_parent._rotation = 旋转角度;
+		dx = Math.cos(旋转角度 * (Math.PI / 180)) * 速度 * 发射速度 / 基准速度;
+		dy = Math.sin(旋转角度 * (Math.PI / 180)) * 速度 * 发射速度 / 基准速度;
+		_parent._x += dx;
+		_parent._y += dy + 上抛速度;
+	};
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter blurX="30" blurY="30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

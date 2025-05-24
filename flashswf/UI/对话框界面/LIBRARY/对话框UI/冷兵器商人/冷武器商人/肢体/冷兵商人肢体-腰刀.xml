@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/冷兵器商人/冷武器商人/肢体/冷兵商人肢体-腰刀" itemID="66655798-0000141b" symbolType="graphic" lastModified="1717917609">
+  <timeline>
+    <DOMTimeline name="冷兵商人肢体-腰刀">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/冷兵器商人/冷武器商人/肢体/细分/冷兵商人肢体-小刀" selected="true" symbolType="graphic" centerPoint3DX="23.05" centerPoint3DY="17" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0516815185546875" b="0.371826171875" c="0.371826171875" d="0.0516815185546875" tx="3.85" ty="5.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="对话框UI/冷兵器商人/冷武器商人/肢体/细分/冷兵商人肢体-刀套" selected="true" symbolType="graphic" centerPoint3DX="17.05" centerPoint3DY="17.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.330322265625" b="-0.180648803710938" c="-0.180648803710938" d="0.330322265625" tx="34.05" ty="12.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

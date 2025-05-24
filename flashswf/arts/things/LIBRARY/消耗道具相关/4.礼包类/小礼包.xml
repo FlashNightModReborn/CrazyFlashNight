@@ -1,0 +1,119 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/4.礼包类/小礼包" itemID="682f6ff3-00000bfd" linkageExportForAS="true" linkageIdentifier="小礼包" lastModified="1747939315">
+  <timeline>
+    <DOMTimeline name="小礼包">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#69FDBC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#33F2F8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[关卡可获得奖励品 = [];
+关卡可获得奖励品.push(["加强抗生素药剂",1,10]);
+关卡可获得奖励品.push(["加强mp药剂",1,10]);
+关卡可获得奖励品.push(["冲锋枪达姆弹弹药",1,20]);
+关卡可获得奖励品.push(["狙击步枪通用弹药",1,20]);
+关卡可获得奖励品.push(["加强抗生素药剂",1,20]);
+关卡可获得奖励品.push(["加强mp药剂",1,20]);
+关卡可获得奖励品.push(["冲锋枪通用弹药",1,40]);
+关卡可获得奖励品.push(["突击步枪通用弹药",1,40]);
+关卡可获得奖励品.push(["复活币",1,12]);
+奖励品 = [];
+var i = 0;
+while(i < 关卡可获得奖励品.length)
+{
+   if(random(关卡可获得奖励品[i][1]) == 0)
+   {
+      奖励品.push([关卡可获得奖励品[i][0],random(关卡可获得奖励品[i][2]) + 1]);
+   }
+   i++;
+}
+_root.奖励物品界面.奖励品 = 奖励品;
+_root.奖励物品界面.在线奖励刷新("材料盒子");
+_root.效果("升级动画2",this._x,this._y,100);
+this.removeMovieClip();
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DCFA68">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   垂直速度 = -5;
+   起始Y = _parent.Z轴坐标;
+   this.onEnterFrame = function()
+   {
+      _parent._y += 垂直速度;
+      垂直速度 += _root.重力加速度;
+      if(_parent._y >= 起始Y)
+      {
+         _parent._y = 起始Y;
+         delete this.onEnterFrame;
+         _parent.gotoAndPlay("消失");
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F530E4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="消耗道具相关/4.礼包类/Symbol 3939" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.96295166015625" d="1.96295166015625" tx="-0.5" ty="-3.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

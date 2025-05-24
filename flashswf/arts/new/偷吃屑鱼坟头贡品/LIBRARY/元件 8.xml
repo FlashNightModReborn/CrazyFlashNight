@@ -1,0 +1,363 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="元件 8" itemID="66572548-00003f12" lastModified="1716987208" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="元件 8">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 1" selected="true" centerPoint3DX="88.2" centerPoint3DY="63.65">
+                  <matrix>
+                    <Matrix tx="69.7" ty="39.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.15" y="24.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS shoulder cannon" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.496231079101563" b="-0.865310668945313" c="0.865341186523438" d="0.496246337890625" ty="93.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.2" y="41.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS arm2back" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.67864990234375" b="-0.730636596679688" c="0.730636596679688" d="0.67864990234375" tx="94" ty="82.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.9" y="1.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 10" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="91.8" ty="65.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 9" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="79.6" ty="165.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 8" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="38.85" ty="168.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS leg2A" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998641967773438" b="0.0518646240234375" c="-0.0518646240234375" d="0.998641967773438" tx="78.5" ty="115.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.75" y="44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#262626"/>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <SolidColor color="#222222"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!1833 3510[1829 3521 1816 3524!1816 3524[1804 3528 1790 3522!1790 3522[1779 3514 1776 3502!1776 3502[1771 3489 1779 3479!1779 3479[1787 3468 1799 3463!1799 3463[1810 3460 1823 3466!1823 3466[1833 3472 1838 3486!1838 3486[1841 3499 1833
+ 3510"/>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!1815 3480[1821 3485 1823 3491!1823 3491[1824 3499 1821 3503!1821 3503[1818 3508 1812 3510!1812 3510[1805 3511 1799 3510!1799 3510[1793 3507 1791 3499!1791 3499[1790 3491 1793 3486!1793 3486[1796 3482 1804 3479!1804 3479[1810 3477 1815
+ 3480"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                    <DOMGroup>
+                      <transformationPoint>
+                        <Point x="89.8" y="176.35"/>
+                      </transformationPoint>
+                      <members>
+                        <DOMShape>
+                          <transformationPoint>
+                            <Point x="89.8" y="176.35"/>
+                          </transformationPoint>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#343434"/>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <SolidColor color="#303030"/>
+                            </FillStyle>
+                            <FillStyle index="3">
+                              <SolidColor color="#323232"/>
+                            </FillStyle>
+                            <FillStyle index="4">
+                              <SolidColor color="#2C2C2C"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!1876 3214|1901 3233"/>
+                            <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
+!1901 3233|2018 3217"/>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="
+!2018 3217|1993 3199!1993 3199|1876 3214"/>
+                            <Edge fillStyle1="2" strokeStyle="1" edges="
+!1923 3499|1800 3557!1800 3557|1777 3554!1777 3554|1769 3524!1769 3524|1805 3473!1805 3473|1895 3431!1895 3431|1856 3221!1856 3221|1876 3214"/>
+                            <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+!1901 3233|1960 3454"/>
+                            <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="
+!1960 3454|2077 3438"/>
+                            <Edge fillStyle0="3" strokeStyle="1" edges="
+!2077 3438|2018 3217"/>
+                            <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="
+!1960 3454|1923 3499"/>
+                            <Edge fillStyle0="4" strokeStyle="1" edges="
+!1923 3499|2040 3484!2040 3484|2077 3438"/>
+                            <Edge cubics="!1805 3473(;1805,3473 1895,3431 1895,3431q1805 3473 1895 3431)1895,3431;"/>
+                            <Edge cubics="!1769 3524(1769,3524;1769,3524 1805,3473 1805,3473q1769 3524 1805 3473);"/>
+                            <Edge cubics="!1777 3554(1777,3554;1777,3554 1769,3524 1769,3524q1777 3554 1769 3524);"/>
+                            <Edge cubics="!1800 3557(1800,3557;1800,3557 1777,3554 1777,3554q1800 3557 1777 3554);"/>
+                            <Edge cubics="!1856 3221(1856,3221;1856,3221 1876,3214 1876,3214q1856 3221 1876 3214);"/>
+                            <Edge cubics="!1960 3454(;1960,3454 1923,3499 1923,3499q1960 3454 1923 3499);"/>
+                            <Edge cubics="!1876 3214(1876,3214;1876,3214 1901,3233 1901,3233q1876 3214 1901 3233);"/>
+                            <Edge cubics="!1895 3431(1895,3431;1895,3431 1856,3221 1856,3221q1895 3431 1856 3221);"/>
+                            <Edge cubics="!2077 3438(;2077,3438 2040,3484 2040,3484q2077 3438 2040 3484);"/>
+                            <Edge cubics="!1993 3199(1993,3199;1993,3199 2018,3217 2018,3217q1993 3199 2018 3217);"/>
+                            <Edge cubics="!2077 3438(2077,3438;2077,3438 2018,3217 2018,3217q2077 3438 2018 3217);"/>
+                            <Edge cubics="!1923 3499(1923,3499;1923,3499 1800,3557 1800,3557q1923 3499 1800 3557);"/>
+                            <Edge cubics="!1901 3233(;1901,3233 1960,3454 1960,3454q1901 3233 1960 3454);"/>
+                            <Edge cubics="!1876 3214(1876,3214;1876,3214 1993,3199 1993,3199q1876 3214 1993 3199);"/>
+                            <Edge cubics="!1901 3233(;1901,3233 2018,3217 2018,3217q1901 3233 2018 3217);"/>
+                            <Edge cubics="!2077 3438(2077,3438;2077,3438 1960,3454 1960,3454q2077 3438 1960 3454);"/>
+                            <Edge cubics="!2040 3484(2040,3484;2040,3484 1923,3499 1923,3499q2040 3484 1923 3499);"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="ARMS leg2A" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.956512451171875" b="0.291671752929688" c="-0.291671752929688" d="0.956512451171875" tx="47.7" ty="118.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.3" y="42.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#262626"/>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <SolidColor color="#222222"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="
+!1022 3575[1018 3586 1005 3589!1005 3589[993 3593 979 3587!979 3587[968 3579 965 3567!965 3567[960 3554 968 3544!968 3544[976 3533 988 3528!988 3528[999 3525 1012 3531!1012 3531[1022 3537 1027 3551!1027 3551[1030 3564 1022 3575"/>
+                            <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!1012 3556[1013 3564 1010 3568!1010 3568[1007 3573 1001 3575!1001 3575[994 3576 988 3575!988 3575[982 3572 980 3564!980 3564[979 3556 982 3551!982 3551[985 3547 993 3544!993 3544[999 3542 1004 3545!1004 3545[1010 3550 1012 3556"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                    <DOMGroup>
+                      <transformationPoint>
+                        <Point x="49.25" y="179.6"/>
+                      </transformationPoint>
+                      <members>
+                        <DOMShape>
+                          <transformationPoint>
+                            <Point x="49.25" y="179.6"/>
+                          </transformationPoint>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#303030"/>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <SolidColor color="#343434"/>
+                            </FillStyle>
+                            <FillStyle index="3">
+                              <SolidColor color="#323232"/>
+                            </FillStyle>
+                            <FillStyle index="4">
+                              <SolidColor color="#2C2C2C"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="
+!1112 3564|989 3622!989 3622|966 3619!966 3619|958 3589!958 3589|994 3538!994 3538|1084 3496!1084 3496|1045 3286!1045 3286|1065 3279"/>
+                            <Edge fillStyle1="2" strokeStyle="1" edges="
+!1065 3279|1182 3264!1182 3264|1207 3282"/>
+                            <Edge fillStyle1="3" strokeStyle="1" edges="
+!1207 3282|1266 3503"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="
+!1266 3503|1229 3549!1229 3549|1112 3564"/>
+                            <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!1090 3298|1207 3282"/>
+                            <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!1065 3279|1090 3298"/>
+                            <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
+!1149 3519|1112 3564"/>
+                            <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="
+!1266 3503|1149 3519"/>
+                            <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!1090 3298|1149 3519"/>
+                            <Edge cubics="!994 3538(;994,3538 1084,3496 1084,3496q994 3538 1084 3496)1084,3496;"/>
+                            <Edge cubics="!958 3589(958,3589;958,3589 994,3538 994,3538q958 3589 994 3538);"/>
+                            <Edge cubics="!966 3619(966,3619;966,3619 958,3589 958,3589q966 3619 958 3589);"/>
+                            <Edge cubics="!989 3622(989,3622;989,3622 966,3619 966,3619q989 3622 966 3619);"/>
+                            <Edge cubics="!1045 3286(1045,3286;1045,3286 1065,3279 1065,3279q1045 3286 1065 3279);"/>
+                            <Edge cubics="!1149 3519(;1149,3519 1112,3564 1112,3564q1149 3519 1112 3564);"/>
+                            <Edge cubics="!1065 3279(1065,3279;1065,3279 1090,3298 1090,3298q1065 3279 1090 3298);"/>
+                            <Edge cubics="!1084 3496(1084,3496;1084,3496 1045,3286 1045,3286q1084 3496 1045 3286);"/>
+                            <Edge cubics="!1266 3503(;1266,3503 1229,3549 1229,3549q1266 3503 1229 3549);"/>
+                            <Edge cubics="!1182 3264(1182,3264;1182,3264 1207,3282 1207,3282q1182 3264 1207 3282);"/>
+                            <Edge cubics="!1266 3503(1266,3503;1266,3503 1207,3282 1207,3282q1266 3503 1207 3282);"/>
+                            <Edge cubics="!1112 3564(1112,3564;1112,3564 989,3622 989,3622q1112 3564 989 3622);"/>
+                            <Edge cubics="!1090 3298(;1090,3298 1149,3519 1149,3519q1090 3298 1149 3519);"/>
+                            <Edge cubics="!1065 3279(1065,3279;1065,3279 1182,3264 1182,3264q1065 3279 1182 3264);"/>
+                            <Edge cubics="!1090 3298(;1090,3298 1207,3282 1207,3282q1090 3298 1207 3282);"/>
+                            <Edge cubics="!1266 3503(1266,3503;1266,3503 1149,3519 1149,3519q1266 3503 1149 3519);"/>
+                            <Edge cubics="!1229 3549(;1229,3549 1112,3564 1112,3564q1229 3549 1112 3564);"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="ARMS legbackB" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.959945678710938" b="-0.275787353515625" c="0.275787353515625" d="0.959945678710938" tx="63.85" ty="85.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.85" y="25.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS crotchA" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.988204956054688" b="0.148651123046875" c="-0.148651123046875" d="0.988204956054688" tx="61.65" ty="72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.9" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS legfrontB" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996826171875" b="0.0795440673828125" c="-0.0795440673828125" d="0.996826171875" tx="50.05" ty="79.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="9.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS torsoAB" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.984786987304688" b="0.169464111328125" c="-0.169464111328125" d="0.984786987304688" tx="54.25" ty="36.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.8" y="19.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS headB3" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998855590820313" b="0.0436859130859375" c="-0.0436859130859375" d="0.998855590820313" tx="66.3" ty="13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.5" y="17.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 4" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="108.55" ty="100.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS arm2front" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.67498779296875" b="-0.73394775390625" c="0.73394775390625" d="0.67498779296875" tx="45.95" ty="84.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.65" y="1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="60.9" ty="66.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="MISSILE SHOULDER ARMOR" selected="true" centerPoint3DX="49.45" centerPoint3DY="55">
+                  <matrix>
+                    <Matrix tx="25.6" ty="19.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.85" y="35.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

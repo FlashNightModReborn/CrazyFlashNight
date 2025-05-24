@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/背景" itemID="65aa3a7c-00000b85" lastModified="1737184406">
+  <timeline>
+    <DOMTimeline name="背景">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/bitmap51850.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="25.8474731445313" d="25.4830932617188" tx="-549" ty="-148.05"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!46401 -2961|46401 18954!46401 18954|-10980 18954!-10980 18954|-10980 -2961!-10980 -2961|46401 -2961"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

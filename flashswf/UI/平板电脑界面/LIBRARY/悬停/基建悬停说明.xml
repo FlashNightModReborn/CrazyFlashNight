@@ -1,0 +1,203 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="悬停/基建悬停说明" itemID="66fc1609-0000560f" lastModified="1727804871" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="基建悬停说明">
+      <layers>
+        <DOMLayer name="as" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="28" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="引导线遮罩" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/补间 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-227.9" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/补间 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-20.95" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="引导线" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/悬停引导线" centerPoint3DX="-14.4" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix tx="-111.4" ty="-12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97" y="23.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/悬停引导线" centerPoint3DX="-14.4" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix tx="-111.4" ty="-12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97" y="23.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字遮罩" color="#FF4FFF" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-7.5546875, -0.1484375" startPointB="-7.5546875, #1.09" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFB.F1, -0.1484375" anchorPointA="-0.5625, -0.1484375" controlPointB="#FFFFFB.F1, #1.09" anchorPointB="-0.5625, #1.09" isLine="true"/>
+                    <MorphCurves controlPointA="-0.5625, #0.66" anchorPointA="-0.5625, #0.F2" controlPointB="-0.5625, #1.95" anchorPointB="-0.5625, #2.21" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFFB.F1, #0.F2" anchorPointA="-7.5546875, #0.F2" controlPointB="#FFFFFB.F1, #2.21" anchorPointB="-7.5546875, #2.21" isLine="true"/>
+                    <MorphCurves controlPointA="-7.5546875, #0.66" anchorPointA="-7.5546875, -0.1484375" controlPointB="-7.5546875, #1.95" anchorPointB="-7.5546875, #1.09" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="-7.5546875, #1.09" startPointB="-0.2109375, -0.1484375" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFB.F1, #1.09" anchorPointA="-0.5625, #1.09" controlPointB="#3.49, -0.1484375" anchorPointB="#6.C8, -0.1484375" isLine="true"/>
+                    <MorphCurves controlPointA="-0.5625, #1.95" anchorPointA="-0.5625, #2.21" controlPointB="#6.C8, #0.66" anchorPointB="#6.C8, #0.F2" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFFB.F1, #2.21" anchorPointA="-7.5546875, #2.21" controlPointB="#3.49, #0.F2" anchorPointB="-0.2109375, #0.F2" isLine="true"/>
+                    <MorphCurves controlPointA="-7.5546875, #1.95" anchorPointA="-7.5546875, #1.09" controlPointB="-0.2109375, #0.66" anchorPointB="-0.2109375, -0.1484375" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#04A8FF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-144 -38|-144 242!-144 242|-1934 242!-1934 242|-1934 -38!-1934 -38|-144 -38!-144 545|-1934 545!-1934 545|-1934 265!-1934 265|-144 265!-144 265|-144 545"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-7.5546875, #1.09" startPointB="#FFFFFF.C5, #1.09" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFB.F1, #1.09" anchorPointA="-0.5625, #1.09" controlPointB="#3.44, #1.09" anchorPointB="#6.C3, #1.09" isLine="true"/>
+                    <MorphCurves controlPointA="-0.5625, #1.95" anchorPointA="-0.5625, #2.21" controlPointB="#6.C3, #1.95" anchorPointB="#6.C3, #2.21" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFFB.F1, #2.21" anchorPointA="-7.5546875, #2.21" controlPointB="#3.44, #2.21" anchorPointB="#FFFFFF.C5, #2.21" isLine="true"/>
+                    <MorphCurves controlPointA="-7.5546875, #1.95" anchorPointA="-7.5546875, #1.09" controlPointB="#FFFFFF.C5, #1.95" anchorPointB="#FFFFFF.C5, #1.09" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="-0.2109375, -0.1484375" startPointB="-0.2109375, -0.1484375" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#3.49, -0.1484375" anchorPointA="#6.C8, -0.1484375" controlPointB="#3.49, -0.1484375" anchorPointB="#6.C8, -0.1484375" isLine="true"/>
+                    <MorphCurves controlPointA="#6.C8, #0.66" anchorPointA="#6.C8, #0.F2" controlPointB="#6.C8, #0.66" anchorPointB="#6.C8, #0.F2" isLine="true"/>
+                    <MorphCurves controlPointA="#3.49, #0.F2" anchorPointA="-0.2109375, #0.F2" controlPointB="#3.49, #0.F2" anchorPointB="-0.2109375, #0.F2" isLine="true"/>
+                    <MorphCurves controlPointA="-0.2109375, #0.66" anchorPointA="-0.2109375, -0.1484375" controlPointB="-0.2109375, #0.66" anchorPointB="-0.2109375, -0.1484375" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#04A8FF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1736 -38|1736 242!1736 242|-54 242!-54 242|-54 -38!-54 -38|1736 -38!-144 545|-1934 545!-1934 545|-1934 265!-1934 265|-144 265!-144 265|-144 545"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#04A8FF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1736 -38|1736 242!1736 242|-54 242!-54 242|-54 -38!-54 -38|1736 -38!1731 545|-59 545!-59 545|-59 265!-59 265|1731 265!1731 265|1731 545"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#4FFF4F" parentLayerIndex="3" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/基建悬停说明文字" centerPoint3DX="41.45" centerPoint3DY="11.15">
+                  <transformationPoint>
+                    <Point x="41.45" y="11.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/基建悬停说明文字" centerPoint3DX="41.45" centerPoint3DY="11.15">
+                  <transformationPoint>
+                    <Point x="41.45" y="11.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/基建悬停说明文字" centerPoint3DX="41.45" centerPoint3DY="11.15">
+                  <transformationPoint>
+                    <Point x="41.45" y="11.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,196 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1747643832" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="任务图标" currentFrame="29">
+      <layers>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function refresh()
+{
+	var self = this;
+	self.任务图标._visible = false;
+	self.任务明细按钮._visible = false;
+	self.删除任务按钮._visible = false;
+	self.完成标志._visible = false
+	_root.帧计时器.添加单次任务(function() {
+		if(self.数组号 == null){
+			self.任务图标._visible = false;
+			self.任务明细按钮._visible = false;
+			self.删除任务按钮._visible = false;
+			self.完成标志._visible = false;
+			return;
+		}
+	
+		self.任务图标.NPC头像框位置示意._visible = false;
+		self.任务图标._visible = true;
+		self.任务明细按钮._visible = true;
+		self.任务图标.taskName.htmlText = self.任务标题;
+		self.任务图标.taskChain.htmlText = self.任务类型;
+		if(self.任务图标 != null && self.任务图标.NPC头像框 == null){
+			var NPC头像框 = self.任务图标.attachMovie("NPC头像框","NPC头像框",self.任务图标.getNextHighestDepth());
+			NPC头像框._x = self.任务图标.NPC头像框位置示意._x;
+			NPC头像框._y = self.任务图标.NPC头像框位置示意._y;
+			NPC头像框._xscale = self.任务图标.NPC头像框位置示意._xscale;
+			NPC头像框._yscale = self.任务图标.NPC头像框位置示意._yscale;
+			NPC头像框.swapDepths(self.任务图标.NPC头像框位置示意);
+			self.任务图标.NPC头像框位置示意.removeMovieClip();
+		}
+		self.任务图标.NPC头像框.gotoAndStop(self.接取NPC);
+		self.删除任务按钮._visible = self.允许删除 ? true : false;
+		self.完成标志._visible = self.任务进度 === "达成";
+	}, (refreshDelay + 1) * 200)
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[refresh();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完成标志" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/组件/转圈 &amp; 勾选/完成标志" name="完成标志" centerPoint3DX="226.15" centerPoint3DY="20.8">
+                  <matrix>
+                    <Matrix a="2" d="2" tx="208.35" ty="4.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="删除任务按钮" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/删除任务按钮" name="删除任务按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.3255615234375" d="2.3255615234375" tx="223.4" ty="20.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.DeleteTask(this.数组号);
+	_parent._parent.排列任务图标();
+}
+on (rollOver) {
+	_root.注释(100,_root.获得翻译("删除任务"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/选择任务按钮" name="任务明细按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.960006713867188" d="1.36363220214844" tx="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="125" y="44"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.横出方块.gotoAndPlay(1);
+	_parent.当前任务标志._y = this._y;
+	_parent.当前任务标志.gotoAndPlay("start");
+	_parent._parent.显示任务明细(this.数组号);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="横出方块" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/横出方块" name="横出方块" centerPoint3DX="-8.6" centerPoint3DY="60">
+                  <transformationPoint>
+                    <Point x="-0.15" y="60"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" selected="true" centerPoint3DX="105.75" centerPoint3DY="60">
+                  <matrix>
+                    <Matrix tx="-14.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" distance="15" quality="3" strength="0.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" centerPoint3DX="125" centerPoint3DY="60">
+                  <matrix>
+                    <Matrix tx="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" distance="15" quality="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

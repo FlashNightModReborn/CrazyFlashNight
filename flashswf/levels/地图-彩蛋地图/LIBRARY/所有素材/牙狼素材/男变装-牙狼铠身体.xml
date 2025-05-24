@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/牙狼素材/男变装-牙狼铠身体" itemID="657eb9fd-000009df" linkageExportForAS="true" linkageIdentifier="男变装-牙狼铠身体" lastModified="1702997132" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="男变装-牙狼铠身体">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/姑且算脖子" centerPoint3DX="-23.6" centerPoint3DY="-51">
+                  <matrix>
+                    <Matrix a="-1.01828002929688" b="0.0533599853515625" c="0.0523529052734375" d="0.998626708984375" tx="29.55" ty="-106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.9" y="52.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/姑且算是左肩甲" centerPoint3DX="83.3" centerPoint3DY="-56">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0139923095703125" c="0.01397705078125" d="0.999893188476563" tx="123.3" ty="-96.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.05" y="36.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-9" contrast="-6" saturation="-12" hue="-6"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/姑且算底衣腹肌" centerPoint3DX="10.05" centerPoint3DY="48.45">
+                  <matrix>
+                    <Matrix a="-1.10528564453125" b="0.0013427734375" c="0.0013275146484375" d="1.08734130859375" tx="62.05" ty="-16.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.25" y="59.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/姑且算是胸甲的玩意儿" selected="true" centerPoint3DX="-9.8" centerPoint3DY="-19.2">
+                  <matrix>
+                    <Matrix a="-0.826614379882813" b="-0.0107421875" c="-0.0105438232421875" d="0.810684204101563" tx="69" ty="-74.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-16.8" y="6.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-9" contrast="-6" saturation="-12" hue="-6"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/元件 1" centerPoint3DX="57.65" centerPoint3DY="-4.75">
+                  <matrix>
+                    <Matrix tx="24.85" ty="-64.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.8" y="59.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-9" contrast="-6" saturation="-12" hue="-6"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,75 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板电脑界面" itemID="6700bfa9-00000943" linkageExportForAS="true" linkageIdentifier="平板电脑界面" lastModified="1734959691" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="平板电脑界面" currentFrame="11">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" name="初始化" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" name="空闲" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 初始化()
+{
+	this._visible = true;
+	this.初始化界面.play();
+}
+
+function 关闭界面(){
+	this._visible = false;
+	gotoAndStop("初始化");
+}
+
+this._xscale = 150;
+this._yscale = 150;
+this._visible = false;
+stop();
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板初始化" name="初始化界面" centerPoint3DX="-0.6" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix tx="-225" ty="-150"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="223.4" y="147.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="平板背景" selected="true" centerPoint3DX="-0.6" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix tx="-225" ty="-150"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="224.4" y="149.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

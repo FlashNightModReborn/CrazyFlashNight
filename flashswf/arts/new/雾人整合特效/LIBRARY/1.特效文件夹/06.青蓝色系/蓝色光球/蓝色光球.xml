@@ -1,0 +1,112 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/蓝色光球/蓝色光球" itemID="6554ccb5-0000301d" linkageExportForAS="true" linkageIdentifier="蓝色光球" lastModified="1700056271">
+  <timeline>
+    <DOMTimeline name="蓝色光球" currentFrame="11">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#D7F23B">
+          <frames>
+            <DOMFrame index="0" duration="8" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFFC.3D, -3.609375" startPointB="#FFFFFC.2B, -3.609375" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFFC.3D, -5.1171875" anchorPointA="#FFFFFD.4D, -6.1796875" controlPointB="#FFFFFC.2B, #FFFFFA.DB" anchorPointB="-2.75, -6.2265625"/>
+                    <MorphCurves controlPointA="-1.6328125, -7.2421875" anchorPointA="#FFFFFF.DF, -7.2421875" controlPointB="-1.6640625, #FFFFF8.B1" anchorPointB="-0.1328125, #FFFFF8.B1"/>
+                    <MorphCurves controlPointA="#1.6, -7.2421875" anchorPointA="#2.71, -6.1796875" controlPointB="#1.66, #FFFFF8.B1" anchorPointB="#2.7C, -6.2265625"/>
+                    <MorphCurves controlPointA="#3.81, -5.1171875" anchorPointA="#3.81, -3.609375" controlPointB="#3.91, #FFFFFA.DB" anchorPointB="#3.91, -3.609375"/>
+                    <MorphCurves controlPointA="#3.81, -2.109375" anchorPointA="#2.71, #FFFFFE.F5" controlPointB="#3.91, -2.078125" anchorPointB="#2.7C, -0.9921875"/>
+                    <MorphCurves controlPointA="#1.6, #0.05" anchorPointA="#FFFFFF.DF, #0.05" controlPointB="#1.66, #0.16" anchorPointB="-0.1328125, #0.16"/>
+                    <MorphCurves controlPointA="-1.6328125, #0.05" anchorPointA="#FFFFFD.4D, #FFFFFE.F5" controlPointB="-1.6640625, #0.16" anchorPointB="-2.75, -0.9921875"/>
+                    <MorphCurves controlPointA="#FFFFFC.3D, -2.109375" anchorPointA="#FFFFFC.3D, -3.609375" controlPointB="#FFFFFC.2B, -2.078125" anchorPointB="#FFFFFC.2B, -3.609375"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0574798583984375" d="0.0574798583984375" tx="-1.65" ty="-46.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.164705882352941"/>
+                        <GradientEntry color="#0099FF" alpha="0" ratio="0.917647058823529"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.4" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!625 -267[352 5 -33 5!-33 5[-418 5 -691 -267!-691 -267[-963 -540 -963 -924!-963 -924[-963 -1310 -691 -1582!-691 -1582[-418 -1854 -33 -1854!-33 -1854[352 -1854 625 -1582!625 -1582[897 -1310 897 -924!897 -924[897 -540 625 -267"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0585784912109375" d="0.0585784912109375" tx="-1.65" ty="-46.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.109803921568627" ratio="0.164705882352941"/>
+                        <GradientEntry color="#0099FF" alpha="0" ratio="0.917647058823529"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.0431372549019608" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!636 -254[358 22 -34 22!-34 22[-426 22 -704 -254!-704 -254[-981 -532 -981 -924!-981 -924[-981 -1317 -704 -1594!-704 -1594[-426 -1871 -34 -1871!-34 -1871[358 -1871 636 -1594!636 -1594[913 -1317 913 -924!913 -924[913 -532 636 -254"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0587158203125" d="0.0587158203125" tx="-1.65" ty="-46.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.164705882352941"/>
+                        <GradientEntry color="#0099FF" alpha="0" ratio="0.917647058823529"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!639 -252[360 25 -33 25!-33 25[-426 25 -705 -252!-705 -252[-983 -531 -983 -924!-983 -924[-983 -1318 -705 -1596!-705 -1596[-426 -1874 -33 -1874!-33 -1874[360 -1874 639 -1596!639 -1596[917 -1318 917 -924!917 -924[917 -531 639 -252"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

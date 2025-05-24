@@ -1,0 +1,186 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-兵工厂中枢" itemID="66b8b287-00000914" linkageExportForAS="true" linkageIdentifier="特殊敌人-兵工厂中枢" lastModified="1747837935" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="特殊敌人-兵工厂中枢" currentFrame="12">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" name="结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 状态改变(状态)
+{
+	if (hp == 0)
+	{
+		gotoAndStop("结束");
+	}
+}
+
+function 检测雕像状态()
+{
+	var 游戏世界 = _root.gameworld;
+	var 存活雕像数量 = 0;
+	var 雕像列表 = [游戏世界.雕像0, 游戏世界.雕像1, 游戏世界.雕像2, 游戏世界.雕像3];
+	var 护罩列表 = [this.护罩0, this.护罩1, this.护罩2, this.护罩3];
+	for (var i = 0; i < 4; i++)
+	{
+		if (雕像列表[i].hp > 0)
+		{
+			存活雕像数量++;
+			if (!护罩列表[i].正常)
+			{
+				护罩列表[i].gotoAndPlay("复活");
+			}
+		}
+		else if (护罩列表[i].正常)
+		{
+			护罩列表[i].gotoAndPlay("消失");
+		}
+	}
+	this.无敌 = 存活雕像数量 > 0;
+}
+
+Z轴坐标 = this._y;
+
+hp = hp满血值 = 1;
+防御力 = 1;
+躲闪率 = 100;
+
+无敌 = true;
+状态 = "正常";
+击中效果 = "击中金属";
+
+unitAIType = "None";
+
+_root.敌人函数.初始化单位(this);
+gotoAndStop("正常");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="护罩" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩0" centerPoint3DX="43.3" centerPoint3DY="-118.4">
+                  <matrix>
+                    <Matrix tx="-0.5" ty="-205"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩1" centerPoint3DX="43.3" centerPoint3DY="-133.4">
+                  <matrix>
+                    <Matrix tx="-0.5" ty="-220"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩2" centerPoint3DX="43.3" centerPoint3DY="-148.4">
+                  <matrix>
+                    <Matrix tx="-0.5" ty="-235"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩3" centerPoint3DX="43.3" centerPoint3DY="-163.4">
+                  <matrix>
+                    <Matrix tx="-0.5" ty="-250"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/能量线" name="能量线" centerPoint3DX="25" centerPoint3DY="-117.9">
+                  <matrix>
+                    <Matrix tx="-1" ty="-287.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26" y="169.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" name="area" centerPoint3DY="-80">
+                  <matrix>
+                    <Matrix a="3.20001220703125" d="6.39994812011719" tx="-40" ty="-160"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢正常" name="man" centerPoint3DX="2" centerPoint3DY="-155.05">
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢结束" name="man" selected="true" centerPoint3DX="2" centerPoint3DY="-155.05">
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

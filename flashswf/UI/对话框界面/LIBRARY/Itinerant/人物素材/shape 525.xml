@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Itinerant/人物素材/shape 525" itemID="5306dc65-0000020e" symbolType="graphic" lastModified="1472113559">
+  <timeline>
+    <DOMTimeline name="shape 525">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#F5F3F1"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#97816C"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.05" solidStyle="hairline">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.05" solidStyle="hairline">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!13.5 360.5[#7D.AA #18B.68 218.5 446"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!218.5 446[#E5.48 #1C3.CC 240 458!240 458|235 432"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!235 432[#7D.05 #175.3B -4 333.5"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!-4 333.5|-18 351!-18 351[-1.9453125 #163.96 13.5 360.5"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!218.5 446[#BF.E9 566 191 686!191 686[#B7.6D #341.51 156 961"/>
+                    <Edge fillStyle1="2" edges="!156 961[#83.8A #3F1.C9 69.5 1004.5!69.5 1004.5[#7.83 #3E7.35 4 942.5"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!4 942.5[#FFFFEB.7F #2F3.DA -7.5 550.5!-7.5 550.5|13.5 360.5!231 411|235 432"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!10 316.5[#85.83 #167.EF 231 411"/>
+                    <Edge strokeStyle="2" edges="!-318 448|-308 443"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!-4 333.5|10 316.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#ECCEB6"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="0.05" joints="miter" solidStyle="hairline">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!184 0|208 0!208 0[251 13 280 66!280 66|284 73!284 73[310 124 304 193!304 193[298 265 252 302"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!252 302[209 389 196 618!196 618[182 846 156 966"/>
+                    <Edge fillStyle1="1" edges="!156 966[139 1000 79 1000!79 1000|75 1000!75 1000[17 998 5 946"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!5 946|4 940!4 940[-12 628 30 342!30 342[24 0 184 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

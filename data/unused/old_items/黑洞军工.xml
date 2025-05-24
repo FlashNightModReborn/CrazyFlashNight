@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <item>
+    <id>5701</id>
+    <name>FN F2000</name>
+    <displayname>FN F2000</displayname>
+    <icon>FN F2000</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>3.6</weight>
+    <price>62400</price>
+    <description>FN F2000是由比利时公司Fabrique Nationale所制造的一种突击步枪。2001年3月在阿拉伯联合酋长国阿布扎比举行的IDEX展览会上首次正式展示。
+F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的性能与那极具科幻感的外型完全是天作之合。
+从质量和特点来看，应是黑洞军工依设计图所产。</description>
+    <level>16</level>
+    <data>
+      <capacity>30</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>100</interval>
+      <velocity>35</velocity>
+      <bullet>精制普通子弹</bullet>
+      <bulletrename>精制子弹</bulletrename>
+      <sound>re_smg_mp40.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>200</power>
+      <impact>50</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-FN F2000</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>5702</id>
+    <name>HK416</name>
+    <displayname>HK416</displayname>
+    <icon>HK416</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>4</weight>
+    <price>100000</price>
+    <description>HK416是由黑克勒-科赫以HK G36突击步枪的气动系统在M4卡宾枪的设计上重新改造而成，原为M4上机匣套件，现已成为完整的突击步枪推出。
+从质量和特点来看，应是黑洞军工依设计图所产。</description>
+    <level>30</level>
+    <data>
+      <capacity>40</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>100</interval>
+      <velocity>35</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>hk416.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>320</power>
+      <impact>50</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-HK416</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>5703</id>
+    <name>STI2011</name>
+    <displayname>STI2011</displayname>
+    <icon>STI2011</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>3</weight>
+    <price>53000</price>
+    <description>2011系列是由美国定制制造商STI International（现为STACCATO）开发的自动手枪模块化框架和完整型号的总称。
+该概念是M1911的21世纪翻新模型，有各种变体，例如竞争、执法和自卫。 而“2011”这个名字的意思则是“M1911在100年后的样子”。
+从质量和特点来看，应是黑洞军工依设计图所产。</description>
+    <level>25</level>
+    <data>
+      <capacity>8</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>150</interval>
+      <velocity>30</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>re_pistol_m1911_2011.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>马格南手枪弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>1000</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-STI2011</dressup>
+      <slay>6</slay>
+    </equipped>
+  </item>
+</root>

@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan颈饰4" itemID="66c0a59d-0000041b" lastModified="1723901341">
+  <timeline>
+    <DOMTimeline name="lo-chan颈饰4">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#161616"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#2B2B2B"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#515151"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#3D3D3D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!485 298S3|562 285"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!562 285S5|455 18"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!455 18S3|380 128"/>
+                    <Edge fillStyle0="1" fillStyle1="4" edges="!380 128S3|485 298"/>
+                    <Edge fillStyle0="5" strokeStyle="1" edges="!133 0S5|0 303"/>
+                    <Edge fillStyle0="5" fillStyle1="4" edges="!0 303S3|162 104"/>
+                    <Edge fillStyle0="5" fillStyle1="3" edges="!162 104S3|133 0"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!162 104S3|380 128"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!0 303S5|206 628"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!206 628S3|485 298"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!133 0S6|455 18"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!562 285S6[373 489 206 628"/>
+                    <Edge cubics="!133 0(;133,0 0,303 0,303q133 0 0 303);"/>
+                    <Edge cubics="!455 18(;455,18 133,0 133,0q455 18 133 0);"/>
+                    <Edge cubics="!206 628(;317,535 436,421 562,285q206 628Q373 489q562 285);"/>
+                    <Edge cubics="!0 303(;0,303 206,628 206,628q0 303 206 628);"/>
+                    <Edge cubics="!562 285(;562,285 455,18 455,18q562 285 455 18);"/>
+                    <Edge cubics="!162 104(;162,104 380,128 380,128q162 104 380 128);"/>
+                    <Edge cubics="!380 128(;380,128 455,18 455,18q380 128 455 18);"/>
+                    <Edge cubics="!162 104(;162,104 133,0 133,0q162 104 133 0);"/>
+                    <Edge cubics="!162 104(;162,104 0,303 0,303q162 104 0 303);"/>
+                    <Edge cubics="!380 128(;380,128 485,298 485,298q380 128 485 298);"/>
+                    <Edge cubics="!485 298(;485,298 562,285 562,285q485 298 562 285);"/>
+                    <Edge cubics="!485 298(;485,298 206,628 206,628q485 298 206 628);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="面板/平板整体UI四环" itemID="66c4b2c1-00001887" lastModified="1724166849" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="平板整体UI四环">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环部件2" centerPoint3DX="115.45" centerPoint3DY="4.4">
+                  <matrix>
+                    <Matrix tx="110.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.1" y="4.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环部件2" centerPoint3DX="4.7" centerPoint3DY="115.85">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" ty="120.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.1" y="4.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环部件2" centerPoint3DX="116" centerPoint3DY="225.65">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="121.05" ty="230"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.1" y="4.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环部件1" centerPoint3DX="116.5" centerPoint3DY="115.9">
+                  <matrix>
+                    <Matrix tx="6.5" ty="5.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="110" y="110.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环部件2" centerPoint3DX="225.75" centerPoint3DY="115.6">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="230.2" ty="110.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.1" y="4.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

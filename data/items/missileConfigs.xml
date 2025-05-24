@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<missileConfigs>
+    <!-- 默认配置 -->
+    <config name="default">
+        <initialSpeedRatio>0.5</initialSpeedRatio>
+        <rotationSpeed>1</rotationSpeed>
+        <acceleration>10</acceleration>
+        <dragCoefficient>0.001</dragCoefficient>
+
+        <preLaunchFrames>
+            <min>10</min>
+            <max>15</max>
+        </preLaunchFrames>
+
+        <preLaunchPeakHeight>
+            <min>20</min>
+            <max>60</max>
+        </preLaunchPeakHeight>
+
+        <preLaunchHorizAmp>
+            <min>0</min>
+            <max>8</max>
+        </preLaunchHorizAmp>
+
+        <preLaunchCycles>
+            <min>1</min>
+            <max>3</max>
+        </preLaunchCycles>
+
+        <rotationShakeTime>
+            <start>0.35</start>
+            <end>0.45</end>
+        </rotationShakeTime>
+
+        <rotationShakeAmplitude>0.4</rotationShakeAmplitude>
+        <searchBatchSize>8</searchBatchSize>
+        <searchRange>30</searchRange>
+        <navigationRatio>4</navigationRatio>
+        <angleCorrection>0.1</angleCorrection>
+    </config>
+
+    <!-- 高速拦截导弹配置 -->
+    <config name="interceptor">
+        <initialSpeedRatio>0.8</initialSpeedRatio>
+        <rotationSpeed>2</rotationSpeed>
+        <acceleration>15</acceleration>
+        <dragCoefficient>0.0008</dragCoefficient>
+
+        <preLaunchFrames>
+            <min>5</min>
+            <max>8</max>
+        </preLaunchFrames>
+
+        <preLaunchPeakHeight>
+            <min>10</min>
+            <max>20</max>
+        </preLaunchPeakHeight>
+
+        <navigationRatio>3</navigationRatio>
+        <angleCorrection>0.15</angleCorrection>
+    </config>
+
+    <!-- 巡航导弹配置 -->
+    <config name="cruise">
+        <initialSpeedRatio>0.3</initialSpeedRatio>
+        <rotationSpeed>0.5</rotationSpeed>
+        <acceleration>2</acceleration>
+        <dragCoefficient>0.0012</dragCoefficient>
+
+        <preLaunchFrames>
+            <min>15</min>
+            <max>20</max>
+        </preLaunchFrames>
+
+        <preLaunchPeakHeight>
+            <min>30</min>
+            <max>80</max>
+        </preLaunchPeakHeight>
+
+        <navigationRatio>5</navigationRatio>
+        <angleCorrection>0.05</angleCorrection>
+        <searchRange>50</searchRange>
+    </config>
+
+    <!-- 多管火箭配置 -->
+    <config name="rocket">
+        <initialSpeedRatio>0.6</initialSpeedRatio>
+        <rotationSpeed>1.5</rotationSpeed>
+        <acceleration>12</acceleration>
+        <dragCoefficient>0.0015</dragCoefficient>
+
+        <preLaunchFrames>
+            <min>3</min>
+            <max>5</max>
+        </preLaunchFrames>
+
+        <preLaunchPeakHeight>
+            <min>5</min>
+            <max>15</max>
+        </preLaunchPeakHeight>
+
+        <preLaunchHorizAmp>
+            <min>10</min>
+            <max>20</max>
+        </preLaunchHorizAmp>
+
+        <navigationRatio>2</navigationRatio>
+        <angleCorrection>0.2</angleCorrection>
+        <searchBatchSize>4</searchBatchSize>
+    </config>
+
+
+    <!-- 铁血战士肩炮等离子炮弹 -->
+    <config name="predatorPlasma">
+        <!-- 初始速度比例: 稍慢启动，给玩家反应时间 -->
+        <initialSpeedRatio>0.3</initialSpeedRatio>
+        <!-- 旋转速度 (度/帧): 非常低，物理上限制急转弯能力 -->
+        <rotationSpeed>0.7</rotationSpeed>
+        <!-- 加速度: 中等 -->
+        <acceleration>10</acceleration>
+        <!-- 阻力系数: 标准值或略高，模拟等离子能量消散？ -->
+        <dragCoefficient>0.02</dragCoefficient>
+
+        <!-- 预发射动画: 快速、短促的发射效果 -->
+        <preLaunchFrames>
+            <min>2</min>
+            <max>4</max>
+        </preLaunchFrames>
+        <preLaunchPeakHeight>
+            <min>5</min>
+            <max>10</max>
+        </preLaunchPeakHeight>
+        <preLaunchHorizAmp>
+            <min>1</min>
+            <max>3</max>
+        </preLaunchHorizAmp>
+        <preLaunchCycles>
+            <min>0.5</min>
+            <max>1</max>
+        </preLaunchCycles>
+
+        <!-- 移除或缩短旋转抖动，保持发射干脆 -->
+        <rotationShakeTime>
+            <start>0.1</start>
+            <end>0.2</end>
+        </rotationShakeTime>
+        <rotationShakeAmplitude>0.2</rotationShakeAmplitude>
+
+        <!-- 索敌批处理大小: 标准即可 -->
+        <searchBatchSize>8</searchBatchSize>
+        <!-- 索敌范围: 标准或稍远 -->
+        <searchRange>35</searchRange>
+
+        <!-- 导航比率 (关键!): 小于1，导致导引非常迟钝 -->
+        <navigationRatio>0.6</navigationRatio>
+        <!-- 角度修正系数: 同样设置较低，减少直接指向目标的倾向 -->
+        <angleCorrection>0.1</angleCorrection>
+    </config>
+</missileConfigs>

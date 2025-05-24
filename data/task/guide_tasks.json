@@ -1,0 +1,311 @@
+{
+    "tasks": [
+        {
+            "id": 120001,
+            "title": "$SIDE_TITLE_10006",
+            "description": "$SIDE_DESCRIPTION_10006",
+
+            "get_requirements": [8],
+            "get_conversation": "$SIDE_GET_10006",
+            "get_npc": "King",
+
+            "finish_requirements": [
+                "DEATH MATCH角斗场#冒险"
+            ],
+            "finish_conversation": "$SIDE_FINISH_10006",
+            "finish_npc": "King",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000",
+                "Glock 18#1"
+            ],
+            
+            "chain":"引导#1"
+        },
+        {
+            "id": 120002,
+            "title": "$SIDE_TITLE_10007",
+            "description": "$SIDE_DESCRIPTION_10007",
+
+            "get_requirements": [120001],
+            "get_conversation": "$SIDE_GET_10007",
+            "get_npc": "King",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_10007",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#500",
+                "经验值#500"
+            ],
+            
+            "chain":"引导#2"
+        },
+        {
+            "id": 120003,
+            "title": "$SIDE_TITLE_10008",
+            "description": "$SIDE_DESCRIPTION_10008",
+
+            "get_requirements": [120002],
+            "get_conversation": "$SIDE_GET_10008",
+            "get_npc": "Boy",
+
+            "finish_requirements": [
+                "郊区#冒险"
+            ],
+            "finish_conversation": "$SIDE_FINISH_10008",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#3000",
+                "经验值#3000",
+                "AK47#1"
+            ],
+            
+            "chain":"引导#3"
+        },
+        {
+            "id": 120005,
+            "title": "$SIDE_TITLE_120005",
+            "description": "$SIDE_DESCRIPTION_120005",
+
+            "get_requirements": [19],
+            "get_conversation": "$SIDE_GET_120005",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "贫民窟#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_120005",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#10000",
+                "经验值#1000",
+                "战术狗腿刀#1",
+                "技能点#25"
+            ],
+            
+            "chain":"引导#5"
+        },
+        {
+            "id": 120006,
+            "title": "$SIDE_TITLE_120006",
+            "description": "$SIDE_DESCRIPTION_120006",
+
+            "get_requirements": [120005],
+            "get_conversation": "$SIDE_GET_120006",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120006",
+            "finish_npc": "丽丽丝",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000"
+            ],
+            
+            "chain":"引导#6"
+        },
+        {
+            "id": 120007,
+            "title": "$SIDE_TITLE_120007",
+            "description": "$SIDE_DESCRIPTION_120007",
+
+            "get_requirements": [120006],
+            "get_conversation": "$SIDE_GET_120007",
+            "get_npc": "丽丽丝",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120007",
+            "finish_npc": "格格巫",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "稀释的毒#1",
+                "格格巫的毒#5"
+            ],
+            
+            "chain":"引导#7"
+        },
+        {
+            "id": 120008,
+            "title": "$SIDE_TITLE_120008",
+            "description": "$SIDE_DESCRIPTION_120008",
+
+            "get_requirements": [120007],
+            "get_conversation": "$SIDE_GET_120008",
+            "get_npc": "格格巫",
+
+            "finish_requirements": [
+                "通缉任务之硬化僵尸#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_120008",
+            "finish_npc": "格格巫",
+            "rewards": [
+                "金币#5000",
+                "经验值#2000",
+                "技能点#30",
+                "格格巫的毒#5"
+            ],
+            
+            "chain":"引导#8"
+        },
+        {
+            "id": 120009,
+            "title": "$SIDE_TITLE_120009",
+            "description": "$SIDE_DESCRIPTION_120009",
+
+            "get_requirements": [63],
+            "get_conversation": "$SIDE_GET_120009",
+            "get_npc": "小F",
+
+            "finish_requirements": [
+                "压制摇滚公园#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_120009",
+            "finish_npc": "小F",
+            "rewards": [
+                "金币#20000",
+                "经验值#500000",
+                "A兵团精致战术背心制作图纸#1",
+                "技能点#50",
+                "强化石#300"
+            ],
+            
+            "chain":"引导#9"
+        },
+        {
+            "id": 120010,
+            "title": "$SIDE_TITLE_120010",
+            "description": "$SIDE_DESCRIPTION_120010",
+
+            "get_requirements": [17],
+            "get_conversation": "$SIDE_GET_120010",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120010",
+            "finish_npc": "Blue",
+            "rewards": [
+                "红黑色功夫装#1",
+                "黑色功夫短裤#1",
+                "红色功夫布鞋#1",
+                "黑色功夫高手装#1",
+                "白色功夫高手裤子#1",
+                "黑色功夫布鞋#1",
+                "技能点#30"
+            ],
+            
+            "chain":"引导#10"
+        },
+        {
+            "id": 120011,
+            "title": "$SIDE_TITLE_120011",
+            "description": "$SIDE_DESCRIPTION_120011",
+
+            "get_requirements": [25,120010],
+            "get_conversation": "$SIDE_GET_120011",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "通缉任务之李小龙coser#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_120011",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#20000",
+                "经验值#1000",
+                "技能点#50"
+            ],
+            
+            "chain":"引导#11"
+        },
+        {
+            "id": 120012,
+            "title": "$SIDE_TITLE_120012",
+            "description": "$SIDE_DESCRIPTION_120012",
+
+            "get_requirements": [4],
+            "get_conversation": "$SIDE_GET_120012",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120012",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "技能点#60"
+            ],
+            
+            "chain":"引导#12"
+        },
+        {
+            "id": 120013,
+            "title": "$SIDE_TITLE_120013",
+            "description": "$SIDE_DESCRIPTION_120013",
+
+            "get_requirements": [120012],
+            "get_conversation": "$SIDE_GET_120013",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120013",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "技能点#60"
+            ],
+            
+            "chain":"引导#13"
+        },
+        {
+            "id": 120015,
+            "title": "$SIDE_TITLE_120015",
+            "description": "$SIDE_DESCRIPTION_120015",
+
+            "get_requirements": [120013],
+            "get_conversation": "$SIDE_GET_120015",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120015",
+            "finish_npc": "格格巫",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "技能点#30"
+            ],
+            
+            "chain":"引导#15"
+        },
+        {
+            "id": 120016,
+            "title": "$SIDE_TITLE_120016",
+            "description": "$SIDE_DESCRIPTION_120016",
+
+            "get_requirements": [120011],
+            "get_conversation": "$SIDE_GET_120016",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120016",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "技能点#20",
+                "二阶白色中山上装#1"
+            ],
+            
+            "chain":"引导#16"
+        }
+    ]
+}

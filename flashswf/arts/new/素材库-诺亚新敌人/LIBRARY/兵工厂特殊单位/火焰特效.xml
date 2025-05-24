@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/火焰特效" itemID="66bca76a-00001298" lastModified="1723639701">
+  <timeline>
+    <DOMTimeline name="火焰特效" currentFrame="31">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/烟气喷射循环单位/烟气喷射循环 32一循环" symbolType="graphic" firstFrame="16" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0024261474609375" b="-0.39849853515625" c="0.39849853515625" d="0.0024261474609375" tx="-2.15" ty="-51.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.85" y="-8.1"/>
+                  </transformationPoint>
+                  <color>
+                    <Color blueMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/烟气喷射循环单位/烟气喷射循环 32一循环" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.004913330078125" b="-0.804794311523438" c="0.804794311523438" d="0.004913330078125" tx="-3.8" ty="-99.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.8" y="-8.05"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FF3F1F"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

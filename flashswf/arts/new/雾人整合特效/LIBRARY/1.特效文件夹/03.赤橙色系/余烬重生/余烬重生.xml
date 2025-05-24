@@ -1,0 +1,3601 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/余烬重生/余烬重生" itemID="654b74c3-000020aa" linkageExportForAS="true" linkageIdentifier="余烬重生" lastModified="1699721689" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="余烬重生" currentFrame="14">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="-20" centerPoint3DY="-188.55">
+                  <matrix>
+                    <Matrix a="1.162353515625" d="1.89695739746094" tx="-43.25" ty="-226.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="-19.6" centerPoint3DY="-176.6">
+                  <matrix>
+                    <Matrix a="1.24992370605469" d="1.89695739746094" tx="-44.65" ty="-214.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="-19.6" centerPoint3DY="-176.6">
+                  <matrix>
+                    <Matrix a="1.30303955078125" d="1.89695739746094" tx="-45.7" ty="-214.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="-6.05" centerPoint3DY="-169.45">
+                  <matrix>
+                    <Matrix a="2.69403076171875" d="2.13497924804688" tx="-59.9" ty="-212.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="-7.75" centerPoint3DY="-146.9">
+                  <matrix>
+                    <Matrix a="2.73138427734375" d="1.91184997558594" tx="-63.1" ty="-182"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="-6.85" centerPoint3DY="-102.85">
+                  <matrix>
+                    <Matrix a="2.73138427734375" d="2.73600769042969" tx="-62.2" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="-6.85" centerPoint3DY="-82.85">
+                  <matrix>
+                    <Matrix a="2.73138427734375" d="2.48040771484375" tx="-62.2" ty="-129.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/落英缤纷/area" name="area" centerPoint3DX="1.1" centerPoint3DY="-64.35">
+                  <matrix>
+                    <Matrix a="2.377197265625" d="1.788818359375" tx="-47.15" ty="-96.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8DDB43">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-4.35" centerPoint3DY="10.25">
+                  <matrix>
+                    <Matrix a="0.06170654296875" b="0.422119140625" c="-0.422119140625" d="0.06170654296875" tx="-27.9" ty="-14.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="5.75" centerPoint3DY="15.95">
+                  <matrix>
+                    <Matrix a="-0.114593505859375" b="0.404815673828125" c="-0.404815673828125" d="-0.114593505859375" tx="-17.8" ty="-8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="12.4" centerPoint3DY="17.6">
+                  <matrix>
+                    <Matrix a="-0.266998291015625" b="0.316970825195313" c="-0.316970825195313" d="-0.266998291015625" tx="-11.15" ty="-6.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="19" centerPoint3DY="19.2">
+                  <matrix>
+                    <Matrix a="-0.369400024414063" b="0.176681518554688" c="-0.176681518554688" d="-0.369400024414063" tx="-4.55" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="22.75" centerPoint3DY="18.15">
+                  <matrix>
+                    <Matrix a="-0.404327392578125" b="0.009033203125" c="-0.009033203125" d="-0.404327392578125" tx="-0.8" ty="-6.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="25.35" centerPoint3DY="14.85">
+                  <matrix>
+                    <Matrix a="-0.3673095703125" b="-0.154434204101563" c="0.154434204101563" d="-0.3673095703125" tx="1.8" ty="-9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="28.15" centerPoint3DY="8.1">
+                  <matrix>
+                    <Matrix a="-0.26690673828125" b="-0.287551879882813" c="0.287551879882813" d="-0.26690673828125" tx="4.6" ty="-16.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="30.9" centerPoint3DY="1.3">
+                  <matrix>
+                    <Matrix a="-0.12335205078125" b="-0.367324829101563" c="0.367324829101563" d="-0.12335205078125" tx="7.35" ty="-23.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="36.2" centerPoint3DY="-9.2">
+                  <matrix>
+                    <Matrix a="0.0368804931640625" b="-0.379974365234375" c="0.379974365234375" d="0.0368804931640625" tx="12.65" ty="-33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="41.6" centerPoint3DY="-19.7">
+                  <matrix>
+                    <Matrix a="0.186935424804688" b="-0.325942993164063" c="0.325942993164063" d="0.186935424804688" tx="18.05" ty="-44.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="47" centerPoint3DY="-30.15">
+                  <matrix>
+                    <Matrix a="0.300384521484375" b="-0.2171630859375" c="0.2171630859375" d="0.300384521484375" tx="23.45" ty="-54.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="52.7" centerPoint3DY="-40.35">
+                  <matrix>
+                    <Matrix a="0.357666015625" b="-0.0731048583984375" c="0.0731048583984375" d="0.357666015625" tx="29.15" ty="-64.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="58.4" centerPoint3DY="-50.65">
+                  <matrix>
+                    <Matrix a="0.351364135742188" b="0.077972412109375" c="-0.077972412109375" d="0.351364135742188" tx="34.85" ty="-75.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="60.15" centerPoint3DY="-58.7">
+                  <matrix>
+                    <Matrix a="0.283447265625" b="0.212188720703125" c="-0.212188720703125" d="0.283447265625" tx="36.6" ty="-83.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="59.3" centerPoint3DY="-64.2">
+                  <matrix>
+                    <Matrix a="0.169281005859375" b="0.304763793945313" c="-0.304763793945313" d="0.169281005859375" tx="35.75" ty="-88.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="56.15" centerPoint3DY="-67.35">
+                  <matrix>
+                    <Matrix a="0.02850341796875" b="0.34228515625" c="-0.34228515625" d="0.02850341796875" tx="32.6" ty="-91.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="50.15" centerPoint3DY="-70.2">
+                  <matrix>
+                    <Matrix a="-0.111724853515625" b="0.318588256835938" c="-0.318588256835938" d="-0.111724853515625" tx="26.6" ty="-94.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="44.1" centerPoint3DY="-72.9">
+                  <matrix>
+                    <Matrix a="-0.229049682617188" b="0.240203857421875" c="-0.240203857421875" d="-0.229049682617188" tx="20.55" ty="-97.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="38.1" centerPoint3DY="-75.75">
+                  <matrix>
+                    <Matrix a="-0.302993774414063" b="0.122848510742188" c="-0.122848510742188" d="-0.302993774414063" tx="14.55" ty="-100.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="36.7" centerPoint3DY="-85.4">
+                  <matrix>
+                    <Matrix a="-0.2559814453125" b="0.197113037109375" c="-0.197113037109375" d="-0.2559814453125" tx="13.15" ty="-109.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="35.25" centerPoint3DY="-95.1">
+                  <matrix>
+                    <Matrix a="-0.1920166015625" b="0.25628662109375" c="-0.25628662109375" d="-0.1920166015625" tx="11.7" ty="-119.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="35.9" centerPoint3DY="-105.35">
+                  <matrix>
+                    <Matrix a="-0.115066528320313" b="0.295272827148438" c="-0.295272827148438" d="-0.115066528320313" tx="12.35" ty="-129.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="36.6" centerPoint3DY="-115.6">
+                  <matrix>
+                    <Matrix a="-0.031524658203125" b="0.312591552734375" c="-0.312591552734375" d="-0.031524658203125" tx="13.05" ty="-140"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="37.2" centerPoint3DY="-125.85">
+                  <matrix>
+                    <Matrix a="0.0527801513671875" b="0.306777954101563" c="-0.306777954101563" d="0.0527801513671875" tx="13.65" ty="-150.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="38.55" centerPoint3DY="-135.15">
+                  <matrix>
+                    <Matrix a="0.131622314453125" b="0.278427124023438" c="-0.278427124023438" d="0.131622314453125" tx="15" ty="-159.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="39.9" centerPoint3DY="-143.75">
+                  <matrix>
+                    <Matrix a="0.199371337890625" b="0.230514526367188" c="-0.230514526367188" d="0.199371337890625" tx="16.35" ty="-168.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="40.9" centerPoint3DY="-151.8">
+                  <matrix>
+                    <Matrix a="0.251693725585938" b="0.167205810546875" c="-0.167205810546875" d="0.251693725585938" tx="17.35" ty="-176.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#09BDC1">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="3.35" centerPoint3DY="2">
+                  <matrix>
+                    <Matrix a="-0.248779296875" b="0.34112548828125" c="-0.34112548828125" d="-0.248779296875" tx="-20.2" ty="-22.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-6" centerPoint3DY="-12">
+                  <matrix>
+                    <Matrix a="0.03924560546875" b="0.406845092773438" c="-0.406845092773438" d="0.03924560546875" tx="-29.55" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-16" centerPoint3DY="-22.75">
+                  <matrix>
+                    <Matrix a="0.231063842773438" b="0.319915771484375" c="-0.319915771484375" d="0.231063842773438" tx="-39.55" ty="-47.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-26" centerPoint3DY="-33.6">
+                  <matrix>
+                    <Matrix a="0.349258422851563" b="0.154098510742188" c="-0.154098510742188" d="0.349258422851563" tx="-49.55" ty="-58"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-32.1" centerPoint3DY="-41.25">
+                  <matrix>
+                    <Matrix a="0.36749267578125" b="-0.0243072509765625" c="0.0243072509765625" d="0.36749267578125" tx="-55.65" ty="-65.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-38.2" centerPoint3DY="-48.95">
+                  <matrix>
+                    <Matrix a="0.302459716796875" b="-0.185882568359375" c="0.185882568359375" d="0.302459716796875" tx="-61.75" ty="-73.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-40.55" centerPoint3DY="-53.15">
+                  <matrix>
+                    <Matrix a="0.1527099609375" b="-0.30572509765625" c="0.30572509765625" d="0.1527099609375" tx="-64.1" ty="-77.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-41.65" centerPoint3DY="-56.85">
+                  <matrix>
+                    <Matrix a="-0.0231475830078125" b="-0.32794189453125" c="0.32794189453125" d="-0.0231475830078125" tx="-65.2" ty="-81.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-39.4" centerPoint3DY="-64.1">
+                  <matrix>
+                    <Matrix a="-0.173004150390625" b="-0.262985229492188" c="0.262985229492188" d="-0.173004150390625" tx="-62.95" ty="-88.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-37.2" centerPoint3DY="-71.4">
+                  <matrix>
+                    <Matrix a="-0.268142700195313" b="-0.138381958007813" c="0.138381958007813" d="-0.268142700195313" tx="-60.75" ty="-95.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-32.8" centerPoint3DY="-82.15">
+                  <matrix>
+                    <Matrix a="-0.288619995117188" b="0.0101165771484375" c="-0.0101165771484375" d="-0.288619995117188" tx="-56.35" ty="-106.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-28.7" centerPoint3DY="-94.6">
+                  <matrix>
+                    <Matrix a="-0.235549926757813" b="0.142105102539063" c="-0.142105102539063" d="-0.235549926757813" tx="-52.25" ty="-119"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-24.5" centerPoint3DY="-107.1">
+                  <matrix>
+                    <Matrix a="-0.129470825195313" b="0.227951049804688" c="-0.227951049804688" d="-0.129470825195313" tx="-48.05" ty="-131.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-23.45" centerPoint3DY="-111.65">
+                  <matrix>
+                    <Matrix a="-0.07965087890625" b="0.244247436523438" c="-0.244247436523438" d="-0.07965087890625" tx="-47" ty="-136.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-22.4" centerPoint3DY="-116.25">
+                  <matrix>
+                    <Matrix a="-0.0296630859375" b="0.25030517578125" c="-0.25030517578125" d="-0.0296630859375" tx="-45.95" ty="-140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-21.35" centerPoint3DY="-120.85">
+                  <matrix>
+                    <Matrix a="0.0195465087890625" b="0.246307373046875" c="-0.246307373046875" d="0.0195465087890625" tx="-44.9" ty="-145.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-20.3" centerPoint3DY="-125.35">
+                  <matrix>
+                    <Matrix a="0.06695556640625" b="0.232711791992188" c="-0.232711791992188" d="0.06695556640625" tx="-43.85" ty="-149.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-19.6" centerPoint3DY="-129.3">
+                  <matrix>
+                    <Matrix a="0.109710693359375" b="0.210205078125" c="-0.210205078125" d="0.109710693359375" tx="-43.15" ty="-153.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-19.05" centerPoint3DY="-133.1">
+                  <matrix>
+                    <Matrix a="0.146316528320313" b="0.18017578125" c="-0.18017578125" d="0.146316528320313" tx="-42.6" ty="-157.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-18.55" centerPoint3DY="-136.7">
+                  <matrix>
+                    <Matrix a="0.175048828125" b="0.144760131835938" c="-0.144760131835938" d="0.175048828125" tx="-42.1" ty="-161.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-18.15" centerPoint3DY="-139.85">
+                  <matrix>
+                    <Matrix a="0.196334838867188" b="0.1048583984375" c="-0.1048583984375" d="0.196334838867188" tx="-41.7" ty="-164.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F161D9">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="43.55" centerPoint3DY="9.45">
+                  <matrix>
+                    <Matrix a="0.25103759765625" b="0.265823364257813" c="-0.265823364257813" d="0.25103759765625" tx="20" ty="-14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="47.9" centerPoint3DY="4.65">
+                  <matrix>
+                    <Matrix a="0.0254058837890625" b="0.359512329101563" c="-0.359512329101563" d="0.0254058837890625" tx="24.35" ty="-19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="48.75" centerPoint3DY="2.5">
+                  <matrix>
+                    <Matrix a="-0.203872680664063" b="0.290390014648438" c="-0.290390014648438" d="-0.203872680664063" tx="25.2" ty="-21.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="48.95" centerPoint3DY="0.4">
+                  <matrix>
+                    <Matrix a="-0.336746215820313" b="0.0950927734375" c="-0.0950927734375" d="-0.336746215820313" tx="25.4" ty="-24"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="46.15" centerPoint3DY="-7.2">
+                  <matrix>
+                    <Matrix a="-0.316497802734375" b="-0.136474609375" c="0.136474609375" d="-0.316497802734375" tx="22.6" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="36.4" centerPoint3DY="-18.85">
+                  <matrix>
+                    <Matrix a="-0.155776977539063" b="-0.301300048828125" c="0.301300048828125" d="-0.155776977539063" tx="12.85" ty="-43.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="26.65" centerPoint3DY="-30.4">
+                  <matrix>
+                    <Matrix a="0.06829833984375" b="-0.327560424804688" c="0.327560424804688" d="0.06829833984375" tx="3.1" ty="-54.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="20" centerPoint3DY="-41.8">
+                  <matrix>
+                    <Matrix a="0.2562255859375" b="-0.206619262695313" c="0.206619262695313" d="0.2562255859375" tx="-3.55" ty="-66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="19.35" centerPoint3DY="-52.1">
+                  <matrix>
+                    <Matrix a="0.32452392578125" b="0.0003204345703125" c="-0.0003204345703125" d="0.32452392578125" tx="-4.2" ty="-76.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="18.7" centerPoint3DY="-58.6">
+                  <matrix>
+                    <Matrix a="0.246536254882813" b="0.2022705078125" c="-0.2022705078125" d="0.246536254882813" tx="-4.85" ty="-83"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="17.7" centerPoint3DY="-61.3">
+                  <matrix>
+                    <Matrix a="0.061492919921875" b="0.307998657226563" c="-0.307998657226563" d="0.061492919921875" tx="-5.85" ty="-85.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="13.9" centerPoint3DY="-63.3">
+                  <matrix>
+                    <Matrix a="-0.144012451171875" b="0.2730712890625" c="-0.2730712890625" d="-0.144012451171875" tx="-9.65" ty="-87.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="6.05" centerPoint3DY="-65.05">
+                  <matrix>
+                    <Matrix a="-0.27984619140625" b="0.11785888671875" c="-0.11785888671875" d="-0.27984619140625" tx="-17.5" ty="-89.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-3.65" centerPoint3DY="-69.2">
+                  <matrix>
+                    <Matrix a="-0.286956787109375" b="-0.0826416015625" c="0.0826416015625" d="-0.286956787109375" tx="-27.2" ty="-93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-11.8" centerPoint3DY="-79.15">
+                  <matrix>
+                    <Matrix a="-0.166763305664063" b="-0.241806030273438" c="0.241806030273438" d="-0.166763305664063" tx="-35.35" ty="-103.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-14.95" centerPoint3DY="-88.1">
+                  <matrix>
+                    <Matrix a="-0.086700439453125" b="-0.278076171875" c="0.278076171875" d="-0.086700439453125" tx="-38.5" ty="-112.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-12.3" centerPoint3DY="-101">
+                  <matrix>
+                    <Matrix a="0.0328216552734375" b="-0.286300659179688" c="0.286300659179688" d="0.0328216552734375" tx="-35.85" ty="-125.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-9.7" centerPoint3DY="-113.95">
+                  <matrix>
+                    <Matrix a="0.144927978515625" b="-0.245254516601563" c="0.245254516601563" d="0.144927978515625" tx="-33.25" ty="-138.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-7.1" centerPoint3DY="-126.85">
+                  <matrix>
+                    <Matrix a="0.229904174804688" b="-0.163070678710938" c="0.163070678710938" d="0.229904174804688" tx="-30.65" ty="-151.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-4.4" centerPoint3DY="-139.8">
+                  <matrix>
+                    <Matrix a="0.273727416992188" b="-0.0547027587890625" c="0.0547027587890625" d="0.273727416992188" tx="-27.95" ty="-164.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-1.85" centerPoint3DY="-152.7">
+                  <matrix>
+                    <Matrix a="0.26971435546875" b="0.060028076171875" c="-0.060028076171875" d="0.26971435546875" tx="-25.4" ty="-177.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F6F39D">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="7.15" centerPoint3DY="13.3">
+                  <matrix>
+                    <Matrix a="0.232498168945313" b="-0.199691772460938" c="0.199691772460938" d="0.232498168945313" tx="-16.4" ty="-11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="16.6" centerPoint3DY="6.6">
+                  <matrix>
+                    <Matrix a="-0.304351806640625" b="0.103469848632813" c="-0.103469848632813" d="-0.304351806640625" tx="-6.95" ty="-17.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="4.8" centerPoint3DY="-26.6">
+                  <matrix>
+                    <Matrix a="0.336517333984375" b="0.017791748046875" c="-0.017791748046875" d="0.336517333984375" tx="-18.75" ty="-51"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="5.35" centerPoint3DY="-24.6">
+                  <matrix>
+                    <Matrix a="-0.3193359375" b="-0.147857666015625" c="0.147857666015625" d="-0.3193359375" tx="-18.2" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="17.35" centerPoint3DY="-61.6">
+                  <matrix>
+                    <Matrix a="0.25128173828125" b="0.268325805664063" c="-0.268325805664063" d="0.25128173828125" tx="-6.2" ty="-86"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="24.5" centerPoint3DY="-69.15">
+                  <matrix>
+                    <Matrix a="0.199203491210938" b="0.31756591796875" c="-0.31756591796875" d="0.199203491210938" tx="0.95" ty="-93.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="30.25" centerPoint3DY="-76.25">
+                  <matrix>
+                    <Matrix a="0.137405395507813" b="0.356704711914063" c="-0.356704711914063" d="0.137405395507813" tx="6.7" ty="-100.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="36.05" centerPoint3DY="-83.35">
+                  <matrix>
+                    <Matrix a="0.0682373046875" b="0.384246826171875" c="-0.384246826171875" d="0.0682373046875" tx="12.5" ty="-107.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="41.8" centerPoint3DY="-90.5">
+                  <matrix>
+                    <Matrix a="-0.0037841796875" b="0.398269653320313" c="-0.398269653320313" d="-0.0037841796875" tx="18.25" ty="-114.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="47.55" centerPoint3DY="-97.6">
+                  <matrix>
+                    <Matrix a="-0.081146240234375" b="0.397628784179688" c="-0.397628784179688" d="-0.081146240234375" tx="24" ty="-122"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="53.3" centerPoint3DY="-104.7">
+                  <matrix>
+                    <Matrix a="-0.158584594726563" b="0.382308959960938" c="-0.382308959960938" d="-0.158584594726563" tx="29.75" ty="-129.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="56.55" centerPoint3DY="-111.2">
+                  <matrix>
+                    <Matrix a="-0.231781005859375" b="0.352096557617188" c="-0.352096557617188" d="-0.231781005859375" tx="33" ty="-135.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="58.95" centerPoint3DY="-117.7">
+                  <matrix>
+                    <Matrix a="-0.300765991210938" b="0.307266235351563" c="-0.307266235351563" d="-0.300765991210938" tx="35.4" ty="-142.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="60.95" centerPoint3DY="-127.45">
+                  <matrix>
+                    <Matrix a="-0.178543090820313" b="0.385879516601563" c="-0.385879516601563" d="-0.178543090820313" tx="37.4" ty="-151.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="60" centerPoint3DY="-139">
+                  <matrix>
+                    <Matrix a="-0.0389862060546875" b="0.419586181640625" c="-0.419586181640625" d="-0.0389862060546875" tx="36.45" ty="-163.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="53.75" centerPoint3DY="-145.5">
+                  <matrix>
+                    <Matrix a="0.101119995117188" b="0.4044189453125" c="-0.4044189453125" d="0.101119995117188" tx="30.2" ty="-169.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="47.5" centerPoint3DY="-151.95">
+                  <matrix>
+                    <Matrix a="0.227996826171875" b="0.343612670898438" c="-0.343612670898438" d="0.227996826171875" tx="23.95" ty="-176.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="41.4" centerPoint3DY="-158.4">
+                  <matrix>
+                    <Matrix a="0.325637817382813" b="0.24609375" c="-0.24609375" d="0.325637817382813" tx="17.85" ty="-182.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="35.1" centerPoint3DY="-164.8">
+                  <matrix>
+                    <Matrix a="0.385421752929688" b="0.121871948242188" c="-0.121871948242188" d="0.385421752929688" tx="11.55" ty="-189.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="28.9" centerPoint3DY="-171.25">
+                  <matrix>
+                    <Matrix a="0.400222778320313" b="-0.0125579833984375" c="0.0125579833984375" d="0.400222778320313" tx="5.35" ty="-195.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#8B32F1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-3.95" centerPoint3DY="12.3">
+                  <matrix>
+                    <Matrix a="0.374786376953125" b="0.0729217529296875" c="-0.0729217529296875" d="0.374786376953125" tx="-27.5" ty="-12.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="8.4" centerPoint3DY="5.05">
+                  <matrix>
+                    <Matrix a="0.221725463867188" b="0.301605224609375" c="-0.301605224609375" d="0.221725463867188" tx="-15.15" ty="-19.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="18.1" centerPoint3DY="3">
+                  <matrix>
+                    <Matrix a="-0.0403594970703125" b="0.365692138671875" c="-0.365692138671875" d="-0.0403594970703125" tx="-5.45" ty="-21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="23.35" centerPoint3DY="2.55">
+                  <matrix>
+                    <Matrix a="-0.272735595703125" b="0.235824584960938" c="-0.235824584960938" d="-0.272735595703125" tx="-0.2" ty="-21.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="26" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix a="-0.354034423828125" b="-0.0110015869140625" c="0.0110015869140625" d="-0.354034423828125" tx="2.45" ty="-23.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="27.75" centerPoint3DY="-3.95">
+                  <matrix>
+                    <Matrix a="-0.246856689453125" b="-0.243560791015625" c="0.243560791015625" d="-0.246856689453125" tx="4.2" ty="-28.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="31.45" centerPoint3DY="-13.8">
+                  <matrix>
+                    <Matrix a="-0.0151214599609375" b="-0.340057373046875" c="0.340057373046875" d="-0.0151214599609375" tx="7.9" ty="-38.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="39.7" centerPoint3DY="-26">
+                  <matrix>
+                    <Matrix a="0.214431762695313" b="-0.254791259765625" c="0.254791259765625" d="0.214431762695313" tx="16.15" ty="-50.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="52.05" centerPoint3DY="-36.25">
+                  <matrix>
+                    <Matrix a="0.323410034179688" b="-0.04119873046875" c="0.04119873046875" d="0.323410034179688" tx="28.5" ty="-60.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="64.4" centerPoint3DY="-46.65">
+                  <matrix>
+                    <Matrix a="0.2603759765625" b="0.184783935546875" c="-0.184783935546875" d="0.2603759765625" tx="40.85" ty="-71.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="73.3" centerPoint3DY="-52.4">
+                  <matrix>
+                    <Matrix a="0.0638275146484375" b="0.30609130859375" c="-0.30609130859375" d="0.0638275146484375" tx="49.75" ty="-76.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="75.8" centerPoint3DY="-56.35">
+                  <matrix>
+                    <Matrix a="-0.1566162109375" b="0.262344360351563" c="-0.262344360351563" d="-0.1566162109375" tx="52.25" ty="-80.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="72" centerPoint3DY="-61.25">
+                  <matrix>
+                    <Matrix a="-0.286819458007813" b="0.083892822265625" c="-0.083892822265625" d="-0.286819458007813" tx="48.45" ty="-85.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="63.75" centerPoint3DY="-69.4">
+                  <matrix>
+                    <Matrix a="-0.261932373046875" b="-0.129531860351563" c="0.129531860351563" d="-0.261932373046875" tx="40.2" ty="-93.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="59.5" centerPoint3DY="-74.6">
+                  <matrix>
+                    <Matrix a="-0.199981689453125" b="-0.20806884765625" c="0.20806884765625" d="-0.199981689453125" tx="35.95" ty="-99"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="57.8" centerPoint3DY="-81.25">
+                  <matrix>
+                    <Matrix a="-0.116165161132813" b="-0.260452270507813" c="0.260452270507813" d="-0.116165161132813" tx="34.25" ty="-105.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="56" centerPoint3DY="-88">
+                  <matrix>
+                    <Matrix a="-0.019927978515625" b="-0.281707763671875" c="0.281707763671875" d="-0.019927978515625" tx="32.45" ty="-112.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="54.25" centerPoint3DY="-94.65">
+                  <matrix>
+                    <Matrix a="0.074859619140625" b="-0.268966674804688" c="0.268966674804688" d="0.074859619140625" tx="30.7" ty="-119.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="52.55" centerPoint3DY="-101.4">
+                  <matrix>
+                    <Matrix a="0.160491943359375" b="-0.224472045898438" c="0.224472045898438" d="0.160491943359375" tx="29" ty="-125.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="50.8" centerPoint3DY="-108.05">
+                  <matrix>
+                    <Matrix a="0.224639892578125" b="-0.15496826171875" c="0.15496826171875" d="0.224639892578125" tx="27.25" ty="-132.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="49.05" centerPoint3DY="-114.7">
+                  <matrix>
+                    <Matrix a="0.26129150390625" b="-0.069122314453125" c="0.069122314453125" d="0.26129150390625" tx="25.5" ty="-139.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#AB72EB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="14.1" centerPoint3DY="11.3">
+                  <matrix>
+                    <Matrix a="-0.22198486328125" b="0.30438232421875" c="-0.30438232421875" d="-0.22198486328125" tx="-9.45" ty="-13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="8.2" centerPoint3DY="0.15">
+                  <matrix>
+                    <Matrix a="-0.0432891845703125" b="0.363037109375" c="-0.363037109375" d="-0.0432891845703125" tx="-15.35" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="0.55" centerPoint3DY="-8.8">
+                  <matrix>
+                    <Matrix a="0.128814697265625" b="0.3299560546875" c="-0.3299560546875" d="0.128814697265625" tx="-23" ty="-33.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-7.05" centerPoint3DY="-17.75">
+                  <matrix>
+                    <Matrix a="0.261474609375" b="0.2220458984375" c="-0.2220458984375" d="0.261474609375" tx="-30.6" ty="-42.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-14.7" centerPoint3DY="-26.7">
+                  <matrix>
+                    <Matrix a="0.325286865234375" b="0.0692596435546875" c="-0.0692596435546875" d="0.325286865234375" tx="-38.25" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-19.1" centerPoint3DY="-31.55">
+                  <matrix>
+                    <Matrix a="0.308639526367188" b="-0.0888519287109375" c="0.0888519287109375" d="0.308639526367188" tx="-42.65" ty="-55.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-23.55" centerPoint3DY="-36.4">
+                  <matrix>
+                    <Matrix a="0.2218017578125" b="-0.217025756835938" c="0.217025756835938" d="0.2218017578125" tx="-47.1" ty="-60.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-23.9" centerPoint3DY="-39.5">
+                  <matrix>
+                    <Matrix a="0.0902099609375" b="-0.28564453125" c="0.28564453125" d="0.0902099609375" tx="-47.45" ty="-63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-23.75" centerPoint3DY="-43.25">
+                  <matrix>
+                    <Matrix a="-0.052886962890625" b="-0.283798217773438" c="0.283798217773438" d="-0.052886962890625" tx="-47.3" ty="-67.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-22.45" centerPoint3DY="-49.8">
+                  <matrix>
+                    <Matrix a="-0.173873901367188" b="-0.215835571289063" c="0.215835571289063" d="-0.173873901367188" tx="-46" ty="-74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-21.25" centerPoint3DY="-56.4">
+                  <matrix>
+                    <Matrix a="-0.245712280273438" b="-0.10333251953125" c="0.10333251953125" d="-0.245712280273438" tx="-44.8" ty="-80.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-18.5" centerPoint3DY="-66.3">
+                  <matrix>
+                    <Matrix a="-0.254592895507813" b="0.0213165283203125" c="-0.0213165283203125" d="-0.254592895507813" tx="-42.05" ty="-90.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-15.75" centerPoint3DY="-76.35">
+                  <matrix>
+                    <Matrix a="-0.206024169921875" b="0.131744384765625" c="-0.131744384765625" d="-0.206024169921875" tx="-39.3" ty="-100.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-12.5" centerPoint3DY="-86.9">
+                  <matrix>
+                    <Matrix a="-0.115524291992188" b="0.203399658203125" c="-0.203399658203125" d="-0.115524291992188" tx="-36.05" ty="-111.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-10.95" centerPoint3DY="-91.75">
+                  <matrix>
+                    <Matrix a="-0.065032958984375" b="0.219223022460938" c="-0.219223022460938" d="-0.065032958984375" tx="-34.5" ty="-116.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-9.5" centerPoint3DY="-96.35">
+                  <matrix>
+                    <Matrix a="-0.0128936767578125" b="0.223403930664063" c="-0.223403930664063" d="-0.0128936767578125" tx="-33.05" ty="-120.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-8.55" centerPoint3DY="-100.1">
+                  <matrix>
+                    <Matrix a="0.0363311767578125" b="0.215591430664063" c="-0.215591430664063" d="0.0363311767578125" tx="-32.1" ty="-124.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-7.55" centerPoint3DY="-103.95">
+                  <matrix>
+                    <Matrix a="0.082672119140625" b="0.196792602539063" c="-0.196792602539063" d="0.082672119140625" tx="-31.1" ty="-128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-6.65" centerPoint3DY="-107.8">
+                  <matrix>
+                    <Matrix a="0.121978759765625" b="0.168930053710938" c="-0.168930053710938" d="0.121978759765625" tx="-30.2" ty="-132.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-5.7" centerPoint3DY="-111.65">
+                  <matrix>
+                    <Matrix a="0.153167724609375" b="0.133712768554688" c="-0.133712768554688" d="0.153167724609375" tx="-29.25" ty="-136.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="-4.75" centerPoint3DY="-115.45">
+                  <matrix>
+                    <Matrix a="0.175186157226563" b="0.09356689453125" c="-0.09356689453125" d="0.175186157226563" tx="-28.3" ty="-139.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#D428BA">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="53.85" centerPoint3DY="17.7">
+                  <matrix>
+                    <Matrix a="0.2239990234375" b="0.237197875976563" c="-0.237197875976563" d="0.2239990234375" tx="30.3" ty="-6.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="65.15" centerPoint3DY="16.1">
+                  <matrix>
+                    <Matrix a="0.0226593017578125" b="0.320785522460938" c="-0.320785522460938" d="0.0226593017578125" tx="41.6" ty="-8.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="71.3" centerPoint3DY="14.95">
+                  <matrix>
+                    <Matrix a="-0.181900024414063" b="0.259109497070313" c="-0.259109497070313" d="-0.181900024414063" tx="47.75" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="71.9" centerPoint3DY="11.9">
+                  <matrix>
+                    <Matrix a="-0.30047607421875" b="0.0848388671875" c="-0.0848388671875" d="-0.30047607421875" tx="48.35" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="67.95" centerPoint3DY="4.75">
+                  <matrix>
+                    <Matrix a="-0.28240966796875" b="-0.121780395507813" c="0.121780395507813" d="-0.28240966796875" tx="44.4" ty="-19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="62.45" centerPoint3DY="-7.7">
+                  <matrix>
+                    <Matrix a="-0.138900756835938" b="-0.268753051757813" c="0.268753051757813" d="-0.138900756835938" tx="38.9" ty="-32.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="56.95" centerPoint3DY="-20.15">
+                  <matrix>
+                    <Matrix a="0.060882568359375" b="-0.291839599609375" c="0.291839599609375" d="0.060882568359375" tx="33.4" ty="-44.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="51.45" centerPoint3DY="-32.5">
+                  <matrix>
+                    <Matrix a="0.2286376953125" b="-0.184356689453125" c="0.184356689453125" d="0.2286376953125" tx="27.9" ty="-56.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="47.75" centerPoint3DY="-41.3">
+                  <matrix>
+                    <Matrix a="0.289596557617188" b="0.000274658203125" c="-0.000274658203125" d="0.289596557617188" tx="24.2" ty="-65.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="45.25" centerPoint3DY="-45.7">
+                  <matrix>
+                    <Matrix a="0.219985961914063" b="0.18048095703125" c="-0.18048095703125" d="0.219985961914063" tx="21.7" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="41.45" centerPoint3DY="-46.65">
+                  <matrix>
+                    <Matrix a="0.05487060546875" b="0.274826049804688" c="-0.274826049804688" d="0.05487060546875" tx="17.9" ty="-71.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="34.9" centerPoint3DY="-46.05">
+                  <matrix>
+                    <Matrix a="-0.128509521484375" b="0.243667602539063" c="-0.243667602539063" d="-0.128509521484375" tx="11.35" ty="-70.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="25.4" centerPoint3DY="-47.35">
+                  <matrix>
+                    <Matrix a="-0.249710083007813" b="0.10516357421875" c="-0.10516357421875" d="-0.249710083007813" tx="1.85" ty="-71.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="15.1" centerPoint3DY="-52.5">
+                  <matrix>
+                    <Matrix a="-0.256027221679688" b="-0.0737457275390625" c="0.0737457275390625" d="-0.256027221679688" tx="-8.45" ty="-76.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="6.7" centerPoint3DY="-62.15">
+                  <matrix>
+                    <Matrix a="-0.1488037109375" b="-0.21575927734375" c="0.21575927734375" d="-0.1488037109375" tx="-16.85" ty="-86.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="4.4" centerPoint3DY="-67.65">
+                  <matrix>
+                    <Matrix a="-0.0773773193359375" b="-0.248138427734375" c="0.248138427734375" d="-0.0773773193359375" tx="-19.15" ty="-92.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="3.15" centerPoint3DY="-73.7">
+                  <matrix>
+                    <Matrix a="-0.001190185546875" b="-0.258193969726563" c="0.258193969726563" d="-0.001190185546875" tx="-20.4" ty="-98.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="2.85" centerPoint3DY="-79.85">
+                  <matrix>
+                    <Matrix a="0.073944091796875" b="-0.2451171875" c="0.2451171875" d="0.073944091796875" tx="-20.7" ty="-104.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="3.3" centerPoint3DY="-86.05">
+                  <matrix>
+                    <Matrix a="0.141510009765625" b="-0.210861206054688" c="0.210861206054688" d="0.141510009765625" tx="-20.25" ty="-110.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="4.7" centerPoint3DY="-92.05">
+                  <matrix>
+                    <Matrix a="0.196212768554688" b="-0.1580810546875" c="0.1580810546875" d="0.196212768554688" tx="-18.85" ty="-116.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="6.75" centerPoint3DY="-97.7">
+                  <matrix>
+                    <Matrix a="0.232620239257813" b="-0.0920257568359375" c="0.0920257568359375" d="0.232620239257813" tx="-16.8" ty="-122.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="9.5" centerPoint3DY="-102.8">
+                  <matrix>
+                    <Matrix a="0.247650146484375" b="-0.01959228515625" c="0.01959228515625" d="0.247650146484375" tx="-14.05" ty="-127.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="12.45" centerPoint3DY="-107.3">
+                  <matrix>
+                    <Matrix a="0.24066162109375" b="0.053558349609375" c="-0.053558349609375" d="0.24066162109375" tx="-11.1" ty="-131.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#2EC7BB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="17.8" centerPoint3DY="21.2">
+                  <matrix>
+                    <Matrix a="0.20745849609375" b="-0.178192138671875" c="0.178192138671875" d="0.20745849609375" tx="-5.75" ty="-3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="17.85" centerPoint3DY="23.3">
+                  <matrix>
+                    <Matrix a="-0.138259887695313" b="-0.243377685546875" c="0.243377685546875" d="-0.138259887695313" tx="-5.7" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="26.35" centerPoint3DY="15.25">
+                  <matrix>
+                    <Matrix a="-0.271575927734375" b="0.0923309326171875" c="-0.0923309326171875" d="-0.271575927734375" tx="2.8" ty="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="26.65" centerPoint3DY="-2.9">
+                  <matrix>
+                    <Matrix a="0.03973388671875" b="0.291107177734375" c="-0.291107177734375" d="0.03973388671875" tx="3.1" ty="-27.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="15.65" centerPoint3DY="-14.45">
+                  <matrix>
+                    <Matrix a="0.300277709960938" b="0.0158843994140625" c="-0.0158843994140625" d="0.300277709960938" tx="-7.9" ty="-38.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="9.6" centerPoint3DY="-12.9">
+                  <matrix>
+                    <Matrix a="0.0744781494140625" b="-0.29815673828125" c="0.29815673828125" d="0.0744781494140625" tx="-13.95" ty="-37.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="18.4" centerPoint3DY="-13.1">
+                  <matrix>
+                    <Matrix a="-0.284927368164063" b="-0.131927490234375" c="0.131927490234375" d="-0.284927368164063" tx="-5.15" ty="-37.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="29.1" centerPoint3DY="-27.65">
+                  <matrix>
+                    <Matrix a="-0.1878662109375" b="0.259902954101563" c="-0.259902954101563" d="-0.1878662109375" tx="5.55" ty="-52.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="27.1" centerPoint3DY="-45.45">
+                  <matrix>
+                    <Matrix a="0.224212646484375" b="0.239425659179688" c="-0.239425659179688" d="0.224212646484375" tx="3.55" ty="-69.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="32.7" centerPoint3DY="-52">
+                  <matrix>
+                    <Matrix a="0.177734375" b="0.283355712890625" c="-0.283355712890625" d="0.177734375" tx="9.15" ty="-76.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="37.25" centerPoint3DY="-58.1">
+                  <matrix>
+                    <Matrix a="0.122650146484375" b="0.318313598632813" c="-0.318313598632813" d="0.122650146484375" tx="13.7" ty="-82.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="41.8" centerPoint3DY="-64.25">
+                  <matrix>
+                    <Matrix a="0.06207275390625" b="0.342742919921875" c="-0.342742919921875" d="0.06207275390625" tx="18.25" ty="-88.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="46.35" centerPoint3DY="-70.4">
+                  <matrix>
+                    <Matrix a="-0.0032806396484375" b="0.355499267578125" c="-0.355499267578125" d="-0.0032806396484375" tx="22.8" ty="-94.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="50.9" centerPoint3DY="-76.55">
+                  <matrix>
+                    <Matrix a="-0.0724334716796875" b="0.355239868164063" c="-0.355239868164063" d="-0.0724334716796875" tx="27.35" ty="-100.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="52.85" centerPoint3DY="-82.5">
+                  <matrix>
+                    <Matrix a="-0.141510009765625" b="0.34112548828125" c="-0.34112548828125" d="-0.141510009765625" tx="29.3" ty="-106.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="52.8" centerPoint3DY="-88.6">
+                  <matrix>
+                    <Matrix a="-0.206817626953125" b="0.314163208007813" c="-0.314163208007813" d="-0.206817626953125" tx="29.25" ty="-113"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="50.65" centerPoint3DY="-94.7">
+                  <matrix>
+                    <Matrix a="-0.26837158203125" b="0.274169921875" c="-0.274169921875" d="-0.26837158203125" tx="27.1" ty="-119.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="50.2" centerPoint3DY="-102.85">
+                  <matrix>
+                    <Matrix a="-0.159317016601563" b="0.344345092773438" c="-0.344345092773438" d="-0.159317016601563" tx="26.65" ty="-127.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="47.85" centerPoint3DY="-110.6">
+                  <matrix>
+                    <Matrix a="-0.0360107421875" b="0.3739013671875" c="-0.3739013671875" d="-0.0360107421875" tx="24.3" ty="-135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="45.5" centerPoint3DY="-118.35">
+                  <matrix>
+                    <Matrix a="0.0888519287109375" b="0.361297607421875" c="-0.361297607421875" d="0.0888519287109375" tx="21.95" ty="-142.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="41.45" centerPoint3DY="-125.15">
+                  <matrix>
+                    <Matrix a="0.20233154296875" b="0.307418823242188" c="-0.307418823242188" d="0.20233154296875" tx="17.9" ty="-149.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="37" centerPoint3DY="-130.8">
+                  <matrix>
+                    <Matrix a="0.29052734375" b="0.219696044921875" c="-0.219696044921875" d="0.29052734375" tx="13.45" ty="-155.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="32.9" centerPoint3DY="-134.95">
+                  <matrix>
+                    <Matrix a="0.3436279296875" b="0.10870361328125" c="-0.10870361328125" d="0.3436279296875" tx="9.35" ty="-159.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/余烬重生/Symbol 16" blendMode="add" centerPoint3DX="28.75" centerPoint3DY="-139">
+                  <matrix>
+                    <Matrix a="0.35711669921875" b="-0.011199951171875" c="0.011199951171875" d="0.35711669921875" tx="5.2" ty="-163.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600" inner="true"/>
+                    <GlowFilter blurX="15" blurY="15" color="#990000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

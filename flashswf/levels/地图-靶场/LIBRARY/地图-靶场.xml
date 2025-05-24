@@ -1,0 +1,830 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1746453845" lastUniqueIdentifier="108">
+  <timeline>
+    <DOMTimeline name="地图-靶场">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[允许通行 = true;
+_root.横版卷屏(_root.控制目标,背景长,背景高,1);
+_root.显示同伴血槽();
+_root.关卡地图帧值 = "地图-靶场";
+
+_root.配置场景环境信息();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="效果层" color="#D47599" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.swapDepths(100000);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹层" color="#B0C0C6" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Ltinerant" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Ltinerant" centerPoint3DX="1663.6" centerPoint3DY="867.45">
+                  <matrix>
+                    <Matrix tx="1614.4" ty="775.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.25" y="92.2"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "Itinerant";
+	身高 = 175;
+	性别 = "女";
+	方向 = "左";
+	NPC任务_任务_关卡路径 = "挑战Itinerant";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Surveyor" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Surveyor" centerPoint3DX="2041.15" centerPoint3DY="779.4">
+                  <matrix>
+                    <Matrix a="0.722854614257813" d="0.72265625" tx="1769.55" ty="483.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="375.8" y="408.7"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "surveyor";
+	身高 = 175;
+	性别 = "男";
+	方向 = "左";
+	NPC任务_任务_关卡路径 = "挑战surveyor";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="出生地" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="出生地" centerPoint3DX="1317.9" centerPoint3DY="652.35">
+                  <matrix>
+                    <Matrix a="3.0517578125" d="1.220703125" tx="1307.4" ty="632.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("","","","");
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="提示" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!5238 5954|5238 11120!5238 11120|848 11120!848 11120|848 5954!848 5954|5238 5954"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="提示箭头" centerPoint3DX="1309.65" centerPoint3DY="476.05">
+                  <matrix>
+                    <Matrix d="0.563629150390625" tx="1282.8" ty="460.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="27.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+		this._visible = 1;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMDynamicText fontRenderingMode="standard" width="215.5" height="254.3" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="44.4" ty="299.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>你不该看到这句话的，看到了说明你用喷气背包或者一瞬千击之类的方式穿过地图了，快回去！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="30" bitmapSize="600" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="门1" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" centerPoint3DX="1318.3" centerPoint3DY="510.05">
+                  <matrix>
+                    <Matrix a="7.31060791015625" d="1.21147155761719" tx="1307.8" ty="490.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+		切换场景("门1","地图-军阀基地","",_root.上键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地图" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地图碰撞箱" name="地图" centerPoint3DX="1475.8" centerPoint3DY="513.4">
+                  <transformationPoint>
+                    <Point x="1475.8" y="513.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="高一点的障碍" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/高一点的障碍" centerPoint3DX="1796.15" centerPoint3DY="775.7">
+                  <matrix>
+                    <Matrix tx="1679.2" ty="669.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="116.9" y="106.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="尸体层" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="deadbody" name="deadbody">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/背景" centerPoint3DX="1742.55" centerPoint3DY="518">
+                  <matrix>
+                    <Matrix tx="632.55" ty="88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1110" y="430"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1" centerPoint3DX="2797.4" centerPoint3DY="324.5">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="2627.7" ty="229.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.35" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1" centerPoint3DX="2490.35" centerPoint3DY="324.05">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="2320.65" ty="228.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.35" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="896.2" ty="228.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.35" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="590.25" ty="228.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.35" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网2">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="285.4" ty="229.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="220.75" y="124.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1" centerPoint3DX="149.7" centerPoint3DY="324.5">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="-20" ty="229.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.2" y="124.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/侧棱柱" centerPoint3DX="796.15" centerPoint3DY="423.3">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="631.4" ty="393.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="214.85" y="39.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="554.1" ty="334.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="683.95" centerPoint3DY="370.05">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="631.4" ty="330.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="762.35" centerPoint3DY="374">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="709.8" ty="334.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="846" centerPoint3DY="374">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="793.45" ty="334.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.45" y="51.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="928.85" centerPoint3DY="374">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="876.3" ty="334.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/靶子1" centerPoint3DX="816" centerPoint3DY="571.6">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="783.8" ty="499.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.15" y="93.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="949.4" ty="388.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.7" y="51.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="985.95" ty="418.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.65" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/短棱柱" centerPoint3DX="673.75" centerPoint3DY="502.25">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="627.2" ty="453.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.7" y="63.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱A" centerPoint3DX="559.5" centerPoint3DY="626.25">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="461.35" ty="522.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.9" y="135.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱A">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="604.1" ty="513.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.9" y="134.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱B" centerPoint3DX="599.3" centerPoint3DY="542.05">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="501.15" ty="438.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128.1" y="134.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/短棱柱" centerPoint3DX="891.05" centerPoint3DY="508.7">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="844.5" ty="460.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.75" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/短棱柱">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="667.6" ty="513.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.65" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱A">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="373.5" ty="419.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128.05" y="135.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱B">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="218.5" ty="584.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128.05" y="135.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱A">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="429.55" ty="409.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="127.85" y="134.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/短棱柱">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="376.8" ty="574.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.65" y="63.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱A">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="221.65" ty="628.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128.05" y="134.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="526.25" ty="359.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="492.2" ty="387.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="461.35" ty="419.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="429.55" ty="453.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="396.05" ty="486"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.65" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="356.25" ty="522.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="324.4" ty="557.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.4" y="51.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="298.65" ty="592.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.65" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="262.5" ty="628.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.45" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="229.65" ty="661.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="207.25" ty="708.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="958.35" ty="452.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="985.65" centerPoint3DY="530.35">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="933.1" ty="490.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.45" y="51.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="905.55" ty="527.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="877.05" ty="565.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="853.2" ty="603.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="827.95" ty="641.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.45" y="51.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="800.4" ty="679.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="771.95" ty="716.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/短棱柱" centerPoint3DX="783.1" centerPoint3DY="641.3">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="736.55" ty="592.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.65" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/靶子2" centerPoint3DX="537.55" centerPoint3DY="717.55">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="503.1" ty="646.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.7" y="88.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/靶子3" centerPoint3DX="844.75" centerPoint3DY="694.9">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="807.15" ty="623.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.75" y="94.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="2014.65" ty="228.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.35" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="1708.65" ty="228.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.4" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网2" centerPoint3DX="1573.05" centerPoint3DY="324.2">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="1403.8" ty="229.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="220.75" y="124.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱B">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="1659.2" ty="396.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128" y="134.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/栅栏">
+                  <matrix>
+                    <Matrix a="0.997894287109375" d="0.997894287109375" tx="1445.05" ty="400.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.85" y="56.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/栅栏" centerPoint3DX="1562.3" centerPoint3DY="547.25">
+                  <matrix>
+                    <Matrix a="0.997894287109375" d="0.997894287109375" tx="1519.65" ty="490.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.8" y="56.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱A">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2699.5" ty="389.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128.05" y="134.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/短棱柱">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2752.2" ty="554.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.75" y="63.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/长棱柱A">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2907.25" ty="608.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128" y="135.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2602.8" ty="339.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2636.8" ty="367.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2667.65" ty="399.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2699.5" ty="433.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2732.85" ty="465.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2772.85" ty="502.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.65" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2804.7" ty="537.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.65" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2830.25" ty="572.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2866.55" ty="608.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.65" y="51.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2899.35" ty="641.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.6" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆">
+                  <matrix>
+                    <Matrix a="-0.766891479492188" d="0.766891479492188" tx="2919.15" ty="684.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.45" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/怪物堆" centerPoint3DX="2483.15" centerPoint3DY="728.8">
+                  <matrix>
+                    <Matrix tx="2320.25" ty="635"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162" y="93.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/图层很高的沙袋" centerPoint3DX="782.5" centerPoint3DY="918.25">
+                  <matrix>
+                    <Matrix tx="507" ty="858.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="275.45" y="59.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

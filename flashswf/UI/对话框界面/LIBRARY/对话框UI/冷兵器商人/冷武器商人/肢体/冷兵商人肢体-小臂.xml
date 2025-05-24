@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/冷兵器商人/冷武器商人/肢体/冷兵商人肢体-小臂" itemID="66655666-00001374" symbolType="graphic" lastModified="1717917286">
+  <timeline>
+    <DOMTimeline name="冷兵商人肢体-小臂">
+      <layers>
+        <DOMLayer name="Layer_1" color="#4F4FFF" current="true" isSelected="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#E5BB9C"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#B2937E"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!696 807|823 650!823 650[908 543 941 415!941 415[972 295 1000 111"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!1000 111[943 242 916 333!916 333[849 551 696 807"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!724 3|689 25!689 25[513 153 293 645!293 645[182 892 1 1059"/>
+                    <Edge fillStyle0="1" edges="!1 1059[-21 1257 308 1217"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!308 1217[512 1026 696 807"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!552 70[359 313 233 596!233 596[106 878 10 1010"/>
+                    <Edge fillStyle0="2" edges="!10 1010|1 1059!724 3|676 13!676 13[618 30 552 70"/>
+                    <Edge fillStyle0="1" edges="!1000 111[855 -16 724 3"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

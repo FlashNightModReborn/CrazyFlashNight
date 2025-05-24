@@ -1,0 +1,80 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/黑铁会外交部长-部件/外交部长-腰挂刀串" itemID="665b5a40-00001f8a" lastModified="1717264064" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="外交部长-腰挂刀串">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="22.05" centerPoint3DY="42.15">
+                  <matrix>
+                    <Matrix ty="0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.95" y="41.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="26.7" centerPoint3DY="43.8">
+                  <matrix>
+                    <Matrix tx="4.65" ty="2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.95" y="41.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="31.35" centerPoint3DY="45.45">
+                  <matrix>
+                    <Matrix tx="9.3" ty="3.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.95" y="41.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="36" centerPoint3DY="47.1">
+                  <matrix>
+                    <Matrix tx="13.95" ty="5.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.95" y="41.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="142.05" centerPoint3DY="42.05">
+                  <matrix>
+                    <Matrix a="-0.935379028320313" d="0.935379028320313" tx="161.25" ty="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="139.8" centerPoint3DY="43.55">
+                  <matrix>
+                    <Matrix a="-0.935379028320313" d="0.935379028320313" tx="159" ty="2.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="137.55" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix a="-0.935379028320313" d="0.935379028320313" tx="156.75" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/杂项/武器-飞刀" centerPoint3DX="135.3" centerPoint3DY="46.55">
+                  <matrix>
+                    <Matrix a="-0.935379028320313" d="0.935379028320313" tx="154.5" ty="5.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,3253 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/cs6用动画/被击 复制" itemID="669a3add-00002bf9" lastModified="1722139659" lastUniqueIdentifier="335">
+  <timeline>
+    <DOMTimeline name="被击 复制" currentFrame="28">
+      <layers>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.无敌 = true;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.无敌 = false;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器">
+                  <matrix>
+                    <Matrix a="0.112777709960938" b="-0.385848999023438" c="0.385848999023438" d="0.112777709960938" tx="195.8" ty="122.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39617919921875" b="0.441207885742188" c="0.448822021484375" d="0.402938842773438" tx="222.4" ty="219.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.05" y="-210.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2">
+                  <matrix>
+                    <Matrix a="0.99261474609375" b="0.064910888671875" c="-0.064910888671875" d="0.99261474609375" tx="61" ty="155.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.75" y="24.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1">
+                  <matrix>
+                    <Matrix a="0.9906005859375" b="-0.0762786865234375" c="0.0762786865234375" d="0.9906005859375" tx="176.35" ty="122.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.541748046875" b="0.15045166015625" c="0.14605712890625" d="-0.52581787109375" tx="195.35" ty="127.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.7" y="-14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2">
+                  <matrix>
+                    <Matrix a="-0.537811279296875" b="0.067596435546875" c="-0.067596435546875" d="-0.537811279296875" tx="224.35" ty="184"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="10.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.83642578125" b="-0.079193115234375" c="-0.0767364501953125" d="0.810028076171875" tx="214.8" ty="384.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.65" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.95965576171875" b="0.0902099609375" c="0.108154296875" d="1.05979919433594" tx="201.2" ty="319.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.98992919921875" b="0.495147705078125" c="0.497543334960938" d="1.0875244140625" tx="188.8" ty="225.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.05" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.847198486328125" b="-0.0023956298828125" c="-0.0023193359375" d="0.82037353515625" tx="167.6" ty="388.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.3" y="5.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.970321655273438" b="0.009002685546875" c="0.0184783935546875" d="1.07225036621094" tx="160.8" ty="326.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.55" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5">
+                  <matrix>
+                    <Matrix a="0.96063232421875" b="-0.26519775390625" c="0.26519775390625" d="0.96063232421875" tx="101.15" ty="250.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.25" y="12.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="156.8" centerPoint3DY="236.4">
+                  <matrix>
+                    <Matrix a="0.61566162109375" b="-0.122970581054688" c="0.127792358398438" d="0.639892578125" tx="104.95" ty="214.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.15" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4">
+                  <matrix>
+                    <Matrix a="0.9869384765625" b="0.15997314453125" c="-0.15997314453125" d="0.9869384765625" tx="149.65" ty="98.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.85" y="109.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头">
+                  <matrix>
+                    <Matrix a="0.992462158203125" b="0.0638275146484375" c="-0.0638275146484375" d="0.992462158203125" tx="152.4" ty="73.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="44.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂">
+                  <matrix>
+                    <Matrix a="0.868881225585938" b="0.4766845703125" c="-0.4766845703125" d="0.868881225585938" tx="127.9" ty="115.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手">
+                  <matrix>
+                    <Matrix a="0.992233276367188" b="-0.013885498046875" c="0.013885498046875" d="0.992233276367188" tx="78.95" ty="169.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪">
+                  <matrix>
+                    <Matrix a="0.17474365234375" b="0.340087890625" c="0.340087890625" d="-0.17474365234375" tx="52.95" ty="162.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.55" y="130.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="205.15" centerPoint3DY="189.2">
+                  <matrix>
+                    <Matrix a="0.0701141357421875" b="-0.39581298828125" c="0.373565673828125" d="0.1075439453125" tx="216.3" ty="127.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="136.65" centerPoint3DY="168.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.408599853515625" b="0.42926025390625" c="0.436676025390625" d="0.415573120117188" tx="227.9" ty="224.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84" y="-210.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="158.55" centerPoint3DY="235.15">
+                  <matrix>
+                    <Matrix a="0.98980712890625" b="0.0955657958984375" c="-0.0955657958984375" d="0.98980712890625" tx="68.5" ty="156.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.75" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="211.7" centerPoint3DY="158.5">
+                  <matrix>
+                    <Matrix a="0.981170654296875" b="-0.1531982421875" c="0.1531982421875" d="0.981170654296875" tx="183.2" ty="127.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="216" centerPoint3DY="128.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50537109375" b="0.24517822265625" c="0.23797607421875" d="-0.490509033203125" tx="215.95" ty="128.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.7" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="223.4" centerPoint3DY="161.45">
+                  <matrix>
+                    <Matrix a="-0.540496826171875" b="-0.031097412109375" c="0.031097412109375" d="-0.540496826171875" tx="234.45" ty="187.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.8" y="10.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="202.15" centerPoint3DY="399.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.835205078125" b="-0.0720367431640625" c="-0.0698089599609375" d="0.808837890625" tx="221.65" ty="384.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.55" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="199.6" centerPoint3DY="357.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.962646484375" b="0.0345916748046875" c="0.0467376708984375" d="1.0635986328125" tx="211.9" ty="321.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="7.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="196.25" centerPoint3DY="282.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9490966796875" b="0.569244384765625" c="0.579086303710938" d="1.0462646484375" tx="191.65" ty="229.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.05" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="137.75" centerPoint3DY="401.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.844711303710938" b="-0.04998779296875" c="-0.0484161376953125" d="0.817977905273438" tx="156.95" ty="386.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.25" y="5.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="140.8" centerPoint3DY="362.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.955078125" b="-0.17047119140625" c="-0.180023193359375" d="1.05699157714844" tx="160.55" ty="329.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.55" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="156.9" centerPoint3DY="289.7">
+                  <matrix>
+                    <Matrix a="0.97796630859375" b="-0.1912841796875" c="0.1912841796875" d="0.97796630859375" tx="105.95" ty="249.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.25" y="12.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="161.8" centerPoint3DY="239.4">
+                  <matrix>
+                    <Matrix a="0.618988037109375" b="-0.10479736328125" c="0.108917236328125" d="0.643356323242188" tx="110.55" ty="216.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="173.85" centerPoint3DY="171.6">
+                  <matrix>
+                    <Matrix a="0.981597900390625" b="0.189559936523438" c="-0.189559936523438" d="0.981597900390625" tx="158.8" ty="101.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.9" y="109.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="188.85" centerPoint3DY="104">
+                  <matrix>
+                    <Matrix a="0.989990234375" b="0.093658447265625" c="-0.093658447265625" d="0.989990234375" tx="162.35" ty="76.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="44.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="139.6" centerPoint3DY="155.7">
+                  <matrix>
+                    <Matrix a="0.854049682617188" b="0.502548217773438" c="-0.502548217773438" d="0.854049682617188" tx="136.65" ty="117.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="136.75" centerPoint3DY="219.3">
+                  <matrix>
+                    <Matrix a="0.9920654296875" b="0.0159759521484375" c="-0.0159759521484375" d="0.9920654296875" tx="86.05" ty="170.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="152.6" centerPoint3DY="236.5">
+                  <matrix>
+                    <Matrix a="0.164413452148438" b="0.345138549804688" c="0.345138549804688" d="-0.164413452148438" tx="60.45" ty="163.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.4" y="130.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="232.55" centerPoint3DY="194.7">
+                  <matrix>
+                    <Matrix a="0.026641845703125" b="-0.401092529296875" c="0.36126708984375" d="0.1024169921875" tx="236.95" ty="132.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="143.85" centerPoint3DY="171.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.420684814453125" b="0.4169921875" c="0.4241943359375" d="0.4278564453125" tx="233.35" ty="229.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-210.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="163.6" centerPoint3DY="238.15">
+                  <matrix>
+                    <Matrix a="0.986083984375" b="0.126129150390625" c="-0.126129150390625" d="0.986083984375" tx="76.1" ty="156.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.75" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="220.9" centerPoint3DY="161.6">
+                  <matrix>
+                    <Matrix a="0.965805053710938" b="-0.22918701171875" c="0.22918701171875" d="0.965805053710938" tx="190.1" ty="133.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="236.55" centerPoint3DY="130.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.45263671875" b="0.33172607421875" c="0.322006225585938" d="-0.439315795898438" tx="236.55" ty="130.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.8" y="-14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="237.9" centerPoint3DY="163.3">
+                  <matrix>
+                    <Matrix a="-0.525665283203125" b="-0.126815795898438" c="0.126815795898438" d="-0.525665283203125" tx="244.15" ty="191.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="10.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="209.15" centerPoint3DY="400.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.833953857421875" b="-0.064910888671875" c="-0.062896728515625" d="0.807647705078125" tx="228.45" ty="385.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.6" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="208.25" centerPoint3DY="358.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.96246337890625" b="-0.02105712890625" c="-0.0147705078125" d="1.06390380859375" tx="222.55" ty="323.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="203" centerPoint3DY="285.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.902816772460938" b="0.6400146484375" c="0.657211303710938" d="0.998931884765625" tx="194.3" ty="232.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.05" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="126.15" centerPoint3DY="398.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.839584350585938" b="-0.0973358154296875" c="-0.0942535400390625" d="0.813018798828125" tx="146.2" ty="383.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.25" y="5.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="134.4" centerPoint3DY="361.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.906951904296875" b="-0.34405517578125" c="-0.372283935546875" d="1.00531005859375" tx="159.9" ty="332.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.5" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="158.75" centerPoint3DY="292.5">
+                  <matrix>
+                    <Matrix a="0.9896240234375" b="-0.11627197265625" c="0.11627197265625" d="0.9896240234375" tx="111" ty="248.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.2" y="12.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="166.7" centerPoint3DY="242.4">
+                  <matrix>
+                    <Matrix a="0.621795654296875" b="-0.0865631103515625" c="0.0899505615234375" d="0.646270751953125" tx="116.2" ty="217.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="180.75" centerPoint3DY="175.1">
+                  <matrix>
+                    <Matrix a="0.975448608398438" b="0.218994140625" c="-0.218994140625" d="0.975448608398438" tx="167.8" ty="104.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.9" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="197.9" centerPoint3DY="108.05">
+                  <matrix>
+                    <Matrix a="0.9866943359375" b="0.123397827148438" c="-0.123397827148438" d="0.9866943359375" tx="172.3" ty="79.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="44.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="147" centerPoint3DY="158.1">
+                  <matrix>
+                    <Matrix a="0.8385009765625" b="0.52801513671875" c="-0.52801513671875" d="0.8385009765625" tx="145.2" ty="120.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="142.35" centerPoint3DY="221.75">
+                  <matrix>
+                    <Matrix a="0.99114990234375" b="0.0457763671875" c="-0.0457763671875" d="0.99114990234375" tx="93.2" ty="171.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.5" y="8.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="157.6" centerPoint3DY="239.35">
+                  <matrix>
+                    <Matrix a="0.153961181640625" b="0.34991455078125" c="0.34991455078125" d="-0.153961181640625" tx="67.65" ty="163.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.45" y="130.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="259.9" centerPoint3DY="199.35">
+                  <matrix>
+                    <Matrix a="-0.0171356201171875" b="-0.401611328125" c="0.34893798828125" d="0.0974273681640625" tx="257.45" ty="136.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="150.95" centerPoint3DY="173.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.432373046875" b="0.404388427734375" c="0.411376953125" d="0.439788818359375" tx="238.7" ty="234.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-210.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="168.6" centerPoint3DY="241.1">
+                  <matrix>
+                    <Matrix a="0.981414794921875" b="0.156539916992188" c="-0.156539916992188" d="0.981414794921875" tx="83.65" ty="156.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.75" y="24.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="230" centerPoint3DY="164.6">
+                  <matrix>
+                    <Matrix a="0.944580078125" b="-0.3037109375" c="0.3037109375" d="0.944580078125" tx="197.1" ty="138.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="257.3" centerPoint3DY="131.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.385238647460938" b="0.4073486328125" c="0.395370483398438" d="-0.3739013671875" tx="257.25" ty="131.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.75" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="252.35" centerPoint3DY="165.35">
+                  <matrix>
+                    <Matrix a="-0.49334716796875" b="-0.2198486328125" c="0.2198486328125" d="-0.49334716796875" tx="253.4" ty="193.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="11"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="216.2" centerPoint3DY="400.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8326416015625" b="-0.057830810546875" c="-0.0560302734375" d="0.806365966796875" tx="235.3" ty="385.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.6" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="216.8" centerPoint3DY="359.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.959075927734375" b="-0.0766143798828125" c="-0.0761871337890625" d="1.0606689453125" tx="233.15" ty="325.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.1" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="209.8" centerPoint3DY="288.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.85125732421875" b="0.70703125" c="0.731536865234375" d="0.945785522460938" tx="197.05" ty="235.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.05" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="114.55" centerPoint3DY="394.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.831787109375" b="-0.14422607421875" c="-0.1396484375" d="0.80548095703125" tx="135.35" ty="381.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.3" y="5.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="128.55" centerPoint3DY="360.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.827560424804688" b="-0.5057373046875" c="-0.5516357421875" d="0.918991088867188" tx="158.95" ty="336.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="160.6" centerPoint3DY="295.15">
+                  <matrix>
+                    <Matrix a="0.99554443359375" b="-0.04058837890625" c="0.04058837890625" d="0.99554443359375" tx="116.3" ty="248"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.3" y="12.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="171.65" centerPoint3DY="245.3">
+                  <matrix>
+                    <Matrix a="0.624053955078125" b="-0.0682220458984375" c="0.0709075927734375" d="0.64862060546875" tx="121.9" ty="219.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.1" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="187.65" centerPoint3DY="178.5">
+                  <matrix>
+                    <Matrix a="0.96917724609375" b="0.245040893554688" c="-0.245040893554688" d="0.96917724609375" tx="176.65" ty="107.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.9" y="109.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="206.55" centerPoint3DY="112.05">
+                  <matrix>
+                    <Matrix a="0.983001708984375" b="0.1497802734375" c="-0.1497802734375" d="0.983001708984375" tx="181.65" ty="83.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="44.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="154.3" centerPoint3DY="160.65">
+                  <matrix>
+                    <Matrix a="0.824020385742188" b="0.55029296875" c="-0.55029296875" d="0.824020385742188" tx="153.5" ty="122.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="147.95" centerPoint3DY="224.2">
+                  <matrix>
+                    <Matrix a="0.989501953125" b="0.072357177734375" c="-0.072357177734375" d="0.989501953125" tx="100.15" ty="172.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.4" y="8.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="162.7" centerPoint3DY="242.15">
+                  <matrix>
+                    <Matrix a="0.144500732421875" b="0.353866577148438" c="0.353866577148438" d="-0.144500732421875" tx="74.8" ty="163.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.4" y="130.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="287.25" centerPoint3DY="203.45">
+                  <matrix>
+                    <Matrix a="-0.0607452392578125" b="-0.397369384765625" c="0.33660888671875" d="0.0925140380859375" tx="278" ty="141.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="158.05" centerPoint3DY="175.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.443756103515625" b="0.391464233398438" c="0.398239135742188" d="0.451339721679688" tx="243.95" ty="239.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-210"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="173.65" centerPoint3DY="243.85">
+                  <matrix>
+                    <Matrix a="0.975830078125" b="0.186813354492188" c="-0.186813354492188" d="0.975830078125" tx="91.4" ty="156.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.85" y="24.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="238.75" centerPoint3DY="167.6">
+                  <matrix>
+                    <Matrix a="0.917633056640625" b="-0.376327514648438" c="0.376327514648438" d="0.917633056640625" tx="203.85" ty="144.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="277.7" centerPoint3DY="134.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.305450439453125" b="0.46954345703125" c="0.45574951171875" d="-0.29644775390625" tx="277.7" ty="133.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.05" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="265.95" centerPoint3DY="167.55">
+                  <matrix>
+                    <Matrix a="-0.445785522460938" b="-0.303924560546875" c="0.303924560546875" d="-0.445785522460938" tx="261.85" ty="195.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.25" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="223.05" centerPoint3DY="401.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.831329345703125" b="-0.0507354736328125" c="-0.0491790771484375" d="0.805084228515625" tx="241.75" ty="386.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="225.35" centerPoint3DY="360.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9525146484375" b="-0.131866455078125" c="-0.137313842773438" d="1.0538330078125" tx="243.6" ty="326.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.85" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="216.15" centerPoint3DY="290.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.794784545898438" b="0.76995849609375" c="0.801605224609375" d="0.887176513671875" tx="199.15" ty="238.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="102.7" centerPoint3DY="390.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8214111328125" b="-0.190597534179688" c="-0.1845703125" d="0.79541015625" tx="124" ty="378.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.7" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="123.5" centerPoint3DY="357.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.719696044921875" b="-0.64996337890625" c="-0.711959838867188" d="0.801071166992188" tx="157.7" ty="340.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="7.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="162.2" centerPoint3DY="297.3">
+                  <matrix>
+                    <Matrix a="0.9957275390625" b="0.0353240966796875" c="-0.0353240966796875" d="0.9957275390625" tx="121.5" ty="246.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.75" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.55" centerPoint3DY="248.15">
+                  <matrix>
+                    <Matrix a="0.625823974609375" b="-0.0498504638671875" c="0.0518035888671875" d="0.65045166015625" tx="127.6" ty="220.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.15" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="194.55" centerPoint3DY="181.75">
+                  <matrix>
+                    <Matrix a="0.961410522460938" b="0.274032592773438" c="-0.274032592773438" d="0.961410522460938" tx="185.65" ty="110.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.85" y="109.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="215.3" centerPoint3DY="115.9">
+                  <matrix>
+                    <Matrix a="0.97808837890625" b="0.179306030273438" c="-0.179306030273438" d="0.97808837890625" tx="191.25" ty="86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="161.6" centerPoint3DY="162.85">
+                  <matrix>
+                    <Matrix a="0.80712890625" b="0.5748291015625" c="-0.5748291015625" d="0.80712890625" tx="161.95" ty="124.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="9.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="153.5" centerPoint3DY="226.2">
+                  <matrix>
+                    <Matrix a="0.986923217773438" b="0.102096557617188" c="-0.102096557617188" d="0.986923217773438" tx="107.2" ty="173.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="167.5" centerPoint3DY="244.55">
+                  <matrix>
+                    <Matrix a="0.1337890625" b="0.358078002929688" c="0.358078002929688" d="-0.1337890625" tx="82" ty="163.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.55" y="130.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="159.15" centerPoint3DY="177.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45233154296875" b="0.381393432617188" c="0.387969970703125" d="0.460067749023438" tx="243.6" ty="242.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-210.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="173.25" centerPoint3DY="245.8">
+                  <matrix>
+                    <Matrix a="0.971420288085938" b="0.2078857421875" c="-0.2078857421875" d="0.971420288085938" tx="92.9" ty="156.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.8" y="24.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="239.95" centerPoint3DY="171.1">
+                  <matrix>
+                    <Matrix a="0.925445556640625" b="-0.35626220703125" c="0.35626220703125" d="0.925445556640625" tx="205.55" ty="146.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="214.4" centerPoint3DY="399.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.82867431640625" b="-0.074127197265625" c="-0.0718231201171875" d="0.802490234375" tx="233.5" ty="385.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="6.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="219.6" centerPoint3DY="361.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.925872802734375" b="-0.257858276367188" c="-0.27679443359375" d="1.02555847167969" tx="242.2" ty="330.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.85" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="215.55" centerPoint3DY="293.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.81585693359375" b="0.7474365234375" c="0.776473999023438" d="0.909103393554688" tx="199.95" ty="241.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="97.9" centerPoint3DY="390.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8167724609375" b="-0.206710815429688" c="-0.200180053710938" d="0.790939331054688" tx="119.4" ty="378.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.65" y="5.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="119.2" centerPoint3DY="358.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.70745849609375" b="-0.66314697265625" c="-0.726669311523438" d="0.787689208984375" tx="153.75" ty="341.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="160.35" centerPoint3DY="299.15">
+                  <matrix>
+                    <Matrix a="0.992462158203125" b="0.08740234375" c="-0.08740234375" d="0.992462158203125" tx="122.35" ty="246.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.8" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="250.45">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="222.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="195.5" centerPoint3DY="184.2">
+                  <matrix>
+                    <Matrix a="0.955184936523438" b="0.294906616210938" c="-0.294906616210938" d="0.955184936523438" tx="188.2" ty="112.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.8" y="109.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="217.8" centerPoint3DY="118.8">
+                  <matrix>
+                    <Matrix a="0.97381591796875" b="0.200485229492188" c="-0.200485229492188" d="0.97381591796875" tx="194.5" ty="88.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="44.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="163.05" centerPoint3DY="164.65">
+                  <matrix>
+                    <Matrix a="0.794357299804688" b="0.592132568359375" c="-0.592132568359375" d="0.794357299804688" tx="164.3" ty="126.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="10.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="160.05" centerPoint3DY="227.95">
+                  <matrix>
+                    <Matrix a="0.99114990234375" b="-0.0365447998046875" c="0.0365447998046875" d="0.99114990234375" tx="106.85" ty="181.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="176.65" centerPoint3DY="244.1">
+                  <matrix>
+                    <Matrix a="0.1824951171875" b="0.33587646484375" c="0.33587646484375" d="-0.1824951171875" tx="80.7" ty="175.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.35" y="130.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="269.05" centerPoint3DY="135.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3851318359375" b="0.403915405273438" c="0.39202880859375" d="-0.373825073242188" tx="268.95" ty="135.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="263.8" centerPoint3DY="170.3">
+                  <matrix>
+                    <Matrix a="-0.49346923828125" b="-0.21453857421875" c="0.21453857421875" d="-0.49346923828125" tx="264.95" ty="198.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.15" y="10.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="410" centerPoint3DY="86.6">
+                  <matrix>
+                    <Matrix a="-0.382843017578125" b="-0.122344970703125" c="0.0186767578125" d="0.407577514648438" tx="349.1" ty="47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="255" y="306.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay">
+                  <matrix>
+                    <Matrix b="0.134765625" tx="-15.55" ty="-121.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="274.55" y="257.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#FFFF00"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.21875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="160.2" centerPoint3DY="179.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.460693359375" b="0.37109375" c="0.377548217773438" d="0.46856689453125" tx="243.1" ty="246.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.15" y="-209.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="172.75" centerPoint3DY="247.7">
+                  <matrix>
+                    <Matrix a="0.966552734375" b="0.228927612304688" c="-0.228927612304688" d="0.966552734375" tx="94.35" ty="157"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.9" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="241.15" centerPoint3DY="174.55">
+                  <matrix>
+                    <Matrix a="0.932861328125" b="-0.336029052734375" c="0.336029052734375" d="0.932861328125" tx="207.35" ty="149.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="205.7" centerPoint3DY="398" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.82537841796875" b="-0.097442626953125" c="-0.094390869140625" d="0.79931640625" tx="225.2" ty="383.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="214.3" centerPoint3DY="362.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8826904296875" b="-0.37908935546875" c="-0.4111328125" d="0.9788818359375" tx="240.8" ty="335"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="8.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="214.9" centerPoint3DY="296" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.836395263671875" b="0.724395751953125" c="0.75079345703125" d="0.930389404296875" tx="200.75" ty="243.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="93" centerPoint3DY="390.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.81182861328125" b="-0.22271728515625" c="-0.215682983398438" d="0.786163330078125" tx="114.7" ty="378.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.65" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="114.9" centerPoint3DY="358.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.695037841796875" b="-0.6761474609375" c="-0.74114990234375" d="0.774078369140625" tx="149.75" ty="341.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="7.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="158.55" centerPoint3DY="300.8">
+                  <matrix>
+                    <Matrix a="0.98651123046875" b="0.139190673828125" c="-0.139190673828125" d="0.98651123046875" tx="123.35" ty="245.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.8" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="252.75">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="225.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="196.55" centerPoint3DY="186.65">
+                  <matrix>
+                    <Matrix a="0.948516845703125" b="0.31561279296875" c="-0.31561279296875" d="0.948516845703125" tx="190.7" ty="115.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.9" y="109.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="220.15" centerPoint3DY="121.7">
+                  <matrix>
+                    <Matrix a="0.969085693359375" b="0.22149658203125" c="-0.22149658203125" d="0.969085693359375" tx="197.5" ty="91.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="44.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="164.45" centerPoint3DY="166.4">
+                  <matrix>
+                    <Matrix a="0.78118896484375" b="0.609115600585938" c="-0.609115600585938" d="0.78118896484375" tx="166.45" ty="128.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.1" y="10.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="166.35" centerPoint3DY="228.9">
+                  <matrix>
+                    <Matrix a="0.975982666015625" b="-0.17437744140625" c="0.17437744140625" d="0.975982666015625" tx="107.3" ty="190.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.5" y="8.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="185" centerPoint3DY="242.6">
+                  <matrix>
+                    <Matrix a="0.226547241210938" b="0.307861328125" c="0.307861328125" d="-0.226547241210938" tx="80.65" ty="187.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.5" y="130.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="259.75" centerPoint3DY="140.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.453826904296875" b="0.32476806640625" c="0.31524658203125" d="-0.44049072265625" tx="259.6" ty="140.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.1" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="261" centerPoint3DY="173.85">
+                  <matrix>
+                    <Matrix a="-0.524383544921875" b="-0.118453979492188" c="0.118453979492188" d="-0.524383544921875" tx="267.4" ty="201.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.1" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="410.15" centerPoint3DY="71.25">
+                  <matrix>
+                    <Matrix a="-0.39630126953125" b="-0.06475830078125" c="0.0096435546875" d="0.410369873046875" tx="347.55" ty="41.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="254.9" y="306.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="231.25" centerPoint3DY="193.6">
+                  <matrix>
+                    <Matrix a="0.984161376953125" b="0.005279541015625" d="0.96112060546875" tx="-38.95" ty="-55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="274.55" y="257.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FFFF00" strength="2"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.41015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="161.3" centerPoint3DY="180.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.46881103515625" b="0.360687255859375" c="0.366912841796875" d="0.476852416992188" tx="242.7" ty="249.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-209.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="172.4" centerPoint3DY="249.6">
+                  <matrix>
+                    <Matrix a="0.96124267578125" b="0.24981689453125" c="-0.24981689453125" d="0.96124267578125" tx="96" ty="157.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.85" y="24.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="242.4" centerPoint3DY="177.95">
+                  <matrix>
+                    <Matrix a="0.9398193359375" b="-0.315658569335938" c="0.315658569335938" d="0.9398193359375" tx="209.1" ty="152.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="197" centerPoint3DY="396.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.821441650390625" b="-0.120590209960938" c="-0.116851806640625" d="0.795501708984375" tx="216.8" ty="382.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="6.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="209.2" centerPoint3DY="363.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.82373046875" b="-0.493453979492188" c="-0.538070678710938" d="0.91473388671875" tx="239.1" ty="339.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="214.25" centerPoint3DY="298.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.85626220703125" b="0.70074462890625" c="0.72454833984375" d="0.950958251953125" tx="201.65" ty="245.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="88.1" centerPoint3DY="389.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.806564331054688" b="-0.238632202148438" c="-0.2310791015625" d="0.78106689453125" tx="110.05" ty="379"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.65" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="110.6" centerPoint3DY="358.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.682373046875" b="-0.68890380859375" c="-0.75537109375" d="0.76019287109375" tx="145.7" ty="342.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="156.75" centerPoint3DY="302.4">
+                  <matrix>
+                    <Matrix a="0.97784423828125" b="0.190643310546875" c="-0.190643310546875" d="0.97784423828125" tx="124.45" ty="245.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.85" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="255">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="227.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="197.45" centerPoint3DY="189.15">
+                  <matrix>
+                    <Matrix a="0.941390991210938" b="0.336227416992188" c="-0.336227416992188" d="0.941390991210938" tx="193.2" ty="117.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.9" y="109.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="222.55" centerPoint3DY="124.75">
+                  <matrix>
+                    <Matrix a="0.963958740234375" b="0.242462158203125" c="-0.242462158203125" d="0.963958740234375" tx="200.5" ty="93.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="44.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="165.8" centerPoint3DY="168.2">
+                  <matrix>
+                    <Matrix a="0.7677001953125" b="0.625885009765625" c="-0.625885009765625" d="0.7677001953125" tx="168.65" ty="130.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="172.5" centerPoint3DY="229.15">
+                  <matrix>
+                    <Matrix a="0.94183349609375" b="-0.3087158203125" c="0.3087158203125" d="0.94183349609375" tx="108.6" ty="199.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.5" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="192.85" centerPoint3DY="240.05">
+                  <matrix>
+                    <Matrix a="0.26702880859375" b="0.27301025390625" c="0.27301025390625" d="-0.26702880859375" tx="81.9" ty="200.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.55" y="130.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="250.4" centerPoint3DY="146.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50653076171875" b="0.234222412109375" c="0.227340698242188" d="-0.49163818359375" tx="250.25" ty="146.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="-14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="258" centerPoint3DY="178.2">
+                  <matrix>
+                    <Matrix a="-0.536849975585938" b="-0.018402099609375" c="0.018402099609375" d="-0.536849975585938" tx="269.4" ty="204"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.1" y="10.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="406.85" centerPoint3DY="55.35">
+                  <matrix>
+                    <Matrix a="-0.401214599609375" b="-0.005889892578125" c="0.0005035400390625" d="0.412994384765625" tx="343.9" ty="34.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="255" y="306.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="203.4" centerPoint3DY="214.05">
+                  <matrix>
+                    <Matrix a="0.952011108398438" b="-0.117889404296875" d="0.9222412109375" tx="-57.95" ty="9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="274.5" y="257.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="12" blurY="12" color="#FFFF00" strength="3"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.609375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="162.4" centerPoint3DY="182.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476715087890625" b="0.35003662109375" c="0.356124877929688" d="0.484848022460938" tx="242.2" ty="253.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.15" y="-209.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="171.95" centerPoint3DY="251.5">
+                  <matrix>
+                    <Matrix a="0.955490112304688" b="0.270614624023438" c="-0.270614624023438" d="0.955490112304688" tx="97.6" ty="157.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.9" y="24.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="243.6" centerPoint3DY="181.4">
+                  <matrix>
+                    <Matrix a="0.94635009765625" b="-0.295166015625" c="0.295166015625" d="0.94635009765625" tx="210.85" ty="154.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="188.3" centerPoint3DY="394.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.81683349609375" b="-0.14361572265625" c="-0.13916015625" d="0.791061401367188" tx="208.5" ty="381.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="204.5" centerPoint3DY="363.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.75006103515625" b="-0.59881591796875" c="-0.6551513671875" d="0.834228515625" tx="237.35" ty="343.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="213.65" centerPoint3DY="301.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.875457763671875" b="0.67657470703125" c="0.697723388671875" d="0.970794677734375" tx="202.45" ty="248.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="83.2" centerPoint3DY="389.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.801010131835938" b="-0.254425048828125" c="-0.246383666992188" d="0.77569580078125" tx="105.3" ty="379.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.7" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="106.35" centerPoint3DY="358.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.669464111328125" b="-0.701446533203125" c="-0.769332885742188" d="0.746078491210938" tx="141.75" ty="343.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.3" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="155" centerPoint3DY="303.95">
+                  <matrix>
+                    <Matrix a="0.96649169921875" b="0.24151611328125" c="-0.24151611328125" d="0.96649169921875" tx="125.7" ty="245.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.8" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="257.3">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="229.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="198.5" centerPoint3DY="191.6">
+                  <matrix>
+                    <Matrix a="0.933837890625" b="0.356658935546875" c="-0.356658935546875" d="0.933837890625" tx="195.75" ty="119.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.85" y="109.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="225" centerPoint3DY="127.8">
+                  <matrix>
+                    <Matrix a="0.958343505859375" b="0.2633056640625" c="-0.2633056640625" d="0.958343505859375" tx="203.6" ty="96.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="44.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="167.25" centerPoint3DY="170.05">
+                  <matrix>
+                    <Matrix a="0.75384521484375" b="0.642318725585938" c="-0.642318725585938" d="0.75384521484375" tx="170.95" ty="132.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="10.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="178.35" centerPoint3DY="228.65">
+                  <matrix>
+                    <Matrix a="0.88922119140625" b="-0.436935424804688" c="0.436935424804688" d="0.88922119140625" tx="111.05" ty="208.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="200.05" centerPoint3DY="236.5">
+                  <matrix>
+                    <Matrix a="0.30224609375" b="0.23284912109375" c="0.23284912109375" d="-0.30224609375" tx="84.75" ty="212.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.7" y="130.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="241.15" centerPoint3DY="152.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5413818359375" b="0.135421752929688" c="0.13140869140625" d="-0.52545166015625" tx="240.95" ty="152.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.05" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="255.15" centerPoint3DY="183.1">
+                  <matrix>
+                    <Matrix a="-0.530364990234375" b="0.082122802734375" c="-0.082122802734375" d="-0.530364990234375" tx="271.15" ty="206.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.05" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="399.85" centerPoint3DY="39.5">
+                  <matrix>
+                    <Matrix a="-0.39739990234375" b="0.053009033203125" c="-0.00872802734375" d="0.415390014648438" tx="337.95" ty="27.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="254.95" y="307"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="175.55" centerPoint3DY="234.55">
+                  <matrix>
+                    <Matrix a="0.9049072265625" b="-0.2327880859375" d="0.88336181640625" tx="-72.85" ty="71.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="274.5" y="257.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="16" blurY="16" color="#FFFF00" strength="4"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="163.45" centerPoint3DY="183.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.484420776367188" b="0.339279174804688" c="0.34515380859375" d="0.492660522460938" tx="241.65" ty="256.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.05" y="-209.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="171.65" centerPoint3DY="253.45">
+                  <matrix>
+                    <Matrix a="0.949310302734375" b="0.291290283203125" c="-0.291290283203125" d="0.949310302734375" tx="99.45" ty="157.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.6" y="24.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="244.8" centerPoint3DY="184.7">
+                  <matrix>
+                    <Matrix a="0.95245361328125" b="-0.274505615234375" c="0.274505615234375" d="0.95245361328125" tx="212.7" ty="157.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="179.45" centerPoint3DY="392.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8116455078125" b="-0.16650390625" c="-0.161300659179688" d="0.7860107421875" tx="200.15" ty="380.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.25" y="6.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="200.1" centerPoint3DY="363.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.66302490234375" b="-0.693405151367188" c="-0.760467529296875" d="0.7388916015625" tx="235.35" ty="347.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.4" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="212.65" centerPoint3DY="304.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.894027709960938" b="0.651901245117188" c="0.670379638671875" d="0.989898681640625" tx="202.8" ty="250.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="78" centerPoint3DY="389.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.795166015625" b="-0.270111083984375" c="-0.261566162109375" d="0.77001953125" tx="100.2" ty="379"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.25" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="101.85" centerPoint3DY="358.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6563720703125" b="-0.713790893554688" c="-0.7830810546875" d="0.731689453125" tx="137.45" ty="343.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="153.3" centerPoint3DY="305.15">
+                  <matrix>
+                    <Matrix a="0.952545166015625" b="0.291793823242188" c="-0.291793823242188" d="0.952545166015625" tx="127" ty="245.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.9" y="13.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.55" centerPoint3DY="259.5">
+                  <matrix>
+                    <Matrix a="0.625823974609375" b="-0.0498504638671875" c="0.0518035888671875" d="0.65045166015625" tx="127.6" ty="231.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.15" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="199.35" centerPoint3DY="194.1">
+                  <matrix>
+                    <Matrix a="0.92584228515625" b="0.376937866210938" c="-0.376937866210938" d="0.92584228515625" tx="198.15" ty="122.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.1" y="109.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="227.05" centerPoint3DY="130.8">
+                  <matrix>
+                    <Matrix a="0.952316284179688" b="0.28399658203125" c="-0.28399658203125" d="0.952316284179688" tx="206.4" ty="98.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="44.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="168.5" centerPoint3DY="171.55">
+                  <matrix>
+                    <Matrix a="0.739669799804688" b="0.658447265625" c="-0.658447265625" d="0.739669799804688" tx="172.95" ty="133.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="9.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="183.55" centerPoint3DY="227.1">
+                  <matrix>
+                    <Matrix a="0.81939697265625" b="-0.556549072265625" c="0.556549072265625" d="0.81939697265625" tx="114.1" ty="216.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.6" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="205.95" centerPoint3DY="231.65">
+                  <matrix>
+                    <Matrix a="0.33154296875" b="0.18817138671875" c="0.18817138671875" d="-0.33154296875" tx="88.6" ty="224.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.45" y="130.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="232" centerPoint3DY="159.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.55718994140625" b="0.031829833984375" c="0.0308837890625" d="-0.540802001953125" tx="231.9" ty="159.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.95" y="-14.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="252.2" centerPoint3DY="188.7">
+                  <matrix>
+                    <Matrix a="-0.505294799804688" b="0.1795654296875" c="-0.1795654296875" d="-0.505294799804688" tx="272.1" ty="208.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.5" y="10.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面">
+                  <matrix>
+                    <Matrix a="-0.385009765625" b="0.110687255859375" c="-0.0181121826171875" d="0.4176025390625" tx="329" ty="24.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="252.85" y="300.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="205.95" centerPoint3DY="231.55">
+                  <matrix>
+                    <Matrix a="0.844482421875" b="-0.33770751953125" d="0.844482421875" tx="-25.9" ty="107.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="205.65" y="257.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FFFF00" strength="5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="163.45" centerPoint3DY="184.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.484420776367188" b="0.339279174804688" c="0.34515380859375" d="0.492660522460938" tx="241.65" ty="256.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.05" y="-209.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="171.65" centerPoint3DY="253.45">
+                  <matrix>
+                    <Matrix a="0.949310302734375" b="0.291290283203125" c="-0.291290283203125" d="0.949310302734375" tx="99.45" ty="157.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.6" y="24.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="244.8" centerPoint3DY="184.7">
+                  <matrix>
+                    <Matrix a="0.95245361328125" b="-0.274505615234375" c="0.274505615234375" d="0.95245361328125" tx="212.7" ty="157.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="179.45" centerPoint3DY="392.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8116455078125" b="-0.16650390625" c="-0.161300659179688" d="0.7860107421875" tx="200.15" ty="380.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.25" y="6.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="200.1" centerPoint3DY="363.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.66302490234375" b="-0.693405151367188" c="-0.760467529296875" d="0.7388916015625" tx="235.35" ty="347.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.4" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="212.65" centerPoint3DY="304.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.894027709960938" b="0.651901245117188" c="0.670379638671875" d="0.989898681640625" tx="202.8" ty="250.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="78" centerPoint3DY="389.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.795166015625" b="-0.270111083984375" c="-0.261566162109375" d="0.77001953125" tx="100.2" ty="379"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.25" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="101.85" centerPoint3DY="358.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6563720703125" b="-0.713790893554688" c="-0.7830810546875" d="0.731689453125" tx="137.45" ty="343.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="153.3" centerPoint3DY="305.15">
+                  <matrix>
+                    <Matrix a="0.952545166015625" b="0.291793823242188" c="-0.291793823242188" d="0.952545166015625" tx="127" ty="245.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.9" y="13.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.55" centerPoint3DY="259.5">
+                  <matrix>
+                    <Matrix a="0.625823974609375" b="-0.0498504638671875" c="0.0518035888671875" d="0.65045166015625" tx="127.6" ty="231.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.15" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="199.35" centerPoint3DY="194.1">
+                  <matrix>
+                    <Matrix a="0.92584228515625" b="0.376937866210938" c="-0.376937866210938" d="0.92584228515625" tx="198.15" ty="122.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.1" y="109.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="227.05" centerPoint3DY="130.9">
+                  <matrix>
+                    <Matrix a="0.952316284179688" b="0.28399658203125" c="-0.28399658203125" d="0.952316284179688" tx="206.4" ty="98.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="44.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="168.5" centerPoint3DY="171.65">
+                  <matrix>
+                    <Matrix a="0.739669799804688" b="0.658447265625" c="-0.658447265625" d="0.739669799804688" tx="172.95" ty="134.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="9.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="183.65" centerPoint3DY="227.25">
+                  <matrix>
+                    <Matrix a="0.81939697265625" b="-0.556549072265625" c="0.556549072265625" d="0.81939697265625" tx="114.2" ty="216.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.6" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="206.05" centerPoint3DY="231.75">
+                  <matrix>
+                    <Matrix a="0.33154296875" b="0.18817138671875" c="0.18817138671875" d="-0.33154296875" tx="88.7" ty="224.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.45" y="130.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="232.05" centerPoint3DY="159.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.55718994140625" b="0.031829833984375" c="0.0308837890625" d="-0.540802001953125" tx="231.95" ty="159.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.95" y="-14.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="252.25" centerPoint3DY="188.75">
+                  <matrix>
+                    <Matrix a="-0.505294799804688" b="0.1795654296875" c="-0.1795654296875" d="-0.505294799804688" tx="272.15" ty="208.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.5" y="10.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="222" centerPoint3DY="239.75">
+                  <matrix>
+                    <Matrix a="-0.385009765625" b="0.110687255859375" c="-0.0181121826171875" d="0.4176025390625" tx="329" ty="24.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="252.85" y="300.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="205.95" centerPoint3DY="231.55">
+                  <matrix>
+                    <Matrix a="0.844482421875" b="-0.33770751953125" d="0.844482421875" tx="-25.9" ty="107.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="205.65" y="257.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#FFFF00" strength="5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="162.35" centerPoint3DY="182.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476730346679688" b="0.35003662109375" c="0.356109619140625" d="0.484848022460938" tx="242.2" ty="253.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.05" y="-209.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="172.1" centerPoint3DY="251.6">
+                  <matrix>
+                    <Matrix a="0.955490112304688" b="0.2706298828125" c="-0.2706298828125" d="0.955490112304688" tx="97.85" ty="157.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.6" y="24.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="243.65" centerPoint3DY="181.25">
+                  <matrix>
+                    <Matrix a="0.94635009765625" b="-0.295135498046875" c="0.295135498046875" d="0.94635009765625" tx="210.95" ty="154.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="188.15" centerPoint3DY="394.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.81683349609375" b="-0.143646240234375" c="-0.13916015625" d="0.791061401367188" tx="208.5" ty="381.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="204.35" centerPoint3DY="363.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.75006103515625" b="-0.59881591796875" c="-0.6551513671875" d="0.834228515625" tx="237.25" ty="343.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.4" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="213.4" centerPoint3DY="301.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.875473022460938" b="0.676559448242188" c="0.69769287109375" d="0.970809936523438" tx="202.05" ty="248"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.8" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="82.95" centerPoint3DY="389.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.801010131835938" b="-0.254440307617188" c="-0.24639892578125" d="0.775680541992188" tx="104.95" ty="378.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.2" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="106.15" centerPoint3DY="358.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.669464111328125" b="-0.701461791992188" c="-0.76934814453125" d="0.746063232421875" tx="141.4" ty="342.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.9" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="155.05" centerPoint3DY="303.8">
+                  <matrix>
+                    <Matrix a="0.96649169921875" b="0.241546630859375" c="-0.241546630859375" d="0.96649169921875" tx="125.65" ty="245.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.9" y="13.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="257.3">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="229.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="198.4" centerPoint3DY="191.6">
+                  <matrix>
+                    <Matrix a="0.933807373046875" b="0.356689453125" c="-0.356689453125" d="0.933807373046875" tx="195.6" ty="119.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.1" y="109.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="224.7" centerPoint3DY="127.85">
+                  <matrix>
+                    <Matrix a="0.958358764648438" b="0.2633056640625" c="-0.2633056640625" d="0.958358764648438" tx="203.35" ty="96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.1" y="44.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="167" centerPoint3DY="169.95">
+                  <matrix>
+                    <Matrix a="0.753875732421875" b="0.642303466796875" c="-0.642303466796875" d="0.753875732421875" tx="170.75" ty="132.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="10.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="177.95" centerPoint3DY="228.5">
+                  <matrix>
+                    <Matrix a="0.889251708984375" b="-0.436920166015625" c="0.436920166015625" d="0.889251708984375" tx="110.7" ty="207.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="199.6" centerPoint3DY="236.3">
+                  <matrix>
+                    <Matrix a="0.30224609375" b="0.23284912109375" c="0.23284912109375" d="-0.30224609375" tx="84.4" ty="212.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.55" y="130.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="241.15" centerPoint3DY="152.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5413818359375" b="0.135406494140625" c="0.13140869140625" d="-0.52545166015625" tx="241.05" ty="152.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="-14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="254.85" centerPoint3DY="183.15">
+                  <matrix>
+                    <Matrix a="-0.530364990234375" b="0.082122802734375" c="-0.082122802734375" d="-0.530364990234375" tx="270.8" ty="206"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.7" y="10.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="231.15" centerPoint3DY="230.25">
+                  <matrix>
+                    <Matrix a="-0.39739990234375" b="0.053009033203125" c="-0.0087432861328125" d="0.415390014648438" tx="337.1" ty="30.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="252.8" y="300.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="238" centerPoint3DY="218.35">
+                  <matrix>
+                    <Matrix a="0.904876708984375" b="-0.2327880859375" d="0.883331298828125" tx="-10.45" ty="55.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="205.6" y="257.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="16" blurY="16" color="#FFFF00" strength="4"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="161.3" centerPoint3DY="180.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468841552734375" b="0.36065673828125" c="0.366912841796875" d="0.476852416992188" tx="242.65" ty="249.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.15" y="-209.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="172.5" centerPoint3DY="249.75">
+                  <matrix>
+                    <Matrix a="0.96124267578125" b="0.249847412109375" c="-0.249847412109375" d="0.96124267578125" tx="96.2" ty="157.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.65" y="24.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="242.4" centerPoint3DY="177.75">
+                  <matrix>
+                    <Matrix a="0.9398193359375" b="-0.315658569335938" c="0.315658569335938" d="0.9398193359375" tx="209.15" ty="152.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="196.9" centerPoint3DY="396.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.821441650390625" b="-0.120590209960938" c="-0.116867065429688" d="0.795516967773438" tx="216.9" ty="382.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="208.9" centerPoint3DY="363" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.82373046875" b="-0.493453979492188" c="-0.53802490234375" d="0.91473388671875" tx="238.85" ty="338.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.4" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="214" centerPoint3DY="298.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.856292724609375" b="0.700729370117188" c="0.72454833984375" d="0.950973510742188" tx="201.2" ty="245.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="87.85" centerPoint3DY="389.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.806564331054688" b="-0.2386474609375" c="-0.231109619140625" d="0.78106689453125" tx="109.65" ty="378.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.2" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="110.4" centerPoint3DY="358.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.682373046875" b="-0.688934326171875" c="-0.75537109375" d="0.76019287109375" tx="145.35" ty="342.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.95" y="7.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="156.8" centerPoint3DY="302.25">
+                  <matrix>
+                    <Matrix a="0.977813720703125" b="0.190643310546875" c="-0.190643310546875" d="0.977813720703125" tx="124.4" ty="245.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.85" y="13.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="255">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="227.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="197.4" centerPoint3DY="189.1">
+                  <matrix>
+                    <Matrix a="0.941390991210938" b="0.33624267578125" c="-0.33624267578125" d="0.941390991210938" tx="193" ty="117.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.05" y="109.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="222.25" centerPoint3DY="124.8">
+                  <matrix>
+                    <Matrix a="0.963973999023438" b="0.242462158203125" c="-0.242462158203125" d="0.963973999023438" tx="200.25" ty="93.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.1" y="44.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="165.55" centerPoint3DY="168">
+                  <matrix>
+                    <Matrix a="0.767745971679688" b="0.6258544921875" c="-0.6258544921875" d="0.767745971679688" tx="168.45" ty="130.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="172.05" centerPoint3DY="228.9">
+                  <matrix>
+                    <Matrix a="0.94183349609375" b="-0.3087158203125" c="0.3087158203125" d="0.94183349609375" tx="108.35" ty="199.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="9.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="192.5" centerPoint3DY="239.6">
+                  <matrix>
+                    <Matrix a="0.26702880859375" b="0.27301025390625" c="0.27301025390625" d="-0.26702880859375" tx="81.6" ty="200"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.45" y="130.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="250.35" centerPoint3DY="146.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50653076171875" b="0.234237670898438" c="0.227340698242188" d="-0.49163818359375" tx="250.25" ty="146.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="-14.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="257.65" centerPoint3DY="178.05">
+                  <matrix>
+                    <Matrix a="-0.536834716796875" b="-0.0183868408203125" c="0.0183868408203125" d="-0.536834716796875" tx="269" ty="203.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.5" y="10.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="240.2" centerPoint3DY="220.6">
+                  <matrix>
+                    <Matrix a="-0.401214599609375" b="-0.0058746337890625" c="0.0004730224609375" d="0.412994384765625" tx="343" ty="37.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="252.7" y="300.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="269" centerPoint3DY="205.8">
+                  <matrix>
+                    <Matrix a="0.95196533203125" b="-0.117904663085938" d="0.922210693359375" tx="7.65" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="205.55" y="257.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="12" blurY="12" color="#FFFF00" strength="3"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.609375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="160.2" centerPoint3DY="179.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.460693359375" b="0.37109375" c="0.377548217773438" d="0.46856689453125" tx="243.1" ty="246.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-209.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="172.9" centerPoint3DY="247.85">
+                  <matrix>
+                    <Matrix a="0.966552734375" b="0.22894287109375" c="-0.22894287109375" d="0.966552734375" tx="94.6" ty="157.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.65" y="24.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="241.3" centerPoint3DY="174.4">
+                  <matrix>
+                    <Matrix a="0.932861328125" b="-0.336029052734375" c="0.336029052734375" d="0.932861328125" tx="207.45" ty="149.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="205.6" centerPoint3DY="397.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.82537841796875" b="-0.097442626953125" c="-0.0944061279296875" d="0.79931640625" tx="225.25" ty="383.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="214" centerPoint3DY="362.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8826904296875" b="-0.37908935546875" c="-0.4111328125" d="0.978912353515625" tx="240.45" ty="334.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.35" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="214.65" centerPoint3DY="296" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.836395263671875" b="0.724365234375" c="0.75079345703125" d="0.930419921875" tx="200.35" ty="243.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="92.7" centerPoint3DY="390.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.81182861328125" b="-0.222747802734375" c="-0.2156982421875" d="0.7861328125" tx="114.3" ty="378.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.2" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="114.7" centerPoint3DY="358.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.69500732421875" b="-0.6761474609375" c="-0.74114990234375" d="0.7740478515625" tx="149.4" ty="341.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.95" y="7.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="158.55" centerPoint3DY="300.6">
+                  <matrix>
+                    <Matrix a="0.98651123046875" b="0.139205932617188" c="-0.139205932617188" d="0.98651123046875" tx="123.2" ty="245.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.9" y="13.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="252.75">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="225.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="196.4" centerPoint3DY="186.6">
+                  <matrix>
+                    <Matrix a="0.948486328125" b="0.315658569335938" c="-0.315658569335938" d="0.948486328125" tx="190.55" ty="115.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.05" y="109.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="219.9" centerPoint3DY="121.8">
+                  <matrix>
+                    <Matrix a="0.969085693359375" b="0.22149658203125" c="-0.22149658203125" d="0.969085693359375" tx="197.25" ty="91.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="44.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="164.25" centerPoint3DY="166.25">
+                  <matrix>
+                    <Matrix a="0.78118896484375" b="0.609115600585938" c="-0.609115600585938" d="0.78118896484375" tx="166.3" ty="128.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="166" centerPoint3DY="228.6">
+                  <matrix>
+                    <Matrix a="0.975982666015625" b="-0.174362182617188" c="0.174362182617188" d="0.975982666015625" tx="107" ty="190.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.5" y="9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="184.7" centerPoint3DY="242.05">
+                  <matrix>
+                    <Matrix a="0.226547241210938" b="0.307861328125" c="0.307861328125" d="-0.226547241210938" tx="80.25" ty="187.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.55" y="130.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="259.6" centerPoint3DY="140.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.453826904296875" b="0.324798583984375" c="0.31524658203125" d="-0.44049072265625" tx="259.55" ty="140.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="-14.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="260.55" centerPoint3DY="173.85">
+                  <matrix>
+                    <Matrix a="-0.524383544921875" b="-0.118453979492188" c="0.118453979492188" d="-0.524383544921875" tx="266.85" ty="201.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="10.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="249.35" centerPoint3DY="211">
+                  <matrix>
+                    <Matrix a="-0.39630126953125" b="-0.06475830078125" c="0.0096282958984375" d="0.410369873046875" tx="346.8" ty="43.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="252.8" y="300.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay" centerPoint3DX="299.1" centerPoint3DY="193.85">
+                  <matrix>
+                    <Matrix a="0.984130859375" b="0.0052642822265625" d="0.961090087890625" tx="28.9" ty="-54.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="205.65" y="257.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FFFF00" strength="2"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.41015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="159.05" centerPoint3DY="177.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.45233154296875" b="0.381393432617188" c="0.387969970703125" d="0.460067749023438" tx="243.45" ty="242.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-209.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="173.4" centerPoint3DY="245.95">
+                  <matrix>
+                    <Matrix a="0.971405029296875" b="0.207916259765625" c="-0.207916259765625" d="0.971405029296875" tx="93.1" ty="156.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.65" y="24.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="240.1" centerPoint3DY="170.95">
+                  <matrix>
+                    <Matrix a="0.925445556640625" b="-0.356246948242188" c="0.356246948242188" d="0.925445556640625" tx="205.7" ty="146.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="214.35" centerPoint3DY="399.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.82867431640625" b="-0.07415771484375" c="-0.0718536376953125" d="0.802490234375" tx="233.55" ty="384.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.25" y="6.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="219.35" centerPoint3DY="361.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.92584228515625" b="-0.257843017578125" c="-0.276779174804688" d="1.02557373046875" tx="241.85" ty="330.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.35" y="8.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="215.35" centerPoint3DY="293.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.815902709960938" b="0.7474365234375" c="0.776458740234375" d="0.90911865234375" tx="199.55" ty="241.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="97.55" centerPoint3DY="390.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8167724609375" b="-0.20672607421875" c="-0.200180053710938" d="0.790924072265625" tx="118.95" ty="378.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.2" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="118.95" centerPoint3DY="358.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.70745849609375" b="-0.66314697265625" c="-0.726669311523438" d="0.787689208984375" tx="153.35" ty="340.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.95" y="7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="160.35" centerPoint3DY="298.9">
+                  <matrix>
+                    <Matrix a="0.992431640625" b="0.0873870849609375" c="-0.0873870849609375" d="0.992431640625" tx="122.2" ty="245.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.9" y="13.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.6" centerPoint3DY="250.45">
+                  <matrix>
+                    <Matrix a="0.62579345703125" b="-0.049835205078125" c="0.051788330078125" d="0.650421142578125" tx="127.6" ty="222.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="195.45" centerPoint3DY="184.15">
+                  <matrix>
+                    <Matrix a="0.955169677734375" b="0.294906616210938" c="-0.294906616210938" d="0.955169677734375" tx="188" ty="112.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.05" y="109.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="217.5" centerPoint3DY="118.8">
+                  <matrix>
+                    <Matrix a="0.97381591796875" b="0.200469970703125" c="-0.200469970703125" d="0.97381591796875" tx="194.2" ty="88.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="44.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="162.8" centerPoint3DY="164.5">
+                  <matrix>
+                    <Matrix a="0.794342041015625" b="0.592132568359375" c="-0.592132568359375" d="0.794342041015625" tx="164.05" ty="126.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="10.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="159.45" centerPoint3DY="227.5">
+                  <matrix>
+                    <Matrix a="0.99114990234375" b="-0.036529541015625" c="0.036529541015625" d="0.99114990234375" tx="106.4" ty="181.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="9.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="176.15" centerPoint3DY="243.5">
+                  <matrix>
+                    <Matrix a="0.182479858398438" b="0.335861206054688" c="0.335861206054688" d="-0.182479858398438" tx="80.2" ty="175.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.5" y="130.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="268.85" centerPoint3DY="135" loop="loop">
+                  <matrix>
+                    <Matrix a="0.3851318359375" b="0.403915405273438" c="0.39202880859375" d="-0.373825073242188" tx="268.75" ty="134.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="263.6" centerPoint3DY="170.1">
+                  <matrix>
+                    <Matrix a="-0.49346923828125" b="-0.21453857421875" c="0.21453857421875" d="-0.49346923828125" tx="264.75" ty="198.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.15" y="10.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架反面" centerPoint3DX="410" centerPoint3DY="86.6">
+                  <matrix>
+                    <Matrix a="-0.382843017578125" b="-0.122344970703125" c="0.0186767578125" d="0.407577514648438" tx="349.1" ty="47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="255" y="306.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/防护罩" blendMode="overlay">
+                  <matrix>
+                    <Matrix b="0.134765625" tx="-15.55" ty="-121.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="274.55" y="257.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#FFFF00"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.21875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="287.25" centerPoint3DY="203.45">
+                  <matrix>
+                    <Matrix a="-0.0607452392578125" b="-0.397369384765625" c="0.33660888671875" d="0.0925140380859375" tx="278" ty="141.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="158.05" centerPoint3DY="175.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.443756103515625" b="0.391464233398438" c="0.398239135742188" d="0.451339721679688" tx="243.95" ty="239.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-210"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="173.65" centerPoint3DY="243.85">
+                  <matrix>
+                    <Matrix a="0.975830078125" b="0.186813354492188" c="-0.186813354492188" d="0.975830078125" tx="91.4" ty="156.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.85" y="24.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="238.75" centerPoint3DY="167.6">
+                  <matrix>
+                    <Matrix a="0.917633056640625" b="-0.376327514648438" c="0.376327514648438" d="0.917633056640625" tx="203.85" ty="144.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="277.7" centerPoint3DY="134.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.305450439453125" b="0.46954345703125" c="0.45574951171875" d="-0.29644775390625" tx="277.7" ty="133.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.05" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="265.95" centerPoint3DY="167.55">
+                  <matrix>
+                    <Matrix a="-0.445785522460938" b="-0.303924560546875" c="0.303924560546875" d="-0.445785522460938" tx="261.85" ty="195.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.25" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="223.05" centerPoint3DY="401.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.831329345703125" b="-0.0507354736328125" c="-0.0491790771484375" d="0.805084228515625" tx="241.75" ty="386.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="225.35" centerPoint3DY="360.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9525146484375" b="-0.131866455078125" c="-0.137313842773438" d="1.0538330078125" tx="243.6" ty="326.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.85" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="216.15" centerPoint3DY="290.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.794784545898438" b="0.76995849609375" c="0.801605224609375" d="0.887176513671875" tx="199.15" ty="238.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="102.7" centerPoint3DY="390.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8214111328125" b="-0.190597534179688" c="-0.1845703125" d="0.79541015625" tx="124" ty="378.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.7" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="123.5" centerPoint3DY="357.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.719696044921875" b="-0.64996337890625" c="-0.711959838867188" d="0.801071166992188" tx="157.7" ty="340.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="7.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="162.2" centerPoint3DY="297.3">
+                  <matrix>
+                    <Matrix a="0.9957275390625" b="0.0353240966796875" c="-0.0353240966796875" d="0.9957275390625" tx="121.5" ty="246.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.75" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="176.55" centerPoint3DY="248.15">
+                  <matrix>
+                    <Matrix a="0.625823974609375" b="-0.0498504638671875" c="0.0518035888671875" d="0.65045166015625" tx="127.6" ty="220.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.15" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="194.55" centerPoint3DY="181.75">
+                  <matrix>
+                    <Matrix a="0.961410522460938" b="0.274032592773438" c="-0.274032592773438" d="0.961410522460938" tx="185.65" ty="110.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.85" y="109.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="215.3" centerPoint3DY="115.9">
+                  <matrix>
+                    <Matrix a="0.97808837890625" b="0.179306030273438" c="-0.179306030273438" d="0.97808837890625" tx="191.25" ty="86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="161.6" centerPoint3DY="162.85">
+                  <matrix>
+                    <Matrix a="0.80712890625" b="0.5748291015625" c="-0.5748291015625" d="0.80712890625" tx="161.95" ty="124.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="9.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="153.5" centerPoint3DY="226.2">
+                  <matrix>
+                    <Matrix a="0.986923217773438" b="0.102096557617188" c="-0.102096557617188" d="0.986923217773438" tx="107.2" ty="173.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="167.5" centerPoint3DY="244.55">
+                  <matrix>
+                    <Matrix a="0.1337890625" b="0.358078002929688" c="0.358078002929688" d="-0.1337890625" tx="82" ty="163.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.55" y="130.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="259.95" centerPoint3DY="199.55">
+                  <matrix>
+                    <Matrix a="-0.01715087890625" b="-0.401611328125" c="0.348968505859375" d="0.097412109375" tx="257.5" ty="136.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="150.9" centerPoint3DY="173.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.432403564453125" b="0.40435791015625" c="0.411376953125" d="0.439788818359375" tx="238.65" ty="234.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-209.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="168.55" centerPoint3DY="240.95">
+                  <matrix>
+                    <Matrix a="0.98138427734375" b="0.15655517578125" c="-0.15655517578125" d="0.98138427734375" tx="83.6" ty="156.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.85" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="229.75" centerPoint3DY="164.65">
+                  <matrix>
+                    <Matrix a="0.944580078125" b="-0.303741455078125" c="0.303741455078125" d="0.944580078125" tx="196.8" ty="138.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="257.15" centerPoint3DY="131.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.38525390625" b="0.4073486328125" c="0.3953857421875" d="-0.373886108398438" tx="257.1" ty="131.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.1" y="-14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="252.05" centerPoint3DY="165">
+                  <matrix>
+                    <Matrix a="-0.49334716796875" b="-0.2198486328125" c="0.2198486328125" d="-0.49334716796875" tx="253.05" ty="193.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="10.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="216.15" centerPoint3DY="400.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8326416015625" b="-0.0578155517578125" c="-0.0560150146484375" d="0.806381225585938" tx="235" ty="385.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="216.7" centerPoint3DY="359.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.959075927734375" b="-0.0766448974609375" c="-0.0762481689453125" d="1.06065368652344" tx="232.95" ty="324.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="209.5" centerPoint3DY="288" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.85125732421875" b="0.70703125" c="0.731552124023438" d="0.945785522460938" tx="196.5" ty="235.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.05" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="114.3" centerPoint3DY="394.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.831787109375" b="-0.14422607421875" c="-0.139678955078125" d="0.805465698242188" tx="134.9" ty="381.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.65" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="128.65" centerPoint3DY="360.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.827545166015625" b="-0.505767822265625" c="-0.5516357421875" d="0.918991088867188" tx="158.9" ty="336.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="160.25" centerPoint3DY="294.95">
+                  <matrix>
+                    <Matrix a="0.99554443359375" b="-0.0405426025390625" c="0.0405426025390625" d="0.99554443359375" tx="115.8" ty="247.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.75" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="171.6" centerPoint3DY="245.3">
+                  <matrix>
+                    <Matrix a="0.624069213867188" b="-0.0682220458984375" c="0.070892333984375" d="0.64862060546875" tx="121.85" ty="219.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.1" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="187.7" centerPoint3DY="178.4">
+                  <matrix>
+                    <Matrix a="0.969223022460938" b="0.245025634765625" c="-0.245025634765625" d="0.969223022460938" tx="176.65" ty="107.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.8" y="109.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="206.4" centerPoint3DY="111.9">
+                  <matrix>
+                    <Matrix a="0.983001708984375" b="0.149810791015625" c="-0.149810791015625" d="0.983001708984375" tx="181.45" ty="83"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="154.2" centerPoint3DY="160.5">
+                  <matrix>
+                    <Matrix a="0.82403564453125" b="0.55029296875" c="-0.55029296875" d="0.82403564453125" tx="153.45" ty="122.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.1" y="10.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="147.9" centerPoint3DY="223.9">
+                  <matrix>
+                    <Matrix a="0.989532470703125" b="0.0723724365234375" c="-0.0723724365234375" d="0.989532470703125" tx="100.05" ty="172.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="162.65" centerPoint3DY="241.8">
+                  <matrix>
+                    <Matrix a="0.144515991210938" b="0.3538818359375" c="0.3538818359375" d="-0.144515991210938" tx="74.7" ty="163.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.5" y="130.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="232.5" centerPoint3DY="194.8">
+                  <matrix>
+                    <Matrix a="0.0266265869140625" b="-0.401092529296875" c="0.361297607421875" d="0.1024169921875" tx="236.95" ty="132.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="143.7" centerPoint3DY="171.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.420700073242188" b="0.4169921875" c="0.4241943359375" d="0.4278564453125" tx="233.25" ty="229.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-210"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="163.55" centerPoint3DY="238">
+                  <matrix>
+                    <Matrix a="0.986083984375" b="0.126144409179688" c="-0.126144409179688" d="0.986083984375" tx="76" ty="156"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.95" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="220.65" centerPoint3DY="161.65">
+                  <matrix>
+                    <Matrix a="0.9658203125" b="-0.229217529296875" c="0.229217529296875" d="0.9658203125" tx="189.8" ty="132.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="236.5" centerPoint3DY="130.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.45263671875" b="0.331756591796875" c="0.322006225585938" d="-0.439300537109375" tx="236.45" ty="129.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11" y="-14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="237.55" centerPoint3DY="162.95">
+                  <matrix>
+                    <Matrix a="-0.525665283203125" b="-0.126815795898438" c="0.126815795898438" d="-0.525665283203125" tx="243.65" ty="190.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="10.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="209.15" centerPoint3DY="400.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.833953857421875" b="-0.0648956298828125" c="-0.062896728515625" d="0.807647705078125" tx="228.15" ty="385.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="208" centerPoint3DY="358.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.96246337890625" b="-0.0211029052734375" c="-0.01483154296875" d="1.06388854980469" tx="222.25" ty="322.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="202.8" centerPoint3DY="285.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.902816772460938" b="0.639999389648438" c="0.6572265625" d="0.998947143554688" tx="193.85" ty="231.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="125.9" centerPoint3DY="398.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.839584350585938" b="-0.0973358154296875" c="-0.0942535400390625" d="0.813018798828125" tx="145.7" ty="383.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.65" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="134.4" centerPoint3DY="361.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.90692138671875" b="-0.34405517578125" c="-0.372299194335938" d="1.00531005859375" tx="159.8" ty="332.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="158.45" centerPoint3DY="292.45">
+                  <matrix>
+                    <Matrix a="0.9896240234375" b="-0.116241455078125" c="0.116241455078125" d="0.9896240234375" tx="110.45" ty="248.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.8" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="166.75" centerPoint3DY="242.3">
+                  <matrix>
+                    <Matrix a="0.621810913085938" b="-0.0865478515625" c="0.0899505615234375" d="0.646270751953125" tx="116.2" ty="217.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="180.85" centerPoint3DY="174.95">
+                  <matrix>
+                    <Matrix a="0.9754638671875" b="0.218963623046875" c="-0.218963623046875" d="0.9754638671875" tx="167.9" ty="104.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.8" y="109.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="197.85" centerPoint3DY="107.9">
+                  <matrix>
+                    <Matrix a="0.9866943359375" b="0.123397827148438" c="-0.123397827148438" d="0.9866943359375" tx="172.2" ty="79.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.1" y="45.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="147" centerPoint3DY="157.95">
+                  <matrix>
+                    <Matrix a="0.838531494140625" b="0.52801513671875" c="-0.52801513671875" d="0.838531494140625" tx="145.2" ty="120"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="142.45" centerPoint3DY="221.5">
+                  <matrix>
+                    <Matrix a="0.99114990234375" b="0.0457916259765625" c="-0.0457916259765625" d="0.99114990234375" tx="93.25" ty="171.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.6" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="157.75" centerPoint3DY="239.05">
+                  <matrix>
+                    <Matrix a="0.153976440429688" b="0.349899291992188" c="0.349899291992188" d="-0.153976440429688" tx="67.75" ty="162.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.6" y="130.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器" centerPoint3DX="205.2" centerPoint3DY="189.3">
+                  <matrix>
+                    <Matrix a="0.0701141357421875" b="-0.39581298828125" c="0.373565673828125" d="0.1075439453125" tx="216.45" ty="127.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" centerPoint3DX="136.6" centerPoint3DY="168.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.408615112304688" b="0.42926025390625" c="0.436691284179688" d="0.41558837890625" tx="227.85" ty="224.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.1" y="-209.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2" centerPoint3DX="158.5" centerPoint3DY="235.05">
+                  <matrix>
+                    <Matrix a="0.98980712890625" b="0.0955810546875" c="-0.0955810546875" d="0.98980712890625" tx="68.4" ty="155.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.85" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1" centerPoint3DX="211.55" centerPoint3DY="158.55">
+                  <matrix>
+                    <Matrix a="0.981170654296875" b="-0.153228759765625" c="0.153228759765625" d="0.981170654296875" tx="183" ty="127.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" centerPoint3DX="215.85" centerPoint3DY="128.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.505401611328125" b="0.245162963867188" c="0.23797607421875" d="-0.490524291992188" tx="215.75" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="-14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2" centerPoint3DX="222.95" centerPoint3DY="161.1">
+                  <matrix>
+                    <Matrix a="-0.540496826171875" b="-0.031097412109375" c="0.031097412109375" d="-0.540496826171875" tx="233.95" ty="187.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="10.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="202.1" centerPoint3DY="399.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.835205078125" b="-0.0720367431640625" c="-0.069793701171875" d="0.808837890625" tx="221.3" ty="384.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.2" y="6.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="199.45" centerPoint3DY="357.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.962646484375" b="0.0345458984375" c="0.0466766357421875" d="1.0635986328125" tx="211.6" ty="320.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" centerPoint3DX="196.1" centerPoint3DY="282.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.949127197265625" b="0.569244384765625" c="0.579071044921875" d="1.0462646484375" tx="191.25" ty="228.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" centerPoint3DX="137.5" centerPoint3DY="401.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.844696044921875" b="-0.0500030517578125" c="-0.0484161376953125" d="0.817962646484375" tx="156.5" ty="386"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.65" y="5.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" centerPoint3DX="140.75" centerPoint3DY="362.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.955078125" b="-0.170501708984375" c="-0.180038452148438" d="1.05699157714844" tx="160.4" ty="329.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="7.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5" centerPoint3DX="156.5" centerPoint3DY="289.55">
+                  <matrix>
+                    <Matrix a="0.97796630859375" b="-0.191253662109375" c="0.191253662109375" d="0.97796630859375" tx="105.3" ty="249.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.8" y="12.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="161.75" centerPoint3DY="239.4">
+                  <matrix>
+                    <Matrix a="0.618988037109375" b="-0.104782104492188" c="0.108917236328125" d="0.643356323242188" tx="110.55" ty="216.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.2" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4" centerPoint3DX="173.9" centerPoint3DY="171.55">
+                  <matrix>
+                    <Matrix a="0.981613159179688" b="0.18951416015625" c="-0.18951416015625" d="0.981613159179688" tx="158.85" ty="101.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.8" y="109.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头" centerPoint3DX="188.75" centerPoint3DY="103.8">
+                  <matrix>
+                    <Matrix a="0.989990234375" b="0.093658447265625" c="-0.093658447265625" d="0.989990234375" tx="162.25" ty="76.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.05" y="45.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂" centerPoint3DX="139.45" centerPoint3DY="155.5">
+                  <matrix>
+                    <Matrix a="0.854049682617188" b="0.5025634765625" c="-0.5025634765625" d="0.854049682617188" tx="136.55" ty="117.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手" centerPoint3DX="136.75" centerPoint3DY="218.95">
+                  <matrix>
+                    <Matrix a="0.992095947265625" b="0.015960693359375" c="-0.015960693359375" d="0.992095947265625" tx="86.05" ty="170.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪" centerPoint3DX="152.65" centerPoint3DY="236.1">
+                  <matrix>
+                    <Matrix a="0.164413452148438" b="0.345138549804688" c="0.345138549804688" d="-0.164413452148438" tx="60.45" ty="162.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.5" y="130.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/武器素材/待机武器">
+                  <matrix>
+                    <Matrix a="0.112777709960938" b="-0.385848999023438" c="0.385848999023438" d="0.112777709960938" tx="195.8" ty="122.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 805" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39617919921875" b="0.441207885742188" c="0.448822021484375" d="0.402938842773438" tx="222.35" ty="219.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-84.05" y="-210.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 2">
+                  <matrix>
+                    <Matrix a="0.99261474609375" b="0.064910888671875" c="-0.064910888671875" d="0.99261474609375" tx="61" ty="155.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="112.75" y="24.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 1">
+                  <matrix>
+                    <Matrix a="0.9906005859375" b="-0.0762786865234375" c="0.0762786865234375" d="0.9906005859375" tx="176.35" ty="122.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 472" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.541748046875" b="0.15045166015625" c="0.14605712890625" d="-0.52581787109375" tx="195.35" ty="127.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.7" y="-14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/外套2">
+                  <matrix>
+                    <Matrix a="-0.537811279296875" b="0.067596435546875" c="-0.067596435546875" d="-0.537811279296875" tx="224.35" ty="184.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="10.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.83642578125" b="-0.079193115234375" c="-0.0767364501953125" d="0.810028076171875" tx="214.8" ty="384.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.65" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.95965576171875" b="0.0902099609375" c="0.108154296875" d="1.05979919433594" tx="201.2" ty="319.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 528" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.98992919921875" b="0.495147705078125" c="0.497543334960938" d="1.0875244140625" tx="188.8" ty="225.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.05" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 526" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.847198486328125" b="-0.0023956298828125" c="-0.0023193359375" d="0.82037353515625" tx="167.6" ty="388.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.3" y="5.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 527" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.970321655273438" b="0.009002685546875" c="0.0184783935546875" d="1.07225036621094" tx="160.8" ty="326.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.55" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 5">
+                  <matrix>
+                    <Matrix a="0.96063232421875" b="-0.26519775390625" c="0.26519775390625" d="0.96063232421875" tx="101.15" ty="250.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.25" y="12.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/裙子" centerPoint3DX="156.8" centerPoint3DY="236.4">
+                  <matrix>
+                    <Matrix a="0.61566162109375" b="-0.122970581054688" c="0.127792358398438" d="0.639892578125" tx="104.95" ty="214.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.15" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 4">
+                  <matrix>
+                    <Matrix a="0.9869384765625" b="0.15997314453125" c="-0.15997314453125" d="0.9869384765625" tx="149.65" ty="98.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.85" y="109.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/头">
+                  <matrix>
+                    <Matrix a="0.992462158203125" b="0.0638275146484375" c="-0.0638275146484375" d="0.992462158203125" tx="152.35" ty="73.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="44.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/右上臂">
+                  <matrix>
+                    <Matrix a="0.868881225585938" b="0.4766845703125" c="-0.4766845703125" d="0.868881225585938" tx="127.85" ty="115.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/机枪手">
+                  <matrix>
+                    <Matrix a="0.992233276367188" b="-0.013885498046875" c="0.013885498046875" d="0.992233276367188" tx="78.75" ty="169.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/德洛希尔握枪">
+                  <matrix>
+                    <Matrix a="0.17474365234375" b="0.340087890625" c="0.340087890625" d="-0.17474365234375" tx="52.75" ty="162.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="253.55" y="130.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="影子" color="#009999" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="图层_22" color="#FF0000" parentLayerIndex="2">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/Symbol 2" centerPoint3DX="256.1" centerPoint3DY="492.7">
+                  <matrix>
+                    <Matrix a="0.82159423828125" d="0.334503173828125" tx="169.4" ty="406.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/Symbol 2" centerPoint3DX="270.9" centerPoint3DY="493.45">
+                  <matrix>
+                    <Matrix a="0.82159423828125" d="0.334503173828125" tx="184.2" ty="406.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/Symbol 2" centerPoint3DX="235" centerPoint3DY="493.45">
+                  <matrix>
+                    <Matrix a="0.82159423828125" d="0.334503173828125" tx="148.3" ty="406.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/Symbol 2" centerPoint3DX="235" centerPoint3DY="493.45">
+                  <matrix>
+                    <Matrix a="0.82159423828125" d="0.334503173828125" tx="148.3" ty="406.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/Symbol 2" centerPoint3DX="235" centerPoint3DY="493.45">
+                  <matrix>
+                    <Matrix a="0.82159423828125" d="0.334503173828125" tx="148.3" ty="406.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/Symbol 2" centerPoint3DX="261.65" centerPoint3DY="492.65">
+                  <matrix>
+                    <Matrix a="0.82159423828125" d="0.334503173828125" tx="174.95" ty="406"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="sound_layer" color="#9933CC" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("Itinerantsheild.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("Itinerantsheild_R.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

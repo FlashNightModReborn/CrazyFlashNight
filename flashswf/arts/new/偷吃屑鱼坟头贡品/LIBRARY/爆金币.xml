@@ -1,0 +1,640 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆金币" itemID="65f9377f-00003299" linkageExportForAS="true" linkageIdentifier="爆金币" lastModified="1739235993">
+  <timeline>
+    <DOMTimeline name="爆金币">
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728" soundName="特效与子弹/sound376.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/blood233" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-20.25" y="0.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-2.15" centerPoint3DY="-9.5">
+                  <matrix>
+                    <Matrix tx="-4.2" ty="-13.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="0.75" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="-0.5" b="-0.866012573242188" c="0.866012573242188" d="-0.5" tx="-1.7" ty="13.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="9.65" centerPoint3DY="-4.1">
+                  <matrix>
+                    <Matrix a="0.5" b="0.866012573242188" c="-0.866012573242188" d="0.5" tx="12.1" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-8.4" centerPoint3DY="7.3">
+                  <matrix>
+                    <Matrix a="0.499969482421875" b="-0.866012573242188" c="0.866012573242188" d="0.499969482421875" tx="-12.85" ty="6.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="17.25" centerPoint3DY="6.85">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="21.1" ty="4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-5.1" centerPoint3DY="18.65">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="-0.707107543945313" tx="-1.75" ty="19.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-22.2" centerPoint3DY="-9.35">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.70709228515625" c="0.70709228515625" d="0.70709228515625" tx="-26.6" ty="-11.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="9.8" centerPoint3DY="-16.45">
+                  <matrix>
+                    <Matrix tx="7.75" ty="-20.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-16.85" centerPoint3DY="-2.45">
+                  <matrix>
+                    <Matrix a="0.707107543945313" b="-0.70709228515625" c="0.70709228515625" d="0.707107543945313" tx="-21.15" ty="-3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-3.6" centerPoint3DY="-16.65">
+                  <matrix>
+                    <Matrix a="0.866012573242188" b="-0.499984741210938" c="0.5" d="0.866012573242188" tx="-7.3" ty="-18.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-1" centerPoint3DY="15.65">
+                  <matrix>
+                    <Matrix a="-0.5" b="-0.866012573242188" c="0.866012573242188" d="-0.5" tx="-3.45" ty="19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="14.55" centerPoint3DY="-5.45">
+                  <matrix>
+                    <Matrix a="0.5" b="0.866012573242188" c="-0.866012573242188" d="0.5" tx="17" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-13.5" centerPoint3DY="10.95">
+                  <matrix>
+                    <Matrix a="-1.52587890625e-005" b="-0.999969482421875" c="0.999969482421875" d="-1.52587890625e-005" tx="-18.3" ty="12.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="3.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="22.75" centerPoint3DY="10.45">
+                  <matrix>
+                    <Matrix a="-0.499984741210938" b="0.86602783203125" c="-0.86602783203125" d="-0.499984741210938" tx="27.1" ty="10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-7.9" centerPoint3DY="25.75">
+                  <matrix>
+                    <Matrix a="-0.965911865234375" b="0.258819580078125" c="-0.258819580078125" d="-0.965911865234375" tx="-5.5" ty="28.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-26.4" centerPoint3DY="-10.7">
+                  <matrix>
+                    <Matrix a="0.999969482421875" d="0.999969482421875" tx="-28.85" ty="-14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="14.75" centerPoint3DY="-20.75">
+                  <matrix>
+                    <Matrix a="0.707107543945313" b="0.70709228515625" c="-0.70709228515625" d="0.707107543945313" tx="16.15" ty="-24.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-27.45" centerPoint3DY="-4">
+                  <matrix>
+                    <Matrix a="0.258819580078125" b="-0.965896606445313" c="0.965896606445313" d="0.258819580078125" tx="-31.65" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-13" centerPoint3DY="-23.15">
+                  <matrix>
+                    <Matrix a="0.866012573242188" b="-0.499984741210938" c="0.5" d="0.866012573242188" tx="-16.7" ty="-25.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-4.05" centerPoint3DY="23.15">
+                  <matrix>
+                    <Matrix a="-0.5" b="-0.866012573242188" c="0.866012573242188" d="-0.5" tx="-6.5" ty="26.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="19.15" centerPoint3DY="-5.45">
+                  <matrix>
+                    <Matrix a="1.52587890625e-005" b="0.999984741210938" c="-0.999969482421875" d="1.52587890625e-005" tx="23.85" ty="-7.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-22.15" centerPoint3DY="18.7">
+                  <matrix>
+                    <Matrix a="-0.258804321289063" b="-0.965896606445313" c="0.965896606445313" d="-0.258804321289063" tx="-26.3" ty="21.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="3.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="27.2" centerPoint3DY="16.65">
+                  <matrix>
+                    <Matrix a="-0.865997314453125" b="0.500015258789063" c="-0.500015258789063" d="-0.865997314453125" tx="30.7" ty="19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-10.65" centerPoint3DY="29.3">
+                  <matrix>
+                    <Matrix a="-0.965911865234375" b="-0.2587890625" c="0.2587890625" d="-0.965911865234375" tx="-10.6" ty="33"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-32.55" centerPoint3DY="-14.35">
+                  <matrix>
+                    <Matrix a="0.499984741210938" b="0.865982055664063" c="-0.865982055664063" d="0.499984741210938" tx="-30.3" ty="-18.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="20.8" centerPoint3DY="-23.5">
+                  <matrix>
+                    <Matrix a="-0.258819580078125" b="0.965896606445313" c="-0.965896606445313" d="-0.258819580078125" tx="25.15" ty="-24.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-41.9" centerPoint3DY="-5.2">
+                  <matrix>
+                    <Matrix a="-0.965896606445313" b="-0.258819580078125" c="0.258819580078125" d="-0.965896606445313" tx="-40.8" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-18.75" centerPoint3DY="-25">
+                  <matrix>
+                    <Matrix a="0.707107543945313" b="-0.707077026367188" c="0.70709228515625" d="0.707107543945313" tx="-22.95" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-6.55" centerPoint3DY="29.9">
+                  <matrix>
+                    <Matrix a="-0.866012573242188" b="-0.499984741210938" c="0.5" d="-0.866012573242188" tx="-6.85" ty="34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="29.3" centerPoint3DY="-7.3">
+                  <matrix>
+                    <Matrix a="-0.2587890625" b="0.965911865234375" c="-0.965896606445313" d="-0.258773803710938" tx="34.65" ty="-8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-34.5" centerPoint3DY="25.85">
+                  <matrix>
+                    <Matrix a="-0.258804321289063" b="-0.965896606445313" c="0.965896606445313" d="-0.258804321289063" tx="-38.65" ty="28.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="3.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="33.85" centerPoint3DY="24.15">
+                  <matrix>
+                    <Matrix a="-0.999984741210938" b="4.57763671875e-005" c="-4.57763671875e-005" d="-0.999984741210938" tx="35.6" ty="28.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-17.1" centerPoint3DY="35.55">
+                  <matrix>
+                    <Matrix a="-0.258834838867188" b="-0.96588134765625" c="0.96588134765625" d="-0.258834838867188" tx="-20.25" ty="37.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-39.9" centerPoint3DY="-17.05">
+                  <matrix>
+                    <Matrix a="0.258834838867188" b="0.965866088867188" c="-0.965866088867188" d="0.258834838867188" tx="-36.65" ty="-20.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="29.25" centerPoint3DY="-26.8">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="0.707077026367188" c="-0.707077026367188" d="-0.70709228515625" tx="33.55" ty="-25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-64.95" centerPoint3DY="0.55">
+                  <matrix>
+                    <Matrix a="-0.866012573242188" b="0.499969482421875" c="-0.499969482421875" d="-0.866012573242188" tx="-61.35" ty="2.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-28.75" centerPoint3DY="-30.25">
+                  <matrix>
+                    <Matrix a="0.707107543945313" b="-0.707077026367188" c="0.70709228515625" d="0.707107543945313" tx="-32.95" ty="-31.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-6.55" centerPoint3DY="38.3">
+                  <matrix>
+                    <Matrix a="-0.866012573242188" b="-0.499984741210938" c="0.5" d="-0.866012573242188" tx="-6.85" ty="42.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="39.8" centerPoint3DY="-5.9">
+                  <matrix>
+                    <Matrix a="-0.2587890625" b="0.965911865234375" c="-0.965896606445313" d="-0.258773803710938" tx="45.15" ty="-7.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-45.15" centerPoint3DY="32.6">
+                  <matrix>
+                    <Matrix a="-0.258804321289063" b="-0.965896606445313" c="0.965896606445313" d="-0.258804321289063" tx="-49.3" ty="35.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="3.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="37.75" centerPoint3DY="31.25">
+                  <matrix>
+                    <Matrix a="-0.999984741210938" b="4.57763671875e-005" c="-4.57763671875e-005" d="-0.999984741210938" tx="39.5" ty="35.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-23.25" centerPoint3DY="44.55">
+                  <matrix>
+                    <Matrix a="-0.258834838867188" b="-0.96588134765625" c="0.96588134765625" d="-0.258834838867188" tx="-26.4" ty="46.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-50.75" centerPoint3DY="-20.95">
+                  <matrix>
+                    <Matrix a="-0.258773803710938" b="0.965866088867188" c="-0.965866088867188" d="-0.258773803710938" tx="-46.3" ty="-22.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="38.65" centerPoint3DY="-26.2">
+                  <matrix>
+                    <Matrix a="-0.865997314453125" b="0.499984741210938" c="-0.499984741210938" d="-0.865997314453125" tx="42.45" ty="-23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-85.8" centerPoint3DY="7.8">
+                  <matrix>
+                    <Matrix a="-0.866012573242188" b="0.499969482421875" c="-0.499969482421875" d="-0.866012573242188" tx="-82.2" ty="10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-31.25" centerPoint3DY="-26.75">
+                  <matrix>
+                    <Matrix a="0.500015258789063" b="-0.865982055664063" c="0.865997314453125" d="0.500015258789063" tx="-35.75" ty="-26.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-7.15" centerPoint3DY="47.8">
+                  <matrix>
+                    <Matrix a="-0.866012573242188" b="-0.499984741210938" c="0.5" d="-0.866012573242188" tx="-7.45" ty="52.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="42.2" centerPoint3DY="-0.5">
+                  <matrix>
+                    <Matrix a="-0.2587890625" b="0.965911865234375" c="-0.965896606445313" d="-0.258773803710938" tx="47.55" ty="-1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="3.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-48.65" centerPoint3DY="38.65">
+                  <matrix>
+                    <Matrix a="0.499984741210938" b="-0.865997314453125" c="0.865997314453125" d="0.499984741210938" tx="-53.65" ty="37.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="3.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="38.6" centerPoint3DY="42.8">
+                  <matrix>
+                    <Matrix a="-0.707122802734375" b="-0.707046508789063" c="0.707046508789063" d="-0.707122802734375" tx="37.1" ty="47.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="3.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-26.6" centerPoint3DY="51.75">
+                  <matrix>
+                    <Matrix a="0.258773803710938" b="-0.965896606445313" c="0.965896606445313" d="0.258773803710938" tx="-30.3" ty="51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="-54.25" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="-0.258773803710938" b="0.965866088867188" c="-0.965866088867188" d="-0.258773803710938" tx="-49.8" ty="-15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/feather" centerPoint3DX="39" centerPoint3DY="-20.35">
+                  <matrix>
+                    <Matrix a="-0.70709228515625" b="0.707077026367188" c="-0.707077026367188" d="-0.70709228515625" tx="43.85" ty="-19.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="3.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/bloodyfeather" centerPoint3DX="-87" centerPoint3DY="17">
+                  <matrix>
+                    <Matrix a="-0.5" b="0.865982055664063" c="-0.865982055664063" d="-0.5" tx="-82.55" ty="16.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="3.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

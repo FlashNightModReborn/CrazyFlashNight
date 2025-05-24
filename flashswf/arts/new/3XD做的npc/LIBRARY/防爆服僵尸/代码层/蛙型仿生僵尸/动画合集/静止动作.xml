@@ -1,0 +1,1045 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/静止动作" itemID="671dc807-00000b94" lastModified="1730003696" lastUniqueIdentifier="35">
+  <timeline>
+    <DOMTimeline name="静止动作" currentFrame="24">
+      <layers>
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="50" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" referenceID="E4B2B7E3-A135-EC45-8AD9-CB1A1A6E02E2">
+                  <matrix>
+                    <Matrix tx="10.5" ty="54.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":1,"parent":"R1729048147546","rig":"R1729048147546","version":6,"snapTo":"2024_9_16_2_4_16_859"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" centerPoint3DX="15.55" centerPoint3DY="69.8">
+                  <matrix>
+                    <Matrix a="0.993865966796875" b="0.110580444335938" c="-0.110580444335938" d="0.993865966796875" tx="25.4" ty="55.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"3","parent":"2","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_16_859"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" centerPoint3DX="8.8" centerPoint3DY="66.3">
+                  <matrix>
+                    <Matrix tx="-0.6" ty="56.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"3","parent":"2","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_16_859"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" referenceID="9622250E-5C0E-384B-8F0F-6553F8D71643">
+                  <matrix>
+                    <Matrix tx="10.5" ty="54.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":1,"parent":"R1729048147546","rig":"R1729048147546","version":6,"snapTo":"2024_9_16_2_4_16_859"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y1" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" name="ikNode_1" referenceID="25BAF7FD-0801-7B41-BE41-3A8E818B3505">
+                  <matrix>
+                    <Matrix tx="19.2" ty="28.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"R1729048147546","parent":"","rig":"R1729048147546","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" name="ikNode_1" centerPoint3DX="20.2" centerPoint3DY="42.7">
+                  <matrix>
+                    <Matrix tx="34.1" ty="29.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"2","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_15_716"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" name="ikNode_1" centerPoint3DX="13.45" centerPoint3DY="39.2">
+                  <matrix>
+                    <Matrix tx="8.1" ty="30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"2","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_15_716"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" name="ikNode_1" referenceID="4F4F7985-D820-9142-809F-03B6C920958A">
+                  <matrix>
+                    <Matrix tx="19.2" ty="28.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"R1729048147546","parent":"","rig":"R1729048147546","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y3" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" name="ikNode_4" referenceID="07032CA2-36BB-DF43-B44F-0455B75C2C87">
+                  <matrix>
+                    <Matrix a="1.07623291015625" d="1.07408142089844" tx="15.9" ty="82.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":2,"parent":1,"rig":"R1729048147546","version":6,"snapTo":"2024_9_16_3_9_9_100"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" name="ikNode_4" centerPoint3DX="17.5" centerPoint3DY="83.5">
+                  <matrix>
+                    <Matrix a="1.05198669433594" b="0.227142333984375" c="-0.2266845703125" d="1.04986572265625" tx="27.9" ty="83.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"4","parent":"2","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_24_582"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" name="ikNode_4" centerPoint3DX="15.1" centerPoint3DY="78.1">
+                  <matrix>
+                    <Matrix a="1.07623291015625" d="1.07408142089844" tx="6.25" ty="82.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"4","parent":"2","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_24_582"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" name="ikNode_4" referenceID="EE2A9409-EF96-3F48-A23A-E90D899E850C">
+                  <matrix>
+                    <Matrix a="1.07623291015625" d="1.07408142089844" tx="15.9" ty="82.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":2,"parent":1,"rig":"R1729048147546","version":6,"snapTo":"2024_9_16_3_9_9_100"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="棍" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" name="ikNode_6" referenceID="EC177A47-834C-CD47-AC2A-861654DD1AC9">
+                  <matrix>
+                    <Matrix tx="17.85" ty="85.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":3,"parent":2,"rig":"R1729048147546","version":6,"snapTo":"2024_9_16_2_10_27_619"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" name="ikNode_6" centerPoint3DX="46.55" centerPoint3DY="88.2">
+                  <matrix>
+                    <Matrix a="0.973068237304688" b="0.230453491210938" c="-0.230453491210938" d="0.973068237304688" tx="31.05" ty="86.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"5","parent":"4","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_27_619"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" name="ikNode_6" centerPoint3DX="43.4" centerPoint3DY="84">
+                  <matrix>
+                    <Matrix tx="9.6" ty="86.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"5","parent":"4","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_27_619"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" name="ikNode_6" referenceID="CE067E4F-93D7-E043-A3B7-8C4EF9B4C379">
+                  <matrix>
+                    <Matrix tx="17.85" ty="85.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":3,"parent":2,"rig":"R1729048147546","version":6,"snapTo":"2024_9_16_2_10_27_619"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11">
+                  <matrix>
+                    <Matrix a="0.994674682617188" b="0.1029052734375" c="-0.1029052734375" d="0.994674682617188" tx="28.25" ty="19.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"6","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_14_507"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" centerPoint3DX="38.8" centerPoint3DY="13.65">
+                  <matrix>
+                    <Matrix a="0.90386962890625" b="0.42767333984375" c="-0.42767333984375" d="0.90386962890625" tx="44.9" ty="22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"6","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_14_507"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" centerPoint3DX="32.05" centerPoint3DY="10.15">
+                  <matrix>
+                    <Matrix a="0.704269409179688" b="-0.709823608398438" c="0.709823608398438" d="0.704269409179688" tx="14.8" ty="19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"6","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_14_507"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11">
+                  <matrix>
+                    <Matrix a="0.994674682617188" b="0.1029052734375" c="-0.1029052734375" d="0.994674682617188" tx="28.25" ty="19.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"6","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_14_507"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="body" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" name="ikNode_18" referenceID="3E3FBF69-0E90-674A-86C7-FC3FDD0FFBE9">
+                  <matrix>
+                    <Matrix a="0.99407958984375" b="-0.108306884765625" c="0.108306884765625" d="0.99407958984375" tx="29.35" ty="71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"1","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_35_990"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" name="ikNode_18" centerPoint3DX="34.65" centerPoint3DY="53.2">
+                  <matrix>
+                    <Matrix a="0.993255615234375" b="0.11566162109375" c="-0.11566162109375" d="0.993255615234375" tx="34.6" ty="72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"1","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_35_990"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" name="ikNode_18" centerPoint3DX="27.9" centerPoint3DY="49.7">
+                  <matrix>
+                    <Matrix a="0.9417724609375" b="-0.336105346679688" c="0.336105346679688" d="0.9417724609375" tx="27.85" ty="69.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"1","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_35_990"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" name="ikNode_18" referenceID="652B9DBC-4BA8-B44B-9B93-CA65559DF757">
+                  <matrix>
+                    <Matrix a="0.99407958984375" b="-0.108306884765625" c="0.108306884765625" d="0.99407958984375" tx="29.35" ty="71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"1","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_10_35_990"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ass" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6">
+                  <matrix>
+                    <Matrix tx="27.4" ty="72.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"R1729044636081","parent":"","rig":"R1729044636081","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" centerPoint3DX="32.45" centerPoint3DY="74.6">
+                  <matrix>
+                    <Matrix tx="32.65" ty="74.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"R1729044636081","parent":"","rig":"R1729044636081","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" centerPoint3DX="25.7" centerPoint3DY="71.1">
+                  <matrix>
+                    <Matrix tx="25.9" ty="71.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"R1729044636081","parent":"","rig":"R1729044636081","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6">
+                  <matrix>
+                    <Matrix tx="27.4" ty="72.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"R1729044636081","parent":"","rig":"R1729044636081","version":6}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz2" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" name="ikNode_14" referenceID="563BF17D-466A-DD42-BDC6-E04B0E633C51">
+                  <matrix>
+                    <Matrix tx="20.15" ty="106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"11","parent":"10","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_9_311"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" name="ikNode_14" centerPoint3DX="19.8" centerPoint3DY="125.25">
+                  <matrix>
+                    <Matrix a="0.99725341796875" b="0.07379150390625" c="-0.07379150390625" d="0.99725341796875" tx="25.4" ty="108.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"11","parent":"10","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_9_311"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" name="ikNode_14" centerPoint3DX="13.05" centerPoint3DY="121.75">
+                  <matrix>
+                    <Matrix a="0.996673583984375" b="-0.081329345703125" c="0.081329345703125" d="0.996673583984375" tx="21.35" ty="104.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"11","parent":"10","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_9_311"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" name="ikNode_14" referenceID="06A86988-09D5-B94D-99F7-A9CFE084D338">
+                  <matrix>
+                    <Matrix tx="20.15" ty="106.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"11","parent":"10","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_9_311"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" name="ikNode_13" referenceID="F554C56A-396F-6644-B7A2-3230E057BC53">
+                  <matrix>
+                    <Matrix tx="20.15" ty="73.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"10","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_17_220"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" name="ikNode_13" centerPoint3DX="27.1" centerPoint3DY="90.2">
+                  <matrix>
+                    <Matrix tx="25.4" ty="75.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"10","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_17_220"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" name="ikNode_13" centerPoint3DX="20.35" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix a="0.996566772460938" b="-0.0823822021484375" c="0.0823822021484375" d="0.996566772460938" tx="18.65" ty="71.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"10","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_17_220"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" name="ikNode_13" referenceID="FB5C6376-AB1E-CB49-8C68-5301E807CD7B">
+                  <matrix>
+                    <Matrix tx="20.15" ty="73.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"10","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_17_220"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz3" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_16" referenceID="AA07CF1D-CE8A-DC46-AA08-E63E78C17E29">
+                  <matrix>
+                    <Matrix tx="5.5" ty="142.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"12","parent":"11","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_10_539"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_16" centerPoint3DX="15.55" centerPoint3DY="147.9">
+                  <matrix>
+                    <Matrix a="0.99859619140625" b="-0.0527191162109375" c="0.0527191162109375" d="0.99859619140625" tx="8.1" ty="143.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"12","parent":"11","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_10_539"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_16" centerPoint3DX="8.8" centerPoint3DY="144.4">
+                  <matrix>
+                    <Matrix a="0.996994018554688" b="0.0774078369140625" c="-0.0774078369140625" d="0.996994018554688" tx="9.65" ty="141.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"12","parent":"11","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_10_539"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_16" referenceID="25E154FB-F6F6-474E-84E9-A26999359DD8">
+                  <matrix>
+                    <Matrix tx="5.5" ty="142.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"12","parent":"11","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_10_539"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy2" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" name="ikNode_20" referenceID="E88E7DD2-F9E2-9443-B9B5-8B200E7A9068">
+                  <matrix>
+                    <Matrix tx="49.5" ty="104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"8","parent":"7","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_5_794"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" name="ikNode_20" centerPoint3DX="52.7" centerPoint3DY="124.65">
+                  <matrix>
+                    <Matrix a="0.99993896484375" b="-0.00634765625" c="0.00634765625" d="0.99993896484375" tx="52.75" ty="106.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"8","parent":"7","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_5_794"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" name="ikNode_20" centerPoint3DX="44.05" centerPoint3DY="120.7">
+                  <matrix>
+                    <Matrix a="0.99945068359375" b="-0.032318115234375" c="0.032318115234375" d="0.99945068359375" tx="46.15" ty="103.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"8","parent":"7","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_5_794"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" name="ikNode_20" referenceID="22A32008-44B8-8447-A6AF-06B881256713">
+                  <matrix>
+                    <Matrix tx="49.5" ty="104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"8","parent":"7","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_5_794"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy1" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" name="ikNode_19" referenceID="4C3A633B-ADE0-DE40-9D57-86E113B1CB6C">
+                  <matrix>
+                    <Matrix tx="37.8" ty="73.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"7","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_15_569"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" name="ikNode_19" centerPoint3DX="45.2" centerPoint3DY="90.4">
+                  <matrix>
+                    <Matrix tx="43.05" ty="74.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"7","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_15_569"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" name="ikNode_19" centerPoint3DX="38.45" centerPoint3DY="86.9">
+                  <matrix>
+                    <Matrix a="0.998291015625" b="0.0581817626953125" c="-0.0581817626953125" d="0.998291015625" tx="36.3" ty="71.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"7","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_15_569"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" name="ikNode_19" referenceID="98616F2C-6E8B-5347-9276-DCDED238A78A">
+                  <matrix>
+                    <Matrix tx="37.8" ty="73.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"7","parent":"R1729044636081","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_15_569"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy3" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_22" referenceID="FA69D31C-8009-7A41-94B3-AD74732AF7F8">
+                  <matrix>
+                    <Matrix tx="39.15" ty="140.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"9","parent":"8","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_7_74"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_22" centerPoint3DX="54.7" centerPoint3DY="147.05">
+                  <matrix>
+                    <Matrix a="0.999252319335938" b="-0.0383148193359375" c="0.0383148193359375" d="0.999252319335938" tx="42.6" ty="140.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"9","parent":"8","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_7_74"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_22" centerPoint3DX="42.45" centerPoint3DY="142.55">
+                  <matrix>
+                    <Matrix a="0.997543334960938" b="0.069610595703125" c="-0.069610595703125" d="0.997543334960938" tx="36.95" ty="139.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"9","parent":"8","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_7_74"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" name="ikNode_22" referenceID="BEDBAFF3-9790-B040-954B-8924318121FC">
+                  <matrix>
+                    <Matrix tx="39.15" ty="140.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"9","parent":"8","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_11_7_74"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z3" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" name="ikNode_11" referenceID="1410F639-B44F-9A49-B4EE-655581201FA9" centerPoint3DX="50.2" centerPoint3DY="82.5">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.04998779296875" tx="51.15" ty="82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"15","parent":"14","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_45_796"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" name="ikNode_11" centerPoint3DX="55.45" centerPoint3DY="84.25">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.04998779296875" tx="64.9" ty="88.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"15","parent":"14","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_45_796"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" name="ikNode_11" centerPoint3DX="48.7" centerPoint3DY="80.75">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.04998779296875" tx="39.95" ty="77.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"15","parent":"14","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_45_796"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" name="ikNode_11" referenceID="D049DA41-0C27-2D48-94B3-E6A398C77D35" centerPoint3DX="50.2" centerPoint3DY="82.5">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.04998779296875" tx="51.15" ty="82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"15","parent":"14","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_45_796"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z2" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" name="ikNode_9" referenceID="6964ED22-EDBA-9C42-AEC2-79A800992E61">
+                  <matrix>
+                    <Matrix tx="45.45" ty="62.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"14","parent":"13","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_43_861"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" name="ikNode_9" centerPoint3DX="50.8" centerPoint3DY="73.25">
+                  <matrix>
+                    <Matrix tx="59.2" ty="68.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"14","parent":"13","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_43_861"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" name="ikNode_9" centerPoint3DX="44.05" centerPoint3DY="69.75">
+                  <matrix>
+                    <Matrix tx="34.25" ty="58.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"14","parent":"13","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_43_861"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" name="ikNode_9" referenceID="14BB18C6-F7D0-6044-AECD-856EE112CDD1">
+                  <matrix>
+                    <Matrix tx="45.45" ty="62.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"14","parent":"13","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_43_861"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z1" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" name="ikNode_8" referenceID="24CC9C5A-D1D6-5240-84C3-715BF29743B9">
+                  <matrix>
+                    <Matrix tx="44.05" ty="31.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"13","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_40_499"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" name="ikNode_8" centerPoint3DX="48.3" centerPoint3DY="45.8">
+                  <matrix>
+                    <Matrix tx="57.8" ty="37.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"13","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_40_499"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" name="ikNode_8" centerPoint3DX="41.55" centerPoint3DY="42.3">
+                  <matrix>
+                    <Matrix tx="32.85" ty="27.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"13","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_40_499"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" name="ikNode_8" referenceID="3C039B69-7D0F-1344-9916-A89CA2AB7503">
+                  <matrix>
+                    <Matrix tx="44.05" ty="31.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"13","parent":"1","rig":"R1729044636081","version":6,"snapTo":"2024_9_16_2_4_40_499"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

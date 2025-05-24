@@ -1,0 +1,161 @@
+{
+    "tasks": [
+        {
+            "id": 150001,
+            "title": "$SIDE_TITLE_150001",
+            "description": "$SIDE_DESCRIPTION_150001",
+
+            "get_requirements": [77],
+            "get_conversation": "$SIDE_GET_150001",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_150001",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "幻影胸甲#1",
+                "幻影腿甲#1",
+                "幻影装甲鞋#1",
+                "幻影头部装甲#1",
+                "幻影手甲#1",
+                "烈焰斩马刀#1",
+                "LS06#1",
+                "LS06#1"
+            ],
+            
+            "chain":"预览#1"
+        },
+        {
+            "id": 150002,
+            "title": "$SIDE_TITLE_150002",
+            "description": "$SIDE_DESCRIPTION_150002",
+
+            "get_requirements": [150001],
+            "get_conversation": "$SIDE_GET_150002",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "试验场#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_150002",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#10000",
+                "经验值#2000000",
+                "重甲上衣#1",
+                "重甲裤子#1",
+                "重甲鞋子#1",
+                "重甲头部#1",
+                "重甲手套#1",
+                "极品巨兽#1"
+            ],
+            
+            "chain":"预览#2"
+        },
+        {
+            "id": 150003,
+            "title": "$SIDE_TITLE_150003",
+            "description": "$SIDE_DESCRIPTION_150003",
+
+            "get_requirements": [150002],
+            "get_conversation": "$SIDE_GET_150003",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "决战之地#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_150003",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#20000",
+                "经验值#2000000",
+                "蓝晶战斗服#1",
+                "蓝晶下装#1",
+                "蓝晶鞋#1",
+                "蓝晶面具#1",
+                "蓝晶手套#1",
+                "冰魄神斩#1"
+            ],
+            
+            "chain":"预览#3"
+        },
+        {
+            "id": 150005,
+            "title": "$SIDE_TITLE_150005",
+            "description": "$SIDE_DESCRIPTION_150005",
+
+            "get_requirements": [150003],
+            "get_conversation": "$SIDE_GET_150005",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "挑战Andylaw#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_150005",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "炎魔甲#1",
+                "炎魔腿甲#1",
+                "炎魔鞋#1",
+                "炎魔盔#1",
+                "炎魔手套#1",
+                "炎魔枪A100#1",
+                "炎魔枪B100#1",
+                "炎魔斩new#1"
+            ],
+            
+            "chain":"预览#5"
+        },
+        {
+            "id": 150006,
+            "title": "$SIDE_TITLE_150006",
+            "description": "$SIDE_DESCRIPTION_150006",
+
+            "get_requirements": [150005],
+            "get_conversation": "$SIDE_GET_150006",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "菲尼克斯Lv10#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_150006",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "远古忍者甲#1",
+                "远古忍者腿甲#1",
+                "远古忍者鞋#1",
+                "远古忍者盔#1",
+                "远古忍者手套#1",
+                "忍者执剑#1",
+                "战术巴雷特#1",
+                "K点#20000",
+                "经验值#2000000"
+            ],
+            
+            "chain":"预览#6"
+        },
+        {
+            "id": 150007,
+            "title": "$SIDE_TITLE_150007",
+            "description": "$SIDE_DESCRIPTION_150007",
+
+            "get_requirements": [150006],
+            "get_conversation": "$SIDE_GET_150007",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "挑战战斗天才#地狱"
+            ],
+            "finish_conversation": "$SIDE_FINISH_150007",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#30000",
+                "K点#30000",
+                "经验值#3000000"
+            ],
+            
+            "chain":"预览#7"
+        }
+    ]
+}

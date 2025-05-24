@@ -1,0 +1,476 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>未知金属</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdww_men_BG.swf</Background>
+            <PlayerX>200</PlayerX>
+            <PlayerY>420</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Tetrriture</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>我们在这里解决敌人后分头出击！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>A兵团精英A</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>好，麻烦你突入进去，我们会堵住出口的。</Text>
+                <Type>兵种374</Type>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>A兵团精英B</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>最好尽快找到传闻中的方舟武士！</Text>
+                <Type>兵种375</Type>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种374</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种375</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种71</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种1</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种2</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种3</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种5</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="8">
+                        <Type>兵种6</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="9">
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="10">
+                        <Type>兵种8</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种74</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>37</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>37</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种71</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>37</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种72</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>37</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地哨岗_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>500</x>
+                <y>400</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+            <Point id="1">
+                <x>800</x>
+                <y>400</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+            <Point id="2">
+                <x>650</x>
+                <y>490</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种12</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种12</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>……消失了……！和在军阀基地遇到的一样！</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地哨岗_2_BG.swf</Background>
+            <PlayerX>512</PlayerX>
+            <PlayerY>370</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <x>650</x>
+                        <y>420</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <x>400</x>
+                        <y>430</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种72</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <x>100</x>
+                        <y>470</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种71</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <x>800</x>
+                        <y>550</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地哨岗_2_BG.swf</Background>
+            <PlayerX>512</PlayerX>
+            <PlayerY>370</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>250</x>
+                <y>400</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+            <Point id="1">
+                <x>750</x>
+                <y>400</y>
+                <Identifier>出生点-光束发射器</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <x>800</x>
+                        <y>500</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种72</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <x>320</x>
+                        <y>450</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种12</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种12</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>37</Level>
+                        <x>600</x>
+                        <y>510</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地哨岗_2_BG.swf</Background>
+            <PlayerX>512</PlayerX>
+            <PlayerY>370</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>38</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种72</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>38</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>38</Level>
+                        <x>300</x>
+                        <y>500</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种70</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>38</Level>
+                        <x>700</x>
+                        <y>480</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/诺亚前线基地哨岗顶层_BG.swf</Background>
+            <PlayerX>450</PlayerX>
+            <PlayerY>390</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>950</x>
+                <y>400</y>
+                <Identifier>出生点-管道</Identifier>
+            </Point>
+            <Point id="1">
+                <x>965</x>
+                <y>500</y>
+                <Identifier>出生点-管道</Identifier>
+            </Point>
+            <Point id="1">
+                <x>512</x>
+                <y>330</y>
+                <Identifier>出生点-嵌入大机关门</Identifier>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>无处可逃了吧……让我看看，你究竟是什么东西！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>750</x>
+                        <y>450</y>
+                        <Parameters>登场动画:a0,死亡动画:a0</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种72</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种74</Type>
+                        <Interval>6000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种70</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

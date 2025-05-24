@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="shape/Symbol 2988" itemID="6597607e-00000dd4" symbolType="graphic" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 2988">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#505050"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <BitmapFill bitmapPath="image/bitmap2255.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="1045.45" ty="-62.9"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="2" edges="!22166 6096|22192 6096!22192 6096|22166 6044"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!22166 6044|22166 6096"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!22166 6096|0 6096"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!0 6096|0 11072!0 11072|22166 11072!22166 11072|22166 6096"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!19193 0|22166 6044!0 6096|4222 0!4222 0|4250 0"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4250 0|19193 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

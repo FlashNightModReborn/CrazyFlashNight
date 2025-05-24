@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/钝器/锤子/刀-锤子" itemID="660f6770-00001858" linkageExportForAS="true" linkageIdentifier="刀-锤子" lastModified="1718619485" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="刀-锤子">
+      <layers>
+        <DOMLayer name="Layer 1" color="#00FEFC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3&#xA;" centerPoint3DX="19.75" centerPoint3DY="162.75">
+                  <matrix>
+                    <Matrix a="1.48202514648438" d="3.00503540039063" tx="3.95" ty="150.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="5.25" centerPoint3DY="-74.3">
+                  <matrix>
+                    <Matrix a="0.7066650390625" d="11.0243835449219" tx="-7.25" ty="-86.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="-19.75" centerPoint3DY="162.75">
+                  <matrix>
+                    <Matrix a="1.44781494140625" d="3.00503540039063" tx="-32.25" ty="150.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F6DE74" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/钝器/锤子/锤子" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1、我的任务/组件/我的任务-静态" itemID="67cc04f7-000001c3" lastModified="1741700269">
+  <timeline>
+    <DOMTimeline name="我的任务-静态">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="160.2" height="57.5" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="49.3" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>我的任务</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="40" bitmapSize="800" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="40" bitmapSize="800" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.247177124023438" d="0.24700927734375" tx="-16.3" ty="15.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="145.65" y="81.8"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4555 2801|1319 2794!1319 2794|2685 462!2685 462|3559 1969!3559 1969|3159 1969!3159 1969|2698 1119!2698 1119|1932 2479!1932 2479|4375 2485!4375 2485|4555 2801!2957 0|2960 2!2960 2|4306 2364!4306 2364|2169 2346!2169 2346|2357 2035!2357
+ 2035|3766 2048!3766 2048|2768 322!2768 322|2956 0!2956 0|2957 0"/>
+                    <Edge cubics="!4375 2485(;4375,2485 4555,2801 4555,2801q4375 2485 4555 2801);"/>
+                    <Edge cubics="!4555 2801(;4555,2801 1319,2794 1319,2794q4555 2801 1319 2794);"/>
+                    <Edge cubics="!1319 2794(;1319,2794 2685,462 2685,462q1319 2794 2685 462);"/>
+                    <Edge cubics="!2685 462(;2685,462 3559,1969 3559,1969q2685 462 3559 1969);"/>
+                    <Edge cubics="!3559 1969(;3559,1969 3159,1969 3159,1969q3559 1969 3159 1969);"/>
+                    <Edge cubics="!3159 1969(;3159,1969 2698,1119 2698,1119q3159 1969 2698 1119);"/>
+                    <Edge cubics="!2698 1119(;2698,1119 1932,2479 1932,2479q2698 1119 1932 2479);"/>
+                    <Edge cubics="!1932 2479(;1932,2479 4375,2485 4375,2485q1932 2479 4375 2485);"/>
+                    <Edge cubics="!2957 0(;2957,0 2960,2 2960,2q2957 0 2960 2);"/>
+                    <Edge cubics="!2960 2(;2960,2 4306,2364 4306,2364q2960 2 4306 2364);"/>
+                    <Edge cubics="!4306 2364(;4306,2364 2169,2346 2169,2346q4306 2364 2169 2346);"/>
+                    <Edge cubics="!2169 2346(;2169,2346 2357,2035 2357,2035q2169 2346 2357 2035);"/>
+                    <Edge cubics="!2357 2035(;2357,2035 3766,2048 3766,2048q2357 2035 3766 2048);"/>
+                    <Edge cubics="!3766 2048(;3766,2048 2768,322 2768,322q3766 2048 2768 322);"/>
+                    <Edge cubics="!2768 322(;2768,322 2956,0 2956,0q2768 322 2956 0);"/>
+                    <Edge cubics="!2956 0(;2956,0 2957,0 2957,0q2956 0 2957 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

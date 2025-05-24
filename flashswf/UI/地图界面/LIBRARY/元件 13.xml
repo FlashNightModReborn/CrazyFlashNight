@@ -1,0 +1,103 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="元件 13" itemID="674adb0d-0000274a" lastModified="1732958989" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="元件 13">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.3306884765625" c="-0.64019775390625" d="0" tx="634.45" ty="458.8"/>
+                        </matrix>
+                        <GradientEntry ratio="0.650980392156863"/>
+                        <GradientEntry color="#333333" ratio="0.737254901960784"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!23178 14594S2|2200 14594!2200 14594|2200 3758!2200 3758|23178 3758!23178 3758|23178 14594"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2493" selected="true" centerPoint3DX="870.5" centerPoint3DY="568.5">
+                  <matrix>
+                    <Matrix tx="465.25" ty="357.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" saturation="-100" hue="180"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2493" selected="true" centerPoint3DX="1208.3" centerPoint3DY="562">
+                  <matrix>
+                    <Matrix tx="803.05" ty="350.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" saturation="-100" hue="180"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2494" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="920.9" ty="463.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2494" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="677.95" ty="463.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2495" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="732.95" ty="498.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2496" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="230.15" ty="513.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2498" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1048.7" ty="438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2499" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.865966796875" d="0.865966796875" tx="746" ty="485.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

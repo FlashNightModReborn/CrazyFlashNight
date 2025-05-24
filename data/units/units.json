@@ -1,0 +1,6736 @@
+[
+  {
+    "id": 0,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "暴走终结者桩子",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 1,
+    "spritename": "敌人-金发女僵尸1",
+    "level": 2,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 2,
+    "spritename": "敌人-眼镜僵尸1",
+    "level": 2,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 3,
+    "spritename": "敌人-光头军人僵尸1",
+    "level": 3,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 4,
+    "spritename": "敌人-金发红衣服女僵尸1",
+    "level": 2,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 5,
+    "spritename": "敌人-胖僵尸1",
+    "level": 2,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 6,
+    "spritename": "敌人-黄色衣服男僵尸1",
+    "level": 2,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 7,
+    "spritename": "敌人-帽子瘦僵尸1",
+    "level": 3,
+    "name": "狂躁僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 8,
+    "spritename": "敌人-小儿麻痹僵尸1",
+    "level": 3,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 9,
+    "spritename": "敌人-兽化僵尸1",
+    "level": 5,
+    "name": "兽化僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 10,
+    "spritename": "敌人-裸体兽化僵尸1",
+    "level": 5,
+    "name": "兽化僵尸",
+    "is_hostile": true,
+    "height": null,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 11,
+    "spritename": "敌人-boss大僵尸",
+    "level": 10,
+    "name": "巨型僵尸",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 12,
+    "spritename": "敌人-忍者BOSS",
+    "level": 20,
+    "name": "？？？",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 13,
+    "spritename": "敌人-僵尸1-狗",
+    "level": 5,
+    "name": "野狗",
+    "is_hostile": true,
+    "height": null,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 14,
+    "spritename": "敌人-异形女王",
+    "level": 20,
+    "name": "女王异形",
+    "is_hostile": true,
+    "height": 450,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 15,
+    "spritename": "敌人-球形异形兵1",
+    "level": 8,
+    "name": "禁卫异形",
+    "is_hostile": true,
+    "height": 350,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 16,
+    "spritename": "敌人-肉色异形兵1",
+    "level": 6,
+    "name": "斥候异形",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 17,
+    "spritename": "敌人-蛇形异形幼虫",
+    "level": 5,
+    "name": "破胸虫",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 18,
+    "spritename": "敌人-蜘蛛形异形幼虫",
+    "level": 5,
+    "name": "抱面虫",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 19,
+    "spritename": "敌人-蓝色异形兵1",
+    "level": 6,
+    "name": "兵蜂异形",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 20,
+    "spritename": "敌人-黑色异形兵1",
+    "level": 6,
+    "name": "信使异形",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 21,
+    "spritename": "敌人-红色铁血战士",
+    "level": 20,
+    "name": "狂战士铁血",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 22,
+    "spritename": "敌人-蓝色铁血战士",
+    "level": 20,
+    "name": "狩猎者铁血",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 23,
+    "spritename": "敌人-黄色铁血战士",
+    "level": 20,
+    "name": "驯鹰者铁血",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 24,
+    "spritename": "敌人-铁血小飞机",
+    "level": 20,
+    "name": "铁血鹰",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 25,
+    "spritename": "敌人-终结者T800",
+    "level": 5,
+    "name": "终结者",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": "随机长枪",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 26,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼男桩子",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑色辫子头",
+      "head": null,
+      "body": "褐色皮衣",
+      "leg": "盗贼褐色皮裤",
+      "hand": null,
+      "foot": "褐色厚底皮鞋",
+      "neck": "角斗高手项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 27,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": "双管猎枪",
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-络腮胡",
+      "head": null,
+      "body": "褐色背带背心",
+      "leg": "盗贼牛仔裤带腿包",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 28,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": "雷明登870",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-金色大奔头",
+      "head": null,
+      "body": "褐色皮带装",
+      "leg": "盗贼褐色皮裤",
+      "hand": null,
+      "foot": "褐色厚底皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 29,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "maddog疯狗刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-褐色纹身",
+      "head": null,
+      "body": "盗贼纹身装",
+      "leg": "盗贼褐色皮裤",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 30,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": "Mp5 pdw",
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-绿色莫西干",
+      "head": null,
+      "body": "盗贼无袖皮马甲",
+      "leg": "金色腰带破洞牛仔裤",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 32,
+    "spritename": "主角-男",
+    "level": 8,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 165,
+    "data": {
+      "primary": "雷明登870",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-玫红色马尾",
+      "head": null,
+      "body": "盗贼纹身装",
+      "leg": "盗贼褐色皮裤",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 31,
+    "spritename": "主角-男",
+    "level": 8,
+    "name": "盗贼女桩子",
+    "is_hostile": true,
+    "height": 165,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-深蓝色挑染短发",
+      "head": null,
+      "body": "褐色背带背心",
+      "leg": "盗贼牛仔裤带腿包",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "角斗高手项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 33,
+    "spritename": "主角-男",
+    "level": 8,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 165,
+    "data": {
+      "primary": null,
+      "secondary": "毛瑟手枪",
+      "secondary2": "毛瑟手枪",
+      "melee": null,
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-咖啡色中长马尾",
+      "head": null,
+      "body": "盗贼无袖皮马甲",
+      "leg": "金色腰带破洞牛仔裤",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 34,
+    "spritename": "主角-男",
+    "level": 8,
+    "name": "突击兵",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "M4A1改",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-军阀红色贝雷帽",
+      "head": null,
+      "body": "军阀突击兵衣服",
+      "leg": "军阀带弹药包裤子",
+      "hand": null,
+      "foot": "军阀棕色皮靴",
+      "neck": "军阀士兵项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 35,
+    "spritename": "主角-男",
+    "level": 8,
+    "name": "弹药兵",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "M3 Rocket Launcher",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-军阀红色贝雷帽",
+      "head": "咖啡色条纹蒙面",
+      "body": "军阀弹药兵衣服",
+      "leg": "军阀带腰包裤子",
+      "hand": null,
+      "foot": "军阀棕色皮靴",
+      "neck": "军阀士兵项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 36,
+    "spritename": "主角-男",
+    "level": 8,
+    "name": "侦察兵",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "芬兰之星",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-军阀红色贝雷帽",
+      "head": null,
+      "body": "军阀侦察兵衣服",
+      "leg": "军阀普通军裤",
+      "hand": null,
+      "foot": "军阀棕色皮靴",
+      "neck": "军阀士兵项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 37,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "兵头",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "AK200",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-军阀红色贝雷帽",
+      "head": "黑色太阳镜",
+      "body": "军阀兵头衣服",
+      "leg": "军阀普通带腿包军裤",
+      "hand": null,
+      "foot": "军阀棕色皮靴",
+      "neck": "军阀士兵项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 38,
+    "spritename": "主角-男",
+    "level": 15,
+    "name": "重装兵",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "M249",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "装甲头盔",
+      "body": "军阀重装兵衣服",
+      "leg": "军阀装甲裤",
+      "hand": "军阀装甲手套",
+      "foot": "军阀棕色皮靴",
+      "neck": "军阀士兵项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 39,
+    "spritename": "敌人-士兵奔跑僵尸1",
+    "level": 3,
+    "name": "狂躁僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 40,
+    "spritename": "敌人-李小龙",
+    "level": 20,
+    "name": "Lee",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 41,
+    "spritename": "敌人-武士铁血战士",
+    "level": 20,
+    "name": "武士铁血",
+    "is_hostile": true,
+    "height": 230,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 42,
+    "spritename": "敌人-硬化僵尸",
+    "level": 20,
+    "name": "硬化僵尸",
+    "is_hostile": true,
+    "height": 280,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 43,
+    "spritename": "敌人-狂野玫瑰马尾姑娘",
+    "level": 20,
+    "name": "街舞少女",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 44,
+    "spritename": "敌人-盗贼枪手",
+    "level": 20,
+    "name": "左轮",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 45,
+    "spritename": "敌人-盗贼侏儒",
+    "level": 20,
+    "name": "跳蚤",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 46,
+    "spritename": "敌人-辫子姑娘",
+    "level": 20,
+    "name": "战斗少女",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 47,
+    "spritename": "敌人-黑铁会死士",
+    "level": 20,
+    "name": "黑铁死士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 48,
+    "spritename": "敌人-盗贼大叔",
+    "level": 20,
+    "name": "铁拳",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 49,
+    "spritename": "敌人-盗贼瘦子",
+    "level": 20,
+    "name": "杀手",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 50,
+    "spritename": "敌人-摇滚公园萝莉",
+    "level": 20,
+    "name": "吉他",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 51,
+    "spritename": "敌人-摇滚公园少女",
+    "level": 20,
+    "name": "键盘",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 52,
+    "spritename": "敌人-摇滚公园御姐",
+    "level": 20,
+    "name": "主唱",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 53,
+    "spritename": "敌人-军阀将军",
+    "level": 20,
+    "name": "将军",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 54,
+    "spritename": "敌人-军阀狙击兵",
+    "level": 20,
+    "name": "狙击兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 55,
+    "spritename": "敌人-军阀重装兵",
+    "level": 20,
+    "name": "重装兵",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 56,
+    "spritename": "敌人-军阀突击兵",
+    "level": 20,
+    "name": "突击兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 57,
+    "spritename": "敌人-军阀弹药兵",
+    "level": 20,
+    "name": "弹药兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 58,
+    "spritename": "敌人-牛仔boss",
+    "level": 1,
+    "name": "牛仔",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 59,
+    "spritename": "敌人-黑白无常",
+    "level": 1,
+    "name": "浮士德兄弟",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 60,
+    "spritename": "敌人-雪女",
+    "level": 1,
+    "name": "魔女",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 61,
+    "spritename": "敌人-小日本小兵",
+    "level": 1,
+    "name": "杂兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 62,
+    "spritename": "敌人-日本特战",
+    "level": 1,
+    "name": "特种兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 63,
+    "spritename": "敌人-日本军官",
+    "level": 1,
+    "name": "少佐",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 64,
+    "spritename": "敌人-黑铁会刺客",
+    "level": 1,
+    "name": "黑铁刺客",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 65,
+    "spritename": "敌人-黑铁会大叔",
+    "level": 1,
+    "name": "黑铁大叔",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 66,
+    "spritename": "敌人-飞刀小子",
+    "level": 1,
+    "name": "翅虎",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 67,
+    "spritename": "敌人-粉红头发御姐",
+    "level": 1,
+    "name": "火凤",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 68,
+    "spritename": "敌人-铠甲勇士战马形态",
+    "level": 1,
+    "name": "黑龙",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 69,
+    "spritename": "敌人-唐装剑侠",
+    "level": 1,
+    "name": "黑铁",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 70,
+    "spritename": "敌人-重型改造僵尸",
+    "level": 1,
+    "name": "重型改造僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 71,
+    "spritename": "敌人-兽化改造僵尸",
+    "level": 1,
+    "name": "兽化改造僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 72,
+    "spritename": "敌人-普通改造僵尸",
+    "level": 1,
+    "name": "普通改造僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 73,
+    "spritename": "敌人-铠甲勇士",
+    "level": 1,
+    "name": "黑龙",
+    "is_hostile": true,
+    "height": 178,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 74,
+    "spritename": "敌人-普通爆炸僵尸",
+    "level": 1,
+    "name": "爆炸僵尸",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 75,
+    "spritename": "敌人-普通尸母",
+    "level": 1,
+    "name": "尸母",
+    "is_hostile": true,
+    "height": 290,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 76,
+    "spritename": "敌人-普通僵尸蛆",
+    "level": 1,
+    "name": "僵尸蛆",
+    "is_hostile": true,
+    "height": null,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 77,
+    "spritename": "敌人-普通基因虫",
+    "level": 1,
+    "name": "基因虫",
+    "is_hostile": true,
+    "height": null,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 78,
+    "spritename": "敌人-方舟兽王",
+    "level": 1,
+    "name": "方舟兽王",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 79,
+    "spritename": "敌人-方舟兽王虎",
+    "level": 1,
+    "name": "方舟兽王兽形",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 80,
+    "spritename": "敌人-重型改造僵尸",
+    "level": 1,
+    "name": "重型改造僵尸",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 81,
+    "spritename": "敌人-兽化改造僵尸",
+    "level": 1,
+    "name": "兽化改造僵尸",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 82,
+    "spritename": "敌人-普通改造僵尸",
+    "level": 1,
+    "name": "普通改造僵尸",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 83,
+    "spritename": "敌人-普通爆炸僵尸",
+    "level": 1,
+    "name": "爆炸僵尸",
+    "is_hostile": true,
+    "height": 230,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 84,
+    "spritename": "敌人-普通尸母",
+    "level": 1,
+    "name": "暴走尸母",
+    "is_hostile": true,
+    "height": 295,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 85,
+    "spritename": "敌人-普通基因虫",
+    "level": 1,
+    "name": "暴走基因虫",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 86,
+    "spritename": "敌人-狂野玫瑰马尾姑娘",
+    "level": 20,
+    "name": "街舞少女",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 87,
+    "spritename": "敌人-盗贼枪手",
+    "level": 20,
+    "name": "左轮",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 88,
+    "spritename": "敌人-盗贼侏儒",
+    "level": 20,
+    "name": "跳蚤",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 89,
+    "spritename": "敌人-辫子姑娘",
+    "level": 20,
+    "name": "战斗少女",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 90,
+    "spritename": "敌人-黑铁会死士",
+    "level": 20,
+    "name": "黑铁死士",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 91,
+    "spritename": "敌人-盗贼大叔",
+    "level": 20,
+    "name": "铁拳",
+    "is_hostile": false,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 92,
+    "spritename": "敌人-盗贼瘦子",
+    "level": 20,
+    "name": "杀手",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 93,
+    "spritename": "敌人-摇滚公园萝莉",
+    "level": 20,
+    "name": "吉他",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 94,
+    "spritename": "敌人-摇滚公园少女",
+    "level": 20,
+    "name": "键盘",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 95,
+    "spritename": "敌人-摇滚公园御姐",
+    "level": 20,
+    "name": "主唱",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 96,
+    "spritename": "敌人-军阀将军",
+    "level": 20,
+    "name": "将军",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 97,
+    "spritename": "敌人-军阀狙击兵",
+    "level": 20,
+    "name": "狙击兵",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 98,
+    "spritename": "敌人-军阀重装兵",
+    "level": 20,
+    "name": "重装兵",
+    "is_hostile": false,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 99,
+    "spritename": "敌人-军阀突击兵",
+    "level": 20,
+    "name": "突击兵",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 100,
+    "spritename": "敌人-军阀弹药兵",
+    "level": 20,
+    "name": "弹药兵",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 101,
+    "spritename": "敌人-黑铁会刺客",
+    "level": 1,
+    "name": "黑铁刺客",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 102,
+    "spritename": "敌人-黑铁会大叔",
+    "level": 1,
+    "name": "黑铁行刑者",
+    "is_hostile": false,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 103,
+    "spritename": "敌人-飞刀小子",
+    "level": 1,
+    "name": "翅虎",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 104,
+    "spritename": "敌人-粉红头发御姐",
+    "level": 1,
+    "name": "火凤",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 105,
+    "spritename": "敌人-铠甲勇士战马形态",
+    "level": 1,
+    "name": "黑龙",
+    "is_hostile": false,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 106,
+    "spritename": "敌人-唐装剑侠",
+    "level": 1,
+    "name": "黑铁",
+    "is_hostile": false,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 107,
+    "spritename": "敌人-方舟卫士",
+    "level": 1,
+    "name": "方舟卫士",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 108,
+    "spritename": "敌人-方舟无人机",
+    "level": 1,
+    "name": "方舟无人机",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 109,
+    "spritename": "敌人-渗透者",
+    "level": 1,
+    "name": "渗透者",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 110,
+    "spritename": "敌人-方舟护士",
+    "level": 1,
+    "name": "方舟护士",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 111,
+    "spritename": "敌人-方舟巨人",
+    "level": 1,
+    "name": "方舟巨人",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 112,
+    "spritename": "敌人-方舟卫士",
+    "level": 1,
+    "name": "暴走方舟卫士",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 113,
+    "spritename": "敌人-方舟无人机",
+    "level": 1,
+    "name": "暴走方舟无人机",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 114,
+    "spritename": "敌人-渗透者",
+    "level": 1,
+    "name": "稀有渗透者",
+    "is_hostile": true,
+    "height": 240,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 115,
+    "spritename": "敌人-方舟护士",
+    "level": 1,
+    "name": "暴走方舟护士",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 116,
+    "spritename": "敌人-武士大僵尸",
+    "level": 1,
+    "name": "克隆僵尸武士",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 117,
+    "spritename": "敌人-软化僵尸",
+    "level": 1,
+    "name": "克隆软化僵尸",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 118,
+    "spritename": "敌人-方舟白虎兵",
+    "level": 1,
+    "name": "方舟克隆白虎",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 119,
+    "spritename": "敌人-忍者兵",
+    "level": 1,
+    "name": "方舟克隆忍者",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 120,
+    "spritename": "敌人-方舟巨人兵",
+    "level": 1,
+    "name": "方舟克隆巨人",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 121,
+    "spritename": "敌人-方舟妖姬",
+    "level": 1,
+    "name": "方舟妖姬",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 122,
+    "spritename": "敌人-波斯步兵",
+    "level": 1,
+    "name": "波斯步兵",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 123,
+    "spritename": "敌人-波斯弓兵",
+    "level": 1,
+    "name": "波斯弓兵",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 124,
+    "spritename": "敌人-不死亲卫队",
+    "level": 1,
+    "name": "不死亲卫队",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 125,
+    "spritename": "敌人-不死兽人",
+    "level": 1,
+    "name": "不死兽人",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 126,
+    "spritename": "敌人-斯巴达战士",
+    "level": 1,
+    "name": "斯巴达勇士",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 127,
+    "spritename": "敌人-小日本小兵",
+    "level": 1,
+    "name": "暴走步兵",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 128,
+    "spritename": "敌人-小日本小兵",
+    "level": 1,
+    "name": "远古步兵",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 129,
+    "spritename": "敌人-日本特战",
+    "level": 1,
+    "name": "暴走敢死队",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 130,
+    "spritename": "敌人-日本特战",
+    "level": 1,
+    "name": "远古敢死队",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 131,
+    "spritename": "敌人-日本军官",
+    "level": 1,
+    "name": "暴走中佐",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 132,
+    "spritename": "敌人-日本军官",
+    "level": 1,
+    "name": "远古中佐",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 133,
+    "spritename": "敌人-异形女王",
+    "level": 60,
+    "name": "暴走女王异形",
+    "is_hostile": true,
+    "height": 480,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 134,
+    "spritename": "敌人-异形女王",
+    "level": 60,
+    "name": "远古女王异形",
+    "is_hostile": true,
+    "height": 550,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 135,
+    "spritename": "敌人-异形女王",
+    "level": 60,
+    "name": "亚种女王异形",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 136,
+    "spritename": "敌人-球形异形兵1",
+    "level": 60,
+    "name": "暴走禁卫异形",
+    "is_hostile": true,
+    "height": 380,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 137,
+    "spritename": "敌人-球形异形兵1",
+    "level": 60,
+    "name": "远古禁卫异形",
+    "is_hostile": true,
+    "height": 400,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 138,
+    "spritename": "敌人-肉色异形兵1",
+    "level": 60,
+    "name": "暴走斥候异形",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 139,
+    "spritename": "敌人-肉色异形兵1",
+    "level": 60,
+    "name": "远古斥候异形",
+    "is_hostile": true,
+    "height": 230,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 140,
+    "spritename": "敌人-蛇形异形幼虫",
+    "level": 60,
+    "name": "暴走破胸虫",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 141,
+    "spritename": "敌人-蛇形异形幼虫",
+    "level": 60,
+    "name": "远古破胸虫",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 142,
+    "spritename": "敌人-蜘蛛形异形幼虫",
+    "level": 60,
+    "name": "暴走抱面虫",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 143,
+    "spritename": "敌人-蜘蛛形异形幼虫",
+    "level": 60,
+    "name": "远古抱面虫",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 144,
+    "spritename": "敌人-蓝色异形兵1",
+    "level": 60,
+    "name": "暴走兵蜂异形",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 145,
+    "spritename": "敌人-蓝色异形兵1",
+    "level": 60,
+    "name": "远古兵蜂异形",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 146,
+    "spritename": "敌人-黑色异形兵1",
+    "level": 60,
+    "name": "暴走信使异形",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 147,
+    "spritename": "敌人-黑色异形兵1",
+    "level": 60,
+    "name": "远古信使异形",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 148,
+    "spritename": "敌人-红色铁血战士",
+    "level": 60,
+    "name": "暴走狂战士铁血",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 149,
+    "spritename": "敌人-红色铁血战士",
+    "level": 60,
+    "name": "远古狂战士铁血",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 150,
+    "spritename": "敌人-蓝色铁血战士",
+    "level": 60,
+    "name": "暴走狩猎者铁血",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 151,
+    "spritename": "敌人-蓝色铁血战士",
+    "level": 60,
+    "name": "远古狩猎者铁血",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 152,
+    "spritename": "敌人-黄色铁血战士",
+    "level": 60,
+    "name": "暴走追踪者铁血",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 153,
+    "spritename": "敌人-黄色铁血战士",
+    "level": 60,
+    "name": "远古追踪者铁血",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 154,
+    "spritename": "敌人-武士铁血战士",
+    "level": 60,
+    "name": "暴走武士铁血",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 155,
+    "spritename": "敌人-武士铁血战士",
+    "level": 60,
+    "name": "远古武士铁血",
+    "is_hostile": true,
+    "height": 280,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 156,
+    "spritename": "敌人-武士铁血战士",
+    "level": 60,
+    "name": "亚种武士铁血",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 157,
+    "spritename": "敌人-忍者BOSS",
+    "level": 60,
+    "name": "远古方舟武士",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 158,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Pig",
+    "is_hostile": false,
+    "height": 200,
+    "NPC": true,
+    "data": {
+      "primary": "M134暴力版的PIG版",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "猎杀巨物大锤",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "Pig头-NPC",
+      "body": "Pig上装-NPC",
+      "leg": "墨绿军用下装",
+      "hand": "Pig手-NPC",
+      "foot": "墨绿军用鞋",
+      "neck": "BPK战队右前锋项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 159,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Boy",
+    "is_hostile": false,
+    "height": 185,
+    "NPC": true,
+    "data": {
+      "primary": "战术巴雷特",
+      "secondary": "P90战术版",
+      "secondary2": "P90战术版",
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-boy发型",
+      "head": "Boy头-NPC",
+      "body": "Boy上装-NPC",
+      "leg": "Boy下装-NPC",
+      "hand": "Boy手-NPC",
+      "foot": "Boy脚-NPC",
+      "neck": "BPK战队队长项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 160,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "King",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": "极品UZI的KING版",
+      "secondary2": "极品UZI的KING版",
+      "melee": null,
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": "King头-NPC",
+      "body": "King上装-NPC",
+      "leg": "King下装-NPC",
+      "hand": "King手-NPC",
+      "foot": "King脚-NPC",
+      "neck": "BPK战队左前锋项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 161,
+    "spritename": "敌人-方舟兽王虎",
+    "level": 60,
+    "name": "远古兽王",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 162,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T700",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "战术版AK200",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 163,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T750",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "双管白火铳",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 164,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T800",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "战术版FIM92",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 165,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T850",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "M134暴力版",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 166,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T900",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "极品巨兽",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 167,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T950",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "穿刺QBZ95",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 168,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T1000",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "烈焰枪B100",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 169,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T700",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "战术版AK200",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 170,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T750",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "双管白火铳",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 171,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T800",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "战术版FIM92",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 172,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T850",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "M134暴力版",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 173,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T900",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "极品巨兽",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 174,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T950",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "穿刺QBZ95",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 175,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T1000",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": "量子能量枪",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 176,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者T1000",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "烈焰枪A100",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 177,
+    "spritename": "敌人-终结者T800",
+    "level": 60,
+    "name": "终结者",
+    "is_hostile": true,
+    "height": 230,
+    "data": {
+      "primary": "战术巴雷特",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 178,
+    "spritename": "敌人-普通爆炸僵尸",
+    "level": 60,
+    "name": "远古爆炸僵尸",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 179,
+    "spritename": "敌人-普通尸母",
+    "level": 60,
+    "name": "远古尸母",
+    "is_hostile": true,
+    "height": 350,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 180,
+    "spritename": "敌人-重型改造僵尸",
+    "level": 60,
+    "name": "远古重型改造僵尸",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 181,
+    "spritename": "敌人-兽化改造僵尸",
+    "level": 60,
+    "name": "远古兽化改造僵尸",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 182,
+    "spritename": "敌人-普通改造僵尸",
+    "level": 60,
+    "name": "远古普通改造僵尸",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 183,
+    "spritename": "敌人-方舟兽王",
+    "level": 60,
+    "name": "远古方舟兽王",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 184,
+    "spritename": "敌人-方舟兽王",
+    "level": 60,
+    "name": "亚种方舟兽王",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 185,
+    "spritename": "敌人-方舟兽王",
+    "level": 60,
+    "name": "暴走方舟兽王",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 186,
+    "spritename": "敌人-方舟兽王虎",
+    "level": 60,
+    "name": "亚种方舟兽王兽形",
+    "is_hostile": true,
+    "height": 160,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 187,
+    "spritename": "敌人-方舟兽王虎",
+    "level": 60,
+    "name": "暴走方舟兽王兽形",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 188,
+    "spritename": "敌人-忍者BOSS",
+    "level": 60,
+    "name": "暴走方舟武士",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 189,
+    "spritename": "敌人-忍者BOSS",
+    "level": 60,
+    "name": "亚种方舟武士",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 190,
+    "spritename": "敌人-方舟卫士",
+    "level": 60,
+    "name": "远古方舟卫士",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 191,
+    "spritename": "敌人-方舟无人机",
+    "level": 60,
+    "name": "远古方舟无人机",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 192,
+    "spritename": "敌人-渗透者",
+    "level": 60,
+    "name": "远古渗透者",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 193,
+    "spritename": "敌人-方舟护士",
+    "level": 60,
+    "name": "远古方舟护士",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 194,
+    "spritename": "敌人-方舟巨人",
+    "level": 60,
+    "name": "暴走方舟巨人",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 195,
+    "spritename": "敌人-方舟巨人",
+    "level": 60,
+    "name": "远古方舟巨人",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 196,
+    "spritename": "敌人-方舟巨人",
+    "level": 60,
+    "name": "亚种方舟巨人",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 197,
+    "spritename": "敌人-武士大僵尸",
+    "level": 60,
+    "name": "暴走克隆僵尸武士",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 198,
+    "spritename": "敌人-软化僵尸",
+    "level": 60,
+    "name": "暴走克隆软化僵尸",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 199,
+    "spritename": "敌人-方舟白虎兵",
+    "level": 60,
+    "name": "暴走方舟克隆白虎",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 200,
+    "spritename": "敌人-忍者兵",
+    "level": 60,
+    "name": "暴走方舟克隆忍者",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 201,
+    "spritename": "敌人-方舟巨人兵",
+    "level": 60,
+    "name": "暴走方舟克隆巨人",
+    "is_hostile": true,
+    "height": 240,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 202,
+    "spritename": "敌人-武士大僵尸",
+    "level": 60,
+    "name": "远古克隆僵尸武士",
+    "is_hostile": true,
+    "height": 240,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 203,
+    "spritename": "敌人-软化僵尸",
+    "level": 60,
+    "name": "远古克隆软化僵尸",
+    "is_hostile": true,
+    "height": 240,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 204,
+    "spritename": "敌人-方舟白虎兵",
+    "level": 60,
+    "name": "远古方舟克隆白虎",
+    "is_hostile": true,
+    "height": 250,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 205,
+    "spritename": "敌人-忍者兵",
+    "level": 60,
+    "name": "远古方舟克隆忍者",
+    "is_hostile": true,
+    "height": 240,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 206,
+    "spritename": "敌人-方舟巨人兵",
+    "level": 60,
+    "name": "远古方舟克隆巨人",
+    "is_hostile": true,
+    "height": 260,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 207,
+    "spritename": "敌人-方舟妖姬",
+    "level": 60,
+    "name": "暴走方舟妖姬",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 208,
+    "spritename": "敌人-方舟妖姬",
+    "level": 60,
+    "name": "远古方舟妖姬",
+    "is_hostile": true,
+    "height": 230,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 209,
+    "spritename": "敌人-方舟妖姬",
+    "level": 60,
+    "name": "亚种方舟妖姬",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 210,
+    "spritename": "敌人-终结者T800",
+    "level": 50,
+    "NPC": true,
+    "name": "终结者改量X1",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": "极品巨兽",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 211,
+    "spritename": "敌人-终结者T800",
+    "level": 50,
+    "NPC": true,
+    "name": "终结者改量X2",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": "烈焰枪A100",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 212,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Blue",
+    "is_hostile": false,
+    "height": 185,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-蓝色头巾",
+      "head": "blue头-NPC",
+      "body": "blue上装-NPC",
+      "leg": "blue下装-NPC",
+      "hand": "blue装手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "骆驼祥子项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 213,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Andy",
+    "is_hostile": false,
+    "height": 185,
+    "NPC": true,
+    "data": {
+      "primary": "黄金QBZ的Andy版",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "绝地武士佩剑",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "Andy领子-NPC",
+      "body": "Andy上装-NPC",
+      "leg": "Andy下装-NPC",
+      "hand": "Andy装手套-NPC",
+      "foot": "黑色板鞋",
+      "neck": "东区最强战士项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 214,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "The Girl",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": "钛合金P90",
+      "secondary2": "钛合金P90",
+      "melee": "镜之虎彻",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": "TheGirl头-NPC",
+      "body": "TheGirl上装-NPC",
+      "leg": "TheGirl下装-NPC",
+      "hand": "TheGirl手-NPC",
+      "foot": "TheGirl脚-NPC",
+      "neck": "战斗女仆项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 215,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Pig",
+    "is_hostile": false,
+    "height": 200,
+    "NPC": true,
+    "data": {
+      "primary": "M134暴力版的PIG版",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "猎杀巨物大锤",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "Pig头-NPC",
+      "body": "Pig上装-NPC",
+      "leg": "墨绿军用下装",
+      "hand": "Pig手-NPC",
+      "foot": "墨绿军用鞋",
+      "neck": "BPK战队右前锋项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 216,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Boy",
+    "is_hostile": false,
+    "height": 185,
+    "NPC": true,
+    "data": {
+      "primary": "战术巴雷特",
+      "secondary": "P90战术版",
+      "secondary2": "P90战术版",
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-boy发型",
+      "head": "Boy头-NPC",
+      "body": "Boy上装-NPC",
+      "leg": "Boy下装-NPC",
+      "hand": "Boy手-NPC",
+      "foot": "Boy脚-NPC",
+      "neck": "BPK战队队长项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 217,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "King",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": "极品UZI的KING版",
+      "secondary2": "极品UZI的KING版",
+      "melee": null,
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": "King头-NPC",
+      "body": "King上装-NPC",
+      "leg": "King下装-NPC",
+      "hand": "King手-NPC",
+      "foot": "King脚-NPC",
+      "neck": "BPK战队左前锋项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 218,
+    "spritename": "敌人-摇滚公园萝莉",
+    "level": 60,
+    "name": "吉他",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 219,
+    "spritename": "敌人-摇滚公园少女",
+    "level": 60,
+    "name": "键盘",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 220,
+    "spritename": "敌人-摇滚公园御姐",
+    "level": 60,
+    "name": "主唱",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 221,
+    "spritename": "敌人-军阀重装兵",
+    "level": 60,
+    "name": "重装兵",
+    "is_hostile": false,
+    "height": 210,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 222,
+    "spritename": "敌人-军阀突击兵",
+    "level": 60,
+    "name": "突击兵",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 223,
+    "spritename": "敌人-军阀弹药兵",
+    "level": 60,
+    "name": "弹药兵",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 224,
+    "spritename": "敌人-飞刀小子",
+    "level": 60,
+    "name": "翅虎",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 225,
+    "spritename": "敌人-粉红头发御姐",
+    "level": 60,
+    "name": "火凤",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 226,
+    "spritename": "敌人-铠甲勇士战马形态",
+    "level": 60,
+    "name": "黑龙",
+    "is_hostile": false,
+    "height": 250,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 227,
+    "spritename": "敌人-唐装剑侠",
+    "level": 60,
+    "name": "史诗黑铁",
+    "is_hostile": false,
+    "height": 185,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 228,
+    "spritename": "敌人-牛仔boss",
+    "level": 60,
+    "name": "牛仔",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 229,
+    "spritename": "敌人-雪女",
+    "level": 60,
+    "name": "远古魔女",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 230,
+    "spritename": "敌人-方舟兽王",
+    "level": 60,
+    "name": "史诗方舟兽王",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 231,
+    "spritename": "敌人-牛仔boss",
+    "level": 60,
+    "name": "远古牛仔",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 232,
+    "spritename": "敌人-李小龙",
+    "level": 20,
+    "name": "绝世武圣Lee",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 233,
+    "spritename": "敌人-方舟妖姬",
+    "level": 60,
+    "name": "史诗方舟妖姬",
+    "is_hostile": true,
+    "height": 230,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 234,
+    "spritename": "敌人-黑白无常",
+    "level": 1,
+    "name": "史诗浮士德兄弟",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 235,
+    "spritename": "主角-男",
+    "level": 15,
+    "name": "远古流年",
+    "is_hostile": false,
+    "height": 200,
+    "data": {
+      "primary": "远古诛神枪",
+      "secondary": "远古诛神短枪",
+      "secondary2": "远古诛神短枪",
+      "melee": "远古诛神剑",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "远古诛神头盔",
+      "body": "远古诛神胸甲",
+      "leg": "远古诛神腿甲",
+      "hand": "远古诛神手套",
+      "foot": "远古诛神战鞋",
+      "neck": "远古诛神项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 236,
+    "spritename": "主角-男",
+    "level": 80,
+    "name": "漆黑噤默",
+    "is_hostile": true,
+    "height": 176,
+    "data": {
+      "primary": "逻辑工作室一型",
+      "secondary": "STI2011",
+      "secondary2": "STI2011",
+      "melee": "轮盘重工",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑韩式头",
+      "head": "噤默面具",
+      "body": "噤默礼服",
+      "leg": "噤默礼裤",
+      "hand": "噤默手套",
+      "foot": "噤默皮鞋",
+      "neck": "色彩收尾人",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 237,
+    "spritename": "敌人-独狼",
+    "level": 25,
+    "name": "独狼铁血",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 238,
+    "spritename": "主角-男",
+    "level": 5,
+    "name": "BYD 小F",
+    "is_hostile": true,
+    "height": 145,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "扳手",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "小F头部",
+      "body": "小F上装",
+      "leg": "小F上装",
+      "hand": "小F手套",
+      "foot": "小F鞋",
+      "neck": null,
+      "gender": "男"
+    }
+  },
+  {
+    "id": 239,
+    "spritename": "敌人-牛仔boss",
+    "level": 60,
+    "name": "牛仔",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 240,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "A兵团突击兵 汉斯",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "m14",
+      "secondary": "UZI",
+      "secondary2": "UZI",
+      "melee": "战术狗腿刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑朋克头",
+      "head": "战术猪鼻式防毒面具",
+      "body": "A兵团制式战术背心",
+      "leg": "A兵团制式战术裤",
+      "hand": "A兵团战术制式手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "战斗专家军牌",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 241,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "A兵团突击兵 梅利",
+    "is_hostile": false,
+    "height": 170,
+    "data": {
+      "primary": "m14",
+      "secondary": "UZI",
+      "secondary2": "UZI",
+      "melee": "战术狗腿刀",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-玫红色马尾",
+      "head": "战术猪鼻式防毒面具",
+      "body": "A兵团制式战术背心",
+      "leg": "A兵团制式战术裤",
+      "hand": "A兵团战术制式手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "战斗专家军牌",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 242,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "A兵团侦察兵 托斯卡",
+    "is_hostile": false,
+    "height": 185,
+    "data": {
+      "primary": "AWP",
+      "secondary": "M1911",
+      "secondary2": "M1911",
+      "melee": "匕首",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑猫王头",
+      "head": "战术猪鼻式防毒面具",
+      "body": "A兵团制式战术背心",
+      "leg": "A兵团制式战术裤",
+      "hand": "A兵团战术制式手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "战斗专家军牌",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 243,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "A兵团侦察兵 托斯卡",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "SVD",
+      "secondary": "M1911",
+      "secondary2": "M1911",
+      "melee": "匕首",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑韩式头",
+      "head": "战术猪鼻式防毒面具",
+      "body": "A兵团制式战术背心",
+      "leg": "A兵团制式战术裤",
+      "hand": "A兵团战术制式手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "战斗专家军牌",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 244,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "A兵团重装兵 拉德",
+    "is_hostile": false,
+    "height": 190,
+    "data": {
+      "primary": "MG42",
+      "secondary": "P90",
+      "secondary2": "P90",
+      "melee": "斩马刀",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-金色长发",
+      "head": "精致战术猪鼻式防毒面具",
+      "body": "A兵团精致战术背心",
+      "leg": "A兵团精致战术裤",
+      "hand": "A兵团精致战术手套",
+      "foot": "A兵团精致战术皮鞋",
+      "neck": "战斗狂人军牌",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 245,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "A兵团重装兵 明王",
+    "is_hostile": false,
+    "height": 220,
+    "data": {
+      "primary": "M249",
+      "secondary": "P90",
+      "secondary2": "P90",
+      "melee": "斩马刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-bob自由爆炸头",
+      "head": "精致战术猪鼻式防毒面具",
+      "body": "A兵团精致战术背心",
+      "leg": "A兵团精致战术裤",
+      "hand": "A兵团精致战术手套",
+      "foot": "A兵团精致战术皮鞋",
+      "neck": "战斗狂人军牌",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 246,
+    "spritename": "主角-男",
+    "level": 90,
+    "name": "冷月",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "镜之虎彻",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-金色不良少年头",
+      "head": null,
+      "body": "蓝色西式校服",
+      "leg": "黑色校服裤子",
+      "hand": null,
+      "foot": "白色板鞋",
+      "neck": "守护之力",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 247,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁卫兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "方钢锤",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑骑士头",
+      "head": "锐刻幻影夜视仪",
+      "body": "黑铁死士绑带",
+      "leg": "黑铁死士制式裤",
+      "hand": "黑铁死士手套",
+      "foot": "黑铁死士鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 248,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁禁卫",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "苍面银牙",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑色辫子头",
+      "head": "黑铁死士围巾",
+      "body": "黑铁死士绑带",
+      "leg": "黑铁死士制式裤",
+      "hand": "黑铁死士手套",
+      "foot": "黑铁死士鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 249,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁众",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "战术狗腿刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑蓬头",
+      "head": "复镕望远热感仪",
+      "body": "黑铁死士绑带",
+      "leg": "黑铁死士制式裤",
+      "hand": "黑铁死士手套",
+      "foot": "黑铁死士鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  }, 
+  {
+    "id": 250,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁武者",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "长墨白铁",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "红外线滤光镜",
+      "body": "黑铁死士绑带",
+      "leg": "黑铁死士制式裤",
+      "hand": "黑铁死士手套",
+      "foot": "黑铁死士鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  }, 
+  {
+    "id": 251,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁杀手",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "虎彻",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑朋克头",
+      "head": "黑铁死士围巾",
+      "body": "黑铁行刑者绑带",
+      "leg": "黑铁行刑者制式裤",
+      "hand": "黑铁行刑者手套",
+      "foot": "黑铁行刑者鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  }, 
+  {
+    "id": 252,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁刀斧手",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "黑铁巨斧",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑韩式头",
+      "head": "复镕望远热感仪",
+      "body": "黑铁行刑者绑带",
+      "leg": "黑铁行刑者制式裤",
+      "hand": "黑铁行刑者手套",
+      "foot": "黑铁行刑者鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  }, 
+  {
+    "id": 253,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁莽汉",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "黑铁重剑枪",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-络腮胡",
+      "head": "锐刻幻影夜视仪",
+      "body": "黑铁行刑者绑带",
+      "leg": "黑铁行刑者制式裤",
+      "hand": "黑铁行刑者手套",
+      "foot": "黑铁行刑者鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  }, 
+  {
+    "id": 254,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "黑铁斥候",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "西洋重剑枪",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-精武短发",
+      "head": "红外线滤光镜",
+      "body": "黑铁行刑者绑带",
+      "leg": "黑铁行刑者制式裤",
+      "hand": "黑铁行刑者手套",
+      "foot": "黑铁行刑者鞋",
+      "neck": "黑铁信徒",
+      "gender": "男"
+    }
+  }, 
+  {
+    "id": 255,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "键盘狂热粉",
+    "is_hostile": true,
+    "height": 160,
+    "data": {
+      "primary": null,
+      "secondary": "MP7",
+      "secondary2": "MP7",
+      "melee": "电子音乐键盘",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-BOSS3头发",
+      "head": null,
+      "body": "keyboard衣服",
+      "leg": "keyboard裙子",
+      "hand": "牛皮手套",
+      "foot": "BOSS3鞋子",
+      "neck": "摇滚爱好者",
+      "gender": "女"
+    }
+  }, 
+  {
+    "id": 256,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "吉他狂热粉",
+    "is_hostile": true,
+    "height": 160,
+    "data": {
+      "primary": null,
+      "secondary": "MP7",
+      "secondary2": "MP7",
+      "melee": "桔色电子吉他",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-BOSS2头发",
+      "head": null,
+      "body": "guitar衣服",
+      "leg": "guitar裙子",
+      "hand": "牛皮手套",
+      "foot": "BOSS2鞋子",
+      "neck": "摇滚爱好者",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 257,
+    "spritename": "敌人-李小龙",
+    "level": 30,
+    "name": "Lee",
+    "is_hostile": false,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 258,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "主唱狂热粉",
+    "is_hostile": true,
+    "height": 160,
+    "data": {
+      "primary": null,
+      "secondary": "MP7",
+      "secondary2": "MP7",
+      "melee": "红色电子吉他",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-BOSS1头发",
+      "head": null,
+      "body": "singer衣服",
+      "leg": "singer裤子",
+      "hand": "牛皮手套",
+      "foot": "BOSS1鞋子",
+      "neck": "摇滚爱好者",
+      "gender": "女"
+  }
+  },
+  {
+    "id": 259,
+    "spritename": "敌人-双喷少女",
+    "level": 20,
+    "name": "摇滚学姐",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 260,
+    "spritename": "敌人-精英战术少女",
+    "level": 20,
+    "name": "精英战术少女",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 261,
+    "spritename": "敌人-黑铁武士",
+    "level": 30,
+    "name": "黑铁武士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+  }
+  },
+    {
+    "id": 263,
+    "spritename": "敌人-黑铁武士",
+    "level": 30,
+    "name": "黑铁武士",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+  }
+  },
+  {
+    "id": 264,
+    "spritename": "敌人-军阀精英突击兵",
+    "level": 30,
+    "name": "军阀精英突击兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+ }
+  },
+  {
+    "id": 265,
+    "spritename": "敌人-军阀精英重装兵",
+    "level": 30,
+    "name": "军阀精英重装兵",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+ }
+  },
+  {
+    "id": 266,
+    "spritename": "敌人-军阀精英弹药兵",
+    "level": 30,
+    "name": "军阀精英弹药兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+ }
+  },
+  {
+    "id": 267,
+    "spritename": "敌人-军阀精英狙击兵",
+    "level": 30,
+    "name": "军阀精英狙击兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+ }
+  },
+  {
+    "id": 268,
+    "spritename": "敌人-黑铁精英流锤兵",
+    "level": 30,
+    "name": "黑铁流锤",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+ }
+  },
+  {
+    "id": 269,
+    "spritename": "敌人-黑铁重锤",
+    "level": 30,
+    "name": "黑铁重锤",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+ }
+  },
+  {
+    "id": 270,
+    "spritename": "敌人-黑铁死士精英",
+    "level": 30,
+    "name": "黑铁游侠",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 271,
+    "spritename": "主角-尾上世莉架",
+    "level": 8,
+    "name": "尾上世莉架",
+    "is_hostile": true,
+    "height": 157,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "眼Di Sword (Real boot) ",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": null,
+      "body": null,
+      "leg": null,
+      "hand": null,
+      "foot": null,
+      "neck": "呕吐蛙挂坠",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 272,
+    "spritename": "敌人-黄色衣服男僵尸1",
+    "level": 2,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 273,
+    "spritename": "敌人-医疗女仆",
+    "level": 30,
+    "name": "医疗女仆（白）",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 274,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Blue",
+    "is_hostile": true,
+    "height": 185,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-蓝色头巾",
+      "head": "blue头-NPC",
+      "body": "blue上装-NPC",
+      "leg": "blue下装-NPC",
+      "hand": "blue装手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "骆驼祥子项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 275,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Andy",
+    "is_hostile": true,
+    "height": 185,
+    "NPC": false,
+    "data": {
+      "primary": "黄金QBZ的Andy版",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "绝地武士佩剑",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "Andy领子-NPC",
+      "body": "Andy上装-NPC",
+      "leg": "Andy下装-NPC",
+      "hand": "Andy装手套-NPC",
+      "foot": "黑色板鞋",
+      "neck": "东区最强战士项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 276,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "The Girl",
+    "is_hostile": true,
+    "height": 175,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": "钛合金P90",
+      "secondary2": "钛合金P90",
+      "melee": "镜之虎彻",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": "TheGirl头-NPC",
+      "body": "TheGirl上装-NPC",
+      "leg": "TheGirl下装-NPC",
+      "hand": "TheGirl手-NPC",
+      "foot": "TheGirl脚-NPC",
+      "neck": "战斗女仆项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 277,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Pig",
+    "is_hostile": true,
+    "height": 200,
+    "NPC": false,
+    "data": {
+      "primary": "M134暴力版的PIG版",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "猎杀巨物大锤",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "Pig头-NPC",
+      "body": "Pig上装-NPC",
+      "leg": "墨绿军用下装",
+      "hand": "Pig手-NPC",
+      "foot": "墨绿军用鞋",
+      "neck": "BPK战队右前锋项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 278,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Boy",
+    "is_hostile": true,
+    "height": 185,
+    "NPC": false,
+    "data": {
+      "primary": "战术巴雷特",
+      "secondary": "P90战术版",
+      "secondary2": "P90战术版",
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-boy发型",
+      "head": "Boy头-NPC",
+      "body": "Boy上装-NPC",
+      "leg": "Boy下装-NPC",
+      "hand": "Boy手-NPC",
+      "foot": "Boy脚-NPC",
+      "neck": "BPK战队队长项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 279,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "King",
+    "is_hostile": true,
+    "height": 175,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": "极品UZI的KING版",
+      "secondary2": "极品UZI的KING版",
+      "melee": null,
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": "King头-NPC",
+      "body": "King上装-NPC",
+      "leg": "King下装-NPC",
+      "hand": "King手-NPC",
+      "foot": "King脚-NPC",
+      "neck": "BPK战队左前锋项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 280,
+    "spritename": "主角-男",
+    "level": 35,
+    "name": "A兵团精英A",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "AK74战术版",
+      "secondary": "无枪托ZUX197",
+      "secondary2": "无枪托ZUX197",
+      "melee": "战术黑刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑蓬头",
+      "head": "精致战术猪鼻式防毒面具",
+      "body": "A兵团精致战术背心",
+      "leg": "A兵团精致战术裤",
+      "hand": "A兵团精致战术手套",
+      "foot": "A兵团精致战术皮鞋",
+      "neck": "佚名精锐-A",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 281,
+    "spritename": "主角-男",
+    "level": 35,
+    "name": "A兵团精英B",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "WA2000",
+      "secondary": "KRISS轻量化突击版",
+      "secondary2": "KRISS轻量化突击版",
+      "melee": "虎彻",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-银色清爽直发",
+      "head": "精致战术猪鼻式防毒面具",
+      "body": "A兵团精致战术背心",
+      "leg": "A兵团精致战术裤",
+      "hand": "A兵团精致战术手套",
+      "foot": "A兵团精致战术皮鞋",
+      "neck": "佚名精锐-B",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 282,
+    "spritename": "主角-文天",
+    "level": 8,
+    "name": "文天",
+    "is_hostile": false,
+    "height": 172,
+    "data": {
+      "primary": "光子破坏炮",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "光子粉碎刃",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": null,
+      "body": null,
+      "leg": null,
+      "hand": null,
+      "foot": null,
+      "neck": "Smart Barin",
+      "gender": "男"
+    }  
+  },
+  {
+    "id": 283,
+    "spritename": "敌人-狙击女仆",
+    "level": 2,
+    "name": "狙击女仆（黑）",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 284,
+    "spritename": "敌人-Tomboy",
+    "level": 2,
+    "name": "Tomboy",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 285,
+    "spritename": "敌人-武装JK",
+    "level": 2,
+    "name": "武装JK",
+    "is_hostile": true,
+    "height": 160,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 286,
+    "spritename": "敌人-方舟爪豪",
+    "level": 45,
+    "name": "方舟爪豪",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 287,
+    "spritename": "敌人-蛙型仿生僵尸",
+    "level": 2,
+    "name": "蛙型仿生僵尸",
+    "is_hostile": true,
+    "height": 160,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 288,
+    "spritename": "敌人-医疗女仆",
+    "level": 30,
+    "name": "医疗女仆（白）",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+    {
+    "id": 289,
+    "spritename": "资源箱",
+    "level": 1,
+    "name": "箱子",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+    {
+    "id": 290,
+    "spritename": "敌人-异形蛋",
+    "level": 2,
+    "name": "异形卵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+    {
+    "id": 291,
+    "spritename": "敌人-红水晶",
+    "level": 2,
+    "name": "红水晶",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+     }
+  },
+    {
+    "id": 292,
+    "spritename": "敌人-迷你黑洞",
+    "level": 2,
+    "name": "迷你黑洞",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+    {
+    "id": 293,
+    "spritename": "敌人-柜员女僵尸",
+    "level": 2,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+    {
+    "id": 294,
+    "spritename": "敌人-诺艾尔",
+    "level": 2,
+    "name": "诺艾尔",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 295,
+    "spritename": "主角-文天",
+    "level": 8,
+    "name": "文天",
+    "is_hostile": true,
+    "height": 172,
+    "data": {
+      "primary": "光子破坏炮",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "光子粉碎刃",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": null,
+      "body": null,
+      "leg": null,
+      "hand": null,
+      "foot": null,
+      "neck": "Smart Barin",
+      "gender": "男"
+    }  
+  },
+  {
+    "id": 296,
+    "spritename": "敌人-杰克霜精",
+    "level": 2,
+    "name": "杰克霜精",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+	  "id": 297,
+    "spritename": "敌人-邪恶霜精",
+    "level": 2,
+    "name": "邪恶霜精",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+	"id": 298,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "ShopGirl",
+    "is_hostile": false,
+    "height": 175,
+    "NPC": true,
+    "data": {
+      "primary": null,
+      "secondary": "MK23手枪",
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": "ShopGirl头-NPC",
+      "body": "ShopGirl上装-NPC",
+      "leg": "ShopGirl下装-NPC",
+      "hand": "ShopGirl手-NPC",
+      "foot": "ShopGirl脚-NPC",
+      "neck": "K5项链",
+      "gender": "女"
+    }
+  },
+  {
+  "id": 299,
+    "spritename": "主角-男",
+    "level": 100,
+    "name": "战术JK",
+    "is_hostile": false,
+    "height": 166,
+    "data": {
+      "primary": "双管白火铳",
+      "secondary": "Desert Eagle改装版",
+      "secondary2": "Desert Eagle改装版",
+      "melee": "上古饮血大太刀",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": "战术JK头部",
+      "body": "战术JK上衣",
+      "leg": "战术JK裙",
+      "hand": "三阶黑色皮手套",
+      "foot": "战术JK鞋子",
+      "neck": "角斗王者项链",
+      "gender": "女"
+    }
+    },
+  { 
+    "id": 300,
+    "spritename": "敌人-圣诞白忍",
+    "level": 20,
+    "name": "！！！",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  { 
+    "id": 301,
+    "spritename": "敌人-奇美拉I型",
+    "level": 20,
+    "name": "奇美拉I型",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  { 
+    "id": 302,
+    "spritename": "敌人-奇美拉II型",
+    "level": 20,
+    "name": "奇美拉II型",
+    "is_hostile": true,
+    "height": 210,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+  "id": 303,
+    "spritename": "主角-男",
+    "level": 100,
+    "name": "奇美拉III",
+    "is_hostile": true,
+    "height": 200,
+    "NPC": false,
+    "data": {
+      "primary": "诛神枪",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "诛神头盔",
+      "body": "诛神胸甲",
+      "leg": "诛神腿甲",
+      "hand": "诛神手套",
+      "foot": "诛神战鞋",
+      "neck": "奇美拉改造人",
+      "gender": "男"
+	}
+  },
+  {
+  "id": 304,
+    "spritename": "主角-男",
+    "level": 100,
+    "name": "奇美拉IV",
+    "is_hostile": true,
+    "height": 200,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": "诛神短枪",
+      "secondary2": "诛神短枪",
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "诛神头盔",
+      "body": "诛神胸甲",
+      "leg": "诛神腿甲",
+      "hand": "诛神手套",
+      "foot": "诛神战鞋",
+      "neck": "奇美拉改造人",
+      "gender": "男"
+	}
+  },
+  {
+  "id": 305,
+    "spritename": "主角-男",
+    "level": 100,
+    "name": "杂交熊I",
+    "is_hostile": true,
+    "height": 200,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "魔剑但丁",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "双色巧克力味小熊头",
+      "body": "原味小熊上装",
+      "leg": "麦香味小熊下装",
+      "hand": "麦香味小熊手套",
+      "foot": "草莓味小熊鞋",
+      "neck": "杂交测试种",
+      "gender": "男"
+	}
+  },
+  {
+  "id": 306,
+    "spritename": "主角-男",
+    "level": 100,
+    "name": "杂交熊II",
+    "is_hostile": true,
+    "height": 200,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "绯红女皇",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "草莓味小熊头",
+      "body": "麦香味小熊上装",
+      "leg": "抹茶味小熊下装",
+      "hand": "双色巧克力味小熊手套",
+      "foot": "双色巧克力味小熊鞋",
+      "neck": "杂交测试种",
+      "gender": "男"
+	}
+  },
+  {
+  "id": 307,
+    "spritename": "主角-男",
+    "level": 100,
+    "name": "杂交熊II",
+    "is_hostile": true,
+    "height": 200,
+    "NPC": false,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "武神之刃",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "抹茶味小熊头",
+      "body": "双色巧克力味小熊上装",
+      "leg": "草莓味小熊下装",
+      "hand": "草莓味小熊手套",
+      "foot": "抹茶味小熊鞋",
+      "neck": "杂交测试种",
+      "gender": "男"
+	}
+  },
+  {
+    "id": 308,
+    "spritename": "主角-文天",
+    "level": 8,
+    "name": "文天",
+    "is_hostile": false,
+    "height": 172,
+    "data": {
+      "primary": "光子破坏炮",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "光子粉碎刃",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": null,
+      "body": null,
+      "leg": null,
+      "hand": null,
+      "foot": null,
+      "neck": "Smart Barin",
+      "gender": "男"
+    }
+  },
+  { 
+    "id": 309,
+    "spritename": "敌人-魔神菲尼克斯",
+    "level": 20,
+    "name": "菲尼克斯",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 310,
+    "spritename": "敌人-凤凰眷属连射兵",
+    "level": 20,
+    "name": "射手眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 311,
+    "spritename": "敌人-凤凰眷属狙击兵",
+    "level": 20,
+    "name": "狙击眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 312,
+    "spritename": "敌人-凤凰眷属刀兵",
+    "level": 20,
+    "name": "刀兵眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 313,
+    "spritename": "敌人-凤凰眷属大刀兵",
+    "level": 20,
+    "name": "大刀眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 314,
+    "spritename": "敌人-凤凰眷属远程刀兵",
+    "level": 20,
+    "name": "飞刀眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 315,
+    "spritename": "敌人-凤凰眷属飞行",
+    "level": 20,
+    "name": "魔法飞行眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 316,
+    "spritename": "敌人-凤凰眷属飞行小型",
+    "level": 20,
+    "name": "小型飞行眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 317,
+    "spritename": "敌人-凤凰眷属火精灵",
+    "level": 20,
+    "name": "火精灵眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 318,
+    "spritename": "敌人-凤凰眷属大火精灵",
+    "level": 20,
+    "name": "大火精灵眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 319,
+    "spritename": "敌人-凤凰眷属铁甲",
+    "level": 20,
+    "name": "铁甲眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 320,
+    "spritename": "敌人-凤凰眷属金甲",
+    "level": 20,
+    "name": "金甲眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 321,
+    "spritename": "敌人-凤凰眷属刺客",
+    "level": 20,
+    "name": "刺客眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 322,
+    "spritename": "敌人-凤凰眷属赤焰",
+    "level": 20,
+    "name": "赤焰眷属",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 323,
+    "spritename": "敌人-凤凰眷属黑金",
+    "level": 20,
+    "name": "黑金眷属",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 324,
+    "spritename": "敌人-凤凰眷属狗",
+    "level": 20,
+    "name": "狗眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 325,
+    "spritename": "敌人-凤凰眷属火狗",
+    "level": 20,
+    "name": "火狗眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 326,
+    "spritename": "敌人-凤凰眷属火炮兵",
+    "level": 20,
+    "name": "火炮兵眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 327,
+    "spritename": "敌人-凤凰眷属盾兵",
+    "level": 20,
+    "name": "盾兵眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 328,
+    "spritename": "敌人-凤凰眷属虫",
+    "level": 20,
+    "name": "虫眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 329,
+    "spritename": "敌人-凤凰眷属武士",
+    "level": 20,
+    "name": "武士眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 330,
+    "spritename": "敌人-凤凰眷属连射兵",
+    "level": 20,
+    "name": "射手眷属",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary":  "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 331,
+    "spritename": "敌人-凤凰眷属狙击兵",
+    "level": 20,
+    "name": "狙击眷属",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 332,
+    "spritename": "敌人-凤凰眷属火精灵",
+    "level": 20,
+    "name": "火精灵眷属",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 333,
+    "spritename": "敌人-凤凰眷属飞行",
+    "level": 20,
+    "name": "魔法飞行眷属",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 334,
+    "spritename": "敌人-锡蒙利范围光环发生器",
+    "level": 20,
+    "name": "锡蒙利范围光环发生器",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 335,
+    "spritename": "敌人-锡蒙利",
+    "level": 20,
+    "name": "锡蒙利",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 336,
+    "spritename": "敌人-恶魔骑士",
+    "level": 20,
+    "name": "恶魔骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 337,
+    "spritename": "敌人-重盾骑士",
+    "level": 20,
+    "name": "重盾骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 338,
+    "spritename": "敌人-重弓骑士",
+    "level": 20,
+    "name": "重弓骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 339,
+    "spritename": "敌人-重剑骑士",
+    "level": 20,
+    "name": "重剑骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": "待机",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 340,
+    "spritename": "敌人-巨锤骑士",
+    "level": 20,
+    "name": "巨锤战士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 341,
+    "spritename": "敌人-盾卫骑士",
+    "level": 20,
+    "name": "盾卫士兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 342,
+    "spritename": "敌人-火焰骑士",
+    "level": 20,
+    "name": "火焰骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 343,
+    "spritename": "敌人-恶魔骑士",
+    "level": 20,
+    "name": "恶魔骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 344,
+    "spritename": "敌人-重盾骑士",
+    "level": 20,
+    "name": "重盾骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  { 
+    "id": 345,
+    "spritename": "敌人-重剑骑士",
+    "level": 20,
+    "name": "重剑骑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+     },
+  { 
+    "id": 346,
+    "spritename": "敌人-lady",
+    "level": 20,
+    "name": "lady",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+     },
+  { 
+    "id": 347,
+    "spritename": "敌人-黑铁会改造人",
+    "level": 20,
+    "name": "诺亚试验体α",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+     },
+  { 
+    "id": 348,
+    "spritename": "敌人-人修罗",
+    "level": 20,
+    "name": "混沌王",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 349,
+    "spritename": "主角-男",
+    "level": 30,
+    "name": "？？",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": "MG42",
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "",
+      "head": "92式头部装甲",
+      "body": "92式胸甲",
+      "leg": "92式腿甲",
+      "hand": "92式手甲",
+      "foot": "92式装甲鞋",
+      "neck": "人狼士兵",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 350,
+    "spritename": "主角-男",
+    "level": 30,
+    "name": "？？",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": "P90战术版",
+      "secondary2": "P90战术版",
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "",
+      "head": "92式头部装甲",
+      "body": "92式胸甲",
+      "leg": "92式腿甲",
+      "hand": "92式手甲",
+      "foot": "92式装甲鞋",
+      "neck": "人狼士兵",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 351,
+    "spritename": "主角-男",
+    "level": 30,
+    "name": "？？",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "光刀狮子",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "",
+      "head": "92式头部装甲",
+      "body": "92式胸甲",
+      "leg": "92式腿甲",
+      "hand": "92式手甲",
+      "foot": "92式装甲鞋",
+      "neck": "人狼士兵",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 352,
+    "spritename": "主角-男",
+    "level": 30,
+    "name": "？？",
+    "is_hostile": true,
+    "height": 220,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "",
+      "head": "92式头部装甲",
+      "body": "92式胸甲",
+      "leg": "92式腿甲",
+      "hand": "92式手甲",
+      "foot": "92式装甲鞋",
+      "neck": "人狼士兵",
+      "gender": "男"
+    }
+    },
+  { 
+    "id": 353,
+    "spritename": "敌人-劫掠少女",
+    "level": 20,
+    "name": "掠夺少女",
+    "is_hostile": true,
+    "height": 176,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+    },
+  { 
+    "id": 354,
+    "spritename": "敌人-刀狙少女",
+    "level": 20,
+    "name": "精锐掠夺少女",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+      },
+  { 
+    "id": 355,
+    "spritename": "敌人-劫掠少女",
+    "level": 20,
+    "name": "掠夺少女",
+    "is_hostile": false,
+    "height": 176,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+    },
+  { 
+    "id": 356,
+    "spritename": "敌人-刀狙少女",
+    "level": 20,
+    "name": "精锐掠夺少女",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+     },
+  {
+    "id": 357,
+    "spritename": "敌人-双喷少女",
+    "level": 20,
+    "name": "摇滚学姐",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 358,
+    "spritename": "敌人-精英战术少女",
+    "level": 20,
+    "name": "精英战术少女",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 359,
+    "spritename": "敌人-方舟收割者",
+    "level": 20,
+    "name": "Ark Reaper",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 360,
+    "spritename": "敌人-Surveyor",
+    "level": 20,
+    "name": "Surveyor",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 361,
+    "spritename": "敌人-EXUSIAI指挥官",
+    "level": 50,
+    "name": "EXUSIAI指挥官",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 362,
+    "spritename": "敌人-EXUSIAI素体",
+    "level": 30,
+    "name": "EXUSIAI素体",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 363,
+    "spritename": "敌人-EXUSIAI支援型",
+    "level": 40,
+    "name": "EXUSIAI支援型",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 364,
+    "spritename": "敌人-EXUSIAI突击型",
+    "level": 40,
+    "name": "EXUSIAI突击型",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 365,
+    "spritename": "敌人-Surveyor",
+    "level": 20,
+    "name": "Surveyor",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 366,
+    "spritename": "敌人-Gazer",
+    "level": 20,
+    "name": "Gazer",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 367,
+    "spritename": "敌人-旧型号机器人",
+    "level": 20,
+    "name": "旧型号机器人",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 368,
+    "spritename": "敌人-唐头肌肉男",
+    "level": 20,
+    "name": "神秘肌肉男",
+    "is_hostile": true,
+    "height": 195,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 369,
+    "spritename": "敌人-白面肌肉男",
+    "level": 20,
+    "name": "白面肌肉男",
+    "is_hostile": true,
+    "height": 200,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 370,
+    "spritename": "敌人-灰面肌肉男",
+    "level": 20,
+    "name": "灰面肌肉男",
+    "is_hostile": true,
+    "height": 205,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 371,
+    "spritename": "敌人-Itinerant",
+    "level": 20,
+    "name": "Itinerant",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 372,
+    "spritename": "敌人-诺亚克隆兽",
+    "level": 30,
+    "name": "克隆兽",
+    "is_hostile": true,
+    "height": 230,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 373,
+    "spritename": "敌人-闪6特工",
+    "level": 30,
+    "name": "克隆人",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 374,
+    "spritename": "主角-男",
+    "level": 37,
+    "name": "A兵团精英A",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "中国88式狙击步枪改造版",
+      "secondary": "穿刺LS06",
+      "secondary2": "穿刺LS06",
+      "melee": "斩马刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑蓬头",
+      "head": "精致战术猪鼻式防毒面具",
+      "body": "幻影胸甲",
+      "leg": "幻影腿甲",
+      "hand": "幻影手甲",
+      "foot": "幻影装甲鞋",
+      "neck": "佚名精锐-A",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 375,
+    "spritename": "主角-男",
+    "level": 37,
+    "name": "A兵团精英B",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "中国88式狙击步枪改造版",
+      "secondary": "穿刺LS06",
+      "secondary2": "穿刺LS06",
+      "melee": "斩马刀",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-银色清爽直发",
+      "head": "精致战术猪鼻式防毒面具",
+      "body": "幻影胸甲",
+      "leg": "幻影腿甲",
+      "hand": "幻影手甲",
+      "foot": "幻影装甲鞋",
+      "neck": "佚名精锐-B",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 376,
+    "spritename": "敌人-黑铁精英流锤兵",
+    "level": 30,
+    "name": "黑铁流锤",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 377,
+    "spritename": "敌人-黑铁死士精英",
+    "level": 30,
+    "name": "黑铁游侠",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 378,
+    "spritename": "敌人-黑白无常",
+    "level": 1,
+    "name": "浮士德兄弟",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+    {
+    "id": 379,
+    "spritename": "敌人-锯片陷阱",
+    "level": 1,
+    "name": "锯片陷阱",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+     }
+  },
+  {
+    "id": 380,
+    "spritename": "敌人-雪女",
+    "level": 60,
+    "name": "魔女",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 381,
+    "spritename": "敌人-虚拟向导",
+    "level": 1,
+    "name": "虚拟向导",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 382,
+    "spritename": "敌人-浮士德",
+    "level": 1,
+    "name": "憎恶浮士德",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 383,
+    "spritename": "敌人-玩具机器人",
+    "level": 1,
+    "name": "玩具机器人",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 384,
+    "spritename": "敌人-火柴人剑士",
+    "level": 1,
+    "name": "火柴人剑士",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 385,
+    "spritename": "敌人-拼命之王",
+    "level": 70,
+    "name": "拼命之王",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 386,
+    "spritename": "敌人-dude",
+    "level": 70,
+    "name": "dude",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+	}
+  },
+  {
+    "id": 387,
+    "spritename": "敌人-Tomboy",
+    "level": 2,
+    "name": "Tomboy",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 388,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "大学警备队",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "M4A1",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "战术狗腿刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑韩式头2",
+      "head": null,
+      "body": "黑色长袖学生制服",
+      "leg": "黑色校服裤子",
+      "hand": null,
+      "foot": "黑灰色白底皮鞋",
+      "neck": "枪械中加成项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 389,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "大学警备队",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": "AUG",
+      "secondary": null,
+      "secondary2": null,
+      "melee": "战术狗腿刀",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-深蓝色挑染短发",
+      "head": null,
+      "body": "bob自由牛仔衫",
+      "leg": "bob自由喇叭裤",
+      "hand": null,
+      "foot": "bob自由火箭皮鞋",
+      "neck": "枪械中加成项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 390,
+    "spritename": "敌人-旧型号机器人",
+    "level": 20,
+    "name": "旧型号机器人",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 391,
+    "spritename": "主角-尾上世莉架",
+    "level": 8,
+    "name": "尾上世莉架",
+    "is_hostile": false,
+    "height": 157,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "眼Di Sword (Real boot) ",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": null,
+      "head": null,
+      "body": null,
+      "leg": null,
+      "hand": null,
+      "foot": null,
+      "neck": "呕吐蛙挂坠",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 392,
+    "spritename": "敌人-诺艾尔",
+    "level": 2,
+    "name": "诺艾尔",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 393,
+    "spritename": "敌人-瘦骨男尸",
+    "level": 1,
+    "name": "僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 394,
+    "spritename": "敌人-血鼠",
+    "level": 1,
+    "name": "血鼠",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 395,
+    "spritename": "敌人-防护服士兵",
+    "level": 1,
+    "name": "清道夫",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 396,
+    "spritename": "敌人-变异犬",
+    "level": 1,
+    "name": "蛆狗",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 397,
+    "spritename": "敌人-鳄嘴兽人",
+    "level": 1,
+    "name": "鳄嘴兽人",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 398,
+    "spritename": "敌人-诺亚突击兵",
+    "level": 1,
+    "name": "忏悔者",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 399,
+    "spritename": "敌人-诺亚狙击兵",
+    "level": 1,
+    "name": "布道者",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 400,
+    "spritename": "敌人-防爆服僵尸",
+    "level": 1,
+    "name": "防暴僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 401,
+    "spritename": "敌人-特警僵尸",
+    "level": 1,
+    "name": "特战僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 402,
+    "spritename": "敌人-诺亚重装兵",
+    "level": 1,
+    "name": "卫道士",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 403,
+    "spritename": "敌人-异变盗贼",
+    "level": 1,
+    "name": "异变盗贼",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 404,
+    "spritename": "敌人-人面蛛",
+    "level": 1,
+    "name": "人面蛛",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+   }
+    },
+  {
+    "id": 405,
+    "spritename": "敌人-诺亚地狱三头犬",
+    "level": 1,
+    "name": "刻耳柏洛斯",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 406,
+    "spritename": "敌人-高级防护服士兵",
+    "level": 1,
+    "name": "A级清道夫",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 407,
+    "spritename": "敌人-原体融合生物",
+    "level": 1,
+    "name": "原体融合生物",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 408,
+    "spritename": "敌人-王牌霜精",
+    "level": 2,
+    "name": "王牌霜精",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 409,
+    "spritename": "敌人-黑铁长枪兵",
+    "level": 1,
+    "name": "黑铁枪兵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 410,
+    "spritename": "敌人-黑铁弓箭手",
+    "level": 1,
+    "name": "黑铁弓手",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 411,
+    "spritename": "敌人-霜精之王",
+    "level": 2,
+    "name": "霜精之王",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 412,
+    "spritename": "敌人-92式终结者",
+    "level": 10,
+    "name": "装甲恶灵",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 413,
+    "spritename": "敌人-不明士兵",
+    "level": 35,
+    "name": "3XF士兵？",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 414,
+    "spritename": "敌人-不明士兵",
+    "level": 35,
+    "name": "侦察队员",
+    "is_hostile": false,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 415,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": "匕首",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑色辫子头",
+      "head": null,
+      "body": "褐色背带背心",
+      "leg": "盗贼牛仔裤带腿包",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 416,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-络腮胡",
+      "head": "圆框墨镜",
+      "body": "褐色背带背心",
+      "leg": "盗贼牛仔裤带腿包",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 417,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 183,
+    "data": {
+      "primary": null,
+      "secondary": "M1911",
+      "secondary2": "m9",
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-金色大奔头",
+      "head": "红外线滤光镜",
+      "body": "褐色皮带装",
+      "leg": "盗贼褐色皮裤",
+      "hand": null,
+      "foot": "褐色厚底皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 418,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 155,
+    "data": {
+      "primary": null,
+      "secondary": "UZI",
+      "secondary2": null,
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-绿色莫西干",
+      "head": null,
+      "body": "盗贼无袖皮马甲",
+      "leg": "金色腰带破洞牛仔裤",
+      "hand": null,
+      "foot": "褐色简单皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "男"
+    }
+  },
+  {
+    "id": 419,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 170,
+    "data": {
+      "primary": null,
+      "secondary": "UZI",
+      "secondary2": null,
+      "melee": "水管",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-女式-玫红色马尾",
+      "head": null,
+      "body": "盗贼纹身装",
+      "leg": "盗贼褐色皮裤",
+      "hand": "牛皮手套",
+      "foot": "褐色厚底皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 420,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 160,
+    "data": {
+      "primary": null,
+      "secondary": "UZI",
+      "secondary2": null,
+      "melee": "短斧",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑贴头",
+      "head": null,
+      "body": "褐色背带背心",
+      "leg": "盗贼牛仔裤带腿包",
+      "hand": null,
+      "foot": "深灰色皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 421,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 165,
+    "data": {
+      "primary": null,
+      "secondary": "Glock 18",
+      "secondary2": null,
+      "melee": "匕首",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-女式-咖啡色中长马尾",
+      "head": null,
+      "body": "盗贼无袖皮马甲",
+      "leg": "金色腰带破洞牛仔裤",
+      "hand": null,
+      "foot": "褐色圆头皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 422,
+    "spritename": "主角-男",
+    "level": 10,
+    "name": "盗贼",
+    "is_hostile": true,
+    "height": 165,
+    "data": {
+      "primary": null,
+      "secondary": "Glock 18",
+      "secondary2": null,
+      "melee": "大剑",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-女式-咖啡色中长马尾",
+      "head": null,
+      "body": "盗贼无袖皮马甲",
+      "leg": "金色腰带破洞牛仔裤",
+      "hand": null,
+      "foot": "褐色圆头皮鞋",
+      "neck": "拦路游寇项链",
+      "gender": "女"
+    }
+  }
+]

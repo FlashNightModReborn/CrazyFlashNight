@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>无限过图关卡编辑器</title>
+  <!-- 引入样式文件 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="editor">
+
+    <!-- ======== 导入units.json ======== -->
+    <div class="section">
+      <label>导入units.json</label>
+      <input type="file" id="unitsloader" accept=".json" />
+                <div class="help-wrapper">
+                    <button class="help-btn">?</button>
+                    <div class="help-tooltip">请在此处导入data\units里的units.json，缺乏此文件则无法读取兵种数据</div>
+                </div>
+    </div>
+
+    <!-- ======== StageInfo部分 ======== -->
+    <div class="section section-stage" id="stage-info-container">
+      <!-- 这里会由 JS 动态注入 -->
+    </div>
+
+    <!-- ======== Rewards部分 ======== -->
+    <div class="section section-rewards">
+      <h2>
+        奖励列表
+        <button id="btn-add-reward">+</button>
+      </h2>
+      <div id="Rewards" class="dynamic-list"></div>
+        <div class="help-wrapper">
+                    <button class="help-btn">?</button>
+                    <div class="help-tooltip">该模块用来编辑关卡的奖励内容。请检索data\items文件夹中的各个xml文件，找到对应的物品并键入其name。<br>注意不要在生成概率和最大数量栏位中输入正整数外的其他内容</div>
+                </div>
+    </div>
+
+    <!-- ======== SubStages部分 ======== -->
+    <div class="section section-substages">
+      <h2>
+        子关卡
+        <button id="btn-add-substage">+</button>
+      </h2>
+      <div id="SubStages" class="dynamic-list"></div>
+        <div class="help-wrapper">
+                    <button class="help-btn">?</button>
+                    <div class="help-tooltip">待开发</div>
+                </div>
+    </div>
+
+    <!-- ======== 生成XML按钮 ======== -->
+    <button id="btn-generate-xml">生成XML</button>
+
+    <!-- ======== 输出XML ======== -->
+    <pre id="output"></pre>
+
+    <!-- ======== 复制XML按钮 ======== -->
+    <button id="btn-copy-xml">复制XML</button>
+
+  </div>
+
+  <!-- 在这儿引入各个 JS 文件，顺序从数据/工具 -> 渲染 -> 事件 -> 入口 -->
+  <script src="dataStore.js"></script>
+  <script src="utils.js"></script>
+  <script src="render.js"></script>
+  <script src="events.js"></script>
+  <script src="main.js"></script>
+
+</body>
+</html>

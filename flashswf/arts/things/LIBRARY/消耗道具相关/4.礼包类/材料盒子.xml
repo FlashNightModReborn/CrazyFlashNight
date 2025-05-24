@@ -1,0 +1,139 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/4.礼包类/材料盒子" itemID="682f6ffc-00000c01" linkageExportForAS="true" linkageIdentifier="材料盒子" lastModified="1747939324">
+  <timeline>
+    <DOMTimeline name="材料盒子">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B965E8">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#B5E62F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[关卡可获得奖励品 = [];
+关卡可获得奖励品.push(["普通hp药剂",1,1]);
+关卡可获得奖励品.push(["上色涂料",40,1]);
+关卡可获得奖励品.push(["弹簧",40,1]);
+关卡可获得奖励品.push(["战术导轨",40,1]);
+关卡可获得奖励品.push(["防沙皮革",40,1]);
+关卡可获得奖励品.push(["螺丝套件",40,1]);
+关卡可获得奖励品.push(["烈性火药",40,1]);
+关卡可获得奖励品.push(["可塑式钢板",40,1]);
+关卡可获得奖励品.push(["增效剂",40,1]);
+关卡可获得奖励品.push(["不锈钢材",40,1]);
+关卡可获得奖励品.push(["生物催化剂",40,1]);
+关卡可获得奖励品.push(["小型液晶屏",40,1]);
+关卡可获得奖励品.push(["枪械内构强化套件",40,1]);
+关卡可获得奖励品.push(["高强度合金",40,1]);
+关卡可获得奖励品.push(["石英磨刀石",40,1]);
+关卡可获得奖励品.push(["复合式军用塑料",40,1]);
+关卡可获得奖励品.push(["高耐力橡胶",40,1]);
+关卡可获得奖励品.push(["军用帆布",40,1]);
+关卡可获得奖励品.push(["战术背带",40,1]);
+关卡可获得奖励品.push(["强力胶",40,1]);
+关卡可获得奖励品.push(["镭射瞄准具",80,1]);
+关卡可获得奖励品.push(["不锈钢材",80,1]);
+关卡可获得奖励品.push(["战术握把",80,1]);
+关卡可获得奖励品.push(["水冷机构",80,1]);
+关卡可获得奖励品.push(["碳纤维布料",80,1]);
+关卡可获得奖励品.push(["动力液压杆",80,1]);
+关卡可获得奖励品.push(["突击型光学瞄具",80,1]);
+关卡可获得奖励品.push(["电脑芯片",80,1]);
+关卡可获得奖励品.push(["加长弹匣",80,1]);
+奖励品 = [];
+var i = 0;
+while(i < 关卡可获得奖励品.length)
+{
+   if(random(关卡可获得奖励品[i][1]) == 0)
+   {
+      奖励品.push([关卡可获得奖励品[i][0],random(关卡可获得奖励品[i][2]) + 1]);
+   }
+   i++;
+}
+_root.奖励物品界面.奖励品 = 奖励品;
+_root.奖励物品界面.在线奖励刷新("材料盒子");
+_root.效果("升级动画2",this._x,this._y,100);
+this.removeMovieClip();
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EF9387">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   垂直速度 = -5;
+   起始Y = _parent.Z轴坐标;
+   this.onEnterFrame = function()
+   {
+      _parent._y += 垂直速度;
+      垂直速度 += _root.重力加速度;
+      if(_parent._y >= 起始Y)
+      {
+         _parent._y = 起始Y;
+         delete this.onEnterFrame;
+         _parent.gotoAndPlay("消失");
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E69889" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="消耗道具相关/4.礼包类/Symbol 3930" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.86705017089844" d="1.86705017089844" tx="-0.5" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

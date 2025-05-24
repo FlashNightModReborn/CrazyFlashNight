@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1746207488">
+  <timeline>
+    <DOMTimeline name="Symbol 1275">
+      <layers>
+        <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Pig表情普通" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.934555053710938" d="0.934555053710938" tx="31.55" ty="-1085.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="77.95" y="102.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="微笑" labelType="name" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Pig表情坏笑" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.92584228515625" d="0.925735473632813" tx="31.55" ty="-1088.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.7" y="100.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" name="愤怒" labelType="name" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Pig表情愤怒" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.923507690429688" d="0.92340087890625" tx="31.55" ty="-1086.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.9" y="99.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" name="悲伤" labelType="name" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Pig表情悲伤" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.933883666992188" d="0.933792114257813" tx="31.55" ty="-1090.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78" y="98.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 100" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Pig身体" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.934555053710938" d="0.934555053710938" tx="-563.1" ty="-1175.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="576.2" y="607.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

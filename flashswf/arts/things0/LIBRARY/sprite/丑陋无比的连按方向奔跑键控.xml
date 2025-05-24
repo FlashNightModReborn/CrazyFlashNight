@@ -1,0 +1,494 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/丑陋无比的连按方向奔跑键控" itemID="66587e46-00000645" lastModified="1742889188">
+  <timeline>
+    <DOMTimeline name="丑陋无比的连按方向奔跑键控">
+      <layers>
+        <DOMLayer name="Script Layer" color="#819898">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#E09079">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="139.95" centerPoint3DY="56.5">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="101.2" ty="30.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      if(_root.当前玩家总数 > 1)
+      {
+         _root.发布消息("闪避！");
+         _root.发动技能(_parent._parent.操控编号,-1);
+      }
+   }
+   mykey = _parent._parent.闪避键;
+   thisname = "f";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#AAFD02">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="161.75" centerPoint3DY="35.1">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="123" ty="8.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.切换武器键;
+   thisname = "v";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#97C748">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="139.95" centerPoint3DY="36.3">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="101.2" ty="10.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.C键;
+   thisname = "c";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#98CB21">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="117.8" centerPoint3DY="39.45">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="79.05" ty="13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.技能键;
+   thisname = "z";
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="153" blueOffset="204" greenOffset="51"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#BECFFA" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="234" height="20" variableName="zhaoshu">
+                  <matrix>
+                    <Matrix tx="-113.95" ty="-87.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="SimSun" fillColor="#0099CC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#EB53C7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="86.85" centerPoint3DY="39.45">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="48.1" ty="13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.B键;
+   thisname = "k";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#D6EF24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="3.2" centerPoint3DY="35.1">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="-35.55" ty="8.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.左键;
+   thisname = "a";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#A498AD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="20.05" centerPoint3DY="50.9">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="-18.7" ty="24.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.上键;
+   thisname = "w";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#EF95AE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 112" centerPoint3DX="55" centerPoint3DY="10.05">
+                  <matrix>
+                    <Matrix a="0.288894653320313" d="0.288894653320313" tx="32" ty="-12.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#C20AED" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 109" selected="true" centerPoint3DX="-4.25" centerPoint3DY="7.55">
+                  <matrix>
+                    <Matrix a="0.380279541015625" d="0.380279541015625" tx="-25" ty="-13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[// 鼠标按下事件：更新 aa 属性，加上 "m"
+onClipEvent(mouseDown) {
+    _parent.aa = _parent.aa.substr(1, 9) + "m";
+}
+
+// 每帧事件，根据 aa 中的指令执行对应动作
+onClipEvent(enterFrame) {
+    // 从 aa 中提取指令，注意部分指令为单字符（如 f），统一转换为两字符的情况
+    var cmd:String = _parent.aa.substr(8, 2);
+    if (cmd.charAt(0) == "f") {
+        cmd = "f";
+    }
+    
+    // 构建动作映射表，表中只保存参数，不嵌入大量函数
+    var actionMap:Object = {
+        // 跑动相关：只有在没有射击中的情况下才执行
+        dd: { type: "run", zhaoshu: "右跑" },
+        aa: { type: "run", zhaoshu: "左跑" },
+        
+        // 技能相关
+        f:  { type: "skill", zhaoshu: "技能闪避", skillId: -1 },
+        zw: { type: "skill", zhaoshu: "技能w", skillId: 0 },
+        zs: { type: "skill", zhaoshu: "技能s", skillId: 1 },
+        
+        // 方向依赖的技能
+        za: { 
+            type: "skill", 
+            // 如果方向为“右”，则表示后技能；如果方向为“左”，则表示前技能
+            zhaoshu: { 右: "技能后", 左: "技能前" },
+            skillId: { 右: 2, 左: 3 }
+        },
+        zd: { 
+            type: "skill", 
+            // 如果方向为“右”，则表示前技能；如果方向为“左”，则表示后技能
+            zhaoshu: { 右: "技能前", 左: "技能后" },
+            skillId: { 右: 3, 左: 2 }
+        },
+        
+        // 取消技能，不需要调用发动技能
+        zz: { type: "none", zhaoshu: "取消技能" },
+        
+        // 其它技能
+        zc: { type: "skill", zhaoshu: "技能c", skillId: 4 },
+        zv: { type: "skill", zhaoshu: "技能v", skillId: 5 }
+    };
+    
+    // 如果映射表中存在该命令，则根据类型执行公共逻辑
+    if (actionMap[cmd] != undefined) {
+        var actionObj:Object = actionMap[cmd];
+        // 如果需要判断角色朝向，则取当前方向
+        var direction:String = _parent._parent.方向;
+        
+        // 跑动命令，需先确认当前没有射击中
+        if (actionObj.type == "run") {
+            if (!_parent._parent.射击中) {
+                _parent.zhaoshu = actionObj.zhaoshu;
+                _parent._parent.状态改变(_parent._parent.攻击模式 + "跑");
+            }
+        }
+        // 技能命令
+        else if (actionObj.type == "skill") {
+            // 如果技能参数依赖于方向，则分别处理
+            if (typeof(actionObj.zhaoshu) == "object") {
+                _parent.zhaoshu = actionObj.zhaoshu[direction];
+                _root.发动技能(_parent._parent.操控编号, actionObj.skillId[direction]);
+            } else {
+                _parent.zhaoshu = actionObj.zhaoshu;
+                _root.发动技能(_parent._parent.操控编号, actionObj.skillId);
+            }
+        }
+        // 对于不需要调用额外函数的命令，例如取消技能
+        else if (actionObj.type == "none") {
+            _parent.zhaoshu = actionObj.zhaoshu;
+        }
+        
+        // 公共操作：执行完命令后，更新 aa 属性
+        _parent.aa = _parent.aa.substr(1, 9) + "-";
+    }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#8D7BFA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="62.85" centerPoint3DY="39.45">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="24.1" ty="13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.A键;
+   thisname = "j";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#22FD76">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="36.15" centerPoint3DY="36.05">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="-2.6" ty="9.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.右键;
+   thisname = "d";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#DE12B9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 107" centerPoint3DX="18.95" centerPoint3DY="36.3">
+                  <matrix>
+                    <Matrix a="0.242507934570313" d="0.242507934570313" tx="-19.8" ty="10.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function whatkey(keyname)
+   {
+      _parent.aa = _parent.aa.substr(1,9) + keyname;
+   }
+   mykey = _parent._parent.下键;
+   thisname = "s";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#AE9286" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMInputText fontRenderingMode="device" width="216.45" height="22.35" variableName="aa">
+                  <matrix>
+                    <Matrix tx="-107.4" ty="-57.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>----------</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="20" bitmapSize="400" face="Arial-BoldMT" fillColor="#0000FF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMInputText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

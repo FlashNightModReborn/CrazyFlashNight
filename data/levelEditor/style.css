@@ -1,0 +1,176 @@
+/* ========== 全局基础样式 ========== */
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #fafafa;
+  }
+  
+  /* ========== 整体容器 ========== */
+  .section {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  .section:hover {
+    transform: translateY(-2px);
+  }
+  .section-stage {
+    background-color: #e3f2fd;
+  }
+  .section-rewards {
+    background-color: #f0f4c3;
+  }
+  .section-substages {
+    background-color: #f5f5f5;
+  }
+  
+  .input-group {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.5);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .input-group:hover {
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .dynamic-list {
+    margin-left: 20px;
+  }
+  .array-item {
+    margin: 5px 0;
+    padding: 8px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+  }
+  
+  .nested {
+    margin-left: 20px;
+    border-left: 2px solid #ddd;
+    padding-left: 10px;
+  }
+  
+  .xml-params-editor {
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.5);
+  }
+  .xml-param {
+    margin: 5px 0;
+    display: grid;
+    grid-template-columns: 120px 1fr 30px;
+    gap: 5px;
+    align-items: start;
+  }
+  
+  /* 按钮样式 */
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* 响应式布局 */
+  @media (min-width: 768px) {
+    .required-fields {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+  }
+  
+
+  /* 优化下拉菜单显示 */
+  select {
+    padding: 4px;
+    min-width: 180px;
+    margin-right: 8px;
+  }
+
+  .unit-info {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 8px;
+  }
+
+/* 帮助按钮容器 */
+        .help-wrapper {
+            position: absolute;
+            right: 15px;
+            top: 20px;
+        }
+
+        /* 问号按钮新样式 */
+        .help-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #666;
+            color: white;
+            border: none;
+            cursor: help;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+            .help-btn:hover {
+                background: #444;
+            }
+        /* 提示框样式 */
+        .help-tooltip {
+            visibility: hidden;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            background: rgba(96, 96, 96, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none; /* 防止提示框干扰悬停状态 */
+        }
+
+
+        /* 悬停显示提示 */
+        .help-wrapper:hover .help-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+
+        /* 新增验证相关样式 */
+        .validatable-field {
+            position: relative;
+        }
+
+        .invalid {
+            border: 2px solid #ff4444 !important;
+        }
+
+        .error-msg {
+            color: #ff4444;
+            font-size: 12px;
+            position: absolute;
+            bottom: -18px;
+            left: 0;
+            white-space: nowrap;
+        }

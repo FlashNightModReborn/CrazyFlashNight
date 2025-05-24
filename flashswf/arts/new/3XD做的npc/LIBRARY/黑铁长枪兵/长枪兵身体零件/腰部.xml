@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁长枪兵/长枪兵身体零件/腰部" itemID="66fe150e-000019c4" lastModified="1727927566">
+  <timeline>
+    <DOMTimeline name="腰部">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/未命名文件夹 1/Symbol 793" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.631927490234375" b="-0.0603790283203125" c="-0.05242919921875" d="0.5484619140625" tx="32.45" ty="2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="18.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 40" selected="true">
+                  <matrix>
+                    <Matrix a="0.3775634765625" d="0.3455810546875" tx="-0.15" ty="4.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="46.6" y="26.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

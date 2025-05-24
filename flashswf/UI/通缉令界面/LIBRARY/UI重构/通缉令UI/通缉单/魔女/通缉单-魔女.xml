@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/通缉令UI/通缉单/魔女/通缉单-魔女" itemID="6639124c-000063d0" lastModified="1715016300" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="通缉单-魔女" currentFrame="29">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/魔女/通缉单模板" centerPoint3DX="83.95" centerPoint3DY="159">
+                  <matrix>
+                    <Matrix ty="25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="83.95" y="134"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" quality="3" strength="0.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/魔女/通缉单模板" centerPoint3DX="83.95" centerPoint3DY="134">
+                  <transformationPoint>
+                    <Point x="83.95" y="134"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" quality="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

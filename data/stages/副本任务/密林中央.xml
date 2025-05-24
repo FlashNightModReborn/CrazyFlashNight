@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_1_BG.swf</Background>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>诺艾尔</Name>
+                <Title>女仆骑士（自称）</Title>
+                <Char>诺艾尔</Char>
+                <Text>应该就在前方。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>烦人的家伙来了。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种383</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种391</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种392</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+				</SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/事故森林2.swf</Background>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>盗贼</Name>
+                <Title>盗贼</Title>
+                <Char>主角模板</Char>
+                <Text>嗯？你们是···</Text>
+                <Type>兵种27</Type>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>啧，干掉他们！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种27</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种28</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种29</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种391</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种392</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+              <SubDialogue id="0">
+                <Name>诺艾尔</Name>
+                <Title>女仆骑士（自称）</Title>
+                <Char>诺艾尔</Char>
+                <Text>这些人···</Text>
+              </SubDialogue>
+              <SubDialogue id="1">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>不值一提，不过发现我们那就是另一回事了。还有，打起精神，新的敌人来了。</Text>
+            </SubDialogue>
+                </Dialogue>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种383</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种384</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            <Dialogue>
+              <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这是？</Text>
+              </SubDialogue>
+              <SubDialogue id="1">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>文天说过的吧，这里不过是意识空间。不用管他们的外形，不过是妄想的结果而已。</Text>
+              </SubDialogue>
+                <SubDialogue id="2">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>前面是不稳定区域，我们可能会走散，注意安全后汇合。</Text>
+              </SubDialogue>
+            </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>糟糕，突然就走散了。这些家伙···！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种383</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种384</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+              <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>啧，快点打完吧。</Text>
+              </SubDialogue>
+                </Dialogue>
+				</SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种384</Type>
+                        <Interval>300</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种383</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种386</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            <Dialogue>
+              <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>我都学会那家伙的口癖了···得快点汇合。</Text>
+              </SubDialogue>
+            </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/事故森林1.swf</Background>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>840</x>
+                <y>194</y>
+                <Identifier>髅髅宫歌留多</Identifier>
+            </Instance>
+        </Instances>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>嘁，原来是这样。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>什么意思？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>多余的回去后再解释吧。你这家伙，也给我跟上。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>歌留多</Name>
+                <Title>？？？</Title>
+                <Char>歌留多</Char>
+                <Text>···</Text>
+            </SubDialogue>
+              <SubDialogue id="4">
+                <Name>诺艾尔</Name>
+                <Title>女仆骑士（自称）</Title>
+                <Char>诺艾尔</Char>
+                <Text>诶，这就走了吗？</Text>
+              </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+                </SubWave>
+        </Wave>
+        </SubStage>
+</GameStage>

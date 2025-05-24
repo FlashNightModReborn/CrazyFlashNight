@@ -1,0 +1,477 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1747717311" lastUniqueIdentifier="28">
+  <timeline>
+    <DOMTimeline name="车库">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[允许通行 = true;
+_root.关卡地图帧值 = "基地车库";
+_root.配置场景环境信息();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="效果" color="#2ADF8F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.swapDepths(100000);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹区域" color="#9648DD" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="出生地" color="#0FD8B1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="出生地" centerPoint3DX="147" centerPoint3DY="434.75">
+                  <matrix>
+                    <Matrix a="5.51217651367188" d="1.75689697265625" tx="136.5" ty="414.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("","","","");
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="门-判定" color="#BA50B8" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" centerPoint3DX="1235.65" centerPoint3DY="564.5">
+                  <matrix>
+                    <Matrix a="3.30868530273438" d="8.36627197265625" tx="1225.15" ty="544.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("门4","基地1层","",_root.右键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门2" centerPoint3DX="54.45" centerPoint3DY="550">
+                  <matrix>
+                    <Matrix a="3.7288818359375" d="8.0970458984375" tx="43.95" ty="530.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("","关卡地图","",_root.左键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" centerPoint3DX="203.9" centerPoint3DY="395.6">
+                  <matrix>
+                    <Matrix tx="139.9" ty="336.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="64" y="58.8"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "冷兵器商人";
+	商店 = "冷兵器出售";
+	身高 = 185;
+	性别 = "男";
+	方向 = "右";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="功能" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="BPK" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="KING" color="#BA6078" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/King-NPC" centerPoint3DX="951.3" centerPoint3DY="440">
+                  <matrix>
+                    <Matrix tx="863" ty="315.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	脸型 = "女变装-基本脸型";
+	发型 = "";
+	头部装备 = "King头-NPC";
+	上装装备 = "King上装-NPC";
+	手部装备 = "King手-NPC";
+	下装装备 = "King下装-NPC";
+	脚部装备 = "King脚-NPC";
+	颈部装备 = "新手军牌";
+	长枪 = "";
+	手枪 = "UZI";
+	手枪2 = "UZI";
+	刀 = "";
+	手雷 = "";
+	名字 = "King";
+	商店 = "手枪出售";
+	身高 = 170;
+	性别 = "女";
+	方向 = "左";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="BOY" color="#A91BDC" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/Boy-NPC" centerPoint3DX="778.25" centerPoint3DY="472.05">
+                  <matrix>
+                    <Matrix tx="689.95" ty="348"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	脸型 = "男变装-基本脸型";
+	发型 = "";
+	头部装备 = "Boy头-NPC";
+	上装装备 = "Boy上装-NPC";
+	手部装备 = "Boy手-NPC";
+	下装装备 = "Boy下装-NPC";
+	脚部装备 = "Boy脚-NPC";
+	颈部装备 = "新手军牌";
+	长枪 = "AWP";
+	手枪 = "p90";
+	刀 = "";
+	手雷 = "";
+	名字 = "Boy";
+	商店 = "长枪&手雷出售";
+	身高 = 179;
+	性别 = "男";
+	动画 = "站立吸烟";
+	NPC任务_任务_关卡路径 = "挑战BPK";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="PIG" color="#D2FD7B" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2364" centerPoint3DX="449.35" centerPoint3DY="427.05">
+                  <matrix>
+                    <Matrix tx="361.05" ty="303"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	脸型 = "男变装-基本脸型";
+	发型 = "";
+	头部装备 = "Pig头-NPC";
+	上装装备 = "Pig上装-NPC";
+	手部装备 = "Pig手-NPC";
+	下装装备 = "墨绿军用下装";
+	脚部装备 = "墨绿军用鞋";
+	颈部装备 = "新手军牌";
+	长枪 = "M134";
+	手枪 = "";
+	刀 = "双面斧";
+	手雷 = "";
+	名字 = "Pig";
+	身高 = 210;
+	性别 = "男";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地图区域" color="#A78BCA" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 基地车库" name="地图" centerPoint3DX="784.95" centerPoint3DY="456.25">
+                  <matrix>
+                    <Matrix d="1.0001220703125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="deadbody" color="#3488F9" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="玩家的车" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/自行车" centerPoint3DX="1091.35" centerPoint3DY="709.9">
+                  <matrix>
+                    <Matrix a="0.508346557617188" d="0.508346557617188" tx="1013.1" ty="663.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="151.75" y="92.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (!_root.基建系统.infrastructure.自行车)
+	{
+		_root.确认通用面板.名称 = "购买自行车";
+		_root.确认通用面板.说明 = "是否要购买自行车？总花费合计8000金币。\n购买后可解锁较近距离阵营与区域的地图快速传送功能，例如废城。";
+		_root.确认通用面板.成功说明 = "成功购买自行车！";
+		_root.确认通用面板.失败说明 = "购买失败！";
+		_root.确认通用面板.确认 = function()
+		{
+			if (_root.金钱 < 8000)
+			{
+				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+				return false;
+			}
+			_root.金钱 -= 8000;
+			_root.基建系统.infrastructure.自行车 = 1;
+			return true;
+		};
+		_root.确认通用面板.启动();
+	}else{
+		_root.地图界面.gotoAndStop(4);
+	}
+}
+on(rollOver){
+   gotoAndStop("描边");
+}
+on(rollOut){
+   gotoAndPlay(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" centerPoint3DX="905.25" centerPoint3DY="755.95">
+                  <matrix>
+                    <Matrix a="0.247238159179688" d="0.247238159179688" tx="770.95" ty="664.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="453.6" y="368.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (!_root.基建系统.infrastructure.摩托车)
+	{
+		_root.确认通用面板.名称 = "购买摩托车";
+		_root.确认通用面板.说明 = "是否要购买摩托车？需要学习1级驾驶技能，总花费合计35000金币。\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。";
+		_root.确认通用面板.成功说明 = "成功购买摩托车！";
+		_root.确认通用面板.失败说明 = "购买失败！";
+		_root.确认通用面板.确认 = function()
+		{
+			if (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 1)
+			{
+				if (_root.金钱 < 35000)
+				{
+					_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+					return false;
+				}
+				_root.金钱 -= 35000;
+				_root.基建系统.infrastructure.摩托车 = 1;
+			}
+			else
+			{
+				_root.确认通用面板.失败说明 = "购买失败，驾驶摩托车需获得驾照，请学习驾驶技能！";
+				return false;
+			}
+			return true;
+		};
+		_root.确认通用面板.启动();
+	}
+	else
+	{
+		_root.地图界面.gotoAndStop(4);
+	}
+}
+on (rollOver) {
+	gotoAndStop("描边");
+}
+on (rollOut) {
+	gotoAndPlay(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="318.3" centerPoint3DY="717.45">
+                  <matrix>
+                    <Matrix a="-0.808090209960938" d="0.783767700195313" tx="376.3" ty="680.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="271.4" y="119.25"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (!_root.基建系统.infrastructure.越野车)
+	{
+		_root.确认通用面板.名称 = "购买越野车";
+		_root.确认通用面板.说明 = "是否要购买越野车？需要学习2级驾驶技能，总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地，并可增加一页后勤战备箱。";
+		_root.确认通用面板.成功说明 = "成功购买越野车！";
+		_root.确认通用面板.失败说明 = "购买失败！";
+		_root.确认通用面板.确认 = function()
+		{
+			if (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 2)
+			{
+				if (_root.金钱 < 500000)
+				{
+					_root.确认通用面板.失败说明 = "购买失败，金币不足！";
+					return false;
+				}
+				_root.金钱 -= 500000;
+				_root.基建系统.infrastructure.越野车 = 1;
+			}
+			else
+			{
+				_root.确认通用面板.失败说明 = "购买失败，驾驶越野车需获得驾照，请学习驾驶技能至2级！";
+				return false;
+			}
+			return true;
+		};
+		_root.确认通用面板.启动();
+	}
+	else
+	{
+		_root.地图界面.gotoAndStop(4);
+	}
+}
+on (rollOver) {
+	gotoAndStop("描边");
+}
+on (rollOut) {
+	gotoAndPlay(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="bpk的车" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/bpk的车" centerPoint3DX="615.2" centerPoint3DY="267.55">
+                  <matrix>
+                    <Matrix tx="401.55" ty="192.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="213.65" y="74.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="场景" color="#A65995" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/车库背景" centerPoint3DX="577.8" centerPoint3DY="269.6" exportAsBitmap="true">
+                  <matrix>
+                    <Matrix tx="937.7" ty="245.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

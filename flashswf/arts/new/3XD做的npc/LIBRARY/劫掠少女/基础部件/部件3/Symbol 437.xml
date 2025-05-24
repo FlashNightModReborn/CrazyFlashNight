@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/基础部件/部件3/Symbol 437" itemID="6577faef-0000149c" symbolType="graphic" lastModified="1701508661">
+  <timeline>
+    <DOMTimeline name="Symbol 437">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#747577"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#474747"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!165 38|157 42"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!59 26|73 34!73 34|115 26!115 26|118 25"/>
+                    <Edge fillStyle0="1" edges="!118 25|89 15!89 15[66 5 43 0!43 0|59 13!59 13|59 26"/>
+                    <Edge fillStyle1="2" edges="!118 25|164 37!164 37|165 38!165 38|197 45"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!197 45|199 63!199 63[181 84 156 94"/>
+                    <Edge fillStyle1="2" edges="!156 94[118 109 74 105!74 105|27 95!27 95|0 86!0 86|27 72!27 72|45 58"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!45 58|66 83!66 83|49 54"/>
+                    <Edge fillStyle0="1" edges="!49 54|45 58"/>
+                    <Edge fillStyle0="2" edges="!59 26|49 54"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

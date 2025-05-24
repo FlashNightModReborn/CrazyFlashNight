@@ -1,0 +1,170 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1743104626" lastUniqueIdentifier="28">
+  <timeline>
+    <DOMTimeline name="材料内容整体">
+      <layers>
+        <DOMLayer name="图标" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料大全/图标壳/图标壳" name="图标壳" centerPoint3DX="167.55" centerPoint3DY="52.6">
+                  <matrix>
+                    <Matrix a="2.625" d="2.625" tx="167.55" ty="52.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	this.基本款._visible = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="详细信息" fontRenderingMode="device" width="184.1" height="70.25" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="221.35" ty="25.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>简介</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="0" size="9" bitmapSize="180" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="0" size="9" bitmapSize="180" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="名字" fontRenderingMode="device" width="84.75" height="17.25">
+                  <matrix>
+                    <Matrix tx="232.15" ty="5.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>名称</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="简介" fontRenderingMode="device" width="302.45" height="129.8" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="121.15" ty="108.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>详细</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>信息</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料大全/材料图" centerPoint3DX="167.55" centerPoint3DY="52.6">
+                  <matrix>
+                    <Matrix a="1.21435546875" d="1.21435546875" tx="116" ty="7.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.45" y="36.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料大全/材料简介" centerPoint3DX="322.55" centerPoint3DY="49.4">
+                  <matrix>
+                    <Matrix tx="217.4" ty="1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="105.15" y="47.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料大全详细介绍" centerPoint3DX="210.4" centerPoint3DY="139.05">
+                  <matrix>
+                    <Matrix a="1.66287231445313" d="1.89067077636719" tx="116" ty="101.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" centerPoint3DX="32" centerPoint3DY="137.5">
+                  <matrix>
+                    <Matrix tx="-28" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="97.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	//import org.flashNight.gesh.array.ArrayUtil;
+	this.材料大全 = _root.图鉴信息.材料大全;
+	this.itemNum = 材料大全.length;
+	this.itemNameList = new Array(itemNum);
+	this.itemInfoList = new Array(itemNum);
+	for(var i = 0; i< itemNum; i++){
+		this.itemNameList[i] = 材料大全[i].Name;
+		this.itemInfoList[i] = _root.getItemData(材料大全[i].Name);
+	}
+	this.buttonEvent = function(index){
+		_parent.名字.text = this.itemNameList[index];
+		_parent.简介.text = this.材料大全[index].Description;
+		_parent.详细信息.text = this.材料大全[index].Information;
+		_parent.图标壳.图标.removeMovieClip();
+		var icon = "图标-" + itemInfoList[index].icon;
+		_parent.图标壳.attachMovie(icon,"图标",0);
+		_parent.图标壳.图标.gotoAndStop(2);
+	}
+}
+/*onClipEvent (load) {
+	this.itemNameList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+	this.buttonEvent = function(index){
+	}
+}*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

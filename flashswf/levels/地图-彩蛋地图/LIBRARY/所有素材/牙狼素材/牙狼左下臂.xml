@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/牙狼素材/牙狼左下臂" itemID="657eb321-00000957" linkageExportForAS="true" linkageIdentifier="男变装-牙狼铠左下臂" lastModified="1702995398" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="牙狼左下臂">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/下臂" centerPoint3DX="-4.75" centerPoint3DY="-22.2">
+                  <matrix>
+                    <Matrix a="0.665924072265625" b="0.030853271484375" c="-0.0463104248046875" d="0.998916625976563" tx="-37.45" ty="-121"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.95" y="190.65"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-9" contrast="-6" saturation="-12" hue="-6"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#282D24"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!338 -679|341 -669"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!229 -986[319 -827 338 -679!338 -679|-239 -1002"/>
+                    <Edge fillStyle1="1" edges="!-239 -1002[#FFFF6D.32 #FFFB02.EA 229 -986"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

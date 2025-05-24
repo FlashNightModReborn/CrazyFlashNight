@@ -1,0 +1,82 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/冰汽/冰汽" itemID="66b786e7-00001dc4" linkageExportForAS="true" linkageIdentifier="冰汽" lastModified="1723304804">
+  <timeline>
+    <DOMTimeline name="冰汽" currentFrame="7">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 637" blendMode="screen" centerPoint3DX="-7.5" centerPoint3DY="-1.6">
+                  <matrix>
+                    <Matrix a="-0.328598022460938" d="0.230056762695313" tx="56.25" ty="17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 638" blendMode="screen" centerPoint3DX="-14.5" centerPoint3DY="-1.25">
+                  <matrix>
+                    <Matrix a="-0.328598022460938" d="0.230056762695313" tx="56.25" ty="17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="132.1" y="-75.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 639" blendMode="screen" centerPoint3DX="-18.4" centerPoint3DY="-1.65">
+                  <matrix>
+                    <Matrix a="-0.328598022460938" d="0.230056762695313" tx="56.25" ty="17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="148.35" y="-83.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 640" selected="true" blendMode="screen" centerPoint3DX="-23.95" centerPoint3DY="-1.65">
+                  <matrix>
+                    <Matrix a="-0.328598022460938" d="0.230056762695313" tx="56.25" ty="17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="175.6" y="-82.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

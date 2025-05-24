@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/短棱柱" itemID="65a3caf3-0000002a" lastModified="1705233139">
+  <timeline>
+    <DOMTimeline name="短棱柱">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.041229248046875" b="0.01690673828125" c="-0.029327392578125" d="0.0714874267578125" tx="96.4" ty="64.2"/>
+                        </matrix>
+                        <GradientEntry color="#7E766A" ratio="0"/>
+                        <GradientEntry color="#60584C" ratio="0.466666666666667"/>
+                        <GradientEntry color="#7E766A" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.030029296875" b="0.017333984375" c="-0.0218963623046875" d="0.0379180908203125" tx="85.95" ty="38.75"/>
+                        </matrix>
+                        <GradientEntry color="#9F968B" ratio="0"/>
+                        <GradientEntry color="#8C8378" ratio="0.47843137254902"/>
+                        <GradientEntry color="#9F968B" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.039093017578125" b="0.0225677490234375" c="-0.01678466796875" d="0.0290679931640625" tx="27" ty="99.25"/>
+                        </matrix>
+                        <GradientEntry color="#4C4438" ratio="0.00392156862745098"/>
+                        <GradientEntry color="#6A6256" ratio="0.466666666666667"/>
+                        <GradientEntry color="#4C4438" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1080 2535|2336 1198!2336 1198|2428 841!2428 841|2428 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!2428 0|1080 1435"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!1080 1435|1080 2535"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!0 1435|1348 0!1348 0|2428 0"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!1080 1435|0 1435"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!0 1435|0 2535!0 2535|1080 2535"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/滑动光斩/Symbol 207" itemID="653cd862-00000299" lastModified="1690082192">
+  <timeline>
+    <DOMTimeline name="Symbol 207">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8D7BFA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient focalPointRatio="0.0117647058823529">
+                        <matrix>
+                          <Matrix a="0.2164306640625" d="0.1163330078125" tx="118.8" ty="60.95"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0.411764705882353"/>
+                        <GradientEntry color="#09ADFB" alpha="0.580392156862745" ratio="0.533333333333333"/>
+                        <GradientEntry color="#1E5FF7" ratio="0.631372549019608"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3740 20[3467 26 2728 150!2728 150|2580 174!2580 174|2774 186!2774 186|3120 210!3120 210|3440 240!3440 240[2872 301 2454 367!2454 367|1947 83!1947 83[2635 0 3440 0!3440 0|3569 6!3569 6|3740 20"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

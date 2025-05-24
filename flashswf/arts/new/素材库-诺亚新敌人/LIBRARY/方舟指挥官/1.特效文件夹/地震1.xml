@@ -1,0 +1,49 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/1.特效文件夹/地震1" itemID="65ab76b8-00000a0a" lastModified="1705735864" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="地震1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/Symbol 473" selected="true" centerPoint3DX="235.7" centerPoint3DY="106.6">
+                  <matrix>
+                    <Matrix a="0.339981079101563" d="0.339981079101563" tx="145.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="47" blurY="47" color="#B10101"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/Symbol 475" selected="true" centerPoint3DX="265.65" centerPoint3DY="90.45">
+                  <matrix>
+                    <Matrix a="0.339981079101563" d="0.339981079101563" tx="123.55" ty="61.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#B10101"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/Symbol 479" selected="true" centerPoint3DX="521.1" centerPoint3DY="123.1">
+                  <matrix>
+                    <Matrix a="0.339981079101563" d="0.339981079101563" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#B10101"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

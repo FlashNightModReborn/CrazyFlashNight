@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种277</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <掉落物>
+                                <名字>战术狗腿刀</名字>
+                                <概率>0</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种278</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <掉落物>
+                                <名字>P90战术版</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <掉落物>
+                                <名字>P90战术版</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <掉落物>
+                                <名字>战术巴雷特</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种279</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <掉落物>
+                                <名字>战术狗腿刀</名字>
+                                <概率>0</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

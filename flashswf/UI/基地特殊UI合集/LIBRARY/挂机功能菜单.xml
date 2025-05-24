@@ -1,0 +1,1539 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="挂机功能菜单" itemID="67876ec7-00001c6a" linkageExportForAS="true" linkageIdentifier="挂机功能菜单" lastModified="1737284892" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="挂机功能菜单">
+      <layers>
+        <DOMLayer name="Script Layer" color="#81DB85">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[当前NPC = "";
+物品栏 = [];
+NPC任务_任务 = [];
+_root.全部翻译(this);
+function 获得训练项目文本()
+{
+	训练数组 = _root.健身房训练类型;
+	for (i = 0; i < 13; i++)
+	{
+		i1 = i + 1;
+		if (训练数组[i] && 训练数组[i].属性名)
+		{
+			if (训练数组[i].消耗 == 0)
+			{
+				消耗字符 = "免费";
+			}
+			else
+			{
+				消耗字符 = 训练数组[i].消耗 + (训练数组[i].货币名 == "金钱" ? "金币" : 训练数组[i].货币名);
+			}
+			this["text" + i1].text = 消耗字符 + "训练" + Math.floor(训练数组[i].时长 / 1000) + "秒提升" + 训练数组[i].加成 + 训练数组[i].加成名;
+		}else{
+			this["text" + i1].text = "";
+		}
+	}
+}
+获得训练项目文本();
+/*this.text1.text = "50000金币训练30秒提升10HP上限";
+this.text2.text = "1000K点训练30秒提升10HP上限";
+this.text3.text = "50000金币训练30秒提升10MP上限";
+this.text4.text = "1000K点训练30秒提升10MP上限";
+this.text5.text = "90000金币训练30秒提升3空手力";
+this.text6.text = "3000K点训练30秒提升3空手力";
+this.text7.text = "2500K点训练30秒获得5防御力";
+this.text8.text = "250K点训练1秒获得25技能点";
+this.text9.text = "1000K点训练1秒获得100技能点";
+this.text10.text = "5000K点训练1秒获得500技能点";
+this.text11.text = "10000K点训练1秒获得1000技能点";
+this.text12.text = "20000K点训练1秒获得2000技能点";
+this.text13.text = "50000K点训练1秒获得5000技能点";*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#19B7EB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2481" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="222.3" ty="-22.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[12];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+	}
+	this._visible = 0;
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[12];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.注释(100,_root.获得翻译("获得"+训练参数.属性名 +"：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" + _root.获得翻译("K点价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#931EE9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2480" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="222.3" ty="-40.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[11];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+	}
+	this._visible = 0;
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[11];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.注释(100,_root.获得翻译("获得"+训练参数.属性名 +"：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" + _root.获得翻译("K点价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B05E92">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2479" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="222.3" ty="-57.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[10];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+	}
+	this._visible = 0;
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[10];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.注释(100,_root.获得翻译("获得"+训练参数.属性名 +"：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" + _root.获得翻译("K点价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#76BB94">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2478" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="222.3" ty="-73.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[9];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+	}
+	this._visible = 0;
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[9];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.注释(100,_root.获得翻译("获得"+训练参数.属性名 +"：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" + _root.获得翻译("K点价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#B7F81A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2477" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="222.3" ty="-91.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[8];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+	}
+	this._visible = 0;
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[8];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.注释(100,_root.获得翻译("获得"+训练参数.属性名 +"：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" + _root.获得翻译("K点价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#CCF8FB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2476" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="222.45" ty="-108.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[7];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+	}
+	this._visible = 0;
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[7];
+	if (训练参数 && 训练参数.属性名 == "技能点")
+	{
+		_root.注释(100,_root.获得翻译("获得"+训练参数.属性名 +"：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" + _root.获得翻译("K点价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#32CDE2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2475" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-6.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[6];
+	if(!训练参数.属性名){
+		_root.注释结束();
+	}
+	else if (_root[训练参数.货币名] >= 训练参数.消耗)
+	{
+		if (训练参数.货币名 == "金钱")
+		{
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+		}
+		else if (训练参数.货币名 == "K点")
+		{
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+		}
+		this._visible = 0;
+		setTimeout(function ()
+		{
+			if (_root[训练参数.属性名] <= 训练参数.上限)
+			{
+				_root[训练参数.属性名] += 训练参数.加成;
+				if (_root[训练参数.属性名] > 训练参数.上限)
+				{
+					_root[训练参数.属性名] = 训练参数.上限;
+				}
+				if (训练参数.货币名 == "金钱")
+				{
+					_root[训练参数.货币名] -= 训练参数.消耗;
+					_root.播放音效("收银机.mp3");
+				}
+				_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+				_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+			}
+			else
+			{
+				_root.经验值 += 50000;
+				_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+			}
+		},训练参数.时长);
+	}
+	else
+	{
+		_root.发布消息(训练参数.货币名 + "不足！");
+	}
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[6];
+	if(训练参数.属性名){
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" +训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}
+//this.text1.text = "50000金币训练30秒提升10HP上限";
+//this.text2.text = "1000K点训练30秒提升10HP上限";
+//this.text3.text = "50000金币训练30秒提升10MP上限";
+//this.text4.text = "1000K点训练30秒提升10MP上限";
+//this.text5.text = "90000金币训练30秒提升3空手力";
+//this.text6.text = "3000K点训练30秒提升3空手力";
+//this.text7.text = "2500K点训练30秒获得5防御力";]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#BFFD5C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2474" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-24.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[5];
+	if(!训练参数.属性名){
+		_root.注释结束();
+	}
+	else if (_root[训练参数.货币名] >= 训练参数.消耗)
+	{
+		if (训练参数.货币名 == "金钱")
+		{
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+		}
+		else if (训练参数.货币名 == "K点")
+		{
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+		}
+		this._visible = 0;
+		setTimeout(function ()
+		{
+			if (_root[训练参数.属性名] <= 训练参数.上限)
+			{
+				_root[训练参数.属性名] += 训练参数.加成;
+				if (_root[训练参数.属性名] > 训练参数.上限)
+				{
+					_root[训练参数.属性名] = 训练参数.上限;
+				}
+				if (训练参数.货币名 == "金钱")
+				{
+					_root[训练参数.货币名] -= 训练参数.消耗;
+					_root.播放音效("收银机.mp3");
+				}
+				_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+				_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+			}
+			else
+			{
+				_root.经验值 += 50000;
+				_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+			}
+		},训练参数.时长);
+	}
+	else
+	{
+		_root.发布消息(训练参数.货币名 + "不足！");
+	}
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[5];
+	if(训练参数.属性名){
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" +训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}
+//this.text1.text = "50000金币训练30秒提升10HP上限";
+//this.text2.text = "1000K点训练30秒提升10HP上限";
+//this.text3.text = "50000金币训练30秒提升10MP上限";
+//this.text4.text = "1000K点训练30秒提升10MP上限";
+//this.text5.text = "90000金币训练30秒提升3空手力";
+//this.text6.text = "3000K点训练30秒提升3空手力";
+//this.text7.text = "2500K点训练30秒获得5防御力";]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#DEBB02">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2473" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-41.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[4];
+	if(!训练参数.属性名){
+		_root.注释结束();
+	}
+	else if (_root[训练参数.货币名] >= 训练参数.消耗)
+	{
+		if (训练参数.货币名 == "金钱")
+		{
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+		}
+		else if (训练参数.货币名 == "K点")
+		{
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+		}
+		this._visible = 0;
+		setTimeout(function ()
+		{
+			if (_root[训练参数.属性名] <= 训练参数.上限)
+			{
+				_root[训练参数.属性名] += 训练参数.加成;
+				if (_root[训练参数.属性名] > 训练参数.上限)
+				{
+					_root[训练参数.属性名] = 训练参数.上限;
+				}
+				if (训练参数.货币名 == "金钱")
+				{
+					_root[训练参数.货币名] -= 训练参数.消耗;
+					_root.播放音效("收银机.mp3");
+				}
+				_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+				_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+			}
+			else
+			{
+				_root.经验值 += 50000;
+				_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+			}
+		},训练参数.时长);
+	}
+	else
+	{
+		_root.发布消息(训练参数.货币名 + "不足！");
+	}
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[4];
+	if(训练参数.属性名){
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" +训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}
+//this.text1.text = "50000金币训练30秒提升10HP上限";
+//this.text2.text = "1000K点训练30秒提升10HP上限";
+//this.text3.text = "50000金币训练30秒提升10MP上限";
+//this.text4.text = "1000K点训练30秒提升10MP上限";
+//this.text5.text = "90000金币训练30秒提升3空手力";
+//this.text6.text = "3000K点训练30秒提升3空手力";
+//this.text7.text = "2500K点训练30秒获得5防御力";]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#7AE069">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2472" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-58.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[3];
+	if(!训练参数.属性名){
+		_root.注释结束();
+	}
+	else if (_root[训练参数.货币名] >= 训练参数.消耗)
+	{
+		if (训练参数.货币名 == "金钱")
+		{
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+		}
+		else if (训练参数.货币名 == "K点")
+		{
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+		}
+		this._visible = 0;
+		setTimeout(function ()
+		{
+			if (_root[训练参数.属性名] <= 训练参数.上限)
+			{
+				_root[训练参数.属性名] += 训练参数.加成;
+				if (_root[训练参数.属性名] > 训练参数.上限)
+				{
+					_root[训练参数.属性名] = 训练参数.上限;
+				}
+				if (训练参数.货币名 == "金钱")
+				{
+					_root[训练参数.货币名] -= 训练参数.消耗;
+					_root.播放音效("收银机.mp3");
+				}
+				_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+				_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+			}
+			else
+			{
+				_root.经验值 += 50000;
+				_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+			}
+		},训练参数.时长);
+	}
+	else
+	{
+		_root.发布消息(训练参数.货币名 + "不足！");
+	}
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[3];
+	if(训练参数.属性名){
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" +训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}
+//this.text1.text = "50000金币训练30秒提升10HP上限";
+//this.text2.text = "1000K点训练30秒提升10HP上限";
+//this.text3.text = "50000金币训练30秒提升10MP上限";
+//this.text4.text = "1000K点训练30秒提升10MP上限";
+//this.text5.text = "90000金币训练30秒提升3空手力";
+//this.text6.text = "3000K点训练30秒提升3空手力";
+//this.text7.text = "2500K点训练30秒获得5防御力";]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#B0C544">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2471" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-75.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[2];
+	if(!训练参数.属性名){
+		_root.注释结束();
+	}
+	else if (_root[训练参数.货币名] >= 训练参数.消耗)
+	{
+		if (训练参数.货币名 == "金钱")
+		{
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+		}
+		else if (训练参数.货币名 == "K点")
+		{
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+		}
+		this._visible = 0;
+		setTimeout(function ()
+		{
+			if (_root[训练参数.属性名] <= 训练参数.上限)
+			{
+				_root[训练参数.属性名] += 训练参数.加成;
+				if (_root[训练参数.属性名] > 训练参数.上限)
+				{
+					_root[训练参数.属性名] = 训练参数.上限;
+				}
+				if (训练参数.货币名 == "金钱")
+				{
+					_root[训练参数.货币名] -= 训练参数.消耗;
+					_root.播放音效("收银机.mp3");
+				}
+				_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+				_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+			}
+			else
+			{
+				_root.经验值 += 50000;
+				_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+			}
+		},训练参数.时长);
+	}
+	else
+	{
+		_root.发布消息(训练参数.货币名 + "不足！");
+	}
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[2];
+	if(训练参数.属性名){
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" +训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}
+//this.text1.text = "50000金币训练30秒提升10HP上限";
+//this.text2.text = "1000K点训练30秒提升10HP上限";
+//this.text3.text = "50000金币训练30秒提升10MP上限";
+//this.text4.text = "1000K点训练30秒提升10MP上限";
+//this.text5.text = "90000金币训练30秒提升3空手力";
+//this.text6.text = "3000K点训练30秒提升3空手力";
+//this.text7.text = "2500K点训练30秒获得5防御力";]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#DE4AFC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2470" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-93.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[1];
+	if (!训练参数.属性名)
+	{
+		_root.注释结束();
+	}
+	else if (_root[训练参数.货币名] >= 训练参数.消耗)
+	{
+		if (训练参数.货币名 == "金钱")
+		{
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+		}
+		else if (训练参数.货币名 == "K点")
+		{
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+		}
+		this._visible = 0;
+		setTimeout(function ()
+		{
+		if (_root[训练参数.属性名] <= 训练参数.上限)
+		{
+		_root[训练参数.属性名] += 训练参数.加成;
+		if (_root[训练参数.属性名] > 训练参数.上限)
+		{
+		_root[训练参数.属性名] = 训练参数.上限;
+		}
+		if (训练参数.货币名 == "金钱")
+		{
+		_root[训练参数.货币名] -= 训练参数.消耗;
+		_root.播放音效("收银机.mp3");
+		}
+		_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+		_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+		}
+		else
+		{
+		_root.经验值 += 50000;
+		_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+		}
+		},训练参数.时长);
+	}
+	else
+	{
+		_root.发布消息(训练参数.货币名 + "不足！");
+	}
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[1];
+	if (训练参数.属性名)
+	{
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长 / 1000) + "，" + 训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}
+//this.text1.text = "50000金币训练30秒提升10HP上限";
+//this.text2.text = "1000K点训练30秒提升10HP上限";
+//this.text3.text = "50000金币训练30秒提升10MP上限";
+//this.text4.text = "1000K点训练30秒提升10MP上限";
+//this.text5.text = "90000金币训练30秒提升3空手力";
+//this.text6.text = "3000K点训练30秒提升3空手力";
+//this.text7.text = "2500K点训练30秒获得5防御力";]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#E131E9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2469" symbolType="button">
+                  <matrix>
+                    <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-110.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	var 训练参数 = _root.健身房训练类型[0];
+	if (!训练参数.属性名)
+	{
+		_root.注释结束();
+	}
+	else if (_root[训练参数.货币名] >= 训练参数.消耗)
+	{
+		if (训练参数.货币名 == "金钱")
+		{
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+		}
+		else if (训练参数.货币名 == "K点")
+		{
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+		}
+		this._visible = 0;
+		setTimeout(function ()
+		{
+		if (_root[训练参数.属性名] <= 训练参数.上限)
+		{
+		_root[训练参数.属性名] += 训练参数.加成;
+		if (_root[训练参数.属性名] > 训练参数.上限)
+		{
+		_root[训练参数.属性名] = 训练参数.上限;
+		}
+		if (训练参数.货币名 == "金钱")
+		{
+		_root[训练参数.货币名] -= 训练参数.消耗;
+		_root.播放音效("收银机.mp3");
+		}
+		_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+		_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+		}
+		else
+		{
+		_root.经验值 += 50000;
+		_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+		}
+		},训练参数.时长);
+	}
+	else
+	{
+		_root.发布消息(训练参数.货币名 + "不足！");
+	}
+}
+on (rollOver) {
+	var 训练参数 = _root.健身房训练类型[0];
+	if (训练参数.属性名)
+	{
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长 / 1000) + "，" + 训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}
+//this.text1.text = "50000金币训练30秒提升10HP上限";
+//this.text2.text = "1000K点训练30秒提升10HP上限";
+//this.text3.text = "50000金币训练30秒提升10MP上限";
+//this.text4.text = "1000K点训练30秒提升10MP上限";
+//this.text5.text = "90000金币训练30秒提升3空手力";
+//this.text6.text = "3000K点训练30秒提升3空手力";
+//this.text7.text = "2500K点训练30秒获得5防御力";]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#C602E0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text13" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="125.85" ty="-30.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#BD54D1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text12" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="125.85" ty="-47.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#786AA5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text11" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="125.85" ty="-64.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#E23D95">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text10" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="125.85" ty="-81.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#DF3BBB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text9" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="125.85" ty="-99.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#7D6DFA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text8" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="125.85" ty="-116.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#902CF5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text7" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-88.45" ty="-14.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#CDD9D4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text6" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-88.45" ty="-30.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#A1D66C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text5" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-88.45" ty="-47.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#ABEF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text4" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-88.45" ty="-64.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#D08FCA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text3" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-88.45" ty="-81.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#3CA0B9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text2" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-88.45" ty="-99.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#83D941">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text1" fontRenderingMode="device" width="201.15" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-88.45" ty="-116.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>免费训练5秒 获得5点经验</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36" color="#53E478">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="217.25" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="125.75" ty="-136.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>训练获得技能点</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 37" color="#DACE34">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="202.3" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.0322265625" tx="-89.65" ty="-136.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>训练获得永久属性提升（换图生效）</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 38" color="#A9A4B7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="323.6" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-70.8" ty="-156.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>健身训练：跟随等级与进度解锁更多项</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#B5D542">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 538" symbolType="button">
+                  <matrix>
+                    <Matrix tx="349.35" ty="-150.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 40" color="#D3EE51">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="-81" ty="-147.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 49" color="#A7E02B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="221.55" centerPoint3DY="-137.75">
+                  <matrix>
+                    <Matrix a="0" b="0.690353393554688" c="-1" d="0" tx="119.05" ty="-138.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="-115.8">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="-116.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="-98.95">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="-99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="-82.1">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="-83.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="-65.25">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="-66.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="-48.4">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="-49.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="-31.55">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="-32.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="-14.7">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="4.8" centerPoint3DY="2.45">
+                  <matrix>
+                    <Matrix a="1.03948974609375" tx="-91.35" ty="1.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.85" centerPoint3DY="-115.8">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="-116.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.85" centerPoint3DY="-98.95">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="-99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.85" centerPoint3DY="-82.1">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="-83.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.85" centerPoint3DY="-65.25">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="-66.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.85" centerPoint3DY="-48.4">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="-49.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.85" centerPoint3DY="-31.55">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="-32.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.85" centerPoint3DY="-14.7">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="226.1" centerPoint3DY="2.45">
+                  <matrix>
+                    <Matrix a="1.1414794921875" tx="116.9" ty="1.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 50" color="#5FB2D3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.057342529296875" c="-0.146484375" d="0" tx="28.15" ty="-114.8"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.057342529296875" c="-0.146484375" d="0" tx="242.15" ty="-114.8"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.057342529296875" c="-0.148956298828125" d="0" tx="26.55" ty="-114.8"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.057342529296875" c="-0.146484375" d="0" tx="239.95" ty="-114.8"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!2443 -3235|2488 -3235"/>
+                    <Edge fillStyle1="4" edges="!2488 -3235|7199 -3235!7199 -3235|7199 513!7199 513|2488 513"/>
+                    <Edge fillStyle1="2" edges="!2488 513|2443 513"/>
+                    <Edge fillStyle1="1" edges="!2443 513|2425 513"/>
+                    <Edge fillStyle1="3" edges="!2425 513|-1909 513!-1909 513|-1909 -3235!-1909 -3235|2425 -3235"/>
+                    <Edge fillStyle1="1" edges="!2425 -3235|2443 -3235"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2443 -3235|2443 513"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!2425 -3235|2425 513"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!2488 -3235|2488 513"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

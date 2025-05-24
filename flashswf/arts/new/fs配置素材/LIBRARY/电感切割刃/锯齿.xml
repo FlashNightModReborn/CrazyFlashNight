@@ -1,0 +1,103 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="电感切割刃/锯齿" itemID="655c4e01-00000625" lastModified="1700551129">
+  <timeline>
+    <DOMTimeline name="锯齿">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.002777099609375" c="0.01715087890625" d="0" tx="137.15" ty="2.3"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.002777099609375" c="0.0079345703125" d="0" tx="112.55" ty="2.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.002838134765625" c="0.007965087890625" d="0" tx="77.05" ty="2.45"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.002838134765625" c="0.00885009765625" d="0" tx="94.85" ty="2.4"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.00286865234375" c="0.0072021484375" d="0" tx="60.7" ty="2.45"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.00286865234375" c="0.00799560546875" d="0" tx="44.3" ty="2.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="7">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.002899169921875" c="0.0089111328125" d="0" tx="26.6" ty="2.55"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="8">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.002899169921875" c="0.00799560546875" d="0" tx="8.8" ty="2.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2415 191|2505 0!2505 0|3079 191!3079 191|2415 191"/>
+                    <Edge fillStyle1="2" edges="!2415 191|2075 190!2075 190|2164 1!2164 1|2350 1!2350 1|2415 191"/>
+                    <Edge fillStyle0="4" edges="!1795 2|1704 189!1704 189|2075 190!2075 190|2011 1!2011 1|1795 2"/>
+                    <Edge fillStyle1="3" edges="!1705 193|1365 192!1365 192|1455 2!1455 2|1640 2!1640 2|1705 193"/>
+                    <Edge fillStyle1="5" edges="!1050 193|1140 3!1140 3|1300 2!1300 2|1365 193!1365 193|1050 193"/>
+                    <Edge fillStyle1="6" edges="!710 192[777 50 799 3!799 3|985 3!985 3|1050 193!1050 193|710 192"/>
+                    <Edge fillStyle1="7" edges="!710 192|340 195"/>
+                    <Edge fillStyle1="8" edges="!340 195|0 194!0 194|90 5!90 5|275 4!275 4|340 195"/>
+                    <Edge fillStyle1="7" edges="!340 195|430 4!430 4|646 3!646 3|710 192"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,40 @@
+Flade History
+____________________________________
+
+2005-11-20
+Release Alpha 0.6
+- ParticleSystem class renamed to DynamicsEngine
+- Instantiation of primitives/surfaces/constraints is no longer hidden by the DynamicsEngine interface
+- RectangleTile added
+- CircleSurface renamed to CircleTile
+- Particle class is now an abstract base class and should not be instantiated directly
+- Added RectangleParticle
+- Added CircleParticle
+- Collision depth of LineSegments can now be set with LineSegment.setCollisionDepth()
+- Added onContact() event handler for surfaces
+- Directories for different sections of the library
+- Added LineSegment.setCollisionDepth() method
+- The Wheel particle property has been removed. The Wheel object itself is now correctly a primitive.
+- Added Wheel.setTraction();
+- Removed LineSurface.setIsOrientH(), collision is handled correctly now
+- ParticleSystem.setKfr() renamed to DynamicsEngine.setSurfaceBounce()
+- ParticleSystem.setFriction() renamed to DynamicsEngine.setSurfaceFriction()
+- Added setVisible() method to all paintable objects;
+- Added setActiveState() and getActiveState() to Surfaces. Surfaces can now be de/activated this way.
+
+
+2005-08-19
+Release Alpha 0.5
+- AS2 Port
+- Removal of Point class
+- Renaming of Surface and Constraint classes to allow for interfaces.
+
+
+2005-03-06
+Release Alpha 0.4
+- Added support for circle surfaces
+- Bug Fix: when the surfaces were vertical or near-vertical
+  particle collision was not detected
+
+2005-02-09
+Initial Release Alpha 0.3

@@ -1,0 +1,94 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/激光剑强化版/刀-审判日夜闪" itemID="6663e16d-0000240b" linkageExportForAS="true" linkageIdentifier="刀-审判日夜闪" lastModified="1718619118" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="刀-审判日夜闪">
+      <layers>
+        <DOMLayer name="刀口" color="#00FF00" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/绝地武士光剑/Symbol 13" name="刀口位置3" centerPoint3DX="0.5" centerPoint3DY="242.5">
+                  <matrix>
+                    <Matrix d="3.91799926757813" tx="-12" ty="230"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(15) == 0)
+      {
+         var myPoint = {x:this._x,y:this._y};
+         _parent.localToGlobal(myPoint);
+         _root.gameworld.globalToLocal(myPoint);
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "光剑特效";
+         子弹威力 = 400;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/绝地武士光剑/Symbol 13" name="刀口位置1" centerPoint3DX="0.5" centerPoint3DY="66.95">
+                  <matrix>
+                    <Matrix d="3.19999694824219" tx="-12" ty="54.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/绝地武士光剑/Symbol 13" name="刀口位置2" centerPoint3DX="0.5" centerPoint3DY="146.95">
+                  <matrix>
+                    <Matrix d="3.82180786132813" tx="-12" ty="134.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/激光剑强化版/激光剑" centerPoint3DX="-2.1" centerPoint3DY="124.15">
+                  <matrix>
+                    <Matrix tx="-16.55" ty="-79.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="208.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

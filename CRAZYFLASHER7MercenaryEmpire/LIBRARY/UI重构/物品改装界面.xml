@@ -1,0 +1,698 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1747748224" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="物品改装界面" currentFrame="37">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F2BEC5">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" name="结算" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="18" name="等待中" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="43" name="成功" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#C44A9F">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 物品合成(素材数组)
+{
+	符合条件 = true;
+	var i = 0;
+	var 合成表 = 素材数组.materials;
+	var 物品数据 = _root.getItemData(素材数组.name);
+	if (物品数据.level && _root.等级 < Number(物品数据.level))
+	{
+		_root.发布消息("当前等级不足！");
+		_root.最上层发布文字提示("装备所需等级高于当前等级！");
+		return;
+	}
+	this.itemArray = _root.getRequirementFromTask(合成表);
+	if (_root.itemContain(itemArray) == null)
+	{
+		_root.发布消息("素材不足！");
+		return;
+	}
+	合成价格倍率 = 1;
+	if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用)
+	{
+		合成价格倍率 = 1 - _root.主角被动技能.铁匠.等级 * 0.05;
+	}
+	if (_root.金钱 < Math.floor(素材数组.price * 合成价格倍率))
+	{
+		符合条件 = false;
+		_root.发布消息(_root.获得翻译("金钱不足！"));
+	}
+	if (_root.物品栏.背包.getFirstVacancy() == -1)
+	{
+		符合条件 = false;
+		_root.发布消息(_root.获得翻译("背包空位不足！"));
+	}
+	if (符合条件 == true)
+	{
+		虚拟币支付(Math.floor(Number(素材数组.kprice) * 合成价格倍率),素材数组);
+	}
+}
+function 排列奖励块(页)
+{
+	yMoveNumbers = 0;
+	xMoveNumbers = 0;
+	var i = 每页显示数 * (_root.改装系统当前页数 - 1);
+	var 图标末尾数 = i + 20;
+	while (xMoveNumbers < 2)
+	{
+		if (i >= 图标末尾数 || i >= 改装清单.length)
+		{
+			return;
+		}
+		while (yMoveNumbers < 10)
+		{
+			if (i >= 图标末尾数 || i >= 改装清单.length)
+			{
+				return;
+			}
+			var 当前物品 = 改装清单[i];
+			if (当前物品.title)
+			{
+				this.attachMovie("装备改装界面显示块","图纸块" + i,this.getNextHighestDepth(),{_x:xMoveNumbers * 244 + 8, _y:yMoveNumbers * 28 + 30, 改装信息:当前物品, 标题:当前物品.title, 多语言标题:_root.获得翻译(_root.getItemData(当前物品.name).displayname), 价格:当前物品.price, K点价格:当前物品.kprice, 数组号:i});
+			}
+			yMoveNumbers++;
+			i++;
+		}
+		yMoveNumbers = 0;
+		xMoveNumbers++;
+	}
+}
+function 删除奖励块()
+{
+	for (var i = 0; i < 改装清单.length; i++)
+	{
+		this["图纸块" + i].removeMovieClip();
+	}
+}
+function 虚拟币支付(amount, 素材数组)
+{
+	var 合成表 = 素材数组.materials;
+
+	if (amount > 0)
+	{
+		if (_root.虚拟币 >= amount)
+		{
+			var result = _root.itemSubmit(this.itemArray);
+			if (!result)
+			{
+				_root.发布消息("素材不足！素材检索可能存在漏洞");
+				return;
+			}
+			_root.singleAcquire(素材数组.name,1);
+			_root.虚拟币 -= amount;
+			合成价格倍率 = 1;
+			if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用)
+			{
+				合成价格倍率 = 1 - _root.主角被动技能.铁匠.等级 * 0.05;
+			}
+			铁匠提示 = 合成价格倍率 < 1 ? "节约" + (1 - 合成价格倍率) * 100 + "金额支出。" : "";
+			_root.发布消息(_root.获得翻译("支付成功！" + 铁匠提示));
+			tmp_金钱 = _root.金钱 - Math.floor(素材数组.price * 合成价格倍率);
+			if (tmp_金钱 != undefined and isNaN(tmp_金钱) != true)
+			{
+				_root.金钱 = tmp_金钱;
+			}
+			删除材料块();
+			_root.最上层发布文字提示(_root.获得翻译("制作成功！请查看背包。"));
+			_root.获取虚拟币值();
+			gotoAndStop("成功");
+			play();
+		}
+		else
+		{
+			_root.发布消息(_root.获得翻译("K点不足！"));
+			gotoAndStop(1);
+		}
+	}
+	else if (amount == 0)
+	{
+		合成价格倍率 = 1;
+		if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用)
+		{
+			合成价格倍率 = 1 - _root.主角被动技能.铁匠.等级 * 0.05;
+		}
+		if (_root.金钱 >= Math.floor(素材数组.price * 合成价格倍率))
+		{
+			var result = _root.itemSubmit(this.itemArray);
+			if (!result)
+			{
+				_root.发布消息("素材不足！素材检索可能存在漏洞");
+				return;
+			}
+			_root.singleAcquire(素材数组.name,1);
+			铁匠提示 = 合成价格倍率 < 1 ? "节约" + (1 - 合成价格倍率) * 100 + "金额支出。" : "";
+			_root.发布消息(_root.获得翻译("支付成功！" + 铁匠提示));
+			tmp_金钱 = _root.金钱 - Math.floor(素材数组.price * 合成价格倍率);
+			if (tmp_金钱 != undefined and isNaN(tmp_金钱) != true)
+			{
+				_root.金钱 = tmp_金钱;
+			}
+			删除材料块();
+			_root.最上层发布文字提示(_root.获得翻译("制作成功！请查看背包。"));
+			_root.获取虚拟币值();
+			gotoAndStop("成功");
+			play();
+		}
+		else
+		{
+			_root.发布消息(_root.获得翻译("金币不足！"));
+			gotoAndStop(1);
+		}
+	}
+}
+每页显示数 = 20;
+if (!改装清单)
+{
+	改装清单 = _root.改装清单["默认"];
+}
+
+
+排列奖励块(_root.改装系统当前页数);
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 排列材料块()
+{
+	var 材料列表 = _root.getRequirementFromTask(改装清单[准备合成的数组号].materials);
+	for (var i = 0; i < 材料列表.length; i++)
+	{
+		var 材料信息 = 材料列表[i];
+		var 材料块 = this.attachMovie("装备改装界面显示块2","材料" + i,this.getNextHighestDepth(),{
+			_x:8, 
+			_y:i * 30 + 45, 
+			标题:材料信息.name, 
+			多语言标题:_root.获得翻译(_root.getItemData(材料信息.name).displayname), 
+			个数:材料信息.value
+		});
+	}
+}
+function 删除材料块()
+{
+	var len = 改装清单[准备合成的数组号].materials.length;
+	for (var i = 0; i < len; i++)
+	{
+		this["材料" + i].removeMovieClip();
+	}
+}
+物品显示名称 = _root.物品属性列表[改装清单[准备合成的数组号].name].displayname;
+合成价格倍率 = 1;
+if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用)
+{
+	合成价格倍率 = 1 - _root.主角被动技能.铁匠.等级 * 0.05;
+}
+mytext.htmlText = _root.获得翻译(物品显示名称 + "<BR>" + _root.获得翻译("金币") + "：" + Math.floor(改装清单[准备合成的数组号].price * 合成价格倍率) + "   " + _root.获得翻译("K点") + "：" + Math.floor(改装清单[准备合成的数组号].kprice * 合成价格倍率) + "<BR>");
+requirements.htmlText = _root.获得翻译("需要材料（数量/为装备时则代表强化度）：");
+排列材料块();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="43" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("ammopickup1.wav");
+删除材料块();
+_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#A27677">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" centerPoint3DX="403.95" centerPoint3DY="366.4">
+                  <matrix>
+                    <Matrix tx="364.6" ty="353.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	this.gotoAndStop(1);
+	_parent.删除材料块();
+	_parent.gotoAndStop(1);
+}
+on (press) {
+	this.gotoAndStop(3);
+}
+on (rollOver) {
+	this.gotoAndStop(2);
+}
+on (rollOut) {
+	this.gotoAndStop(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="61" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#37FB65">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/装备改装界面显示块2" centerPoint3DX="125.85" centerPoint3DY="411.15">
+                  <matrix>
+                    <Matrix tx="6" ty="397"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/确认按钮" centerPoint3DX="100.65" centerPoint3DY="366.4">
+                  <matrix>
+                    <Matrix tx="61.65" ty="353.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	this.gotoAndStop(1);
+	_parent.物品合成(_parent.改装清单[_parent.准备合成的数组号]);
+}
+on (press) {
+	this.gotoAndStop(3);
+}
+on (rollOver) {
+	this.gotoAndStop(2);
+}
+on (rollOut) {
+	this.gotoAndStop(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="61" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#F2DE62">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="30" height="18.3" isSelectable="false" variableName="_root.改装系统当前页数">
+                  <matrix>
+                    <Matrix tx="238.55" ty="324.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="79" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#306FE1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="87.95" centerPoint3DY="334.1">
+                  <matrix>
+                    <Matrix tx="42.15" ty="322.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.改装系统向前翻页();
+}
+onClipEvent (load) {
+	this.改装系统向前翻页 = _root.改装系统向前翻页;
+	显示文字 = _root.获得翻译("上一页");
+}
+on (rollOver) {
+}
+on (rollOut) {
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="79" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#FC9687">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="417.5" centerPoint3DY="333.1">
+                  <matrix>
+                    <Matrix tx="371.7" ty="321.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this.改装系统向后翻页();
+}
+onClipEvent (load) {
+	this.改装系统向后翻页 = _root.改装系统向后翻页;
+	显示文字 = _root.获得翻译("下一页");
+}
+on (rollOver) {
+}
+on (rollOut) {
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="79" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#D0B995" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/装备改装界面显示块" centerPoint3DX="130.1" centerPoint3DY="390.65">
+                  <matrix>
+                    <Matrix tx="9" ty="376"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = false;
+}
+onClipEvent (unload) {
+	_parent.删除奖励块();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/合成系统检视框" centerPoint3DX="446.45" centerPoint3DY="210.95">
+                  <matrix>
+                    <Matrix a="5.83023071289063" d="5.83023071289063" tx="370.9" ty="128.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="14.15"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   tmp_sx = _root.根据物品名查找全部属性(_parent.改装信息.name);
+   图标 = "图标-" + tmp_sx[1];
+   gotoAndStop("默认图标");
+}
+on(rollOver){
+   _root.物品图标注释(_parent.改装信息.name,1);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="61" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#3AEF6A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="249.95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="127" ty="361.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>改装后的物品强化等级为</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>，请提前转换强化度</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" fontRenderingMode="device" width="198.95" height="68.2" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="273.95" ty="241"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="requirements" fontRenderingMode="device" width="211" height="21.45" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="19" ty="29.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="18" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" fontRenderingMode="device" width="136" height="51" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="188" ty="171"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>等待中</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="35" bitmapSize="700" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="43" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" selected="true" fontRenderingMode="device" width="181" height="81.2" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="166" ty="157"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters> 制作成功！&#xD;请查看背包。</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="30" bitmapSize="600" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#EE80AB">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/关闭按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="484" ty="15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	this._visible = 0;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#9CCF7E">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="165.1" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="33.9" ty="6.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>制作</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#E77261">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="17.05" ty="16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#D66588">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2551" centerPoint3DX="367" centerPoint3DY="351.75">
+                  <matrix>
+                    <Matrix a="2.15545654296875" d="1.1495361328125" tx="252" ty="174.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-148.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-天使铳" itemID="65f8459f-000027e3" linkageExportForAS="true" linkageIdentifier="枪-长枪-天使铳" lastModified="1714663944" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="枪-长枪-天使铳">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" selected="true" centerPoint3DX="199.05" centerPoint3DY="-31.45">
+                  <matrix>
+                    <Matrix a="1.72637939453125" d="1.72637939453125" tx="163.6" ty="-66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Angelic Rifle" centerPoint3DX="1.4" centerPoint3DY="-30.3">
+                  <matrix>
+                    <Matrix a="3.50250244140625" d="3.50250244140625" tx="-163.85" ty="-88.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="46.75" y="16.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="0.05"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

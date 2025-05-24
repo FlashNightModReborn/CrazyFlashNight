@@ -1,0 +1,1082 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="6">
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="7">
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="8">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="9">
+            <Name>弹簧</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="10">
+            <Name>上色涂料</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="11">
+            <Name>增效剂</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="12">
+            <Name>可塑式钢板</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="13">
+            <Name>战术导轨</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="14">
+            <Name>螺丝套件</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="15">
+            <Name>小型液晶屏</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="16">
+            <Name>防沙皮革</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="17">
+            <Name>烈性火药</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="18">
+            <Name>生物催化剂</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="19">
+            <Name>不锈钢材</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="20">
+            <Name>高强度合金</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="21">
+            <Name>枪械内构强化套件</Name>
+            <AcquisitionProbability>28</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="22">
+            <Name>动力液压杆</Name>
+            <AcquisitionProbability>30</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="23">
+            <Name>碳纤维布料</Name>
+            <AcquisitionProbability>30</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="24">
+            <Name>战术握把</Name>
+            <AcquisitionProbability>30</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="25">
+            <Name>镭射瞄准具</Name>
+            <AcquisitionProbability>30</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="26">
+            <Name>突击型光学瞄具</Name>
+            <AcquisitionProbability>30</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="27">
+            <Name>水冷机构</Name>
+            <AcquisitionProbability>30</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_1_BG.swf</Background>
+            <PlayerX>60</PlayerX>
+            <PlayerY>476</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1250</x>
+                <y>475</y>
+                <BiasX>150</BiasX>
+                <BiasY>100</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>563</x>
+                        <y>431</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>820</x>
+                        <y>520</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
+            <PlayerX>112</PlayerX>
+            <PlayerY>450</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1701</x>
+                <y>421</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1701</x>
+                <y>592</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>369</x>
+                        <y>544</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>413</x>
+                        <y>393</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种16</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种20</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种16</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Animation>
+                <Path>flashswf/movies/movie_avp_1_3.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <Background>flashswf/backgrounds/avp1_3_BG.swf</Background>
+            <PlayerX>112</PlayerX>
+            <PlayerY>397</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种22</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <x>824</x>
+                        <y>462</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_4_BG.swf</Background>
+            <PlayerX>116</PlayerX>
+            <PlayerY>411</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1810</x>
+                <y>548</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1816</x>
+                <y>579</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1822</x>
+                <y>605</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>537</x>
+                        <y>529</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种16</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>772</x>
+                        <y>403</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>898</x>
+                        <y>442</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种16</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1102</x>
+                        <y>553</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种19</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种20</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种19</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Animation>
+                <Path>flashswf/movies/movie_avp_1_5.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <Background>flashswf/backgrounds/avp1_5_BG.swf</Background>
+            <PlayerX>250</PlayerX>
+            <PlayerY>487</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>915</x>
+                <y>422</y>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种23</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <x>915</x>
+                        <y>437</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种24</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_6_BG.swf</Background>
+            <PlayerX>113</PlayerX>
+            <PlayerY>412</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1777</x>
+                <y>448</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种16</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>560</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种16</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>873</x>
+                        <y>520</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种16</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1073</x>
+                        <y>382</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种15</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1344</x>
+                        <y>371</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种16</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1443</x>
+                        <y>520</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种16</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Animation>
+                <Path>flashswf/movies/movie_avp_1_7.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <Background>flashswf/backgrounds/avp1_7_BG.swf</Background>
+            <PlayerX>119</PlayerX>
+            <PlayerY>435</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <x>617</x>
+                        <y>426</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="7">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_8_BG.swf</Background>
+            <PlayerX>113</PlayerX>
+            <PlayerY>408</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>476</x>
+                        <y>393</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>561</x>
+                        <y>540</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>640</x>
+                        <y>364</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种15</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>733</x>
+                        <y>364</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>778</x>
+                        <y>498</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>930</x>
+                        <y>367</y>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种15</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1008</x>
+                        <y>503</y>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1008</x>
+                        <y>423</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="8">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_9_BG.swf</Background>
+            <PlayerX>135</PlayerX>
+            <PlayerY>376</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>6</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>915</x>
+                        <y>343</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1119</x>
+                        <y>589</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1613</x>
+                        <y>434</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>349</x>
+                        <y>517</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>471</x>
+                        <y>351</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种15</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1308</x>
+                        <y>403</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="9">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_10_BG.swf</Background>
+            <PlayerX>113</PlayerX>
+            <PlayerY>385</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>5</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>570</x>
+                        <y>537</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>678</x>
+                        <y>335</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1635</x>
+                        <y>578</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1750</x>
+                        <y>364</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="10">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_11_BG.swf</Background>
+            <PlayerX>115</PlayerX>
+            <PlayerY>362</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>4</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>378</x>
+                        <y>531</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>753</x>
+                        <y>301</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>519</x>
+                        <y>436</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>614</x>
+                        <y>589</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>458</x>
+                        <y>353</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种15</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种17</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="8">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1436</x>
+                        <y>467</y>
+                    </Enemy>
+                    <Enemy id="9">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1640</x>
+                        <y>617</y>
+                    </Enemy>
+                    <Enemy id="10">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1698</x>
+                        <y>403</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="11">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_12_BG.swf</Background>
+            <PlayerX>112</PlayerX>
+            <PlayerY>369</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>3</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>430</x>
+                        <y>533</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>456</x>
+                        <y>372</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种18</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>736</x>
+                        <y>349</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>869</x>
+                        <y>552</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种19</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种20</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种15</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种18</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="8">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1530</x>
+                        <y>404</y>
+                    </Enemy>
+                    <Enemy id="9">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1674</x>
+                        <y>571</y>
+                    </Enemy>
+                    <Enemy id="10">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1751</x>
+                        <y>448</y>
+                    </Enemy>
+                    <Enemy id="11">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1858</x>
+                        <y>392</y>
+                    </Enemy>
+                    <Enemy id="12">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1865</x>
+                        <y>592</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="12">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_13_BG.swf</Background>
+            <PlayerX>112</PlayerX>
+            <PlayerY>397</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>0</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>1225</x>
+                <y>-68</y>
+                <url>flashswf/movies/异形卵巢_avp1_13.swf</url>
+            </Instance>
+        </Instances>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1480</x>
+                <y>500</y>
+                <BiasX>380</BiasX>
+                <BiasY>140</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>422</x>
+                        <y>469</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>696</x>
+                        <y>591</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>839</x>
+                        <y>410</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>868</x>
+                        <y>469</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1001</x>
+                        <y>453</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种290</Type>
+                        <Interval>100</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="13">
+        <BasicInformation>
+            <Animation>
+                <Path>flashswf/movies/movie_avp_1_14.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <Background>flashswf/backgrounds/avp1_13_BG.swf</Background>
+            <PlayerX>1000</PlayerX>
+            <PlayerY>400</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>0</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>1225</x>
+                <y>-68</y>
+                <url>flashswf/movies/异形卵巢_avp1_14.swf</url>
+            </Instance>
+        </Instances>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种14</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>1376</x>
+                        <y>425</y>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

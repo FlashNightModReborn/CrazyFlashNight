@@ -1,0 +1,1442 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/快捷技能界面" itemID="66520790-00001b5c" lastModified="1746408795" lastUniqueIdentifier="74">
+  <timeline>
+    <DOMTimeline name="快捷技能界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels Layer" color="#CBE269">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="刷新" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#65FB82">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.技能栏列表 = [null, 快捷技能栏1, 快捷技能栏2, 快捷技能栏3, 快捷技能栏4, 快捷技能栏5, 快捷技能栏6, 快捷技能栏7, 快捷技能栏8, 快捷技能栏9, 快捷技能栏10, 快捷技能栏11, 快捷技能栏12];
+
+function 刷新技能等级显示()
+{
+	for (var i = 1; i < 13; i++)
+	{
+		技能栏列表[i].数量 = _root.根据技能名查找主角技能等级(技能栏列表[i].已装备名);
+	}
+}
+
+function 取消装备技能(编号)
+{
+	_root["快捷技能栏" + 编号] = "";
+	var 技能栏 = this.技能栏列表[编号];
+	技能栏.已装备名 = "";
+	技能栏.是否装备 = 0;
+	技能栏.gotoAndStop(1);
+	_root.主角技能表[技能栏.对应数组号][2] = false;
+	_root.主角技能表[技能栏.对应数组号][4] = false;
+	if (_root.主角技能表[技能栏.对应数组号][3].indexOf("被动") > -1)
+	{
+		_root.更新主角被动技能();
+		_root.gameworld[_root.控制目标].被动技能 = _root.主角被动技能;
+	}
+	_root.排列技能图标();
+}
+
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SP相关" color="#FF4FFF" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="SP按钮" color="#4FFFFF" parentLayerIndex="2" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1857" symbolType="button" isVisible="false">
+                  <matrix>
+                    <Matrix a="3.1820068359375" d="0.576400756835938" tx="95.35" ty="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="-12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(150,_root.获得翻译("技能点数") + "：" + _root.技能点数);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SP点数" color="#FF800A" parentLayerIndex="2" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" fontRenderingMode="standard" width="49.3" height="15.55" includeOutlines="true" isSelectable="false" variableName="_root.技能点数">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="84.25" ty="-19.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.8" y="7.75"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>9999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="Aero*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10" isEnabled="false"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SP" color="#808080" parentLayerIndex="2" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="21.2" height="11.15" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="56.8" ty="-16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.65" y="7.75"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>SP.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="10" bitmapSize="200" face="Aero*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10" isEnabled="false"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Skill" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="33.2" height="20.1" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="6" ty="-19.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>Skill</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="18" bitmapSize="360" face="Aero"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="边框" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <transformationPoint>
+                    <Point x="186.5" y="8.35"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.020751953125" c="-0.0033111572265625" d="0" tx="78.2" ty="18.25"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0.231372549019608"/>
+                        <GradientEntry color="#E5E5E5" ratio="0.784313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.020751953125" c="-0.0033111572265625" d="0" tx="90.65" ty="18.25"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0.231372549019608"/>
+                        <GradientEntry color="#E5E5E5" ratio="0.784313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.020751953125" c="-0.0033111572265625" d="0" tx="103.15" ty="18.25"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0.231372549019608"/>
+                        <GradientEntry color="#E5E5E5" ratio="0.784313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.0244140625" c="-0.0033111572265625" d="0" tx="65.6" ty="6.85"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0.231372549019608"/>
+                        <GradientEntry color="#E5E5E5" ratio="0.784313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.020751953125" c="-0.0033111572265625" d="0" tx="119.5" ty="18.25"/>
+                        </matrix>
+                        <GradientEntry color="#999999" alpha="0.6" ratio="0.231372549019608"/>
+                        <GradientEntry color="#E5E5E5" alpha="0.6" ratio="0.780392156862745"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.020751953125" c="-0.0033111572265625" d="0" tx="114.65" ty="18.25"/>
+                        </matrix>
+                        <GradientEntry color="#999999" alpha="0.8" ratio="0.231372549019608"/>
+                        <GradientEntry color="#E5E5E5" alpha="0.8" ratio="0.752941176470588"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="4" edges="!1112 -39/2640 -39!2640 -39/2674 -75!2674 -75/2721 -306!2721 -306/2703 -328!2703 -328/1718 -328!1718 -328/1688 -301!1688 -301/1201 -301!1201 -301/1153 -301!1153 -301/1119 -274!1119 -274/1080 -78!1080 -78/1112 -39!2748.5 -217/7050 -217
+!7050 -217/7268 -35!7268 -35/8517 -35!8517 -35|8584 22!8584 22|8584 815!8584 815|8507 866!8507 866|78 866!78 866|-10 774!-10 774|-10 -212!-10 -212|125 -374!125 -374/2746 -374!2746 -374/2775 -328!2775 -328/2748.5 -217"/>
+                    <Edge fillStyle1="1" edges="
+!7088 -217/7296 -217!7296 -217/7481 -63!7481 -63/7272 -63!7272 -63/7088 -217"/>
+                    <Edge fillStyle1="2" edges="
+!7546 -217/7731 -63!7731 -63/7522 -63!7522 -63/7337 -217!7337 -217/7546 -217"/>
+                    <Edge fillStyle1="3" edges="
+!7771 -63/7587 -217!7587 -217/7769 -217!7769 -217/7954 -63!7954 -63/7771 -63"/>
+                    <Edge fillStyle1="6" edges="
+!7817 -217/7970 -217!7970 -217/8155 -63!8155 -63/8001 -63!8001 -63/7817 -217"/>
+                    <Edge fillStyle1="5" edges="
+!8203 -63/8018 -217!8018 -217/8122 -217!8122 -217/8307 -63!8307 -63/8203 -63"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="
+!8529 54|8494 22!8494 22|109 22!109 22|63 73!63 73|63 756!63 756|109 806!109 806|8495 806!8495 806|8529 782!8529 782|8529 54"/>
+                    <Edge cubics="!7088 -217(;7088,-217 7296,-217 7296,-217q7088 -217 7296 -217);"/>
+                    <Edge cubics="!7296 -217(;7296,-217 7481,-63 7481,-63q7296 -217 7481 -63);"/>
+                    <Edge cubics="!7088 -217(;7088,-217 7272,-63 7272,-63q7088 -217 7272 -63);"/>
+                    <Edge cubics="!7731 -63(;7731,-63 7522,-63 7522,-63q7731 -63 7522 -63);"/>
+                    <Edge cubics="!7587 -217(;7587,-217 7769,-217 7769,-217q7587 -217 7769 -217);"/>
+                    <Edge cubics="!7546 -217(;7546,-217 7731,-63 7731,-63q7546 -217 7731 -63);"/>
+                    <Edge cubics="!7771 -63(;7771,-63 7587,-217 7587,-217q7771 -63 7587 -217);"/>
+                    <Edge cubics="!7954 -63(;7954,-63 7771,-63 7771,-63q7954 -63 7771 -63);"/>
+                    <Edge cubics="!7769 -217(;7769,-217 7954,-63 7954,-63q7769 -217 7954 -63);"/>
+                    <Edge cubics="!7481 -63(;7481,-63 7272,-63 7272,-63q7481 -63 7272 -63);"/>
+                    <Edge cubics="!7522 -63(;7522,-63 7337,-217 7337,-217q7522 -63 7337 -217);"/>
+                    <Edge cubics="!7337 -217(;7337,-217 7546,-217 7546,-217q7337 -217 7546 -217);"/>
+                    <Edge cubics="!7050 -217(;7050,-217 7268,-35 7268,-35q7050 -217 7268 -35);"/>
+                    <Edge cubics="!7268 -35(;7268,-35 8517,-35 8517,-35q7268 -35 8517 -35);"/>
+                    <Edge cubics="!8529 54(;8529,54 8494,22 8494,22q8529 54 8494 22);"/>
+                    <Edge cubics="!8517 -35(;8517,-35 8584,22 8584,22q8517 -35 8584 22);"/>
+                    <Edge cubics="!8495 806(;8495,806 8529,782 8529,782q8495 806 8529 782);"/>
+                    <Edge cubics="!8584 815(;8584,815 8507,866 8507,866q8584 815 8507 866);"/>
+                    <Edge cubics="!63 73(;63,73 109,22 109,22q63 73 109 22);"/>
+                    <Edge cubics="!78 866(;78,866 -10,774 -10,774q78 866 -10 774);"/>
+                    <Edge cubics="!63 756(;63,756 109,806 109,806q63 756 109 806);"/>
+                    <Edge cubics="!8529 782(;8529,782 8529,54 8529,54q8529 782 8529 54);"/>
+                    <Edge cubics="!63 73(;63,73 63,756 63,756q63 73 63 756);"/>
+                    <Edge cubics="!8507 866(;8507,866 78,866 78,866q8507 866 78 866);"/>
+                    <Edge cubics="!109 806(;109,806 8495,806 8495,806q109 806 8495 806);"/>
+                    <Edge cubics="!8584 22(;8584,22 8584,815 8584,815q8584 22 8584 815);"/>
+                    <Edge cubics="!109 22(;109,22 8494,22 8494,22q109 22 8494 22);"/>
+                    <Edge cubics="!2749 -217(;2749,-217 7050,-217 7050,-217q2749 -217 7050 -217);"/>
+                    <Edge cubics="!-10 774(;-10,774 -10,-212 -10,-212q-10 774 -10 -212);"/>
+                    <Edge cubics="!-10 -212(;-10,-212 125,-374 125,-374q-10 -212 125 -374);"/>
+                    <Edge cubics="!7817 -217(;7817,-217 7970,-217 7970,-217q7817 -217 7970 -217);"/>
+                    <Edge cubics="!8001 -63(;8001,-63 7817,-217 7817,-217q8001 -63 7817 -217);"/>
+                    <Edge cubics="!8155 -63(;8155,-63 8001,-63 8001,-63p8155 -63 8001 -63);"/>
+                    <Edge cubics="!7970 -217(;7970,-217 8155,-63 8155,-63p7970 -217 8155 -63);"/>
+                    <Edge cubics="!8018 -217(;8018,-217 8122,-217 8122,-217q8018 -217 8122 -217);"/>
+                    <Edge cubics="!8018 -217(;8018,-217 8203,-63 8203,-63q8018 -217 8203 -63);"/>
+                    <Edge cubics="!8122 -217(;8122,-217 8307,-63 8307,-63q8122 -217 8307 -63);"/>
+                    <Edge cubics="!8307 -63(;8307,-63 8203,-63 8203,-63q8307 -63 8203 -63);"/>
+                    <Edge cubics="!1153 -301(;1153,-301 1119,-274 1119,-274q1153 -301 1119 -274);"/>
+                    <Edge cubics="!1201 -301(;1201,-301 1153,-301 1153,-301q1201 -301 1153 -301);"/>
+                    <Edge cubics="!1119 -274(;1119,-274 1089,-127 1089,-127q1119 -274 1089 -127);"/>
+                    <Edge cubics="!2775 -328(;2775,-328 2749,-217 2749,-217q2775 -328 2749 -217);"/>
+                    <Edge cubics="!2746 -374(;2746,-374 2775,-328 2775,-328q2746 -374 2775 -328);"/>
+                    <Edge cubics="!125 -374(;125,-374 2746,-374 2746,-374q125 -374 2746 -374);"/>
+                    <Edge cubics="!1089 -127(;1089,-127 1108,-77 1108,-77q1089 -127 1108 -77);"/>
+                    <Edge cubics="!1718 -328(;1718,-328 1688,-301 1688,-301q1718 -328 1688 -301);"/>
+                    <Edge cubics="!2676 -127(;2676,-127 2698,-217 2698,-217q2676 -127 2698 -217);"/>
+                    <Edge cubics="!2632 -65(;2632,-65 2676,-127 2676,-127q2632 -65 2676 -127);"/>
+                    <Edge cubics="!2698 -217(;2698,-217 2721,-306 2721,-306q2698 -217 2721 -306);"/>
+                    <Edge cubics="!2721 -306(;2721,-306 2703,-328 2703,-328q2721 -306 2703 -328);"/>
+                    <Edge cubics="!2703 -328(;2703,-328 1718,-328 1718,-328q2703 -328 1718 -328);"/>
+                    <Edge cubics="!1108 -77(;1108,-77 2632,-65 2632,-65q1108 -77 2632 -65);"/>
+                    <Edge cubics="!1688 -301(;1688,-301 1201,-301 1201,-301q1688 -301 1201 -301);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="技能" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="小X" color="#9FC2AC" parentLayerIndex="8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1793" symbolType="button">
+                  <matrix>
+                    <Matrix tx="35.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1794" symbolType="button">
+                  <matrix>
+                    <Matrix tx="70.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1795" symbolType="button">
+                  <matrix>
+                    <Matrix tx="105.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(3);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1796" symbolType="button">
+                  <matrix>
+                    <Matrix tx="140.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(4);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1797" symbolType="button">
+                  <matrix>
+                    <Matrix tx="175.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(5);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1798" symbolType="button">
+                  <matrix>
+                    <Matrix tx="210.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(6);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 3480" symbolType="button">
+                  <matrix>
+                    <Matrix tx="245.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(7);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 3481" symbolType="button">
+                  <matrix>
+                    <Matrix tx="280.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(8);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 3482" symbolType="button">
+                  <matrix>
+                    <Matrix tx="315.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(9);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 3483" symbolType="button">
+                  <matrix>
+                    <Matrix tx="350.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(10);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 3484" symbolType="button">
+                  <matrix>
+                    <Matrix tx="385.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(11);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 3485" symbolType="button">
+                  <matrix>
+                    <Matrix tx="420.5" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	取消装备技能(12);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="字母" color="#C77188" parentLayerIndex="8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器1" centerPoint3DX="30.55" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="22.4" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	扳机键 = "快捷技能栏键1";
+	控制参数 = "快捷技能栏1";
+	控制参数2 = "进度条1";
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器2" centerPoint3DX="65.6" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="57.45" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键2";
+   控制参数 = "快捷技能栏2";
+   控制参数2 = "进度条2";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器3" centerPoint3DX="100.65" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="92.5" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键3";
+   控制参数 = "快捷技能栏3";
+   控制参数2 = "进度条3";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器4" centerPoint3DX="135.7" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="127.55" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键4";
+   控制参数 = "快捷技能栏4";
+   控制参数2 = "进度条4";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器5" centerPoint3DX="170.75" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="162.6" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键5";
+   控制参数 = "快捷技能栏5";
+   控制参数2 = "进度条5";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器6" centerPoint3DX="205.8" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="197.65" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键6";
+   控制参数 = "快捷技能栏6";
+   控制参数2 = "进度条6";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器7" centerPoint3DX="240.85" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="232.7" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	扳机键 = "快捷技能栏键7";
+	控制参数 = "快捷技能栏7";
+	控制参数2 = "进度条7";
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器8" centerPoint3DX="275.9" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="267.75" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键8";
+   控制参数 = "快捷技能栏8";
+   控制参数2 = "进度条8";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器9" centerPoint3DX="310.95" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="302.8" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键9";
+   控制参数 = "快捷技能栏9";
+   控制参数2 = "进度条9";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器10" centerPoint3DX="346" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="337.85" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键10";
+   控制参数 = "快捷技能栏10";
+   控制参数2 = "进度条10";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器11" centerPoint3DX="381.05" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="372.9" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键11";
+   控制参数 = "快捷技能栏11";
+   控制参数2 = "进度条11";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能控制器" name="控制器12" centerPoint3DX="416.1" centerPoint3DY="53.35">
+                  <matrix>
+                    <Matrix tx="407.95" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   扳机键 = "快捷技能栏键12";
+   控制参数 = "快捷技能栏12";
+   控制参数2 = "进度条12";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冷却条" color="#E6E462" parentLayerIndex="8" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条1" centerPoint3DX="35.1" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="22.35" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条2" centerPoint3DX="70.15" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="57.4" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条3" centerPoint3DX="105.2" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="92.45" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条4" centerPoint3DX="140.25" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="127.5" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条5" centerPoint3DX="175.3" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="162.55" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条6" centerPoint3DX="210.35" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="197.6" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条7" centerPoint3DX="245.4" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="232.65" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条8" centerPoint3DX="280.45" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="267.7" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条9" centerPoint3DX="315.5" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="302.75" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条10" centerPoint3DX="350.55" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="337.8" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条11" centerPoint3DX="385.6" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="372.85" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="进度条12" selected="true" centerPoint3DX="420.65" centerPoint3DY="33.45">
+                  <matrix>
+                    <Matrix tx="407.9" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="透明格" color="#95F44D" parentLayerIndex="8" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏1" centerPoint3DX="35.1" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="22.35" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	function 快捷技能栏图标刷新()
+	{
+		是否装备 = 0;
+		装备槽类别 = this._name;
+		已装备名 = _root[this._name];
+		对应装备 = this._name;
+		控制器 = "控制器1";
+		进度条 = "进度条1";
+		if (已装备名 != "")
+		{
+			i = 0;
+			while (i <= _root.主角技能表.length)
+			{
+				if (_root.主角技能表[i][0] == 已装备名)
+				{
+					this.对应数组号 = i;
+					this.是否装备 = 1;
+					this.数量 = _root.主角技能表[i][1];
+					该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+					this.冷却时间 = 该技能全部属性.CD;
+					this.消耗mp = 该技能全部属性.MP;
+					break;
+				}
+				i++;
+			}
+		}
+		if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined or this.数量 == 0)
+		{
+			this.gotoAndStop(已装备名);
+		}
+		else
+		{
+			this.图标 = "图标-" + 已装备名;
+			this.gotoAndStop("默认图标");
+		}
+	}
+	快捷技能栏图标刷新();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏2" centerPoint3DX="70.15" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="57.4" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器2";
+	进度条 = "进度条2";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏3" centerPoint3DX="105.2" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="92.45" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器3";
+	进度条 = "进度条3";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏4" centerPoint3DX="140.25" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="127.5" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器4";
+	进度条 = "进度条4";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏5" centerPoint3DX="175.3" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="162.55" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器5";
+	进度条 = "进度条5";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏6" centerPoint3DX="210.35" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="197.6" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器6";
+	进度条 = "进度条6";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏7" centerPoint3DX="245.4" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="232.65" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器7";
+	进度条 = "进度条7";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏8" centerPoint3DX="280.45" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="267.7" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器8";
+	进度条 = "进度条8";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏9" centerPoint3DX="315.5" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="302.75" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器9";
+	进度条 = "进度条9";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏10" centerPoint3DX="350.55" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="337.8" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器10";
+	进度条 = "进度条10";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏11" centerPoint3DX="385.6" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="372.85" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器11";
+	进度条 = "进度条11";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/技能图标" name="快捷技能栏12" centerPoint3DX="420.65" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix tx="407.9" ty="20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	是否装备 = 0;
+	装备槽类别 = this._name;
+	已装备名 = _root[this._name];
+	对应装备 = this._name;
+	控制器 = "控制器12";
+	进度条 = "进度条12";
+	if (已装备名 != "")
+	{
+		i = 0;
+		while (i <= _root.主角技能表.length)
+		{
+			if (_root.主角技能表[i][0] == 已装备名)
+			{
+				this.对应数组号 = i;
+				this.是否装备 = 1;
+				this.数量 = _root.主角技能表[i][1];
+				该技能全部属性 = _root.根据技能名查找全部属性(已装备名);
+				this.冷却时间 = 该技能全部属性.CD;
+				this.消耗mp = 该技能全部属性.MP;
+				break;
+			}
+			i++;
+		}
+	}
+	if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined)
+	{
+		this.gotoAndStop(已装备名);
+	}
+	else
+	{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="黑格子" color="#DE94AD" parentLayerIndex="8" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="22.35" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="57.4" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="92.45" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="127.5" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="162.55" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="197.6" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="232.65" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="267.7" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="302.75" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="337.8" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="372.85" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/快捷道具格子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="407.9" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

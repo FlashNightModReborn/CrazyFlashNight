@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2647" itemID="6597607e-00000c50" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 2647">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FC9D5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.004150390625" d="0.004150390625" tx="3" ty="3.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!19 19[38 0 65 0!65 0[92 0 111 19!111 19[130 38 130 65!130 65[130 92 111 111!111 111[92 130 65 130!65 130[38 130 19 111!19 111[0 92 0 65!0 65[0 38 19 19"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

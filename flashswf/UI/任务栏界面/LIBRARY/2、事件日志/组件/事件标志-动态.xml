@@ -1,0 +1,91 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2、事件日志/组件/事件标志-动态" itemID="67cc1071-000002cb" lastModified="1741426967">
+  <timeline>
+    <DOMTimeline name="事件标志-动态" currentFrame="24">
+      <layers>
+        <DOMLayer name="遮罩" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="5.10675048828125" d="4.0806884765625" tx="-6.55" ty="0.65"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!31 54|172 54!172 54|172 152!172 152|31 152!31 152|31 54"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#FF800A" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2、事件日志/组件/记录-多行" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="5.25" ty="13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.7" y="12.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2、事件日志/组件/记录-多行" selected="true" symbolType="graphic" centerPoint3DX="18.95" centerPoint3DY="18.25" loop="loop">
+                  <matrix>
+                    <Matrix tx="5.25" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.7" y="12.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="5.10675048828125" d="1.2244873046875" tx="-6.55" ty="-2.85"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!31 54|172 54!172 54|172 152!172 152|31 152!31 152|31 54"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="5.10675048828125" d="4.8968505859375" tx="-6.55" ty="-3.75"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!31 54|172 54!172 54|172 152!172 152|31 152!31 152|31 54"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

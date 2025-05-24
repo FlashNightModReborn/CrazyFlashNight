@@ -1,0 +1,387 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/零件/待机武器" itemID="662e3396-00001515" lastModified="1714303894" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="待机武器">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="-0.011322021484375" c="0.022308349609375" d="0" tx="124.85" ty="13.55"/>
+                        </matrix>
+                        <GradientEntry ratio="0.713725490196078"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00469970703125" d="0.265548706054688" tx="105.2" ty="248.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0155029296875" d="0.0155029296875" tx="101.95" ty="533.3"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!2395 530[2406 528 2415 525!2415 525|2287 525"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!2287 525[2279 528 2271 531!2271 531|2395 530"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!2149 627|2149 9328!2149 9328|1925 9328!1925 9328|1925 627!1925 627|2149 627"/>
+                    <Edge strokeStyle="1" edges="!217 525|252 525"/>
+                    <Edge fillStyle1="3" strokeStyle="2" edges="!2039 10434[2135 10434 2203 10502!2203 10502[2271 10570 2271 10666!2271 10666[2271 10762 2203 10830!2203 10830[2174 10859 2139 10876!2139 10876[2094 10898 2039 10898!2039 10898[1984 10898 1939 10876!1939 10876[1904 10859 1875 10830!1875
+ 10830[1807 10762 1807 10666!1807 10666[1807 10570 1875 10502!1875 10502[1943 10434 2039 10434"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.54827880859375" d="1.54827880859375" tx="-86.3" ty="-562.55"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.00439453125" d="-0.0255126953125" tx="124.4" ty="688.1"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#333333" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!2282 13308|2282 14124!2282 14124[2282 14134 2292 14134!2292 14134|2572 14134!2572 14134[2582 14134 2582 14124!2582 14124|2582 13308!2582 13308[2582 13298 2572 13298!2572 13298|2292 13298!2292 13298[2282 13298 2282 13308"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.09477233886719" b="-1.09478759765625" c="1.09478759765625" d="1.09477233886719" tx="-496.7" ty="-270.3"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.002197265625" d="0.002197265625" tx="143.85" ty="419.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!2896 8350|2896 8412!2896 8412|2858 8412!2858 8412|2858 8350!2858 8350|2896 8350"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="-1.09478759765625" b="-1.09477233886719" c="1.09477233886719" d="-1.09478759765625" tx="-216.45" ty="649.05"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.002197265625" d="0.002197265625" tx="143.85" ty="419.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!2896 8350|2896 8412!2896 8412|2858 8412!2858 8412|2858 8350!2858 8350|2896 8350"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.09477233886719" b="-1.09478759765625" c="1.09478759765625" d="1.09475708007813" tx="-534.4" ty="-216.1"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.002197265625" d="0.002197265625" tx="143.85" ty="419.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!2896 8350|2896 8412!2896 8412|2858 8412!2858 8412|2858 8350!2858 8350|2896 8350"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.09477233886719" b="1.09478759765625" c="1.09478759765625" d="-1.09475708007813" tx="-496.7" ty="384.9"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.002197265625" d="0.002197265625" tx="143.85" ty="419.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!2896 8350|2896 8412!2896 8412|2858 8412!2858 8412|2858 8350!2858 8350|2896 8350"/>
+                  </edges>
+                </DOMShape>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0194854736328125" b="-0.0233154296875" c="0.0565338134765625" d="0.0472564697265625" tx="111.4" ty="34.95"/>
+                            </matrix>
+                            <GradientEntry color="#666666" ratio="0"/>
+                            <GradientEntry ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#191919"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#333333"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="
+!1595 525|2415 525!2415 525|2505 624!2505 624|2505 1677!2505 1677|2387 1801!2387 1801|1650 1801!1650 1801|1533 1708"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="
+!1533 1708|1099 1708!1099 1708|1099 968!1099 968|1534 974"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="
+!1534 974|1534 764!1534 764|1595 699!1595 699|1595 624"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="
+!1595 624|975 626"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="
+!975 626|975 824!975 824|49 824!49 824|56 785!56 785|56 631"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="
+!56 631|217 525!217 525|1595 525"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!1595 624|1595 525"/>
+                        <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+!975 626|56 631"/>
+                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!1533 1708|1534 974"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 1" selected="true" centerPoint3DX="68.8" centerPoint3DY="65.8">
+                  <matrix>
+                    <Matrix a="1.54827880859375" d="1.54827880859375" tx="55.4" ty="49.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7" y="11"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 2" centerPoint3DX="26.4" centerPoint3DY="42.9">
+                  <matrix>
+                    <Matrix a="1.48550415039063" d="0.646041870117188" tx="3.8" ty="32.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0229339599609375" b="0.003753662109375" c="-0.003753662109375" d="0.0229339599609375" tx="128.65" ty="11"/>
+                            </matrix>
+                            <GradientEntry color="#FF0000" ratio="0"/>
+                            <GradientEntry ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#333333"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0" b="-0.011322021484375" c="0.022308349609375" d="0" tx="124.85" ty="13.55"/>
+                            </matrix>
+                            <GradientEntry ratio="0.713725490196078"/>
+                            <GradientEntry color="#666666" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0196533203125" d="0.0708770751953125" tx="62.8" ty="23.95"/>
+                            </matrix>
+                            <GradientEntry color="#666666" ratio="0"/>
+                            <GradientEntry ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!2510 638[2699 538 2651 356"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!2651 356[2629 332 2589 299!2589 299[2550 265 2510 226"/>
+                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!2510 226[2620 471 2415 525"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!2415 525[2406 528 2395 530"/>
+                        <Edge fillStyle0="2" edges="
+!2395 530[2449 578 2510 638"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="
+!2346 31[2356 13 2386 0!2386 0|2853 408!2853 408[2869 496 2801 502!2801 502|2651 356"/>
+                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="
+!2417 446[2370 488 2287 525"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="
+!2287 525|2415 525!2346 31|2256 30!2256 30[2205 53 2394 226!2394 226[2524 347 2417 446"/>
+                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!2510 226|2347 95!2347 95[2330 56 2346 31"/>
+                        <Edge fillStyle0="4" strokeStyle="1" edges="
+!2417 446|252 446!252 446|252 525"/>
+                        <Edge fillStyle0="4" edges="
+!252 525|2287 525"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 6" centerPoint3DX="102.25" centerPoint3DY="63.25">
+                  <matrix>
+                    <Matrix a="1.54827880859375" d="1.54827880859375" tx="77.1" ty="41.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.25" y="15.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 5" centerPoint3DX="27.7" centerPoint3DY="87.9">
+                  <matrix>
+                    <Matrix a="1.54827880859375" d="1.54827880859375" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.15" y="40.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 3" centerPoint3DX="26.1" centerPoint3DY="130.55">
+                  <matrix>
+                    <Matrix a="1.54827880859375" d="1.54827880859375" tx="4.5" ty="102.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.45" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 4" centerPoint3DX="27.65" centerPoint3DY="83.1">
+                  <matrix>
+                    <Matrix a="1.54827880859375" d="1.54827880859375" tx="5.05" ty="28.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.8" y="36.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

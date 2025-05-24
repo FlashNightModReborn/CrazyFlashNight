@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/1.特效文件夹/10.力大砖飞/陨星坠地/未命名文件夹 1/shape 63" itemID="56c077c2-0000003f" symbolType="graphic" lastModified="1455454146">
+  <timeline>
+    <DOMTimeline name="shape 63">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.008026123046875" b="-0.017974853515625" c="0.002532958984375" d="0.001129150390625" tx="22.7" ty="-1.3"/>
+                        </matrix>
+                        <GradientEntry color="#EFFFFF" ratio="0"/>
+                        <GradientEntry color="#E9FFFF" ratio="0.705882352941177"/>
+                        <GradientEntry color="#BDFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0030517578125" b="-0.0068511962890625" c="0.0172576904296875" d="0.0077056884765625" tx="-36.5" ty="-9.15"/>
+                        </matrix>
+                        <GradientEntry color="#EFFFFF" ratio="0"/>
+                        <GradientEntry color="#E9FFFF" ratio="0.705882352941177"/>
+                        <GradientEntry color="#BDFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!624 -303|282 250!282 250|519 -59!519 -59|624 -303"/>
+                    <Edge fillStyle1="2" edges="!-703 -216|-498 56!-498 56|-733 -168!-733 -168|-963 -421!-963 -421|-703 -216"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

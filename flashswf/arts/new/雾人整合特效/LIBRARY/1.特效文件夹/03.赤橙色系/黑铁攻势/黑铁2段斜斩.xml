@@ -1,0 +1,152 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/黑铁攻势/黑铁2段斜斩" itemID="65473501-00000e25" linkageExportForAS="true" linkageIdentifier="黑铁2段斜斩" lastModified="1730486939" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="黑铁2段斜斩">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BDD3F1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+   if(_parent.方向 == "右")
+   {
+      _parent.移动("右",慢速度);
+   }
+   else if(_parent.方向 == "左")
+   {
+      _parent.移动("左",慢速度);
+   }
+}
+gotoAndPlay(_parent.近战招式);
+if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-1.5" centerPoint3DY="18.35">
+                  <matrix>
+                    <Matrix a="4.56234741210938" b="0.636154174804688" c="-0.282745361328125" d="2.02783203125" tx="-86.6" ty="-34.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-54" centerPoint3DY="15.6">
+                  <matrix>
+                    <Matrix a="1.27128601074219" b="1.6832275390625" c="-1.26976013183594" d="0.959030151367188" tx="-58.1" ty="-40.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="17.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 66" color="#8787CA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/黑铁攻势/Symbol 837" centerPoint3DX="25.55" centerPoint3DY="2.7">
+                  <matrix>
+                    <Matrix a="-0.0782012939453125" b="-0.234207153320313" c="0.258010864257813" d="-0.0698699951171875" tx="66.05" ty="-23.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.07916259765625" b="0.00933837890625" c="-0.01873779296875" d="0.13482666015625" tx="-37.5" ty="-8.55"/>
+                        </matrix>
+                        <GradientEntry color="#FFAD00" ratio="0"/>
+                        <GradientEntry color="#FFAD00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-1057 -680[-925 -284 -479 -99!-479 -99[-340 -43 -195 -17!-195 -17[-357 52 -586 -13!-586 -13[-408 144 -235 216!-235 216[-449 277 -685 213!-685 213[-532 437 -191 528!-191 528[-415 605 -721 613!-721 613[-469 804 56 833!56 833[-412 984 -964
+ 881!-964 881[-562 1218 200 1272!200 1272[462 1292 767 1279!767 1279[862 1274 961 1267!961 1267|911 1279!911 1279[844 1297 777 1314!777 1314[433 1393 103 1393!103 1393[-42 1392 -183 1378!-183 1378[-572 1335 -936 1186!-936 1186[-1808 827
+ -2065 53!-2065 53[-2087 -14 -2112 -102!-2112 -102|-1099 -889!-1099 -889[-1092 -785 -1057 -680"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.04150390625" b="0.0201568603515625" c="-0.0703277587890625" d="0.119613647460938" tx="-45.85" ty="-11.8"/>
+                        </matrix>
+                        <GradientEntry color="#FFAD00" ratio="0"/>
+                        <GradientEntry color="#FFAD00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-1059 -686[-962 -394 -808 -180!-808 -180[-933 -220 -1111 -381!-1111 -381[-1233 -173 -1160 77!-1160 77[-1295 -17 -1429 -168!-1429 -168[-1527 89 -1374 366!-1374 366[-1517 323 -1666 148!-1666 148[-1582 363 -1362 639!-1362 639[-1657 484
+ -1856 199!-1856 199[-1652 676 -1111 1103!-1111 1103[-1836 743 -2066 49!-2066 49[-2090 -18 -2115 -105!-2115 -105|-1101 -895!-1101 -895[-1095 -790 -1059 -686"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-22.15" ty="33.5"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0057830810546875" b="0.0049285888671875" c="-0.102157592773438" d="0.098785400390625" tx="-63.8" ty="-51"/>
+                        </matrix>
+                        <GradientEntry color="#FFAD00" ratio="0"/>
+                        <GradientEntry color="#FFAD00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!-1626 -627S1[-1571 -461 -1485 -313!-1485 -313[-1567 -564 -1550 -748!-1550 -748[-1445 -762 -1398 -705!-1398 -705[-1409 -929 -1091 -1087!-1091 -1087|-834 -1139!-834 -1139[-836 -1368 -650 -1484!-650 -1484[-658 -1527 -660 -1570!-660 -1570
+|-1673 -782!-1673 -782[-1649 -693 -1626 -627"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/元件 4" itemID="65fbad10-000003cb" lastModified="1710992656">
+  <timeline>
+    <DOMTimeline name="元件 4">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="所有素材/bitmap6.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="-41.4715576171875" d="41.4715576171875" tx="1644.7"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <BitmapFill bitmapPath="所有素材/bitmap6.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="41.4715576171875" d="41.4715576171875" tx="1630"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <BitmapFill bitmapPath="所有素材/bitmap6.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="41.4715576171875" d="41.4715576171875"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <BitmapFill bitmapPath="所有素材/bitmap6.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="-41.4715576171875" d="41.4715576171875" tx="824.7"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <BitmapFill bitmapPath="所有素材/bitmap6.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="41.4715576171875" d="41.4715576171875" tx="820"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!32600 0S2|40880 0!40880 0|40880 8295!40880 8295|32600 8295"/>
+                    <Edge fillStyle1="1" edges="!32600 8295S2|24600 8295"/>
+                    <Edge fillStyle1="5" edges="!24600 8295S2|16400 8295"/>
+                    <Edge fillStyle1="4" edges="!16400 8295S2|8200 8295"/>
+                    <Edge fillStyle1="3" edges="!8200 8295S2|0 8295!0 8295|0 0!0 0|8200 0"/>
+                    <Edge fillStyle1="4" edges="!8200 0S2|16400 0"/>
+                    <Edge fillStyle1="5" edges="!16400 0S2|24600 0"/>
+                    <Edge fillStyle1="1" edges="!24600 0S2|32600 0"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!32600 0S3|32600 8295"/>
+                    <Edge fillStyle0="1" fillStyle1="5" edges="!24600 0S3|24600 8295"/>
+                    <Edge fillStyle0="4" fillStyle1="5" edges="!16400 8295S3|16400 0"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!8200 0S3|8200 8295"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

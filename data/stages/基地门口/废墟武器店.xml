@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk3_1_BG.swf</Background>
+            <PlayerX>865</PlayerX>
+            <PlayerY>599</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Moan</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>1493</x>
+                        <y>384</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种5</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>1685</x>
+                        <y>234</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>284</x>
+                        <y>229</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk3_2_BG.swf</Background>
+            <PlayerX>871</PlayerX>
+            <PlayerY>620</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>414</x>
+                        <y>324</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>1350</x>
+                        <y>304</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>1648</x>
+                        <y>240</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种6</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>1596</x>
+                        <y>240</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk3_3_BG.swf</Background>
+            <PlayerX>875</PlayerX>
+            <PlayerY>624</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>501</x>
+                        <y>250</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>1401</x>
+                        <y>398</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种6</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <x>352</x>
+                        <y>270</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>3</Level>
+                        <x>1232</x>
+                        <y>250</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk3_4_BG.swf</Background>
+            <PlayerX>100</PlayerX>
+            <PlayerY>359</PlayerY>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>634</x>
+                <y>392</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>最小主线进度:5,最大主线进度:5,内部物:m9,数量:1,等级:0,名字:木箱</Parameters>
+            </Instance>
+            <Instance id="1">
+                <x>560</x>
+                <y>260</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>内部物:冲锋枪通用弹药,数量:10,等级:0,名字:木箱2</Parameters>
+            </Instance>
+            <Instance id="2">
+                <x>1130</x>
+                <y>450</y>
+                <Identifier>隐藏资源点</Identifier>
+                <Parameters>最小主线进度:5,最大主线进度:5,内部物:53式步骑枪,数量:1,等级:0,名字:木箱3</Parameters>
+            </Instance>
+            <Instance id="3">
+                <x>1130</x>
+                <y>450</y>
+                <Identifier>隐藏资源点</Identifier>
+                <Parameters>最小主线进度:6,内部物:突击步枪通用弹药,数量:1,等级:0,名字:木箱3</Parameters>
+            </Instance>
+        </Instances>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>啊…………怎么有个家伙在这儿……是敌人吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这家伙身上有枪，在基地没有见过这个家伙，应该是敌人没错！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>只要在他拔枪之前快速解决掉他就赢了！如果他拔枪，只要避免和他同一直线就能避开子弹！好，来吧！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <x>800</x>
+                        <y>320</y>
+                        <spritename>主角-男</spritename>
+                        <Name>盗贼</Name>
+                        <IsHostile>true</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon />
+                        <SecondaryWeapon>PPK</SecondaryWeapon>
+                        <SecondaryWeapon2 />
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-络腮胡</HairStyle>
+                        <HeadEquipment>男变装-圆框墨镜</HeadEquipment>
+                        <BodyArmor>褐色背带背心</BodyArmor>
+                        <LegArmor>盗贼牛仔裤带腿包</LegArmor>
+                        <HandGear />
+                        <FootGear>褐色简单皮鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

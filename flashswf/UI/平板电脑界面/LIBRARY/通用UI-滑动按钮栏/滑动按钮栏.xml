@@ -1,0 +1,143 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="通用UI-滑动按钮栏/滑动按钮栏" itemID="67690413-000002d2" lastModified="1734958489" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="滑动按钮栏">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[enableScroll = true;
+baseWidth = 120;
+baseHeight = 20;
+baseBorder = 5;
+baseNum = 8;
+btnList = null;
+
+itemNum = 0;
+scrollNum = 0;
+scrollIndex = 0;
+
+function initialize(){
+	if(!this.itemNameList.length || !this.buttonEvent){
+		this._visible = false;
+		return;
+	}
+	this.itemNum = itemNameList.length;
+	if(isNaN(btnNum))btnNum = baseNum;
+	if(btnNum >= itemNum){
+		btnNum = itemNum;
+		enableScroll = false;
+	}else{
+		this.scrollNum = itemNum - btnNum + 1;
+		this.scrollIndex = 0;
+	}
+	//
+	if(isNaN(btnWidth))btnWidth = baseWidth;
+	if(isNaN(btnHeight))btnHeight = baseHeight;
+	if(isNaN(btnBorder))btnBorder = baseBorder;
+	this.btnBound = btnHeight + btnBorder;
+	this.scrollLength =  btnBound * (btnNum - 1);
+	this.totalHeight = btnBound * btnNum - btnBorder;
+	//
+	this.btn0.bg._width = btnWidth;
+	this.btn0.mytext._width = btnWidth;
+	this.btn.buttonIndex = 0;
+	if(enableScroll){
+		this.scrollbar._x = btnWidth + 10;
+		this.scrollbar._height = totalHeight;
+		this.scrollbutton._x = btnWidth + 10;
+	}else{
+		this.scrollbar._visible = false;
+		this.scrollbutton._visible = false;
+	}
+	//
+	btnList = new Array(btnNum);
+	btnList[0] = this.btn0;
+	for(var i = 1; i < btnNum; i++){
+		var btn = this.btn0.duplicateMovieClip("btn"+i,i);
+		btn._y = btnBound * i;
+		btn.buttonIndex = i;
+		btnList[i] = btn;
+	}
+	//
+	refreshButtons();
+	this.buttonEvent(0);
+}
+
+function scroll(){
+	var y = this._ymouse - this.scrollbutton.dy;
+	if(y<0) y=0;
+	if(y>scrollLength) y=scrollLength;
+	this.scrollbutton._y = y;
+	scrollIndex = Math.floor(y / scrollLength * scrollNum);
+	if(scrollIndex >= scrollNum) scrollIndex = scrollNum - 1;
+	refreshButtons();
+}
+
+function refreshButtons(){
+	for(var i = 0; i < btnNum; i++){
+		btnList[i].mytext.text = itemNameList[i + scrollIndex];
+		btnList[i].buttonIndex = i + scrollIndex;
+	}
+}
+
+initialize();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="滑动栏" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动槽" name="scrollbar" centerPoint3DX="132" centerPoint3DY="97.55">
+                  <matrix>
+                    <Matrix tx="130" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="97.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="滑动拖拽按钮" name="scrollbutton" centerPoint3DX="136" centerPoint3DY="10">
+                  <matrix>
+                    <Matrix tx="130"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="10"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	this.dy = _parent._ymouse - this._y;
+
+	this.onEnterFrame = function()
+	{
+		_parent.scroll();
+	};
+}
+on (release, releaseOutside) {
+	delete this.onEnterFrame;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/按钮-单元体" name="btn0" centerPoint3DX="62" centerPoint3DY="10.5">
+                  <transformationPoint>
+                    <Point x="62" y="10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

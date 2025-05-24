@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/事故森林1.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种22</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种23</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种237</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种305</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>不掉装备:true</Parameters>
+                    </Enemy>
+					<Enemy id="5">
+                        <Type>兵种308</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+				</SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种22</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种23</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种237</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种306</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>不掉装备:true</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+				</SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种21</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种22</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种23</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种237</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种307</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>不掉装备:true</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            <Dialogue>
+              <SubDialogue id="0">
+                <Name>文天</Name>
+                <Title>神秘人</Title>
+                <Char>文天</Char>
+                <Text>没想到除了他们还有另外的人也在帮忙搬运这些东西，而且前方似乎还有不少人。</Text>
+              </SubDialogue>
+              <SubDialogue id="1">
+                <Name>文天</Name>
+                <Title>神秘人</Title>
+                <Char>文天</Char>
+                <Text>在此之前做好准备吧。</Text>
+              </SubDialogue>
+            </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/事故森林2.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种296</Type>
+                        <Interval>200</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>25</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种297</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>25</Level>
+                    </Enemy>
+					<Enemy id="2">
+                        <Type>兵种308</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+              <SubDialogue id="0">
+                <Name>文天</Name>
+                <Title>神秘人</Title>
+                <Char>文天</Char>
+                <Text>居然有人已经把技术解析出来了？这些战斗服都是不应该存在于这个世界的东西……</Text>
+              </SubDialogue>
+                </Dialogue>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种301</Type>
+                        <Interval>200</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>25</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种302</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>25</Level>
+                    </Enemy>
+                </EnemyGroup>
+            <Dialogue>
+              <SubDialogue id="0">
+                <Name>？？？</Name>
+                <Title>？？？</Title>
+                <Char>主角模板</Char>
+                <Text>不要再得寸进尺了，这和你们没有任何关系。</Text>
+                <Type>兵种303</Type>
+              </SubDialogue>
+              <SubDialogue id="1">
+                <Name>文天</Name>
+                <Title>神秘人</Title>
+                <Char>文天</Char>
+                <Text>都抢了我保管的东西还没关系？</Text>
+              </SubDialogue>
+            </Dialogue>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种301</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种302</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种297</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种303</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>不掉装备:true</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            <Dialogue>
+              <SubDialogue id="0">
+                <Name>文天</Name>
+                <Title>神秘人</Title>
+                <Char>文天</Char>
+                <Text>呼，辛苦了。我先在这里检查一下还有什么东西能带走的，你先回去吧。</Text>
+              </SubDialogue>
+            </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/标题画面/封面背景 1024*576" itemID="663221de-00001ca5" lastModified="1737210014">
+  <timeline>
+    <DOMTimeline name="封面背景 1024*576">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BFBC45">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/标题画面/Symbol 988" centerPoint3DX="137.75" centerPoint3DY="626.4">
+                  <matrix>
+                    <Matrix a="0.770034790039063" d="0.770172119140625" tx="-272.3" ty="-162.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7A8AF9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="bitmap961.jpg">
+                  <matrix>
+                    <Matrix a="1.27999877929688" d="1.27996826171875" tx="-424" ty="-270"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

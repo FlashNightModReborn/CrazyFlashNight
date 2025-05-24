@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/绝地武士光剑/Symbol 4184" itemID="66631a4d-00002064" symbolType="graphic" lastModified="1715872572">
+  <timeline>
+    <DOMTimeline name="Symbol 4184">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0338134765625" d="0.03326416015625" ty="132.35"/>
+                        </matrix>
+                        <GradientEntry color="#FF00E6" alpha="0.501960784313725" ratio="0"/>
+                        <GradientEntry color="#FF00E6" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!550 2647[550 2872 389 3030!389 3030[228 3189 0 3189!0 3189[-228 3189 -389 3030!-389 3030[-550 2872 -550 2647!-550 2647[-550 2423 -389 2265!-389 2265[-228 2106 0 2106!0 2106[228 2106 389 2265!389 2265[550 2423 550 2647"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.03997802734375" d="0.213973999023438" tx="-0.05" ty="-17.55"/>
+                        </matrix>
+                        <GradientEntry color="#FF00E6" alpha="0.501960784313725" ratio="0"/>
+                        <GradientEntry color="#FF00E6" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!650 -351[650 1092 459 2111!459 2111[269 3129 -1 3129!-1 3129[-270 3129 -461 2111!-461 2111[-651 1092 -651 -351!-651 -351[-651 -1794 -461 -2813!-461 -2813[-270 -3832 -1 -3832!-1 -3832[269 -3832 459 -2813!459 -2813[650 -1794 650 -351"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

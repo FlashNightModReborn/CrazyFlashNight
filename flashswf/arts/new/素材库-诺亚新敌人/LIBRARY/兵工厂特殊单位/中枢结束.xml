@@ -1,0 +1,257 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/中枢结束" itemID="66ba5570-0000135a" lastModified="1747837956" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="中枢结束" currentFrame="44">
+      <layers>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 特效()
+{
+	var myX = _parent._x + 30 - random(60);
+	var myY = _parent._y - random(200);
+	_root.效果("空中小火焰爆炸",myX,myY,100);
+}
+
+var 护罩列表 = [_parent.护罩0, _parent.护罩1, _parent.护罩2, _parent.护罩3];
+for (var i = 0; i < 4; i++)
+{
+	if (护罩列表[i].正常)
+	{
+		护罩列表[i].gotoAndPlay("消失");
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[特效();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[特效();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[特效();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[特效();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[特效();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[特效();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[特效();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 子弹属性 = _root.子弹属性初始化(this.攻击点);
+
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.子弹种类 = "普通爆炸";
+子弹属性.子弹威力 = 100;
+子弹属性.子弹速度 = 0;
+子弹属性.Z轴攻击范围 = 60;
+子弹属性.击倒率 = 1;
+
+_root.子弹区域shoot传递(子弹属性);
+
+
+//强制击杀所有怪物
+var 玩家 = _root.gameworld[_root.控制目标];
+var 敌人列表 = _root.帧计时器.获取敌人缓存(玩家, 1);
+for (var i = 0; i < 敌人列表.length; i++)
+{
+	敌人列表[i].hp = 0;
+	敌人列表[i].dispatcher.publish("death",敌人列表[i]);
+	敌人列表[i].状态改变("血腥死");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.创建可拾取物("兵工厂备份硬盘",1,_parent._x,_parent._y,true,{xmov:-10, 垂直速度:-15,_xscale:150,_yscale:150});]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_parent.hp <= 0)
+{
+	if (_parent.已加经验值 != true)
+	{
+		if (_parent.是否为敌人 == true)
+		{
+			_root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+			_root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+			_root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+			_parent.计算经验值();
+		}
+	}
+}
+_root.敌人函数.注销单位(_parent);
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="27" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" name="攻击点" centerPoint3DX="12.5" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix ty="-30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/火焰特效" centerPoint3DX="-21" centerPoint3DY="-143">
+                  <matrix>
+                    <Matrix tx="-13.9" ty="-52.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.1" y="-90.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="3" ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-7" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="4" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢素材" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢结束素材" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

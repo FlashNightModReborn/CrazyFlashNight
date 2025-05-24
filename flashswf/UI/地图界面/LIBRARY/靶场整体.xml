@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="靶场整体" itemID="67e69c17-000007e5" symbolType="graphic" lastModified="1743166491">
+  <timeline>
+    <DOMTimeline name="靶场整体">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 51851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.72979736328125" d="0.5953369140625" tx="17.6" ty="78"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.614166259765625" d="0.614166259765625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.35" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/铁丝网2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.614166259765625" d="0.614166259765625" tx="502.5" ty="2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="220.7" y="124.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,429 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/05.粉紫色系/樱刺/樱刺" itemID="653d5638-00000824" linkageExportForAS="true" linkageIdentifier="樱刺" lastModified="1740301049" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="樱刺" currentFrame="7">
+      <layers>
+        <DOMLayer name="代码" color="#666FF0" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = random(0);
+this._y -= 100;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="判定框" color="#83C998" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="156.3" centerPoint3DY="7.05">
+                  <matrix>
+                    <Matrix a="5.012451171875" b="1.52587890625e-005" d="2.21722412109375" tx="56.85" ty="-35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="199.4" centerPoint3DY="7.95">
+                  <matrix>
+                    <Matrix a="5.012451171875" b="1.52587890625e-005" d="2.21722412109375" tx="100.25" ty="-35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="199.4" centerPoint3DY="7.95">
+                  <matrix>
+                    <Matrix a="5.012451171875" b="1.52587890625e-005" d="2.21722412109375" tx="100.25" ty="-35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B16AAD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5554" blendMode="add" centerPoint3DX="139.4" centerPoint3DY="3.85">
+                  <matrix>
+                    <Matrix a="1.18382263183594" c="-0.0066986083984375" d="-1.18377685546875" tx="94.5" ty="-9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5558" blendMode="add" centerPoint3DX="175.95" centerPoint3DY="23.1">
+                  <matrix>
+                    <Matrix a="1.18382263183594" c="-0.0066986083984375" d="-1.18377685546875" tx="119.7" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5564" blendMode="add" centerPoint3DX="180.8" centerPoint3DY="36.2">
+                  <matrix>
+                    <Matrix a="1.18382263183594" c="-0.0066986083984375" d="-1.18377685546875" tx="113.7" ty="16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5568" blendMode="add" centerPoint3DX="198.15" centerPoint3DY="35">
+                  <matrix>
+                    <Matrix a="1.18382263183594" c="-0.0066986083984375" d="-1.18377685546875" tx="121.35" ty="16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5572" blendMode="add" centerPoint3DX="178.6" centerPoint3DY="32.85">
+                  <matrix>
+                    <Matrix a="1.18382263183594" c="-0.0066986083984375" d="-1.18377685546875" tx="123.85" ty="16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BDD3F1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5552" blendMode="add" centerPoint3DX="107.05" centerPoint3DY="7.55">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-1.52587890625e-005" c="1.52587890625e-005" d="0.999984741210938" tx="94.85" ty="-2.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5556" blendMode="add" centerPoint3DX="108.85" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-1.52587890625e-005" c="1.52587890625e-005" d="0.999984741210938" tx="96.9" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5560" blendMode="add" centerPoint3DX="176.7" centerPoint3DY="35.6">
+                  <matrix>
+                    <Matrix a="1.18382263183594" c="-0.0066986083984375" d="-1.18377685546875" tx="108.05" ty="15.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5562" blendMode="add" centerPoint3DX="169.6" centerPoint3DY="-0.05">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-1.52587890625e-005" c="1.52587890625e-005" d="0.999984741210938" tx="101.85" ty="-16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5566" blendMode="add" centerPoint3DX="170.8" centerPoint3DY="1.9">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-1.52587890625e-005" c="1.52587890625e-005" d="0.999984741210938" tx="105.75" ty="-16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5570" blendMode="add" centerPoint3DX="169.65" centerPoint3DY="5.3">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="-1.52587890625e-005" c="1.52587890625e-005" d="0.999984741210938" tx="105.8" ty="-9.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#BB6D6E">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5548" blendMode="add" centerPoint3DX="113.05" centerPoint3DY="6.15">
+                  <matrix>
+                    <Matrix a="1.18382263183594" c="-0.0066986083984375" d="-1.18377685546875" tx="74.35" ty="-5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5550" blendMode="add" centerPoint3DX="72.35" centerPoint3DY="17.75">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="47.8" ty="4.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5548" blendMode="add" centerPoint3DX="105.6" centerPoint3DY="27.75">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="67.6" ty="15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5554" blendMode="add" centerPoint3DX="133.5" centerPoint3DY="31.4">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="89.2" ty="19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5558" blendMode="add" centerPoint3DX="172.6" centerPoint3DY="23.6">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="116.35" ty="5.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5560" blendMode="add" centerPoint3DX="172.4" centerPoint3DY="12.25">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="103.6" ty="-7.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5564" blendMode="add" centerPoint3DX="176.85" centerPoint3DY="11">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="109.6" ty="-7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5568" blendMode="add" centerPoint3DX="193.05" centerPoint3DY="11.15">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="117.9" ty="-7.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5572" blendMode="add" centerPoint3DX="176.7" centerPoint3DY="7.7">
+                  <matrix>
+                    <Matrix a="1.2738037109375" b="-1.52587890625e-005" c="0.007232666015625" d="1.27378845214844" tx="120.45" ty="-7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-106"/>
+                    <GlowFilter blurX="119" blurY="6" color="#FF33FF" strength="1.89"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

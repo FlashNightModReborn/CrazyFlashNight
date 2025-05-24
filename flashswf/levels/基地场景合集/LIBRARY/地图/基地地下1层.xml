@@ -1,0 +1,525 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1747718602" lastUniqueIdentifier="24">
+  <timeline>
+    <DOMTimeline name="基地地下1层">
+      <layers>
+        <DOMLayer name="Script Layer" color="#CAA521">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[允许通行 = true;
+_root.配置场景环境信息();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="功能" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4A8ED2" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.swapDepths(100000);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5AF6B6" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E8C12C" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="出生地" centerPoint3DX="872.95" centerPoint3DY="349.8">
+                  <matrix>
+                    <Matrix a="5.51217651367188" d="1.75689697265625" tx="862.45" ty="329.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("","","","");
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#E4A038">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2391" name="普通门" centerPoint3DX="229.2" centerPoint3DY="439.75">
+                  <matrix>
+                    <Matrix a="-0.529281616210938" b="0.614883422851563" tx="180.9" ty="345.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#8DB0AF" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门4" centerPoint3DX="180.8" centerPoint3DY="390.35">
+                  <matrix>
+                    <Matrix a="4.216064453125" d="1.23077392578125" tx="170.3" ty="370.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("门1","健身房","普通门",_root.左键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#79FE48" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门3" centerPoint3DX="484.45" centerPoint3DY="273.6">
+                  <matrix>
+                    <Matrix a="5.34867858886719" d="1.75540161132813" tx="473.95" ty="253.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("出生地","地图-走廊","",_root.上键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#ACBE51" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门2" centerPoint3DX="1398.4" centerPoint3DY="283.6">
+                  <matrix>
+                    <Matrix a="5.34867858886719" d="1.75540161132813" tx="1387.9" ty="263.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("门2","基地1层","",_root.上键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#10A1DE" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" centerPoint3DX="1216.35" centerPoint3DY="284.6">
+                  <matrix>
+                    <Matrix a="5.51217651367188" d="1.75689697265625" tx="1205.85" ty="264.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	切换场景("门1","武器库","武器库门",_root.上键);
+}
+onClipEvent (load) {
+	是否从门加载主角 = true;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#EDBF22" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/健身房沙袋" name="沙袋" centerPoint3DX="1674.8" centerPoint3DY="429.45">
+                  <matrix>
+                    <Matrix tx="1608.25" ty="302.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="NPC" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="A兵团士兵？" color="#96DADD" parentLayerIndex="11" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2385" centerPoint3DX="1047.8" centerPoint3DY="587">
+                  <matrix>
+                    <Matrix tx="976.55" ty="461.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 175)
+	{
+		this._visible = 0;
+	}
+	是否为敌人 = false;
+	this._name = 名字 = "A兵团士兵";
+	身高 = 175;
+	性别 = "男";
+	方向 = "右";
+	if (_root.NPCTaskCheck(名字).result == "接受任务")
+	{
+		_root.发布消息(名字 + "也许需要你的帮助");
+	}
+	默认对话 = [[], [], []];
+	默认对话[0][0] = ["A兵团士兵", "线人", "A兵团士兵", "补给的事情就拜托给你了！", "微笑"];
+	默认对话[1][0] = ["A兵团士兵", "线人", "A兵团士兵", "搜集的时候要小心，很多地方残留的大量僵尸！", "普通"];
+	默认对话[2][0] = ["A兵团士兵", "线人", "A兵团士兵", "A兵团最强的士兵真是靠的住！", "思考"];
+	NPC任务_任务_关卡路径 = "搜寻诺亚前线战场补给";
+	商品编号 = "O2011100900000000802";
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="蓝发女" color="#AFB740" parentLayerIndex="11" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/蓝发女-NPC" centerPoint3DX="689.75" centerPoint3DY="384.75">
+                  <matrix>
+                    <Matrix tx="601.45" ty="260.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	脸型 = "女变装-基本脸型";
+	发型 = "";
+	头部装备 = "TheGirl头";
+	上装装备 = "TheGirl上装";
+	手部装备 = "TheGirl手";
+	下装装备 = "TheGirl下装";
+	脚部装备 = "TheGirl脚";
+	颈部装备 = "新手军牌";
+	长枪 = "";
+	手枪 = "";
+	刀 = "";
+	手雷 = "";
+	名字 = "The Girl";
+	商店 = "服装＆消耗品出售";
+	身高 = 155;
+	性别 = "女";
+	动画 = "端盘子";
+	可学的技能 = _root.theGirl的技能;
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="蓝头巾" color="#EF7277" parentLayerIndex="11" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/Blue-NPC" centerPoint3DX="1565.65" centerPoint3DY="553.2">
+                  <matrix>
+                    <Matrix tx="1477.35" ty="429.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	脸型 = "男变装-基本脸型";
+	发型 = "发型-男式-蓝色头巾";
+	头部装备 = "blue头-NPC";
+	上装装备 = "blue上装-NPC";
+	手部装备 = "blue装手套";
+	下装装备 = "blue下装-NPC";
+	脚部装备 = "A兵团制式战术皮鞋";
+	颈部装备 = "";
+	长枪 = "";
+	手枪 = "";
+	刀 = "";
+	名字 = "Blue";
+	商店 = "冷兵器出售";
+	身高 = 185;
+	性别 = "男";
+	动画 = "拳头攻击";
+	NPC任务_任务_关卡路径 = "挑战Blue";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Andy Law" color="#9BCD8B" parentLayerIndex="11" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/Andy-NPC" centerPoint3DX="819.7" centerPoint3DY="382.95">
+                  <matrix>
+                    <Matrix tx="731.4" ty="258.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	脸型 = "男变装-基本脸型";
+	发型 = "";
+	头部装备 = "Andy领子-NPC";
+	上装装备 = "Andy上装-NPC";
+	手部装备 = "Andy装手套-NPC";
+	下装装备 = "Andy下装-NPC";
+	脚部装备 = "黑色板鞋";
+	颈部装备 = "";
+	长枪 = "";
+	手枪 = "Mp5 pdw";
+	手枪2 = "m9";
+	刀 = "";
+	手雷 = "";
+	名字 = "Andy Law";
+	商店 = "服装出售"
+	身高 = 175;
+	性别 = "男";
+	动画 = "普通坐";
+	方向 = "左";
+	NPC任务_任务_关卡路径 = "挑战Andylaw";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地图" color="#E8922C" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 地下1层" name="地图" centerPoint3DX="1041.85" centerPoint3DY="407.25">
+                  <matrix>
+                    <Matrix d="1.0001220703125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#47BEF8" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" left="50.9" width="68.2" height="18.45" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="0.776123046875" b="-0.731719970703125" tx="63.05" ty="258.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>健身房</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" leftMargin="26" lineSpacing="0" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#CCFF00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" leftMargin="26" lineSpacing="0" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#CCFF00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#CCFF99"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#537CBB" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="89.75" height="12.95" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="1158.75" ty="51.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>武器仓库</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#7D879D" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2345" name="武器库门" centerPoint3DX="1287.9" centerPoint3DY="280.55">
+                  <matrix>
+                    <Matrix tx="1216.4" ty="134.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#B4AA9D" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2337" centerPoint3DX="818.85" centerPoint3DY="63.6">
+                  <matrix>
+                    <Matrix tx="792.45" ty="36"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#F3C7FD" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#58F187" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2330" centerPoint3DX="1128.6" centerPoint3DY="59.15">
+                  <matrix>
+                    <Matrix a="0.533737182617188" d="0.533737182617188" tx="1097" ty="17.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#BA12CB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/地下1层背景" name="背景" centerPoint3DX="1982.2" centerPoint3DY="548.25" exportAsBitmap="true">
+                  <matrix>
+                    <Matrix tx="937.7" ty="245.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

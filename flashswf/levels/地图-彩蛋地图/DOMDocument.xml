@@ -1,0 +1,746 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="button" itemID="66011506-00000dd7"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="6601150c-00000dde" isExpanded="true"/>
+          <DOMFolderItem name="sprite/新地图" itemID="66011bb7-00000e65" isExpanded="true"/>
+          <DOMFolderItem name="UI重构" itemID="668a7e49-000018c6"/>
+          <DOMFolderItem name="UI重构/商店相关" itemID="668a7e49-000018c7"/>
+          <DOMFolderItem name="歌留多" itemID="670cf381-0000038c" isExpanded="true"/>
+          <DOMFolderItem name="零件" itemID="66012485-00000403" isExpanded="true"/>
+          <DOMFolderItem name="诺艾尔" itemID="660cdfcd-00000e07" isExpanded="true"/>
+          <DOMFolderItem name="素材" itemID="67fc5e94-00001812"/>
+          <DOMFolderItem name="素材/角色部件" itemID="6804f039-00001811"/>
+          <DOMFolderItem name="素材/武器" itemID="6800ed41-0000173f"/>
+          <DOMFolderItem name="素材/杂项" itemID="6800ed35-0000173a"/>
+          <DOMFolderItem name="所有素材" itemID="66011278-00000ccb"/>
+          <DOMFolderItem name="所有素材/1.冷兵器" itemID="65fbe274-00000c38"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/锐器" itemID="65fbe274-00000c39"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/锐器/石中剑" itemID="65fbe274-00000c3a"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器" itemID="65fbe274-00000c3c"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/轮盘重工" itemID="65fbe274-00000c3d"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/轮盘重工/未命名文件夹 1" itemID="65fbe274-00000c3e"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/勇气灵剑" itemID="65fbe274-00000c40"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/月光大剑" itemID="65fbe274-00000c42"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/斩龙剑" itemID="65fbe274-00000c47"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/斩龙剑/未命名文件夹 1" itemID="65fbe274-00000c48"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/斩月" itemID="65fbe274-00000c4a"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/斩月/未命名文件夹 1" itemID="65fbe274-00000c4b"/>
+          <DOMFolderItem name="所有素材/1.冷兵器/重锐器/指令意志" itemID="65fbe274-00000c4d"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包" itemID="65fb1950-0000405c"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/绯红女皇组件" itemID="65fb1950-00004062"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/绯红女皇组件/0-杂项" itemID="65fb1950-00004063"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/黑檀木白象牙组件" itemID="65fb1950-0000405d"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/黑檀木白象牙组件/白象牙组件" itemID="65fb1950-0000405e"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/黑檀木白象牙组件/白象牙组件/0-杂项" itemID="6568a62b-0000065e"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/黑檀木白象牙组件/黑檀木组件" itemID="65fb1950-00004060"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/黑檀木白象牙组件/黑檀木组件/0-杂项" itemID="6568a8d8-000006cf"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/魔剑但丁组件" itemID="65fb1950-00004072"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项" itemID="65fb1950-00004073"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/叛逆之刃组件" itemID="65fb1950-0000406c"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/叛逆之刃组件/0-杂项" itemID="65fb1950-0000406d"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/阎魔刀组件" itemID="65fb1950-0000407a"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/湛蓝玫瑰组件" itemID="65fb1950-0000407f"/>
+          <DOMFolderItem name="所有素材/鬼泣素材包/湛蓝玫瑰组件/0-杂项" itemID="65fb1950-00004080"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包" itemID="65fbea67-00000faa" isExpanded="true"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包/disword" itemID="65fbea67-00000fab"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包/disword/仿造剑兰" itemID="65fbea67-00000fac"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项" itemID="6568aad3-00000753"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包/disword/剑兰di sword" itemID="65fbea67-00000fae"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包/尾上世莉架" itemID="65fbf7dd-0000087b" isExpanded="true"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包/尾上世莉架/人物组件" itemID="6561b66a-0000027c" isExpanded="true"/>
+          <DOMFolderItem name="所有素材/混沌系列素材包/尾上世莉架/人物组件/动作用" itemID="6552eb65-0000003c"/>
+          <DOMFolderItem name="所有素材/家具" itemID="65fbdfe9-00000897"/>
+          <DOMFolderItem name="所有素材/冷兵" itemID="65fbe7a3-00000f75"/>
+          <DOMFolderItem name="所有素材/冷兵/锐器" itemID="65fbe7a3-00000f76"/>
+          <DOMFolderItem name="所有素材/冷兵/锐器/龍一文字" itemID="65fbe7a3-00000f77"/>
+          <DOMFolderItem name="所有素材/零件" itemID="65f482a0-00001ef3"/>
+          <DOMFolderItem name="所有素材/霜精素材" itemID="66012519-00000444" isExpanded="true"/>
+          <DOMFolderItem name="所有素材/牙狼素材" itemID="65fb1ad0-000040a3"/>
+          <DOMFolderItem name="所有素材/杂物" itemID="65fbdf77-00000890"/>
+          <DOMFolderItem name="所有素材/重复项目文件夹" itemID="65fbdeee-00000881"/>
+          <DOMFolderItem name="所有素材/装备" itemID="65fbe6c1-00000eb2"/>
+          <DOMFolderItem name="所有素材/装备/西风大剑" itemID="65fbe6c1-00000eb3"/>
+          <DOMFolderItem name="文天npc" itemID="660ce059-00000e31" isExpanded="true"/>
+          <DOMFolderItem name="小绿人" itemID="6561b396-000001cd"/>
+          <DOMFolderItem name="小绿人/光子破坏炮" itemID="660f9cb9-000005e5"/>
+          <DOMFolderItem name="小绿人/人物发型" itemID="64e8c230-0000041c"/>
+          <DOMFolderItem name="小绿人/人物发型/精修" itemID="64bb144a-000000f4"/>
+          <DOMFolderItem name="小绿人/尚未整理" itemID="660f9cb9-000005c3"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="所有素材/201808-120FP0560176" itemID="570f8d8f-0000000f" sourceExternalFilepath="./LIBRARY/所有素材/201808-120FP0560176.jpg" originalCompressionType="lossless" quality="50" href="所有素材/201808-120FP0560176.jpg" bitmapDataHRef="M 5 1711009057.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="所有素材/bitmap1.png" itemID="65fb1448-000039bf" sourceExternalFilepath="./LIBRARY/所有素材/bitmap1.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap1.png" bitmapDataHRef="M 3 1710953628.dat" frameRight="5540" frameBottom="4480"/>
+          <DOMBitmapItem name="所有素材/bitmap37.png" itemID="65fb1448-000039c9" sourceExternalFilepath="./LIBRARY/所有素材/bitmap37.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap37.png" bitmapDataHRef="M 1 1710953628.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="位图 1" itemID="6603979e-00000301" sourceExternalFilepath="./LIBRARY/位图 1.png" sourceLastImported="1711511439" externalFileCRC32="1085762004" externalFileSize="1343374" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 6 1711511439.dat" frameRight="76200" frameBottom="29540"/>
+          <DOMBitmapItem name="所有素材/位图 4" itemID="65fbce45-0000042f" sourceExternalFilepath="./LIBRARY/所有素材/位图 4" sourceLastImported="1711001157" originalCompressionType="lossless" quality="50" href="所有素材/位图 4" bitmapDataHRef="M 4 1711001157.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 51651.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b8f" lastModified="1704196122"/>
+          <Include href="button/Symbol 51923.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d4d" lastModified="1704196122"/>
+          <Include href="deadbody.xml" loadImmediate="false" itemID="66d0920e-000012a2" lastModified="1724945142"/>
+          <Include href="PC.xml" loadImmediate="false" itemID="660cec15-0000105d" lastModified="1712122901"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2386.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b38" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35471.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35472.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cbb" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35475.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35477.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35501.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf6" lastModified="1704196122"/>
+          <Include href="shape/Symbol 51880.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ceb" lastModified="1711349998"/>
+          <Include href="sprite/新地图/Symbol 51881.xml" loadImmediate="false" itemID="6597607e-00000ced" lastModified="1711348810"/>
+          <Include href="Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1707199899"/>
+          <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
+          <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720349306"/>
+          <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
+          <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000aec" lastModified="1712300758"/>
+          <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000aee" lastModified="1712300758"/>
+          <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000af0" lastModified="1712300758"/>
+          <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000af2" lastModified="1712300758"/>
+          <Include href="场景门.xml" loadImmediate="false" itemID="66f5a03f-00000e56" lastModified="1727373384"/>
+          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1745164278"/>
+          <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e1b3-000017cf" lastModified="1742201273"/>
+          <Include href="歌留多/歌留多胯.xml" itemIcon="1" loadImmediate="false" itemID="67096725-00000045" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多身体.xml" itemIcon="1" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多手-侧面张开.xml" itemIcon="1" loadImmediate="false" itemID="6709f7c6-000002b6" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多手-张开.xml" itemIcon="1" loadImmediate="false" itemID="6709f7ca-000002b7" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多头.xml" itemIcon="1" loadImmediate="false" itemID="67097170-00000049" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多头整体.xml" itemIcon="1" loadImmediate="false" itemID="6709745f-0000005d" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多五官.xml" itemIcon="1" loadImmediate="false" itemID="67097411-00000058" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多小腿.xml" itemIcon="1" loadImmediate="false" itemID="67096445-0000002b" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多鞋.xml" itemIcon="1" loadImmediate="false" itemID="6709f5e9-00000189" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多鞋鞋带.xml" itemIcon="1" loadImmediate="false" itemID="6709f568-0000017f" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多眼1.xml" itemIcon="1" loadImmediate="false" itemID="670972a2-00000051" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多眼2.xml" itemIcon="1" loadImmediate="false" itemID="670974e1-00000066" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多右大臂.xml" itemIcon="1" loadImmediate="false" itemID="6709648b-00000036" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多右大腿.xml" itemIcon="1" loadImmediate="false" itemID="6709659f-0000003a" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多右小臂.xml" itemIcon="1" loadImmediate="false" itemID="6709648e-00000037" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多左大臂.xml" itemIcon="1" loadImmediate="false" itemID="67096484-00000034" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多左大腿.xml" itemIcon="1" loadImmediate="false" itemID="67096491-00000038" lastModified="1728926280"/>
+          <Include href="歌留多/歌留多左小臂.xml" itemIcon="1" loadImmediate="false" itemID="67096488-00000035" lastModified="1728926280"/>
+          <Include href="歌留多/髅髅宫歌留多.xml" itemIcon="1" loadImmediate="false" itemID="6709f658-00000196" lastModified="1728926280"/>
+          <Include href="歌留多/髅髅宫歌留多-站立动画.xml" loadImmediate="false" itemID="670cf4d1-000003f7" lastModified="1728926298"/>
+          <Include href="歌留多npc.xml" loadImmediate="false" itemID="670cf3d4-000003ba" lastModified="1728926348"/>
+          <Include href="假兰博.xml" loadImmediate="false" itemID="680517af-00000bff" lastModified="1745164207"/>
+          <Include href="假州长.xml" loadImmediate="false" itemID="680517c0-00000c6c" lastModified="1745164224"/>
+          <Include href="可互动的任务接取PC.xml" loadImmediate="false" itemID="660ceb90-00001057" lastModified="1712123235"/>
+          <Include href="零件/带帽霜精头.xml" itemIcon="1" loadImmediate="false" itemID="65e99d6c-00000204" lastModified="1728926532"/>
+          <Include href="零件/霜精臂膀.xml" itemIcon="1" loadImmediate="false" itemID="65e9853a-000001ee" lastModified="1728926532"/>
+          <Include href="零件/霜精脚踝.xml" itemIcon="1" loadImmediate="false" itemID="65e9a0c4-0000020a" lastModified="1728926532"/>
+          <Include href="零件/霜精口水巾.xml" itemIcon="1" loadImmediate="false" itemID="65e99c87-000001fa" lastModified="1728926532"/>
+          <Include href="零件/霜精身子.xml" itemIcon="1" loadImmediate="false" itemID="65e98078-000001e6" lastModified="1728926532"/>
+          <Include href="零件/霜精手.xml" itemIcon="1" loadImmediate="false" itemID="65e99bd4-000001f6" lastModified="1728926532"/>
+          <Include href="零件/霜精右靴子.xml" itemIcon="1" loadImmediate="false" itemID="65e9adc0-000001e9" lastModified="1728926532"/>
+          <Include href="零件/霜精左靴子.xml" itemIcon="1" loadImmediate="false" itemID="65e9adb3-000001e4" lastModified="1728926532"/>
+          <Include href="门提示.xml" loadImmediate="false" itemID="6603bcd7-00000dbc" lastModified="1711520998"/>
+          <Include href="面包机.xml" loadImmediate="false" itemID="6805177d-00000bc8" lastModified="1745164157"/>
+          <Include href="诺艾尔/Symbol 51623.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b66" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51625.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b69" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51627.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b6c" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51629.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b6f" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51631.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b72" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51633.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b75" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51635.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b77" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51637.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b79" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51639.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7c" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51641.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b7f" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51643.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b82" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51645.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b85" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51647.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b88" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51649.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8b" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51650.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8d" lastModified="1728926454"/>
+          <Include href="诺艾尔/Symbol 51652.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b91" lastModified="1728926500"/>
+          <Include href="素材/角色部件/阿波脚.xml" loadImmediate="false" itemID="6800efb3-000017c0" lastModified="1744891827"/>
+          <Include href="素材/角色部件/阿波胯部.xml" loadImmediate="false" itemID="6800f020-000017cc" lastModified="1744891936"/>
+          <Include href="素材/角色部件/阿波头1.xml" loadImmediate="false" itemID="6800e6fd-0000169b" lastModified="1744889597"/>
+          <Include href="素材/角色部件/阿波完整左大腿.xml" loadImmediate="false" itemID="6800f59e-00001911" lastModified="1744893342"/>
+          <Include href="素材/角色部件/阿波小腿.xml" loadImmediate="false" itemID="6800ef6c-000017b6" lastModified="1744891756"/>
+          <Include href="素材/角色部件/阿波右大腿.xml" loadImmediate="false" itemID="6800f02c-000017d0" lastModified="1744891948"/>
+          <Include href="素材/角色部件/阿波左大腿.xml" loadImmediate="false" itemID="6800effd-000017c8" lastModified="1744891901"/>
+          <Include href="素材/角色部件/阿波左下臂.xml" loadImmediate="false" itemID="6800f0c0-000017ed" lastModified="1744892096"/>
+          <Include href="素材/角色部件/机哥.xml" loadImmediate="false" itemID="68015715-00000414" lastModified="1744918481"/>
+          <Include href="素材/角色部件/排骨脊椎.xml" loadImmediate="false" itemID="6800f242-00001842" lastModified="1744892482"/>
+          <Include href="素材/角色部件/排骨脚.xml" loadImmediate="false" itemID="6800f1df-00001832" lastModified="1744892383"/>
+          <Include href="素材/角色部件/排骨胯部.xml" loadImmediate="false" itemID="6800f20e-0000183a" lastModified="1744892430"/>
+          <Include href="素材/角色部件/排骨上臂.xml" loadImmediate="false" itemID="6800f335-0000186f" lastModified="1744892725"/>
+          <Include href="素材/角色部件/排骨上身.xml" loadImmediate="false" itemID="6800f265-00001846" lastModified="1744892517"/>
+          <Include href="素材/角色部件/排骨头1.xml" loadImmediate="false" itemID="6800ebb9-000016c6" lastModified="1744890809"/>
+          <Include href="素材/角色部件/排骨小腿.xml" loadImmediate="false" itemID="6800f1ce-0000182e" lastModified="1744892366"/>
+          <Include href="素材/角色部件/排骨右小臂.xml" loadImmediate="false" itemID="6800f363-0000187d" lastModified="1744892771"/>
+          <Include href="素材/角色部件/排骨左大腿.xml" loadImmediate="false" itemID="6800f1fc-00001836" lastModified="1744892412"/>
+          <Include href="素材/角色部件/排骨左小臂.xml" loadImmediate="false" itemID="6800f34f-00001876" lastModified="1744892751"/>
+          <Include href="素材/角色部件/新型终结者脊椎.xml" loadImmediate="false" itemID="6800d69d-00001660" lastModified="1744885405"/>
+          <Include href="素材/角色部件/新型终结者上臂.xml" loadImmediate="false" itemID="6800d79a-00001684" lastModified="1744885658"/>
+          <Include href="素材/角色部件/新型终结者头部1.xml" loadImmediate="false" itemID="6800d65f-00001653" lastModified="1744885343"/>
+          <Include href="素材/角色部件/新型终结者右手.xml" loadImmediate="false" itemID="6800d78f-00001680" lastModified="1744885647"/>
+          <Include href="素材/角色部件/新型终结者右小臂.xml" loadImmediate="false" itemID="6800d782-0000167c" lastModified="1744885634"/>
+          <Include href="素材/角色部件/新型终结者左手.xml" loadImmediate="false" itemID="6800d7e1-0000168f" lastModified="1744885729"/>
+          <Include href="素材/武器/Podbyrin 9.2 mm.xml" loadImmediate="false" itemID="67fde7f7-00000321" lastModified="1744693239"/>
+          <Include href="素材/武器/阿波的兰博刀.xml" loadImmediate="false" itemID="6800f58d-0000190d" lastModified="1744893325"/>
+          <Include href="素材/武器/排骨的podbyrin.xml" loadImmediate="false" itemID="6800f790-00001969" lastModified="1744893840"/>
+          <Include href="素材/武器/排骨小刀.xml" loadImmediate="false" itemID="6800f2e7-00001860" lastModified="1744896287"/>
+          <Include href="素材/杂项/camopaint.xml" loadImmediate="false" itemID="67fd243e-000002bb" lastModified="1744694198"/>
+          <Include href="素材/杂项/CAMOPAINT2.xml" loadImmediate="false" itemID="67fd251c-000002c7" lastModified="1744643392"/>
+          <Include href="素材/杂项/CAMOPAINT3.xml" loadImmediate="false" itemID="67fd2583-000002d3" lastModified="1744643547"/>
+          <Include href="素材/杂项/排骨上身刀鞘.xml" loadImmediate="false" itemID="6800f2d2-00001859" lastModified="1744892627"/>
+          <Include href="素材/杂项/排骨右大腿枪套.xml" loadImmediate="false" itemID="6800f37a-00001884" lastModified="1744892794"/>
+          <Include href="素材/杂项/飘头带改.xml" loadImmediate="false" itemID="67fc6b11-00001ca4" lastModified="1744793211"/>
+          <Include href="所有素材/1.冷兵器/锐器/石中剑/石中剑.xml" loadImmediate="false" itemID="6565f5fa-00000027" lastModified="1702565773"/>
+          <Include href="所有素材/1.冷兵器/重锐器/轮盘重工/未命名文件夹 1/Symbol 4834.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001eb6" lastModified="1702237154"/>
+          <Include href="所有素材/1.冷兵器/重锐器/勇气灵剑/勇气灵剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6e6b6-00001d6b" lastModified="1710679780"/>
+          <Include href="所有素材/1.冷兵器/重锐器/月光大剑/Symbol 5252.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-000013a0" lastModified="1710653981"/>
+          <Include href="所有素材/1.冷兵器/重锐器/月光大剑/Symbol 5253.xml" loadImmediate="false" itemID="65f68a66-000013a1" lastModified="1710653981"/>
+          <Include href="所有素材/1.冷兵器/重锐器/月光大剑/Symbol 5254.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-000013a2" lastModified="1710653981"/>
+          <Include href="所有素材/1.冷兵器/重锐器/月光大剑/Symbol 5255.xml" loadImmediate="false" itemID="65f68a66-000013a3" lastModified="1710653981"/>
+          <Include href="所有素材/1.冷兵器/重锐器/斩龙剑/未命名文件夹 1/Symbol 5221.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001f33" lastModified="1702237154"/>
+          <Include href="所有素材/1.冷兵器/重锐器/斩月/未命名文件夹 1/Symbol 4790.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001e8d" lastModified="1702559029"/>
+          <Include href="所有素材/1.冷兵器/重锐器/指令意志/指令意志.xml" loadImmediate="false" itemID="65207555-00001ac8" lastModified="1696626006"/>
+          <Include href="所有素材/shape 49.xml" itemIcon="1" loadImmediate="false" itemID="585509cb-00000035" lastModified="1584110133"/>
+          <Include href="所有素材/shape 53.xml" itemIcon="1" loadImmediate="false" itemID="585509cb-00000039" lastModified="1585565857"/>
+          <Include href="所有素材/shape 136.xml" itemIcon="1" loadImmediate="false" itemID="585507dd-0000008b" lastModified="1481967581"/>
+          <Include href="所有素材/shape 675.xml" itemIcon="1" loadImmediate="false" itemID="585509ce-000002a7" lastModified="1481968078"/>
+          <Include href="所有素材/shape 676.xml" itemIcon="1" loadImmediate="false" itemID="585509ce-000002a8" lastModified="1711005643"/>
+          <Include href="所有素材/shape 697.xml" itemIcon="1" loadImmediate="false" itemID="585509ce-000002bd" lastModified="1584111042"/>
+          <Include href="所有素材/shape 723.xml" itemIcon="1" loadImmediate="false" itemID="585509ce-000002d7" lastModified="1583761879"/>
+          <Include href="所有素材/shape 725.xml" itemIcon="1" loadImmediate="false" itemID="585509ce-000002d9" lastModified="1583761850"/>
+          <Include href="所有素材/sprite 724.xml" loadImmediate="false" itemID="585509ce-000002d8" lastModified="1481968078"/>
+          <Include href="所有素材/sprite 726.xml" loadImmediate="false" itemID="585509ce-000002da" lastModified="1481968078"/>
+          <Include href="所有素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a47" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a48" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a49" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a4a" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a4b" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 15.xml" loadImmediate="false" itemID="65fb1449-00003a4c" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a4d" lastModified="1710954298"/>
+          <Include href="所有素材/Symbol 17.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a4e" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a4f" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a50" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 20.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a51" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 21.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a52" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a53" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 23.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a54" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a55" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 25.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a56" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 27.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a58" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 28.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a59" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 29.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a5a" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 30.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a5b" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 31.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a5c" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 32.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a5d" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 33.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a5e" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a5f" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 35.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a60" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 39.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a63" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 40.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a64" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 41.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a65" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 44.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a68" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 46.xml" loadImmediate="false" itemID="65fb1449-00003a69" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 47.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a6a" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 48.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a6b" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 49.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a6c" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 53.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a6f" lastModified="1710953690"/>
+          <Include href="所有素材/Symbol 54.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a70" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 55.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a71" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 57.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a73" lastModified="1710953722"/>
+          <Include href="所有素材/Symbol 60.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a76" lastModified="1710953808"/>
+          <Include href="所有素材/Symbol 61.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a77" lastModified="1699960299"/>
+          <Include href="所有素材/Symbol 62.xml" itemIcon="1" loadImmediate="false" itemID="65fb1449-00003a78" lastModified="1710953798"/>
+          <Include href="所有素材/Symbol 63.xml" loadImmediate="false" itemID="65fb1449-00003a79" lastModified="1711511303"/>
+          <Include href="所有素材/吹风口.xml" loadImmediate="false" itemID="65fbc61e-00000416" lastModified="1710999070"/>
+          <Include href="所有素材/大数字0.xml" loadImmediate="false" itemID="65fbda06-0000025a" lastModified="1711004166"/>
+          <Include href="所有素材/大箱子1.xml" itemIcon="1" loadImmediate="false" itemID="658bcf45-0000024e" lastModified="1703661381"/>
+          <Include href="所有素材/大箱子2.xml" itemIcon="1" loadImmediate="false" itemID="658bcf50-00000250" lastModified="1703661392"/>
+          <Include href="所有素材/大箱子盖子.xml" loadImmediate="false" itemID="658bcf75-00000254" lastModified="1703661429"/>
+          <Include href="所有素材/大箱子容器.xml" loadImmediate="false" itemID="658bcf82-0000025a" lastModified="1703661442"/>
+          <Include href="所有素材/发光条纹1.xml" itemIcon="1" loadImmediate="false" itemID="658bcf58-00000251" lastModified="1703661400"/>
+          <Include href="所有素材/发光条纹2.xml" itemIcon="1" loadImmediate="false" itemID="658bcf5c-00000252" lastModified="1703661404"/>
+          <Include href="所有素材/挂柜子.xml" loadImmediate="false" itemID="65fbeebd-00001023" lastModified="1711009607"/>
+          <Include href="所有素材/鬼泣素材包/绯红女皇组件/0-杂项/绯红女皇.xml" loadImmediate="false" itemID="65549329-0000001e" lastModified="1700041513"/>
+          <Include href="所有素材/鬼泣素材包/绯红女皇组件/0-杂项/绯红女皇刀刃.xml" loadImmediate="false" itemID="655f3bfd-000000a2" lastModified="1700898108"/>
+          <Include href="所有素材/鬼泣素材包/绯红女皇组件/0-杂项/绯红女皇握把.xml" loadImmediate="false" itemID="655f3c08-000000a3" lastModified="1700740104"/>
+          <Include href="所有素材/鬼泣素材包/绯红女皇组件/0-杂项/引擎.xml" loadImmediate="false" itemID="65548dff-00000010" lastModified="1700742895"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/白象牙组件/0-杂项/白象牙枪膛.xml" loadImmediate="false" itemID="655e28aa-00000041" lastModified="1700744864"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/白象牙组件/0-杂项/白象牙组件3.xml" loadImmediate="false" itemID="655e2a5a-0000004f" lastModified="1700670042"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/白象牙组件/0-杂项/握把.xml" loadImmediate="false" itemID="655e2c0a-0000005b" lastModified="1700744597"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/白象牙组件/白象牙.xml" loadImmediate="false" itemID="655e2c2f-0000006a" lastModified="1700670511"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/黑檀木组件/0-杂项/黑檀木枪膛.xml" loadImmediate="false" itemID="655e2306-00000026" lastModified="1700744955"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/黑檀木组件/0-杂项/黑檀木握把.xml" loadImmediate="false" itemID="655e16ca-00000009" lastModified="1700745303"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/黑檀木组件/0-杂项/黑檀木组件3.xml" loadImmediate="false" itemID="655e247d-00000034" lastModified="1700668541"/>
+          <Include href="所有素材/鬼泣素材包/黑檀木白象牙组件/黑檀木组件/黑檀木.xml" loadImmediate="false" itemID="655e248f-00000038" lastModified="1700668559"/>
+          <Include href="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/剑口.xml" loadImmediate="false" itemID="655f1c3e-0000000c" lastModified="1700753505"/>
+          <Include href="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/精修版剑柄.xml" loadImmediate="false" itemID="655f34aa-00000037" lastModified="1700738218"/>
+          <Include href="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/魔剑但丁.xml" loadImmediate="false" itemID="655f3082-00000026" lastModified="1702145710"/>
+          <Include href="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/魔剑但丁不带裂口.xml" loadImmediate="false" itemID="655f3077-00000024" lastModified="1700883597"/>
+          <Include href="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/魔剑但丁剑身.xml" loadImmediate="false" itemID="655f7252-000000b2" lastModified="1700754002"/>
+          <Include href="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/中间细节.xml" loadImmediate="false" itemID="655f3000-0000001e" lastModified="1700751737"/>
+          <Include href="所有素材/鬼泣素材包/叛逆之刃组件/0-杂项/剑刃.xml" loadImmediate="false" itemID="655dd3cc-00000037" lastModified="1700883359"/>
+          <Include href="所有素材/鬼泣素材包/叛逆之刃组件/0-杂项/骷髅头剑柄.xml" loadImmediate="false" itemID="655dc9d8-00000025" lastModified="1700748483"/>
+          <Include href="所有素材/鬼泣素材包/叛逆之刃组件/0-杂项/叛逆剑口.xml" loadImmediate="false" itemID="655f3b65-00000079" lastModified="1700739941"/>
+          <Include href="所有素材/鬼泣素材包/叛逆之刃组件/0-杂项/叛逆之刃.xml" loadImmediate="false" itemID="655dd448-0000003b" lastModified="1700648008"/>
+          <Include href="所有素材/鬼泣素材包/阎魔刀组件/刀刃.xml" loadImmediate="false" itemID="657585c3-00000e5b" lastModified="1702204197"/>
+          <Include href="所有素材/鬼泣素材包/阎魔刀组件/阎魔刀刀柄.xml" loadImmediate="false" itemID="657577b7-00000ad6" lastModified="1702203385"/>
+          <Include href="所有素材/鬼泣素材包/阎魔刀组件/阎魔刀刀口.xml" loadImmediate="false" itemID="65757cf1-00000b08" lastModified="1702203837"/>
+          <Include href="所有素材/鬼泣素材包/阎魔刀组件/阎魔刀决定版.xml" loadImmediate="false" itemID="6575814a-00000b50" lastModified="1702305178"/>
+          <Include href="所有素材/鬼泣素材包/湛蓝玫瑰组件/0-杂项/玫瑰花纹.xml" loadImmediate="false" itemID="655a15f9-0000001d" lastModified="1700402681"/>
+          <Include href="所有素材/鬼泣素材包/湛蓝玫瑰组件/0-杂项/枪管.xml" loadImmediate="false" itemID="655a13f5-00000019" lastModified="1701356531"/>
+          <Include href="所有素材/鬼泣素材包/湛蓝玫瑰组件/0-杂项/枪身.xml" loadImmediate="false" itemID="655a0e4c-00000012" lastModified="1700747242"/>
+          <Include href="所有素材/鬼泣素材包/湛蓝玫瑰组件/0-杂项/枪托.xml" loadImmediate="false" itemID="655618eb-00000009" lastModified="1700397438"/>
+          <Include href="所有素材/鬼泣素材包/湛蓝玫瑰组件/0-杂项/湛蓝玫瑰.xml" loadImmediate="false" itemID="655a161c-00000021" lastModified="1700402716"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/对齐固定件.xml" loadImmediate="false" itemID="6553669d-0000004c" lastModified="1699964573"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/仿造disword剑柄.xml" loadImmediate="false" itemID="6553432b-00000062" lastModified="1699966622"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/仿制刀片.xml" loadImmediate="false" itemID="655364af-00000043" lastModified="1699964145"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/固定支架.xml" loadImmediate="false" itemID="65536804-0000007a" lastModified="1699964932"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/螺丝孔.xml" loadImmediate="false" itemID="65532e06-000002f5" lastModified="1699950086"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/螺丝孔2.xml" loadImmediate="false" itemID="65536004-00000018" lastModified="1699962884"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/伪造固定支架.xml" loadImmediate="false" itemID="65536aa8-0000009f" lastModified="1699965608"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/0-杂项/中心.xml" loadImmediate="false" itemID="65532f65-00000314" lastModified="1699950666"/>
+          <Include href="所有素材/混沌系列素材包/disword/仿造剑兰/伪造剑兰disword.xml" loadImmediate="false" itemID="655372d6-00000054" lastModified="1699967702"/>
+          <Include href="所有素材/混沌系列素材包/disword/剑兰di sword/Symbol 26.xml" loadImmediate="false" itemID="6569f388-000002b6" lastModified="1701441764"/>
+          <Include href="所有素材/混沌系列素材包/disword/剑兰di sword/Symbol 28.xml" loadImmediate="false" itemID="6569f388-000002b7" lastModified="1701441764"/>
+          <Include href="所有素材/混沌系列素材包/disword/剑兰di sword/Symbol 29.xml" loadImmediate="false" itemID="6569f388-000002b8" lastModified="1701441764"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/动作用模型.xml" loadImmediate="false" itemID="655231b8-00000476" lastModified="1728926376"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/鼻子.xml" itemIcon="1" loadImmediate="false" itemID="654fb2a0-00000018" lastModified="1728926419"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/脖子.xml" itemIcon="1" loadImmediate="false" itemID="654f8781-0000004c" lastModified="1728926419"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/动作用/动作胯部.xml" loadImmediate="false" itemID="65522f7f-0000040e" lastModified="1699939463"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/动作用/动作上半身.xml" loadImmediate="false" itemID="65522f73-00000408" lastModified="1711012892"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/粉毛发型.xml" itemIcon="1" loadImmediate="false" itemID="654f8bb0-00000060" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/领结.xml" itemIcon="1" loadImmediate="false" itemID="6551bf44-0000040a" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/领口.xml" itemIcon="1" loadImmediate="false" itemID="654f7133-00000007" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/头部.xml" itemIcon="1" loadImmediate="false" itemID="654fa1c2-0000006f" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/完整的头！.xml" itemIcon="1" loadImmediate="false" itemID="654fa389-00000073" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/鞋子.xml" itemIcon="1" loadImmediate="false" itemID="65510304-0000001c" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/袖子.xml" itemIcon="1" loadImmediate="false" itemID="6551bbb5-000003f6" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/右上肢.xml" itemIcon="1" loadImmediate="false" itemID="6551b7ed-000003ed" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/右手.xml" itemIcon="1" loadImmediate="false" itemID="6551c204-00000412" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/右眼.xml" itemIcon="1" loadImmediate="false" itemID="654fb29a-00000014" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/左大腿.xml" itemIcon="1" loadImmediate="false" itemID="65522153-0000002d" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/左手.xml" itemIcon="1" loadImmediate="false" itemID="6551c20c-00000416" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/左小腿.xml" itemIcon="1" loadImmediate="false" itemID="655223f4-00000031" lastModified="1728926411"/>
+          <Include href="所有素材/混沌系列素材包/尾上世莉架/人物组件/左眼.xml" itemIcon="1" loadImmediate="false" itemID="654fb28c-0000000f" lastModified="1728926411"/>
+          <Include href="所有素材/家具/落地钟.xml" loadImmediate="false" itemID="5a0fcb5f-00000548" lastModified="1510984543"/>
+          <Include href="所有素材/冷兵/锐器/龍一文字/Symbol 4852.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00001341" lastModified="1710692448"/>
+          <Include href="所有素材/冷兵/锐器/龍一文字/龍一文字.xml" itemIcon="1" loadImmediate="false" itemID="65f7169e-00002727" lastModified="1710693475"/>
+          <Include href="所有素材/零件/霜精帽子.xml" loadImmediate="false" itemID="65e97c06-000001e2" lastModified="1710607979"/>
+          <Include href="所有素材/零件/霜精头.xml" loadImmediate="false" itemID="65e968e9-000001db" lastModified="1709829788"/>
+          <Include href="所有素材/曲面屏.xml" loadImmediate="false" itemID="65fbc7a6-0000041d" lastModified="1711003271"/>
+          <Include href="所有素材/缺损地面1.xml" loadImmediate="false" itemID="660395e3-000002eb" lastModified="1711511011"/>
+          <Include href="所有素材/石头3.xml" itemIcon="1" loadImmediate="false" itemID="658bd0ce-000002b2" lastModified="1703661774"/>
+          <Include href="所有素材/实木柜子.xml" loadImmediate="false" itemID="65fbed87-00001009" lastModified="1711009619"/>
+          <Include href="所有素材/士力架npc.xml" loadImmediate="false" itemID="660114f3-00000db0" lastModified="1728926395"/>
+          <Include href="所有素材/数字段1.xml" loadImmediate="false" itemID="65fbdaaa-0000025e" lastModified="1711004621"/>
+          <Include href="所有素材/数字段2.xml" loadImmediate="false" itemID="65fbdaef-00000265" lastModified="1711004610"/>
+          <Include href="所有素材/数字段3.xml" loadImmediate="false" itemID="65fbdd16-00000278" lastModified="1711004950"/>
+          <Include href="所有素材/霜精素材/heeho君npc.xml" loadImmediate="false" itemID="6601282d-000002e5" lastModified="1728926511"/>
+          <Include href="所有素材/霜精素材/墨镜.xml" loadImmediate="false" itemID="660124d0-00000426" lastModified="1711350992"/>
+          <Include href="所有素材/霜精素材/霜精.xml" loadImmediate="false" itemID="66012502-0000042d" lastModified="1728926521"/>
+          <Include href="所有素材/霜精素材/物资箱1.xml" itemIcon="1" loadImmediate="false" itemID="658bcf23-0000024a" lastModified="1703661347"/>
+          <Include href="所有素材/物资箱3.xml" loadImmediate="false" itemID="658bcf8c-00000261" lastModified="1703661452"/>
+          <Include href="所有素材/显示器.xml" loadImmediate="false" itemID="5710a0cf-0000003d" lastModified="1460707647"/>
+          <Include href="所有素材/斜向墙.xml" loadImmediate="false" itemID="6603969a-000002f4" lastModified="1711511194"/>
+          <Include href="所有素材/斜向墙2.xml" loadImmediate="false" itemID="660396f5-000002f9" lastModified="1711511285"/>
+          <Include href="所有素材/牙狼素材/姑且算脖子.xml" loadImmediate="false" itemID="656f3428-0000039a" lastModified="1702813525"/>
+          <Include href="所有素材/牙狼素材/姑且算底衣腹肌.xml" loadImmediate="false" itemID="656f30ef-00000393" lastModified="1701785839"/>
+          <Include href="所有素材/牙狼素材/姑且算是完整的屁股吧.xml" loadImmediate="false" itemID="6576b451-000003dc" lastModified="1702811884"/>
+          <Include href="所有素材/牙狼素材/姑且算是小腿.xml" itemIcon="1" loadImmediate="false" itemID="657de11a-00000211" lastModified="1702799268"/>
+          <Include href="所有素材/牙狼素材/姑且算是胸甲的玩意儿.xml" loadImmediate="false" itemID="656f2299-00000365" lastModified="1702810951"/>
+          <Include href="所有素材/牙狼素材/姑且算是腰带的玩意儿.xml" loadImmediate="false" itemID="6576b186-000003cd" lastModified="1702811876"/>
+          <Include href="所有素材/牙狼素材/姑且算是左肩甲.xml" loadImmediate="false" itemID="656f447e-000003ca" lastModified="1701790846"/>
+          <Include href="所有素材/牙狼素材/肩甲.xml" loadImmediate="false" itemID="656c54b4-000002a7" lastModified="1701789935"/>
+          <Include href="所有素材/牙狼素材/就当是脚吧.xml" itemIcon="1" loadImmediate="false" itemID="657df88c-00000216" lastModified="1702815350"/>
+          <Include href="所有素材/牙狼素材/男变装-牙狼铠上臂.xml" itemID="657ebb88-00000a09" lastModified="1702997113"/>
+          <Include href="所有素材/牙狼素材/男变装-牙狼铠身体.xml" itemID="657eb9fd-000009df" lastModified="1702997132"/>
+          <Include href="所有素材/牙狼素材/男变装-牙狼铠头盔.xml" itemID="657ebaa7-000009ff" lastModified="1702816597"/>
+          <Include href="所有素材/牙狼素材/男变装-牙狼铠鞋子.xml" itemID="657eba5a-000009ec" lastModified="1702996459"/>
+          <Include href="所有素材/牙狼素材/尚且算大腿.xml" itemIcon="1" loadImmediate="false" itemID="657dabca-00000210" lastModified="1702814006"/>
+          <Include href="所有素材/牙狼素材/下臂.xml" loadImmediate="false" itemID="656ec31b-0000033e" lastModified="1702799982"/>
+          <Include href="所有素材/牙狼素材/牙狼屁股.xml" itemID="657eb5de-0000097f" lastModified="1702816869"/>
+          <Include href="所有素材/牙狼素材/牙狼小腿.xml" itemID="657eb40b-0000096c" lastModified="1702995582"/>
+          <Include href="所有素材/牙狼素材/牙狼右大腿.xml" itemID="657eb3ab-0000095e" lastModified="1702995486"/>
+          <Include href="所有素材/牙狼素材/牙狼右下臂.xml" itemID="657eb444-0000096e" lastModified="1702995469"/>
+          <Include href="所有素材/牙狼素材/牙狼左大腿.xml" itemID="657eb3f3-00000969" lastModified="1702995452"/>
+          <Include href="所有素材/牙狼素材/牙狼左下臂.xml" itemID="657eb321-00000957" lastModified="1702995398"/>
+          <Include href="所有素材/牙狼素材/左上臂.xml" loadImmediate="false" itemID="656c73eb-000002ac" lastModified="1702812271"/>
+          <Include href="所有素材/一地的彩蛋装备.xml" loadImmediate="false" itemID="65fbfed1-0000093a" lastModified="1711013587"/>
+          <Include href="所有素材/仪表盘1.xml" loadImmediate="false" itemID="65fbc569-000003f5" lastModified="1710998889"/>
+          <Include href="所有素材/仪表盘2.xml" loadImmediate="false" itemID="65fbc578-000003fa" lastModified="1710998904"/>
+          <Include href="所有素材/仪表盘3.xml" loadImmediate="false" itemID="65fbc587-000003fe" lastModified="1710998919"/>
+          <Include href="所有素材/仪表盘4.xml" loadImmediate="false" itemID="65fbc58f-00000402" lastModified="1710998927"/>
+          <Include href="所有素材/仪表盘5.xml" loadImmediate="false" itemID="65fbc59a-00000406" lastModified="1710998938"/>
+          <Include href="所有素材/仪表盘6.xml" loadImmediate="false" itemID="65fbc5a7-0000040a" lastModified="1710998951"/>
+          <Include href="所有素材/仪表盘7.xml" loadImmediate="false" itemID="65fbc5af-0000040e" lastModified="1710998959"/>
+          <Include href="所有素材/元件 1.xml" loadImmediate="false" itemID="657ee860-000004d9" lastModified="1702815840"/>
+          <Include href="所有素材/元件 2.xml" loadImmediate="false" itemID="657ee86d-000004dd" lastModified="1702815853"/>
+          <Include href="所有素材/元件 3.xml" loadImmediate="false" itemID="65fbac2e-0000024a" lastModified="1710992430"/>
+          <Include href="所有素材/元件 4.xml" loadImmediate="false" itemID="65fbad10-000003cb" lastModified="1710992656"/>
+          <Include href="所有素材/元件 5.xml" loadImmediate="false" itemID="65fbb053-000003d7" lastModified="1711003526"/>
+          <Include href="所有素材/元件 6.xml" loadImmediate="false" itemID="65fbcec1-00000431" lastModified="1711001281"/>
+          <Include href="所有素材/元件 7.xml" loadImmediate="false" itemID="65fbd6dc-000007dd" lastModified="1711004266"/>
+          <Include href="所有素材/元件 8.xml" loadImmediate="false" itemID="65fbe7a9-00000f7f" lastModified="1711007657"/>
+          <Include href="所有素材/元件 9.xml" loadImmediate="false" itemID="65fbfbf3-0000089a" lastModified="1711012851"/>
+          <Include href="所有素材/元件 10.xml" loadImmediate="false" itemID="65fbfc0b-000008a1" lastModified="1711012875"/>
+          <Include href="所有素材/元件 11.xml" loadImmediate="false" itemID="65fbfc57-000008b8" lastModified="1711012951"/>
+          <Include href="所有素材/原神刀.xml" loadImmediate="false" itemID="65fbe68c-00000ea3" lastModified="1711007372"/>
+          <Include href="所有素材/杂物/书堆2.xml" loadImmediate="false" itemID="59f41913-000009a3" lastModified="1509169427"/>
+          <Include href="所有素材/重复项目文件夹/元件 1.xml" loadImmediate="false" itemID="65fbdeee-00000882" lastModified="1584110038"/>
+          <Include href="所有素材/重复项目文件夹/元件 8.xml" loadImmediate="false" itemID="65fbf7df-00000897" lastModified="1711011748"/>
+          <Include href="所有素材/装备/西风大剑/西风大剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6f751-00001efc" lastModified="1710683985"/>
+          <Include href="所有素材/字母串1.xml" loadImmediate="false" itemID="65fbdc7f-00000273" lastModified="1711004799"/>
+          <Include href="所有素材/字母串2.xml" loadImmediate="false" itemID="65fbdc7a-00000270" lastModified="1711004794"/>
+          <Include href="文天.xml" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1728926470"/>
+          <Include href="文天npc/Symbol 35474.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cbe" lastModified="1728926482"/>
+          <Include href="文天npc/Symbol 35476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc4" lastModified="1728926482"/>
+          <Include href="文天npc/Symbol 35478.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cca" lastModified="1728926482"/>
+          <Include href="文天npc/Symbol 35482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cd3" lastModified="1728926482"/>
+          <Include href="文天npc/Symbol 35498.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cef" lastModified="1728926482"/>
+          <Include href="文天npc/Symbol 35499.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf1" lastModified="1728926482"/>
+          <Include href="文天npc/Symbol 35500.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf4" lastModified="1728926482"/>
+          <Include href="我们仨.xml" loadImmediate="false" itemID="68051663-00000991" lastModified="1745163877"/>
+          <Include href="小绿人/光子破坏炮/A兵团标志.xml" loadImmediate="false" itemID="64ce483d-0000039a" lastModified="1703251887"/>
+          <Include href="小绿人/光子破坏炮/大炮组件1.xml" loadImmediate="false" itemID="64e89cfe-00000038" lastModified="1692974878"/>
+          <Include href="小绿人/光子破坏炮/待机模式.xml" loadImmediate="false" itemID="64e8c135-00000406" lastModified="1703250415"/>
+          <Include href="小绿人/光子破坏炮/光子破坏炮尾部.xml" loadImmediate="false" itemID="64e8bc19-00000037" lastModified="1692974705"/>
+          <Include href="小绿人/人物发型/精修/黑猫王精修.xml" loadImmediate="false" itemID="64c118b9-000001a9" lastModified="1692975800"/>
+          <Include href="小绿人/尚未整理/Symbol 3.xml" loadImmediate="false" itemID="6577b699-00000956" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000958" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 6.xml" loadImmediate="false" itemID="6577b699-00000959" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 15.xml" loadImmediate="false" itemID="6577b699-00000961" lastModified="1703308874"/>
+          <Include href="小绿人/尚未整理/Symbol 16.xml" loadImmediate="false" itemID="6577b699-00000962" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 17.xml" loadImmediate="false" itemID="6577b699-00000963" lastModified="1703256543"/>
+          <Include href="小绿人/尚未整理/Symbol 19.xml" loadImmediate="false" itemID="6577b699-00000964" lastModified="1703308885"/>
+          <Include href="小绿人/尚未整理/Symbol 20.xml" loadImmediate="false" itemID="6577b699-00000965" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 21.xml" loadImmediate="false" itemID="6577b699-00000966" lastModified="1703258310"/>
+          <Include href="小绿人/尚未整理/Symbol 23.xml" loadImmediate="false" itemID="6577b699-00000967" lastModified="1703308884"/>
+          <Include href="小绿人/尚未整理/Symbol 24.xml" loadImmediate="false" itemID="6577b699-00000968" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 25.xml" loadImmediate="false" itemID="6577b699-00000969" lastModified="1703258185"/>
+          <Include href="小绿人/尚未整理/Symbol 26.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-0000096a" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 27.xml" loadImmediate="false" itemID="6577b699-0000096b" lastModified="1703308886"/>
+          <Include href="小绿人/尚未整理/Symbol 28.xml" loadImmediate="false" itemID="6577b699-0000096c" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 29.xml" loadImmediate="false" itemID="6577b699-0000096d" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 31.xml" loadImmediate="false" itemID="6577b699-0000096e" lastModified="1703308882"/>
+          <Include href="小绿人/尚未整理/Symbol 32.xml" loadImmediate="false" itemID="6577b699-0000096f" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 33.xml" loadImmediate="false" itemID="6577b699-00000970" lastModified="1703258846"/>
+          <Include href="小绿人/尚未整理/Symbol 35.xml" loadImmediate="false" itemID="6577b699-00000971" lastModified="1703308876"/>
+          <Include href="小绿人/尚未整理/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 37.xml" loadImmediate="false" itemID="6577b699-00000973" lastModified="1703256296"/>
+          <Include href="小绿人/尚未整理/Symbol 46.xml" loadImmediate="false" itemID="6577b699-00000977" lastModified="1703256056"/>
+          <Include href="小绿人/尚未整理/Symbol 50.xml" loadImmediate="false" itemID="6577b699-0000097a" lastModified="1703270290"/>
+          <Include href="小绿人/尚未整理/Symbol 54.xml" loadImmediate="false" itemID="6577b699-0000097d" lastModified="1703259636"/>
+          <Include href="小绿人/尚未整理/Symbol 58.xml" loadImmediate="false" itemID="6577b699-00000980" lastModified="1703259618"/>
+          <Include href="小绿人/尚未整理/Symbol 62.xml" loadImmediate="false" itemID="6577b699-00000983" lastModified="1703258830"/>
+          <Include href="小绿人/尚未整理/Symbol 63.xml" loadImmediate="false" itemID="6577b699-00000984" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 65.xml" loadImmediate="false" itemID="6577b699-00000985" lastModified="1703308881"/>
+          <Include href="小绿人/尚未整理/Symbol 66.xml" loadImmediate="false" itemID="6577b699-00000986" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 67.xml" loadImmediate="false" itemID="6577b699-00000987" lastModified="1703256672"/>
+          <Include href="小绿人/尚未整理/Symbol 69.xml" loadImmediate="false" itemID="6577b699-00000988" lastModified="1703308879"/>
+          <Include href="小绿人/尚未整理/Symbol 70.xml" loadImmediate="false" itemID="6577b699-00000989" lastModified="1702343951"/>
+          <Include href="小绿人/尚未整理/Symbol 71.xml" loadImmediate="false" itemID="6577b699-0000098a" lastModified="1703258165"/>
+          <Include href="小绿人/文天身体.xml" loadImmediate="false" itemID="6585a0d1-00001fbd" lastModified="1703256414"/>
+          <Include href="小绿人/文天头.xml" loadImmediate="false" itemID="56aef52c-0000150a" lastModified="1692975824"/>
+          <Include href="小绿人/文天小腿.xml" loadImmediate="false" itemID="56aef558-0000150c" lastModified="1703258907"/>
+          <Include href="小绿人/左手.xml" loadImmediate="false" itemID="6585934d-00001f69" lastModified="1703252813"/>
+          <Include href="效果.xml" loadImmediate="false" itemID="66d09260-000012ac" lastModified="1724944992"/>
+          <Include href="子弹区域.xml" loadImmediate="false" itemID="66d09236-000012a7" lastModified="1724944950"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <swatchLists>
+          <swatchList>
+               <swatches>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330000" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#660000" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663333" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990000" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC0000" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993333" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3333" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3333" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996666" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6666" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6666" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9999" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9999" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem color="#E2928E" hue="2" saturation="143" brightness="174"/>
+                    <SolidSwatchItem color="#B35977" hue="227" saturation="88" brightness="126"/>
+               </swatches>
+          </swatchList>
+     </swatchLists>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="1252469" publishTime="1738917371"/>
+          <PublishItem publishSize="1252601" publishTime="1729504895"/>
+          <PublishItem publishSize="1252612" publishTime="1729504819"/>
+          <PublishItem publishSize="1251363" publishTime="1728926363"/>
+          <PublishItem publishSize="1251262" publishTime="1728920157"/>
+          <PublishItem publishSize="1240024" publishTime="1724945489"/>
+          <PublishItem publishSize="1239802" publishTime="1724409466"/>
+          <PublishItem publishSize="1239806" publishTime="1724409057"/>
+          <PublishItem publishSize="1239452" publishTime="1720795690"/>
+          <PublishItem publishSize="1239485" publishTime="1720353000"/>
+          <PublishItem publishSize="1239859" publishTime="1712334916"/>
+          <PublishItem publishSize="1239862" publishTime="1712332827"/>
+          <PublishItem publishSize="1237512" publishTime="1712302521"/>
+          <PublishItem publishSize="1238989" publishTime="1712301370"/>
+          <PublishItem publishSize="1238986" publishTime="1712300947"/>
+          <PublishItem publishSize="1236004" publishTime="1712122922"/>
+          <PublishItem publishSize="1235767" publishTime="1712121809"/>
+          <PublishItem publishSize="1235728" publishTime="1712120091"/>
+          <PublishItem publishSize="1235724" publishTime="1712120007"/>
+          <PublishItem publishSize="1183568" publishTime="1711521048"/>
+     </publishHistory>
+</DOMDocument>

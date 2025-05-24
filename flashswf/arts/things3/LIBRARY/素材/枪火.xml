@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/枪火" itemID="67211286-000004f1" lastModified="1730220729">
+  <timeline>
+    <DOMTimeline name="枪火">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 8">
+                  <matrix>
+                    <Matrix a="0.14520263671875" b="0.0065155029296875" c="-0.0046844482421875" d="0.104248046875" tx="0.3" ty="-5.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.45" y="46"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 8">
+                  <matrix>
+                    <Matrix a="0.40118408203125" b="0.0180511474609375" c="-0.0180511474609375" d="0.40118408203125" tx="0.7" ty="-19.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.65" y="47.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 8">
+                  <matrix>
+                    <Matrix a="-0.04833984375" b="-0.0021514892578125" c="-0.0180511474609375" d="0.40118408203125" tx="2.65" ty="-19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.1" y="47.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 8" centerPoint3DX="32.9" centerPoint3DY="0.75">
+                  <matrix>
+                    <Matrix a="0.666748046875" b="0.0300140380859375" c="-0.0066680908203125" d="0.14862060546875" tx="2.75" ty="-7.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.85" y="46.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 8" centerPoint3DX="34.9" centerPoint3DY="0.9">
+                  <matrix>
+                    <Matrix a="0.797515869140625" b="0.035888671875" c="-0.002288818359375" d="0.051422119140625" tx="4.5" ty="-2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.7" y="45.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

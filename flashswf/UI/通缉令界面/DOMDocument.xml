@@ -1,0 +1,1633 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="700" height="450" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="67.0521224560653" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <folders>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="image" itemID="6787c9fe-000002ec"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sound" itemID="6787c9fe-000002e9"/>
+          <DOMFolderItem name="sprite" itemID="6787c9fe-00000325"/>
+          <DOMFolderItem name="UI重构" itemID="67876084-0000176f"/>
+          <DOMFolderItem name="UI重构/通缉令UI" itemID="663afec8-00000c0c"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单" itemID="6787c9fe-000002e1"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/LEE" itemID="6787c9fe-000002e2"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/浮士德兄弟" itemID="6787c9fe-0000030b"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/魔女" itemID="6787c9fe-000002e4"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/牛仔" itemID="6787c9fe-0000031a"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/尾上世莉架" itemID="6787c9fe-000002e6"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/武士铁血" itemID="6787c9fe-000002f8"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/硬化僵尸" itemID="6787c9fe-000002f2"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/LEE/bitmap1.jpg" itemID="6637df65-00003cce" sourceExternalFilepath="./LIBRARY/UI重构/通缉令UI/通缉单/LEE/bitmap1.jpg" sourceLastImported="1714937701" quality="50" href="UI重构/通缉令UI/通缉单/LEE/bitmap1.jpg" bitmapDataHRef="M 1 1736952319.dat" frameRight="3240" frameBottom="2420" isJPEG="true"/>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/尾上世莉架/bitmap1.png" itemID="6637dfeb-00003cff" sourceExternalFilepath="./LIBRARY/UI重构/通缉令UI/通缉单/尾上世莉架/bitmap1.png" sourceLastImported="1714937835" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="UI重构/通缉令UI/通缉单/尾上世莉架/bitmap1.png" bitmapDataHRef="M 3 1736952319.dat" frameRight="3240" frameBottom="2420"/>
+          <DOMBitmapItem name="image/bitmap2321.png" itemID="6597607b-00000479" sourceExternalFilepath="./LIBRARY/image/bitmap2321.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2321.png" bitmapDataHRef="M 7 1736952319.dat" frameRight="2760" frameBottom="500"/>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" itemID="6637df9b-00003ce0" sourceExternalFilepath="./LIBRARY/UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" sourceLastImported="1714937755" quality="50" href="UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" bitmapDataHRef="M 2 1736952319.dat" frameRight="5520" frameBottom="4980" isJPEG="true"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="./LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 5 1736952319.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="./LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 6 1736952319.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" itemID="663a47b4-00000ed6" sourceExternalFilepath="./LIBRARY/UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" sourceLastImported="1715095476" originalCompressionType="lossless" quality="50" href="UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" bitmapDataHRef="M 4 1736952319.dat" frameRight="8000" frameBottom="8000"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 727.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007ea" lastModified="1704196122"/>
+          <Include href="button/Symbol 728.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007eb" lastModified="1714929527"/>
+          <Include href="button/Symbol 2812.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d8e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 297.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000794" lastModified="1704196122"/>
+          <Include href="shape/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000797" lastModified="1704196122"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 534.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007bf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 535.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 537.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1562.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1563.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096e" lastModified="1714921269"/>
+          <Include href="shape/Symbol 1564.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1565.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000970" lastModified="1714921546"/>
+          <Include href="shape/Symbol 1566.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000971" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1567.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000972" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1568.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000973" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1569.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000974" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1570.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000975" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1571.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000976" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1572.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000977" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1573.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000978" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1574.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000979" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1575.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1576.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1577.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2202.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ac3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2322.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2323.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b10" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2759.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d2e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2769.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2770.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2771.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2774.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d56" lastModified="1717919196"/>
+          <Include href="shape/Symbol 2775.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d58" lastModified="1717919177"/>
+          <Include href="shape/Symbol 2780.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d61" lastModified="1717919137"/>
+          <Include href="shape/Symbol 2781.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d63" lastModified="1717919142"/>
+          <Include href="shape/Symbol 2782.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d65" lastModified="1717919132"/>
+          <Include href="shape/Symbol 2783.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d67" lastModified="1717919151"/>
+          <Include href="shape/Symbol 2784.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d69" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2785.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6a" lastModified="1717919229"/>
+          <Include href="shape/Symbol 2786.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6c" lastModified="1717919212"/>
+          <Include href="shape/Symbol 2809.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d8b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 726.xml" loadImmediate="false" itemID="6597607e-000007e9" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2204.xml" loadImmediate="false" itemID="6597607e-00000ac4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2207.xml" loadImmediate="false" itemID="6597607e-00000ac6" lastModified="1715094838"/>
+          <Include href="sprite/Symbol 2209.xml" loadImmediate="false" itemID="6597607e-00000ac7" lastModified="1715094776"/>
+          <Include href="sprite/Symbol 2216.xml" loadImmediate="false" itemID="6597607e-00000aca" lastModified="1715102635"/>
+          <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1720343543"/>
+          <Include href="sprite/Symbol 2777.xml" loadImmediate="false" itemID="6597607e-00000d5b" lastModified="1717919201"/>
+          <Include href="sprite/Symbol 2808.xml" loadImmediate="false" itemID="6597607e-00000d8a" lastModified="1714920884"/>
+          <Include href="sprite/Symbol 2810.xml" loadImmediate="false" itemID="6597607e-00000d8c" lastModified="1714923806"/>
+          <Include href="sprite/Symbol 2811.xml" loadImmediate="false" itemID="6597607e-00000d8d" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2824.xml" loadImmediate="false" itemID="6597607e-00000d94" lastModified="1704196122"/>
+          <Include href="sprite/点酒界面酒保.xml" loadImmediate="false" itemID="6637abba-00001c92" lastModified="1740847323"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
+          <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
+          <Include href="UI重构/通缉令UI/92副本酒杯.xml" loadImmediate="false" itemID="663a3fc5-00000e4e" lastModified="1715093445"/>
+          <Include href="UI重构/通缉令UI/点酒-鸡尾酒.xml" loadImmediate="false" itemID="660d3341-00001dc4" lastModified="1714926727"/>
+          <Include href="UI重构/通缉令UI/点酒-啤酒.xml" loadImmediate="false" itemID="660d3328-00001dbc" lastModified="1714926702"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用鸡尾酒.xml" loadImmediate="false" itemID="660d3245-00001daa" lastModified="1712140869"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用鸡尾酒-空.xml" loadImmediate="false" itemID="660d330c-00001db8" lastModified="1712142251"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用啤酒.xml" loadImmediate="false" itemID="660d3238-00001da5" lastModified="1712140856"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用啤酒-空.xml" loadImmediate="false" itemID="660d32f3-00001db2" lastModified="1712141043"/>
+          <Include href="UI重构/通缉令UI/酒杯-盛.xml" loadImmediate="false" itemID="663a58ce-00000149" lastModified="1715100760"/>
+          <Include href="UI重构/通缉令UI/秋月.xml" itemIcon="1" loadImmediate="false" itemID="65f71d38-000016c2" lastModified="1715101979"/>
+          <Include href="UI重构/通缉令UI/数字1.xml" loadImmediate="false" itemID="6637db85-00003c77" lastModified="1714937536"/>
+          <Include href="UI重构/通缉令UI/数字2.xml" loadImmediate="false" itemID="6637db74-00003c73" lastModified="1714937551"/>
+          <Include href="UI重构/通缉令UI/数字3.xml" loadImmediate="false" itemID="6637db59-00003c23" lastModified="1714936760"/>
+          <Include href="UI重构/通缉令UI/通缉单/LEE/通缉单-LEE.xml" loadImmediate="false" itemID="66390c28-00001392" lastModified="1715014862"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 493.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ab8" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 496.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000abb" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 501.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac0" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 502.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac1" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 503.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac2" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 506.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac5" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 509.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac8" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 514.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000acd" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 515.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ace" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 517.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ad0" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/通缉单-浮士德兄弟.xml" loadImmediate="false" itemID="6639135c-00009911" lastModified="1715016728"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/通缉单模板.xml" loadImmediate="false" itemID="663913db-00009955" lastModified="1715009605"/>
+          <Include href="UI重构/通缉令UI/通缉单/魔女/通缉单-魔女.xml" loadImmediate="false" itemID="6639124c-000063d0" lastModified="1715016300"/>
+          <Include href="UI重构/通缉令UI/通缉单/魔女/通缉单模板.xml" loadImmediate="false" itemID="66391232-000063c1" lastModified="1715143848"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003ce8" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003ceb" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 14.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003cee" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 15.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003cef" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003cf3" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a93" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/通缉单-牛仔.xml" loadImmediate="false" itemID="66391106-00002e61" lastModified="1715015973"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/通缉单模板.xml" loadImmediate="false" itemID="663910f1-00002e54" lastModified="1715013966"/>
+          <Include href="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单-士力架.xml" loadImmediate="false" itemID="663a48b5-00000ee2" lastModified="1715095950"/>
+          <Include href="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单模板.xml" loadImmediate="false" itemID="663a4918-00000eee" lastModified="1715095668"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 3.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094a" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094b" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094c" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 6.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094d" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094f" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000950" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000951" lastModified="1715008245"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000959" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095a" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 20.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095b" lastModified="1715008224"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 21.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095c" lastModified="1715008217"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095d" lastModified="1715008231"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 23.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095e" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095f" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 28.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000963" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 29.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000964" lastModified="1715008239"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/通缉单-武士铁血.xml" loadImmediate="false" itemID="663912cc-00007e60" lastModified="1715016448"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/通缉单模板.xml" loadImmediate="false" itemID="663912b9-00007e53" lastModified="1715008317"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 17.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d15" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d16" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d17" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/通缉单-硬化僵尸.xml" loadImmediate="false" itemID="66391179-00004920" lastModified="1715017466"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/通缉单模板.xml" loadImmediate="false" itemID="6639117d-00004927" lastModified="1715011511"/>
+          <Include href="UI重构/通缉令UI/通缉单模板.xml" loadImmediate="false" itemID="6638eab2-00000663" lastModified="1715010861"/>
+          <Include href="UI重构/通缉令UI/通缉令-关闭.xml" itemIcon="0" loadImmediate="false" itemID="6637c0d4-00001e61" lastModified="1715084654"/>
+          <Include href="UI重构/通缉令UI/通缉令-上一页.xml" loadImmediate="false" itemID="6637d421-00003259" lastModified="1715083351"/>
+          <Include href="UI重构/通缉令UI/通缉令-下一页.xml" loadImmediate="false" itemID="6637ce36-0000295b" lastModified="1715083345"/>
+          <Include href="UI重构/通缉令UI/通缉令标题栏.xml" loadImmediate="false" itemID="6637b566-00002601" lastModified="1714928812"/>
+          <Include href="UI重构/通缉令UI/月光酒.xml" loadImmediate="false" itemID="663a61f4-00000167" lastModified="1715102196"/>
+          <Include href="酒吧场景.xml" itemIcon="1" loadImmediate="false" itemID="67c33944-0000029f" lastModified="1740847436"/>
+          <Include href="酒吧场景（去除遮罩部分）.xml" itemIcon="1" loadImmediate="false" itemID="67c33998-000002d2" lastModified="1740847512"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="Labels Layer" color="#B780F7">
+                         <frames>
+                              <DOMFrame index="0" duration="3" name="首页" labelType="name" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Script Layer" color="#B77AB4" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[this._x = 150;
+this._y = 20;
+
+function 组装副本任务(对象)
+{
+	_root.委托任务界面.NPC任务_任务_起始帧 = null;
+	var taskData = _root.getTaskData(对象.NPC任务_任务_关卡路径);
+	_root.委托任务界面.taskData = taskData;
+	_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
+	_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
+	_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
+	_root.SetDialogue(taskData.get_conversation);
+	_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
+	_root.委托任务界面.显示任务明细(taskData);
+	_root.委托任务界面._visible = true;
+}
+
+function 买一杯酒(对象)
+{
+	if (对象.对话完毕)
+	{
+		return;
+	}
+	if (_root.金钱 >= 对象.价格)
+	{
+		_root.金钱 -= 对象.价格;
+		_root.SetDialogue(对象.对话[对象.对话index], true);
+		对象.对话index += 1;
+		对象.显示文字 = "$" + 对象.价格 + " (" + 对象.对话index + "/" + 对象.对话.length + ")";
+		if (对象.对话index >= 对象.对话.length)
+		{
+			对象.显示文字 = "SOLD OUT";
+			对象.对话完毕 = true;
+		}
+	}
+	else
+	{
+		_root.发布消息("金钱不足！");
+	}
+}
+
+当前页数 = 1;
+stop();
+]]></script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="按钮等" color="#FF800A" autoNamed="false" layerType="folder"/>
+                    <DOMLayer name="页数" color="#6EBF6F" parentLayerIndex="2" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/数字1" centerPoint3DX="537.3" centerPoint3DY="376.75">
+                                             <matrix>
+                                                  <Matrix a="0.996200561523438" b="-0.087158203125" c="0.087158203125" d="0.996200561523438" tx="500.2" ty="317.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="31.8" y="62.25"/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <GlowFilter color="#000000" strength="10"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="1" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/数字2" centerPoint3DX="537.3" centerPoint3DY="376.75">
+                                             <matrix>
+                                                  <Matrix a="0.996200561523438" b="-0.087158203125" c="0.087158203125" d="0.996200561523438" tx="500.2" ty="317.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="31.8" y="62.25"/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <GlowFilter color="#000000" strength="10"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="2" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/数字3" centerPoint3DX="537.3" centerPoint3DY="376.75">
+                                             <matrix>
+                                                  <Matrix a="0.996200561523438" b="-0.087158203125" c="0.087158203125" d="0.996200561523438" tx="500.2" ty="317.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="31.8" y="62.25"/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <GlowFilter color="#000000" strength="10"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="下一页" color="#C6B070" parentLayerIndex="2" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉令-下一页" centerPoint3DX="617.65" centerPoint3DY="380.1">
+                                             <matrix>
+                                                  <Matrix a="1.07562255859375" b="-0.0941009521484375" c="0.0871429443359375" d="0.995986938476563" tx="567.35" ty="373.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on(release){
+   _parent.当前页数 += 1;
+   _parent.nextFrame();
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("下一页");
+}
+on(rollOver){
+   _root.注释(150,this.显示文字);
+	this._xscale = 120;// 将影片剪辑的水平缩放设置为108%
+	this._yscale = 108;// 将影片剪辑的垂直缩放设置为100%
+	this._rotation += 10; // 将元件的旋转角度增加10度
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	//当前层级 = this.getDepth();// 保存当前元件的层级值
+	//this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on(rollOut){
+   _root.注释结束();
+	this._xscale = 108;// 将影片剪辑的水平缩放设置为108%
+	this._yscale = 100;// 将影片剪辑的垂直缩放设置为100%
+	this._rotation -= 10; // 将元件的旋转角度增加10度
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	//this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}]]></script>
+                                             </Actionscript>
+                                             <filters>
+                                                  <GlowFilter color="#000000" strength="10"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="1" duration="2" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="上一页" color="#E3F500" parentLayerIndex="2" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                              <DOMFrame index="1" duration="2" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉令-上一页" centerPoint3DX="450" centerPoint3DY="394.85">
+                                             <matrix>
+                                                  <Matrix a="1.07562255859375" b="-0.0941009521484375" c="0.0871429443359375" d="0.995986938476563" tx="399.75" ty="387.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on(release){
+   if(_parent.当前页数 - 1 > 0)
+   {
+      _parent.当前页数 -= 1;
+   }
+   _parent.prevFrame();
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("上一页");
+}
+on(rollOver){
+   _root.注释(150,this.显示文字);
+	this._xscale = 120;// 将影片剪辑的水平缩放设置为108%
+	this._yscale = 108;// 将影片剪辑的垂直缩放设置为100%
+	this._rotation += 10; // 将元件的旋转角度增加10度
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	//当前层级 = this.getDepth();// 保存当前元件的层级值
+	//this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on(rollOut){
+   _root.注释结束();
+	this._xscale = 108;// 将影片剪辑的水平缩放设置为108%
+	this._yscale = 100;// 将影片剪辑的垂直缩放设置为100%
+	this._rotation -= 10; // 将元件的旋转角度增加10度
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	//this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}]]></script>
+                                             </Actionscript>
+                                             <filters>
+                                                  <GlowFilter color="#000000" strength="10"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="通缉令" color="#9B76A2" parentLayerIndex="2" outline="true" useOutlineView="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/硬化僵尸/通缉单-硬化僵尸" name="通缉令3" centerPoint3DX="321.95" centerPoint3DY="141.95">
+                                             <matrix>
+                                                  <Matrix a="0.440704345703125" b="-0.0381317138671875" c="0.0382232666015625" d="0.4417724609375" tx="278.55" ty="84.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	显示文字 = _root.获得翻译("硬化僵尸");
+	NPC任务_任务_关卡路径 = "通缉任务之硬化僵尸";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/武士铁血/通缉单-武士铁血" name="通缉令2" centerPoint3DX="419.3" centerPoint3DY="124.9">
+                                             <matrix>
+                                                  <Matrix a="0.441757202148438" b="0.023040771484375" c="-0.023101806640625" d="0.442825317382813" tx="384.05" ty="62.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 19)
+	{
+		this._visible = false;
+	}
+	显示文字 = _root.获得翻译("武士铁血");
+	NPC任务_任务_关卡路径 = "通缉任务之武士铁血";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/浮士德兄弟/通缉单-浮士德兄弟" name="通缉令6" centerPoint3DX="510" centerPoint3DY="128.2">
+                                             <matrix>
+                                                  <Matrix a="0.441848754882813" b="-0.0210113525390625" c="0.02105712890625" d="0.442916870117188" tx="468.95" ty="70.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 29)
+	{
+		this._visible = false;
+	}
+	显示文字 = _root.获得翻译("浮士德兄弟");
+	NPC任务_任务_契约金 = 10000;
+	NPC任务_任务_等级限制 = 8;
+	NPC任务_任务_K点 = 0;
+	NPC任务_任务_关卡路径 = "通缉任务之浮士德兄弟";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/LEE/通缉单-LEE" name="通缉令1" centerPoint3DX="600.2" centerPoint3DY="133.3">
+                                             <matrix>
+                                                  <Matrix a="0.441650390625" b="0.0250244140625" c="-0.02508544921875" d="0.442703247070313" tx="565.15" ty="70.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 26)
+	{
+		this._visible = false;
+	}
+	this.显示文字 = _root.获得翻译("武圣LEE");
+	this.NPC任务_任务_关卡路径 = "通缉任务之李小龙coser";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/牛仔/通缉单-牛仔" name="通缉令4" centerPoint3DX="496.85" centerPoint3DY="261.55">
+                                             <matrix>
+                                                  <Matrix a="0.440704345703125" b="-0.0381317138671875" c="0.0382232666015625" d="0.4417724609375" tx="453.6" ty="205.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 29)
+	{
+		this._visible = false;
+	}
+	显示文字 = _root.获得翻译("牛仔");
+	NPC任务_任务_关卡路径 = "通缉任务之牛仔";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/魔女/通缉单-魔女" name="通缉令5" centerPoint3DX="592.95" centerPoint3DY="260.3">
+                                             <matrix>
+                                                  <Matrix a="0.441940307617188" b="0.0192413330078125" c="-0.019287109375" d="0.443008422851563" tx="557.15" ty="199.15"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 29)
+	{
+		this._visible = false;
+	}
+	显示文字 = _root.获得翻译("魔女");
+	NPC任务_任务_关卡路径 = "通缉任务之魔女";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 15; // 将元件的水平位置向左偏移15个像素
+	this._y -= 15; // 将元件的水平位置向上偏移15个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 15; // 将元件的水平位置向右偏移15个像素
+	this._y += 15; // 将元件的水平位置向下偏移15个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="1" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2209" centerPoint3DX="611.8" centerPoint3DY="339.5">
+                                             <matrix>
+                                                  <Matrix a="0.6103515625" d="0.6103515625" tx="549.3" ty="320.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (rollOver) {
+	_root.注释(100,_root.获得翻译("92装甲副本"));
+}
+on (rollOut) {
+	_root.注释结束();
+}
+onClipEvent (load) {
+	if (_root.主线任务进度 < 25)
+	{
+		this._visible = false;
+	}
+	显示文字 = _root.获得翻译("92装甲副本");
+	NPC任务_任务_关卡路径 = "92式装甲副本";
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2216" centerPoint3DX="527.2" centerPoint3DY="321.5">
+                                             <matrix>
+                                                  <Matrix a="0.539993286132813" d="0.539993286132813" tx="471.9" ty="304.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (rollOver) {
+	_root.注释(100,_root.获得翻译("中秋活动副本"));
+}
+on (rollOut) {
+	_root.注释结束();
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("中秋国庆副本");
+	NPC任务_任务_关卡路径 = "中秋国庆副本";
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2207" centerPoint3DX="696.25" centerPoint3DY="336.55">
+                                             <matrix>
+                                                  <Matrix a="0.794937133789063" d="0.794937133789063" tx="622.1" ty="309.15"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (rollOver) {
+	_root.注释(100,_root.获得翻译("剑圣的叹息"));
+}
+on (rollOut) {
+	_root.注释结束();
+}
+onClipEvent (load) {
+	if (_root.主线任务进度 < 19)
+	{
+		this._visible = false;
+	}
+	显示文字 = _root.获得翻译("剑圣的叹息");
+	NPC任务_任务_关卡路径 = "剑圣的叹息";
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单-士力架" centerPoint3DX="527.65" centerPoint3DY="176">
+                                             <matrix>
+                                                  <Matrix a="0.699996948242188" d="0.699996948242188" tx="461.5" ty="54.55"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="94.5" y="173.5"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	显示文字 = _root.获得翻译("尾上世莉架");
+	NPC任务_任务_关卡路径 = "通缉任务之尾上世莉架";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 75; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 10; // 将元件的水平位置向左偏移10个像素
+	this._y -= 10; // 将元件的水平位置向上偏移10个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 70;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 10; // 将元件的水平位置向右偏移10个像素
+	this._y += 10; // 将元件的水平位置向下偏移10个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="2" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="548.1" centerPoint3DY="151.85">
+                                             <matrix>
+                                                  <Matrix tx="502.3" ty="140.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	this.显示文字 = _root.获得翻译("武圣LEE");
+	this.任务前对话 = [];
+	this.任务前对话[0] = ["酒保", "前情报员", "酒保", "堕落城里出现了这家伙，真的很厉害，我怀疑是用李小龙的DNA优化后的产物……", "普通"];
+	this.任务前对话[1] = ["酒保", "前情报员", "酒保", "他说要挑战所有强者，堕落城的老大出重金买他的人头。", "普通"];
+	this.任务前对话[2] = ["酒保", "前情报员", "酒保", "但可不要小看这家伙，目前和他单挑的人都死了……", "普通"];
+	this.任务后对话 = [];
+	this.任务后对话[0] = ["酒保", "前情报员", "酒保", "哈，你回来了，听堕落城的人说，希望你能加入他们的组织，你要不要考虑下？", "普通"];
+	this.NPC任务_任务 = ["通缉任务之李小龙coser", "NPC任务", "酒保", "酒保", 0, "解决堕落城的威胁。李小龙coser是很厉害的。", "简单", "新任务", [], [["金币", 80000], ["经验值", 10000], ["复活币", 1], ["普通hp药剂", 10], ["普通mp药剂", 10]], 任务前对话, 任务后对话, "通缉任务之李小龙coser"];
+	this.NPC任务_任务_动画 = "flashswf/wanted_lixiaolong_index.swf";
+	this.NPC任务_任务_契约金 = 10000;
+	this.NPC任务_任务_等级限制 = 8;
+	this.NPC任务_任务_K点 = 0;
+	this.NPC任务_任务_关卡路径 = "data/stages/副本任务/wanted_lixiaolong.xml";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+}
+on (rollOut) {
+	_root.注释结束();
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="548.1" centerPoint3DY="189.85">
+                                             <matrix>
+                                                  <Matrix tx="502.3" ty="178.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	显示文字 = _root.获得翻译("武士铁血");
+	任务前对话 = [];
+	任务前对话[0] = ["酒保", "前情报员", "酒保", "这是前政府军发布的通缉令，一个穿武士铠甲的家伙似乎不是人类。", "普通"];
+	任务前对话[1] = ["酒保", "前情报员", "酒保", "他似乎喜欢追杀厉害的角色，据说有人见过他杀死僵尸和机器终结者！", "普通"];
+	任务前对话[2] = ["酒保", "前情报员", "酒保", "不知道他到底是一个家伙还是一群家伙，大概是外星人吧！哈哈哈……", "普通"];
+	任务后对话 = [];
+	任务后对话[0] = ["酒保", "前情报员", "酒保", "哈，合作愉快，没想到你真能完成……", "普通"];
+	NPC任务_任务 = ["通缉任务之武士铁血", "NPC任务", "酒保", "酒保", 0, "干掉厉害的武士铁血战士。外星人是很厉害的。", "简单", "新任务", [], [["金币", 80000], ["经验值", 10000], ["复活币", 1], ["普通hp药剂", 10], ["普通mp药剂", 10]], 任务前对话, 任务后对话, "通缉任务之武士铁血"];
+	NPC任务_任务_动画 = "flashswf/wantde_tiexue_index.swf";
+	NPC任务_任务_契约金 = 10000;
+	NPC任务_任务_等级限制 = 8;
+	NPC任务_任务_K点 = 0;
+	NPC任务_任务_关卡路径 = "data/stages/副本任务/wantde_tiexue.xml";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+}
+on (rollOut) {
+	_root.注释结束();
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="548.1" centerPoint3DY="230.85">
+                                             <matrix>
+                                                  <Matrix tx="502.3" ty="219.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	显示文字 = _root.获得翻译("硬化僵尸");
+	任务前对话 = [];
+	任务前对话[0] = ["酒保", "前情报员", "酒保", "这是来自一个商队的委托，一个很难杀死的变异僵尸……", "普通"];
+	任务前对话[1] = ["酒保", "前情报员", "酒保", "商队的护卫队无法杀死这只怪物，貌似他有某种很强的防御。", "普通"];
+	任务前对话[2] = ["酒保", "前情报员", "酒保", "不过我认为再强的怪物也一定有它的弱点……", "普通"];
+	任务后对话 = [];
+	任务后对话[0] = ["酒保", "前情报员", "酒保", "这下商队的路途又变得安全了……", "普通"];
+	NPC任务_任务 = ["通缉任务之硬化僵尸", "NPC任务", "酒保", "酒保", 0, "干掉厉害的硬化僵尸。", "简单", "新任务", [], [["金币", 50000], ["经验值", 10000], ["复活币", 1], ["普通hp药剂", 10], ["普通mp药剂", 10]], 任务前对话, 任务后对话, "通缉任务之硬化僵尸"];
+	NPC任务_任务_动画 = "flashswf/wanted_yinghuajiangshi_index.swf";
+	NPC任务_任务_契约金 = 10000;
+	NPC任务_任务_等级限制 = 8;
+	NPC任务_任务_K点 = 0;
+	NPC任务_任务_关卡路径 = "data/stages/副本任务/wanted_yinghuajiangshi.xml";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+}
+on (rollOut) {
+	_root.注释结束();
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="548.1" centerPoint3DY="268.85">
+                                             <matrix>
+                                                  <Matrix tx="502.3" ty="257.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	显示文字 = _root.获得翻译("牛仔");
+	任务前对话 = [];
+	任务前对话[0] = ["酒保", "前情报员", "酒保", "这家伙……粗狂的性格，潇洒的生活，为人做事不拘小节，最喜欢与枪手对决。", "普通"];
+	任务前对话[1] = ["酒保", "前情报员", "酒保", "末世后的独行者，因曾劫持过A兵团物资而被通缉。", "普通"];
+	任务前对话[2] = ["酒保", "前情报员", "酒保", "擅长左轮手枪和温彻斯特猎枪系列", "普通"];
+	任务后对话 = [];
+	任务后对话[0] = ["酒保", "前情报员", "酒保", "不错哦！", "普通"];
+	NPC任务_任务 = ["通缉任务之牛仔", "NPC任务", "酒保", "酒保", 0, "干掉厉害的神枪手牛仔。", "简单", "新任务", [], [["金币", 50000], ["经验值", 10000], ["普通hp药剂", 3], ["普通mp药剂", 3]], 任务前对话, 任务后对话, "通缉任务之牛仔"];
+	NPC任务_任务_动画 = "flashswf/wanted_niuzai_index.swf";
+	NPC任务_任务_契约金 = 10000;
+	NPC任务_任务_等级限制 = 8;
+	NPC任务_任务_K点 = 0;
+	NPC任务_任务_关卡路径 = "data/stages/副本任务/wanted_niuzai.xml";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+}
+on (rollOut) {
+	_root.注释结束();
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="548.1" centerPoint3DY="303.8">
+                                             <matrix>
+                                                  <Matrix tx="502.3" ty="292.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load){
+   显示文字 = _root.获得翻译("魔女");
+      任务前对话 = [];
+   任务前对话[0] = ["酒保","前情报员","酒保","这家伙……末世前某国超能力研究机构的实验体，身世未知，灾难之后逃出研究所。","普通"];
+   任务前对话[1] = ["酒保","前情报员","酒保","作为实验体长期遭受各种折磨，对人类充满恐惧，有人靠近就会攻击。","普通"];
+   任务前对话[2] = ["酒保","前情报员","酒保","不过听人说是个漂亮的女人啊，叫魔女真是可惜……","普通"];
+   任务后对话 = [];
+   任务后对话[0] = ["酒保","前情报员","酒保","合作愉快！看来我们还挺默契。","普通"];
+   NPC任务_任务 = ["通缉任务之魔女","NPC任务","酒保","酒保",0,"干掉厉害的超能力魔女。","简单","新任务",[],[["金币",60000],["经验值",10000],["普通hp药剂",3],["普通mp药剂",3]],任务前对话,任务后对话,"通缉任务之魔女"];
+   NPC任务_任务_动画 = "flashswf/wanted_monv_index.swf";
+   NPC任务_任务_契约金 = 10000;
+   NPC任务_任务_等级限制 = 8;
+   NPC任务_任务_K点 = 0;
+   NPC任务_任务_关卡路径 = "data/stages/副本任务/wanted_monv.xml";
+}
+on(rollOver){
+   _root.注释(200,显示文字);
+}
+on(rollOut){
+   _root.注释结束();
+}
+on(release){
+   _parent.组装副本任务(this);
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="548.1" centerPoint3DY="117.25">
+                                             <matrix>
+                                                  <Matrix tx="502.3" ty="106.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	显示文字 = _root.获得翻译("浮士德兄弟");
+	任务前对话 = [];
+	任务前对话[0] = ["酒保", "前情报员", "酒保", "这两家伙……相依相偎的双胞胎，从小流落街头，生性胆小，受尽世人冷眼，后被马戏团收留。", "普通"];
+	任务前对话[1] = ["酒保", "前情报员", "酒保", "从小流落街头的双子，在尔欺我诈的世界里挣扎求存，深悉底层世界的生存之道，善于用各种手段去折磨比他们弱小的对手，用充满技巧的招式将对手凌虐致死，是他们独特的战斗美学。", "普通"];
+	任务前对话[2] = ["酒保", "前情报员", "酒保", "对于他们来说，值得珍重的就只有彼此，兄弟的存在就是他们生存的意义。", "普通"];
+	任务后对话 = [];
+	任务后对话[0] = ["酒保", "前情报员", "酒保", "合作愉快！看来我们还挺默契。", "普通"];
+	NPC任务_任务 = ["通缉任务之浮士德兄弟", "NPC任务", "酒保", "酒保", 0, "干掉厉害的浮士德兄弟。", "简单", "新任务", [], [["金币", 50000], ["经验值", 10000], ["普通hp药剂", 3], ["普通mp药剂", 3]], 任务前对话, 任务后对话, "通缉任务之浮士德兄弟"];
+	NPC任务_任务_动画 = "flashswf/wanted_fushidexiongdi_index.swf";
+	NPC任务_任务_契约金 = 10000;
+	NPC任务_任务_等级限制 = 8;
+	NPC任务_任务_K点 = 0;
+	NPC任务_任务_关卡路径 = "data/stages/副本任务/wanted_fushidexiongdi.xml";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+}
+on (rollOut) {
+	_root.注释结束();
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2824" centerPoint3DX="449.3" centerPoint3DY="134.7">
+                                             <matrix>
+                                                  <Matrix tx="379.7" ty="104.2"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (rollOver) {
+	_root.注释(100,_root.获得翻译("兽王套装全新副本百兽之王，通过可以获得碎片！"));
+}
+on (rollOut) {
+	_root.注释结束();
+}
+onClipEvent (load) {
+	this._visible = 0;
+	显示文字 = _root.获得翻译("兽王");
+	任务前对话 = [];
+	任务前对话[0] = ["Andy Law", "东区最强战士", "Andy Law", "在熔岩山洞出现了老虎的咆哮，周边的动物都在逃窜，赶紧去调查一下！", "普通"];
+	任务后对话 = [];
+	任务后对话[0] = ["Andy Law", "东区最强战士", "Andy Law", "看来诺亚技术也在不断升级。", "普通"];
+	NPC任务_任务 = ["百兽之王副本", "NPC任务", "Andy Law", "Andy Law", 0, "通关【百兽之王副本】，可获得兽王碎片用来合成兽王套装。", "简单", "新任务", [], [["经验值", 100000], ["金币", 100000], ["加强抗生素药剂", 80], ["加强mp药剂", 80], ["复活币", 20], ["压缩胶囊之硬化僵尸", 1], ["兽王碎片", 100], ["压缩胶囊之兽王", 1]], 任务前对话, 任务后对话, "百兽之王副本"];
+	NPC任务_任务_动画 = "";
+	NPC任务_任务_契约金 = 10000;
+	NPC任务_任务_等级限制 = 30;
+	NPC任务_任务_K点 = 0;
+	NPC任务_任务_起始帧 = "wuxianguotu_1";
+	商品编号 = "O20111009000000030";
+	关卡可获得奖励品 = [];
+	关卡可获得奖励品.push(["兽王碎片", 1, 100]);
+	关卡可获得奖励品.push(["战队药箱", 2, 10]);
+	关卡可获得奖励品.push(["抗生素", 8, 20]);
+	无限过图基本配置 = [];
+	无限过图基本配置.push({Background:"flashswf/TY_BG_2.swf"});
+	无限过图关卡0 = [];
+	var 出兵的兵种列表 = [];
+	var i = 70;
+	while (i < 121)
+	{
+		if (i != 73)
+		{
+			if (i < 86 || i >= 107)
+			{
+				出兵的兵种列表.push([_root["兵种" + i], 300, 2, 40]);
+			}
+		}
+		i++;
+	}
+	var myleng = 出兵的兵种列表.length;
+	var i = 0;
+	while (i < 9)
+	{
+		无限过图关卡0.push([51, 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)]]);
+		i++;
+	}
+	无限过图关卡0.push([51, [_root.兵种161, 300, 2, 60], [_root.兵种78, 300, 3, 50]]);
+	无限过图总关卡 = [];
+	无限过图总关卡.push(无限过图关卡0);
+}
+on (release) {
+	_root.委托任务界面.NPC任务_任务 = this.NPC任务_任务;
+	_root.委托任务界面.NPC任务_任务_动画 = this.NPC任务_任务_动画;
+	_root.委托任务界面.NPC任务_任务_契约金 = this.NPC任务_任务_契约金;
+	_root.委托任务界面.NPC任务_任务_等级限制 = this.NPC任务_任务_等级限制;
+	_root.委托任务界面.NPC任务_任务_K点 = this.NPC任务_任务_K点;
+	_root.委托任务界面.NPC任务_任务_起始帧 = this.NPC任务_任务_起始帧;
+	_root.委托任务界面.关卡可获得奖励品 = this.关卡可获得奖励品;
+	_root.委托任务界面.显示任务明细(this.NPC任务_任务);
+	_root.SetDialogue(_root.getTaskData(this.NPC任务_任务[0]).get_conversation);
+	_root.委托任务界面.无限过图总关卡 = this.无限过图总关卡;
+	_root.委托任务界面.无限过图基本配置 = this.无限过图基本配置;
+	_root.委托任务界面.商品编号 = this.商品编号;
+	_root.委托任务界面.副本动画 = this.副本动画;
+	_root.委托任务界面._visible = 1;
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2204" centerPoint3DX="398.8" centerPoint3DY="256.5">
+                                             <matrix>
+                                                  <Matrix a="0.604248046875" d="0.6591796875" tx="336.3" ty="237.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on(rollOver){
+   _root.注释(100,_root.获得翻译("BOSS大乱斗"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+onClipEvent(load){
+	this._visible = 0;
+   显示文字 = _root.获得翻译("BOSS大乱斗");
+   任务前对话 = [];
+   任务前对话[0] = ["Andy Law","东区最强战士","Andy Law","新年了活动什么的来不及了毕竟闪8上线了，辉哥说来点刺激的，那就来BOSS大乱斗吧！","大笑"];
+   任务后对话 = [];
+   任务后对话[0] = ["Andy Law","东区最强战士","Andy Law","2018年2月10号到2月17号每天发放100个闪8武装行激活码，先到先得！","大笑"];
+   NPC任务_任务 = ["BOSS大乱斗","NPC任务","Andy Law","Andy Law",0,"通关【BOSS大乱斗】，找刺激！","简单","新任务",[],[["经验值",288888],["金币",28888],["加强抗生素药剂",288],["复活币",50],["穿刺步枪弹夹",288],["加强mp药剂",288],["压缩胶囊之硬化僵尸",30],["压缩胶囊之武士铁血",30],["普通hp粉尘",288],["普通mp粉尘",288],["材料盒子",20],["鼠年碎片",188]],任务前对话,任务后对话,"BOSS大乱斗"];
+   NPC任务_任务_动画 = "";
+   NPC任务_任务_契约金 = 8000;
+   NPC任务_任务_等级限制 = 11;
+   NPC任务_任务_K点 = 0;
+   NPC任务_任务_起始帧 = "wuxianguotu_1";
+   商品编号 = "O201502110000001";
+   关卡可获得奖励品 = [];
+   无限过图基本配置 = [];
+   var 出兵的兵种列表 = [[_root.兵种11,300,2,30],[_root.兵种12,300,2,30],[_root.兵种25,300,2,30],[_root.兵种50,300,2,30],[_root.兵种51,300,2,30],[_root.兵种52,300,2,30],[_root.兵种40,300,2,30],[_root.兵种41,300,2,30],[_root.兵种42,300,2,30],[_root.兵种58,300,2,30],[_root.兵种59,300,2,30],[_root.兵种60,300,2,30],[_root.兵种69,300,2,30],[_root.兵种78,300,2,30],[_root.兵种111,300,2,30],[_root.兵种121,300,2,30],[_root.兵种126,300,2,30],[_root.兵种134,300,2,30],[_root.兵种155,300,2,30],[_root.兵种157,300,2,30]];
+   var myleng = 出兵的兵种列表.length;
+   无限过图总关卡 = [];
+   var i = 0;
+   while(i < 30)
+   {
+      无限过图基本配置.push({Backgrounds:"flashswf/Survival_mode_BG.swf"});
+      this["无限过图关卡" + i] = [];
+      if(i < 20)
+      {
+         this["无限过图关卡" + i].push([51,出兵的兵种列表[i]]);
+      }
+      else
+      {
+         var rdx = random(3) + 2;
+         if(rdx == 3)
+         {
+            this["无限过图关卡" + i].push([51,出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)]]);
+         }
+         else if(rdx == 4)
+         {
+            this["无限过图关卡" + i].push([51,出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)]]);
+         }
+         else
+         {
+            this["无限过图关卡" + i].push([51,出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)]]);
+         }
+      }
+      无限过图总关卡.push(this["无限过图关卡" + i]);
+      i++;
+   }
+}
+on(release){
+   _root.委托任务界面.NPC任务_任务 = this.NPC任务_任务;
+   _root.委托任务界面.NPC任务_任务_动画 = this.NPC任务_任务_动画;
+   _root.委托任务界面.NPC任务_任务_契约金 = this.NPC任务_任务_契约金;
+   _root.委托任务界面.NPC任务_任务_等级限制 = this.NPC任务_任务_等级限制;
+   _root.委托任务界面.NPC任务_任务_K点 = this.NPC任务_任务_K点;
+   _root.委托任务界面.NPC任务_任务_起始帧 = this.NPC任务_任务_起始帧;
+   _root.委托任务界面.关卡可获得奖励品 = this.关卡可获得奖励品;
+   _root.委托任务界面.显示任务明细(this.NPC任务_任务);
+   _root.SetDialogue(_root.getTaskData(this.NPC任务_任务[0]).get_conversation);
+   _root.委托任务界面.无限过图总关卡 = this.无限过图总关卡;
+   _root.委托任务界面.无限过图基本配置 = this.无限过图基本配置;
+   _root.委托任务界面.商品编号 = this.商品编号;
+   _root.委托任务界面.副本动画 = this.副本动画;
+   _root.委托任务界面._visible = 1;
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="337.65" centerPoint3DY="207.2">
+                                             <matrix>
+                                                  <Matrix tx="291.85" ty="196"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load){
+   显示文字 = _root.获得翻译("不知火舞");
+   if(_root.easterEgg)
+   {
+      this._visible = true;
+   }
+   else
+   {
+      this._visible = false;
+   }
+}
+on(rollOver){
+   _root.注释(200,显示文字);
+}
+on(rollOut){
+   _root.注释结束();
+}
+on(release){
+   任务前对话 = [];
+   任务后对话 = [];
+   NPC任务_任务 = ["比武训练之不知火舞","NPC任务","酒保","酒保",0,"挑战不知火舞。","简单","新任务",[],[["经验值",500000]],任务前对话,任务后对话,"比武训练之不知火舞"];
+   NPC任务_任务_动画 = "flashswf/wanted_SHIRANUI_index.swf";
+   NPC任务_任务_契约金 = 0;
+   NPC任务_任务_等级限制 = 30;
+   NPC任务_任务_K点 = 0;
+   NPC任务_任务_起始帧 = "wuxianguotu_1";
+   关卡可获得奖励品 = [];
+   关卡可获得奖励品.push(["抗生素",8,10]);
+   关卡可获得奖励品.push(["普通hp粉尘",2,10]);
+   无限过图基本配置 = [];
+   无限过图基本配置.push({Background:"flashswf/gk12_5_BG.swf"});
+   无限过图关卡0 = [];
+   当前关兵种 = {兵种名:"敌人-不知火舞",等级:50,名字:"不知火舞",是否为敌人:true,身高:155,长枪:"",手枪:"",手枪2:"",刀:"",手雷:""};
+   无限过图关卡0.push([50,[当前关兵种,500,1,50]]);
+   无限过图总关卡 = [];
+   无限过图总关卡.push(无限过图关卡0);
+   _root.委托任务界面.NPC任务_任务 = this.NPC任务_任务;
+   _root.委托任务界面.NPC任务_任务_动画 = this.NPC任务_任务_动画;
+   _root.委托任务界面.NPC任务_任务_契约金 = this.NPC任务_任务_契约金;
+   _root.委托任务界面.NPC任务_任务_等级限制 = this.NPC任务_任务_等级限制;
+   _root.委托任务界面.NPC任务_任务_K点 = this.NPC任务_任务_K点;
+   _root.委托任务界面.NPC任务_任务_起始帧 = this.NPC任务_任务_起始帧;
+   _root.委托任务界面.关卡可获得奖励品 = this.关卡可获得奖励品;
+   _root.委托任务界面.显示任务明细(this.NPC任务_任务);
+   _root.SetDialogue(_root.getTaskData(this.NPC任务_任务[0]).get_conversation);
+   _root.委托任务界面.无限过图总关卡 = this.无限过图总关卡;
+   _root.委托任务界面.无限过图基本配置 = this.无限过图基本配置;
+   _root.委托任务界面.商品编号 = this.商品编号;
+   _root.委托任务界面.副本动画 = this.副本动画;
+   _root.委托任务界面._visible = 1;
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="通缉令介绍" color="#797F94" parentLayerIndex="2" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMStaticText fontRenderingMode="device" width="244.2" height="33.1" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="104.8" ty="339.25"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>上面这些家伙就是最近市面上最火的通缉犯，</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHeiLight" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHeiLight" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>你想接下哪一单？选择一个吧。</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHeiLight" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHeiLight" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="标题栏文字" color="#DD675A" parentLayerIndex="2" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉令标题栏" centerPoint3DX="120.15" centerPoint3DY="53.6">
+                                             <matrix>
+                                                  <Matrix a="0.9993896484375" b="0.0349273681640625" c="-0.0349273681640625" d="0.9993896484375" tx="68.5" ty="20.9"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="52.85" y="30.85"/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <GlowFilter color="#000000" strength="10"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="关闭按钮" color="#DFB03A" parentLayerIndex="2" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉令-关闭" symbolType="button">
+                                             <matrix>
+                                                  <Matrix a="2.22744750976563" b="0.5968017578125" c="-0.5968017578125" d="2.22744750976563" tx="654.3" ty="38.1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (release) {
+	this._visible = 0;
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="拖拽按钮" color="#2AE4C1" parentLayerIndex="2" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="button/Symbol 728" symbolType="button" centerPoint3DX="48.95" centerPoint3DY="76.3">
+                                             <matrix>
+                                                  <Matrix a="1.99241638183594" b="-0.17431640625" c="0.17431640625" d="1.99241638183594" tx="48.95" ty="76.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="背景" color="#FF4FFF" autoNamed="false" layerType="folder"/>
+                    <DOMLayer name="点一杯酒" color="#DACC79" parentLayerIndex="11" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/点酒-啤酒" centerPoint3DX="331.75" centerPoint3DY="285.05">
+                                             <matrix>
+                                                  <Matrix tx="312.2" ty="262.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="19.55" y="22.65"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	价格 = 50;
+	显示文字 = "$" + 价格;
+	对话index = 0;
+	对话 = _root.读取NPC对话("酒桌情报-啤酒");
+	对话完毕 = false;
+}
+on (rollOver) {
+	gotoAndStop(2);
+	this.swapDepths(_parent.getNextHighestDepth());
+	_root.注释(200,"点一杯啤酒");
+}
+on (rollOut) {
+	gotoAndStop(1);
+	_root.注释结束();
+}
+on (release) {
+	_parent.买一杯酒(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/点酒-鸡尾酒" centerPoint3DX="378.65" centerPoint3DY="313.4">
+                                             <matrix>
+                                                  <Matrix tx="367.45" ty="289.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="11.2" y="23.8"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	价格 = 200;
+	显示文字 = "$" + 价格;
+	对话index = 0;
+	对话 = _root.读取NPC对话("酒桌情报-鸡尾酒");
+	对话完毕 = false;
+	if (_root.主线任务进度 < 23)
+	{
+		对话完毕 = true;
+		显示文字 = "补货中"
+	}
+}
+on(rollOver){
+   gotoAndStop(2);
+   this.swapDepths(_parent.getNextHighestDepth());
+   _root.注释(200,"点一杯鸡尾酒");
+}
+on(rollOut){
+   gotoAndStop(1);
+   _root.注释结束();
+}
+on (release) {
+	_parent.买一杯酒(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="黑框" color="#4FFFFF" parentLayerIndex="11" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMShape>
+                                             <fills>
+                                                  <FillStyle index="1">
+                                                       <SolidColor/>
+                                                  </FillStyle>
+                                             </fills>
+                                             <edges>
+                                                  <Edge fillStyle1="1" edges="!13888 818[13841 923 13765 951!13765 951[13702 1021 13586 1031!13586 1031[13594 1064 13604 1096!13604 1096[13620 1146 13630 1176!13630 1176[13650 1238 13663 1350!13663 1350[13670 1416 13674 1500!13674 1500|13708 1446!13708 1446[13723
+ 1478 13747 1549!13747 1549|13807 1752!13807 1752|13807 1758!13807 1758|13809 1764!13809 1764|13841 1931!13841 1931|13845 1999!13845 1999[13845 2024 13837 2036!13837 2036|13833 2072!13833 2072|13839 2225!13839 2225|13890 2587!13890 2587
+[13890 2633 13884 2674!13884 2674|13863 2760!13863 2760[13851 2851 13845 2937!13845 2937[13839 3020 13839 3022!13839 3022|13841 3602!13841 3602|13843 3622!13843 3622|13823 4048!13823 4048|13807 4149!13807 4149|13803 4143!13803 4143|13801
+ 4153!13801 4153[13805 4179 13813 4195!13813 4195[13827 4229 13845 4221!13845 4221[13843 4238 13827 4280!13827 4280[13817 4306 13825 4350!13825 4350|13829 4338!13829 4338[13835 4397 13827 4638!13827 4638[13823 4890 13827 4928!13827 4928
+|13823 4920!13823 4920[13829 4956 13829 5035!13829 5035[13829 5111 13841 5151!13841 5151[13833 5244 13829 5576!13829 5576[13827 5811 13829 5930!13829 5930|13940 6254!13940 6254[13938 6260 13928 6270!13928 6270[13918 6284 13928 6310!13928
+ 6310|13966 6310!13966 6310|13966 6341!13966 6341|13988 6445!13988 6445|14010 6550!14010 6550|14012 6554!14012 6554|14012 6558!14012 6558|14033 6661!14033 6661|14035 6693!14035 6693[14035 6735 14031 6755!14031 6755[13986 6504 13956 6661
+!13956 6661|13956 6900!13956 6900[#3683.BB #1AFF.32 13955.5 6920!13955.5 6920[#3681.1A #1B49.4E 13948 6920!13948 6920[#3678.04 #1AD0.34 13938 6713!13938 6713[13775 6329 13869 6604!13869 6604[#3628.FA #1A77.03 13864.5 6920!13864.5 6920
+[#3625.BF #1F40.3E 14061 7637!14061 7637|14029 7737!14029 7737|14028 7746!14028 7746|14026 7752!14026 7752|14024 7756!14024 7756|13988 7878!13988 7878|13984 7888!13984 7888|13982 7898!13982 7898|13974 7921!13974 7921|14061 7919!14061
+ 7919[14077 7919 14077 7915!14077 7915[14081 7913 14079 7911!14079 7911|14075 7911!14075 7911|14073 7909!14073 7909[14083 7909 14107 7917!14107 7917[14137 7923 14163 7923!14163 7923|14169 7919!14169 7919[14179 7921 14210 7923!14210 7923
+[14224 7925 14163 7927!14163 7927[14240 7939 14367 7933!14367 7933|14503 7919!14503 7919|14514 7919!14514 7919|14278 7973!14278 7973|14248 7973!14248 7973[14256 7975 14214 7983!14214 7983|14194 7991!14194 7991[14183 7997 14204 7997!14204
+ 7997|14139 8007!14139 8007|14119 8013!14119 8013|14105 8019!14105 8019[14071 8043 14063 8047!14063 8047|14018 8041!14018 8041|13952 8057!13952 8057|13944 8120!13944 8120|13942 8126!13942 8126|13942 8134!13942 8134|13904 8321!13904 8321
+|13892 8359!13892 8359|13855 8420!13855 8420|13855 8462!13855 8462[13855 8488 13857 8464!13857 8464|13849 8919!13849 8919|13851 8923!13851 8923|13849 8983!13849 8983|13849 8935!13849 8935|13831 8838!13831 8838|13823 8816!13823 8816|13787
+ 8542!13787 8542[13781 8551 13777 8561!13777 8561[13757 8486 13696 8396!13696 8396|13700 8400!13700 8400[13696 8361 13668 8285!13668 8285|13650 8229!13650 8229[13640 8196 13642 8172!13642 8172[13650 8171 13644 8148!13644 8148[13642 8142
+ 13638 8128!13638 8128|13352 8146!13352 8146[13318 8156 13286 8172!13286 8172[13264 8184 13254 8184!13254 8184|13268 8174!13268 8174|13175 8198!13175 8198[12698 8172 12612 8310!12612 8310|12644 8323!12644 8323[12606 8337 12471 8363!12471
+ 8363|11825 8443!11825 8443[12793 8227 11040 8476!11040 8476[11492 8291 10329 8461!10329 8461|9599 8432!9599 8432|9033 8438!9033 8438|8393 8410!8393 8410[8071 8438 8035 8432!8035 8432[8011 8433 7978 8434!7978 8434[7912 8437 7810 8442
+!7810 8442|7375 8476!7375 8476[7272 8486 7172 8482!7172 8482[6966 8488 6759 8500!6759 8500|5525 8599!5525 8599|5531 8595!5531 8595|5374 8591!5374 8591[5276 8591 5231 8607!5231 8607[5235 8603 5229 8601!5229 8601|5159 8609!5159 8609|5165
+ 8607!5165 8607[5014 8615 4938 8623!4938 8623[4817 8635 4712 8667!4712 8667[4694 8659 4609 8659!4609 8659[4525 8663 4497 8653!4497 8653[4304 8653 4143 8661!4143 8661[3978 8669 3772 8689!3772 8689[3647 8699 3392 8726!3392 8726|3009 8762
+!3009 8762[2999 8752 2993 8746!2993 8746[2979 8736 2945 8740!2945 8740|2941 8776!2941 8776[2869 8762 2790 8768!2790 8768[2762 8770 2633 8784!2633 8784[2530 8796 2480 8796!2480 8796[2396 8796 2335 8772!2335 8772|2271 8822!2271 8822|1570
+ 8889!1570 8889[1550 8945 1576 8955!1576 8955|1546 8957!1546 8957[1540 8997 1548 9011!1548 9011|1566 9019!1566 9019|1574 9017!1574 9017[1572 9023 1548 9040!1548 9040[1526 9056 1520 9078!1520 9078|1534 9080!1534 9080[1516 9102 1510 9108
+!1510 9108[1500 9118 1508 9078!1508 9078[1472 9110 1405 9213!1405 9213[1371 9265 1343 9311!1343 9311[1309 9291 1281 9168!1281 9168[1256 9185 1256 9168!1256 9168|1275 9140!1275 9140|1281 9168!1281 9168[1299 9150 1307 9146!1307 9146[1295
+ 9150 1283 9126!1283 9126[1271 9104 1242 9124!1242 9124[1265 9076 1234 9060!1234 9060[1188 9052 1176 9038!1176 9038|1214 9007!1214 9007|1196 8917!1196 8917[1216 8913 1224 8903!1224 8903[1222 8897 1222 8893!1222 8893|979 8862!979 8862
+|508 8935!508 8935|329 8740!329 8740|266 8488!266 8488|460 8255!460 8255|457 8267!457 8267[488 8283 528 8281!528 8281[544 8281 598 8271!598 8271[643 8261 665 8261!665 8261[703 8259 733 8277!733 8277|733 8271!733 8271[735 8295 763 8293
+!763 8293[779 8293 824 8279!824 8279[872 8265 890 8263!890 8263[922 8259 932 8281!932 8281[973 8297 1025 8271!1025 8271[1081 8241 1099 8235!1099 8235[1097 8237 1099 8241!1099 8241[1102 8251 1112 8259!1112 8259[1114 8259 1114 8261!1114
+ 8261[1116 8261 1118 8261!1118 8261|1116 8096!1116 8096|1071 8150!1071 8150[1047 8106 1015 7844!1015 7844[983 7568 1013 7532!1013 7532[1037 7405 997 7144!997 7144[#3D1.DF #1B66.5B 978 6920!978 6920[#3D2.01 #1AB4.C6 993 6781!993 6781[1011
+ 6496 953 6067!953 6067[876 5493 868 5352!868 5352|874 5355!874 5355[892 5264 896 5216!896 5216[904 5135 872 5093!872 5093[880 5097 886 5091!886 5091|872 5032!872 5032|878 5035!878 5035[874 4914 860 4839!860 4839[842 4729 794 4646!794
+ 4646[810 4628 812 4554!812 4554[814 4477 828 4457!828 4457[#347.CA #10D9.2C 828 4120!828 4120[#333.B5 #F91.78 800 3827!800 3827[737 3386 715 3165!715 3165[719 3159 737 3149!737 3149[751 3135 747 3108!747 3108|697 3108!697 3108[723 3028
+ 693 2839!693 2839[665 2666 713 2579!713 2579|651 2525!651 2525|586 1923!586 1923|572 1925!572 1925[554 1927 550 1915!550 1915[546 1901 532 1903!532 1903[518 1899 478 1927!478 1927[490 1933 488 1937!488 1937[478 1933 455 1933!455 1933
+[460 1927 468 1917!468 1917[472 1909 455 1909!455 1909|492 1903!492 1903[492 1895 484 1899!484 1899[468 1907 453 1905!453 1905|429 1913!429 1913|429 1895!429 1895[383 1857 357 1736!357 1736[335 1633 331 1490!331 1490[327 1417 328 1350
+!328 1350[327 1308 329 1269!329 1269|331 1172!331 1172|341 1168!341 1168|405 1215!405 1215[457 1200 548 1207!548 1207|584 1211!584 1211|542 995!542 995|739 828!739 828|989 758!989 758|1234 915!1234 915|1224 911!1224 911[1202 955 1228
+ 1035!1228 1035[1236 1054 1238 1074!1238 1074[1315 1066 1371 1064!1371 1064[1351 1068 1271 1074!1271 1074[1254 1074 1240 1076!1240 1076[1240 1078 1240 1080!1240 1080|1802 1031!1802 1031[1707 1042 1816 1042!1816 1042[1933 1023 2214 1003
+!2214 1003|2293 1015!2293 1015|3450 909!3450 909[3519 911 3472 915!3472 915[3398 921 3420 927!3420 927[3752 883 4014 872!4014 872[4028 882 3861 897!3861 897[3831 901 3810 903!3810 903|3812 915!3812 915[3857 909 3897 909!3897 909[3971
+ 883 4080 887!4080 887[4108 887 4131 889!4131 889[4203 876 4306 864!4306 864|4650 832!4650 832[4706 846 4811 846!4811 846|4811 844!4811 844|4815 846!4815 846[4859 844 4913 844!4913 844[4911 834 4907 822!4907 822[4930 838 4974 840!4974
+ 840[4990 838 5010 836!5010 836|5032 834!5032 834[5058 828 5014 824!5014 824[4932 818 4930 818!4930 818[5056 812 5225 802!5225 802|5227 796!5227 796[5233 796 5252 800!5252 800[5495 784 5825 762!5825 762[6413 723 6705 707!6705 707[6691
+ 717 6757 717!6757 717[6767 717 6900 711!6900 711[6992 707 7015 711!7015 711[7049 717 6982 740!6982 740[7063 732 7119 717!7119 717[7174 699 7206 691!7206 691[7320 661 7584 649!7584 649[7747 657 7781 675!7781 675[7814 697 7661 719!7661
+ 719|8385 701!8385 701[8407 695 8425 679!8425 679[8446 661 8456 657!8456 657[8508 631 8655 629!8655 629|8367 615!8367 615[8786 599 8997 591!8997 591[9369 579 9589 587!9589 587[9738 575 9732 567!9732 567[9722 554 9778 546!9778 546|10166
+ 536!10166 536[10136 542 10017 560!10017 560[9943 573 10096 573!10096 573|10317 556!10317 556[10170 573 10166 581!10166 581[10164 587 10180 609!10180 609|10384 597!10384 597[10345 601 10331 607!10331 607[10313 615 10339 623!10339 623
+[10345 623 10545 617!10545 617[10676 613 10750 599!10750 599[10734 595 10724 581!10724 581[10716 571 10659 567!10659 567[11324 546 11658 540!11658 540|11324 556!11324 556[11233 562 11213 567!11213 567[11189 575 11263 583!11263 583|11549
+ 569!11549 569|11483 617!11483 617[11636 581 11984 571!11984 571[12181 563 12501 563!12501 563[12509 577 12660 581!12660 581[12666 581 12672 581!12672 581[12665 536 12651 434!12651 434[12649 426 12648 418!12648 418[12646 404 12660 403
+!12660 403[12674 399 12672 389!12672 389[12674 379 12664 367!12664 367[12652 355 12648 349!12648 349[12646 359 12638 355!12638 355[12642 347 12642 329!12642 329[12648 333 12658 341!12658 341[12666 343 12666 329!12666 329|12670 359!12670
+ 359[12680 359 12676 351!12676 351[12668 339 12670 327!12670 327|12662 311!12662 311|12680 309!12680 309[12716 274 12819 253!12819 253[12829 251 12839 249!12839 249[12944 230 13083 220!13083 220[13205 212 13306 208!13306 208|13401 208
+!13401 208|13407 214!13407 214|13358 263!13358 263[13374 309 13364 371!13364 371|13350 466!13350 466[13352 474 13352 496!13352 496[13354 500 13360 512!13360 512|13364 518!13364 518|13543 490!13543 490|13580 744!13580 744[13761 758 13922
+ 719!13922 719|13888 818!12960 1828[12936 1750 12901 1587!12901 1587|12853 1353!12853 1353[12863 1368 12871 1350!12871 1350|12871 1349!12871 1349|12859 1323!12859 1323[12855 1333 12849 1331!12849 1331|12847 1313!12847 1313[12845 1303
+ 12833 1301!12833 1301[12843 1301 12843 1283!12843 1283[12833 1277 12833 1245!12833 1245[12829 1215 12811 1209!12811 1209[12803 1190 12813 1184!12813 1184[12825 1178 12819 1158!12819 1158|12795 1158!12795 1158|12769 1050!12769 1050[12767
+ 1042 12765 1037!12765 1037[12672 1009 12567 959!12567 959|12579 933!12579 933[12559 923 12517 959!12517 959[12473 995 12453 989!12453 989[12467 965 12457 941!12457 941[12451 969 12416 979!12416 979[12376 989 12368 1005!12368 1005[12360
+ 995 12350 965!12350 965[12346 947 12340 937!12340 937[12332 937 12324 939!12324 939|12308 981!12308 981[12274 1058 12195 1041!12195 1041[12100 1019 12064 1048!12064 1048[12070 1037 12072 1031!12072 1031[12076 1019 12070 1011!12070 1011
+[11984 1064 11839 1086!11839 1086[11674 1104 11595 1120!11595 1120[11609 1070 11597 1037!11597 1037[11591 1078 11561 1102!11561 1102[11541 1116 11497 1128!11497 1128[11487 1096 11448 1130!11448 1130[11400 1170 11376 1154!11376 1154|11380
+ 1140!11380 1140[11362 1174 11336 1156!11336 1156[11311 1142 11297 1184!11297 1184|11273 1132!11273 1132[11265 1182 11237 1150!11237 1150[11203 1114 11189 1134!11189 1134|11189 1152!11189 1152[11175 1164 11154 1152!11154 1152[11132 1138
+ 11120 1146!11120 1146|11116 1134!11116 1134[11096 1142 11044 1140!11044 1140[11018 1140 11020 1180!11020 1180[11010 1156 11038 1136!11038 1136[11064 1116 11044 1072!11044 1072[10913 1122 10734 1134!10734 1134[10698 1136 10424 1142!10424
+ 1142[10402 1120 10394 1110!10394 1110[10382 1096 10378 1080!10378 1080[10376 1082 10331 1096!10331 1096[10297 1108 10285 1128!10285 1128[10283 1122 10277 1112!10277 1112[10267 1094 10259 1092!10259 1092[10241 1080 10219 1118!10219 1118
+[10199 1154 10178 1138!10178 1138[10201 1112 10192 1070!10192 1070[10172 1104 10134 1118!10134 1118[10092 1128 10070 1136!10070 1136[10078 1126 10080 1120!10080 1120[10086 1110 10084 1096!10084 1096[10060 1130 10021 1118!10021 1118[9979
+ 1106 9961 1124!9961 1124|9977 1082!9977 1082[9943 1058 9937 1104!9937 1104[9929 1154 9903 1140!9903 1140[9911 1132 9911 1120!9911 1120[9913 1104 9913 1094!9913 1094[9883 1140 9820 1152!9820 1152[9732 1170 9726 1172!9726 1172[9730 1166
+ 9728 1156!9728 1156[9717 1158 9643 1158!9643 1158[9589 1158 9554 1178!9554 1178[9548 1174 9540 1124!9540 1124[9534 1084 9500 1094!9500 1094[9500 1132 9454 1154!9454 1154[9416 1174 9436 1221!9436 1221[9363 1202 9347 1200!9347 1200[9291
+ 1190 9269 1207!9269 1207[9279 1194 9271 1146!9271 1146[9263 1104 9285 1100!9285 1100|9253 1052!9253 1052[9255 1037 9269 1041!9269 1041[9281 1042 9275 1023!9275 1023|9273 1023!9273 1023[9243 1033 9224 1039!9224 1039[9186 1052 9174 1044
+!9174 1044[9136 1106 9116 1138!9116 1138[9077 1194 9039 1202!9039 1202[9055 1184 9043 1142!9043 1142[9033 1112 9037 1102!9037 1102|8953 1255!8953 1255[8945 1257 8939 1227!8939 1227[8933 1200 8918 1211!8918 1211[8920 1225 8912 1239!8912
+ 1239[8908 1249 8898 1265!8898 1265[8872 1265 8850 1263!8850 1263[8806 1255 8800 1207!8800 1207[8796 1192 8810 1184!8810 1184[8822 1176 8810 1162!8810 1162[8790 1162 8770 1176!8770 1176[8751 1192 8731 1192!8731 1192|8729 1182!8729 1182
+[8707 1172 8685 1202!8685 1202[8663 1231 8683 1261!8683 1261[8691 1261 8689 1241!8689 1241[8687 1223 8703 1235!8703 1235[8681 1293 8601 1297!8601 1297[8609 1289 8611 1273!8611 1273[8615 1251 8617 1239!8617 1239[8584 1281 8538 1311!8538
+ 1311[8524 1319 8462 1350!8462 1350[8461 1351 8460 1351!8460 1351|8460 1350!8460 1350[8460 1344 8464 1335!8464 1335[8474 1303 8480 1301!8480 1301[8442 1281 8369 1313!8369 1313[8305 1341 8272 1313!8272 1313[8272 1317 8272 1327!8272 1327
+[8273 1345 8273 1350!8273 1350[8272 1355 8271 1350!8271 1350[8270 1349 8270 1347!8270 1347[8252 1345 8236 1319!8236 1319[8224 1299 8212 1309!8212 1309[8210 1291 8192 1305!8192 1305[8162 1329 8158 1331!8158 1331[8144 1359 8152 1331!8152
+ 1331[8154 1327 8156 1323!8156 1323[8129 1339 8088 1350!8088 1350[8078 1353 8067 1355!8067 1355[7987 1372 7936 1350!7936 1350[7931 1348 7926 1345!7926 1345[7926 1347 7926 1350!7926 1350[7924 1366 7902 1392!7902 1392[7876 1424 7862 1422
+!7862 1422|7868 1372!7868 1372[7862 1362 7844 1361!7844 1361[7842 1359 7842 1361!7842 1361[7836 1359 7830 1359!7830 1359[7818 1359 7812 1353!7812 1353[7803 1359 7787 1366!7787 1366[7755 1382 7733 1355!7733 1355[7738 1359 7742 1350!7742
+ 1350[7745 1342 7747 1323!7747 1323[7751 1285 7733 1287!7733 1287[7705 1293 7701 1305!7701 1305[7697 1321 7677 1329!7677 1329|7652 1350!7652 1350|7651 1351!7651 1351[7651 1374 7630 1372!7630 1372[7616 1370 7626 1396!7626 1396[7618 1384
+ 7586 1386!7586 1386[7556 1390 7556 1350!7556 1350[7556 1348 7556 1345!7556 1345|7562 1281!7562 1281[7548 1283 7532 1321!7532 1321[7525 1338 7520 1350!7520 1350[7511 1372 7508 1376!7508 1376[7502 1362 7502 1355!7502 1355[7500 1396 7473
+ 1388!7473 1388[7435 1378 7423 1416!7423 1416[7407 1404 7343 1394!7343 1394[7296 1388 7282 1355!7282 1355[7242 1390 7232 1396!7232 1396[7202 1414 7174 1400!7174 1400[7178 1396 7186 1386!7186 1386[7192 1378 7194 1366!7194 1366[7178 1349
+ 7166 1357!7166 1357[7153 1372 7141 1380!7141 1380[7143 1371 7121 1350!7121 1350[7117 1347 7113 1343!7113 1343[7067 1299 7059 1289!7059 1289[7037 1307 7035 1347!7035 1347[7035 1348 7035 1350!7035 1350[7033 1369 7033 1404!7033 1404[7017
+ 1357 6966 1390!6966 1390[6914 1424 6892 1380!6892 1380[6909 1363 6917 1350!6917 1350[6933 1324 6914 1309!6914 1309[6896 1259 6862 1305!6862 1305[6823 1359 6797 1337!6797 1337|6811 1416!6811 1416[6799 1392 6765 1412!6765 1412[6737 1426
+ 6739 1382!6739 1382[6733 1392 6703 1390!6703 1390[6680 1390 6684 1434!6684 1434[6652 1412 6540 1414!6540 1414[6457 1418 6426 1350!6426 1350[6423 1345 6421 1339!6421 1339[6403 1347 6395 1349!6395 1349[6394 1349 6393 1350!6393 1350[6379
+ 1357 6383 1380!6383 1380[6395 1404 6407 1384!6407 1384[6417 1366 6421 1378!6421 1378[6407 1380 6407 1412!6407 1412[6379 1394 6375 1386!6375 1386[6369 1374 6374 1350!6374 1350[6376 1339 6381 1325!6381 1325[6357 1305 6331 1350!6331 1350
+[6325 1359 6320 1370!6320 1370[6286 1444 6246 1428!6246 1428[6252 1382 6222 1390!6222 1390|6181 1446!6181 1446[6149 1438 6147 1398!6147 1398[6149 1371 6150 1350!6150 1350[6150 1332 6149 1319!6149 1319[6121 1327 6109 1331!6109 1331[6095
+ 1337 6088 1350!6088 1350[6083 1357 6081 1366!6081 1366|6047 1299!6047 1299[6061 1329 6046 1337!6046 1337[6022 1341 6016 1347!6016 1347|6028 1333!6028 1333[6024 1317 6006 1321!6006 1321[6002 1321 5976 1331!5976 1331[5977 1341 5983 1350
+!5983 1350[5995 1371 6030 1386!6030 1386[6024 1400 6006 1410!6006 1410[5988 1420 5978 1434!5978 1434[5980 1400 5956 1396!5956 1396[5924 1396 5914 1392!5914 1392[5900 1384 5892 1412!5892 1412[5883 1440 5881 1440!5881 1440[5881 1428 5865
+ 1422!5865 1422[5851 1418 5861 1396!5861 1396[5863 1392 5875 1402!5875 1402[5885 1412 5892 1398!5892 1398[5881 1370 5875 1361!5875 1361[5865 1343 5845 1364!5845 1364[5837 1374 5835 1424!5835 1424[5833 1456 5805 1438!5805 1438[5817 1424
+ 5829 1384!5829 1384|5785 1357!5785 1357|5783 1404!5783 1404[5781 1388 5779 1382!5779 1382[5773 1406 5739 1418!5739 1418[5708 1426 5704 1458!5704 1458[5692 1460 5670 1442!5670 1442[5644 1420 5636 1418!5636 1418|5640 1414!5640 1414[5622
+ 1394 5598 1404!5598 1404[5576 1412 5559 1438!5559 1438|5559 1428!5559 1428[5547 1424 5529 1432!5529 1432[5507 1442 5495 1462!5495 1462[5479 1446 5469 1364!5469 1364[5468 1356 5467 1350!5467 1350[5460 1310 5441 1339!5441 1339[5429 1340
+ 5421 1350!5421 1350[5410 1363 5404 1390!5404 1390[5390 1436 5402 1462!5402 1462[5378 1450 5302 1464!5302 1464[5239 1478 5205 1436!5205 1436[5203 1440 5197 1462!5197 1462[5193 1474 5183 1480!5183 1480[5165 1476 5038 1492!5038 1492[4950
+ 1502 4907 1446!4907 1446[4923 1432 4917 1410!4917 1410[4907 1370 4907 1368!4907 1368[4897 1390 4883 1372!4883 1372[4875 1361 4871 1398!4871 1398[4873 1438 4877 1450!4877 1450[4881 1470 4899 1482!4899 1482[4855 1502 4803 1500!4803 1500
+[4748 1496 4724 1468!4724 1468[4740 1488 4716 1516!4716 1516[4718 1466 4694 1452!4694 1452[4672 1438 4646 1460!4646 1460|4642 1504!4642 1504|4620 1460!4620 1460[4612 1490 4607 1506!4607 1506[4597 1533 4577 1510!4577 1510[4573 1476 4567
+ 1464!4567 1464[4525 1512 4513 1521!4513 1521[4477 1547 4453 1523!4453 1523|4424 1462!4424 1462[4410 1468 4402 1488!4402 1488[4394 1512 4412 1523!4412 1523[4356 1496 4336 1484!4336 1484[4302 1464 4291 1430!4291 1430[4223 1520 4112 1549
+!4112 1549[4032 1571 3917 1563!3917 1563|3919 1531!3919 1531[3901 1516 3897 1547!3897 1547[3891 1577 3881 1567!3881 1567[3885 1555 3875 1518!3875 1518[3865 1484 3879 1462!3879 1462[3853 1444 3829 1480!3829 1480[3798 1529 3790 1533!3790
+ 1533[3788 1553 3800 1543!3800 1543[3812 1533 3810 1561!3810 1561[3810 1563 3774 1559!3774 1559[3742 1555 3738 1593!3738 1593[3724 1565 3740 1494!3740 1494|3712 1525!3712 1525[3694 1490 3732 1420!3732 1420[3754 1381 3758 1350!3758 1350
+[3759 1338 3758 1327!3758 1327[3752 1327 3744 1327!3744 1327[3716 1329 3690 1331!3690 1331[3691 1342 3694 1350!3694 1350[3697 1358 3702 1364!3702 1364[3674 1374 3658 1448!3658 1448[3647 1516 3613 1514!3613 1514[3605 1496 3631 1488!3631
+ 1488[3658 1480 3651 1452!3651 1452[3635 1422 3607 1446!3607 1446[3575 1470 3565 1464!3565 1464[3585 1480 3577 1518!3577 1518[3569 1553 3551 1563!3551 1563[3535 1549 3543 1521!3543 1521[3549 1502 3525 1498!3525 1498[3521 1518 3501 1547
+!3501 1547[3492 1573 3513 1587!3513 1587[3505 1631 3482 1615!3482 1615[3454 1599 3442 1631!3442 1631[3436 1609 3452 1537!3452 1537[3464 1482 3436 1466!3436 1466[3440 1488 3412 1535!3412 1535[3386 1581 3402 1627!3402 1627[3388 1615 3386
+ 1587!3386 1587[3382 1559 3392 1531!3392 1531[3382 1520 3348 1557!3348 1557[3321 1587 3315 1523!3315 1523|3307 1581!3307 1581[3285 1549 3269 1518!3269 1518[3237 1537 3219 1547!3219 1547[3189 1565 3191 1512!3191 1512[3172 1518 3160 1525
+!3160 1525[3136 1539 3150 1577!3150 1577[3166 1593 3185 1577!3185 1577[3199 1569 3209 1613!3209 1613[3193 1571 3172 1597!3172 1597[3150 1635 3140 1645!3140 1645|3134 1613!3134 1613[3118 1621 3108 1625!3108 1625[3098 1631 3094 1641!3094
+ 1641[3098 1617 3082 1605!3082 1605|3070 1657!3070 1657[3044 1671 3038 1623!3038 1623[3032 1573 3009 1581!3009 1581|3044 1541!3044 1541[3042 1543 3026 1527!3026 1527[3009 1510 2997 1520!2997 1520[2989 1565 2965 1659!2965 1659[2953 1669
+ 2947 1647!2947 1647[#B7D.32 #661.74 2934.5 1645!2934.5 1645|2961 1597!2961 1597[2965 1583 2945 1555!2945 1555[2923 1521 2899 1523!2899 1523[2877 1537 2865 1575!2865 1575[2854 1615 2879 1633!2879 1633[2863 1633 2852 1615!2852 1615[2838
+ 1595 2848 1571!2848 1571[2828 1579 2832 1605!2832 1605[2836 1637 2820 1651!2820 1651[2812 1637 2780 1597!2780 1597[2744 1555 2730 1531!2730 1531|2734 1525!2734 1525[2696 1537 2689 1539!2689 1539[2673 1541 2661 1545!2661 1545[2647 1585
+ 2651 1611!2651 1611[2627 1621 2605 1555!2605 1555|2559 1569!2559 1569|2545 1565!2545 1565|2539 1579!2539 1579[2537 1581 2537 1585!2537 1585[2535 1603 2543 1605!2543 1605[2534 1615 2524 1639!2524 1639[2508 1679 2482 1659!2482 1659[2498
+ 1641 2482 1587!2482 1587[2480 1581 2478 1575!2478 1575[2464 1573 2458 1565!2458 1565[2454 1571 2440 1573!2440 1573[2422 1573 2408 1581!2408 1581[2416 1589 2438 1587!2438 1587[2460 1585 2466 1589!2466 1589[2446 1595 2414 1603!2414 1603
+[2418 1623 2418 1653!2418 1653|2380 1677!2380 1677|2386 1641!2386 1641[2355 1627 2349 1663!2349 1663[2341 1702 2311 1698!2311 1698|2281 1629!2281 1629[2247 1635 2210 1641!2210 1641[2225 1671 2190 1671!2190 1671[2190 1665 2198 1643!2198
+ 1643[2172 1649 2144 1653!2144 1653|1828 1704!1828 1704[1838 1700 1836 1694!1836 1694[1834 1690 1824 1688!1824 1688|1788 1700!1788 1700[1790 1700 1796 1704!1796 1704[1800 1704 1798 1708!1798 1708[1794 1710 1774 1712!1774 1712[1762 1714
+ 1758 1724!1758 1724[1758 1718 1746 1718!1746 1718|1735 1716!1735 1716[1727 1726 1685 1726!1685 1726[1645 1730 1635 1750!1635 1750[1611 1758 1603 1748!1603 1748[1595 1736 1568 1742!1568 1742|1566 1766!1566 1766|1420 1794!1420 1794[1385
+ 1802 1359 1810!1359 1810[1361 1893 1381 2076!1381 2076[1403 2267 1377 2364!1377 2364[1351 2352 1383 2370!1383 2370[1424 2394 1377 2376!1377 2376|1375 2442!1375 2442|1387 2444!1387 2444[1373 2426 1393 2410!1393 2410[1399 2422 1405 2422
+!1405 2422[1401 2424 1399 2432!1399 2432[1395 2442 1387 2444!1387 2444[1399 2462 1448 2497!1448 2497[1480 2531 1434 2563!1434 2563[1401 2567 1418 2595!1418 2595[1430 2613 1405 2605!1405 2605[1464 2690 1446 2829!1446 2829[1428 2968 1496
+ 3062!1496 3062|1484 3052!1484 3052|1480 3096!1480 3096|1532 3078!1532 3078[1510 3094 1530 3139!1530 3139[1544 3177 1520 3177!1520 3177|1514 3171!1514 3171[1484 3171 1482 3197!1482 3197[1476 3239 1474 3243!1474 3243[1506 3237 1506 3229
+!1506 3229[1512 3241 1534 3263!1534 3263[1508 3306 1520 3390!1520 3390[1534 3465 1504 3497!1504 3497|1546 3519!1546 3519[1524 3559 1562 3666!1562 3666[1595 3765 1546 3813!1546 3813[1566 3895 1595 3990!1595 3990[#649.92 #FC1.B5 1637 4120
+!1637 4120[#66B.C2 #102C.52 1651 4163!1651 4163[1651 4199 1657 4280!1657 4280[1655 4350 1613 4378!1613 4378[1595 4439 1627 4505!1627 4505[1665 4584 1665 4616!1665 4616[1617 4612 1623 4646!1623 4646[1631 4694 1615 4706!1615 4706[1653 4700
+ 1649 4731!1649 4731[1645 4765 1673 4769!1673 4769|1629 4773!1629 4773|1627 4908!1627 4908|1615 4898!1615 4898[1595 4900 1603 4914!1603 4914[1611 4932 1607 4940!1607 4940|1659 4964!1659 4964|1605 4960!1605 4960[1599 4970 1603 4976!1603
+ 4976|1615 4984!1615 4984|1597 4982!1597 4982[1583 5008 1599 5028!1599 5028[1617 5047 1655 5047!1655 5047[1651 5053 1633 5059!1633 5059[1619 5063 1623 5071!1623 5071[1635 5091 1665 5065!1665 5065[1647 5087 1641 5099!1641 5099[1629 5117
+ 1641 5145!1641 5145|1619 5127!1619 5127[1627 5137 1615 5165!1615 5165[1605 5189 1637 5208!1637 5208|1711 5208!1711 5208|1677 5173!1677 5173|1750 5232!1750 5232[1746 5240 1737 5240!1737 5240[1719 5240 1715 5240!1715 5240[1731 5258 1719
+ 5278!1719 5278[1709 5292 1740 5302!1740 5302|1691 5310!1691 5310|1738 5338!1738 5338[1695 5332 1683 5334!1683 5334[1649 5338 1639 5367!1639 5367|1631 5409!1631 5409|1687 5393!1687 5393[1655 5415 1643 5425!1643 5425[1621 5443 1657 5459
+!1657 5459|1615 5465!1615 5465[1609 5483 1641 5487!1641 5487[1671 5491 1655 5507!1655 5507|1619 5497!1619 5497[1621 5514 1661 5612!1661 5612[1687 5675 1659 5721!1659 5721|1641 5721!1641 5721[1623 5755 1647 5809!1647 5809|1655 5801!1655
+ 5801|1669 5860!1669 5860|1637 5864!1637 5864|1653 5906!1653 5906|1629 5906!1629 5906[1601 5960 1651 6017!1651 6017|1665 6003!1665 6003[1667 6009 1794 6025!1794 6025[1794 6037 1816 6049!1816 6049[1834 6057 1820 6083!1820 6083[1788 6069
+ 1766 6077!1766 6077[1790 6111 1792 6113!1792 6113[1798 6119 1838 6137!1838 6137[1800 6121 1764 6135!1764 6135[1729 6149 1711 6180!1711 6180[1713 6218 1746 6264!1746 6264[1770 6296 1752 6329!1752 6329|1687 6365!1687 6365[1683 6383 1723
+ 6395!1723 6395[1756 6405 1740 6417!1740 6417[1729 6453 1748 6453!1748 6453[1768 6453 1760 6480!1760 6480|1764 6480!1764 6480|1758 6486!1758 6486[1744 6504 1750 6522!1750 6522[1760 6550 1760 6556!1760 6556|1784 6594!1784 6594[1824 6596
+ 1806 6616!1806 6616[1780 6647 1780 6649!1780 6649|1828 6657!1828 6657[1764 6741 1764 6898!1764 6898[#6D0.49 #1AF7.61 1744 6920!1744 6920[#6CF.CB #1B09.EC 1744 6924!1744 6924[1746 6936 1760 6963!1760 6963|1778 6949!1778 6949[1754 7059
+ 1752 7097!1752 7097[1750 7130 1762 7238!1762 7238|1794 7256!1794 7256[1778 7250 1756 7262!1756 7262[1735 7273 1729 7289!1729 7289[1729 7303 1738 7341!1738 7341[1750 7385 1750 7405!1750 7405|1733 7405!1733 7405[1738 7460 1729 7474!1729
+ 7474|1731 7474!1731 7474[1689 7530 1665 7582!1665 7582|1663 7536!1663 7536|1617 7586!1617 7586[1611 7597 1649 7613!1649 7613[1683 7629 1637 7687!1637 7687|1593 7719!1593 7719[1621 7723 1601 7774!1601 7774[1593 7792 1554 7862!1554 7862
+|1683 7794!1683 7794[1683 7822 1673 7880!1673 7880[1669 7931 1685 7957!1685 7957[1677 7957 1671 7957!1671 7957[1659 7959 1651 7971!1651 7971|1673 7997!1673 7997|1653 8017!1653 8017[1671 8033 1709 8031!1709 8031[1776 8029 1778 8029!1778
+ 8029|1766 8031!1766 8031[1800 8033 1768 8120!1768 8120[1808 8116 1860 8112!1860 8112|1764 8132!1764 8132[1762 8140 1758 8148!1758 8148|1862 8140!1862 8140[1905 8136 1951 8132!1951 8132|1979 8120!1979 8120[2007 8108 2029 8104!2029 8104
+[2021 8106 2025 8110!2025 8110[2031 8116 2045 8120!2045 8120[2051 8122 2056 8124!2056 8124[2086 8128 2114 8120!2114 8120[2122 8116 2130 8112!2130 8112[2144 8108 2156 8098!2156 8098|2194 8076!2194 8076[2247 8047 2287 8057!2287 8057[2321
+ 8066 2388 8059!2388 8059[2424 8051 2522 8035!2522 8035|2524 8035!2524 8035|2514 8025!2514 8025|3003 7983!3003 7983[3227 7961 3374 7969!3374 7969[3416 7963 3464 7959!3464 7959[3440 7965 3444 7969!3444 7969[3448 7971 3468 7975!3468 7975
+|3470 7975!3470 7975|3472 7973!3472 7973[3492 7955 3493 7955!3493 7955[3499 7951 3480 7977!3480 7977|3585 7979!3585 7979|3589 7969!3589 7969[3559 7979 3535 7963!3535 7963[3555 7957 3551 7953!3551 7953[3557 7955 3571 7957!3571 7957[3587
+ 7961 3589 7969!3589 7969[3619 7959 3680 7913!3680 7913[3734 7888 3780 7923!3780 7923|3841 7913!3841 7913[3883 7921 3883 7925!3883 7925[3885 7933 3790 7943!3790 7943[3800 7953 3829 7943!3829 7943[3849 7937 3851 7937!3851 7937[3857 7939
+ 3845 7957!3845 7957[3889 7939 3947 7929!3947 7929|4082 7923!4082 7923|4143 7931!4143 7931[4157 7929 4173 7927!4173 7927[4199 7923 4296 7906!4296 7906[4376 7890 4446 7884!4446 7884[4547 7870 4692 7868!4692 7868[4919 7862 4863 7880!4863
+ 7880[4821 7894 4817 7896!4817 7896[4803 7907 4855 7913!4855 7913[4889 7921 4958 7911!4958 7911[5050 7898 5097 7898!5097 7898|5185 7925!5185 7925|5294 7906!5294 7906[5304 7902 5326 7896!5326 7896[5354 7890 5368 7884!5368 7884|5396 7888
+!5396 7888|5294 7906!5294 7906[5247 7927 5394 7931!5394 7931[5388 7933 5380 7937!5380 7937|5495 7935!5495 7935[5479 7941 5396 7949!5396 7949[5372 7951 5332 7953!5332 7953[5324 7957 5314 7959!5314 7959[5252 7977 5239 7985!5239 7985[5209
+ 8003 5304 8011!5304 8011|5320 8003!5320 8003[5340 8009 5358 8013!5358 8013[5402 8015 5459 8015!5459 8015[5555 8001 5586 8005!5586 8005[5644 8013 5694 8013!5694 8013[5813 8001 5877 7987!5877 7987[5942 7969 6004 7957!6004 7957|5843 7961
+!5843 7961[5900 7949 6028 7943!6028 7943|6294 7935!6294 7935[6445 7937 6423 7947!6423 7947[6409 7953 6304 7965!6304 7965[6205 7977 6203 7981!6203 7981[6201 7987 6379 7985!6379 7985|6515 7947!6515 7947[6682 7989 7250 7953!7250 7953[7172
+ 7967 7210 7979!7210 7979[7214 7979 7216 7979!7216 7979[7212 7963 7260 7959!7260 7959[7304 7955 7318 7947!7318 7947[7322 7945 7324 7941!7324 7941|7325 7947!7325 7947[7431 7945 7481 7939!7481 7939[7586 7925 7602 7923!7602 7923[7608 7923
+ 7614 7925!7614 7925|7632 7909!7632 7909|7626 7925!7626 7925[7701 7929 7707 7933!7707 7933|7707 7935!7707 7935|7725 7929!7725 7929[7761 7917 7763 7896!7763 7896[7773 7896 7781 7906!7781 7906[7785 7913 7797 7909!7797 7909[7828 7900 7793
+ 7884!7793 7884[7814 7886 7842 7894!7842 7894[7866 7898 7916 7884!7916 7884|7884 7902!7884 7902[7904 7894 7946 7898!7946 7898[7987 7898 8019 7874!8019 7874|8025 7826!8025 7826|7963 7856!7963 7856|8065 7792!8065 7792[8077 7794 8077 7800
+!8077 7800[8075 7814 8077 7816!8077 7816[8105 7802 8134 7806!8134 7806[8156 7810 8174 7784!8174 7784|8184 7818!8184 7818|8232 7778!8232 7778[8220 7816 8220 7820!8220 7820[8224 7846 8268 7848!8268 7848|8333 7848!8333 7848|8317 7808!8317
+ 7808[8333 7812 8361 7836!8361 7836[8387 7850 8417 7820!8417 7820|8421 7852!8421 7852[8450 7856 8458 7828!8458 7828[8462 7816 8466 7814!8466 7814[8474 7808 8490 7816!8490 7816|8472 7846!8472 7846|8498 7842!8498 7842|8659 7798!8659 7798
+[8759 7770 8832 7790!8832 7790|8832 7806!8832 7806|8868 7810!8868 7810|8971 7796!8971 7796|8957 7788!8957 7788|9055 7772!9055 7772|9061 7800!9061 7800|9128 7784!9128 7784|9126 7806!9126 7806[9212 7830 9303 7782!9303 7782|9283 7768!9283
+ 7768[9293 7766 9307 7723!9307 7723[9323 7671 9329 7647!9329 7647[9349 7645 9369 7623!9369 7623[9385 7605 9422 7617!9422 7617[9406 7639 9404 7643!9404 7643[9400 7655 9410 7669!9410 7669[9464 7647 9468 7643!9468 7643|9512 7593!9512 7593
+[9482 7631 9500 7669!9500 7669[9518 7701 9567 7717!9567 7717[9635 7711 9703 7677!9703 7677|9750 7661!9750 7661|9776 7661!9776 7661|9808 7669!9808 7669|9862 7733!9862 7733[9885 7737 9911 7697!9911 7697[9921 7679 9927 7673!9927 7673[9935
+ 7667 9947 7677!9947 7677[10001 7687 10005 7667!10005 7667[10007 7647 10050 7653!10050 7653|10048 7649!10048 7649|10058 7655!10058 7655[10086 7669 10116 7663!10116 7663[10162 7651 10170 7651!10170 7651|10231 7625!10231 7625[10235 7601
+ 10245 7595!10245 7595[10253 7593 10269 7599!10269 7599[10313 7627 10319 7627!10319 7627|10337 7578!10337 7578[10374 7595 10416 7607!10416 7607|10508 7629!10508 7629|10714 7645!10714 7645[10722 7667 10754 7667!10754 7667[10780 7665 10820
+ 7651!10820 7651|10798 7631!10798 7631|10937 7655!10937 7655[10971 7661 11030 7665!11030 7665[11090 7669 11255 7663!11255 7663|11289 7629!11289 7629[11275 7647 11293 7671!11293 7671[11311 7695 11334 7703!11334 7703[11354 7705 11420 7697
+!11420 7697[11499 7687 11521 7687!11521 7687|11519 7707!11519 7707[11559 7705 11589 7707!11589 7707[11619 7711 11629 7715!11629 7715|11631 7715!11631 7715[11720 7762 11795 7788!11795 7788|11722 7786!11722 7786|11790 7830!11790 7830[#2E11.E
+ 7830 11797 7830!11797 7830[#2E11.E #1E96.1 11790 7832!11790 7832|11797 7836!11797 7836[11817 7844 11827 7832!11827 7832[11833 7826 11845 7806!11845 7806[11859 7792 11881 7792!11881 7792[11911 7796 11960 7822!11960 7822|11994 7852!11994
+ 7852|12032 7850!12032 7850[12119 7848 12183 7848!12183 7848|12135 7786!12135 7786|12272 7802!12272 7802[12358 7810 12398 7798!12398 7798[12398 7800 12394 7810!12394 7810[12396 7820 12414 7828!12414 7828|12457 7810!12457 7810|12487 7830
+!12487 7830[12515 7814 12515 7782!12515 7782[12515 7737 12519 7723!12519 7723|12521 7733!12521 7733[12525 7705 12674 7743!12674 7743|12787 7772!12787 7772[12839 7784 12865 7778!12865 7778[12851 7772 12845 7762!12845 7762[12839 7754 12867
+ 7768!12867 7768[12867 7766 12821 7743!12821 7743[12843 7745 12875 7758!12875 7758[12916 7776 12972 7788!12972 7788[12986 7764 13064 7774!13064 7774[13107 7780 13195 7796!13195 7796[13213 7808 13213 7810!13213 7810[13213 7818 13183 7818
+!13183 7818|13272 7848!13272 7848[13284 7848 13262 7830!13262 7830[13244 7816 13286 7824!13286 7824[13304 7830 13314 7838!13314 7838[13318 7842 13324 7850!13324 7850[13328 7856 13342 7860!13342 7860|13467.5 7860!13467.5 7860|13483 7862
+!13483 7862[13511 7864 13475 7870!13475 7870[13493 7870 13517 7868!13517 7868[13539 7866 13558 7868!13558 7868[13558 7864 13560 7858!13560 7858[13574 7830 13554 7808!13554 7808[13550 7800 13541 7792!13541 7792|13519 7770!13519 7770[13487
+ 7739 13497 7717!13497 7717[13507 7691 13497 7647!13497 7647|13483 7586!13483 7586[13531 7586 13517 7428!13517 7428[13501 7244 13411 7009!13411 7009[13479 7043 13407 7003!13407 7003[13336 6963 13411 6999!13411 6999|13413 6936!13413 6936
+|13403 6934!13403 6934[13413 6949 13397 6965!13397 6965[13391 6953 13388 6955!13388 6955[13390 6951 13391 6944!13391 6944[13395 6934 13403 6934!13403 6934[#3453.01 #1B0E.9F 13388 6920!13388 6920[#3430.B8 #1AEE.4F 13348 6880!13348 6880
+[13316 6848 13360 6816!13360 6816[13391 6812 13376 6788!13376 6788[13366 6771 13390 6779!13390 6779[13372 6751 13362 6717!13362 6717|13360 6703!13360 6703|13356 6689!13356 6689|13354 6649!13354 6649|13386 6455!13386 6455[13386 6417 13382
+ 6397!13382 6397|13366 6331!13366 6331|13372 6343!13372 6343|13384 6300!13384 6300|13342 6315!13342 6315[13348 6311 13352 6304!13352 6304|13356 6296!13356 6296|13358 6290!13358 6290|13358 6256!13358 6256[13358 6218 13372 6220!13372 6220
+|13376 6224!13376 6224[13393 6226 13401 6200!13401 6200[13413 6160 13415 6156!13415 6156[13399 6160 13391 6168!13391 6168[13391 6160 13382 6135!13382 6135[13393 6117 13403 6089!13403 6089|13399 6073!13399 6073|13403 6055!13403 6055|13390
+ 6047!13390 6047[13399 6033 13395 5993!13395 5993[13395 5954 13403 5948!13403 5948[13399 5942 13397 5924!13397 5924[13397 5904 13390 5886!13390 5886[13382 5894 13382 5922!13382 5922[13384 5950 13380 5956!13380 5956[13356 5834 13320 5558
+!13320 5558[13362 4710 13280 5125!13280 5125|13278 5119!13278 5119[13274 5135 13268 5129!13268 5129[13272 5087 13252 5079!13252 5079[13262 5081 13262 5049!13262 5049[13252 5039 13252 4990!13252 4990[13248 4938 13230 4926!13230 4926[13223
+ 4896 13232 4886!13232 4886[13244 4876 13238 4843!13238 4843|13215 4841!13215 4841|13189 4660!13189 4660[13157 4487 13153 4493!13153 4493[13167 4471 13169 4465!13169 4465[13147 4342 13129 4274!13129 4274[13135 4284 13139 4280!13139 4280
+[#3346.8C 4200 13116.5 4120!13116.5 4120[#3331.56 4033 13097 3946!13097 3946[13095 3928 13068 3610!13068 3610[13066 3589 13079 3585!13079 3585[13093 3583 13091 3565!13091 3565[13093 3551 13083 3529!13083 3529[13071 3507 13068 3497!13068
+ 3497[13066 3505 13064 3507!13064 3507[13062 3511 13058 3507!13058 3507[13060 3499 13062 3481!13062 3481[13056 3479 13050 3479!13050 3479[13048 3467 13026 3455!13026 3455[13008 3447 13020 3424!13020 3424[13042 3432 13046 3434!13046 3434
+[13056 3436 13071 3430!13071 3430|13046 3394!13046 3394|13000 3373!13000 3373[13035 3388 13070 3374!13070 3374[13105 3362 13119 3332!13119 3332[13115 3300 13079 3251!13079 3251[13068 3239 13064 3223!13064 3223|13062 3207!13062 3207|13070
+ 3189!13070 3189|13133 3153!13133 3153[13137 3137 13095 3125!13095 3125[13077 3119 13073 3117!13073 3117[13068 3112 13077 3104!13077 3104[13087 3072 13068 3070!13068 3070[13048 3070 13054 3042!13054 3042|13050 3044!13050 3044|13054 3038
+!13054 3038[13068 3020 13062 3002!13062 3002[13050 2976 13050 2970!13050 2970|13024 2935!13024 2935[12978 2933 12998 2913!12998 2913[13026 2885 13026 2881!13026 2881|12974 2873!12974 2873[12994 2847 13004 2823!13004 2823[13016 2803 13026
+ 2768!13026 2768|13038 2706!13038 2706|13042 2642!13042 2642|13022 2644!13022 2644|13042 2640!13042 2640|13042 2642!13042 2642[13064 2637 13064 2617!13064 2617[13062 2605 13048 2579!13048 2579|13026 2591!13026 2591[13056 2485 13060 2450
+!13060 2450[13064 2418 13056 2315!13056 2315|13026 2297!13026 2297[13042 2303 13064 2293!13064 2293[13087 2281 13095 2265!13095 2265[13095 2263 13095 2259!13095 2259[13089 2247 13085 2229!13085 2229[13079 2197 13075 2183!13075 2183|13075
+ 2199!13075 2199|13068 2169!13068 2169[13077 2187 13077 2148!13077 2148[13070 2158 13056 2114!13056 2114[13062 2110 13054 2094!13054 2094[13046 2080 13052 2078!13052 2078[13048 2070 13044 2074!13044 2074[13042 2074 13042 2076!13042 2076
+[13040 2064 13030 2044!13030 2044[13016 2018 13008 1993!13008 1993[13000 1961 13000 1947!13000 1947|12980 1897!12980 1897|12984 1885!12984 1885|12970 1881!12970 1881[12980 1873 12976 1847!12976 1847[12976 1824 12984 1820!12984 1820[12980
+ 1818 12978 1806!12978 1806[12978 1794 12970 1784!12970 1784[12962 1790 12962 1806!12962 1806[12964 1824 12960 1828"/>
+                                                  <Edge fillStyle0="1" edges="
+!13117 2358[13119 2364 13121 2368!13121 2368|13119 2356!13119 2356[13121 2358 13125 2372!13125 2372|13117 2372!13117 2372|13117 2358!13087 3485|13091 3485!13091 3485[13091 3495 13095 3505!13095 3505[13099 3517 13089 3517!13089 3517|13087
+ 3485!13083 3485[13081 3487 13077 3485!13077 3485[13077 #D9B.1 13075 3483!13075 3483[#3317.1 #D9B.08 13083 3485"/>
+                                                  <Edge fillStyle1="1" edges="
+!13988 6445[13958 6419 13984 6576!13984 6576[13986 6514 13988 6445!13793 8579|13789 8540!13789 8540|13787 8542!13787 8542|13793 8579!8601 1394[8592 1396 8594 1376!8594 1376[8594 1357 8580 1361!8580 1361[8594 1349 8598 1368!8598 1368[8600
+ 1378 8601 1394!9504 1186|9506 1120!9506 1120|9512 1186!9512 1186|9504 1186!6827 1408|6829 1376!6829 1376|6848 1392!6848 1392|6827 1408!11157 7766|11247 7798!11247 7798|11275 7745!11275 7745[11318 7762 11354 7768!11354 7768|11388 7772
+!11388 7772|11418 7772!11418 7772[11458 7770 11527 7764!11527 7764[11613 7768 11627 7725!11627 7725|11517 7737!11517 7737|11519 7707!11519 7707[11470 7707 11328 7717!11328 7717[11203 7727 11155 7725!11155 7725|11157 7766!11629 7715|11627
+ 7725!11627 7725|11636 7723!11636 7723[11636 7717 11629 7715"/>
+                                                  <Edge fillStyle0="1" edges="
+!12096 7862|12094 7862!12094 7862[12106 7860 12125 7858!12125 7858[12159 7856 12189 7854!12189 7854|12203 7872!12203 7872|12213 7884!12213 7884|12215 7888!12215 7888|12171 7888!12171 7888|12159 7884!12159 7884[12163 7884 12169 7884!12169
+ 7884[12197 7884 12213 7884!12213 7884|12205 7880!12205 7880[12171 7880 12151 7882!12151 7882|12131 7876!12131 7876|12203 7872!12203 7872[12147 7872 12117 7870!12117 7870|12096 7862"/>
+                                                  <Edge fillStyle1="1" edges="
+!3756 1313[3728 1311 3692 1311!3692 1311[3690 1317 3690 1323!3690 1323[3728 1323 3758 1323!3758 1323[3758 1317 3756 1313!2706 1629[2722 1625 2730 1647!2730 1647[2724 1635 2700 1653!2700 1653[2681 1667 2685 1641!2685 1641[2691 1641 2706
+ 1629!2919 1587[2927 1597 2923 1611!2923 1611[2917 1625 2907 1629!2907 1629|2901 1589!2901 1589[2905 1591 2909 1593!2909 1593[2913 1593 2919 1587"/>
+                                                  <Edge fillStyle0="1" edges="
+!1729 7474|1723 7478!1723 7478|1721 7472!1721 7472[1677 7466 1677 7413!1677 7413[1669 7371 1665 7345!1665 7345[1659 7301 1687 7254!1687 7254|1635 7240!1635 7240|1661 7182!1661 7182|1701 7178!1701 7178[1703 7234 1733 7405!1733 7405|1703
+ 7405!1703 7405|1721 7472!1721 7472|1729 7474!5332 7953[5290 7955 5231 7959!5231 7959[5052 7969 5000 7979!5000 7979[4992 7977 4986 7977!4986 7977[4994 7969 5024 7959!5024 7959[5048 7953 5078 7947!5078 7947[5245 7961 5262 7939!5262 7939
+[5262 7931 5266 7929!5266 7929[5274 7929 5314 7939!5314 7939|5380 7937!5380 7937[5362 7945 5332 7953!1790 8162[1796 8160 1802 8160!1802 8160[1810 8162 1808 8164!1808 8164[1802 8164 1794 8164!1794 8164[1792 8162 1790 8162"/>
+                                                  <Edge fillStyle1="1" edges="
+!1556 9021[1562 9023 1570 9021!1570 9021|1566 9019!1566 9019|1556 9021!1556 9021[1548 9017 1548 9011!1548 9011|1544 9011!1544 9011[1542 9021 1556 9021"/>
+                                                  <Edge fillStyle0="1" edges="
+!7453 7945[7492 7941 7518 7941!7518 7941|7327 7961!7327 7961|7325 7949!7325 7949[7381 7953 7453 7945"/>
+                                             </edges>
+                                        </DOMShape>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="酒保" color="#9933CC" parentLayerIndex="11" locked="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="sprite/点酒界面酒保" centerPoint3DX="403.15" centerPoint3DY="702.05">
+                                             <matrix>
+                                                  <Matrix a="1.987548828125" d="1.987548828125" tx="181.7" ty="463.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	名字 = "酒保";
+	_root.初始化NPC(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="遮罩" color="#FF4FFF" parentLayerIndex="11" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMShape isDrawingObject="true">
+                                             <matrix>
+                                                  <Matrix a="-1.987548828125" d="-1.987548828125" tx="1690.8" ty="1006.85"/>
+                                             </matrix>
+                                             <fills>
+                                                  <FillStyle index="1">
+                                                       <SolidColor alpha="0.0980392156862745"/>
+                                                  </FillStyle>
+                                             </fills>
+                                             <edges>
+                                                  <Edge fillStyle1="1" edges="
+!16527 9505|10315 9731!10315 9731|10176 6165!10176 6165|16389 5939!16389 5939|16527 9505"/>
+                                             </edges>
+                                        </DOMShape>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="遮罩场景" color="#FF800A" parentLayerIndex="15" locked="true" current="true" isSelected="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="酒吧场景（去除遮罩部分）" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="-180.05" ty="-178"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="453.1" y="343.35"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 24" color="#9674AB">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="button/Symbol 727" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="142.55" ty="65.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <color>
+                                                  <Color alphaMultiplier="0"/>
+                                             </color>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 25" color="#AFE24F">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="371" centerPoint3DY="231.4">
+                                             <matrix>
+                                                  <Matrix tx="142.55" ty="65.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                                                  <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="图层 1" color="#4FFF4F">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="438232" publishTime="1738917878"/>
+          <PublishItem publishSize="470682" publishTime="1736954783"/>
+          <PublishItem publishSize="470682" publishTime="1736954771"/>
+          <PublishItem publishSize="470682" publishTime="1736954750"/>
+     </publishHistory>
+</DOMDocument>

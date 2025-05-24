@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="电感切割刃/刀-电感切割刃" itemID="655c55d9-00000308" linkageExportForAS="true" linkageIdentifier="刀-电感切割刃" lastModified="1721580831" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="刀-电感切割刃">
+      <layers>
+        <DOMLayer name="注册代码" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置3" centerPoint3DX="-12.05" centerPoint3DY="341.05">
+                  <matrix>
+                    <Matrix tx="-24.55" ty="328.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置2" centerPoint3DX="-12.75" centerPoint3DY="210.3">
+                  <matrix>
+                    <Matrix tx="-25.25" ty="197.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置1" centerPoint3DX="-12.35" centerPoint3DY="100.15">
+                  <matrix>
+                    <Matrix tx="-24.85" ty="87.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/电感切割刃动画" name="动画" centerPoint3DX="0.4" centerPoint3DY="145">
+                  <matrix>
+                    <Matrix a="0" b="1.02323913574219" c="-1.02323913574219" d="0" tx="18.6" ty="-83.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="223.3" y="17.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

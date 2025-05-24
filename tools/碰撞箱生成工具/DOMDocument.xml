@@ -1,0 +1,230 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <symbols>
+          <Include href="元件 1.xml" loadImmediate="false" itemID="674dea17-00000620" lastModified="1733159505"/>
+          <Include href="元件 2.xml" loadImmediate="false" itemID="674dea4a-00000624" lastModified="1733161311"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[// 获取目标影片剪辑
+var mc:MovieClip = _root.gameworld.地图;
+
+// 初始化参数
+var bounds:Object = mc.getBounds(_root); // 获取影片剪辑的边界矩形
+var visited:Object = {}; // 记录已访问的像素点
+var collisionBoxes:Array = []; // 存储多个碰撞箱
+var pixelStep:Number = 1; // 像素步长
+
+// 开始边缘追踪
+startEdgeTracing();
+
+function startEdgeTracing():Void {
+    mc.onEnterFrame = function() {
+        if (!traceNextCollisionBox()) {
+            delete mc.onEnterFrame;
+            onTracingComplete();
+        }
+    };
+}
+
+// 追踪下一个碰撞箱
+function traceNextCollisionBox():Boolean {
+    var startPoint:Object = findStartPoint();
+    if (startPoint == null) {
+        return false; // 没有更多的起始点，完成追踪
+    }
+
+    var points:Array = edgeTracing(startPoint.x, startPoint.y);
+    if (points.length > 0) {
+        collisionBoxes.push(points);
+    }
+
+    return true;
+}
+
+// 寻找下一个起始点
+function findStartPoint():Object {
+    for (var y:Number = bounds.yMin; y <= bounds.yMax; y += pixelStep) {
+        for (var x:Number = bounds.xMin; x <= bounds.xMax; x += pixelStep) {
+            var key:String = x + "_" + y;
+            if (!visited[key] && mc.hitTest(x, y, true)) {
+                return {x: x, y: y};
+            } else {
+                visited[key] = true;
+            }
+        }
+    }
+    return null;
+}
+
+// 边缘追踪算法
+function edgeTracing(startX:Number, startY:Number):Array {
+    var points:Array = [];
+    var stack:Array = [];
+    var directions:Array = [
+        {dx: -1, dy: -1}, {dx: 0, dy: -1}, {dx: 1, dy: -1},
+        {dx: 1, dy: 0},  {dx: 1, dy: 1},  {dx: 0, dy: 1},
+        {dx: -1, dy: 1}, {dx: -1, dy: 0}
+    ]; // 八个方向
+
+    var currentX:Number = startX;
+    var currentY:Number = startY;
+    var previousDirection:Object = null;
+    var startKey:String = startX + "_" + startY;
+
+    do {
+        var key:String = currentX + "_" + currentY;
+        visited[key] = true;
+
+        var edgeFound:Boolean = false;
+        var directionIndex:Number = 0;
+        for (var i:Number = 0; i < directions.length; i++) {
+            var dir:Object = directions[(directionIndex + i) % directions.length];
+            var newX:Number = currentX + dir.dx * pixelStep;
+            var newY:Number = currentY + dir.dy * pixelStep;
+            var newKey:String = newX + "_" + newY;
+
+            if (!visited[newKey] && mc.hitTest(newX, newY, true)) {
+                // 计算方向变化
+                if (previousDirection != null) {
+                    var angleChange:Number = calculateAngleChange(previousDirection, dir);
+                    if (Math.abs(angleChange) > 30) { // 角度变化阈值，可调整
+                        points.push({x: currentX, y: currentY});
+                    }
+                } else {
+                    points.push({x: currentX, y: currentY});
+                }
+
+                previousDirection = dir;
+                currentX = newX;
+                currentY = newY;
+                edgeFound = true;
+                break;
+            } else {
+                visited[newKey] = true;
+            }
+        }
+
+        if (!edgeFound) {
+            // 无法继续前进，结束
+            break;
+        }
+    } while (currentX != startX || currentY != startY);
+
+    return points;
+}
+
+// 计算方向变化角度
+function calculateAngleChange(dir1:Object, dir2:Object):Number {
+    var angle1:Number = Math.atan2(dir1.dy, dir1.dx);
+    var angle2:Number = Math.atan2(dir2.dy, dir2.dx);
+    var angleDiff:Number = angle2 - angle1;
+    // 将角度调整到 -PI 到 PI 之间
+    while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+    while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+    return angleDiff * (180 / Math.PI); // 转换为角度
+}
+
+// 扫描完成后的处理
+function onTracingComplete():Void {
+    // 输出点集数据
+    outputPointsAsXML();
+    // 可视化点集
+    visualizePoints();
+}
+
+// 输出点集为 XML 格式
+function outputPointsAsXML():Void {
+    var xmlStr:String = "<Environment>\n";
+    for (var i:Number = 0; i < collisionBoxes.length; i++) {
+        var points:Array = collisionBoxes[i];
+        xmlStr += "    <Collision>\n";
+        for (var j:Number = 0; j < points.length; j++) {
+            var point:Object = points[j];
+            xmlStr += "        <Point>" + Math.round(point.x) + "," + Math.round(point.y) + "</Point>\n";
+        }
+        xmlStr += "    </Collision>\n";
+    }
+    xmlStr += "</Environment>";
+    trace(xmlStr);
+}
+
+// 可视化点集
+function visualizePoints():Void {
+    var visualMC:MovieClip = _root.createEmptyMovieClip("visualMC", _root.getNextHighestDepth());
+
+    for (var i:Number = 0; i < collisionBoxes.length; i++) {
+        var points:Array = collisionBoxes[i];
+
+        // 使用不同的颜色
+        var color:Number = Math.random() * 0xFFFFFF;
+        visualMC.beginFill(color, 30);
+        visualMC.lineStyle(2, color, 100);
+
+        if (points.length > 0) {
+            visualMC.moveTo(points[0].x, points[0].y);
+            for (var j:Number = 1; j < points.length; j++) {
+                visualMC.lineTo(points[j].x, points[j].y);
+            }
+            visualMC.lineTo(points[0].x, points[0].y); // 闭合多边形
+        }
+        visualMC.endFill();
+
+        // 高亮显示顶点
+        for (var j:Number = 0; j < points.length; j++) {
+            var point:Object = points[j];
+            visualMC.beginFill(0xFF0000, 100);
+            visualMC.drawCircle(point.x, point.y, 3);
+            visualMC.endFill();
+        }
+    }
+}
+]]></script>
+                                   </Actionscript>
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="元件 1" name="gameworld" selected="true" centerPoint3DX="274.95" centerPoint3DY="199.95">
+                                             <matrix>
+                                                  <Matrix tx="-1" ty="-1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="275.95" y="200.95"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="2284" publishTime="1733162166"/>
+          <PublishItem publishSize="2816" publishTime="1733162135"/>
+          <PublishItem publishSize="926" publishTime="1733162105"/>
+          <PublishItem publishSize="926" publishTime="1733162071"/>
+          <PublishItem publishSize="925" publishTime="1733161969"/>
+          <PublishItem publishSize="2282" publishTime="1733161696"/>
+          <PublishItem publishSize="2030" publishTime="1733161590"/>
+          <PublishItem publishSize="2022" publishTime="1733161544"/>
+          <PublishItem publishSize="2284" publishTime="1733161485"/>
+          <PublishItem publishSize="2285" publishTime="1733161315"/>
+          <PublishItem publishSize="2271" publishTime="1733161269"/>
+          <PublishItem publishSize="2139" publishTime="1733161187"/>
+          <PublishItem publishSize="2143" publishTime="1733160994"/>
+          <PublishItem publishSize="2146" publishTime="1733160936"/>
+          <PublishItem publishSize="2032" publishTime="1733160908"/>
+          <PublishItem publishSize="1795" publishTime="1733160754"/>
+          <PublishItem publishSize="1796" publishTime="1733160658"/>
+          <PublishItem publishSize="1852" publishTime="1733160628"/>
+          <PublishItem publishSize="2119" publishTime="1733160413"/>
+          <PublishItem publishSize="2119" publishTime="1733160360"/>
+     </publishHistory>
+</DOMDocument>

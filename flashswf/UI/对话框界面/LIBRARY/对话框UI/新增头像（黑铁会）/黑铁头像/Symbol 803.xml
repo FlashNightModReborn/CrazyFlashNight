@@ -1,0 +1,1471 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 803" itemID="6577efbc-000004cc" lastModified="1716709892">
+  <timeline>
+    <DOMTimeline name="Symbol 803" currentFrame="73">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F110C2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="72" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#92B5DC">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 800" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0F0F0F"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#4B1817"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!-1459 -1425|-1361.5 -1453.5!-1361.5 -1453.5|-1289.5 -1476.5!-1289.5 -1476.5|-1308 -1508!-1308 -1508[-1298 -1510.5 -1290.5 -1516!-1290.5 -1516[-1279.5 -1524 -1279.5 -1536.5!-1279.5 -1536.5[-1279.5 -1571.5 -1296.5 -1588!-1296.5 -1588|-1330.5
+ -1622!-1330.5 -1622[-1333 -1599.5 -1338 -1592!-1338 -1592|-1345 -1576!-1345 -1576[-1353.5 -1553.5 -1382.5 -1553.5!-1382.5 -1553.5|-1419.5 -1555.5!-1419.5 -1555.5[-1433 -1555.5 -1451 -1566!-1451 -1566[-1451.5 -1548.5 -1456 -1542!-1456
+ -1542[-1486.5 -1499.5 -1504.5 -1486!-1504.5 -1486[-1552 -1451 -1624.5 -1491!-1624.5 -1491[-1643.5 -1451 -1690.5 -1465!-1690.5 -1465[-1714 -1472.5 -1704 -1496.5!-1704 -1496.5[-1743.5 -1479.5 -1749.5 -1473!-1749.5 -1473|-1761 -1457!-1761
+ -1457[-1778 -1431 -1804 -1422.5!-1804 -1422.5|-1846.5 -1420!-1846.5 -1420|-1883.5 -1422.5!-1883.5 -1422.5[-1893 -1422.5 -1890.5 -1438.5!-1890.5 -1438.5[-1927.5 -1426 -1947.5 -1428!-1947.5 -1428[-1994.5 -1434 -2004 -1459.5!-2004 -1459.5
+[-1998.5 -1434 -2020.5 -1419.5!-2020.5 -1419.5[-2048.5 -1402 -2076 -1388!-2076 -1388[-2087 -1382.5 -2123.5 -1389!-2123.5 -1389[-2172 -1342.5 -2226 -1342.5!-2226 -1342.5|-2246 -1342.5!-2246 -1342.5|-2226 -1308.5"/>
+                    <Edge fillStyle1="3" edges="
+!-2226 -1308.5|-2225 -1299.5"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-2225 -1299.5[-2739.5 -754.5 -2426 -274.5!-2426 -274.5[-2439.5 -150 -2593 69!-2593 69[-2909.5 358 -3265.5 523.5!-3265.5 523.5[-3415 592.5 -3498.5 680.5!-3498.5 680.5[-3622.5 811 -3599 981.5!-3599 981.5[-3915.5 1094 -3850.5 1228!-3850.5
+ 1228[-3723.5 1350.5 -3394.5 1371!-3394.5 1371[-3065.5 1392 -2697 1262.5!-2697 1262.5|-2394 1277.5!-2394 1277.5[-2156 1288 -2088.5 1248!-2088.5 1248[-2004.5 1198 -1941.5 961"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!-1941.5 961[-1933 911.5 -1929.5 852.5!-1929.5 852.5|-1914.5 660.5!-1914.5 660.5[-1906 565.5 -1548 230.5!-1548 230.5[-1189.5 -104.5 -1483.5 -734.5"/>
+                    <Edge strokeStyle="1" edges="
+!-1483.5 -734.5[-1503 -767 -1506.5 -800"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-1506.5 -800|-1506.5 -805!-1506.5 -805[-1517 -1007.5 -893.5 -1240.5"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!-893.5 -1240.5[-1527 -1200.5 -1642 -1180"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!-1642 -1180[-1602.5 -1201.5 -1525 -1223.5!-1525 -1223.5[-1437.5 -1248 -1399.5 -1256.5!-1399.5 -1256.5[-1355.5 -1268.5 -1367.5 -1282!-1367.5 -1282[-1295.5 -1281.5 -1262 -1279.5!-1262 -1279.5[-1226.5 -1277 -1226 -1303!-1226 -1303[-1184.5
+ -1294 -1172.5 -1303!-1172.5 -1303[-1149.5 -1319.5 -1144 -1322.5!-1144 -1322.5[-1126.5 -1331 -1128.5 -1354!-1128.5 -1354[-1097.5 -1331 -1063 -1320!-1063 -1320[-1028 -1308.5 -1020 -1308.5!-1020 -1308.5[-983.5 -1308.5 -967.5 -1345.5!-967.5
+ -1345.5[-926.5 -1342 -914.5 -1325!-914.5 -1325[-895 -1354 -882.5 -1354!-882.5 -1354[-869.5 -1355.5 -857.5 -1379.5!-857.5 -1379.5[-851.5 -1350.5 -851.5 -1331!-851.5 -1331[-851.5 -1307.5 -844 -1291!-844 -1291[-882.5 -1263 -893.5 -1240.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!-1459 -1425[-1912.5 -1285 -2206 -905!-2206 -905[-2009 -1070 -1660 -1176!-1660 -1176|-1642 -1180"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!-2206 -905[-2282 -841.5 -2335.5 -769"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!-1506.5 -800|-1502 -733"/>
+                    <Edge fillStyle0="2" edges="
+!-1502 -733|-1483.5 -734.5"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
+!-2225 -1299.5[-1850 -1315.5 -1459 -1425"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!-1502 -733[-1460 22 -1760.5 204.5!-1760.5 204.5[-2044 376.5 -1962 857.5!-1962 857.5[-1954 907.5 -1941.5 961"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!-2199.5 1034[-2323 1164 -2722 1068!-3599 981.5|-3556 967!-2697 1262.5[-3166 1331.5 -3404 1228"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#75F3A5">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.08331298828125" b="0.253463745117188" c="0.253463745117188" d="0.0832977294921875" tx="-3.7" ty="-72.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.252670288085938" b="0.0789794921875" c="0.0789794921875" d="-0.252670288085938" tx="-6.1" ty="-55.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A24BAD">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 790" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="15.2" ty="-51.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.206497192382813" b="0.168899536132813" c="0.168914794921875" d="0.206466674804688" tx="9.65" ty="-67.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0F0F0F"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#4B1817"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!361 -1770.5[282 -1757 192.5 -1725!192.5 -1725[-518 -1471 -705 -1764.5!-705 -1764.5[-420 -2687 755 -2768.5!755 -2768.5[1684.5 -2704 1742.5 -2112!1742.5 -2112[1800.5 -1520 1702.5 -1084.5!1702.5 -1084.5[1609.5 -672.5 834 -252.5!834 -252.5
+[777.5 -390.5 768 -549"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!768 -549[1709.5 -1182 1415 -1547.5!1415 -1547.5[1053 -1925.5 358 -1788"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!358 -1788|336.5 -1783.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!361 -1770.5|358 -1788"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!768 -549[758.5 -707 795.5 -885!795.5 -885[1014.5 -1185.5 842.5 -1540.5!842.5 -1540.5[702.5 -1829 361 -1770.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#4B1817"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#0F0F0F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!1361 -1262[1343.5 -1378.5 1290 -1488.5!1290 -1488.5[1004.5 -2078.5 -396.5 -1589.5!-396.5 -1589.5[-718 -1643 -676 -1888.5!-676 -1888.5[-378.5 -3039 463 -3346!463 -3346[2074 -3585 2249 -1846.5!2249 -1846.5[2353 -761 842 -136"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!842 -136[1438.5 -756 1361 -1262"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!1361 -1262[1137.5 -825.5 758 -810.5!758 -810.5[899.5 -490 842 -136"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0F0F0F"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#4B1817"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!782 -1929.5[525 -2126 202 -2276!202 -2276[-698 -2537.5 -598.5 -1872!-598.5 -1872|-674.5 -1804.5!-674.5 -1804.5[-1855 -1995.5 -1863.5 -2452!-1863.5 -2452[-1872 -2908.5 -1261.5 -3052.5!-1261.5 -3052.5[-651 -3196.5 168 -2803!168 -2803|260
+ -2749"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!260 -2749[1230 -2159 1489.5 -1081.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1489.5 -1081.5[1573.5 -733.5 1500 -185.5"/>
+                    <Edge strokeStyle="1" edges="
+!1500 -185.5|1497 -180.5!1497 -180.5|1492.5 -174.5"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!1492.5 -174.5[1488.5 -169 1488.5 -166!1488.5 -166[1488.5 -158.5 1496.5 -121!1496.5 -121[1505.5 -79 1474 -86!1474 -86[1518.5 -69 1565.5 -46!1565.5 -46[1571 -41 1586.5 6!1586.5 6|1601.5 61.5!1601.5 61.5[1609.5 45 1619.5 45!1619.5 45|1638
+ 41!1638 41|1655.5 37!1655.5 37[1672 37 1679 59!1679 59[1682 68 1688 108!1688 108[1692.5 141.5 1667 142.5!1667 142.5[1713.5 179 1739.5 179!1739.5 179[1739.5 191.5 1748 244!1748 244[1757.5 302.5 1745 327.5!1745 327.5[1772.5 336.5 1791
+ 333.5!1791 333.5[1798 333 1801 335.5!1801 335.5[1805 340 1805 355.5!1805 355.5|1802 386!1802 386|1799 416!1799 416[1799 443 1802 488.5!1802 488.5[1820.5 479 1839 490!1839 490[1863 504 1866.5 507.5!1866.5 507.5[1879 518.5 1879 536.5!1879
+ 536.5[1879 544.5 1874.5 555.5!1874.5 555.5|1870.5 569.5!1870.5 569.5[1870.5 574.5 1876.5 589.5!1876.5 589.5[1883.5 606.5 1887.5 632.5!1887.5 632.5|1913 609.5!1913 609.5|1914.5 601.5!1914.5 601.5|1916 595.5!1916 595.5|1959 636!1959 636
+|1993.5 669.5!1993.5 669.5|1993.5 666.5!1993.5 666.5[1993.5 661.5 1997.5 627.5!1997.5 627.5|2001.5 589.5"/>
+                    <Edge fillStyle1="3" edges="
+!2001.5 589.5|2004.5 588.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!2004.5 588.5[1908 92 1499.5 -178"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!1499.5 -178|1500 -185.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!1489.5 -1081.5[1403.5 -1254 1292 -1409"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!1292 -1409[1082 -1701 782 -1929.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!782 -1929.5[1161 -1525.5 996 -736!996 -736|993.5 -726!993.5 -726|995 -725.5"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!995 -725.5|989 -715!989 -715[982 -704.5 983.5 -698.5!983.5 -698.5[1003.5 -688.5 1019.5 -653.5!1019.5 -653.5|1043.5 -601.5!1043.5 -601.5[1016.5 -596 1006 -582!1006 -582[998 -571.5 998 -553.5!998 -553.5[998 -539 1005 -529!1005 -529[1012
+ -519.5 1029.5 -507.5!1029.5 -507.5[1034.5 -504 1061.5 -469.5!1061.5 -469.5[1088.5 -435 1095 -430.5!1095 -430.5[1108.5 -421 1138 -418!1138 -418|1172 -416!1172 -416[1195 -412.5 1210 -392.5!1210 -392.5[1224.5 -373.5 1226.5 -373.5!1226.5
+ -373.5[1236.5 -373.5 1244.5 -389!1244.5 -389[1253 -405 1259 -405!1259 -405[1271 -405 1283 -391!1283 -391[1299 -373 1311.5 -314!1311.5 -314|1316.5 -299.5!1316.5 -299.5[1320 -290.5 1326 -286!1326 -286[1328.5 -288 1366 -277!1366 -277[1380.5
+ -306.5 1372 -329.5!1372 -329.5[1370 -336 1365.5 -342!1365.5 -342|1369 -339"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1369 -339|1370 -336!1370 -336|1373 -330!1373 -330[1479.5 -989 1292 -1409"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!995 -725.5[997.5 -731 996 -736"/>
+                    <Edge fillStyle1="3" edges="
+!1499.5 -178|1492.5 -174.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+!995 -725.5[1226.5 -664.5 1369 -339"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!260 -2749[2116.5 -1686 2004.5 588.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0F0F0F"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#4B1817"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
+!1086.5 -1486|1089.5 -1486"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!1082 -1541.5|1062.5 -1532.5!1062.5 -1532.5[1061 -1531 1061 -1510.5!1061 -1510.5[1061 -1494.5 1063.5 -1486!1063.5 -1486|1086.5 -1486"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!1805.5 -1061.5[1744 -1152 1672.5 -1225.5!1672.5 -1225.5[1435 -1470.5 1086.5 -1534!1086.5 -1534|1082 -1541.5"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!1086.5 -1486[1080.5 -1477.5 1080.5 -1455!1080.5 -1455[1080.5 -1432 1077.5 -1403.5!1077.5 -1403.5[1099.5 -1423.5 1109 -1439!1109 -1439[1118.5 -1455 1129.5 -1455!1129.5 -1455[1138 -1455 1139.5 -1448!1139.5 -1448|1140.5 -1426.5!1140.5 -1426.5
+|1162.5 -1440.5!1162.5 -1440.5[1177 -1449 1183.5 -1449!1183.5 -1449|1221.5 -1440.5!1221.5 -1440.5|1274.5 -1429.5!1274.5 -1429.5[1301 -1425 1297.5 -1397.5!1297.5 -1397.5|1294 -1372!1294 -1372[1293 -1357 1297.5 -1346.5!1297.5 -1346.5[1299.5
+ -1341 1323 -1333!1323 -1333|1376.5 -1313!1376.5 -1313[1457.5 -1277 1495 -1209.5"/>
+                    <Edge strokeStyle="1" edges="
+!1495 -1209.5|1496.5 -1207!1496.5 -1207|1500 -1213"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!1500 -1213[1503 -1217.5 1508.5 -1221!1508.5 -1221|1540 -1169.5!1540 -1169.5[1571 -1117 1571 -1098.5!1571 -1098.5|1605.5 -1096!1605.5 -1096|1602.5 -1094!1602.5 -1094|1602.5 -1093!1602.5 -1093[1591 -1088.5 1591 -1075!1591 -1075[1591 -1067
+ 1583 -1034.5!1583 -1034.5[1603 -1043 1634 -1030.5!1634 -1030.5[1669.5 -1015.5 1705 -1015.5!1705 -1015.5[1719 -1015.5 1732.5 -1020!1732.5 -1020[1746 -1024.5 1754.5 -1024.5!1754.5 -1024.5[1763.5 -1024.5 1773.5 -1018.5!1773.5 -1018.5[1788
+ -1011 1788 -997!1788 -997|1785 -986!1785 -986|1782.5 -979"/>
+                    <Edge strokeStyle="1" edges="
+!1782.5 -979|1782 -978.5!1782 -978.5|1782 -975.5!1782 -975.5|1782.5 -979"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!1782.5 -979[1798 -985.5 1806.5 -1003!1806.5 -1003[1813.5 -1017.5 1813.5 -1031.5!1813.5 -1031.5|1812 -1046"/>
+                    <Edge strokeStyle="1" edges="
+!1812 -1046|1810.5 -1061.5!1810.5 -1061.5|1808 -1061.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!1808 -1061.5|1805.5 -1061.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1805.5 -1061.5|1810.5 -1054!1810.5 -1054|1808 -1061.5!1808 -1061.5[1772 -1154.5 1725.5 -1251!1725.5 -1251|1717 -1268"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!1717 -1268[1581.5 -1544.5 1356 -1854!1356 -1854[1143 -2179.5 488 -2477.5!488 -2477.5[-843.5 -3026 -2123.5 -2410.5!-2123.5 -2410.5[-2471.5 -2198 -2414.5 -1807.5!-2414.5 -1807.5[-2356.5 -1416.5 -1845.5 -1331.5"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!-1845.5 -1331.5|-1778 -1327"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!-1778 -1327|-1778 -1331.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-1778 -1331.5|-1778 -1382.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!-1778 -1382.5[-1971.5 -1519.5 -1566.5 -1667"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!-1566.5 -1667[-1416.5 -1565 -1171.5 -1643.5!-1171.5 -1643.5[-1439 -1322.5 -1778 -1327"/>
+                    <Edge fillStyle1="3" edges="
+!1495 -1209.5|1500 -1213"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!624.5 -1892.5|717 -1875.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!717 -1875.5[960.5 -1739 1082 -1541.5"/>
+                    <Edge strokeStyle="1" edges="
+!622 -1736.5|618 -1737!618 -1737|621.5 -1735.5!621.5 -1735.5|624.5 -1731.5!624.5 -1731.5|622 -1736.5"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!622 -1736.5[609.5 -1758 588 -1767!588 -1767[571 -1774 545 -1774!545 -1774[528.5 -1774 509 -1764!509 -1764[489 -1754 481 -1754!481 -1754[474 -1754 463 -1764!463 -1764|440 -1785.5!440 -1785.5[403 -1816.5 358 -1816.5!358 -1816.5[347 -1816.5
+ 330.5 -1809.5!330.5 -1809.5[314 -1802.5 307 -1802.5!307 -1802.5[289.5 -1802.5 256.5 -1820!256.5 -1820[218.5 -1839.5 205.5 -1843!205.5 -1843|150.5 -1847.5!150.5 -1847.5[98.5 -1853 20 -1880!20 -1880|-156 -1939"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!-156 -1939|-182.5 -1948"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!773 -1720|774.5 -1719.5!774.5 -1719.5|773 -1721.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!773 -1721.5|773 -1720"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!773 -1720|775.5 -1695.5!775.5 -1695.5|778.5 -1673!778.5 -1673[778.5 -1658.5 759.5 -1663!759.5 -1663[740.5 -1667 704 -1641.5!704 -1641.5|697.5 -1653.5!697.5 -1653.5[692 -1665.5 686 -1690!686 -1690[679.5 -1710.5 667 -1720.5!667 -1720.5
+[652 -1732.5 622 -1736.5"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!624.5 -1892.5|773 -1721.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!773 -1720[700.5 -1756 619 -1786!619 -1786|592.5 -1796!592.5 -1796[309 -1898 -77 -1942.5"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
+!-77 -1942.5|-156 -1939"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!717 -1875.5[940.5 -1832.5 1170.5 -1761.5!1170.5 -1761.5[1504.5 -1635.5 1717 -1268"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
+!1805.5 -1061.5|1802 -1061.5"/>
+                    <Edge fillStyle1="3" edges="
+!1812 -1046|1805.5 -1061.5"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="
+!-1845.5 -1331.5|-1778 -1331.5"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-1566.5 -1667[-1279.5 -1771.5 -494.5 -1902!-494.5 -1902[-327 -1929.5 -156 -1939"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!-77 -1942.5[265.5 -1953.5 624.5 -1892.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#4B1817"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#0F0F0F"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!521.5 -2049.5|564 -2012.5!564 -2012.5[476.5 -1916 621.5 -1762"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!621.5 -1762|585 -1787.5"/>
+                    <Edge strokeStyle="1" edges="
+!519.5 -2051[#208.6E #FFF7FD.A2 521.5 -2049.5"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
+!497 -2069.5|513 -2056.5!513 -2056.5|519.5 -2051"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+!519.5 -2051|496.5 -2069.5!496.5 -2069.5|497 -2069.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!497 -2069.5[50.5 -2432 -591 -2466.5"/>
+                    <Edge strokeStyle="1" edges="
+!-591 -2466.5|-548 -2467.5"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!497 -2069.5[556.5 -2105 621 -2070.5!621 -2070.5|615 -2065.5!615 -2065.5[613 -2062.5 613 -2055.5!613 -2055.5[613 -2048 616 -2037!616 -2037[619 -2026 619 -2021!619 -2021|651 -2018.5!651 -2018.5[675 -2015.5 687.5 -2009.5!687.5 -2009.5[676
+ -1997.5 648.5 -1981.5!648.5 -1981.5[636 -1974 636 -1953!636 -1953[636 -1941 653 -1918.5!653 -1918.5[670.5 -1896 670.5 -1878.5!670.5 -1878.5[670.5 -1857.5 669 -1854.5!669 -1854.5[664 -1845 641.5 -1849.5!641.5 -1849.5[641.5 -1844 636 -1844
+!636 -1844[651 -1802.5 664 -1777.5!664 -1777.5[678 -1750.5 693 -1735.5!693 -1735.5|693 -1730!693 -1730[681.5 -1741 676 -1741!676 -1741|676 -1713!676 -1713|679 -1709"/>
+                    <Edge fillStyle0="3" edges="
+!679 -1709|677 -1709"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!677 -1709[656 -1736 621.5 -1762"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!621.5 -1762|631 -1752.5!631 -1752.5[441 -1837 225 -1853!225 -1853|224 -1853"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!224 -1853[214 -1834 214 -1821.5!214 -1821.5[214 -1791.5 235 -1776.5!235 -1776.5[248 -1768.5 255 -1764!255 -1764[268 -1756 276 -1747!276 -1747[249.5 -1729 246 -1724!246 -1724[242.5 -1720 242.5 -1690!242.5 -1690[242.5 -1682 250.5 -1667.5
+!250.5 -1667.5|253.5 -1661"/>
+                    <Edge fillStyle0="3" edges="
+!253.5 -1661|243 -1658"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!243 -1658[236 -1661.5 226.5 -1663.5!226.5 -1663.5|209 -1665!209 -1665|190 -1667"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!190 -1667[13 -1761.5 128 -1856.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+!128 -1856.5|224 -1853"/>
+                    <Edge strokeStyle="1" edges="
+!621 -2070.5|636 -2072.5"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!190 -1667|180 -1667.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!190 -1667|208 -1657.5!208 -1657.5[-387 -1702 -947.5 -1474"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!-947.5 -1474[-647.5 -1646 -219.5 -1818.5!-219.5 -1818.5[-38.5 -1857 128 -1856.5"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!-947.5 -1474[-1384 -1224.5 -1549 -977.5!-1549 -977.5[-1827.5 -561 -2150.5 -242.5!-2150.5 -242.5[-2473.5 76.5 -2873.5 1!-2873.5 1[-3304.5 -385.5 -2856.5 -1212!-2856.5 -1212[-2079 -2419 -591 -2466.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248519897460938" b="0.08990478515625" c="0.08990478515625" d="-0.248519897460938" tx="-1.9" ty="-67.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 802" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#099BF1">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="8.45" ty="-50.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.267257690429688" b="0.0340423583984375" c="0.0340423583984375" d="0.267257690429688" tx="10.25" ty="-50.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.260406494140625" b="0.0697784423828125" c="0.0697784423828125" d="0.260406494140625" tx="11.5" ty="-50.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.234878540039063" b="0.131912231445313" c="0.131912231445313" d="0.234878540039063" tx="14.75" ty="-51.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.190628051757813" b="0.190628051757813" c="0.190628051757813" d="0.190628051757813" tx="18.35" ty="-52.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.140838623046875" b="0.229598999023438" c="0.229598999023438" d="0.140838623046875" tx="20.6" ty="-54.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.073760986328125" b="0.258880615234375" c="0.258880615234375" d="0.073760986328125" tx="22.35" ty="-57.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0939483642578125" b="0.252182006835938" c="0.252166748046875" d="0.093963623046875" tx="21.9" ty="-56.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.104827880859375" b="0.247817993164063" c="0.247817993164063" d="0.104827880859375" tx="21.6" ty="-56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.149765014648438" b="0.222763061523438" c="-0.222763061523438" d="-0.149749755859375" tx="-1" ty="-69.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.188400268554688" b="0.190719604492188" c="-0.19073486328125" d="-0.188385009765625" tx="-1.15" ty="-71.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149932861328125" b="0.221435546875" c="-0.221420288085938" d="0.149932861328125" tx="1.3" ty="-56.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2178955078125" b="0.154541015625" c="-0.154525756835938" d="0.2178955078125" tx="4.3" ty="-53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.237197875976563" b="0.122589111328125" c="-0.122573852539063" d="0.237197875976563" tx="5.95" ty="-52.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2691650390625" b="-0.01434326171875" c="-0.01434326171875" d="0.2691650390625" tx="7.7" ty="-50.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#EB5BB2">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="19.1" ty="-84.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#569DEB">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 790" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="15.2" ty="-51.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="46" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#F16F54">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 787" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="25.4" ty="31.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#D213C7">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 786" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="30.65" ty="56.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#F05BC6">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="4.75" ty="-24.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.235702514648438" b="0.129837036132813" c="0.129837036132813" d="0.235702514648438" tx="13.55" ty="-24.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.159698486328125" b="0.216659545898438" c="0.216659545898438" d="0.159698486328125" tx="20.4" ty="-28.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0260162353515625" b="0.2674560546875" c="0.2674560546875" d="0.0260162353515625" tx="29.7" ty="-34.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.167953491210938" b="0.210342407226563" c="0.210342407226563" d="-0.167938232421875" tx="34.55" ty="-44.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.247085571289063" b="0.105621337890625" c="0.105621337890625" d="-0.247085571289063" tx="36.2" ty="-51.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2593994140625" b="-0.068634033203125" c="-0.068634033203125" d="-0.2593994140625" tx="35.05" ty="-58.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.263946533203125" b="-0.04791259765625" c="-0.04791259765625" d="-0.263931274414063" tx="34.6" ty="-56.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2657470703125" b="-0.0363922119140625" c="-0.036376953125" d="-0.265731811523438" tx="34.25" ty="-55.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.157974243164063" b="0.214706420898438" c="-0.214706420898438" d="-0.157974243164063" tx="-21.85" ty="-85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.162994384765625" b="0.206512451171875" c="0.206512451171875" d="0.162994384765625" tx="6" ty="-34.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.245635986328125" b="0.092498779296875" c="0.092498779296875" d="0.245635986328125" tx="5.2" ty="-30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2691650390625" b="-0.01434326171875" c="-0.01434326171875" d="0.2691650390625" tx="2.65" ty="-24.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#D99037">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="4.85" ty="-11.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.235702514648438" b="0.129837036132813" c="0.129837036132813" d="0.235702514648438" tx="20" ty="-13.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.159698486328125" b="0.216659545898438" c="0.216659545898438" d="0.159698486328125" tx="31.05" ty="-20.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0260162353515625" b="0.2674560546875" c="0.2674560546875" d="0.0260162353515625" tx="42.75" ty="-33.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.167953491210938" b="0.210342407226563" c="0.210342407226563" d="-0.167938232421875" tx="44.7" ty="-52.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.247085571289063" b="0.105621337890625" c="0.105621337890625" d="-0.247085571289063" tx="41.2" ty="-63.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2593994140625" b="-0.068634033203125" c="-0.068634033203125" d="-0.2593994140625" tx="31.6" ty="-71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.263946533203125" b="-0.04791259765625" c="-0.04791259765625" d="-0.263931274414063" tx="32.15" ty="-69.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2657470703125" b="-0.0363922119140625" c="-0.036376953125" d="-0.265731811523438" tx="32.4" ty="-68.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.157974243164063" b="0.214706420898438" c="-0.214706420898438" d="-0.157974243164063" tx="-31" ty="-90.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.096282958984375" b="0.244216918945313" c="0.244216918945313" d="0.096282958984375" tx="16.45" ty="-27.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.20806884765625" b="0.159072875976563" c="0.159072875976563" d="0.208053588867188" tx="10.45" ty="-18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2691650390625" b="-0.01434326171875" c="-0.01434326171875" d="0.2691650390625" tx="2.05" ty="-11.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#A9CDF1">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 783" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="12.6" ty="-4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#AECC6C">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 782" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="21.45" ty="-16.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#B233EC">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 781" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="19.8" ty="-60.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#24A5F6">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 780" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="22.05" ty="-32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#F6CF26">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="40.25" ty="28.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#F60DB8">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="40.75" ty="10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#38D687">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 777" centerPoint3DX="84.9" centerPoint3DY="129.5">
+                  <matrix>
+                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="29.15" ty="-50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#A77D99">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 775" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="14" ty="-1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#34ACC6">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 774" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="22.1" ty="-24.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#F192F7">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 773" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="12.8" ty="-44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#C11AB5">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 772" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="27.1" ty="-4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#E2C672">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 771" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="17.3" ty="-17.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#ED56F3">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 770" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="33.75" ty="-30.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#E39744">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 769" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="37.3" ty="-15.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#21EFE5">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 768" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="30.8" ty="-52"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#9E64BC">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 767" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 791" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#4B1817"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!807.5 442.5|697 -392.5!697 -392.5|551.5 -607!551.5 -607|551.5 -606.5!551.5 -606.5|148 -1060.5!148 -1060.5[75 -836.5 -3 -625!-3 -625[-53 -487 -106 -353.5!-106 -353.5[-236.5 -23 -378.5 276.5!-378.5 276.5[-459 446 -543.5 605.5!-543.5 605.5
+|-549.5 617!-549.5 617|-557 630.5!-557 630.5|-553 631"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-553 631[-582.5 632 -577 670.5!-577 670.5[-550 671 -576.5 704.5!-576.5 704.5[-578.5 723.5 -589.5 734!-589.5 734[-568.5 727 -576.5 753.5!-576.5 753.5[-584.5 779 -592.5 784.5!-592.5 784.5[-569 789.5 -560 782!-560 782[-550.5 774.5 -541
+ 769!-541 769[-540 777.5 -518 805!-518 805[-527 783.5 -522 784!-522 784[-510.5 785.5 -455 762.5!-455 762.5[-458 771 -440 784.5"/>
+                    <Edge strokeStyle="1" edges="
+!-440 784.5|-445.5 785.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!-553 631|-541.5 631.5!-541.5 631.5[-180 658 170.5 605.5!170.5 605.5|171 604"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!171 604|551.5 -606.5!551.5 -606.5|447.5 529"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!447.5 529|445.5 552!445.5 552[426 557 420.5 588.5!420.5 588.5[458 599 436.5 641!436.5 641[454 648.5 484 630.5!484 630.5[489 637 491 658.5!491 658.5|531 628!531 628[541 653.5 560.5 660!560.5 660[586 641 611.5 616.5!611.5 616.5[632 648
+ 649.5 645!649.5 645[673 616.5 691.5 599!691.5 599[749.5 613 769 605!769 605[769 597.5 746 574.5!746 574.5[797 578 823.5 564.5!823.5 564.5|783.5 543.5!783.5 543.5[825.5 544.5 838 522.5!838 522.5[825.5 536.5 804.5 481!804.5 481[815.5 484.5
+ 831.5 478.5!831.5 478.5[808.5 446 807.5 442.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!807.5 442.5[636 505 445.5 552!445.5 552[453.5 539.5 447.5 529"/>
+                    <Edge fillStyle0="1" edges="
+!171 604|181 607"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!181 607[181 620.5 201 651.5!201 651.5[184.5 660 160 651!160 651[189.5 715.5 202 710!202 710[189.5 730 148 720.5!148 720.5[179.5 758 167 771.5!167 771.5[171.5 752.5 103 751.5!103 751.5[98.5 768.5 112 780.5!112 780.5[71.5 783 50 763!50
+ 763[39 785 25 786.5!25 786.5[35 780.5 -4 760!-4 760[-20.5 774.5 -71.5 787!-71.5 787[-64.5 775 -87 768!-87 768[-122.5 777 -177.5 777.5!-177.5 777.5[-176.5 762.5 -193.5 755!-193.5 755|-300.5 780.5"/>
+                    <Edge strokeStyle="1" edges="
+!-300.5 780.5[-324 781.5 -324 784"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-324 784[-324 777.5 -304 780!-304 780|-300.5 780.5"/>
+                    <Edge strokeStyle="1" edges="
+!-300.5 780.5[-293.5 781.5 -288.5 784!-440 797[-451.5 788 -440 784.5!-440 784.5[-445 791 -440 797"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-440 784.5[-424.5 781.5 -392 764!-392 764[-364 784.5 -324 784"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="46" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#E9623F">
+          <frames>
+            <DOMFrame index="0" duration="74" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

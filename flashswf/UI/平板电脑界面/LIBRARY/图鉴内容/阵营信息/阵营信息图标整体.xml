@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图鉴内容/阵营信息/阵营信息图标整体" itemID="66ff556b-000003e9" lastModified="1728009579" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="阵营信息图标整体">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息文字透明" centerPoint3DX="94.5" centerPoint3DY="21.2">
+                  <matrix>
+                    <Matrix tx="38.3" ty="7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="13.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息图标透明" centerPoint3DX="16.95" centerPoint3DY="17.4">
+                  <matrix>
+                    <Matrix a="0.489227294921875" d="0.489227294921875" tx="1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33" y="35.55"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息图标" centerPoint3DX="16.25" centerPoint3DY="18.15">
+                  <matrix>
+                    <Matrix a="0.489227294921875" d="0.489227294921875" ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33" y="35.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息文字" centerPoint3DX="92.25" centerPoint3DY="22.55">
+                  <matrix>
+                    <Matrix tx="36.05" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.2" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

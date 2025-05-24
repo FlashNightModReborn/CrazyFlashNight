@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/混沌系列素材包/尾上世莉架/人物组件/左大腿" itemID="65522153-0000002d" symbolType="graphic" lastModified="1728926411">
+  <timeline>
+    <DOMTimeline name="左大腿">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFD9C3"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CBA697"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#34333B"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#43424B"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!3475 3746[3388 3208 3240 2687"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!3240 2687[2150 2342 1254 3274!1254 3274[1199 3771 1562 4251"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!1562 4251[2490 3437 3475 3746"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3240 2687[3038 1970 2719 1282!2719 1282[2122 475 1120 541!1120 541[249 528 0 1450!0 1450[466 2991 1376 4427"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!1376 4427[1468 4333 1562 4251"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!4056 7813[4065 7707 3979 7683!3979 7683|3381 7683!3381 7683[2841 7255 2558 6344!2558 6344[1593 4745 1562 4251"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!1376 4427[2059 6333 2743 7268!2743 7268[2996 8009 3740 8000!3740 8000[3944 7982 4056 7813"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!4056 7813[4230 7554 4190 6936!4190 6936[3824 4641 3475 3746"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

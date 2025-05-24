@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载背景 1024*576" itemID="66e5b988-00001027" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="加载背景" linkageURL="flashswf/UI/加载背景.swf" lastModified="1726331311">
+  <timeline>
+    <DOMTimeline name="加载背景 1024*576">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!20479 12540|0 12540!0 12540|0 11540!0 11540|20479 11540!20479 11540|20479 12540"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BB6BB5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/bitmap225.jpg" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="25.5999755859375" d="25.5999755859375"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!20480 12288|0 12288!0 12288|0 0!0 0|20480 0!20480 0|20480 12288"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

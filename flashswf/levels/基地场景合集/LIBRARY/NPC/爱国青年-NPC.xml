@@ -1,0 +1,174 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/爱国青年-NPC" itemID="668a9be5-00004f7b" lastModified="1732205606" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="爱国青年-NPC" currentFrame="6">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" name="描边" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+Z轴坐标 = this._y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(2);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="71.25" centerPoint3DY="-179.9">
+                  <matrix>
+                    <Matrix tx="7.25" ty="-189.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="64" y="9.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字信息" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="59.7" centerPoint3DY="-126.65">
+                  <matrix>
+                    <Matrix a="1.08354187011719" d="1.08355712890625" tx="7.7" ty="-150.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Symbol 51651" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 51651" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.87353515625" d="5.45098876953125" tx="11.7" ty="-64.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.是否达成任务检测();
+}
+on(release){
+   _root.是否达成任务检测();
+   if(_root.点击npc后检测任务(名字) == "路过")
+   {
+      _root.NPC功能菜单._visible = 1;
+      _root.NPC功能菜单._x = _root._xmouse;
+      _root.NPC功能菜单._y = _root._ymouse;
+      _root.NPC功能菜单.当前NPC = this._name;
+      _root.NPC功能菜单.刷新显示();
+   }
+}
+on(rollOver){
+   gotoAndStop("描边");
+}
+on(rollOut){
+   gotoAndPlay(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/爱国青年" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.343276977539063" d="0.343276977539063" tx="8.55" ty="-65.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/东亚病夫牌" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1083984375" b="-0.083892822265625" c="-0.0107421875" d="1.12919616699219" tx="15" ty="-61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.45" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/爱国青年" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.343276977539063" d="0.343276977539063" tx="8.55" ty="-65.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/东亚病夫牌" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1083984375" b="-0.083892822265625" c="-0.0107421875" d="1.12919616699219" tx="15" ty="-61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.45" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 476" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.552108764648438" d="0.151199340820313" tx="14.5" ty="3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="86.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/居合/头" itemID="6593cf93-00000308" lastModified="1704307041">
+  <timeline>
+    <DOMTimeline name="头">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新地图素材/居合/元件 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.7818603515625" d="1.776611328125" tx="124.35" ty="22.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.45" y="31.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/居合/元件 15" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.598129272460938" d="0.596435546875" tx="3.35" ty="0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="136.75" y="108.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

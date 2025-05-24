@@ -1,0 +1,164 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2439" itemID="6597607e-00000b5c" lastModified="1737283936">
+  <timeline>
+    <DOMTimeline name="Symbol 2439">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#2FD979">
+          <frames>
+            <DOMFrame index="0" name="准备挂机" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" name="描边" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" name="开始挂机" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#D37AFB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 开始挂机()
+{
+	_root.gameworld[_root.控制目标]._x = this._x;
+	_root.gameworld[_root.控制目标].Z轴坐标 = this._y;
+	_root.gameworld[_root.控制目标]._y = this._y;
+	_root.gameworld[_root.控制目标].挂机项目名 = 挂机项目名;
+	_root.gameworld[_root.控制目标].状态改变("挂机");
+	_root.gameworld[_root.控制目标].man.gotoAndPlay(挂机项目名);
+	_root.gameworld[_root.控制目标].方向改变(人物方向);
+	gotoAndStop("开始挂机");
+}
+stop();
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.挂机中 = true;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#8DD061">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="100" height="40.95" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="-103" ty="-174.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>木人桩</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A1F031">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2437" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.24844360351563" d="5.54519653320313" tx="-51.45" ty="-70"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_root.挂机中 == false)
+	{
+		_root.获取木人桩训练项();
+		var 挂机功能菜单 = _root.从库中加载外部UI("挂机功能菜单");
+		挂机功能菜单.挂机项目 = this._name;
+		挂机功能菜单._visible = 1;
+		挂机功能菜单._x = _root._xmouse;
+		挂机功能菜单._y = _root._ymouse;
+		挂机功能菜单.获得训练项目文本();
+	}
+}
+on (rollOver) {
+	gotoAndStop("描边");
+}
+on (rollOut) {
+	gotoAndStop("准备挂机");
+	play();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#4D99BB">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2436" centerPoint3DX="18.25" centerPoint3DY="-34.25">
+                  <matrix>
+                    <Matrix a="-0.6629638671875" d="0.6629638671875" tx="-24.15" ty="-139.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2436" centerPoint3DX="18.25" centerPoint3DY="-34.25">
+                  <matrix>
+                    <Matrix a="-0.6629638671875" d="0.6629638671875" tx="-24.15" ty="-139.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                    <GlowFilter color="#FFCC00" strength="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

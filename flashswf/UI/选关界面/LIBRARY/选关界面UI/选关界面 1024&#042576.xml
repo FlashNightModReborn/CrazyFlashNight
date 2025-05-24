@@ -1,0 +1,4038 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1746165665" lastUniqueIdentifier="207">
+  <timeline>
+    <DOMTimeline name="选关界面 1024*576" currentFrame="11">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#5E5DCA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" name="基地门口" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" name="基地车库" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" name="黑铁会总部" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" name="地下2层" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="12" name="基地房顶" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="13" name="沙漠虫洞" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" duration="13" name="诺亚前线基地深处" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" duration="7" name="诺亚前线基地深处第二层" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="6" name="雪山" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" name="雪山第二层" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="9" name="雪山内部" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" duration="8" name="雪山内部第二层" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="109" duration="9" name="亡灵沙漠" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" duration="9" name="异界战场" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="127" duration="8" name="坠毁战舰" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="135" duration="8" name="试炼场深处" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#3CAAF5">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.强制解锁关卡 = false;
+function 组装副本任务(对象)
+{
+	_root.委托任务界面.NPC任务_任务_起始帧 = null;
+	var taskData = _root.getTaskData(对象.NPC任务_任务_关卡路径);
+	_root.委托任务界面.taskData = taskData;
+	_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
+	_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
+	_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
+	_root.SetDialogue(taskData.get_conversation);
+	_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
+	_root.委托任务界面.显示任务明细(taskData);
+	_root.委托任务界面._visible = true;
+}
+function 删除所有()
+{
+	for (var each in this)
+	{
+		this[each].removeMovieClip();
+	}
+}
+
+gotoAndStop(_root.关卡地图帧值);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="73" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="93" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="110" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="119" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="127" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="135" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 118" color="#F7CA97">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="73.8" centerPoint3DY="276.95">
+                  <matrix>
+                    <Matrix tx="34.5" ty="264.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="952.8" centerPoint3DY="309.55">
+                  <matrix>
+                    <Matrix tx="913.5" ty="297.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="950.85" centerPoint3DY="320.45">
+                  <matrix>
+                    <Matrix tx="911.55" ty="307.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("基地车库");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="889.85" centerPoint3DY="275">
+                  <matrix>
+                    <Matrix tx="850.55" ty="262.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="757.8" centerPoint3DY="493.95">
+                  <matrix>
+                    <Matrix tx="718.5" ty="481.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="631.35" centerPoint3DY="505.6">
+                  <matrix>
+                    <Matrix tx="592.05" ty="493.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("基地房顶");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="708.85" centerPoint3DY="501.4">
+                  <matrix>
+                    <Matrix tx="669.55" ty="488.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("地下2层");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="706.85" centerPoint3DY="509.45">
+                  <matrix>
+                    <Matrix tx="667.55" ty="496.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("地下2层");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="950.85" centerPoint3DY="293.95">
+                  <matrix>
+                    <Matrix tx="911.55" ty="281.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("基地房顶");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="920.85" centerPoint3DY="315.95">
+                  <matrix>
+                    <Matrix tx="881.55" ty="303.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("基地房顶");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="92" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="883.3" centerPoint3DY="251.4">
+                  <matrix>
+                    <Matrix tx="844" ty="238.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("雪山");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="101" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="882.35" centerPoint3DY="251.5">
+                  <matrix>
+                    <Matrix tx="843.05" ty="239"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("雪山");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="581.4" centerPoint3DY="414.55">
+                  <matrix>
+                    <Matrix tx="542.1" ty="402.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("沙漠虫洞");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="127" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="518.3" centerPoint3DY="482.5">
+                  <matrix>
+                    <Matrix tx="479" ty="470"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("基地门口");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="135" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="498.75" centerPoint3DY="489.95">
+                  <matrix>
+                    <Matrix tx="459.45" ty="477.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _parent.gotoAndStop("基地车库");
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 119" color="#C99A60">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="725.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="16.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>废城</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="728.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="16.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>堕落城</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="745.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="11.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>黑铁会总部</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="722.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="16.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>禁区</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="12" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="740.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="16.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>荒漠</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="13" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="744.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="12.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>沙漠虫洞</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="13" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="739.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="14.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>诺亚前线基地深处</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="6" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="751.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="14.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>雪山</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="9" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="742.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="14.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>雪山内部</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="101" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="109" duration="9" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="741.5" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="12.5" ty="14.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>亡灵沙漠</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" duration="9" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="696.55" height="33" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="18.45" ty="28.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>异界战场</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="127" duration="8" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="741.55" height="33" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="18.45" ty="28.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>坠毁战舰</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="135" duration="8" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="741.55" height="33" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="18.45" ty="28.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>试炼场深处</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 120" color="#D8C265" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="473.55" centerPoint3DY="505.55">
+                  <matrix>
+                    <Matrix tx="222.55" ty="282.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("新手练习场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="661.45" centerPoint3DY="505.55">
+                  <matrix>
+                    <Matrix tx="410.45" ty="282.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("超市废墟");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="794.35" centerPoint3DY="522.55">
+                  <matrix>
+                    <Matrix tx="543.35" ty="299.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("废墟武器店");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="639.25" centerPoint3DY="315.05">
+                  <matrix>
+                    <Matrix tx="388.25" ty="91.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("郊区");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="944.45" centerPoint3DY="513.55">
+                  <matrix>
+                    <Matrix tx="693.45" ty="290.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("第一防线");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1070.45" centerPoint3DY="331.15">
+                  <matrix>
+                    <Matrix tx="819.45" ty="108.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("商业区");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="924.5" centerPoint3DY="396.1">
+                  <matrix>
+                    <Matrix tx="673.5" ty="173"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("第三集结点");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1117.9" centerPoint3DY="425.15">
+                  <matrix>
+                    <Matrix tx="866.9" ty="202.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("贫民窟");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="498.25" centerPoint3DY="414.6">
+                  <matrix>
+                    <Matrix tx="247.25" ty="191.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("闹市区");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="785.45" centerPoint3DY="425.15">
+                  <matrix>
+                    <Matrix tx="534.45" ty="202.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("地铁站");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="850.5" centerPoint3DY="289.7">
+                  <matrix>
+                    <Matrix tx="599.5" ty="66.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("突围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3291" centerPoint3DX="269.1" centerPoint3DY="180.55">
+                  <matrix>
+                    <Matrix tx="219.55" ty="138.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("坠毁战舰");
+   }
+}
+onClipEvent(load){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-第一防线防区" centerPoint3DX="830.45" centerPoint3DY="435.45">
+                  <matrix>
+                    <Matrix tx="759.95" ty="402.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.5" y="33.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-第一防线防区");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="483.45" centerPoint3DY="319.85">
+                  <matrix>
+                    <Matrix tx="232.45" ty="96.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("自来水厂");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="735.45" centerPoint3DY="559.1">
+                  <matrix>
+                    <Matrix tx="484.45" ty="336"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("DEATH MATCH入门赛");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="832.5" centerPoint3DY="501.3">
+                  <matrix>
+                    <Matrix tx="581.5" ty="278.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("DEATH MATCH角斗场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="973.5" centerPoint3DY="406.15">
+                  <matrix>
+                    <Matrix tx="722.5" ty="183.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城区");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1096.5" centerPoint3DY="546.1">
+                  <matrix>
+                    <Matrix tx="845.5" ty="323"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("游寇基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="807.5" centerPoint3DY="414">
+                  <matrix>
+                    <Matrix tx="556.5" ty="190.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="567.8" centerPoint3DY="523">
+                  <matrix>
+                    <Matrix tx="316.8" ty="299.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("摇滚公园");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1162.5" centerPoint3DY="327.15">
+                  <matrix>
+                    <Matrix tx="911.5" ty="104.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("革命军哨所");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3308" centerPoint3DX="502.5" centerPoint3DY="236.55">
+                  <matrix>
+                    <Matrix tx="449.45" ty="217.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("黑铁会总部");
+   }
+}
+onClipEvent(load){
+   显示文字 = "进入黑铁会总部";
+   关卡开放条件 = 25;
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="577.5" centerPoint3DY="436.95">
+                  <matrix>
+                    <Matrix tx="326.5" ty="213.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城深处");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="948.5" centerPoint3DY="563.1">
+                  <matrix>
+                    <Matrix tx="697.5" ty="340"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("A兵团试炼场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="398.5" centerPoint3DY="364.4">
+                  <matrix>
+                    <Matrix tx="147.5" ty="141.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("压制摇滚公园");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="442.5" centerPoint3DY="528.75">
+                  <matrix>
+                    <Matrix tx="191.5" ty="305.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("摇滚内战");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-摇滚" centerPoint3DX="358.5" centerPoint3DY="452.1">
+                  <matrix>
+                    <Matrix tx="107.5" ty="229"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-摇滚公园");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="-24.5" centerPoint3DY="486.55">
+                  <matrix>
+                    <Matrix tx="-275.5" ty="263.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   当前关卡名 = "pk场";
+   淡出跳转帧 = "pk场";
+   关卡开放条件 = 9;
+   详细 = "可以进行玩家间PK的DEATH MATCH角斗场";
+   关卡可获得奖励品 = [];
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-堕落城酒吧" centerPoint3DX="1021.5" centerPoint3DY="320.45">
+                  <matrix>
+                    <Matrix tx="770.5" ty="97.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-堕落城酒吧");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="试炼场深处按钮" centerPoint3DX="772.9" centerPoint3DY="439.6">
+                  <matrix>
+                    <Matrix tx="713.8" ty="408.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.35" y="30.9"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("试炼场深处");
+   }
+}
+onClipEvent(load){
+   显示文字 = "进入试炼场深处";
+   关卡开放条件 = 88;
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-联合大学" centerPoint3DX="163.6" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="163.6" ty="68.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="138.7"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-联合大学");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="562.5" centerPoint3DY="341.45">
+                  <matrix>
+                    <Matrix tx="311.5" ty="118.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("大学城周边");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="512.45" centerPoint3DY="284.35">
+                  <matrix>
+                    <Matrix tx="261.45" ty="61.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城下水道入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="外交地图-堕落城商业街" selected="true" centerPoint3DX="626.45" centerPoint3DY="104.05">
+                  <matrix>
+                    <Matrix tx="613.95" ty="104.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-堕落城商业街");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="489.75" centerPoint3DY="530">
+                  <matrix>
+                    <Matrix tx="238.75" ty="306.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会翅虎堂外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="870" centerPoint3DY="547">
+                  <matrix>
+                    <Matrix tx="619" ty="323.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会总部边缘");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="645.75" centerPoint3DY="473.1">
+                  <matrix>
+                    <Matrix tx="394.75" ty="250"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会翅虎堂内部");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="406.25" centerPoint3DY="387.45">
+                  <matrix>
+                    <Matrix tx="155.25" ty="164.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会火凤堂外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="559.3" centerPoint3DY="380.55">
+                  <matrix>
+                    <Matrix tx="308.3" ty="157.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会火凤堂内部");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1072.8" centerPoint3DY="453.1">
+                  <matrix>
+                    <Matrix tx="821.8" ty="230"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会黑龙堂外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="962.8" centerPoint3DY="408.05">
+                  <matrix>
+                    <Matrix tx="711.8" ty="184.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会黑龙堂内部");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="786.75" centerPoint3DY="408.05">
+                  <matrix>
+                    <Matrix tx="535.75" ty="184.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会总堂外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" cacheAsBitmap="true" centerPoint3DX="727.3" centerPoint3DY="300.05">
+                  <matrix>
+                    <Matrix tx="476.3" ty="76.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会总堂");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="901.75" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="650.75" ty="112.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("被攻击的黑铁会");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1125.3" centerPoint3DY="563.1">
+                  <matrix>
+                    <Matrix tx="874.3" ty="340"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("禁区边缘");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1010.5" centerPoint3DY="466.85">
+                  <matrix>
+                    <Matrix tx="759.5" ty="243.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("深入禁区");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="542.8" centerPoint3DY="413.2">
+                  <matrix>
+                    <Matrix tx="291.8" ty="190.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚前线基地哨岗");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="434.3" centerPoint3DY="355.3">
+                  <matrix>
+                    <Matrix tx="183.3" ty="132.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚前线基地兵工厂");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3320" centerPoint3DX="302.25" centerPoint3DY="442.5">
+                  <matrix>
+                    <Matrix tx="241" ty="423.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("诺亚前线基地深处");
+   }
+}
+onClipEvent(load){
+   关卡开放条件 = 90;
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3325" name="魔神10" centerPoint3DX="386.75" centerPoint3DY="203.4">
+                  <matrix>
+                    <Matrix tx="336.75" ty="153.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (rollOver) {
+	if (_root.主线任务进度 > 150)
+	{
+		_parent.凤凰10._visible = 1;
+		_parent.桶10._visible = 1;
+		_parent.魔神10关闭._visible = 1;
+		gotoAndStop("展开10");
+		//this.swapDepths(_parent.getNextHighestDepth());
+	}
+}
+on (rollOut) {
+	/*if(_root.主线任务进度 >150){
+	   gotoAndStop(1);
+	}else{
+	gotoAndStop("锁定");
+	}*/
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("魔神降临 Lv.10");
+	if (_root.主线任务进度 > 150)
+	{
+		gotoAndStop(1);
+	}
+	else
+	{
+		gotoAndStop("锁定");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3325" name="魔神16" centerPoint3DX="275.25" centerPoint3DY="160.4">
+                  <matrix>
+                    <Matrix tx="225.25" ty="110.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (rollOver) {
+	if (_root.主线任务进度 > 150)
+	{
+		_parent.凤凰16._visible = 1;
+		_parent.桶16._visible = 1;
+		_parent.魔神16关闭._visible = 1;
+		gotoAndStop("展开16");
+		//this.swapDepths(_parent.getNextHighestDepth());
+	}
+}
+on (rollOut) {
+/*	if (_root.主线任务进度 > 150)
+	{
+		gotoAndStop(1);
+	}
+	else
+	{
+		gotoAndStop("锁定");
+	}*/
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("魔神降临 Lv.16");
+	if (_root.主线任务进度 > 150)
+	{
+		gotoAndStop(1);
+	}
+	else
+	{
+		gotoAndStop("锁定");
+	}
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color blueMultiplier="0" greenMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="973.8" centerPoint3DY="327.6">
+                  <matrix>
+                    <Matrix tx="722.8" ty="104.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("被偷袭的基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/凤凰16" name="凤凰16" centerPoint3DX="220.8" centerPoint3DY="73.65">
+                  <matrix>
+                    <Matrix tx="174.8" ty="63.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.75" y="10.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[
+on (release) {
+	_parent.组装副本任务(this);
+}
+onClipEvent (load) {
+	NPC任务_任务_关卡路径 = "菲尼克斯Lv16";
+	this._visible = 0;
+}
+on(rollOver){
+   _root.注释(200,_root.获得翻译("魔神降临：菲尼克斯的高难度版本"));
+}
+on(rollOut){
+   _root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/桶16" name="桶16" centerPoint3DX="219.1" centerPoint3DY="108.25">
+                  <matrix>
+                    <Matrix tx="173.8" ty="97.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.3" y="10.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(200,_root.获得翻译("魔神降临：锡蒙利的高难度版本"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+onClipEvent (load) {
+	NPC任务_任务_关卡路径 = "锡蒙利Lv16";
+	this._visible = 0;
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/凤凰10" name="凤凰10" centerPoint3DX="347.4" centerPoint3DY="85.75">
+                  <matrix>
+                    <Matrix tx="301.65" ty="75.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.5" y="10.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(200,_root.获得翻译("魔神降临：菲尼克斯的低难度版本"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+onClipEvent (load) {
+	NPC任务_任务_关卡路径 = "菲尼克斯Lv10";
+	this._visible = 0;
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/桶10" name="桶10" centerPoint3DX="346.05" centerPoint3DY="119.05">
+                  <matrix>
+                    <Matrix tx="300.45" ty="108.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.85" y="10.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(rollOver){
+   _root.注释(200,_root.获得翻译("魔神降临：锡蒙利的低难度版本"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+onClipEvent (load) {
+	NPC任务_任务_关卡路径 = "锡蒙利Lv10";
+	this._visible = 0;
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新关闭" name="魔神10关闭" centerPoint3DX="398.45" centerPoint3DY="69.65">
+                  <matrix>
+                    <Matrix tx="389.35" ty="60.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="5.25"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+}
+
+onClipEvent (load) {
+   this._visible = 0;
+}
+on(rollOver){
+	if (_root.主线任务进度 > 150)
+	{
+		_parent.魔神10.gotoAndStop(1);
+	}
+	else
+	{
+		_parent.魔神10.gotoAndStop("锁定");
+	}
+	_parent.桶10._visible = 0;
+	_parent.凤凰10._visible = 0;
+   this._visible = 0;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="808.85" centerPoint3DY="298.75">
+                  <matrix>
+                    <Matrix tx="557.85" ty="75.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("被终结者占领的诺亚前线基地兵工厂");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="869.5" centerPoint3DY="394.3">
+                  <matrix>
+                    <Matrix tx="618.5" ty="171.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("基地禁区边缘地带");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-幸存者营地" centerPoint3DX="1080.55" centerPoint3DY="210.2">
+                  <matrix>
+                    <Matrix tx="829.55" ty="-12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("幸存者营地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新关闭" name="魔神16关闭" centerPoint3DX="272.35" centerPoint3DY="58.3">
+                  <matrix>
+                    <Matrix tx="263.25" ty="49.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.25" y="5.25"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+}
+
+onClipEvent (load) {
+   this._visible = 0;
+}
+on(rollOver){
+	if (_root.主线任务进度 > 150)
+	{
+		_parent.魔神16.gotoAndStop(1);
+	}
+	else
+	{
+		_parent.魔神16.gotoAndStop("锁定");
+	}
+	_parent.桶16._visible = 0;
+	_parent.凤凰16._visible = 0;
+   this._visible = 0;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-同盟外交站" centerPoint3DX="119.3" centerPoint3DY="349.95">
+                  <matrix>
+                    <Matrix tx="119.3" ty="220.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="129.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("同盟卸货站");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3331" centerPoint3DX="471.45" centerPoint3DY="522.4">
+                  <matrix>
+                    <Matrix tx="391.45" ty="466.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("沙漠虫洞");
+   }
+}
+onClipEvent(load){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1136.55" centerPoint3DY="529.05">
+                  <matrix>
+                    <Matrix tx="885.55" ty="305.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("难民营地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1087.2" centerPoint3DY="349.1">
+                  <matrix>
+                    <Matrix tx="836.2" ty="126"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("军阀临时补给点");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="790.45" centerPoint3DY="479.15">
+                  <matrix>
+                    <Matrix tx="539.45" ty="256.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("残垣断壁");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="748.45" centerPoint3DY="406.6">
+                  <matrix>
+                    <Matrix tx="497.45" ty="183.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="393.5" centerPoint3DY="541.5">
+                  <matrix>
+                    <Matrix tx="142.5" ty="318.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("军阀据点");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="465.55" centerPoint3DY="325.15">
+                  <matrix>
+                    <Matrix tx="214.55" ty="102.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("军阀前线基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="619.3" centerPoint3DY="279.05">
+                  <matrix>
+                    <Matrix tx="368.3" ty="55.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("军阀秘密基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3336" centerPoint3DX="594.4" centerPoint3DY="103">
+                  <matrix>
+                    <Matrix tx="534" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("雪山");
+   }
+}
+onClipEvent(load){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="347" centerPoint3DY="386.7">
+                  <matrix>
+                    <Matrix tx="96" ty="163.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("袭杀与圈套");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="844.55" centerPoint3DY="593.2">
+                  <matrix>
+                    <Matrix tx="593.55" ty="370.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("虫洞外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="668.5" centerPoint3DY="577.2">
+                  <matrix>
+                    <Matrix tx="417.5" ty="354.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("虫洞洞口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-军阀基地" centerPoint3DX="512.45" centerPoint3DY="468.2">
+                  <matrix>
+                    <Matrix tx="261.45" ty="245.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-军阀");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="469.6" centerPoint3DY="465.2">
+                  <matrix>
+                    <Matrix tx="218.6" ty="242.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("虫洞入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="544.55" centerPoint3DY="544.2">
+                  <matrix>
+                    <Matrix tx="293.55" ty="321.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("虫洞内部");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="657.55" centerPoint3DY="491.75">
+                  <matrix>
+                    <Matrix tx="406.55" ty="268.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("军团驻地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="786.5" centerPoint3DY="520.2">
+                  <matrix>
+                    <Matrix tx="535.5" ty="297.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("关口小道");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="969.55" centerPoint3DY="532.25">
+                  <matrix>
+                    <Matrix tx="718.55" ty="309.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("温泉关口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1018.5" centerPoint3DY="361.65">
+                  <matrix>
+                    <Matrix tx="767.5" ty="138.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("交战热点");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3347" centerPoint3DX="156.55" centerPoint3DY="289">
+                  <matrix>
+                    <Matrix tx="107" ty="247"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("亡灵沙漠");
+   }
+}
+onClipEvent(load){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3350" centerPoint3DX="618.25" centerPoint3DY="311.55">
+                  <matrix>
+                    <Matrix tx="569.1" ty="269.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("异界战场");
+   }
+}
+onClipEvent(load){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="512.25" centerPoint3DY="555.6">
+                  <matrix>
+                    <Matrix tx="261.25" ty="332.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("训练场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="679.8" centerPoint3DY="548.6">
+                  <matrix>
+                    <Matrix tx="428.8" ty="325.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("试验场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="433.7" centerPoint3DY="426.8">
+                  <matrix>
+                    <Matrix tx="182.7" ty="203.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("被摧毁的武器仓库");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="813.85" centerPoint3DY="488.85">
+                  <matrix>
+                    <Matrix tx="562.85" ty="265.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("防御地带");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="952.75" centerPoint3DY="485.8">
+                  <matrix>
+                    <Matrix tx="701.75" ty="262.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("被炸毁的防御地带");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1112.35" centerPoint3DY="488.85">
+                  <matrix>
+                    <Matrix tx="861.35" ty="265.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("武器仓库");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="621.8" centerPoint3DY="408.85">
+                  <matrix>
+                    <Matrix tx="370.8" ty="185.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("尸母巢穴");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="755.8" centerPoint3DY="426.8">
+                  <matrix>
+                    <Matrix tx="504.8" ty="203.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("解救A兵团士兵");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="890.3" centerPoint3DY="408.85">
+                  <matrix>
+                    <Matrix tx="639.3" ty="185.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("僵尸卫队");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1038.8" centerPoint3DY="408.85">
+                  <matrix>
+                    <Matrix tx="787.8" ty="185.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("研究院");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="683.85" centerPoint3DY="307.8">
+                  <matrix>
+                    <Matrix tx="432.85" ty="84.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("虫洞");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="875.8" centerPoint3DY="297.8">
+                  <matrix>
+                    <Matrix tx="624.8" ty="74.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("被清扫的虫洞");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="805.3" centerPoint3DY="350.35">
+                  <matrix>
+                    <Matrix tx="554.3" ty="127.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("初心者");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="983.85" centerPoint3DY="326.8">
+                  <matrix>
+                    <Matrix tx="732.85" ty="103.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("指挥部外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1102.3" centerPoint3DY="350.85">
+                  <matrix>
+                    <Matrix tx="851.3" ty="127.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("指挥部大厅");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="502.75" centerPoint3DY="302.7">
+                  <matrix>
+                    <Matrix tx="251.75" ty="79.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("决战之地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="359.5" centerPoint3DY="135.55">
+                  <matrix>
+                    <Matrix tx="313.7" ty="124.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("诺亚前线基地深处第二层");
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("进入第二层");
+   this.gotoAndStop(1);
+}
+on(rollOver){
+   _root.注释(150,显示文字);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="439.3" centerPoint3DY="406.7">
+                  <matrix>
+                    <Matrix tx="188.3" ty="183.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的被摧毁的武器仓库");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="805.85" centerPoint3DY="406.7">
+                  <matrix>
+                    <Matrix tx="554.85" ty="183.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的防御地带");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1113.9" centerPoint3DY="436.65">
+                  <matrix>
+                    <Matrix tx="862.9" ty="213.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的武器仓库");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1037.35" centerPoint3DY="366.65">
+                  <matrix>
+                    <Matrix tx="786.35" ty="143.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的研究院");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1101.85" centerPoint3DY="308.65">
+                  <matrix>
+                    <Matrix tx="850.85" ty="85.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的指挥部大厅");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="505.25" centerPoint3DY="285.55">
+                  <matrix>
+                    <Matrix tx="254.25" ty="62.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的指挥部大厅");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="462.95" centerPoint3DY="561.9">
+                  <matrix>
+                    <Matrix tx="211.95" ty="338.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("雪地平原");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="649" centerPoint3DY="585.9">
+                  <matrix>
+                    <Matrix tx="398" ty="362.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("雪原坡地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="790" centerPoint3DY="585.9">
+                  <matrix>
+                    <Matrix tx="539" ty="362.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("雪原防御带");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="948.5" centerPoint3DY="566.9">
+                  <matrix>
+                    <Matrix tx="697.5" ty="343.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("雪原深处");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="524" centerPoint3DY="484.5">
+                  <matrix>
+                    <Matrix tx="273" ty="261.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("雪原基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="680" centerPoint3DY="472.5">
+                  <matrix>
+                    <Matrix tx="429" ty="249.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("冰雪之心");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="851.1" centerPoint3DY="467.5">
+                  <matrix>
+                    <Matrix tx="600.1" ty="244.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚雪山");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1038.05" centerPoint3DY="475.5">
+                  <matrix>
+                    <Matrix tx="787.05" ty="252.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚雪山山脚");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="481" centerPoint3DY="394.95">
+                  <matrix>
+                    <Matrix tx="230" ty="171.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚雪山部队");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="642" centerPoint3DY="356.55">
+                  <matrix>
+                    <Matrix tx="391" ty="133.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚雪山山脊");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="759.05" centerPoint3DY="332.55">
+                  <matrix>
+                    <Matrix tx="508.05" ty="109.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚精英部队");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="545.35" centerPoint3DY="146.55">
+                  <matrix>
+                    <Matrix tx="499.55" ty="135.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("雪山第二层");
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("进入第二层");
+   this.gotoAndStop(1);
+}
+on(rollOver){
+   _root.注释(150,显示文字);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="540.1" centerPoint3DY="289.5">
+                  <matrix>
+                    <Matrix tx="289.1" ty="66.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("诺亚雪山山顶");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3362" centerPoint3DX="353.45" centerPoint3DY="149.05">
+                  <matrix>
+                    <Matrix tx="293.05" ty="130.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("雪山内部");
+   }
+}
+onClipEvent(load){
+   关卡开放条件 = 284;
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="604.5" centerPoint3DY="552.95">
+                  <matrix>
+                    <Matrix tx="353.5" ty="329.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的雪地平原");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="899.5" centerPoint3DY="546.1">
+                  <matrix>
+                    <Matrix tx="648.5" ty="323"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的雪地平原");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1086.5" centerPoint3DY="473.55">
+                  <matrix>
+                    <Matrix tx="835.5" ty="250.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的诺亚雪山山脚");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="870.5" centerPoint3DY="341.6">
+                  <matrix>
+                    <Matrix tx="619.5" ty="118.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的诺亚精英部队");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="618.55" centerPoint3DY="256.55">
+                  <matrix>
+                    <Matrix tx="367.55" ty="33.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的诺亚雪山山顶");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="92" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="579.6" centerPoint3DY="107.9">
+                  <matrix>
+                    <Matrix tx="533.8" ty="96.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("雪山内部第二层");
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("进入第二层");
+   关卡开放条件 = 517;
+   this.gotoAndStop(1);
+}
+on(rollOver){
+   _root.注释(150,显示文字);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="629.05" centerPoint3DY="258.9">
+                  <matrix>
+                    <Matrix tx="378.05" ty="35.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("雪山入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="819" centerPoint3DY="290">
+                  <matrix>
+                    <Matrix tx="568" ty="66.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("隧道入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="943" centerPoint3DY="371">
+                  <matrix>
+                    <Matrix tx="692" ty="147.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("熔岩隧道");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1002" centerPoint3DY="439.95">
+                  <matrix>
+                    <Matrix tx="751" ty="216.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("熔岩营地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="743" centerPoint3DY="391.6">
+                  <matrix>
+                    <Matrix tx="492" ty="168.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("秘密通道");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="634" centerPoint3DY="557.55">
+                  <matrix>
+                    <Matrix tx="383" ty="334.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("熔岩广场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="629.05" centerPoint3DY="394.6">
+                  <matrix>
+                    <Matrix tx="378.05" ty="171.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("熔岩秘洞");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="407.1" centerPoint3DY="406.95">
+                  <matrix>
+                    <Matrix tx="156.1" ty="183.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("熔岩基地外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="444" centerPoint3DY="552.75">
+                  <matrix>
+                    <Matrix tx="193" ty="329.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("熔岩基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1121" centerPoint3DY="546.55">
+                  <matrix>
+                    <Matrix tx="870" ty="323.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("集结点A");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="992" centerPoint3DY="543.75">
+                  <matrix>
+                    <Matrix tx="741" ty="320.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("集结点B");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="861" centerPoint3DY="552.75">
+                  <matrix>
+                    <Matrix tx="610" ty="329.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("集结点C");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="101" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="635" centerPoint3DY="241.95">
+                  <matrix>
+                    <Matrix tx="384" ty="18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的雪山入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1008.05" centerPoint3DY="359.95">
+                  <matrix>
+                    <Matrix tx="757.05" ty="136.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的熔岩隧道");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="827.05" centerPoint3DY="346.55">
+                  <matrix>
+                    <Matrix tx="576.05" ty="123.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的秘密通道");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="727" centerPoint3DY="529.55">
+                  <matrix>
+                    <Matrix tx="476" ty="306.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的熔岩广场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="470.05" centerPoint3DY="497.55">
+                  <matrix>
+                    <Matrix tx="219.05" ty="274.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("终结者占领的熔岩基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="445.25" centerPoint3DY="274.25">
+                  <matrix>
+                    <Matrix tx="194.25" ty="51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("山洞入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="585.1" centerPoint3DY="245.25">
+                  <matrix>
+                    <Matrix tx="334.1" ty="22.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("哨兵据点");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="795.8" centerPoint3DY="244.25">
+                  <matrix>
+                    <Matrix tx="544.8" ty="21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("一级防线");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="491.6" centerPoint3DY="347">
+                  <matrix>
+                    <Matrix tx="240.6" ty="123.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("二级防线");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="648.45" centerPoint3DY="332">
+                  <matrix>
+                    <Matrix tx="397.45" ty="108.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("三级防线");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="818.65" centerPoint3DY="346">
+                  <matrix>
+                    <Matrix tx="567.65" ty="122.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("军队据点");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="528.7" centerPoint3DY="440.6">
+                  <matrix>
+                    <Matrix tx="277.7" ty="217.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("补给仓库");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="752.8" centerPoint3DY="423">
+                  <matrix>
+                    <Matrix tx="501.8" ty="199.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("指挥营地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="628.6" centerPoint3DY="350.2">
+                  <matrix>
+                    <Matrix tx="377.6" ty="127.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="769.6" centerPoint3DY="352.2">
+                  <matrix>
+                    <Matrix tx="518.6" ty="129.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船推进舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1043.6" centerPoint3DY="343.2">
+                  <matrix>
+                    <Matrix tx="792.6" ty="120.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船储备舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="902.6" centerPoint3DY="350.2">
+                  <matrix>
+                    <Matrix tx="651.6" ty="127.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船燃料舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="611.6" centerPoint3DY="444.2">
+                  <matrix>
+                    <Matrix tx="360.6" ty="221.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船繁殖舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="752.6" centerPoint3DY="446.2">
+                  <matrix>
+                    <Matrix tx="501.6" ty="223.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船武器舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1026.6" centerPoint3DY="437.2">
+                  <matrix>
+                    <Matrix tx="775.6" ty="214.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船控制舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="885.6" centerPoint3DY="444.2">
+                  <matrix>
+                    <Matrix tx="634.6" ty="221.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船休息舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="716.05" centerPoint3DY="257.2">
+                  <matrix>
+                    <Matrix tx="465.05" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("绿洲外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="837.05" centerPoint3DY="257.2">
+                  <matrix>
+                    <Matrix tx="586.05" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("绿洲深处");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="961.05" centerPoint3DY="257.2">
+                  <matrix>
+                    <Matrix tx="710.05" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("铁血营地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1065.05" centerPoint3DY="257.2">
+                  <matrix>
+                    <Matrix tx="814.05" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("飞船监视点");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="594.05" centerPoint3DY="257.2">
+                  <matrix>
+                    <Matrix tx="343.05" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("盆地入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="127" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="523.55" centerPoint3DY="423.4">
+                  <matrix>
+                    <Matrix tx="272.55" ty="200.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船燃料舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="702.55" centerPoint3DY="425.4">
+                  <matrix>
+                    <Matrix tx="451.55" ty="202.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船休息舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="859.55" centerPoint3DY="423.4">
+                  <matrix>
+                    <Matrix tx="608.55" ty="200.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船储备舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="506.55" centerPoint3DY="517.4">
+                  <matrix>
+                    <Matrix tx="255.55" ty="294.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船控制舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="649" centerPoint3DY="330.4">
+                  <matrix>
+                    <Matrix tx="398" ty="107.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船外围");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="794" centerPoint3DY="330.4">
+                  <matrix>
+                    <Matrix tx="543" ty="107.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="918" centerPoint3DY="330.4">
+                  <matrix>
+                    <Matrix tx="667" ty="107.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船推进舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="1022" centerPoint3DY="330.4">
+                  <matrix>
+                    <Matrix tx="771" ty="107.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("坠毁的飞船武器舱");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="489" centerPoint3DY="330.4">
+                  <matrix>
+                    <Matrix tx="238" ty="107.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("铁血临时营地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="135" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="411.5" centerPoint3DY="294.85">
+                  <matrix>
+                    <Matrix tx="160.5" ty="71.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("试炼场深处入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="603.45" centerPoint3DY="290.85">
+                  <matrix>
+                    <Matrix tx="352.45" ty="67.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("电子战接入设备间");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 121" color="#A7D4B7">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景-废城-topaz-enhance-1024w.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景-堕落城-topaz-enhance-1024w.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景-黑铁会总部-topaz-enhance-1024w.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance selected="true" libraryItemName="背景-禁区-topaz-enhance-1024w.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="12" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景-荒漠-topaz-enhance-1024w.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="13" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/bitmap3342.jpg" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="25.3817749023438" d="25.3817749023438" tx="-6.5" ty="-105.55"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="20" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景-诺亚深处-topaz-enhance-1024w.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="13" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景-雪山-topaz-enhance-1024w.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="92" duration="17" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/bitmap3366.jpg" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="20.4796752929688" d="20.4796752929688"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!20480 12288|0 12288!0 12288|0 0!0 0|20480 0!20480 0|20480 12288"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="597.1" ty="79.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3371" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="597.1" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="127" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3377" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.2548828125" d="1.25482177734375" tx="511.35" ty="286"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="135" duration="8" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景-试炼场深处.png">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

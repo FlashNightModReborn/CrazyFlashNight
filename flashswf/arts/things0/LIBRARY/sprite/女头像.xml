@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/女头像" itemID="668be6d5-0000063e" linkageExportForAS="true" linkageIdentifier="女头像" lastModified="1720444629">
+  <timeline>
+    <DOMTimeline name="女头像">
+      <layers>
+        <DOMLayer name="Layer 1" color="#EECC63" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 871" name="头" centerPoint3DX="53.05" centerPoint3DY="64.25">
+                  <matrix>
+                    <Matrix a="0.544723510742188" b="0.145950317382813" c="-0.14404296875" d="0.537582397460938" tx="21.55" ty="23"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent.脸型 != undefined)
+   {
+      this.基本款._visible = 0;
+      this.attachMovie(_parent._parent._parent.脸型,"装扮",this.getNextHighestDepth());
+   }
+   this.attachMovie(_parent._parent._parent.发型,"装扮2",this.getNextHighestDepth());
+   this.attachMovie(_parent._parent._parent.面具,"装扮3",this.getNextHighestDepth());
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

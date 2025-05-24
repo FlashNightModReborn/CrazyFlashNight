@@ -1,0 +1,533 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="理发店界面" itemID="67876ebc-00001c69" linkageExportForAS="true" linkageIdentifier="理发店界面" lastModified="1740163196" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="理发店界面" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#DBFB99" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (this._x == 0 && this._y == 0)
+{
+	this._x = 100;
+	this._y = 80;
+}
+function 刷新信息()
+{
+	发型库编号 = 选择项.hairCode;
+	理发价格 = price.text = _root.发型价格[选择项.hairCode];
+}
+function 虚拟币支付(amount, 商品编号)
+{
+	if (_root.虚拟币 >= amount)
+	{
+		_root.理发店界面._visible = 0;
+		_root.发布消息(_root.获得翻译("支付成功！"));
+		_root.播放音效("收银机.mp3");
+		_root.改变发型(_root.gameworld[_root.控制目标],发型库编号);
+		this.gotoAndStop(1);
+		this._visible = false;
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("K点不足！"));
+	}
+}
+已选择发型 = false;
+loop = 0;
+while (loop < _root.发型库.length)
+{
+	this.hairContent.attachMovie("发型TAB","tab" + loop.toString(),this.hairContent.getNextHighestDepth(),{hairCode:loop});
+	this.hairContent["tab" + loop.toString()]._y = loop * 20;
+	loop++;
+}
+hairContent.setMask(mask);
+选择项 = undefined;
+loop = 0;
+while (loop < _root.发型库.length)
+{
+	if (_root.发型库[loop] == _root.发型)
+	{
+		选择项 = hairContent["tab" + loop.toString()];
+		选择项.bg._alpha = 100;
+		刷新信息();
+		break;
+	}
+	loop++;
+}
+stop();
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[mytext.text = _root.获得翻译("价格是") + 理发价格 + "，" + _root.获得翻译("确认支付吗？");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="滚动按钮" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/理发店滚动条" name="发型滚动按钮" centerPoint3DX="230.7" centerPoint3DY="116.85">
+                  <matrix>
+                    <Matrix a="0.660415649414063" d="0.130645751953125" tx="217.4" ty="21.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="187.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._x = _parent.hairup._x;
+}
+onClipEvent (enterFrame) {
+	if (开始刷新 == true)
+	{
+		var 发型栏移动范围 = _parent.hairContent._height - _parent.mask._height;
+		var 滑块移动范围 = _parent.hairdown._y - _parent.hairup._y - this._height;
+		var lengthPerItem = 滑块移动范围 / 发型栏移动范围;
+		var 发型栏起始y = 8;
+		_parent.hairContent._y = 发型栏起始y - int((this._y - _parent.hairup._y) / lengthPerItem);
+	}
+}
+/*原代码，这段可实现拖拽按钮，但无法实现发型标题跟随按钮滚动。
+onClipEvent(load){
+   this._x = _parent.hairup._x;
+   var count = _root.发型库.length;
+   var length = _parent.hairdown._y - _parent.hairup._y;
+   var lengthPerItem = int(length / count);
+}
+onClipEvent(enterFrame){
+   if(开始刷新 == true)
+   {
+      var count = _root.发型库.length;
+      var length = _parent.hairdown._y - _parent.hairup._y - this._height;
+      var lengthPerItem = length / count;
+      //_root.理发店界面.列表.my_txt.scroll = int((this._y - _parent.hairup._y) / lengthPerItem);
+      _root.理发店界面.hairContent.scroll = int((this._y - _parent.hairup._y) / lengthPerItem);
+   }
+}
+*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MASK" color="#52D089" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2746" name="mask" centerPoint3DX="64" centerPoint3DY="135.55">
+                  <matrix>
+                    <Matrix a="1.79226684570313" d="0.777145385742188" tx="5.3" ty="7.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发型名字" color="#D79138" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2743" name="hairContent" centerPoint3DX="113.25" centerPoint3DY="18">
+                  <matrix>
+                    <Matrix tx="17" ty="8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上下按钮" color="#8333D9" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2735" name="hairup" symbolType="button">
+                  <matrix>
+                    <Matrix tx="208.25" ty="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   //_parent.hairContent.moveDown();
+   hairContent.moveDown();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color brightness="0.4"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2737" name="hairdown" symbolType="button">
+                  <matrix>
+                    <Matrix tx="208.25" ty="191.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   //_parent.hairContent.moveUp();
+   hairContent.moveUp();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color brightness="0.4"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="折叠" color="#FF4FFF" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="取消" color="#B4AB36" parentLayerIndex="5" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="169.05" centerPoint3DY="290.9">
+                  <matrix>
+                    <Matrix tx="123.25" ty="279.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent._visible = 0;
+   _root.恢复发型(_root.gameworld[_root.控制目标]);
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("取消");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" centerPoint3DX="172.5" centerPoint3DY="127.45">
+                  <matrix>
+                    <Matrix tx="133.15" ty="114.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   this.gotoAndStop(1);
+   _parent.gotoAndStop(1);
+   _root.恢复发型(_root.gameworld[_root.控制目标]);
+}
+on(press){
+   this.gotoAndStop(3);
+}
+on(rollOver){
+   this.gotoAndStop(2);
+}
+on(rollOut){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="确认" color="#77BAA0" parentLayerIndex="5" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="61.05" centerPoint3DY="290.9">
+                  <matrix>
+                    <Matrix tx="15.25" ty="279.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   if(_parent.选择项.hairCode != undefined and _parent.已选择发型 == true)
+   {
+      _parent.gotoAndStop(2);
+   }
+   else
+   {
+      _root.发布消息(_root.获得翻译("请选择你的发型"));
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("下一步");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/确认按钮" centerPoint3DX="55.8" centerPoint3DY="127.95">
+                  <matrix>
+                    <Matrix tx="16.8" ty="115.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   this.gotoAndStop(1);
+   _parent.虚拟币支付(Number(理发价格),"O20111009000000001");
+}
+on(press){
+   this.gotoAndStop(3);
+}
+on(rollOver){
+   this.gotoAndStop(2);
+}
+on(rollOut){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="信息" color="#CB1ACE" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" fontRenderingMode="device" width="116.15" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="10.85" ty="215.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>K点价格：</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="price" selected="true" fontRenderingMode="device" width="68.05" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="136.1" ty="215.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText selected="true" fontRenderingMode="device" width="116.15" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="10.85" ty="245.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>我的K点</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText selected="true" fontRenderingMode="device" width="68.05" height="15.85" isSelectable="false" variableName="_root.虚拟币">
+                  <matrix>
+                    <Matrix tx="134.1" ty="245.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>-1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" selected="true" fontRenderingMode="device" width="188.45" height="78.25" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="18.8" ty="20"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="关闭按钮" color="#92E99B" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2732" symbolType="button">
+                  <matrix>
+                    <Matrix tx="218.35" ty="-14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="界面标题" color="#CBE220" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="164.75" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31.25" ty="-23"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>理发店</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="拖拽按钮" color="#68FFA2" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="13.4" ty="-14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景边框" color="#CAC8A5" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#666666"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!4070 4189S4|110 4189!110 4189|110 90!110 90|4070 90!4070 90|4070 4189"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#FD7583" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2551" centerPoint3DX="230" centerPoint3DY="295.9">
+                  <matrix>
+                    <Matrix tx="115" ty="123.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

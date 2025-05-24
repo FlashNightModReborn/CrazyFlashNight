@@ -1,0 +1,111 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/大大火花/大大火花" itemID="65539c44-00002d43" linkageExportForAS="true" linkageIdentifier="大大火花" lastModified="1699978382">
+  <timeline>
+    <DOMTimeline name="大大火花" currentFrame="7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#962ECA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5016" blendMode="add" centerPoint3DX="20.3" centerPoint3DY="-9.35">
+                  <matrix>
+                    <Matrix a="-1.40484619140625" d="1.40484619140625" tx="12.6" ty="-19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF3300" strength="1.2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5018" blendMode="add" centerPoint3DX="111.8" centerPoint3DY="-19.5">
+                  <matrix>
+                    <Matrix a="-1.40484619140625" d="1.40484619140625" tx="63.85" ty="-68.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF3300" strength="1.2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5020" blendMode="add" centerPoint3DX="153.95" centerPoint3DY="-30.9">
+                  <matrix>
+                    <Matrix a="-1.40484619140625" d="1.40484619140625" tx="87.35" ty="-89.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FF3300" strength="1.2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5022" blendMode="add" centerPoint3DX="192.4" centerPoint3DY="-23.15">
+                  <matrix>
+                    <Matrix a="-1.40484619140625" d="1.40484619140625" tx="112.65" ty="-92.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FF3300" strength="1.2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5024" blendMode="add" centerPoint3DX="226.85" centerPoint3DY="-28.15">
+                  <matrix>
+                    <Matrix a="-1.40484619140625" d="1.40484619140625" tx="135.3" ty="-100.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FF3300" strength="1.2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5026" selected="true" blendMode="add" centerPoint3DX="187.65" centerPoint3DY="-30">
+                  <matrix>
+                    <Matrix a="-1.40484619140625" d="1.40484619140625" tx="110.85" ty="-103.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF3300" strength="1.2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,813 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdfydd_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Machines Collide</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种72</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种76</Type>
+                        <Interval>500</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>这么多蛆虫···看来研究院就在前方。</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdfydd_3_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1200</x>
+                <y>350</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>5</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>810</x>
+                <y>400</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>880</x>
+                <y>560</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>990</x>
+                <y>460</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="4">
+                <x>580</x>
+                <y>550</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="5">
+                <x>1080</x>
+                <y>490</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="6">
+                <x>1500</x>
+                <y>500</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种76</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种74</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种70</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种70</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>6</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>这群家伙居然从空地出现，诺亚的科技已经到这种地步了吗？</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdfqck_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>340</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>5</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>210</x>
+                <y>500</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>440</x>
+                <y>560</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>670</x>
+                <y>460</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="4">
+                <x>880</x>
+                <y>550</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="5">
+                <x>1080</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="6">
+                <x>1250</x>
+                <y>500</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>青蛙？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>800</x>
+                        <y>400</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种373</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>6</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种372</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种70</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种74</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>诺亚的改造真是奇怪···</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdfqck_3_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>500</x>
+                <y>400</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>500</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>900</x>
+                <y>400</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>900</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="4">
+                <x>1300</x>
+                <y>400</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="5">
+                <x>1300</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种70</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种373</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种372</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>这个传送好像越来越有规律了···看起来他们也搞清楚该如何传送了。</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdyjy_3_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>340</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1400</x>
+                <y>590</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>900</x>
+                        <y>370</y>
+                        <Parameters>
+                            <身高>290</身高>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>500</x>
+                        <y>500</y>
+                        <Parameters>
+                            <身高>150</身高>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种372</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种77</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdbgc_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>580</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>又是这种家伙，别跑！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>700</x>
+                        <y>400</y>
+                        <Parameters>
+                            <方向>左</方向>
+                            <登场动画>a1</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种77</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>给它跑了，得赶快追上···</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdbgc_3_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>340</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>700</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种77</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种70</Type>
+                        <Interval>900</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种74</Type>
+                        <Interval>900</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="7">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdjzzd_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>800</x>
+                        <y>410</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种347</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="8">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdyjy_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1000</x>
+                <y>350</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1500</x>
+                <y>580</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <x>800</x>
+                        <y>410</y>
+                        <Parameters>死亡动画:a0</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种347</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种77</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>又抓住一个。</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/杂项/阴影" itemID="66631721-00001174" lastModified="1717242795">
+  <timeline>
+    <DOMTimeline name="阴影">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.14971923828125" d="0.060943603515625" tx="121.7" ty="49.65"/>
+                        </matrix>
+                        <GradientEntry alpha="0.650980392156863" ratio="0.266666666666667"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4157 1696S2[3440 1986 2434 1986!2434 1986[1423 1986 712 1696!712 1696[0 1406 0 993!0 993[0 580 712 290!712 290[1423 0 2434 0!2434 0[3440 0 4157 290!4157 290[4869 580 4869 993!4869 993[4869 1406 4157 1696"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

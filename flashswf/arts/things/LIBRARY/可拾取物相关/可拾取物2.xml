@@ -1,0 +1,398 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物相关/可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1743063088" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="可拾取物2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;5&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B8E7BC" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="静止" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" name="飞出" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="11" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="8" name="自动消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#8287DA" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (物品名 == "金币")
+{
+	物品名 = "金钱";
+}
+if (物品名 == "K点")
+{
+	if (数量 < 10)
+	{
+		数量 += 10;
+	}
+	if (!_root.isEasyMode())
+	{
+		数量上限 = 50 + _root.等级 * _root.等级 * 10;
+		if (数量 > 数量上限)
+		{
+			数量 = 数量上限 + random((数量 - 数量上限) / 100);
+		}
+	}
+	if (_root.isChallengeMode())
+	{
+		数量 = Math.floor(数量 * 0.5);
+	}
+}
+else if (物品名 == "金钱")
+{
+	if (数量 < 10)
+	{
+		数量 += 10;
+	}
+	if (!_root.isEasyMode())
+	{
+		数量上限 = 50 + _root.等级 * 3000;
+		if (数量 > 数量上限)
+		{
+			数量 = 数量上限 + random((数量 - 数量上限) / 5);
+		}
+	}
+	if (_root.isChallengeMode())
+	{
+		数量 = Math.floor(数量 * 0.5);
+	}
+}
+
+mytext = 物品名 + " X" + 数量;
+if (物品名 !== "金钱" && 物品名 !== "K点")
+{
+	var type = _root.getItemData(物品名).type;
+	if (type == "武器" || type == "防具")
+	{
+		if (数量 > 1)
+		{
+			mytext = 物品名 + " +" + 数量;
+		}
+		else
+		{
+			mytext = 物品名;
+		}
+	}
+}
+
+
+Z轴坐标 = this._y;
+if(在飞){
+	gotoAndStop("飞出");
+}else{
+	gotoAndStop("静止");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+在飞 = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+在飞 = true;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+this.removeMovieClip();
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#338BF5" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 292" centerPoint3DX="7" centerPoint3DY="-42">
+                  <matrix>
+                    <Matrix tx="2" ty="-47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#2AE1FD" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="可拾取物相关/可拾取物动态文字" centerPoint3DX="52" centerPoint3DY="-25.9">
+                  <matrix>
+                    <Matrix ty="-35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#D47DF8" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-2.05" centerPoint3DY="2.2">
+                  <matrix>
+                    <Matrix a="1.20001220703125" d="0.960556030273438" tx="-15" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (mouseDown) {
+	if (this.hitTest(_root.鼠标))
+	{
+		_root.pickupItemManager.pickup(_parent, null, false);
+		//_root.鼠标.gotoAndStop("手型抓取");
+	}
+}
+/*onClipEvent (mouseUp) {
+	_root.鼠标.gotoAndStop("手型普通");
+}*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#AEAAE8" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" centerPoint3DX="12" centerPoint3DY="11">
+                  <matrix>
+                    <Matrix ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.游戏世界 = _root.gameworld;
+	this.attachMovie("图标-" + _parent.物品名,"图标",this.getNextHighestDepth());
+	this.图标.gotoAndStop(2);
+	if (this.图标._x != undefined)
+	{
+		this.基本款._visible = 0;
+	}
+	else
+	{
+		this.基本款._visible = 1;
+	}
+	xmov = !isNaN(_parent.xmov) ? _parent.xmov : random(11) - 5;
+	//旋转速度 = 90 - random(180); //未使用
+	起始Y = _parent._y;
+	垂直速度 = !isNaN(_parent.垂直速度) ? _parent.垂直速度 : -(random(5)) - 10;
+	this.onEnterFrame = function()
+	{
+		if (_parent.在飞)
+		{
+			if (_parent._y - 起始Y > 10)
+			{
+				if (Math.floor(垂直速度) > 1)
+				{
+					垂直速度 = (-垂直速度) / 2;
+				}
+				else
+				{
+					delete this.onEnterFrame;
+					_parent.gotoAndStop("静止");
+				}
+			}
+			var temp_x = _parent._x + xmov;
+			var _loc4_ = {x:temp_x, y:起始Y};
+			游戏世界.localToGlobal(_loc4_);
+			var xx = _loc4_.x;
+			var yy = _loc4_.y;
+			if (xmov > 0 && temp_x < _root.Xmax && !游戏世界.地图.hitTest(xx, yy, true))
+			{
+				_parent._x = temp_x;
+			}
+			else if (xmov < 0 && temp_x > _root.Xmin && !游戏世界.地图.hitTest(xx, yy, true))
+			{
+				_parent._x = temp_x;
+			}
+			else
+			{
+				xmov = -Math.floor(xmov * 0.7);//撞墙弹回
+			}
+			if (_root.重力加速度 > 3)
+			{
+				垂直速度 += 3;
+			}
+			else
+			{
+				垂直速度 += _root.重力加速度;
+			}
+			_parent._y += 垂直速度;
+		}
+		else
+		{
+			delete this.onEnterFrame;
+			_parent.gotoAndStop("静止");
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" centerPoint3DX="12" centerPoint3DY="11">
+                  <matrix>
+                    <Matrix ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.attachMovie("图标-" + _parent.物品名,"图标",this.getNextHighestDepth());
+	this.图标.gotoAndStop(2);
+	if (this.图标._x != undefined)
+	{
+		this.基本款._visible = 0;
+	}
+	else
+	{
+		this.基本款._visible = 1;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" centerPoint3DX="12" centerPoint3DY="-8">
+                  <matrix>
+                    <Matrix ty="-20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="焦点高亮框" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="互动提示/互动提示-高亮" name="焦点高亮框" centerPoint3DX="-1.4" centerPoint3DY="5.3">
+                  <matrix>
+                    <Matrix a="1.03326416015625" c="-0.462936401367188" d="0.639389038085938" tx="-1.4" ty="5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#D0CA06" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 58" centerPoint3DX="86.65" centerPoint3DY="92.45">
+                  <matrix>
+                    <Matrix a="0.30712890625" d="0.125030517578125" ty="5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#AA7B70" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

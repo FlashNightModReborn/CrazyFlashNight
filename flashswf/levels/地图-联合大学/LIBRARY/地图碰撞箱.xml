@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图碰撞箱" itemID="67d7e377-000019cf" lastModified="1742201724">
+  <timeline>
+    <DOMTimeline name="地图碰撞箱">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.19999694824219" d="1.19999694824219" tx="7" ty="469.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="947.15" y="259.7"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#333333" alpha="0.298039215686275"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor color="#CCCCCC" alpha="0.298039215686275"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!13813 949|13335 410!13335 410|5953 410!5953 410|5707 740!5707 740|4526 740!4526 740|4526 246!4526 246|3055 246!3055 246|3055 410!3055 410|2814 487!2814 487|1643 487!1643 487|1205 323!1205 323|1 323!1 323|1 -4317!1 -4317|37887 -4317!37887
+ -4317|37887 1118!37887 1118|36425 1118!36425 1118|35956 765!35956 765|35956 510!35956 510|35738 510!35738 510|35175 144!35175 144|35175 0!35175 0|25031 0!25031 0|25031 538!25031 538|16770 538!16770 538|15944 1185!15944 1185|15354.5 1185"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!15354.5 1185|15129 949!15129 949|13813 949"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

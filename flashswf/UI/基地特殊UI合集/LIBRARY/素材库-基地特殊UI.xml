@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-基地特殊UI" itemID="67876f87-00001cfc" linkageExportForAS="true" linkageIdentifier="素材库-基地特殊UI" lastModified="1736953166" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="素材库-基地特殊UI">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="理发店界面" centerPoint3DX="-204.7" centerPoint3DY="72.25">
+                  <matrix>
+                    <Matrix tx="-321.9" ty="-71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.65" y="142.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="挂机功能菜单" centerPoint3DX="217.3" centerPoint3DY="-5">
+                  <matrix>
+                    <Matrix tx="85.05" ty="63.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="131.05" y="-70.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="整容整形界面" centerPoint3DX="634.45" centerPoint3DY="80">
+                  <matrix>
+                    <Matrix tx="516.5" ty="-118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="117.95" y="197.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,25 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="元件 12" itemID="674adab0-0000273d" lastModified="1732958896">
+  <timeline>
+    <DOMTimeline name="元件 12">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地板" selected="true" symbolType="graphic" centerPoint3DX="723.9" centerPoint3DY="628.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.7255859375" c="-0.219772338867188" d="0.638519287109375" tx="254.6" ty="387.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.8" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMBitmapInstance selected="true" libraryItemName="位图 13"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

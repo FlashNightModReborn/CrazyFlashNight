@@ -1,0 +1,702 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>军阀前线基地通关证明</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk17_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Schwarzflammen</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1400</x>
+                <y>450</y>
+                <BiasX>250</BiasX>
+                <BiasY>100</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量:3</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量:7</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量:50</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量:80</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种56</Type>
+                        <Interval>500</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种54</Type>
+                        <Interval>500</Interval>
+                        <Quantity>8</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种267</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种54</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种57</Type>
+                        <Interval>500</Interval>
+                        <Quantity>8</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种266</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种57</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种265</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk21_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1400</x>
+                <y>450</y>
+                <BiasX>250</BiasX>
+                <BiasY>100</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:7,数量_max:8</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:100,数量_max:150</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种264</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种56</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种264</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk17_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1400</x>
+                <y>450</y>
+                <BiasX>250</BiasX>
+                <BiasY>100</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:7,数量_max:8</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:100,数量_max:150</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种267</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种267</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk18_1_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1450</x>
+                <y>550</y>
+                <BiasX>300</BiasX>
+                <BiasY>200</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:11,数量_max:12</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:50,数量_max:100</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种266</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种57</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种266</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk18_2_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1450</x>
+                <y>600</y>
+                <BiasX>300</BiasX>
+                <BiasY>150</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:15,数量_max:16</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:90,数量_max:160</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种265</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种265</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种265</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk19_2_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1400</x>
+                <y>450</y>
+                <BiasX>250</BiasX>
+                <BiasY>100</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:4,数量_max:5</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:12,数量_max:13</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量:20</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:80,数量_max:90</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:80,数量_max:110</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量:120</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种264</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种265</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="8">
+                        <Type>兵种266</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="9">
+                        <Type>兵种267</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="10">
+                        <Type>兵种264</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="11">
+                        <Type>兵种265</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="12">
+                        <Type>兵种266</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="13">
+                        <Type>兵种267</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk18_3_BG.swf</Background>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>600</y>
+                <BiasX>400</BiasX>
+                <BiasY>200</BiasY>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:12,数量_max:13</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种289</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:64,数量_max:69</Parameters>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种289</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:120,数量_max:200</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种289</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>内部物:强化石,数量_min:200,数量_max:210</Parameters>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种264</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种265</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种266</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种267</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="8">
+                        <Type>兵种366</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <DifficultyMax>简单</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="9">
+                        <Type>兵种58</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种365</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种371</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种366</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

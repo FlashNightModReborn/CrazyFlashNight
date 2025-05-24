@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="废弃NPC套装/女变装-the girl上装右下臂" itemID="682f6e44-00000b3c" lastModified="1747938884">
+  <timeline>
+    <DOMTimeline name="女变装-the girl上装右下臂">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D08FCA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#9E7458"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!188 -1011[353 -587 234 -64!234 -64|181 1002"/>
+                    <Edge fillStyle1="1" edges="!181 1002[1 1166 -178 1031"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!-178 1031[-322 -608 -206 -1018!-206 -1018|-209 -1018"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-209 -1018|-191 -1036"/>
+                    <Edge fillStyle1="1" edges="!-191 -1036|-125 -1104!-125 -1104[-38 -1192 188 -1011"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

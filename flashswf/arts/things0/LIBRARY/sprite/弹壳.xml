@@ -1,0 +1,77 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/弹壳" itemID="64d9ee41-00000a13" linkageExportForAS="true" linkageIdentifier="弹壳" lastModified="1693577774">
+  <timeline>
+    <DOMTimeline name="弹壳">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (isNaN(水平速度))
+{
+	水平速度 = random(5) - 2;
+}
+if (isNaN(垂直速度))
+{
+	垂直速度 = -8 - random(12);
+}
+旋转速度 = 10 - random(21);
+if (isNaN(Z轴坐标))
+{
+	Z轴坐标 = this._y + 100;
+}
+this.swapDepths(Z轴坐标);
+this.onEnterFrame = function()
+{
+	if (this._y - Z轴坐标 < -5)
+	{
+		//垂直速度 += _root.重力加速度;
+		垂直速度 += 4;
+		this._x += 水平速度;
+		this._y += 垂直速度;
+		this.mc._rotation += 旋转速度;
+	}
+	else
+	{
+		垂直速度 = -垂直速度 / 2 - random(5);
+		if (垂直速度 < -10)
+		{
+			水平速度 += random(7) - 3;
+			旋转速度 = 旋转速度 * 1.5 + random(51) - 25;
+			this._x += 水平速度;
+			this._y = Z轴坐标 - 6;
+			this.mc._rotation += 旋转速度;
+		}
+		else
+		{
+			delete this.onEnterFrame;
+			_root.add2map(this,2);
+			this.removeMovieClip();
+
+		}
+	}
+};]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/弹壳贴图" name="mc" centerPoint3DX="0.7">
+                  <matrix>
+                    <Matrix a="0.279998779296875" d="0.275360107421875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

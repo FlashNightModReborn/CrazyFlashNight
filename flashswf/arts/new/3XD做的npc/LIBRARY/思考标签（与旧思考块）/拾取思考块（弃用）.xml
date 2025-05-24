@@ -1,0 +1,689 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="思考标签（与旧思考块）/拾取思考块（弃用）" itemID="67e51b53-00000f3c" lastModified="1743067987">
+  <timeline>
+    <DOMTimeline name="拾取思考块（弃用）">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#7CFB1F" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="69" name="停止" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" name="跟随" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="83" duration="19" name="跟随暂停" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="15" name="随机" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" duration="15" name="左移" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="132" duration="11" name="右移" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="143" duration="21" name="攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="19" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="183" duration="209" name="随机移动" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="392" duration="18" name="不思考" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#F161D9" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 思考()
+{
+	if (_root.暂停 == false)
+	{
+		if (_root.控制目标 == _parent._name && _root.控制目标全自动 == false)
+		{
+			this.gotoAndPlay("不思考");
+		}
+		else
+		{
+			_parent.命令 = _root.命令;
+			if (_parent.攻击模式 == "空手")
+			{
+				_parent.x轴攻击范围 = 100;
+				_parent.y轴攻击范围 = 10;
+				_parent.x轴保持距离 = 100;
+			}
+			else if (_parent.攻击模式 == "兵器")
+			{
+				_parent.x轴攻击范围 = 200;
+				_parent.y轴攻击范围 = 10;
+				_parent.x轴保持距离 = 150;
+			}
+			else if (_parent.攻击模式 == "长枪" or _parent.攻击模式 == "手枪" or _parent.攻击模式 == "手枪2" or _parent.攻击模式 == "双枪")
+			{
+				_parent.x轴攻击范围 = 400;
+				_parent.y轴攻击范围 = 10;
+				_parent.x轴保持距离 = 200;
+			}
+			else if (_parent.攻击模式 == "手雷")
+			{
+				_parent.x轴攻击范围 = 300;
+				_parent.y轴攻击范围 = 10;
+				_parent.x轴保持距离 = 200;
+			}
+			寻找攻击目标();
+			if (_parent.是否为敌人 == false)
+			{
+				if (_root.集中攻击目标 == "无")
+				{
+					if (_parent.攻击目标 == "无")
+					{
+						//尝试进行拾取
+						if (_parent.拾取目标 && _parent.拾取目标 !== "无" && _root.物品栏.背包.getFirstVacancy() > -1)
+						{
+							gotoAndPlay("拾取");
+						}
+						else
+						{
+							gotoAndPlay(_parent.命令);
+						}
+					}
+					else
+					{
+						gotoAndStop("攻击");
+						play();
+					}
+				}
+				else
+				{
+					_parent.攻击目标 = _root.集中攻击目标;
+					gotoAndStop("攻击");
+					play();
+				}
+			}
+			else if (_parent.是否为敌人 == true)
+			{
+				if (_parent.攻击目标 == "无")
+				{
+					//尝试进行拾取
+					if (_parent.拾取目标 && _parent.拾取目标 !== "无")
+					{
+						gotoAndPlay("拾取");
+					}
+					else
+					{
+						gotoAndStop("跟随");
+						play();
+					}
+				}
+				else
+				{
+					gotoAndStop("攻击");
+					play();
+				}
+			}
+		}
+	}
+	else
+	{
+		gotoAndPlay(_parent.命令);
+	}
+}
+function 攻击(x轴攻击范围, y轴攻击范围, x轴保持距离)
+{
+	if (_root.暂停 == false)
+	{
+		if (Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) > y轴攻击范围 or Math.abs(_parent._x - _root.gameworld[_parent.攻击目标]._x) > x轴攻击范围)
+		{
+			if (random(_parent.停止机率) == 0)
+			{
+				gotoAndStop("停止");
+				play();
+			}
+			else if (random(_parent.随机移动机率) == 0)
+			{
+				gotoAndStop("随机移动");
+				play();
+			}
+			else
+			{
+				if (random(3) == 0)
+				{
+					_parent.状态改变(_parent.攻击模式 + "跑");
+				}
+				if (_parent._y > _root.gameworld[_parent.攻击目标].Z轴坐标)
+				{
+					_parent.上行 = 1;
+					_parent.下行 = 0;
+				}
+				else
+				{
+					_parent.上行 = 0;
+					_parent.下行 = 1;
+				}
+				if (_parent._x > _root.gameworld[_parent.攻击目标]._x + x轴保持距离)
+				{
+					_parent.左行 = 1;
+					_parent.右行 = 0;
+				}
+				else if (_parent._x < _root.gameworld[_parent.攻击目标]._x - x轴保持距离)
+				{
+					_parent.左行 = 0;
+					_parent.右行 = 1;
+				}
+			}
+		}
+		else
+		{
+			_parent.左行 = 0;
+			_parent.右行 = 0;
+			_parent.上行 = 0;
+			_parent.下行 = 0;
+			if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+			{
+				_parent.方向改变("左");
+			}
+			else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+			{
+				_parent.方向改变("右");
+			}
+			_parent.gotoAndStop(_parent.攻击模式 + "攻击");
+			if (_root.gameworld[_parent.攻击目标].hp <= 0)
+			{
+				_parent.攻击目标 = "无";
+			}
+		}
+	}
+	else
+	{
+		_parent.左行 = 0;
+		_parent.右行 = 0;
+		_parent.上行 = 0;
+		_parent.下行 = 0;
+	}
+}
+function 寻找攻击目标()
+{
+	var 攻击对象 = _root.gameworld[_parent.攻击目标];
+	var _d = Math.abs(攻击对象._x - _parent._x) + Math.abs(攻击对象.Z轴坐标 - _parent.Z轴坐标) * 2;
+	if (_parent.攻击目标 == "无" || _d >= 1000)
+	{
+		_parent.攻击目标 = "无";
+		_parent.拾取目标 = "无";
+		var 敌人表 = new Array();
+		var 可拾取物表 = new Array();
+		for (each in _root.gameworld)
+		{
+			var 当前对象 = _root.gameworld[each];
+			if (当前对象.hp > 0)
+			{
+				if (_parent.是否为敌人 === true && 当前对象.是否为敌人 === false)
+				{
+					var d = Math.abs(当前对象._x - _parent._x);
+					敌人表.push({敌人名:当前对象._name, 距离:d});
+				}
+				else if (_parent.是否为敌人 === false && 当前对象.是否为敌人 === true)
+				{
+					var d = Math.abs(当前对象._x - _parent._x);
+					敌人表.push({敌人名:当前对象._name, 距离:d});
+				}
+			}
+			else if (当前对象._name.indexOf("可拾取物") === 0)
+			{
+				var d = Math.abs(当前对象._x - _parent._x);
+				可拾取物表.push({名字:当前对象._name, 距离:d});
+			}
+		}
+		敌人表.sortOn("距离",16);
+		可拾取物表.sortOn("距离",16);
+		var 最近敌人 = 敌人表[0];
+		var 最近可拾取物 = 可拾取物表[0];
+		if (最近敌人.敌人名)
+		{
+			_parent.攻击目标 = 最近敌人.敌人名;
+		}
+		if(最近可拾取物.名字 && (!最近敌人.敌人名 || 最近敌人.距离 >= 最近可拾取物.距离)){
+			_parent.攻击目标 = "无";
+			_parent.拾取目标 = 最近可拾取物.名字;
+		}
+	}
+	else if (攻击对象.hp <= 0)
+	{
+		_parent.攻击目标 = "无";
+	}
+}
+function 随机移动(随机移动时间)
+{
+	function pause3()
+	{
+		_parent.上行 = 0;
+		_parent.下行 = 0;
+		_parent.左行 = 0;
+		_parent.右行 = 0;
+		clearInterval(pauseInterval3);
+	}
+	_parent.上行 = random(2);
+	_parent.下行 = random(2);
+	_parent.左行 = random(2);
+	_parent.右行 = random(2);
+	clearInterval(pauseInterval3);
+	pauseInterval3 = setInterval(pause3, 随机移动时间);
+}
+this.onUnload = function()
+{
+	clearInterval(pauseInterval3);
+};
+
+//
+
+function 拾取()
+{
+	var 拾取对象 = _root.gameworld[_parent.拾取目标];
+	if (!_root.暂停 && 拾取对象._x)
+	{
+		var 拾取方向 = "右";
+		var 距离X = 拾取对象._x - _parent._x;
+		if(距离X < 0){
+			拾取方向 = "左";
+			距离X = -距离X;
+		}
+		var 距离Y = Math.abs(_parent._y - 拾取对象._y);
+		if(isNaN(_parent.x轴拾取距离)){
+			_parent.x轴拾取距离 = 40;
+		}
+		if (距离X > _parent.x轴拾取距离 || 距离Y > 20)
+		{
+			if (距离X + 距离Y * 2 < 100)
+			{
+				_parent.状态改变(_parent.攻击模式 + "行走");
+			}
+			else if (random(3) == 0)
+			{
+				_parent.状态改变(_parent.攻击模式 + "跑");
+			}
+			if (_parent._y > 拾取对象._y)
+			{
+				_parent.上行 = 1;
+				_parent.下行 = 0;
+			}
+			else
+			{
+				_parent.上行 = 0;
+				_parent.下行 = 1;
+			}
+			if (_parent._x > 拾取对象._x)
+			{
+				_parent.左行 = 1;
+				_parent.右行 = 0;
+			}
+			else if (_parent._x < 拾取对象._x)
+			{
+				_parent.左行 = 0;
+				_parent.右行 = 1;
+			}
+		}
+		else
+		{
+			_parent.左行 = 0;
+			_parent.右行 = 0;
+			_parent.上行 = 0;
+			_parent.下行 = 0;
+			_parent.方向改变(拾取方向);
+			_parent.状态改变("拾取");
+		}
+	}
+	else
+	{
+		_parent.拾取目标 = "无";
+		_parent.左行 = 0;
+		_parent.右行 = 0;
+		_parent.上行 = 0;
+		_parent.下行 = 0;
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="68" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.左行 = 0;
+_parent.右行 = 0;
+_parent.上行 = 0;
+_parent.下行 = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.暂停 == false)
+{
+	X距离 = random(300) - 100;
+	X目标 = _root.gameworld[_root.控制目标]._x;
+	if (Math.abs(_parent._x - X目标) > X距离)
+	{
+		Y目标 = _root.Ymin + random(_root.Ymax - _root.Ymin);
+		Y距离 = 50;
+		if (_parent._x > X目标)
+		{
+			_parent.左行 = 1;
+			_parent.右行 = 0;
+		}
+		else
+		{
+			_parent.左行 = 0;
+			_parent.右行 = 1;
+		}
+	}
+	else
+	{
+		_parent.左行 = 0;
+		_parent.右行 = 0;
+		在跟随范围内 = true;
+	}
+	if (Math.abs(_parent._y - Y目标) > Y距离)
+	{
+		if (_parent._y > Y目标)
+		{
+			_parent.上行 = 1;
+			_parent.下行 = 0;
+		}
+		else
+		{
+			_parent.上行 = 0;
+			_parent.下行 = 1;
+		}
+	}
+	else
+	{
+		_parent.上行 = 0;
+		_parent.下行 = 0;
+	}
+}
+else
+{
+	_parent.左行 = 0;
+	_parent.右行 = 0;
+	_parent.上行 = 0;
+	_parent.下行 = 0;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="83" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[X目标 = _root.gameworld[_root.控制目标]._x;
+if(Math.abs(_parent._x - X目标) > X距离)
+{
+   在跟随范围内 = false;
+}
+else
+{
+   _parent.上行 = 0;
+   _parent.下行 = 0;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(在跟随范围内 == true)
+{
+   if(_parent.命令 == _root.命令)
+   {
+      gotoAndStop("跟随暂停");
+      play();
+   }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="93" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[aaa = random(4);
+switch(aaa)
+{
+   case 0:
+      _parent.命令 = "停止";
+      break;
+   case 1:
+      _parent.命令 = "跟随";
+      break;
+   case 2:
+      _parent.命令 = "左移";
+      break;
+   case 3:
+      _parent.命令 = "右移";
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.暂停 == false)
+{
+   _parent.左行 = 1;
+   _parent.右行 = 0;
+}
+else
+{
+   _parent.左行 = 0;
+   _parent.右行 = 0;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="131" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="132" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.暂停 == false)
+{
+   _parent.左行 = 0;
+   _parent.右行 = 1;
+}
+else
+{
+   _parent.左行 = 0;
+   _parent.右行 = 0;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="142" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="143" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.控制目标 != _parent._name or _root.控制目标全自动 == true)
+{
+	攻击(_parent.x轴攻击范围,_parent.y轴攻击范围,_parent.x轴保持距离);
+}
+else if (_root.控制目标全自动 == true)
+{
+	攻击(_parent.x轴攻击范围,_parent.y轴攻击范围,_parent.x轴保持距离);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="151" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (random(5))
+{
+	gotoAndStop("攻击");
+	play();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="163" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="164" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.控制目标 != _parent._name or _root.控制目标全自动 == true)
+{
+	拾取();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="171" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.gameworld[_parent.拾取目标]._y && random(8))
+{
+	gotoAndStop("拾取");
+	play();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="182" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="183" duration="201" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[随机位置Y = random(_root.Ymax - _root.Ymin) + _root.Ymin;
+随机位置X = random(_root.Xmax - _root.Xmin) + _root.Xmin;
+if(_parent._y > 随机位置Y)
+{
+   _parent.上行 = 1;
+   _parent.下行 = 0;
+}
+else
+{
+   _parent.上行 = 0;
+   _parent.下行 = 1;
+}
+if(_parent._x > 随机位置X)
+{
+   _parent.左行 = 1;
+   _parent.右行 = 0;
+}
+else if(_parent._x < 随机位置X)
+{
+   _parent.左行 = 0;
+   _parent.右行 = 1;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="384" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[思考();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="385" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="409" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.控制目标 == _parent._name and _root.控制目标全自动 == true)
+{
+   思考();
+}
+else
+{
+   this.gotoAndPlay("不思考");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#33C2FF" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!43 -26|50 0!50 0[50 50 0 50!0 50[-45 50 -50 1!-50 1[-50 -50 0 -50!0 -50[31 -50 43 -26"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="409" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

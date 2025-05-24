@@ -1,0 +1,82 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="shopgirl头像" itemID="674ab1e8-00000e2c" lastModified="1732948504">
+  <timeline>
+    <DOMTimeline name="shopgirl头像">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#AA9F98"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!437 0S2[619 0 747 129!747 129[876 257 876 440!876 440[876 622 747 752!747 752[619 880 437 880!437 880[254 880 126 752!126 752[-3 622 -3 440!-3 440[-3 257 126 129!126 129[254 0 437 0"/>
+                    <Edge cubics="!437 0(;558,0 662,43 747,129q437 0Q619 0q747 129);"/>
+                    <Edge cubics="!126 129(126,129;211,43 315,0 437,0q126 129Q254 0q437 0);"/>
+                    <Edge cubics="!437 880(;315,880 211,837 126,752q437 880Q254 880q126 752);"/>
+                    <Edge cubics="!876 440(876,440;876,561 833,665 747,752q876 440Q876 622q747 752);"/>
+                    <Edge cubics="!747 752(;662,837 558,880 437,880q747 752Q619 880q437 880);"/>
+                    <Edge cubics="!126 752(126,752;40,665 -3,561 -3,440q126 752Q-3 622q-3 440);"/>
+                    <Edge cubics="!747 129(;833,214 876,318 876,440q747 129Q876 257q876 440);"/>
+                    <Edge cubics="!-3 440(;-3,318 40,214 126,129q-3 440Q-3 257q126 129);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="位图 19">
+                  <matrix>
+                    <Matrix tx="2.05" ty="0.95"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#AA9F98"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 440[0 257 129 129!129 129[257 0 440 0!440 0[622 0 750 129!750 129[879 257 879 440!879 440[879 622 750 752!750 752[622 880 440 880!440 880[257 880 129 752!129 752[0 622 0 440"/>
+                    <Edge cubics="!440 0(;561,0 665,43 750,129q440 0Q622 0q750 129);"/>
+                    <Edge cubics="!129 129(129,129;214,43 318,0 440,0q129 129Q257 0q440 0);"/>
+                    <Edge cubics="!440 880(;318,880 214,837 129,752q440 880Q257 880q129 752);"/>
+                    <Edge cubics="!879 440(879,440;879,561 836,665 750,752q879 440Q879 622q750 752);"/>
+                    <Edge cubics="!750 752(;665,837 561,880 440,880q750 752Q622 880q440 880);"/>
+                    <Edge cubics="!129 752(129,752;43,665 0,561 0,440q129 752Q0 622q0 440);"/>
+                    <Edge cubics="!750 129(;836,214 879,318 879,440q750 129Q879 257q879 440);"/>
+                    <Edge cubics="!0 440(;0,318 43,214 129,129q0 440Q0 257q129 129);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

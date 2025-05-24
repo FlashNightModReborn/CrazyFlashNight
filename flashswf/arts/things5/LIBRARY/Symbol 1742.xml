@@ -1,0 +1,2335 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1742" itemID="6577efbc-0000076b" lastModified="1747455275">
+  <timeline>
+    <DOMTimeline name="Symbol 1742" currentFrame="24">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#BC16CF">
+          <frames>
+            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#D58EC1">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#D7D3F6">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EC30C7">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="45.5" centerPoint3DY="91.05">
+                  <matrix>
+                    <Matrix a="0.16485595703125" b="0.0462493896484375" c="-0.0462493896484375" d="0.16485595703125" tx="31.6" ty="73.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#BF6E85">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="38.15" centerPoint3DY="97.9">
+                  <matrix>
+                    <Matrix a="0.051544189453125" b="-0.163040161132813" c="0.16302490234375" d="0.051513671875" tx="24.25" ty="80.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#598DF6">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="41.65" centerPoint3DY="90.4">
+                  <matrix>
+                    <Matrix a="0.04754638671875" b="0.164505004882813" c="-0.164474487304688" d="0.0475311279296875" tx="27.75" ty="73.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#B44BB3">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="6.95" centerPoint3DY="97.45">
+                  <matrix>
+                    <Matrix a="0.098358154296875" b="-0.139968872070313" c="0.139938354492188" d="0.098358154296875" tx="-6.95" ty="80.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#E79F96">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="30.85" centerPoint3DY="96.15">
+                  <matrix>
+                    <Matrix a="-0.170974731445313" b="-0.00537109375" c="0.0053863525390625" d="-0.170974731445313" tx="16.95" ty="78.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#4673EE">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="44.25" centerPoint3DY="86.8">
+                  <matrix>
+                    <Matrix a="-0.1707763671875" b="-0.00079345703125" c="0.000823974609375" d="-0.1707763671875" tx="30.35" ty="69.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#B35CC1">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="52.9" centerPoint3DY="82.45">
+                  <matrix>
+                    <Matrix a="-0.100921630859375" b="0.13775634765625" c="-0.13775634765625" d="-0.1009521484375" tx="39" ty="65.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#B6A682">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="53.7" centerPoint3DY="91.5">
+                  <matrix>
+                    <Matrix a="0.0742645263671875" b="-0.15423583984375" c="-0.154205322265625" d="-0.0742645263671875" tx="39.8" ty="74.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#D482AC">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="53.35" centerPoint3DY="95.8">
+                  <matrix>
+                    <Matrix a="0.0222320556640625" b="-0.169326782226563" c="-0.169326782226563" d="-0.0222320556640625" tx="39.45" ty="78.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#809591">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1695" centerPoint3DX="73.15" centerPoint3DY="123.6">
+                  <matrix>
+                    <Matrix a="0.0284576416015625" b="0.168853759765625" c="0.168853759765625" d="-0.0284576416015625" tx="18.85" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#EE8F1A">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1728" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-4.35" ty="61.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#96CC98">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1736" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-4.35" ty="61.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#A3C585">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1735" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#C714C6">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1732" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-4.35" ty="61.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#D54CCE">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1731" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1739" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-4.35" ty="61.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#26F5D2">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1721" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-4.35" ty="61.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!108 981[108 994 124 1006!124 1006|128 1004!128 1004|129 996!129 996[129 976 119 956!119 956[108 966 108 981"/>
+                    <Edge fillStyle0="1" edges="!322 958|314 989!314 989[305 971 305 950!305 950[305 940 311 932!311 932[313 944 321 957!321 957|322 958"/>
+                    <Edge fillStyle1="1" edges="!453 1291[417 1291 403 1277!403 1277|411 1286!411 1286|416 1286!416 1286|410 1294!410 1294|403 1293!403 1293|438 1299!438 1299|456 1294!456 1294|453 1291!334 1090[334 1067 323 1063!323 1063[318 1071 318 1094!318 1094|319 1111!319 1111
+|307 1121!307 1121[299 1132 299 1143!299 1143|300 1150!300 1150|303 1154!303 1154|317 1134!317 1134|323 1122!323 1122[329 1129 341 1129!341 1129[358 1129 364 1121!364 1121|346 1112!346 1112[335 1106 334 1090!259 1230|236 1288!236 1288
+|244 1294!244 1294|270 1257!270 1257[285 1234 323 1198!323 1198[278 1196 259 1230!93 1139[47 1108 -12 1163!-12 1163[-65 1212 -65 1240!-65 1240[-65 1253 -62 1261!-62 1261|-56 1262!-56 1262|-27 1206!-27 1206|-16 1218!-16 1218|-5 1218!-5
+ 1218[-4 1194 5 1180!5 1180[10 1160 32 1152!32 1152[44 1143 66 1143!66 1143|83 1145!83 1145|93 1142!93 1142[95 1166 104 1198!104 1198|108 1198!108 1198[112 1188 104 1155!104 1155[104 1125 149 1116!149 1116[93 1094 93 1134!93 1134|93 1139"/>
+                    <Edge fillStyle0="1" edges="
+!41 1265|46 1266!46 1266|43 1276!43 1276|32 1275!32 1275|41 1265"/>
+                    <Edge fillStyle1="1" edges="
+!11 1267[11 1246 -17 1261!-17 1261[-44 1277 -44 1291!-44 1291|-39 1321!-39 1321|-27 1323!-27 1323|-19 1295!-19 1295[-15 1277 10 1272!10 1272|11 1267!395 1263|393 1241!393 1241|393 1239!393 1239|384 1236!384 1236[379 1231 379 1242!379
+ 1242|380 1275!380 1275|359 1273!359 1273|359 1271!359 1271|311 1277!311 1277|310 1281!310 1281|319 1284!319 1284|349 1282!349 1282|350 1287!350 1287|342 1291!342 1291[336 1297 336 1317!336 1317|341 1351!341 1351|350 1353!350 1353[353
+ 1334 362 1318!362 1318[371 1301 383 1295!383 1295|383 1296!383 1296|391 1297!391 1297|392 1291!392 1291|393 1291!393 1291|393 1279!393 1279|393 1266!393 1266|395 1263!291 1421|301 1439!301 1439|321 1459!321 1459|328 1454!328 1454|330
+ 1442!330 1442[330 1421 298 1406!298 1406|293 1410!293 1410|291 1421"/>
+                    <Edge fillStyle0="1" edges="
+!-847 1280[-847 1253 -887 1238!-887 1238|-887 1237!-887 1237|-888 1237!-888 1237|-893 1235!-893 1235|-894 1235!-894 1235|-909 1207!-909 1207[-922 1186 -922 1164!-922 1164[-882 1169 -882 1209!-882 1209[-882 1223 -885 1233!-885 1233|-883
+ 1235!-883 1235|-846 1238!-846 1238[-843 1242 -843 1258!-843 1258[-829 1257 -814 1265!-814 1265[-800 1274 -800 1285!-800 1285|-804 1302!-804 1302|-809 1301!-809 1301[-808 1294 -822 1282!-822 1282|-843 1263!-843 1263|-847 1280!-847 1280
+|-848 1284"/>
+                    <Edge fillStyle1="1" edges="
+!-1098 1201[-1097 1206 -1082 1206!-1082 1206[-1070 1206 -1062 1226!-1062 1226[-1054 1247 -1042 1249!-1042 1249[-1037 1257 -1037 1245!-1037 1245[-1037 1222 -1046 1211!-1046 1211[-1058 1197 -1094 1190!-1094 1190|-1098 1201!-1212 1329|-1284
+ 1304!-1284 1304|-1284 1300!-1284 1300[-1284 1285 -1295 1274!-1295 1274|-1332 1276!-1332 1276|-1314 1294!-1314 1294|-1303 1309!-1303 1309|-1300 1309!-1300 1309|-1294 1311!-1294 1311|-1222 1360!-1222 1360[-1189 1384 -1199 1411!-1199 1411
+|-1195 1417!-1195 1417|-1188 1374!-1188 1374[-1188 1339 -1212 1329!-973 1326|-985 1308!-985 1308|-1023 1307!-1023 1307[-1006 1329 -995 1329!-995 1329|-973 1326!-959 1396|-953 1403!-953 1403|-942 1403!-942 1403|-942 1378!-942 1378[-942
+ 1362 -955 1354!-955 1354|-968 1364!-968 1364|-961 1380!-961 1380|-959 1396!-986 1407|-1009 1406!-1009 1406|-997 1422!-997 1422[-1008 1419 -1002 1431!-1002 1431|-989 1435!-989 1435|-987 1438!-987 1438|-984 1437!-984 1437|-982 1437!-982
+ 1437|-979 1436!-979 1436|-979 1429!-979 1429|-978 1421!-978 1421|-986 1407!-1417 1243|-1418 1247!-1418 1247[-1397 1260 -1374 1263!-1374 1263|-1332 1272!-1332 1272[-1339 1261 -1365 1250!-1365 1250[-1394 1238 -1417 1243!-242 1102|-235
+ 1135!-235 1135|-227 1170!-227 1170|-220 1176!-220 1176|-242 1176!-242 1176|-244 1193!-244 1193|-237 1241!-237 1241|-227 1242!-227 1242[-217 1206 -230 1186!-230 1186|-207 1176!-207 1176|-207 1175!-207 1175|-219 1176!-219 1176[-212 1168
+ -212 1154!-212 1154[-212 1144 -223 1119!-223 1119[-233 1096 -237 1093!-237 1093|-241 1094!-241 1094|-242 1102!-224 1036|-209 1046!-209 1046|-202 1044!-202 1044|-212 1023!-212 1023|-224 1036"/>
+                    <Edge fillStyle0="1" edges="
+!-244 1343[-207 1341 -192 1321!-192 1321|-184 1300!-184 1300|-184 1298!-184 1298|-182 1300!-182 1300[-166 1317 -140 1317!-140 1317|-110 1313!-110 1313[-93 1318 -89 1321!-89 1321|-148 1331!-148 1331|-173 1324!-173 1324|-176 1328!-176 1328
+[-194 1348 -225 1348!-225 1348|-244 1343"/>
+                    <Edge fillStyle1="1" edges="
+!-242 1278|-222 1275!-222 1275|-222 1269!-222 1269[-222 1233 -185 1221!-185 1221[-188 1199 -208 1219!-208 1219[-230 1241 -242 1274!-242 1274|-242 1278!-339 1324[-340 1291 -292 1293!-292 1293|-353 1295!-353 1295[-357 1302 -357 1333!-357
+ 1333[-357 1358 -350 1373!-350 1373|-343 1363!-343 1363|-343 1369!-343 1369|-342 1362!-342 1362|-343 1361!-343 1361|-339 1324!-51 1354[-47 1362 -34 1362!-34 1362[-11 1362 13 1351!13 1351|-49 1346!-49 1346|-51 1354!-584 1217[-571 1219
+ -569 1226!-569 1226|-567 1236!-567 1236|-560 1237!-560 1237[-555 1234 -555 1221!-555 1221[-555 1185 -597 1209!-597 1209|-599 1210!-599 1210|-612 1221!-612 1221|-594 1226!-594 1226|-584 1217!-667 1225[-685 1205 -718 1214!-718 1214[-722
+ 1208 -722 1221!-722 1221[-722 1233 -719 1228!-719 1228|-694 1230!-694 1230|-697 1231!-697 1231|-678 1235!-678 1235|-672 1242!-672 1242|-657 1262!-657 1262|-655 1260!-655 1260|-654 1252!-654 1252|-656 1241!-656 1241|-641 1245!-641 1245
+[-607 1257 -619 1297!-619 1297|-613 1303!-613 1303[-600 1297 -600 1272!-600 1272[-600 1250 -620 1236!-620 1236[-639 1223 -667 1226!-667 1226|-667 1225!-697 1326[-697 1336 -679 1348!-679 1348|-674 1346!-674 1346|-673 1339!-673 1339|-681
+ 1327!-681 1327[-689 1319 -692 1318!-692 1318|-695 1318!-695 1318|-697 1326!-658 1356|-635 1385!-635 1385[-621 1402 -629 1413!-629 1413|-624 1419!-624 1419|-612 1421!-612 1421[-590 1405 -572 1416!-572 1416[-567 1422 -567 1410!-567 1410
+[-567 1402 -586 1398!-586 1398[-611 1391 -627 1373!-627 1373|-639 1360!-639 1360[-648 1353 -658 1356!-727 1265|-729 1274!-729 1274|-724 1290!-724 1290|-710 1308!-710 1308[-700 1305 -700 1291!-700 1291[-700 1273 -720 1262!-720 1262|-727
+ 1265"/>
+                    <Edge fillStyle0="1" edges="
+!-802 1349[-804 1315 -832 1312!-832 1312[-794 1291 -794 1332!-794 1332|-795 1349!-795 1349|-802 1349!-695 1386[-695 1366 -702 1357!-702 1357[-682 1367 -682 1379!-682 1379[-682 1387 -685 1391!-685 1391|-689 1396!-689 1396|-695 1390!-695
+ 1390|-695 1386"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1738" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 150" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 152" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#D4EAD3">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1729" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1740" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#F0E617"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="
+!188.5 1377[190.5 1376 194 1371!194 1371[187 1363.5 182 1363.5!182 1363.5|171 1367!171 1367[173 1369 174 1372.5!174 1372.5|175.5 1378!175.5 1378[172.5 1379.5 179 1379.5!179 1379.5[185.5 1379.5 188.5 1377!282 1379[284.5 1376.5 287 1369
+!287 1369[284 1366.5 274 1362.5!274 1362.5[264 1359 261.5 1359!261.5 1359[256 1359 251.5 1362!251.5 1362[249.5 1363.5 247 1366!247 1366[250.5 1372.5 259 1377.5!259 1377.5[266.5 1382 271 1382!271 1382[278.5 1382 282 1379!305 1462.5[302.5
+ 1463 300.5 1464.5!300.5 1464.5[297 1467 297 1468.5!297 1468.5[297 1475 308 1484!308 1484[319 1493 328.5 1492!328.5 1492[340.5 1486.5 340.5 1485!340.5 1485[340.5 1478 335 1471!335 1471[329.5 1464 320 1462"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="
+!320 1462|319.5 1466.5!319.5 1466.5[319.5 1470.5 318.5 1471!318.5 1471|306.5 1472!306.5 1472[302.5 1472 301.5 1471!301.5 1471|301 1468.5!301 1468.5|301.5 1464.5!301.5 1464.5|305 1462.5"/>
+                    <Edge fillStyle1="3" edges="
+!320 1462|320 1460.5!320 1460.5[319.5 1459 315.5 1459!315.5 1459[311.5 1459 305 1462.5"/>
+                    <Edge fillStyle1="2" edges="
+!-924.5 1369.5|-925.5 1370!-925.5 1370[-926.5 1371 -926.5 1374.5!-926.5 1374.5[-926.5 1378 -921.5 1381.5!-921.5 1381.5[-914 1387.5 -900 1390!-900 1390[-889.5 1383.5 -889.5 1382.5!-889.5 1382.5[-889.5 1376.5 -899.5 1372.5!-899.5 1372.5
+[-905 1371 -913 1369.5!-913 1369.5|-924.5 1369.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!-953.5 1384|-981.5 1381.5!-981.5 1381.5|-981.5 1380.5!-981.5 1380.5|-985 1381!-985 1381[-986 1381.5 -986 1385.5!-986 1385.5[-986 1390 -984 1391!-984 1391|-976 1392!-976 1392|-952 1392!-952 1392[-950.5 1394.5 -950.5 1388!-950.5 1388[-950.5
+ 1384.5 -953.5 1384"/>
+                    <Edge fillStyle1="2" edges="
+!-921 1403.5[-921 1396.5 -934 1388!-934 1388[-950.5 1377.5 -973.5 1377.5!-973.5 1377.5[-989 1377.5 -993 1381!-993 1381[-994.5 1382 -994.5 1385.5!-994.5 1385.5[-994.5 1397.5 -972 1404!-972 1404[-955.5 1409.5 -938 1409.5!-938 1409.5|-923
+ 1409!-923 1409[-921 1410 -921 1403.5"/>
+                    <Edge fillStyle0="2" edges="
+!-900 1430.5|-887 1437!-887 1437[-866 1448.5 -866 1451!-866 1451[-866 1456 -866.5 1459!-866.5 1459[-868.5 1466 -874 1466!-874 1466[-910 1466 -923 1432.5!-923 1432.5|-913 1425!-913 1425[-910.5 1426 -904.5 1428.5"/>
+                    <Edge fillStyle0="3" edges="
+!-904.5 1428.5|-902.5 1428.5!-902.5 1428.5[-901 1429 -900 1430.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!-904.5 1428.5|-909 1429!-909 1429|-910.5 1430!-910.5 1430[-912 1431 -912 1435!-912 1435|-908 1441!-908 1441[-904 1446 -902.5 1446.5!-902.5 1446.5|-897.5 1447!-897.5 1447[-896 1447 -896 1443!-896 1443[-896 1435 -900 1430.5!-365 1274|-373.5
+ 1272.5!-373.5 1272.5[-389 1272.5 -387.5 1298.5!-387.5 1298.5[-387.5 1304 -384.5 1309.5!-384.5 1309.5[-380.5 1317 -373.5 1317.5!-373.5 1317.5[-373.5 1314 -374.5 1308!-374.5 1308|-375.5 1297.5!-375.5 1297.5[-375.5 1293.5 -373 1289!-373
+ 1289[-368.5 1282 -365 1274"/>
+                    <Edge fillStyle1="2" edges="
+!-400.5 1299[-400.5 1307 -391 1323.5!-391 1323.5[-378 1344.5 -362 1344.5!-362 1344.5|-350 1343.5!-350 1343.5[-349.5 1348 -347 1353!-347 1353[-342.5 1363 -335.5 1363!-335.5 1363[-325.5 1363 -321.5 1357.5!-321.5 1357.5[-318.5 1354.5 -318.5
+ 1351!-318.5 1351[-318.5 1337.5 -321 1332!-321 1332[-323.5 1326 -329 1322!-329 1322[-329 1304.5 -335.5 1290!-335.5 1290[-346.5 1265 -372.5 1265!-372.5 1265[-387 1265 -395.5 1281.5!-395.5 1281.5[-399.5 1290 -400.5 1299"/>
+                    <Edge fillStyle0="3" edges="
+!-392.5 1370|-394 1366.5!-394 1366.5[-397.5 1354.5 -397.5 1351.5!-397.5 1351.5|-397 1347!-397 1347|-396.5 1347.5!-396.5 1347.5|-391 1347!-391 1347|-389 1349"/>
+                    <Edge fillStyle0="2" edges="
+!-389 1349|-385.5 1348.5!-385.5 1348.5[-365 1348.5 -365 1393!-365 1393|-365 1398!-365 1398[-366 1403 -372.5 1403!-372.5 1403[-387 1403 -392.5 1370"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="
+!-389 1349[-387 1351 -386 1355.5!-386 1355.5[-384 1361.5 -384 1367!-384 1367[-384 1377 -388 1380.5!-388 1380.5[-389.5 1379 -392.5 1370"/>
+                    <Edge edges="
+!-331.5 1330|-331 1330"/>
+                    <Edge fillStyle1="2" edges="
+!-331 1330|-331 1330.5"/>
+                    <Edge fillStyle0="2" edges="
+!-336.5 1315.5|-337 1317!-337 1317|-336.5 1317.5!-336.5 1317.5|-336.5 1315.5"/>
+                    <Edge fillStyle1="2" edges="
+!-112.5 1388.5[-112.5 1393.5 -108.5 1396.5!-108.5 1396.5[-106 1398.5 -103.5 1398.5!-103.5 1398.5[-98 1398.5 -94.5 1392!-94.5 1392[-91.5 1387.5 -91.5 1385!-91.5 1385[-91.5 1381.5 -95.5 1379.5!-95.5 1379.5[-99 1377.5 -102 1377.5!-102 1377.5
+[-110.5 1377.5 -112.5 1388.5"/>
+                    <Edge fillStyle1="3" edges="
+!-148.5 1396.5|-149.5 1396!-149.5 1396|-150.5 1397.5"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="
+!-150.5 1397.5[-158 1405 -162.5 1411.5"/>
+                    <Edge fillStyle1="3" edges="
+!-162.5 1411.5|-163.5 1413!-163.5 1413|-163.5 1414"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!-163.5 1414|-163 1415!-163 1415[-164.5 1417 -158 1417!-158 1417[-153.5 1417 -148.5 1410!-148.5 1410[-144.5 1404.5 -144.5 1402.5!-144.5 1402.5[-144.5 1398 -147 1397!-147 1397|-148.5 1396.5"/>
+                    <Edge fillStyle1="2" edges="
+!-163.5 1414|-165 1418!-165 1418[-165 1423.5 -160 1428!-160 1428[-154.5 1432.5 -149.5 1432.5!-149.5 1432.5[-138 1432.5 -131 1422!-131 1422[-125.5 1414 -125.5 1410.5!-125.5 1410.5[-125.5 1404.5 -130 1399.5!-130 1399.5[-134.5 1395 -140
+ 1395!-140 1395[-144.5 1395 -148.5 1396.5"/>
+                    <Edge fillStyle1="1" edges="
+!-150.5 1397.5[-158 1401.5 -162.5 1411.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="
+!-49 1367.5|-48.5 1368!-48.5 1368|-47.5 1368.5!-47.5 1368.5[-49 1372 -55 1377.5!-55 1377.5[-61 1384.5 -64 1384.5!-64 1384.5[-68 1384.5 -69 1383!-69 1383[-69 1381.5 -70 1380.5!-70 1380.5[-69 1376.5 -64.5 1372.5!-64.5 1372.5|-62 1370"/>
+                    <Edge fillStyle1="2" edges="
+!-62 1370|-65.5 1372!-65.5 1372[-71 1376.5 -71 1380!-71 1380[-71 1386 -66.5 1392!-66.5 1392[-61.5 1398.5 -55 1398.5!-55 1398.5[-41.5 1398.5 -33 1390.5!-33 1390.5|-27 1382.5!-27 1382.5[-27 1378 -35.5 1373!-35.5 1373[-42.5 1368.5 -49 1367.5"/>
+                    <Edge fillStyle1="3" edges="
+!-49 1367.5|-53.5 1367!-53.5 1367[-58 1367 -62 1370"/>
+                    <Edge fillStyle1="2" edges="
+!-51 1448|-44.5 1447!-44.5 1447[-43 1444.5 -43 1438!-43 1438[-43 1436.5 -47.5 1431.5!-47.5 1431.5[-51.5 1427.5 -55 1425!-55 1425[-64.5 1436.5 -64.5 1438.5!-64.5 1438.5[-64.5 1446 -51 1448"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!-696 1360.5[-684 1368 -682 1368!-682 1368[-665 1368 -662.5 1365.5!-662.5 1365.5[-668 1360.5 -676 1358.5!-676 1358.5|-683.5 1357.5!-683.5 1357.5[-692.5 1357.5 -696 1360.5"/>
+                    <Edge fillStyle1="2" edges="
+!-702 1359.5[-703.5 1362.5 -703 1365.5!-703 1365.5[-703 1371 -683 1380.5!-683 1380.5[-663 1390.5 -653.5 1390.5!-653.5 1390.5[-644.5 1390.5 -641.5 1385!-641.5 1385[-640 1382 -640 1378.5!-640 1378.5[-640 1373 -658 1363.5!-658 1363.5[-675.5
+ 1354.5 -686 1354.5!-686 1354.5[-698 1354.5 -702 1359.5!-631.5 1374.5[-631.5 1377 -616.5 1386.5!-616.5 1386.5[-609.5 1385 -609.5 1377!-609.5 1377[-609.5 1374 -618.5 1370!-618.5 1370[-627 1366 -630.5 1367.5!-630.5 1367.5|-631.5 1374.5
+!-500.5 1419.5[-500.5 1407 -530 1398.5!-530 1398.5|-535.5 1399!-535.5 1399[-537 1400 -537 1404!-537 1404[-537 1407.5 -527.5 1413.5!-527.5 1413.5[-518 1419.5 -506.5 1424!-506.5 1424|-502 1424!-502 1424[-500.5 1423.5 -500.5 1419.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#A0C45F">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1720" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#F0E617"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-428 801[-426 803.5 -420 805!-420 805[-414.5 807 -412 810.5!-412 810.5[-408.5 815.5 -408.5 828!-408.5 828[-408.5 834.5 -411.5 840!-411.5 840|-418.5 849!-418.5 849|-421 852!-421 852[-422.5 856 -422.5 860.5!-422.5 860.5[-422.5 866.5 -418
+ 872.5!-418 872.5|-409.5 883!-409.5 883[-397 897 -397 912!-397 912[-397 929 -407.5 951.5!-407.5 951.5|-415 967.5!-415 967.5[-418.5 976.5 -418.5 983.5!-418.5 983.5[-418.5 991 -414.5 1001.5!-414.5 1001.5[-407.5 1018 -396 1018!-396 1018
+[-386 1018 -379 1013.5!-379 1013.5[-369.5 1012 -365 999.5!-365 999.5[-362 992 -362 984!-362 984|-365.5 950.5!-365.5 950.5|-365.5 940.5!-365.5 940.5[-364.5 934 -361 930!-361 930[-359 928 -355.5 927!-355.5 927|-351 922.5!-351 922.5|-345.5
+ 920!-345.5 920[-337.5 916.5 -336 911!-336 911[-334.5 905.5 -333.5 891!-333.5 891|-331.5 876!-331.5 876[-328 870.5 -323.5 870.5!-323.5 870.5[-307 870.5 -299 913.5!-299 913.5[-295 935.5 -294 958!-294 958[-294 978 -289 989.5!-289 989.5
+[-285 997 -277.5 1004!-277.5 1004[-268 1011.5 -266 1014.5!-266 1014.5[-260.5 1022.5 -260.5 1036!-260.5 1036[-260.5 1039 -264 1047.5!-264 1047.5[-267.5 1056.5 -267.5 1061!-267.5 1061[-267.5 1067 -262.5 1075!-262.5 1075|-252 1091.5!-252
+ 1091.5[-237 1115.5 -236.5 1136!-236.5 1136[-234.5 1208.5 -206 1208.5!-206 1208.5[-195 1208.5 -191.5 1194!-191.5 1194[-189.5 1187.5 -189.5 1178.5!-189.5 1178.5[-189.5 1165.5 -196.5 1140!-196.5 1140[-200 1126 -203.5 1115!-203.5 1115|-203.5
+ 1113.5!-203.5 1113.5[-203.5 1098.5 -221.5 1047.5!-221.5 1047.5[-239 996 -239 985!-239 985[-239 966.5 -232.5 956.5!-232.5 956.5[-228.5 950 -219 946!-219 946[-207.5 941 -205 938.5!-205 938.5[-198.5 932.5 -198.5 920.5!-198.5 920.5[-198.5
+ 903.5 -218.5 872.5!-218.5 872.5|-233.5 848.5!-233.5 848.5[-241 835 -243 825.5!-243 825.5[-247 810 -252 795.5!-252 795.5|-254.5 789!-254.5 789|-254.5 766.5!-254.5 766.5|-254.5 744.5!-254.5 744.5[-254.5 731.5 -264 702!-264 702[-269.5 686.5
+ -272 676!-272 676[-274.5 668.5 -274.5 663.5!-274.5 663.5[-275.5 658.5 -274 654.5!-274 654.5[-271.5 646 -261.5 646!-261.5 646[-251 646 -246 655!-246 655[-242.5 661 -239.5 675!-239.5 675|-235.5 690.5!-235.5 690.5|-235 691.5!-235 691.5
+|-232.5 696!-232.5 696|-220 704!-220 704[-218 704 -216 697.5!-216 697.5[-214.5 692.5 -214.5 690!-214.5 690[-214.5 683 -221 672!-221 672|-235.5 650.5!-235.5 650.5[-256.5 619.5 -256.5 604.5!-256.5 604.5|-253.5 588.5!-253.5 588.5|-253 580.5
+!-253 580.5[-268.5 540.5 -282.5 526.5!-282.5 526.5|-280 526.5!-280 526.5[-279.5 528.5 -279.5 524.5!-279.5 524.5|-279.5 521!-279.5 521|-283 520.5!-283 520.5[-286 520.5 -287.5 522!-287.5 522|-291 520!-291 520|-289 524!-289 524[-291 527.5
+ -290.5 535!-290.5 535[-290 542 -288 549!-288 549[-288 556 -292.5 559.5!-292.5 559.5|-294 552.5!-294 552.5|-295.5 543.5!-295.5 543.5[-298 533 -307.5 533!-307.5 533[-314.5 533 -318.5 541.5!-318.5 541.5|-317.5 543.5!-317.5 543.5[-324.5
+ 552 -337.5 587.5!-337.5 587.5[-352.5 630 -359.5 663.5!-359.5 663.5[-365 688 -377.5 706!-377.5 706[-385.5 717 -401.5 731.5!-401.5 731.5[-417.5 745.5 -423 753.5!-423 753.5[-432 767.5 -432 786.5!-432 786.5[-432 797 -428 801"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-414.5 780[-414.5 793 -404 800!-404 800[-398.5 803.5 -397 805!-397 805[-394 808.5 -394 814.5!-394 814.5[-394 820.5 -400 830!-400 830[-406 840 -406 850!-406 850[-406 856 -404.5 858!-404.5 858[-402.5 862.5 -396 862.5!-396 862.5[-386.5
+ 862.5 -381 847.5!-381 847.5|-377.5 832.5!-377.5 832.5[-377.5 821.5 -385 807.5!-385 807.5|-392.5 794!-392.5 794|-392 789.5!-392 789.5[-360 789.5 -360 769!-360 769[-360 766 -363.5 758!-363.5 758[-367 750.5 -367 748.5!-367 748.5[-367 743.5
+ -364 740!-364 740|-357.5 735.5!-357.5 735.5[-348 730 -348 717.5!-348 717.5[-348 711 -349.5 708!-349.5 708[-351 705.5 -357 699.5!-357 699.5[-361 703 -361 708!-361 708[-361 725.5 -387.5 749.5!-387.5 749.5|-406 766!-406 766[-414.5 774.5
+ -414.5 780"/>
+                    <Edge fillStyle1="1" edges="
+!-310 541|-309.5 540!-309.5 540|-309 540.5!-309 540.5|-310 541"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-318.5 569[-322 576 -330.5 603.5!-330.5 603.5[-340 632 -340 637.5!-340 637.5[-340 640.5 -337 646.5!-337 646.5[-338.5 647 -334.5 647!-334.5 647[-330 647 -322.5 613!-322.5 613|-315.5 578!-315.5 578[-315.5 570.5 -318.5 569"/>
+                    <Edge fillStyle1="1" edges="
+!-266 689.5[-270 682 -272 676!-272 676[-270 682.5 -268 687!-268 687|-266 689.5!-264 731.5|-265 726.5!-265 726.5|-263.5 732!-263.5 732|-264 731.5!-232.5 696|-247 685.5!-247 685.5|-239.5 691.5!-239.5 691.5|-232.5 696"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!-399.5 793|-399 793.5!-399 793.5|-399 793!-399 793|-399.5 793"/>
+                    <Edge edges="
+!-386.5 820|-386.5 820.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-389.5 920.5[-396.5 939 -404.5 956.5!-404.5 956.5[-409 968 -409 985.5!-409 985.5[-409 1002 -398.5 1002!-398.5 1002[-390.5 1002 -385.5 936!-385.5 936[-385.5 930 -388 920.5!-388 920.5|-389.5 920.5!-288.5 939.5[-288.5 947 -285.5 961.5!-285.5
+ 961.5[-282 981 -276.5 986!-276.5 986|-272 985.5!-272 985.5|-272 974!-272 974|-278.5 953.5!-278.5 953.5[-281.5 940 -285 937.5!-285 937.5|-286.5 937!-286.5 937[-288.5 937 -288.5 939.5!-149.5 910[-149.5 913 -147 921!-147 921[-144.5 928.5
+ -144.5 931!-144.5 931|-142 931!-142 931[-141.5 928 -141.5 924!-141.5 924[-141.5 920.5 -144.5 913!-144.5 913[-147.5 905.5 -148 905.5!-148 905.5|-149.5 906.5!-149.5 906.5|-149.5 910"/>
+                    <Edge fillStyle1="1" edges="
+!-148.5 896[-154.5 896 -155.5 911!-155.5 911[-155.5 918.5 -150 932!-150 932[-144 947.5 -138 947.5!-138 947.5[-132 947.5 -130 940!-130 940|-129 932!-129 932[-129 926 -134 913!-134 913[-140.5 896 -148.5 896!-160.5 971.5[-161.5 974 -161
+ 977!-161 977|-142.5 1031!-142.5 1031[-141 1035.5 -131 1044.5!-131 1044.5[-122 1053 -122 1057.5!-122 1057.5[-121.5 1066.5 -123.5 1083.5!-123.5 1083.5[-114.5 1151.5 -91 1151.5!-91 1151.5[-83 1151.5 -81 1142.5!-81 1142.5|-80 1133.5!-80
+ 1133.5[-80 1122.5 -94.5 1087.5!-94.5 1087.5|-110.5 1047!-110.5 1047[-117 1016 -123 1000.5!-123 1000.5[-135.5 966 -152 966!-152 966[-159 966 -160.5 971.5!-169 954[-163 950 -163 946!-163 946[-163 942 -166 937!-166 937[-169 931.5 -172.5
+ 931.5!-172.5 931.5[-177 931.5 -177 937.5!-177 937.5[-177 939 -174 945.5!-174 945.5[-171 952 -169 954"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-139 1010.5[-139 1002 -140 996!-140 996[-143 984 -150.5 986.5!-150.5 986.5[-147 991.5 -145 1000!-145 1000[-143 1010 -141.5 1013!-141.5 1013|-139.5 1013!-139.5 1013[-139 1015 -139 1010.5"/>
+                    <Edge edges="
+!-113 1056.5|-113.5 1055"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-117 1089[-114.5 1096.5 -112 1114.5!-112 1114.5[-108 1130.5 -97 1138.5!-97 1138.5|-96 1137.5!-96 1137.5[-95.5 1137 -95.5 1134.5!-95.5 1134.5[-95.5 1133.5 -104 1109.5!-104 1109.5[-106.5 1100 -108 1095.5!-108 1095.5[-111 1087.5 -117 1089"/>
+                    <Edge fillStyle1="1" edges="
+!-371 992|-369 984.5!-369 984.5[-369.5 992 -371.5 997!-371.5 997|-371 992!-378 1061[-380 1064 -381 1070!-381 1070|-382.5 1075.5!-382.5 1075.5|-394.5 1080.5!-394.5 1080.5|-396.5 1078.5!-396.5 1078.5[-401 1074 -403.5 1074!-403.5 1074[-408.5
+ 1074 -411.5 1076.5!-411.5 1076.5|-412.5 1074.5!-412.5 1074.5[-413.5 1075.5 -417 1085!-417 1085[-420.5 1094 -420.5 1096!-420.5 1096|-420.5 1098.5!-420.5 1098.5|-421.5 1105.5!-421.5 1105.5[-421.5 1115 -417.5 1132.5!-417.5 1132.5|-411 1159.5
+!-411 1159.5|-416.5 1153.5!-416.5 1153.5[-421 1147.5 -424.5 1147.5!-424.5 1147.5[-431.5 1147.5 -430 1156.5!-430 1156.5[-430 1164 -421 1198!-421 1198[-413 1231.5 -413 1238!-413 1238[-413 1266 -410.5 1279.5!-410.5 1279.5[-404.5 1314 -385
+ 1314!-385 1314[-367 1314 -363.5 1269.5!-363.5 1269.5[-362.5 1254.5 -363 1232.5!-363 1232.5|-363.5 1203!-363.5 1203|-364 1174.5!-364 1174.5[-364 1158 -362 1146.5!-362 1146.5[-357.5 1125 -350 1114!-350 1114[-347.5 1110 -346.5 1107!-346.5
+ 1107[-345 1101.5 -345 1091.5!-345 1091.5|-345 1087!-345 1087|-345 1085!-345 1085[-345 1077 -349.5 1068.5!-349.5 1068.5[-356 1057 -367 1057!-367 1057[-374.5 1057 -378 1061"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-405 1186[-409.5 1170 -412.5 1170!-412.5 1170|-419.5 1171!-419.5 1171|-420.5 1176.5!-420.5 1176.5[-420.5 1184.5 -411 1226!-411 1226[-411 1230 -410 1230.5!-410 1230.5|-406 1232!-406 1232[-400.5 1226 -400.5 1203.5!-400.5 1203.5[-400.5
+ 1200.5 -405 1186!-396 1133|-400 1097.5!-400 1097.5|-409 1096.5!-409 1096.5[-415.5 1096.5 -414 1109!-414 1109[-414 1115.5 -410 1127.5!-410 1127.5[-406 1141 -401.5 1141!-401.5 1141|-397.5 1140.5!-397.5 1140.5[-396 1137 -396 1133!-228 1123.5
+[-228.5 1124.5 -229 1124!-229 1124|-229 1127!-229 1127[-224 1189.5 -214.5 1189.5!-214.5 1189.5[-210 1189.5 -208.5 1185.5!-208.5 1185.5|-208 1181!-208 1181[-208 1170 -211 1157!-211 1157[-216 1133 -228 1123.5"/>
+                    <Edge fillStyle1="1" edges="
+!-424.5 1032[-431.5 1032 -436.5 1052!-436.5 1052|-437 1054.5!-437 1054.5[-440 1050.5 -443.5 1050.5!-443.5 1050.5|-446 1050.5!-446 1050.5|-449.5 1050!-449.5 1050[-456.5 1050 -459 1066.5!-459 1066.5|-459.5 1069!-459.5 1069[-462.5 1078 -463
+ 1088!-463 1088|-459.5 1103!-459.5 1103[-454.5 1117.5 -446 1117.5!-446 1117.5[-438.5 1117.5 -434 1099!-434 1099|-432 1084!-432 1084|-431 1084!-431 1084[-421 1084 -417 1069.5!-417 1069.5[-415.5 1065 -414.5 1059!-414.5 1059|-414.5 1054.5
+!-414.5 1054.5[-414.5 1047.5 -416 1042!-416 1042[-418.5 1032 -424.5 1032"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-455.5 1076|-455.5 1085!-455.5 1085[-455.5 1097 -448 1102.5!-448 1102.5|-446 1101.5!-446 1101.5|-449.5 1089.5!-449.5 1089.5[-451.5 1081.5 -448.5 1078!-448.5 1078|-448.5 1070.5!-448.5 1070.5|-452 1070!-452 1070[-454.5 1070 -455.5 1076"/>
+                    <Edge edges="
+!-447 1107|-447.5 1107"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 128" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 145" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.131256103515625" d="0.131256103515625" tx="5.4" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#6EB6FA">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1225" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1719" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-4.35" ty="61.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!168 951[181 981 201 981!201 981[227 981 233 962!233 962|234 942!234 942[234 899 196 888!196 888[158 876 158 915!158 915[158 929 168 951!39 828[-1 823 -1 858!-1 858[-1 872 13 888!13 888[28 905 45 905!45 905[72 905 79 888!79 888|80 869
+!80 869[80 833 39 828!336 981[336 1004 315 1041!315 1041|312 1046!312 1046|292 1044!292 1044[259 1051 259 1098!259 1098[259 1107 268 1117!268 1117[278 1129 293 1129!293 1129|294 1129!294 1129|300 1174!300 1174|299 1179!299 1179[281 1187
+ 280 1213!280 1213|269 1211!269 1211[258 1212 250 1220!250 1220|254 1211!254 1211|254 1210!254 1210|244 1211!244 1211|227 1198!227 1198|218 1178!218 1178[207 1167 188 1189!188 1189|187 1190!187 1190|184 1177!184 1177|194 1170!194 1170
+|183 1155!183 1155[183 1132 204 1129!204 1129|203 1123!203 1123|199 1098!199 1098[212 1094 216 1083!216 1083|218 1065!218 1065[218 1042 203 1032!203 1032[202 1003 183 997!183 997|183 994!183 994[183 957 144 957!144 957[106 957 106 994
+!106 994[106 1026 145 1026!145 1026|152 1026!152 1026|153 1036!153 1036|153 1058!153 1058[147 1081 120 1083!120 1083|116 1100!116 1100[109 1118 90 1125!90 1125|87 1142!87 1142[81 1132 69 1135!69 1135|63 1129!63 1129[42 1129 29 1114!29
+ 1114|27 1112!27 1112[14 1116 -4 1132!-4 1132[-62 1182 -62 1236!-62 1236|-62 1239!-62 1239|-74 1239!-74 1239|-119 1234!-119 1234|-139 1230!-139 1230|-168 1226!-168 1226[-170 1204 -195 1189!-195 1189[-221 1173 -234 1200!-234 1200|-239
+ 1265!-239 1265|-241 1298!-241 1298|-247 1299!-247 1299|-255 1297!-255 1297[-277 1295 -283 1314!-283 1314[-290 1292 -311 1290!-311 1290[-342 1286 -342 1340!-342 1340[-342 1387 -312 1387!-312 1387[-286 1387 -280 1361!-280 1361|-280 1348
+!-280 1348[-272 1362 -255 1362!-255 1362|-235 1357!-235 1357[-222 1356 -215 1345!-215 1345|-207 1346!-207 1346[-185 1346 -174 1332!-174 1332|-158 1311!-158 1311[-150 1341 -117 1341!-117 1341[-88 1341 -76 1313!-76 1313|-58 1324!-58 1324
+|-39 1334!-39 1334[-32 1352 -11 1352!-11 1352|2 1350!2 1350|22 1352!22 1352|47 1346!47 1346[115 1345 148 1299!148 1299|159 1282!159 1282[206 1275 222 1255!222 1255|231 1234!231 1234|240 1244!240 1244|241 1242!241 1242|240 1245!240 1245
+|244 1269!244 1269|234 1298!234 1298|234 1329!234 1329[237 1345 246 1352!246 1352|244 1362!244 1362|245 1372!245 1372|241 1372!241 1372[208 1376 208 1418!208 1418[208 1430 216 1439!216 1439[226 1449 242 1449!242 1449[267 1449 273 1428
+!273 1428|275 1411!275 1411|275 1409!275 1409[292 1420 315 1423!315 1423|321 1430!321 1430[341 1454 367 1454!367 1454[402 1454 408 1427!408 1427|408 1399!408 1399|408 1396!408 1396|421 1398!421 1398[439 1398 456 1337!456 1337[493 1334
+ 500 1308!500 1308[504 1294 500 1279!500 1279[500 1178 439 1177!439 1177|425 1178!425 1178|413 1175!413 1175|409 1120!409 1120|413 1104!413 1104|416 1093!416 1093|415 1087!415 1087|416 1063!416 1063|411 1056!411 1056|409 1054!409 1054
+[381 1050 372 1040!372 1040[368 1036 368 1025!368 1025[368 1014 385 998!385 998|398 987!398 987|398 985!398 985[398 954 370 937!370 937[341 919 336 981!351 1111|348 1104!348 1104|352 1102!352 1102|351 1111!134 1449[86 1478 86 1526!86
+ 1526[86 1536 93 1545!93 1545[102 1557 116 1557!116 1557|136 1541!136 1541|143 1531!143 1531|156 1512!156 1512|183 1470!183 1470[183 1421 134 1449!305 1646|310 1627!310 1627[310 1613 292 1606!292 1606|295 1626!295 1626|295 1642!295 1642
+|300 1649!300 1649|299 1660!299 1660[308 1656 305 1646!-963 1166[-1032 1177 -1058 1209!-1058 1209|-1073 1206!-1073 1206[-1100 1206 -1106 1218!-1106 1218|-1115 1239!-1115 1239|-1162 1226!-1162 1226|-1179 1231!-1179 1231|-1195 1236!-1195
+ 1236[-1198 1236 -1209 1229!-1209 1229[-1219 1221 -1229 1221!-1229 1221[-1247 1221 -1255 1229!-1255 1229|-1263 1241!-1263 1241|-1274 1229!-1274 1229|-1333 1221!-1333 1221|-1410 1230!-1410 1230|-1435 1239!-1435 1239[-1459 1239 -1466 1261
+!-1466 1261|-1467 1285!-1467 1285|-1466 1297!-1466 1297|-1471 1310!-1471 1310|-1483 1312!-1483 1312|-1512 1306!-1512 1306[-1545 1306 -1552 1331!-1552 1331[-1556 1343 -1553 1357!-1553 1357[-1553 1407 -1539 1424!-1539 1424[-1515 1454 -1430
+ 1454!-1430 1454[-1400 1454 -1394 1440!-1394 1440|-1394 1414!-1394 1414|-1390 1414!-1390 1414|-1384 1414!-1384 1414[-1363 1414 -1357 1399!-1357 1399|-1357 1397!-1357 1397|-1355 1396!-1355 1396|-1341 1402!-1341 1402|-1326 1408!-1326 1408
+|-1313 1403!-1313 1403|-1300 1398!-1300 1398[-1296 1398 -1282 1416!-1282 1416|-1264 1430!-1264 1430[-1254 1438 -1234 1438!-1234 1438[-1204 1438 -1197 1417!-1197 1417|-1195 1395!-1195 1395|-1201 1368!-1201 1368|-1207 1346!-1207 1346|-1206
+ 1346!-1206 1346[-1176 1346 -1167 1328!-1167 1328|-1164 1315!-1164 1315[-1164 1307 -1167 1301!-1167 1301|-1157 1296!-1157 1296[-1148 1301 -1136 1329!-1136 1329[-1129 1346 -1075 1346!-1075 1346[-1030 1346 -1017 1332!-1017 1332[-1012 1327
+ -1012 1314!-1012 1314|-997 1329!-997 1329|-989 1346!-989 1346|-988 1348!-988 1348[-1022 1365 -1022 1401!-1022 1401|-1021 1428!-1021 1428[-1015 1449 -992 1449!-992 1449[-953 1449 -937 1412!-937 1412|-929 1380!-929 1380|-930 1372!-930
+ 1372|-919 1376!-919 1376[-918 1364 -910 1359!-910 1359|-920 1312!-920 1312|-919 1301!-919 1301|-923 1273!-923 1273|-917 1263!-917 1263|-901 1263!-901 1263[-877 1263 -870 1298!-870 1298|-863 1317!-863 1317|-863 1322!-863 1322|-864 1358
+!-864 1358|-864 1360!-864 1360[-854 1364 -851 1374!-851 1374[-826 1368 -809 1356!-809 1356|-790 1337!-790 1337|-774 1341!-774 1341|-769 1341!-769 1341|-764 1341!-764 1341[-730 1341 -722 1320!-722 1320|-722 1298!-722 1298[-722 1288 -725
+ 1281!-725 1281|-714 1278!-714 1278|-694 1333!-694 1333|-689 1348!-689 1348|-694 1347!-694 1347[-725 1347 -725 1378!-725 1378[-725 1395 -702 1416!-702 1416[-676 1438 -648 1438!-648 1438[-597 1438 -584 1399!-584 1399|-584 1390!-584 1390
+|-568 1369!-568 1369|-562 1344!-562 1344|-563 1329!-563 1329[-542 1302 -542 1256!-542 1256|-538 1237!-538 1237|-538 1235!-538 1235|-547 1215!-547 1215[-547 1201 -538 1195!-538 1195|-547 1196!-547 1196[-556 1196 -563 1187!-563 1187|-582
+ 1191!-582 1191|-583 1191!-583 1191[-619 1192 -623 1232!-623 1232|-636 1229!-636 1229|-643 1224!-643 1224|-656 1226!-656 1226[-715 1226 -729 1214!-729 1214|-730 1213!-730 1213|-731 1214!-731 1214[-747 1244 -782 1244!-782 1244[-811 1244
+ -834 1221!-834 1221|-835 1221!-835 1221|-857 1216!-857 1216|-855 1214!-855 1214|-853 1200!-853 1200[-853 1149 -963 1166!-163 1456|-168 1495!-168 1495|-165 1523!-165 1523[-158 1541 -132 1541!-132 1541[-112 1541 -77 1424!-77 1424[-77 1373
+ -123 1402!-123 1402[-134 1409 -142 1418!-142 1418[-163 1424 -163 1452!-163 1452|-163 1456!-503 1113|-513 1137!-513 1137|-522 1152!-522 1152|-522 1156!-522 1156|-522 1177!-522 1177[-524 1186 -531 1191!-531 1191|-516 1189!-516 1189|-505
+ 1191!-505 1191[-479 1187 -467 1165!-467 1165|-459 1138!-459 1138|-459 1133!-459 1133[-446 1130 -442 1118!-442 1118[-438 1110 -439 1101!-439 1101[-439 1067 -470 1067!-470 1067[-500 1067 -500 1100!-500 1100|-500 1101!-500 1101|-499 1110
+!-499 1110|-503 1113"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!120 963|123 961!123 961|126 969!126 969|123 968!123 968|120 963"/>
+                    <Edge fillStyle1="1" edges="
+!408 1129[401 1150 368 1150!368 1150[351 1150 340 1139!340 1139[331 1130 331 1120!331 1120|332 1109!332 1109|324 1110!324 1110|323 1113!323 1113[318 1130 295 1135!295 1135|300 1174!300 1174|299 1179!299 1179[281 1187 280 1213!280 1213
+|269 1211!269 1211[258 1212 250 1220!250 1220|254 1211!254 1211|254 1210!254 1210|244 1211!244 1211|227 1198!227 1198|218 1178!218 1178[207 1167 188 1189!188 1189|187 1190!187 1190|184 1177!184 1177|194 1170!194 1170|183 1155!183 1155
+[183 1132 204 1129!204 1129|203 1123!203 1123|201 1104!201 1104[173 1099 163 1074!163 1074|161 1069!161 1069|160 1068!160 1068|150 1066!150 1066[142 1081 120 1083!120 1083|116 1100!116 1100[109 1118 90 1125!90 1125|87 1142!87 1142[81
+ 1132 69 1135!69 1135|63 1129!63 1129[42 1129 29 1114!29 1114|27 1112!27 1112[14 1116 -4 1132!-4 1132[-62 1182 -62 1236!-62 1236|-62 1239!-62 1239|-74 1239!-74 1239|-119 1234!-119 1234|-139 1230!-139 1230|-168 1226!-168 1226[-170 1204
+ -195 1189!-195 1189[-221 1173 -234 1200!-234 1200|-239 1265!-239 1265|-241 1298!-241 1298|-247 1299!-247 1299|-255 1297!-255 1297[-277 1295 -283 1314!-283 1314[-290 1292 -311 1290!-311 1290[-342 1286 -342 1340!-342 1340[-342 1387 -312
+ 1387!-312 1387[-286 1387 -280 1361!-280 1361|-280 1348!-280 1348[-272 1362 -255 1362!-255 1362|-235 1357!-235 1357[-222 1356 -215 1345!-215 1345|-207 1346!-207 1346[-185 1346 -174 1332!-174 1332|-158 1311!-158 1311[-150 1341 -117 1341
+!-117 1341[-88 1341 -76 1313!-76 1313|-58 1324!-58 1324|-39 1334!-39 1334[-32 1352 -11 1352!-11 1352|-6 1352!-6 1352|-6 1354!-6 1354|-2 1397!-2 1397[-7 1409 -7 1422!-7 1422[-7 1434 -1 1458!-1 1458|4 1461!4 1461|10 1454!10 1454|19 1471
+!19 1471[34 1498 40 1501!40 1501|47 1497!47 1497|50 1486!50 1486|32 1425!32 1425|26 1405!26 1405|31 1389!31 1389[44 1365 75 1354!75 1354|101 1338!101 1338|100 1336!100 1336[130 1324 148 1299!148 1299|159 1282!159 1282[206 1275 222 1255
+!222 1255|231 1234!231 1234|240 1244!240 1244|241 1242!241 1242|240 1245!240 1245|244 1269!244 1269|234 1298!234 1298|234 1329!234 1329[237 1345 246 1352!246 1352|244 1362!244 1362|245 1372!245 1372|241 1372!241 1372[208 1376 208 1418
+!208 1418[208 1430 216 1439!216 1439|222 1444!222 1444|221 1475!221 1475[221 1498 243 1541!243 1541[260 1576 268 1584!268 1584|270 1577!270 1577[249 1492 246 1449!246 1449[268 1447 273 1428!273 1428|275 1411!275 1411|275 1409!275 1409
+[292 1420 315 1423!315 1423|321 1430!321 1430[341 1454 367 1454!367 1454[402 1454 408 1427!408 1427|408 1399!408 1399|408 1396!408 1396|421 1398!421 1398[439 1398 456 1337!456 1337[493 1334 500 1308!500 1308[504 1294 500 1279!500 1279
+[500 1178 439 1177!439 1177|425 1178!425 1178|413 1175!413 1175|410 1125!410 1125|409 1125!409 1125|408 1129!27 1358|16 1369!16 1369|14 1357!14 1357|15 1352!15 1352|22 1352!22 1352|35 1351!35 1351|27 1358!134 1449[86 1478 86 1526!86 1526
+[86 1536 93 1545!93 1545[102 1557 116 1557!116 1557|136 1541!136 1541|143 1531!143 1531|156 1512!156 1512|183 1470!183 1470[183 1421 134 1449!274 1605[283 1613 293 1613!293 1613|286 1600!286 1600[280 1589 268 1587!268 1587|263 1594!263
+ 1594|274 1605!299 1660[308 1656 305 1646!305 1646|310 1627!310 1627[310 1613 292 1606!292 1606|295 1626!295 1626|295 1642!295 1642|300 1649!300 1649|299 1660"/>
+                    <Edge fillStyle0="1" edges="
+!-834 1221[-811 1244 -782 1244!-782 1244[-747 1244 -731 1214!-731 1214|-730 1213!-730 1213|-729 1214!-729 1214[-715 1226 -656 1226!-656 1226|-643 1224!-643 1224|-636 1229!-636 1229|-623 1232!-623 1232[-619 1192 -583 1191!-583 1191|-582
+ 1191!-582 1191|-563 1187!-563 1187|-552 1196!-552 1196|-545 1203!-545 1203|-547 1215!-547 1215|-538 1235!-538 1235|-538 1237!-538 1237|-542 1256!-542 1256[-542 1302 -563 1329!-563 1329|-562 1344!-562 1344|-568 1369!-568 1369|-584 1390
+!-584 1390|-584 1399!-584 1399[-597 1438 -648 1438!-648 1438[-676 1438 -702 1416!-702 1416[-725 1395 -725 1378!-725 1378[-725 1347 -694 1347!-694 1347|-689 1348!-689 1348|-694 1333!-694 1333|-714 1278!-714 1278|-725 1281!-725 1281[-722
+ 1288 -722 1298!-722 1298|-722 1320!-722 1320[-730 1341 -764 1341!-764 1341|-769 1341!-769 1341|-774 1341!-774 1341|-790 1337!-790 1337|-809 1356!-809 1356|-812 1358!-812 1358|-810 1398!-810 1398[-810 1449 -823 1463!-823 1463[-834 1445
+ -833 1398!-833 1398|-835 1369!-835 1369|-851 1374!-851 1374[-854 1364 -864 1360!-864 1360|-864 1358!-864 1358|-863 1322!-863 1322|-863 1317!-863 1317|-870 1298!-870 1298[-877 1263 -901 1263!-901 1263|-917 1263!-917 1263|-923 1273!-923
+ 1273|-919 1301!-919 1301|-920 1312!-920 1312|-910 1359!-910 1359[-918 1364 -919 1376!-919 1376|-930 1372!-930 1372|-929 1380!-929 1380|-937 1412!-937 1412[-953 1449 -992 1449!-992 1449[-1015 1449 -1021 1428!-1021 1428|-1022 1401!-1022
+ 1401[-1022 1365 -988 1348!-988 1348|-989 1346!-989 1346|-997 1329!-997 1329|-1012 1314!-1012 1314[-1012 1327 -1017 1332!-1017 1332[-1030 1346 -1075 1346!-1075 1346[-1129 1346 -1136 1329!-1136 1329[-1148 1301 -1157 1296!-1157 1296|-1167
+ 1301!-1167 1301[-1164 1307 -1164 1315!-1164 1315|-1167 1328!-1167 1328[-1176 1346 -1206 1346!-1206 1346|-1207 1346!-1207 1346|-1201 1368!-1201 1368|-1195 1395!-1195 1395|-1197 1417!-1197 1417[-1202 1431 -1217 1436!-1217 1436[-1214 1451
+ -1214 1467!-1214 1467[-1214 1494 -1229 1501!-1229 1501|-1238 1493!-1238 1493[-1235 1459 -1242 1438!-1242 1438[-1256 1436 -1264 1430!-1264 1430|-1282 1416!-1282 1416[-1296 1398 -1300 1398!-1300 1398|-1313 1403!-1313 1403|-1326 1408!-1326
+ 1408|-1341 1402!-1341 1402|-1355 1396!-1355 1396|-1357 1397!-1357 1397|-1357 1399!-1357 1399[-1363 1414 -1384 1414!-1384 1414|-1379 1419!-1379 1419|-1377 1437!-1377 1437|-1382 1495!-1382 1495[-1388 1544 -1399 1556!-1399 1556|-1407 1552
+!-1407 1552|-1408 1542!-1408 1542|-1403 1532!-1403 1532|-1398 1521!-1398 1521[-1398 1507 -1405 1470!-1405 1470|-1408 1452!-1408 1452|-1430 1454!-1430 1454|-1455 1454!-1455 1454|-1457 1492!-1457 1492[-1461 1522 -1477 1538!-1477 1538|-1487
+ 1532!-1487 1532|-1487 1492!-1487 1492|-1483 1451!-1483 1451[-1524 1443 -1539 1424!-1539 1424[-1553 1407 -1553 1357!-1553 1357[-1556 1343 -1552 1331!-1552 1331[-1545 1306 -1512 1306!-1512 1306|-1483 1312!-1483 1312|-1471 1310!-1471 1310
+|-1466 1297!-1466 1297|-1467 1285!-1467 1285|-1466 1261!-1466 1261[-1459 1239 -1435 1239!-1435 1239|-1410 1230!-1410 1230|-1333 1221!-1333 1221|-1274 1229!-1274 1229|-1263 1241!-1263 1241|-1255 1229!-1255 1229[-1247 1221 -1229 1221!-1229
+ 1221[-1219 1221 -1209 1229!-1209 1229[-1198 1236 -1195 1236!-1195 1236|-1179 1231!-1179 1231|-1162 1226!-1162 1226|-1115 1239!-1115 1239|-1106 1218!-1106 1218[-1100 1206 -1073 1206!-1073 1206|-1058 1209!-1058 1209[-1032 1177 -963 1166
+!-963 1166[-853 1149 -853 1200!-853 1200|-855 1214!-855 1214|-857 1216!-857 1216|-835 1221!-835 1221|-834 1221"/>
+                    <Edge fillStyle1="1" edges="
+!-979 1512|-1062 1505!-1062 1505|-1067 1502!-1067 1502|-1067 1498!-1067 1498|-1098 1498!-1098 1498|-1107 1501!-1107 1501|-1130 1502!-1130 1502|-1132 1521!-1132 1521|-1140 1526!-1140 1526|-1141 1525!-1141 1525|-1142 1533!-1142 1533|-1137
+ 1537!-1137 1537[-1129 1540 -1122 1547!-1122 1547|-1162 1553!-1162 1553|-1193 1561!-1193 1561|-1195 1565!-1195 1565|-1197 1576!-1197 1576[-1197 1587 -1164 1587!-1164 1587|-1137 1586!-1137 1586|-1134 1595!-1134 1595|-1121 1596!-1121 1596
+|-870 1591!-870 1591[-788 1591 -634 1559!-634 1559|-530 1536!-530 1536|-472 1541!-472 1541|-458 1538!-458 1538|-457 1527!-457 1527[-457 1523 -464 1517!-464 1517|-478 1504!-478 1504|-454 1496!-454 1496|-454 1483!-454 1483|-486 1479!-486
+ 1479[-458 1481 -458 1463!-458 1463|-459 1451!-459 1451|-532 1448!-532 1448[-586 1450 -588 1476!-588 1476|-698 1481!-698 1481|-706 1482!-706 1482|-737 1474!-737 1474|-747 1474!-747 1474|-732 1463!-732 1463|-732 1452!-732 1452[-759 1436
+ -791 1459!-791 1459|-831 1490!-831 1490|-842 1477!-842 1477[-852 1485 -852 1501!-852 1501|-864 1499!-864 1499|-864 1497!-864 1497|-872 1498!-872 1498|-897 1496!-897 1496|-948 1493!-948 1493[-967 1493 -979 1512!-142 1418[-163 1424 -163
+ 1452!-163 1452|-163 1456!-163 1456|-168 1495!-168 1495|-165 1523!-165 1523[-158 1541 -132 1541!-132 1541[-112 1541 -77 1424!-77 1424[-77 1373 -123 1402!-123 1402[-134 1409 -142 1418!-808 1515|-806 1514!-806 1514|-801 1515!-801 1515|-805
+ 1515!-805 1515|-808 1515"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!413 1175|425 1178!425 1178|439 1177!439 1177[500 1178 500 1279!500 1279[504 1294 500 1308!500 1308[493 1334 456 1337!456 1337[439 1398 421 1398!421 1398|408 1396!408 1396|408 1399!408 1399|408 1427!408 1427[402 1454 367 1454!367 1454
+[341 1454 321 1430!321 1430|315 1423!315 1423|290 1417!290 1417|281 1455!281 1455[281 1521 346 1581!346 1581|366 1601!366 1601[409 1609 436 1633!436 1633|435 1641!435 1641|411 1644!411 1644|409 1654!409 1654|388 1657!388 1657|303 1657
+!303 1657|299 1660!299 1660|300 1657!300 1657|257 1656!257 1656[199 1651 178 1619!178 1619|186 1611!186 1611|206 1607!206 1607|266 1621!266 1621[267 1595 320 1596!320 1596[308 1585 290 1576!290 1576|284 1586!284 1586|279 1591!279 1591
+|254 1500!254 1500|244 1449!244 1449|242 1449!242 1449[226 1449 216 1439!216 1439[208 1430 208 1418!208 1418[208 1376 241 1372!241 1372|245 1372!245 1372|244 1362!244 1362|246 1352!246 1352[237 1345 234 1329!234 1329|234 1298!234 1298
+|244 1269!244 1269|240 1245!240 1245|241 1242!241 1242|240 1244!240 1244|231 1234!231 1234|222 1255!222 1255[206 1275 159 1282!159 1282|148 1299!148 1299[115 1345 47 1346!47 1346|22 1352!22 1352|2 1350!2 1350|-11 1352!-11 1352|-18 1352
+!-18 1352[-5 1394 -5 1486!-5 1486[-5 1507 -16 1516!-16 1516|-25 1511!-25 1511|-39 1443!-39 1443[-42 1429 -42 1399!-42 1399|-38 1337!-38 1337|-39 1334!-39 1334|-58 1324!-58 1324|-76 1313!-76 1313[-88 1341 -117 1341!-117 1341|-139 1337
+!-139 1337|-139 1340!-139 1340[-139 1348 -145 1356!-145 1356|-155 1351!-155 1351|-152 1326!-152 1326|-158 1311!-158 1311|-174 1332!-174 1332[-185 1346 -207 1346!-207 1346|-215 1345!-215 1345[-222 1356 -235 1357!-235 1357|-243 1361!-243
+ 1361|-244 1367!-244 1367|-252 1367!-252 1367|-255 1362!-255 1362[-272 1362 -280 1348!-280 1348|-280 1361!-280 1361[-286 1387 -312 1387!-312 1387[-342 1387 -342 1340!-342 1340[-342 1286 -311 1290!-311 1290[-290 1292 -283 1314!-283 1314
+[-277 1295 -255 1297!-255 1297|-247 1299!-247 1299|-241 1298!-241 1298|-239 1265!-239 1265|-237 1216!-237 1216|-230 1216!-230 1216[-191 1233 -170 1233!-170 1233|-144 1229!-144 1229|-139 1230!-139 1230|-119 1234!-119 1234|-74 1239!-74
+ 1239|-62 1239!-62 1239|-62 1236!-62 1236[-62 1182 -4 1132!-4 1132[14 1116 27 1112!27 1112|29 1114!29 1114[42 1129 63 1129!63 1129|69 1135!69 1135[81 1132 87 1142!87 1142|90 1125!90 1125[109 1118 116 1100!116 1100|120 1083!120 1083|137
+ 1079!137 1079|180 1107!180 1107|203 1122!203 1122|203 1123!203 1123|204 1129!204 1129[183 1132 183 1155!183 1155|194 1170!194 1170|184 1177!184 1177|187 1190!187 1190|188 1189!188 1189[207 1167 218 1178!218 1178|227 1198!227 1198|244
+ 1211!244 1211|254 1210!254 1210|254 1211!254 1211|250 1220!250 1220[258 1212 269 1211!269 1211|280 1213!280 1213[281 1187 299 1179!299 1179|300 1174!300 1174|294 1129!294 1129|293 1129!293 1129|282 1127!282 1127|348 1120!348 1120|409
+ 1121!409 1121|413 1175"/>
+                    <Edge fillStyle1="1" edges="
+!134 1449[86 1478 86 1526!86 1526[86 1536 93 1545!93 1545|111 1557!111 1557|53 1564!53 1564|165 1569!165 1569|145 1576!145 1576|168 1578!168 1578|179 1570!179 1570|193 1561!193 1561[201 1561 217 1573!217 1573[233 1584 239 1584!239 1584
+|251 1582!251 1582[255 1587 255 1574!255 1574[255 1557 240 1545!240 1545|206 1521!206 1521|181 1524!181 1524[169 1531 169 1547!169 1547|121 1555!121 1555|136 1541!136 1541|143 1531!143 1531|156 1512!156 1512|183 1470!183 1470[183 1421
+ 134 1449!274 1574[266 1574 264 1582!264 1582|270 1588!270 1588[276 1596 276 1584!276 1584|274 1574"/>
+                    <Edge fillStyle0="1" edges="
+!-834 1221[-811 1244 -782 1244!-782 1244[-747 1244 -731 1214!-731 1214|-730 1213!-730 1213|-729 1214!-729 1214[-715 1226 -656 1226!-656 1226|-643 1224!-643 1224|-636 1229!-636 1229|-623 1232!-623 1232[-619 1192 -583 1191!-583 1191|-582
+ 1191!-582 1191|-568 1189!-568 1189|-547 1213!-547 1213|-547 1215!-547 1215|-538 1235!-538 1235|-538 1237!-538 1237|-542 1256!-542 1256[-542 1302 -563 1329!-563 1329|-562 1344!-562 1344|-568 1369!-568 1369|-584 1390!-584 1390|-584 1399
+!-584 1399[-597 1438 -648 1438!-648 1438[-676 1438 -702 1416!-702 1416[-725 1395 -725 1378!-725 1378[-725 1347 -694 1347!-694 1347|-689 1348!-689 1348|-694 1333!-694 1333|-714 1278!-714 1278|-725 1281!-725 1281[-722 1288 -722 1298!-722
+ 1298|-722 1320!-722 1320[-730 1341 -764 1341!-764 1341|-769 1341!-769 1341|-774 1341!-774 1341|-790 1337!-790 1337|-809 1356!-809 1356|-810 1357!-810 1357[-798 1364 -793 1385!-793 1385[-790 1397 -790 1439!-790 1439|-790 1459!-790 1459
+[-759 1436 -732 1452!-732 1452|-732 1463!-732 1463|-747 1474!-747 1474|-737 1474!-737 1474|-706 1482!-706 1482|-698 1481!-698 1481|-588 1476!-588 1476[-586 1450 -532 1448!-532 1448|-459 1451!-459 1451|-458 1463!-458 1463[-458 1481 -486
+ 1479!-486 1479|-454 1483!-454 1483|-454 1496!-454 1496|-478 1504!-478 1504|-464 1517!-464 1517[-457 1523 -457 1527!-457 1527|-458 1538!-458 1538|-472 1541!-472 1541|-525 1536!-525 1536|-525 1537!-525 1537|-526 1542!-526 1542[-518 1545
+ -518 1551!-518 1551|-518 1553!-518 1553|-510 1552!-510 1552|-501 1554!-501 1554|-500 1556!-500 1556|-502 1567!-502 1567|-518 1580!-518 1580|-602 1586!-602 1586[-638 1574 -640 1560!-640 1560[-790 1591 -870 1591!-870 1591|-954 1592!-954
+ 1592|-988 1595!-988 1595|-1042 1598!-1042 1598|-1100 1598!-1100 1598[-1100 1609 -1102 1606!-1102 1606|-1200 1613!-1200 1613|-1271 1616!-1271 1616|-1275 1617!-1275 1617|-1343 1623!-1343 1623|-1408 1631!-1408 1631|-1457 1628!-1457 1628
+|-1474 1621!-1474 1621|-1484 1618!-1484 1618|-1492 1607!-1492 1607|-1479 1597!-1479 1597|-1477 1594!-1477 1594|-1475 1594!-1475 1594|-1463 1587!-1463 1587|-1481 1547!-1481 1547|-1482 1512!-1482 1512|-1482 1480!-1482 1480|-1475 1452!-1475
+ 1452[-1522 1445 -1539 1424!-1539 1424[-1553 1407 -1553 1357!-1553 1357[-1556 1343 -1552 1331!-1552 1331[-1545 1306 -1512 1306!-1512 1306|-1483 1312!-1483 1312|-1471 1310!-1471 1310|-1466 1297!-1466 1297|-1467 1285!-1467 1285|-1466 1261
+!-1466 1261[-1459 1239 -1435 1239!-1435 1239|-1410 1230!-1410 1230|-1333 1221!-1333 1221|-1274 1229!-1274 1229|-1263 1241!-1263 1241|-1255 1229!-1255 1229[-1247 1221 -1229 1221!-1229 1221[-1219 1221 -1209 1229!-1209 1229[-1198 1236 -1195
+ 1236!-1195 1236|-1179 1231!-1179 1231|-1162 1226!-1162 1226|-1115 1239!-1115 1239|-1106 1218!-1106 1218[-1100 1206 -1073 1206!-1073 1206|-1058 1209!-1058 1209[-1032 1177 -963 1166!-963 1166[-853 1149 -853 1200!-853 1200|-855 1214!-855
+ 1214|-857 1216!-857 1216|-835 1221!-835 1221|-834 1221"/>
+                    <Edge fillStyle1="1" edges="
+!-1017 1332[-1012 1327 -1012 1314!-1012 1314|-997 1329!-997 1329|-989 1346!-989 1346|-988 1348!-988 1348[-1022 1365 -1022 1401!-1022 1401|-1021 1428!-1021 1428[-1015 1449 -992 1449!-992 1449[-953 1449 -937 1412!-937 1412|-929 1380!-929
+ 1380|-930 1372!-930 1372|-919 1376!-919 1376[-918 1364 -910 1359!-910 1359|-920 1312!-920 1312|-919 1301!-919 1301|-923 1273!-923 1273|-917 1263!-917 1263|-901 1263!-901 1263[-877 1263 -870 1298!-870 1298|-863 1317!-863 1317|-863 1322
+!-863 1322|-864 1358!-864 1358|-864 1360!-864 1360[-854 1364 -851 1374!-851 1374|-835 1369!-835 1369|-825 1391!-825 1391|-819 1407!-819 1407|-824 1404!-824 1404|-847 1462!-847 1462|-873 1498!-873 1498|-897 1496!-897 1496|-948 1493!-948
+ 1493[-967 1493 -979 1512!-979 1512|-1059 1505!-1059 1505|-1057 1493!-1057 1493|-1056 1473!-1056 1473|-1042 1453!-1042 1453|-1040 1427!-1040 1427[-1040 1387 -1046 1369!-1046 1369[-1050 1356 -1059 1346!-1059 1346[-1028 1343 -1017 1332
+!-1206 1346[-1176 1346 -1167 1328!-1167 1328|-1164 1315!-1164 1315[-1164 1307 -1167 1301!-1167 1301|-1157 1296!-1157 1296[-1148 1301 -1136 1329!-1136 1329[-1130 1343 -1093 1346!-1093 1346|-1090 1362!-1090 1362[-1119 1332 -1147 1354!-1147
+ 1354[-1122 1359 -1099 1388!-1099 1388[-1087 1403 -1079 1421!-1079 1421|-1078 1424!-1078 1424[-1078 1436 -1089 1496!-1089 1496|-1089 1498!-1089 1498|-1098 1498!-1098 1498|-1107 1501!-1107 1501|-1130 1502!-1130 1502|-1132 1521!-1132 1521
+|-1140 1526!-1140 1526|-1141 1525!-1141 1525|-1142 1533!-1142 1533|-1137 1537!-1137 1537[-1129 1540 -1122 1547!-1122 1547|-1162 1553!-1162 1553|-1186 1559!-1186 1559[-1208 1551 -1208 1522!-1208 1522|-1208 1516!-1208 1516|-1197 1498!-1197
+ 1498[-1192 1489 -1192 1471!-1192 1471[-1192 1429 -1197 1414!-1197 1414|-1195 1395!-1195 1395|-1201 1368!-1201 1368|-1207 1346!-1207 1346|-1206 1346!-830 1480|-833 1487!-833 1487|-834 1486!-834 1486|-833 1484!-833 1484|-830 1480!-1430
+ 1454[-1400 1454 -1394 1440!-1394 1440|-1394 1414!-1394 1414|-1390 1414!-1390 1414|-1386 1414!-1386 1414|-1374 1426!-1374 1426|-1354 1445!-1354 1445|-1349 1466!-1349 1466[-1334 1525 -1334 1552!-1334 1552[-1334 1559 -1344 1564!-1344 1564
+|-1367 1576!-1367 1576|-1412 1583!-1412 1583|-1413 1582!-1413 1582|-1414 1585!-1414 1585|-1422 1582!-1422 1582[-1436 1578 -1444 1564!-1444 1564|-1459 1541!-1459 1541|-1458 1493!-1458 1493[-1458 1467 -1467 1453!-1467 1453|-1430 1454!-1226
+ 1472|-1233 1504!-1233 1504|-1225 1528!-1225 1528|-1225 1556!-1225 1556|-1243 1558!-1243 1558[-1246 1533 -1271 1549!-1271 1549|-1291 1564!-1291 1564|-1307 1567!-1307 1567|-1307 1559!-1307 1559[-1307 1479 -1310 1454!-1310 1454[-1314 1425
+ -1322 1408!-1322 1408|-1313 1403!-1313 1403|-1300 1398!-1300 1398[-1296 1398 -1282 1416!-1282 1416|-1264 1430!-1264 1430[-1254 1438 -1234 1438!-1234 1438|-1232 1438!-1232 1438|-1220 1448!-1220 1448|-1226 1472!-1292 1588|-1307 1589!-1307
+ 1589|-1296 1586!-1296 1586|-1292 1588!-163 1456|-168 1495!-168 1495|-165 1523!-165 1523[-158 1541 -132 1541!-132 1541|-120 1532!-120 1532|-100 1540!-100 1540|-69 1544!-69 1544|-51 1522!-51 1522[-73 1489 -96 1480!-96 1480|-77 1424!-77
+ 1424[-77 1373 -123 1402!-123 1402[-134 1409 -142 1418!-142 1418[-163 1424 -163 1452!-163 1452|-163 1456!-806 1514|-801 1515!-801 1515|-805 1515!-805 1515|-808 1515!-808 1515|-806 1514!-93 1521|-115 1524!-115 1524|-108 1512!-108 1512
+|-95 1518!-95 1518|-93 1521!-239 1518|-245 1519!-245 1519|-232 1523!-232 1523|-239 1518"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="13" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!159 1282[206 1275 222 1255!222 1255|231 1234!231 1234|240 1244!240 1244|241 1242!241 1242|240 1245!240 1245|244 1269!244 1269|234 1298!234 1298|234 1329!234 1329[237 1345 246 1352!246 1352|244 1362!244 1362|245 1372!245 1372|241 1372
+!241 1372[208 1376 208 1418!208 1418[208 1429 214 1437!214 1437|212 1450!212 1450[208 1476 211 1511!211 1511|212 1526!212 1526|206 1521!206 1521|181 1524!181 1524[169 1531 169 1547!169 1547|121 1555!121 1555|136 1541!136 1541|183 1470
+!183 1470[183 1421 134 1449!134 1449[86 1478 86 1526!86 1526[86 1536 93 1545!93 1545|111 1557!111 1557|100 1558!100 1558|23 1486!23 1486|23 1463!23 1463|31 1431!31 1431|29 1382!29 1382[24 1353 -2 1354!-2 1354[12 1366 16 1388!16 1388|18
+ 1428!18 1428|16 1450!16 1450[10 1437 7 1417!7 1417[3 1392 -9 1386!-9 1386|-10 1389!-10 1389|-18 1352!-18 1352|-11 1352!-11 1352|2 1350!2 1350|22 1352!22 1352|47 1346!47 1346[115 1345 148 1299!148 1299|159 1282!5 1474[0 1470 -5 1469!-5
+ 1469|-6 1443!-6 1443|6 1469!6 1469|5 1474!290 1417|315 1423!315 1423|321 1430!321 1430|337 1445!337 1445|306 1535!306 1535[281 1496 281 1455!281 1455|290 1417!244 1449|270 1559!270 1559|243 1540!243 1540[228 1532 228 1514!228 1514|241
+ 1449!241 1449|244 1449!-1017 1332[-1012 1327 -1012 1314!-1012 1314|-997 1329!-997 1329|-988 1348!-988 1348[-1022 1365 -1022 1401!-1022 1401|-1021 1428!-1021 1428[-1015 1449 -992 1449!-992 1449[-953 1449 -937 1412!-937 1412|-929 1380
+!-929 1380|-930 1372!-930 1372|-919 1376!-919 1376[-918 1364 -910 1359!-910 1359|-920 1312!-920 1312|-919 1301!-919 1301|-923 1273!-923 1273|-917 1263!-917 1263|-901 1263!-901 1263[-877 1263 -870 1298!-870 1298|-863 1317!-863 1317|-864
+ 1360!-864 1360|-855 1367!-855 1367|-857 1412!-857 1412|-852 1471!-852 1471|-873 1498!-873 1498|-948 1493!-948 1493[-967 1493 -979 1512!-979 1512|-1057 1505!-1057 1505|-1054 1484!-1054 1484|-1056 1474!-1056 1474|-1056 1473!-1056 1473
+|-1042 1453!-1042 1453|-1040 1427!-1040 1427[-1040 1387 -1046 1369!-1046 1369[-1050 1356 -1059 1346!-1059 1346[-1028 1343 -1017 1332!-1206 1346[-1176 1346 -1167 1328!-1167 1328|-1164 1315!-1164 1315[-1164 1307 -1167 1301!-1167 1301|-1157
+ 1296!-1157 1296[-1148 1301 -1136 1329!-1136 1329[-1130 1343 -1093 1346!-1093 1346|-1090 1362!-1090 1362|-1108 1348!-1108 1348[-1128 1339 -1147 1354!-1147 1354[-1133 1357 -1120 1367!-1120 1367|-1127 1411!-1127 1411[-1127 1438 -1106 1453
+!-1106 1453|-1085 1473!-1085 1473|-1089 1496!-1089 1496|-1089 1498!-1089 1498|-1098 1498!-1098 1498|-1107 1501!-1107 1501|-1130 1502!-1130 1502|-1132 1521!-1132 1521|-1140 1526!-1140 1526|-1141 1525!-1141 1525|-1142 1533!-1142 1533|-1137
+ 1537!-1137 1537[-1129 1540 -1122 1547!-1122 1547|-1186 1559!-1186 1559[-1208 1551 -1208 1522!-1208 1522|-1208 1516!-1208 1516|-1197 1498!-1197 1498[-1192 1489 -1192 1471!-1192 1471[-1192 1429 -1197 1414!-1197 1414|-1195 1395!-1195 1395
+|-1207 1346!-1207 1346|-1206 1346!-1079 1421|-1078 1424!-1078 1424|-1080 1443!-1080 1443[-1096 1425 -1104 1382!-1104 1382|-1099 1388!-1099 1388[-1087 1403 -1079 1421!-830 1480|-833 1487!-833 1487|-834 1486!-834 1486|-834 1485!-834 1485
+|-833 1484!-833 1484|-830 1480!-819 1407|-824 1404!-824 1404|-835 1435!-835 1435|-846 1373!-846 1373|-835 1369!-835 1369|-819 1407!-1430 1454[-1400 1454 -1394 1440!-1394 1440|-1394 1414!-1394 1414|-1386 1414!-1386 1414|-1354 1445!-1354
+ 1445|-1349 1466!-1349 1466[-1334 1525 -1334 1552!-1334 1552[-1334 1559 -1344 1564!-1344 1564|-1347 1565!-1347 1565|-1347 1564!-1347 1564[-1353 1556 -1362 1556!-1362 1556[-1352 1525 -1352 1513!-1352 1513[-1352 1444 -1368 1436!-1368 1436
+[-1365 1459 -1365 1486!-1365 1486|-1379 1577!-1379 1577|-1394 1573!-1394 1573|-1435 1461!-1435 1461|-1435 1454!-1435 1454|-1430 1454!-1467 1453|-1460 1453!-1460 1453|-1463 1461!-1463 1461|-1467 1453!-1300 1398[-1296 1398 -1282 1416!-1282
+ 1416|-1264 1430!-1264 1430[-1254 1438 -1234 1438!-1234 1438|-1232 1438!-1232 1438|-1220 1448!-1220 1448|-1233 1504!-1233 1504|-1225 1528!-1225 1528|-1225 1556!-1225 1556|-1243 1558!-1243 1558[-1246 1533 -1271 1549!-1271 1549|-1291 1564
+!-1291 1564|-1307 1567!-1307 1567|-1307 1559!-1307 1559[-1307 1479 -1310 1454!-1310 1454[-1314 1425 -1322 1408!-1322 1408|-1313 1403!-1313 1403|-1300 1398!-1438 1500|-1413 1566!-1413 1566|-1420 1561!-1420 1561[-1438 1548 -1439 1518!-1439
+ 1518|-1438 1500!-806 1514|-801 1515!-801 1515|-808 1515!-808 1515|-806 1514!-93 1521|-115 1524!-115 1524|-108 1512!-108 1512|-95 1518!-95 1518|-93 1521"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#D58396">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1716" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-18.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1725" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" tx="-4.35" ty="61.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#C0EC35">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="20.7" centerPoint3DY="58.9">
+                  <matrix>
+                    <Matrix a="-0.201324462890625" b="0.0581817626953125" c="-0.0706787109375" d="-0.2445068359375" tx="6.8" ty="41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="35.55" centerPoint3DY="18.65">
+                  <matrix>
+                    <Matrix a="-0.201324462890625" b="0.0581817626953125" c="-0.0706787109375" d="-0.2445068359375" tx="21.65" ty="1.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1693" centerPoint3DX="84.65" centerPoint3DY="81.6">
+                  <matrix>
+                    <Matrix a="-0.0240631103515625" b="0.169631958007813" c="0.169631958007813" d="0.0240631103515625" tx="9.75" ty="5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1693" centerPoint3DX="84.65" centerPoint3DY="129.55">
+                  <matrix>
+                    <Matrix a="-0.0240631103515625" b="0.169631958007813" c="0.169631958007813" d="0.0240631103515625" tx="9.75" ty="53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#C4CA59">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="10.75" centerPoint3DY="62.35">
+                  <matrix>
+                    <Matrix a="-0.183975219726563" b="-0.10015869140625" c="0.131454467773438" d="-0.241470336914063" tx="-3.15" ty="45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="25.6" centerPoint3DY="22.1">
+                  <matrix>
+                    <Matrix a="-0.183975219726563" b="-0.10015869140625" c="0.131454467773438" d="-0.241470336914063" tx="11.7" ty="4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="56.5" centerPoint3DY="22.95">
+                  <matrix>
+                    <Matrix a="-0.201324462890625" b="0.0581817626953125" c="-0.0706787109375" d="-0.2445068359375" tx="42.6" ty="5.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#C16C62">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="1.5" centerPoint3DY="58.95">
+                  <matrix>
+                    <Matrix a="-0.0778656005859375" b="-0.194427490234375" c="0.26458740234375" d="-0.105972290039063" tx="-12.4" ty="41.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="16.35" centerPoint3DY="18.7">
+                  <matrix>
+                    <Matrix a="-0.0778656005859375" b="-0.194427490234375" c="0.26458740234375" d="-0.105972290039063" tx="2.45" ty="1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="46.55" centerPoint3DY="26.4">
+                  <matrix>
+                    <Matrix a="-0.183975219726563" b="-0.10015869140625" c="0.131454467773438" d="-0.241470336914063" tx="32.65" ty="9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#FCB825">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="-3.35" centerPoint3DY="51">
+                  <matrix>
+                    <Matrix a="0.0487213134765625" b="-0.203353881835938" c="0.259689331054688" d="0.0622406005859375" tx="-17.25" ty="33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="11.5" centerPoint3DY="10.75">
+                  <matrix>
+                    <Matrix a="0.0487213134765625" b="-0.203353881835938" c="0.259689331054688" d="0.0622406005859375" tx="-2.4" ty="-6.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="37.3" centerPoint3DY="23">
+                  <matrix>
+                    <Matrix a="-0.0778656005859375" b="-0.194427490234375" c="0.26458740234375" d="-0.105972290039063" tx="23.4" ty="5.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#D981F6">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="-2.7" centerPoint3DY="41.75">
+                  <matrix>
+                    <Matrix a="0.158554077148438" b="-0.136215209960938" c="0.16864013671875" d="0.196365356445313" tx="-16.6" ty="24.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="12.15" centerPoint3DY="1.5">
+                  <matrix>
+                    <Matrix a="0.158554077148438" b="-0.136215209960938" c="0.16864013671875" d="0.196365356445313" tx="-1.75" ty="-15.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="32.45" centerPoint3DY="15.05">
+                  <matrix>
+                    <Matrix a="0.0487213134765625" b="-0.203353881835938" c="0.259689331054688" d="0.0622406005859375" tx="18.55" ty="-2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#8F77AB">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="3.25" centerPoint3DY="35.35">
+                  <matrix>
+                    <Matrix a="0.205291748046875" b="-0.0403289794921875" c="0.0556640625" d="0.283294677734375" tx="-10.65" ty="18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="18.1" centerPoint3DY="-4.9">
+                  <matrix>
+                    <Matrix a="0.205291748046875" b="-0.0403289794921875" c="0.0556640625" d="0.283294677734375" tx="4.2" ty="-22.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="33.1" centerPoint3DY="5.8">
+                  <matrix>
+                    <Matrix a="0.158554077148438" b="-0.136215209960938" c="0.16864013671875" d="0.196365356445313" tx="19.2" ty="-11.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#C68583">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="13.8" centerPoint3DY="33.65">
+                  <matrix>
+                    <Matrix a="0.170364379882813" b="0.12066650390625" c="-0.1661376953125" d="0.222137451171875" tx="-0.1" ty="16.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="28.65" centerPoint3DY="-6.6">
+                  <matrix>
+                    <Matrix a="0.170364379882813" b="0.12066650390625" c="-0.1661376953125" d="0.222137451171875" tx="14.75" ty="-23.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="39.05" centerPoint3DY="-0.6">
+                  <matrix>
+                    <Matrix a="0.205291748046875" b="-0.0403289794921875" c="0.0556640625" d="0.283294677734375" tx="25.15" ty="-17.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#A089C3">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="22.75" centerPoint3DY="41.15">
+                  <matrix>
+                    <Matrix a="-0.17779541015625" b="-0.111312866210938" c="-0.139404296875" d="0.22265625" tx="8.85" ty="23.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="37.6" centerPoint3DY="0.9">
+                  <matrix>
+                    <Matrix a="-0.17779541015625" b="-0.111312866210938" c="-0.139404296875" d="0.22265625" tx="23.7" ty="-16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="49.6" centerPoint3DY="-2.3">
+                  <matrix>
+                    <Matrix a="0.170364379882813" b="0.12066650390625" c="-0.1661376953125" d="0.222137451171875" tx="35.7" ty="-19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#54B4E8">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="25" centerPoint3DY="51">
+                  <matrix>
+                    <Matrix a="-0.07037353515625" b="-0.197357177734375" c="-0.249008178710938" d="0.0887908935546875" tx="11.1" ty="33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="39.85" centerPoint3DY="10.75">
+                  <matrix>
+                    <Matrix a="-0.07037353515625" b="-0.197357177734375" c="-0.249008178710938" d="0.0887908935546875" tx="25.95" ty="-6.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="58.55" centerPoint3DY="5.2">
+                  <matrix>
+                    <Matrix a="-0.17779541015625" b="-0.111312866210938" c="-0.139404296875" d="0.22265625" tx="44.65" ty="-12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 33" color="#42AB96">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1724" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 34" color="#B8B255">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1697" centerPoint3DX="60.8" centerPoint3DY="15.05">
+                  <matrix>
+                    <Matrix a="-0.07037353515625" b="-0.197357177734375" c="-0.249008178710938" d="0.0887908935546875" tx="46.9" ty="-2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1271" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#E03177">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1695" centerPoint3DX="39.15" centerPoint3DY="81.7">
+                  <matrix>
+                    <Matrix a="0.0303192138671875" b="0.179916381835938" c="0.179916381835938" d="-0.0303192138671875" tx="-15.15" ty="23.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1695" centerPoint3DX="54" centerPoint3DY="41.45">
+                  <matrix>
+                    <Matrix a="0.0303192138671875" b="0.179916381835938" c="0.179916381835938" d="-0.0303192138671875" tx="-0.3" ty="-17.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36" color="#3CF7AF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1713" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.164764404296875" b="-0.0619659423828125" c="-0.0619659423828125" d="0.164764404296875" tx="80.4" ty="-39.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!475.5 -514[486 -504.5 491.5 -502.5!491.5 -502.5[512.5 -526 520 -546!520 -546[524.5 -558.5 510.5 -563.5!510.5 -563.5[498.5 -568.5 480 -529.5!480 -529.5[477 -521 475.5 -514"/>
+                    <Edge fillStyle1="2" edges="
+!222.5 1019|258.5 999!258.5 999|261 997.5!261 997.5|279 986.5!279 986.5[295 975.5 297 970!297 970|297 967!297 967|297 962!297 962|296.5 952!296.5 952[295 936 297.5 929!297.5 929[304 912.5 341 909!341 909|421 906.5!421 906.5[475 905 505.5
+ 894!505.5 894[547 879 560.5 843!560.5 843[568 823 549.5 798!549.5 798[540 784 538 779.5!538 779.5[533 769 536.5 759.5!536.5 759.5[538 755.5 575 724!575 724[612 692 619.5 672!619.5 672[625 658 623 654.5!623 654.5[618.5 644.5 586.5 636.5
+!586.5 636.5[602.5 622 661 582!661 582[711.5 548 713.5 541.5!713.5 541.5[717 532.5 709.5 526!709.5 526[704 521.5 688.5 515.5!688.5 515.5[639.5 497 554.5 502.5!554.5 502.5|498.5 507!498.5 507[472.5 508.5 464.5 505.5!464.5 505.5[388.5 477
+ 389 472!389 472[403 462 407 451!407 451[414 432.5 390 423.5!390 423.5[371 416.5 330 432.5!330 432.5|302 443.5!302 443.5[288.5 448 283 446.5!283 446.5[264.5 439.5 269.5 409!269.5 409[271 399.5 275 388.5!275 388.5|278.5 378.5!278.5 378.5
+[290 349.5 310 328.5!310 328.5[330.5 308 341.5 279.5!341.5 279.5[349.5 258.5 345 248!345 248[343 242 332.5 235!332.5 235[322.5 228 320.5 219.5!320.5 219.5[317 206.5 326.5 181.5!326.5 181.5[342 140.5 433 64.5!433 64.5|490 17!490 17[507
+ 13 525 -14.5!525 -14.5[534 -27.5 545.5 -50!545.5 -50|559.5 -77.5!559.5 -77.5[557.5 -82.5 562 -95!562 -95[564 -100 588.5 -123.5!588.5 -123.5[585.5 -126 583 -130!583 -130|582.5 -130.5!582.5 -130.5|600 -139!600 -139|612 -145!612 -145|642
+ -172!642 -172|675.5 -200.5!675.5 -200.5[681 -209.5 684.5 -219.5!684.5 -219.5[691.5 -238 693 -255.5!693 -255.5[695 -284 678 -290.5!678 -290.5[651 -301 594.5 -218!594.5 -218[567.5 -178.5 544.5 -135.5!544.5 -135.5[532 -128 520 -110.5!520
+ -110.5[508.5 -95 495.5 -72!495.5 -72[482.5 -63 463.5 -43!463.5 -43|432 -9!432 -9[414 9.5 403 16!403 16[385 26.5 373 43.5!373 43.5|356 74!356 74[346 92 335 101!335 101[323 111 304.5 116.5!304.5 116.5|301.5 110!301.5 110[295 93 297 87
+!297 87[299.5 80 322 50!322 50[345 20 346 17.5!346 17.5[347 15 346.5 10.5!346.5 10.5[349.5 7.5 351.5 2.5!351.5 2.5[354 -3.5 352.5 -11.5!352.5 -11.5|353 -12!353 -12[352.5 -19 344 -29.5!344 -29.5[332 -44 328.5 -51.5!328.5 -51.5[320.5 -67
+ 324 -87.5!324 -87.5|348.5 -195!348.5 -195[363 -257.5 365.5 -312.5!365.5 -312.5|338.5 -323.5!338.5 -323.5|333.5 -329.5!333.5 -329.5[341.5 -363 346.5 -374!346.5 -374[363.5 -413.5 396.5 -460.5!396.5 -460.5[429 -507.5 442.5 -539!442.5 -539
+[454.5 -566.5 457.5 -580!457.5 -580[465.5 -615 445.5 -622.5!445.5 -622.5[426 -629.5 409.5 -602.5!409.5 -602.5[400.5 -589 381 -540!381 -540[363 -495.5 350 -478.5!350 -478.5[330 -452.5 305.5 -461.5!305.5 -461.5[279.5 -471.5 282.5 -501!282.5
+ -501[283 -510 286.5 -520.5!286.5 -520.5|290.5 -529.5!290.5 -529.5[297.5 -545.5 309.5 -555.5!309.5 -555.5[330 -573.5 339.5 -584!339.5 -584|353.5 -616.5!353.5 -616.5[350 -620.5 319 -627!319 -627[306 -631.5 315 -662!315 -662[319 -676 339.5
+ -727!339.5 -727[358 -771.5 362 -792.5!362 -792.5[365 -807 362.5 -816.5!362.5 -816.5[366.5 -838.5 359.5 -841.5!359.5 -841.5[334.5 -851 312 -827!312 -827|309.5 -824.5!309.5 -824.5|306.5 -820.5!306.5 -820.5[297 -808.5 291.5 -794!291.5 -794
+[260 -722 253.5 -654!253.5 -654|249 -607.5!249 -607.5[246 -583.5 237.5 -564!237.5 -564[230 -546.5 212 -523.5!212 -523.5[194.5 -500.5 191.5 -494.5!191.5 -494.5[185 -479 181 -419!181 -419[177.5 -359 173 -349!173 -349[171.5 -345 143 -325
+!143 -325[115 -305.5 107.5 -289!107.5 -289[97.5 -266 79.5 -200.5!79.5 -200.5[61.5 -135 47.5 -103!47.5 -103[33 -69.5 6.5 -20!6.5 -20[-22.5 33.5 -36.5 51.5!-36.5 51.5[-43.5 60.5 -52.5 63.5!-52.5 63.5|-58.5 61!-58.5 61[-89 49.5 -109.5 80.5
+!-109.5 80.5[-119.5 96.5 -124 115.5!-124 115.5[-125 119 -127 131.5!-127 131.5|-138.5 171!-138.5 171|-136 174!-136 174[-135 176 -142 173.5!-142 173.5[-196.5 153 -220.5 115.5!-220.5 115.5|-234 90.5!-234 90.5[-240 79 -247 76.5!-247 76.5
+[-263 70.5 -271 96.5!-271 96.5|-274 98!-274 98[-285.5 83 -285 60.5!-285 60.5[-285 46 -290.5 34!-290.5 34|-292 17.5!-292 17.5[-296.5 -25.5 -299.5 -40!-299.5 -40[-306.5 -40.5 -315.5 -34!-315.5 -34|-331 -21!-331 -21[-352 -3 -368.5 -9.5!-368.5
+ -9.5[-395 -19.5 -400.5 -54!-400.5 -54[-404.5 -81 -396.5 -102.5!-396.5 -102.5[-400 -104 -406.5 -112.5!-406.5 -112.5[-411.5 -112 -423 -101.5!-423 -101.5[-434.5 -90.5 -440.5 -89!-440.5 -89[-464.5 -126 -481 -173.5!-481 -173.5[-488.5 -194.5
+ -506.5 -259!-506.5 -259[-521.5 -312.5 -535.5 -345!-535.5 -345[-556 -393 -587 -432.5!-587 -432.5|-594 -433!-594 -433[-597 -432.5 -599.5 -425!-599.5 -425[-601 -421.5 -597 -369!-597 -369[-592.5 -315.5 -598.5 -295!-598.5 -295|-599 -293!-599
+ -293[-607.5 -304.5 -642.5 -335!-642.5 -335[-677.5 -366 -686 -369.5!-686 -369.5[-693.5 -372 -699 -371!-699 -371[-706.5 -369 -710 -359.5!-710 -359.5|-710 -358.5!-710 -358.5|-704 -317!-704 -317|-703 -312.5!-703 -312.5|-702.5 -312.5!-702.5
+ -312.5[-693.5 -280 -675 -226.5!-675 -226.5[-626.5 -86.5 -624 -76.5!-624 -76.5|-623 -72.5!-623 -72.5|-643 -89.5!-643 -89.5[-659 -103.5 -662.5 -104.5!-662.5 -104.5[-683 -112.5 -688.5 -95.5!-688.5 -95.5[-691.5 -88 -687 -60.5!-687 -60.5
+|-681 -26.5!-681 -26.5|-681 -23!-681 -23[-704 -33.5 -717.5 -27.5!-717.5 -27.5[-726 -24 -728.5 -16.5!-728.5 -16.5[-730 -13 -721.5 13!-721.5 13|-703 71.5!-703 71.5[-674.5 162.5 -675.5 200.5!-675.5 200.5|-709.5 186.5!-709.5 186.5|-734.5
+ 173!-734.5 173[-765 161.5 -774.5 182.5!-774.5 182.5[-775.5 185.5 -751.5 222!-751.5 222[-716 277 -700 303.5!-700 303.5[-672.5 350 -658 384.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-658 384.5|-658 385!-658 385|-654 393.5"/>
+                    <Edge edges="
+!-654 393.5[#FFFD73.A5 #18E.1D -650.5 402.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-650.5 402.5|-645.5 419!-645.5 419|-640.5 406!-640.5 406|-627 415!-627 415[-621.5 412 -614.5 414.5!-614.5 414.5|-559.5 440.5!-559.5 440.5|-588.5 382!-588.5 382|-598 361!-598 361|-601 355.5!-601 355.5[-615 326 -619.5 311!-619.5 311|-619
+ 310!-619 310[-613.5 313.5 -572.5 349.5!-572.5 349.5[-532.5 385.5 -524.5 388.5!-524.5 388.5[-508 394.5 -500 386.5!-500 386.5|-495 376!-495 376[-485.5 352 -526.5 238!-526.5 238[-547.5 180.5 -573 117!-573 117|-573.5 115!-573.5 115|-572.5
+ 116!-572.5 116[-551.5 132.5 -540.5 136.5!-540.5 136.5[-524 142.5 -514 136.5!-514 136.5[-509 133 -506.5 128!-506.5 128[-499 108 -507.5 48.5!-507.5 48.5[-515 -4 -524.5 -29.5!-524.5 -29.5|-524.5 -33!-524.5 -33|-522.5 -31!-522.5 -31[-512.5
+ -19 -491 15!-491 15|-446 85.5!-446 85.5[-386 178.5 -366 186!-366 186[-349 192 -340.5 176!-340.5 176|-335 157.5!-335 157.5[-325 187.5 -273 292!-273 292[-220.5 396.5 -178 377.5!-178 377.5[-135 358 -116 328.5!-116 328.5[-110 319.5 -105
+ 307!-105 307|-100.5 296.5!-100.5 296.5[-98.5 291 -93 262.5!-93 262.5[-87.5 234.5 -85.5 229!-85.5 229[-83.5 224.5 -79.5 218.5!-79.5 218.5[-86.5 212 -75.5 216.5!-75.5 216.5[-58.5 222.5 -44.5 241.5!-44.5 241.5[-30.5 260.5 -26 262!-26 262
+[-0.5 271.5 19 239.5!19 239.5[25 229 29.5 216!29.5 216|33 205!33 205[41.5 182 68 62!68 62[94.5 -58.5 97 -87.5!97 -87.5[117 -82.5 128 -96!128 -96[132.5 -101 137.5 -115.5!137.5 -115.5[152 -154 164 -198!164 -198[172 -226.5 174.5 -244.5!174.5
+ -244.5|184 -259!184 -259[204.5 -288 223 -281!223 -281[236.5 -275.5 240.5 -259!240.5 -259[243 -247 241 -242!241 -242[235.5 -226.5 217 -204!217 -204[198.5 -181 194 -170!194 -170[187.5 -151.5 183.5 -129.5!183.5 -129.5[177.5 -94.5 189 -84
+!189 -84[229.5 -50 235 -42.5!235 -42.5[238.5 -37 237 -29.5!237 -29.5|229.5 -6.5!229.5 -6.5[216 33.5 215.5 56!215.5 56[215.5 71.5 222 84.5!222 84.5[229.5 99 230 106!230 106[231.5 121 221 149!221 149[216.5 160.5 199.5 184.5!199.5 184.5
+[182.5 208 179 217.5!179 217.5[169.5 241.5 175 256!175 256[178.5 265 192.5 275!192.5 275[206.5 285 210 292!210 292[216.5 304.5 208.5 325.5!208.5 325.5[207 330 190 354!190 354[173.5 378.5 166.5 397!166.5 397[163.5 404.5 160 422.5!160 422.5
+[154.5 449 154.5 473!154.5 473[153.5 547 201.5 565!201.5 565[217 571 254.5 550.5!254.5 550.5[274.5 539.5 281.5 536.5!281.5 536.5[295 531 303 534!303 534[313 537.5 315 545!315 545[316 548.5 315 560.5!315 560.5[314 570.5 317.5 576.5!317.5
+ 576.5[322.5 585 337.5 590.5!337.5 590.5[362.5 600 382 596!382 596|399 592!399 592[410.5 589.5 421.5 589.5!421.5 589.5|471 608.5!471 608.5|465.5 625.5!465.5 625.5[461.5 637 440.5 646.5!440.5 646.5|396 663.5!396 663.5[332 688 318 724.5
+!318 724.5[312.5 739.5 321 752.5!321 752.5[326.5 761.5 342.5 773!342.5 773[361 786.5 365 790.5!365 790.5[374.5 800 371 810!371 810[370 812.5 346.5 816!346.5 816[337.5 817 329 818.5!329 818.5[316.5 813.5 293.5 825.5!293.5 825.5|290.5 826.5
+!290.5 826.5[237.5 839 200.5 862!200.5 862[200 868.5 203.5 874!203.5 874[206 878 217 888.5!217 888.5[226 897 229 904.5!229 904.5[240 916.5 244.5 924!244.5 924[240.5 927 222 950!222 950[202.5 975 199.5 983!199.5 983[192.5 1001 221.5 1018.5
+!221.5 1018.5|222.5 1019"/>
+                    <Edge fillStyle0="1" edges="
+!318 -908.5[317.5 -894 311 -876.5!311 -876.5[307 -865.5 307 -872.5!307 -872.5[305 -872.5 303 -871!303 -871|295.5 -873!295.5 -873[286 -876.5 283.5 -901!283.5 -901|283.5 -902.5"/>
+                    <Edge fillStyle0="2" edges="
+!283.5 -902.5[282 -922.5 285.5 -932.5!285.5 -932.5[288.5 -940.5 291.5 -941!291.5 -941|302.5 -937.5!302.5 -937.5[318.5 -932 318 -909.5!318 -909.5|318 -908.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!318 -908.5|302.5 -913.5!302.5 -913.5|297 -909!297 -909[290 -903 283.5 -902.5"/>
+                    <Edge fillStyle1="2" edges="
+!261 -826.5|261.5 -844.5!261.5 -844.5[261 -878.5 249 -883!249 -883[237.5 -887.5 226 -875!226 -875[220.5 -869 217.5 -861.5!217.5 -861.5[213.5 -850 210.5 -839"/>
+                    <Edge fillStyle1="1" edges="
+!210.5 -839|206.5 -818!206.5 -818[203 -784.5 220 -778.5!220 -778.5[238.5 -771.5 249.5 -786!249.5 -786[253 -790.5 255 -797!255 -797|257 -803!257 -803[260 -811.5 261 -826.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!261 -826.5|259.5 -829!259.5 -829[248.5 -844 243 -846.5!243 -846.5[227 -852.5 215.5 -843!215.5 -843|210.5 -839"/>
+                    <Edge fillStyle1="1" edges="
+!408 -218.5[399 -204 391.5 -189!391.5 -189[384 -168 385 -159!385 -159[386.5 -147 402.5 -122"/>
+                    <Edge fillStyle1="2" edges="
+!402.5 -122|403.5 -120!403.5 -120|405.5 -121"/>
+                    <Edge fillStyle1="1" edges="
+!405.5 -121[444 -137.5 473 -167.5!473 -167.5|483 -178.5"/>
+                    <Edge fillStyle1="2" edges="
+!483 -178.5[504 -203.5 514.5 -231.5!514.5 -231.5[523.5 -255.5 524.5 -261.5!524.5 -261.5[527.5 -283 510.5 -289.5!510.5 -289.5[473.5 -303.5 429 -248!429 -248[417.5 -234 408 -218.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!408 -218.5[412 -218 415 -219!415 -219|422 -224.5!422 -224.5[432.5 -232 460 -222!460 -222[482.5 -213.5 483 -185.5!483 -185.5|483 -178.5!392 -87.5|390.5 -84.5!390.5 -84.5|399 -79!399 -79|422.5 -65.5!422.5 -65.5|425 -64.5"/>
+                    <Edge fillStyle1="2" edges="
+!425 -64.5|427.5 -70.5!427.5 -70.5|430 -77.5!430 -77.5[435.5 -91.5 435 -96!435 -96[434 -101 425.5 -104.5!425.5 -104.5[410 -110.5 394.5 -90.5!394.5 -90.5|394 -90!394 -90|392 -87.5"/>
+                    <Edge fillStyle1="1" edges="
+!392 -87.5[386 -79 382.5 -69!382.5 -69|376.5 -52.5!376.5 -52.5[374 -48.5 385 -44.5!385 -44.5[406 -36.5 420 -56!420 -56[422.5 -60 425 -64.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!402.5 -122|407.5 -122!407.5 -122|405.5 -121"/>
+                    <Edge fillStyle1="2" edges="
+!748.5 -149|749.5 -150.5!749.5 -150.5[761.5 -163 773 -179.5!773 -179.5|782 -193!782 -193[784.5 -200.5 778.5 -209.5!778.5 -209.5|768.5 -223.5!768.5 -223.5[757.5 -220 720.5 -188!720.5 -188|713 -182"/>
+                    <Edge fillStyle1="1" edges="
+!713 -182[682.5 -154.5 679 -145.5!679 -145.5[671 -125 684.5 -120!684.5 -120[711.5 -109.5 748.5 -149"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!748.5 -149[742 -173 728.5 -178!728.5 -178|713 -182"/>
+                    <Edge fillStyle1="1" edges="
+!618 -76.5[615.5 -69.5 615.5 -49.5!615.5 -49.5[609 -48 620.5 -43.5!620.5 -43.5[628.5 -41 638 -51!638 -51|646.5 -62.5!646.5 -62.5[651 -74 638.5 -92!638.5 -92[620.5 -82.5 618 -76.5"/>
+                    <Edge fillStyle1="2" edges="
+!791.5 605[802 598.5 811 590.5!811 590.5[818.5 584 819.5 581.5!819.5 581.5[825 567 805 559.5!805 559.5[792 554.5 771.5 560.5"/>
+                    <Edge fillStyle1="1" edges="
+!771.5 560.5[750 566.5 719.5 584!719.5 584[715.5 594.5 723 604!723 604[728.5 611.5 734.5 613.5!734.5 613.5[760 623 791 605!791 605|791.5 605"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!791.5 605|791.5 604.5!791.5 604.5[790 577.5 771.5 560.5"/>
+                    <Edge fillStyle1="1" edges="
+!648.5 486[648.5 488.5 655.5 491!655.5 491[667 495.5 681 486!681 486[691 478.5 693 474!693 474|693.5 468.5!693.5 468.5|691.5 465!691.5 465|682 460!682 460[668.5 455 650.5 473!650.5 473[646.5 484 648 483.5!648 483.5|648.5 486"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!34 775[6.5 764.5 -113 888!-113 888[-173 949.5 -227 1013.5!-227 1013.5[-237.5 1036 -238.5 1040!-238.5 1040[-242 1058.5 -223.5 1066!-223.5 1066|-176 1061!-176 1061[-129 1056 -123 1058.5!-123 1058.5[-115 1061.5 -114 1084!-114 1084[-112.5
+ 1106 -104.5 1109!-104.5 1109[-83.5 1117 7 995.5!7 995.5|14.5 978.5!14.5 978.5[15.5 971 1.5 966!1.5 966[-13.5 960 -37 965!-37 965[-48.5 967.5 -64 973!-64 973|-58.5 956!-58.5 956|-60.5 954!-60.5 954|-68.5 949.5!-68.5 949.5[-79 945.5 -87
+ 949!-87 949|-99.5 955.5!-99.5 955.5[-91 944 -25 871.5!-25 871.5[37 804 41.5 794!41.5 794[48 780 34 775"/>
+                    <Edge fillStyle1="1" edges="
+!694 591|684.5 586!684.5 586[671.5 581 652 602.5!652 602.5|650 609!650 609[651.5 608.5 652 610!652 610|653 615!653 615|662 620!662 620[670 623 682.5 614!682.5 614[693 606.5 694 603.5!694 603.5[695.5 600 697 593!697 593|694 591"/>
+                    <Edge fillStyle0="2" edges="
+!296 1014[322 995 338 1001!338 1001[344.5 1003 345.5 1005!345.5 1005|347 1007!347 1007[345.5 1014 344.5 1017!344.5 1017[344 1018.5 336 1028!336 1028|335 1029!335 1029|333.5 1031!333.5 1031|318 1047.5"/>
+                    <Edge fillStyle0="1" edges="
+!318 1047.5|315.5 1049.5!315.5 1049.5[283.5 1079.5 263.5 1072!263.5 1072[257 1069.5 255.5 1065.5!255.5 1065.5|253.5 1062!253.5 1062|256.5 1052!256.5 1052[278.5 1027 296 1014"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!296 1014|318 1047.5"/>
+                    <Edge fillStyle1="1" edges="
+!-1.5 1223.5|47.5 1195!47.5 1195[110 1158 131.5 1143!131.5 1143[148 1131.5 181 1096.5!181 1096.5[219 1056.5 226 1038.5!226 1038.5[228.5 1031.5 227 1028.5!227 1028.5|220 1020.5!220 1020.5|222 1019.5!222 1019.5|222.5 1019"/>
+                    <Edge fillStyle1="2" edges="
+!-722 -316.5|-724.5 -329!-724.5 -329|-725 -333!-725 -333[-735 -375 -753.5 -382!-753.5 -382[-764.5 -386.5 -770 -379!-770 -379[-773 -375 -773 -370.5!-773 -370.5[-780 -352 -774 -319.5!-774 -319.5|-771 -307"/>
+                    <Edge fillStyle1="1" edges="
+!-771 -307[-763 -280 -745 -273.5!-745 -273.5[-727 -266.5 -721.5 -282.5!-721.5 -282.5[-717.5 -292 -722 -316.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-722 -316.5|-722 -315!-722 -315[-735.5 -315.5 -751.5 -312!-751.5 -312|-771 -307!-363 152|-364 148!-364 148|-365.5 149.5!-365.5 149.5|-363 152!-534.5 106.5|-533.5 103.5!-533.5 103.5|-535 106!-535 106|-534.5 106.5"/>
+                    <Edge fillStyle1="2" edges="
+!-745 120.5[-758 100 -761 97.5!-761 97.5|-769.5 97.5!-769.5 97.5[-773 98.5 -776 106!-776 106|-776 106.5!-776 106.5|-776.5 107!-776.5 107|-776.5 107.5!-776.5 107.5|-776.5 111!-776.5 111|-776.5 111.5!-776.5 111.5|-776 112!-776 112|-776
+ 112.5!-776 112.5|-775 117.5!-775 117.5|-770 130.5"/>
+                    <Edge fillStyle1="1" edges="
+!-770 130.5|-768 135!-768 135[-757.5 158 -750 160.5!-750 160.5|-742.5 162.5!-742.5 162.5|-737.5 161.5!-737.5 161.5|-735 161!-735 161[-734 161 -731.5 154.5!-731.5 154.5[-729 148 -744 123!-744 123|-745 120.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-745 120.5[-759 127 -770 130.5"/>
+                    <Edge fillStyle1="1" edges="
+!-658 384.5|-654 393.5!-650.5 402.5[-647.5 411 -645.5 419!-645.5 419[-636 451 -642.5 469!-642.5 469[-643.5 471.5 -659.5 481.5!-659.5 481.5[-675 491 -678 499!-678 499[-684.5 516 -674 542.5"/>
+                    <Edge fillStyle1="2" edges="
+!-674 542.5[-668.5 556 -658.5 572.5"/>
+                    <Edge fillStyle1="1" edges="
+!-658.5 572.5|-642.5 595!-642.5 595|-610 638!-610 638[-595 658 -597.5 665!-597.5 665[-599.5 670 -610.5 680.5!-610.5 680.5[-621 691.5 -623.5 698.5!-623.5 698.5[-627 708 -620 729.5!-620 729.5[-658 728 -668.5 732.5!-668.5 732.5[-673.5 735
+ -678.5 747.5!-678.5 747.5|-667 764!-667 764[-653 785 -642 804.5!-642 804.5[-605 871.5 -604 922.5!-604 922.5[-603.5 933.5 -610 994.5!-610 994.5[-615 1043.5 -610.5 1047!-610.5 1047[-590.5 1062 -589.5 1060.5!-589.5 1060.5[-587.5 1055 -586
+ 1049!-586 1049[-580 1047 -575.5 1040!-575.5 1040|-569.5 1024!-569.5 1024|-568.5 1020.5!-568.5 1020.5|-567 1033.5!-567 1033.5[-565.5 1052 -561 1053.5!-561 1053.5[-553.5 1052.5 -552 1053!-552 1053[-547 1055 -544.5 1077!-544.5 1077|-544
+ 1086.5!-544 1086.5[-374 1204 -99 1243.5!-99 1243.5|-62 1249!-62 1249|-56.5 1246.5!-56.5 1246.5|-19.5 1227!-19.5 1227|-13.5 1229.5!-13.5 1229.5|-4.5 1225"/>
+                    <Edge edges="
+!-4.5 1225|-1.5 1223.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-521 354.5|-521.5 354!-521.5 354|-519.5 351.5!-519.5 351.5|-521 354.5!-552 465.5|-548 463.5!-548 463.5|-548.5 463!-548.5 463|-552 465.5!-431 598|-432.5 612.5!-432.5 612.5[-434 620.5 -437.5 624!-437.5 624[-443 619 -459 594.5!-459 594.5
+[-473.5 571.5 -477.5 569!-477.5 569[-486 571 -488 572!-488 572[-491 574 -494 582!-494 582[-511 651.5 -491 673!-491 673|-487 674!-487 674|-483 682!-483 682[-493 685 -497 695.5!-497 695.5[-496.5 867 -452 884!-452 884|-443 885.5!-443 885.5
+|-439 884.5!-439 884.5[-437.5 884 -435 877!-435 877[-432.5 871 -433.5 832.5!-433.5 832.5[-434.5 793.5 -433 789.5!-433 789.5|-427 776!-427 776[-423 778.5 -418.5 785!-418.5 785|-410.5 793.5!-410.5 793.5[-402.5 791.5 -400.5 790!-400.5 790
+[-397.5 788 -394.5 780!-394.5 780[-389 764.5 -391 742!-391 742|-375 699!-375 699[-374.5 706 -367 714!-367 714[-361.5 720 -358.5 721!-358.5 721[-349.5 724.5 -340.5 713.5!-340.5 713.5[-331.5 721 -325.5 735!-325.5 735|-322 742!-322 742[-319.5
+ 759.5 -311 800.5!-311 800.5[-297 866 -295.5 866.5!-295.5 866.5[-280 872.5 -248.5 838!-248.5 838[-242 830.5 -210 789.5!-210 789.5|-206.5 799!-206.5 799[-204.5 803 -197.5 806!-197.5 806[-186.5 810 -177 792.5!-177 792.5|-169.5 772.5!-169.5
+ 772.5|-163 754!-163 754|-160 747!-160 747[-154.5 732 -147.5 692!-147.5 692|-136.5 633.5!-136.5 633.5[-137.5 633 -136.5 632!-136.5 632|-143.5 628!-143.5 628[-148.5 626 -160 642!-160 642|-185.5 678.5!-185.5 678.5[-226 735.5 -262 741.5
+!-262 741.5|-263 743!-263 743[-268 735 -270 724.5!-270 724.5|-272.5 698.5!-272.5 698.5[-274.5 665 -292.5 652!-292.5 652[-302.5 655.5 -307.5 668!-307.5 668|-309.5 668.5!-309.5 668.5[-324 643.5 -329 594.5!-329 594.5[-333 549 -350.5 526
+!-350.5 526[-357.5 527 -359.5 528!-359.5 528[-364 530.5 -367 537.5!-367 537.5[-370 546 -379 608.5!-379 608.5[-381 607.5 -385.5 612.5!-385.5 612.5[-407.5 590 -411.5 589!-411.5 589[-428.5 582.5 -431 598!-471.5 621.5|-470.5 618!-470.5 618
+|-469 620!-469 620|-471.5 621.5"/>
+                    <Edge fillStyle0="1" edges="
+!-700 587.5|-696.5 594!-696.5 594[-685.5 616.5 -687.5 622.5!-687.5 622.5[-690.5 629.5 -691.5 630.5!-691.5 630.5|-695 631.5!-695 631.5|-698.5 633!-698.5 633|-706 631!-706 631[-717 627 -724.5 596"/>
+                    <Edge fillStyle0="2" edges="
+!-724.5 596|-729.5 572.5!-729.5 572.5|-729.5 570.5!-729.5 570.5[-727 564 -724 564!-724 564|-716.5 565.5!-716.5 565.5|-714 567.5!-714 567.5|-713.5 568!-713.5 568|-700.5 587!-700.5 587|-700 587.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-700 587.5|-724.5 596!-674 542.5[-669 546.5 -665 551!-665 551[-655.5 563 -658.5 572.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-12 825.5|-12 824.5!-12 824.5|-11.5 824.5!-11.5 824.5|-12 825.5"/>
+                    <Edge fillStyle1="1" edges="
+!-106.5 1184|-107 1183.5!-107 1183.5|-106.5 1183.5!-106.5 1183.5|-106.5 1184"/>
+                    <Edge edges="
+!-513.5 1015|-513.5 1014.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1733" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1295" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 37" color="#B6BA58">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1712" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.164764404296875" b="-0.0619659423828125" c="-0.0619659423828125" d="0.164764404296875" tx="80.4" ty="-34.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#330000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="
+!-315.5 -670|-314.5 -670.5!-314.5 -670.5|-315 -671.5!-315 -671.5|-315.5 -670"/>
+                    <Edge fillStyle1="2" edges="
+!-108.5 1211|-109.5 1213.5!-109.5 1213.5|-111.5 1221!-111.5 1221[-113 1225 -105 1228!-105 1228[-104 1228.5 59 1061.5!59 1061.5|61.5 1065!61.5 1065[86 1038.5 124 999.5!124 999.5[160.5 962.5 175 946!175 946[224.5 890.5 249.5 823.5!249.5
+ 823.5[261.5 791 264.5 768!264.5 768[267.5 745 274 728.5!274 728.5[286 696.5 310.5 675!310.5 675[322 664.5 358.5 641.5!358.5 641.5[391.5 621 409.5 602!409.5 602[436.5 573 453.5 529!453.5 529[464 500.5 465.5 465.5!465.5 465.5[467 430 474
+ 411.5!474 411.5[495 355 562.5 322!562.5 322[595 307 608 300!608 300[629.5 288.5 634.5 275.5!634.5 275.5[636.5 269.5 638.5 247.5!638.5 247.5|641.5 223!641.5 223[654.5 189 694 153.5!694 153.5|710 148!710 148|757 131!757 131[784.5 123 794.5
+ 115.5!794.5 115.5[804 108.5 810 93!810 93[821.5 62.5 789.5 50.5!789.5 50.5[775.5 45 761.5 56!761.5 56[727.5 64 655 120.5!655 120.5[639.5 128 622.5 141!622.5 141|591 166.5!591 166.5[549.5 199.5 510 213!510 213[470.5 227 411 253.5!411
+ 253.5|323 292.5!323 292.5[323 283.5 309 247.5!309 247.5[293 208.5 283.5 205!283.5 205[270 200 247 211.5!247 211.5[224 223 216.5 220.5!216.5 220.5[194.5 212 179.5 180!179.5 180[170 160.5 157 114!157 114[144 66.5 135.5 48!135.5 48[121
+ 16 100 8!100 8[88.5 4 67 5.5!67 5.5[65 -15.5 59 -56!59 -56[47 -140 50 -176!50 -176[51 -191.5 61 -224.5!61 -224.5[73.5 -266.5 76.5 -279.5!76.5 -279.5[91 -345 52 -359.5!52 -359.5[35.5 -366 26 -350!26 -350[21 -342 19 -332!19 -332[10 -307
+ 10 -223!10 -223|11 -180.5!11 -180.5[-10 -175 -13.5 -165!-13.5 -165[-22.5 -141 -23.5 -90.5!-23.5 -90.5|-23.5 -70.5!-23.5 -70.5|-30 -36!-30 -36|-39 -33!-39 -33|-50.5 -59.5!-50.5 -59.5[-60 -82.5 -80 -99!-80 -99[-108 -123 -166 -144.5!-166
+ -144.5[-195 -155.5 -223.5 -244!-223.5 -244|-237.5 -287!-237.5 -287[-238.5 -308.5 -235.5 -331!-235.5 -331|-226 -377.5!-226 -377.5[-221 -404 -221.5 -423!-221.5 -423[-223 -449 -235 -476!-235 -476[-240.5 -488.5 -265 -593!-265 -593[-292 -693
+ -312.5 -700.5!-312.5 -700.5[-325.5 -705.5 -332.5 -696.5!-332.5 -696.5[-336.5 -692 -337.5 -686!-337.5 -686[-343 -671.5 -327.5 -554!-327.5 -554[-310 -421 -309.5 -413!-309.5 -413[-334 -416 -344 -408!-344 -408[-349.5 -403.5 -355 -389!-355
+ -389[-359.5 -377.5 -349 -273.5!-349 -273.5[-338.5 -163.5 -324.5 -108!-324.5 -108|-323.5 -108!-323.5 -108[-315 -23.5 -347.5 63!-347.5 63|-357.5 90!-357.5 90[-368.5 113.5 -376.5 110!-376.5 110[-387.5 106 -393 94!-393 94[-396 87 -399.5
+ 69!-399.5 69[-403 52 -407 44!-407 44[-413 31.5 -426 26.5!-426 26.5[-434.5 23.5 -439 2!-439 2|-446.5 -44.5!-446.5 -44.5[-456.5 -112 -484.5 -122.5!-484.5 -122.5[-499.5 -128 -507 -120.5!-507 -120.5[-511 -117 -512.5 -111!-512.5 -111[-518
+ -96 -513.5 11!-513.5 11[-508.5 123 -510 132.5!-510 132.5|-543.5 119!-543.5 119[-571.5 108.5 -590.5 124!-590.5 124[-600 132 -604 142.5!-604 142.5[-611 160.5 -608.5 224.5!-608.5 224.5[-606.5 288.5 -610 298.5!-610 298.5[-611.5 303 -639.5
+ 346.5!-639.5 346.5[-649.5 373.5 -654.5 401!-654.5 401|-664 428!-664 428[-666.5 442 -660 455.5!-660 455.5[-660 495.5 -650.5 545!-650.5 545[-645.5 571.5 -625.5 652.5!-625.5 652.5[-607.5 728 -598.5 780.5!-598.5 780.5|-593 778!-593 778[-566
+ 968.5 -536.5 1060.5!-536.5 1060.5|-536 1062!-536 1062|-519.5 1067.5"/>
+                    <Edge fillStyle1="1" edges="
+!-519.5 1067.5|-513.5 1072!-513.5 1072[-447.5 1119 -269.5 1186!-269.5 1186[-207.5 1209.5 -156 1213!-156 1213[-127.5 1215 -108.5 1211"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-108.5 1211|-102.5 1209.5!-102.5 1209.5|-100.5 1204.5!-100.5 1204.5|-102 1202.5!-102 1202.5|-102.5 1202!-102.5 1202[-83 1176.5 -12.5 1110.5!-12.5 1110.5[47 1055 82.5 1024.5!82.5 1024.5[97.5 1005 114 986!114 986|160.5 933.5!160.5 933.5
+[208 879 231.5 816!231.5 816[242 788.5 245 765.5!245 765.5[248 742.5 255 723.5!255 723.5|256.5 720!256.5 720[259.5 704 262.5 697!262.5 697[275 663.5 325.5 602.5!325.5 602.5[376.5 541.5 381.5 527.5!381.5 527.5[384.5 519.5 385 491.5!385
+ 491.5[385.5 464 396 436.5!396 436.5[409 401.5 430 376.5!430 376.5[450.5 351.5 457 334.5!457 334.5[462.5 319.5 463.5 314!463.5 314|439 327.5!439 327.5|396 349.5!396 349.5[333.5 378 305.5 367.5!305.5 367.5[290 362 241.5 277!241.5 277[240.5
+ 276.5 213 279.5!213 279.5[183.5 281.5 172 277!172 277[137.5 264 121.5 232.5!121.5 232.5[113.5 217.5 101.5 170!101.5 170[91 127.5 76.5 105.5!76.5 105.5[54 72 9 55!9 55[5.5 53.5 -23.5 52!-23.5 52[-53 50.5 -63 46.5!-63 46.5[-96.5 34 -109.5
+ 18.5!-109.5 18.5[-114.5 12.5 -127.5 -14!-127.5 -14[-139 -39 -160.5 -60!-160.5 -60[-191.5 -91.5 -251.5 -128!-251.5 -128[-253.5 -123 -262 -110.5!-262 -110.5|-267 -36.5!-267 -36.5[-274.5 43 -286 73.5!-286 73.5|-291.5 90!-291.5 90[-299.5
+ 109.5 -309 124!-309 124[-340 172 -379.5 157!-379.5 157[-397.5 150 -421.5 123.5!-421.5 123.5[-446 96.5 -447 96!-447 96[-458 92 -472 120!-472 120[-482.5 141 -486 157.5!-486 157.5[-489.5 176.5 -498.5 183.5!-498.5 183.5[-505 188.5 -517 188.5
+!-517 188.5[-531.5 189 -535.5 190!-535.5 190[-545.5 193.5 -550.5 206.5!-550.5 206.5[-551 208.5 -549.5 250.5!-549.5 250.5[-549.5 296.5 -557.5 318!-557.5 318[-562.5 331.5 -586 352.5!-586 352.5[-611.5 375.5 -616.5 384.5!-616.5 384.5[-623.5
+ 397 -633.5 424.5!-633.5 424.5[-636.5 450.5 -635 479!-635 479[-632.5 531 -615.5 602!-615.5 602|-589 706.5!-589 706.5[-581 744 -583 764.5!-583 764.5[-574.5 788 -567 819.5!-567 819.5[-562 840 -549 907!-549 907[-534.5 982 -519.5 1067.5"/>
+                    <Edge fillStyle1="2" edges="
+!-433.5 -489[-436 -483 -429.5 -441.5!-429.5 -441.5[-422.5 -398 -415.5 -388!-415.5 -388|-409 -387!-409 -387[-407 -387.5 -405 -393!-405 -393[-397.5 -412 -402.5 -446!-402.5 -446[-407.5 -478.5 -418 -495!-418 -495|-428 -497!-428 -497|-430
+ -495!-430 -495[-432 -494 -433.5 -489!-713.5 -275.5[-719 -260 -713.5 -220.5!-713.5 -220.5[-706.5 -174.5 -684.5 -166.5!-684.5 -166.5|-671 -163!-671 -163[-669 -163 -666 -171.5!-666 -171.5[-664.5 -176 -664 -191.5!-664 -191.5[-664 -209 -666
+ -226.5!-666 -226.5|-668.5 -240.5!-668.5 -240.5|-666.5 -239.5!-666.5 -239.5[-654.5 -244.5 -653.5 -246.5!-653.5 -246.5[-647 -265 -662 -321!-662 -321[-677.5 -378 -694 -387!-694 -387|-706.5 -381.5!-706.5 -381.5[-709 -374 -708.5 -353.5!-708.5
+ -353.5[-708 -331.5 -704 -309.5!-704 -309.5|-698 -284!-698 -284[-708 -285.5 -713.5 -275.5!-656 -98.5[-667 -102.5 -671.5 -87!-671.5 -87[-674.5 -79 -667 -44!-667 -44[-658.5 -7 -648.5 -3.5!-648.5 -3.5[-639.5 0 -635.5 -5.5!-635.5 -5.5|-632.5
+ -12!-632.5 -12[-631 -16.5 -640 -55.5!-640 -55.5[-649.5 -96 -656 -98.5"/>
+                    <Edge edges="
+!-489.5 -97|-489 -97.5"/>
+                    <Edge fillStyle1="2" edges="
+!-39.5 -375.5[-41.5 -375.5 -43.5 -370!-43.5 -370[-46.5 -362.5 -45.5 -332.5!-45.5 -332.5[-45 -300 -39 -298!-39 -298[-29 -294 -24.5 -305.5!-24.5 -305.5[-21.5 -313.5 -22 -336!-22 -336[-22.5 -365.5 -32.5 -374.5!-32.5 -374.5|-39.5 -375.5!-24.5
+ -266|-32 -268!-32 -268[-33 -267.5 -35.5 -261.5!-35.5 -261.5[-37.5 -256 -36.5 -241.5!-36.5 -241.5[-35 -225.5 -30.5 -220.5!-30.5 -220.5|-24 -220!-24 -220[-22 -220 -20 -225.5!-20 -225.5[-16.5 -234 -18 -248.5!-18 -248.5[-19 -264 -24.5 -266"/>
+                    <Edge fillStyle0="2" edges="
+!-315 -263.5|-317.5 -264!-317.5 -264|-316.5 -256!-316.5 -256|-315 -263.5"/>
+                    <Edge fillStyle1="2" edges="
+!827 151[806 143 772.5 171!772.5 171|770.5 172!770.5 172|759.5 180.5!759.5 180.5[746.5 191.5 738 204.5!738 204.5[736 210.5 739 217.5!739 217.5[741.5 224 746 226!746 226[754 228.5 762 228.5!762 228.5[781.5 232 805.5 209.5!805.5 209.5|806
+ 209.5!806 209.5|806.5 208.5!806.5 208.5|807.5 207.5!807.5 207.5|808 207.5!808 207.5[826.5 190 830 179.5!830 179.5[833 173 834 166.5!834 166.5[836 154.5 827 151!685.5 212.5|679.5 216!679.5 216[665.5 225.5 663.5 229.5!663.5 229.5|661.5
+ 237.5!661.5 237.5|662 240!662 240[662.5 242.5 667.5 244!667.5 244[672.5 246 679.5 243.5!679.5 243.5[688 244.5 697.5 237.5!697.5 237.5[706.5 231 708 227.5!708 227.5|708 226.5!708 226.5[716 221 717 218.5!717 218.5|718.5 211!718.5 211|708.5
+ 205!708.5 205[701.5 202.5 685.5 212.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1695" centerPoint3DX="74.95" centerPoint3DY="45.75">
+                  <matrix>
+                    <Matrix a="0.0303192138671875" b="0.179916381835938" c="0.179916381835938" d="-0.0303192138671875" tx="20.65" ty="-12.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1723" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-18.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1270" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-18.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1306" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 38" color="#2BD5DF">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1718" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1282" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-18.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1294" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-18.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#5CB989">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1693" centerPoint3DX="60.3" centerPoint3DY="96.2">
+                  <matrix>
+                    <Matrix a="-0.0240631103515625" b="0.169631958007813" c="0.169631958007813" d="0.0240631103515625" tx="-14.6" ty="20.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1693" centerPoint3DX="84.65" centerPoint3DY="68.4">
+                  <matrix>
+                    <Matrix a="-0.0240631103515625" b="0.169631958007813" c="0.169631958007813" d="0.0240631103515625" tx="9.75" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1717" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-18.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1300" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-18.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 453" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.134201049804688" b="-0.05047607421875" c="-0.05047607421875" d="0.134201049804688" tx="63.25" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 40" color="#B276CC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1691" centerPoint3DX="72.8" centerPoint3DY="131.1">
+                  <matrix>
+                    <Matrix a="-0.0860748291015625" b="0.082183837890625" c="0.082183837890625" d="0.0860748291015625" tx="-13.4" ty="21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1691" centerPoint3DX="50.4" centerPoint3DY="104.9">
+                  <matrix>
+                    <Matrix a="-0.0860748291015625" b="0.082183837890625" c="0.082183837890625" d="0.0860748291015625" tx="-35.8" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1691" centerPoint3DX="36.9" centerPoint3DY="128.55">
+                  <matrix>
+                    <Matrix a="-0.0860748291015625" b="0.082183837890625" c="0.082183837890625" d="0.0860748291015625" tx="-49.3" ty="18.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1691" centerPoint3DX="7.05" centerPoint3DY="170.05">
+                  <matrix>
+                    <Matrix a="0.002685546875" b="0.118789672851563" c="0.118789672851563" d="-0.002685546875" tx="-79.15" ty="59.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 41" color="#3E96DD">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1689" centerPoint3DX="71.55" centerPoint3DY="125.7">
+                  <matrix>
+                    <Matrix a="-0.05511474609375" b="0.105667114257813" c="0.105667114257813" d="0.05511474609375" tx="-24.55" ty="29.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1689" centerPoint3DX="62.2" centerPoint3DY="112.65">
+                  <matrix>
+                    <Matrix a="-0.05511474609375" b="0.105667114257813" c="0.105667114257813" d="0.05511474609375" tx="-33.9" ty="16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1689" centerPoint3DX="35.3" centerPoint3DY="144">
+                  <matrix>
+                    <Matrix a="0.03546142578125" b="0.113571166992188" c="0.113571166992188" d="-0.03546142578125" tx="-60.8" ty="47.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1689" centerPoint3DX="31.45" centerPoint3DY="161.55">
+                  <matrix>
+                    <Matrix a="0.076171875" b="0.091217041015625" c="0.091217041015625" d="-0.076171875" tx="-64.65" ty="65.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 42" color="#AA84A4">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1687" centerPoint3DX="83.9" centerPoint3DY="122.2">
+                  <matrix>
+                    <Matrix a="-0.0920867919921875" b="0.0754852294921875" c="0.0754852294921875" d="0.0920867919921875" tx="-6.35" ty="33.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1687" centerPoint3DX="110.55" centerPoint3DY="110.5">
+                  <matrix>
+                    <Matrix a="-0.0920867919921875" b="0.0754852294921875" c="0.0754852294921875" d="0.0920867919921875" tx="20.3" ty="21.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1687" centerPoint3DX="112.95" centerPoint3DY="123.7">
+                  <matrix>
+                    <Matrix a="-0.0920867919921875" b="0.0754852294921875" c="0.0754852294921875" d="0.0920867919921875" tx="22.7" ty="34.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1687" centerPoint3DX="98.2" centerPoint3DY="139.35">
+                  <matrix>
+                    <Matrix a="-0.0920867919921875" b="0.0754852294921875" c="0.0754852294921875" d="0.0920867919921875" tx="7.95" ty="50.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 43" color="#C3E7A2">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1685" centerPoint3DX="48.6" centerPoint3DY="122.15">
+                  <matrix>
+                    <Matrix a="-0.0232391357421875" b="0.11724853515625" c="0.11724853515625" d="0.0232391357421875" tx="-24.5" ty="43.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1685" centerPoint3DX="42.85" centerPoint3DY="120">
+                  <matrix>
+                    <Matrix a="-0.0232391357421875" b="0.11724853515625" c="0.11724853515625" d="0.0232391357421875" tx="-30.25" ty="41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1685" centerPoint3DX="28.1" centerPoint3DY="138.5">
+                  <matrix>
+                    <Matrix a="0.0448760986328125" b="0.110549926757813" c="0.110549926757813" d="-0.0448760986328125" tx="-45" ty="59.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1685" centerPoint3DX="27.15" centerPoint3DY="144.95">
+                  <matrix>
+                    <Matrix a="0.0677337646484375" b="0.0981292724609375" c="0.0981292724609375" d="-0.0677337646484375" tx="-45.95" ty="66.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 44" color="#A5B546">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1683" centerPoint3DX="54" centerPoint3DY="115.1">
+                  <matrix>
+                    <Matrix a="-0.108688354492188" b="0.0502471923828125" c="0.0502471923828125" d="0.108688354492188" tx="-7.55" ty="47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1683" centerPoint3DX="67.5" centerPoint3DY="109.05">
+                  <matrix>
+                    <Matrix a="-0.108688354492188" b="0.0502471923828125" c="0.0502471923828125" d="0.108688354492188" tx="5.95" ty="40.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1683" centerPoint3DX="66.45" centerPoint3DY="119.55">
+                  <matrix>
+                    <Matrix a="-0.108688354492188" b="0.0502471923828125" c="0.0502471923828125" d="0.108688354492188" tx="4.9" ty="51.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1683" centerPoint3DX="65.9" centerPoint3DY="126.15">
+                  <matrix>
+                    <Matrix a="-0.108688354492188" b="0.0502471923828125" c="0.0502471923828125" d="0.108688354492188" tx="4.35" ty="58.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 45" color="#E19835">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1681" centerPoint3DX="55.8" centerPoint3DY="129.15">
+                  <matrix>
+                    <Matrix a="-0.13092041015625" b="0.0147857666015625" c="0.0147857666015625" d="0.13092041015625" tx="-8.35" ty="52.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1681" centerPoint3DX="59.85" centerPoint3DY="132.1">
+                  <matrix>
+                    <Matrix a="-0.130844116210938" b="-0.0146331787109375" c="-0.0146331787109375" d="0.130844116210938" tx="-4.3" ty="55.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1681" centerPoint3DX="66.7" centerPoint3DY="148.55">
+                  <matrix>
+                    <Matrix a="-0.0574951171875" b="-0.118240356445313" c="-0.118240356445313" d="0.0574951171875" tx="2.55" ty="71.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 46" color="#F1C71D">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1679" centerPoint3DX="41.8" centerPoint3DY="114.6">
+                  <matrix>
+                    <Matrix a="-0.120010375976563" d="0.120010375976563" tx="-11.85" ty="62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 47" color="#FA843D">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1677" centerPoint3DX="21.7" centerPoint3DY="104.4">
+                  <matrix>
+                    <Matrix a="-0.098785400390625" b="-0.015228271484375" c="-0.015228271484375" d="0.098785400390625" tx="-17.75" ty="68.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 48" color="#44CC82">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1675" centerPoint3DX="2.5" centerPoint3DY="93.85">
+                  <matrix>
+                    <Matrix a="-0.0399169921875" b="-0.0912933349609375" c="-0.0912933349609375" d="0.0399169921875" tx="-21.95" ty="71.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 49" color="#7664BA">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2" centerPoint3DX="76.2" centerPoint3DY="157.65">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-10.45" ty="71"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#C39966" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728" soundName="音效/sound49.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

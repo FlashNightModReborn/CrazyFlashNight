@@ -1,0 +1,91 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/通缉令UI/通缉令动画" itemID="6637c4fa-000028b0" lastModified="1714930938">
+  <timeline>
+    <DOMTimeline name="通缉令动画">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.2667236328125" d="0.2667236328125" tx="88" ty="68"/>
+                        </matrix>
+                        <GradientEntry color="#FFCC00" ratio="0"/>
+                        <GradientEntry color="#57480F" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3358 5360S2|0 5360!0 5360|0 0!0 0|3358 0!3358 0|3358 5360"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 977" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.35174560546875" d="4.35174560546875" tx="85.05" ty="57.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="100.15" height="34.9" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="0.815841674804688" d="0.815841674804688" tx="44.4" ty="85.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>A</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="28" bitmapSize="560" face="GillSans-UltraBoldCondensed" fillColor="#CC0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>.ARMY</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="28" bitmapSize="560" face="GillSans-UltraBoldCondensed"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-8.5" width="124.45" height="71.8" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="31" ty="157.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>CONTRACT</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" size="28" bitmapSize="560" face="GillSans-UltraBoldCondensed"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;MISSION</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" leftMargin="13" size="28" bitmapSize="560" face="GillSans-UltraBoldCondensed"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="bitmap" width="56.2" height="7" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="106" ty="257"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>NO PICTURE</characters>
+                      <textAttrs>
+                        <DOMTextAttrs rotation="true" lineSpacing="0" size="7" bitmapSize="140" face="7px2bus" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

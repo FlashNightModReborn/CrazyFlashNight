@@ -1,0 +1,616 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2035" itemID="6597607e-00000a84" lastModified="1744812329">
+  <timeline>
+    <DOMTimeline name="Symbol 2035" currentFrame="1">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#CDFE1F">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" name="等待" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="7" name="成功" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="5" name="失败" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#73AABA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 刷新数据()
+{
+	gotoAndStop(1);
+	确认按钮._visible = 1;
+	if (this.宠物数据)
+	{
+		刷新宠物数据();
+	}
+	else
+	{
+		刷新佣兵数据();
+	}
+}
+
+function 刷新佣兵数据()
+{
+	k点价格 = 0;
+/*	if (_root.isEasyMode() == true)
+	{
+		金币价格 = Number(佣兵数据[0]) * 1000;
+	}
+	else if (_root.isChallengeMode() == true)
+	{
+		金币价格 = Number(佣兵数据[0]) * 15000;
+	}
+	else if (Number(佣兵数据[0]) >= 50)
+	{
+		金币价格 = Number(佣兵数据[0]) * 25000 - 1000000;
+	}
+	else if (Number(佣兵数据[0]) >= 10)
+	{
+		金币价格 = Number(佣兵数据[0]) * 5000 - 20000;
+	}
+	else
+	{
+		金币价格 = 2500 + Number(佣兵数据[0]) * 2500;
+	}*/
+	金币价格 = 佣兵数据[18];
+	var 价格倍率 = 1;
+	if (_root.主角被动技能.口才 && _root.主角被动技能.口才.启用)
+	{
+		价格倍率 = 1 - _root.主角被动技能.口才.等级 * 0.02;
+	}
+	金币价格 = Math.floor(金币价格 * 价格倍率);
+	txt.text = _root.获得翻译("你确定要雇佣") + 佣兵数据[1] + _root.获得翻译("吗？") + "\r" + _root.获得翻译("等级") + ": " + 佣兵数据[0] + "\r" + _root.获得翻译("金币身价") + "： " + 金币价格 + "\r" + _root.获得翻译("K点身价") + "： " + k点价格;
+	是否k点雇佣兵赚k点支付 = 0;
+}
+
+function 刷新宠物数据()
+{
+	var 宠物对象 = _root.gameworld[当前NPC];
+	this.金币价格 = 宠物对象.雇佣价格;
+	this.k点价格 = 0;
+	txt.text = _root.获得翻译("你确定要招募") + 宠物对象.名字 + _root.获得翻译("吗？") + "\r" + _root.获得翻译("等级") + ": " + 宠物数据[1] + "\r" + _root.获得翻译("金币身价") + "： " + 金币价格;
+}
+
+function 刷新数据纯K点()
+{
+	gotoAndStop(1);
+	//k点价格 = Number(佣兵数据[0]) * 20;
+	//金币价格 = Number(佣兵数据[0]) * 1000;
+	txt.text = _root.获得翻译("你确定要雇佣") + 佣兵数据[1] + _root.获得翻译("吗？") + "\r" + _root.获得翻译("等级") + ": " + 佣兵数据[0] + "\r" + _root.获得翻译("金币身价") + "： " + 金币价格 + "\r" + _root.获得翻译("K点身价") + "： " + k点价格;
+	是否k点雇佣兵赚k点支付 = 1;
+}
+function k点雇佣兵赚k点()
+{
+	/*if (_root.同伴数 >= _root.佣兵个数限制)
+	{
+	_root.发布消息(_root.获得翻译("超过佣兵个数限制！无法雇佣！"));
+	}
+	else if (_root.虚拟币 >= k点价格)
+	{
+	var _loc2_ = "http://" + _root.address + "/crazyflashercom/k5_ybhire.action?k=" + random(100);
+	var lv = new LoadVars();
+	lv.accId = _root.accId;
+	lv.ybid = 赚k点佣兵列表id;
+	lv.moneyvip = k点价格;
+	lv.fkey = CF7_PAY_UTL.md5(lv.accId + "&" + lv.ybid + "&" + lv.moneyvip + "ANZJFGJJ@8*2!^%@&^$@&(&(..)@&#JFJxx");
+	lv.sendAndLoad(_loc2_,lv,"POST");
+	lv.onLoad = function(b)
+	{
+	if (b)
+	{
+	if (lv.content + "" != "-1")
+	{
+	if (lv.content + "" != "-2")
+	{
+	if (lv.content + "" != "-3")
+	{
+	if (lv.content + "" != "-4")
+	{
+	if (lv.content + "" != "-5")
+	{
+	if (lv.content + "" != "-6")
+	{
+	if (lv.content + "" != "-7")
+	{
+	if (lv.content + "" == "0")
+	{
+	雇佣佣兵();
+	_root.获取虚拟币值();
+	}}}}}}}}}};
+	}*/
+}
+function 结算(金币, k点)
+{
+	符合条件 = true;
+	if (_root.金钱 < 金币)
+	{
+		符合条件 = false;
+		_root.发布消息(_root.获得翻译("金钱不足！"));
+	}
+	//检测是否有空位 
+	格子位置号 = -1;
+	if (this.宠物数据)
+	{
+		for (var i = 0; i < _root.宠物信息.length; i++)
+		{
+			if (_root.宠物信息[i].length == 0)
+			{
+				格子位置号 = i;
+				break;
+			}
+		}
+		if (格子位置号 < 0)
+		{
+			符合条件 = false;
+			_root.发布消息(_root.获得翻译("战宠栏位不足！无法雇佣！"));
+		}
+	}
+	else if (_root.同伴数 >= _root.佣兵个数限制)
+	{
+		符合条件 = false;
+		_root.发布消息(_root.获得翻译("超过佣兵个数限制！无法雇佣！"));
+	}
+	else if (_root.等级 + 5 < this.佣兵数据[0] and _root.等级 < 20 and _root.isEasyMode() != true)
+	{
+		符合条件 = false;
+		_root.发布消息(_root.获得翻译("低等级时无法雇佣等级过高的佣兵！"));
+	}
+	if (符合条件 == true)
+	{
+		虚拟币支付(k点,"O20111009000000005");
+	}
+}
+
+function 雇佣佣兵()
+{
+	if (_root.同伴数 >= _root.佣兵个数限制)
+	{
+		_root.发布消息(_root.获得翻译("超过佣兵个数限制！无法雇佣！"));
+	}
+	else if (_root.等级 + 5 < this.佣兵数据[0] and _root.等级 < 20 and _root.isEasyMode() != true)
+	{
+		_root.发布消息(_root.获得翻译("低等级时无法雇佣等级过高的佣兵！"));
+	}
+	else if (_root.金钱 >= 金币价格 and _root.同伴数 < _root.佣兵个数限制)
+	{
+		_root.金钱 -= 金币价格;
+		_root.发布消息(_root.获得翻译("雇佣成功！"));
+		_root.播放音效("收银机.mp3");
+		_root.买佣兵(this.佣兵数据[2],floor(金币价格 * 0.8));
+		var _loc3_ = 0;
+		while (_loc3_ < _root.佣兵个数限制)
+		{
+			if (_root.同伴数据[_loc3_] + "" == [] + "" or _root.同伴数据[_loc3_] == undefined)
+			{
+				_root.同伴数据[_loc3_] = this.佣兵数据;
+				_root.同伴数++;
+				_root.佣兵是否出战信息[_loc3_] = 1;
+				break;
+			}
+			_loc3_ += 1;
+		}
+		if (_root.gameworld[this.当前NPC]._x == undefined)
+		{
+			位置X = _root.gameworld[_root.控制目标]._x;
+			位置Y = _root.gameworld[_root.控制目标]._y;
+		}
+		else
+		{
+			位置X = _root.gameworld[this.当前NPC]._x;
+			位置Y = _root.gameworld[this.当前NPC]._y;
+		}
+		if (this.佣兵数据[11] == "角斗高手项链")
+		{
+			this.佣兵数据[11] = "战斗专家军牌";
+		}
+		else if (this.佣兵数据[11] == "角斗王者项链")
+		{
+			this.佣兵数据[11] = "战斗狂人军牌";
+		}
+		if(this.佣兵数据[19] && this.佣兵数据[19].是否杂交 == false){
+			for (var i = 0; i < _root.可雇佣兵.length; i++) {
+    			if (_root.可雇佣兵[i][1] == this.佣兵数据[1] && _root.可雇佣兵[i][2] == this.佣兵数据[2] ) {
+        			_root.可雇佣兵.splice(i, 1);
+					break;
+    			}
+			}
+			if(this.佣兵数据[19].隐藏){
+				for (var i = 0; i <_root.隐藏的可雇佣兵.length; i++) {
+    				if (_root.隐藏的可雇佣兵[i][1] == this.佣兵数据[1] && _root.隐藏的可雇佣兵[i][2] == this.佣兵数据[2] ) {
+        				_root.隐藏的可雇佣兵.splice(i, 1);
+						break;
+    				}
+				}
+			}
+		}
+		//_root.gameworld.attachMovie("主角-" + this.佣兵数据[17],"同伴" + Number(_root.同伴数 - 1),_root.gameworld.getNextHighestDepth(),{_x:位置X,_y:位置Y,用户ID:this.佣兵数据[2],是否为敌人:false,身高:this.佣兵数据[3],名字:this.佣兵数据[1],等级:this.佣兵数据[0],脸型:this.佣兵数据[4],发型:this.佣兵数据[5],头部装备:this.佣兵数据[6],上装装备:this.佣兵数据[7],手部装备:this.佣兵数据[8],下装装备:this.佣兵数据[9],脚部装备:this.佣兵数据[10],颈部装备:this.佣兵数据[11],长枪:this.佣兵数据[12],手枪:this.佣兵数据[13],手枪2:this.佣兵数据[14],刀:this.佣兵数据[15],手雷:this.佣兵数据[16],性别:this.佣兵数据[17],是否为佣兵:true});   
+		_root.gameworld.attachMovie("主角-男","同伴" + Number(_loc3_),_root.gameworld.getNextHighestDepth(),{_x:位置X, _y:位置Y, 用户ID:this.佣兵数据[2], 是否为敌人:false, 身高:this.佣兵数据[3], 名字:this.佣兵数据[1], 等级:this.佣兵数据[0], 脸型:this.佣兵数据[4], 发型:this.佣兵数据[5], 头部装备:this.佣兵数据[6], 上装装备:this.佣兵数据[7], 手部装备:this.佣兵数据[8], 下装装备:this.佣兵数据[9], 脚部装备:this.佣兵数据[10], 颈部装备:this.佣兵数据[11], 长枪:this.佣兵数据[12], 手枪:this.佣兵数据[13], 手枪2:this.佣兵数据[14], 刀:this.佣兵数据[15], 手雷:this.佣兵数据[16], 性别:this.佣兵数据[17], 是否为佣兵:true});
+		_root.佣兵信息界面.gotoAndPlay(1);
+		_root.佣兵信息界面.排列佣兵图标();
+		removeMovieClip(_root.gameworld[this.当前NPC]);
+		_visible = false;
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("金钱不足！"));
+	}
+}
+
+function 雇佣宠物()
+{
+	_root.gameworld[this.当前NPC].removeMovieClip();
+	_root.删除场景宠物();
+	_root.宠物信息[格子位置号] = this.宠物数据;
+	_root.最大宠物出战数 = Math.min(_root.等级 / 5, 5);
+	if (_root.isChallengeMode() == true)
+	{
+		_root.最大宠物出战数 = _root.等级 / 35;
+	}
+	if (_root.isEasyMode() == true)
+	{
+		_root.最大宠物出战数 = 5 + _root.等级 / 5;
+	}
+	if (_root.出战宠物id库.length >= _root.最大宠物出战数)
+	{
+		_root.宠物信息[格子位置号][4] = 0;
+	}
+	_root.宠物信息界面.aaa = _root.宠物信息;
+	_root.宠物信息界面.排列宠物图标();
+	_root.加载宠物(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
+}
+
+
+function 虚拟币支付(amount, 商品编号)
+{
+	if (_root.虚拟币 >= amount)
+	{
+		_root.虚拟币 -= amount;
+		if (amount > 0)
+		{
+			_root.发布消息(_root.获得翻译("支付成功！"));
+			_root.播放音效("收银机.mp3");
+		}
+		if (this.宠物数据)
+		{
+			雇佣宠物();
+		}
+		else
+		{
+			雇佣佣兵();
+		}
+		gotoAndStop("成功");
+		play();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("K点不足！"));
+	}
+}
+stop();
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.联机2015发送传言("雇佣");
+_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_visible = false;
+gotoAndStop(1);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F6B336">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" centerPoint3DX="226.85" centerPoint3DY="149.65">
+                  <matrix>
+                    <Matrix tx="187.5" ty="137.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent._visible = false;
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C259CB">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="确认按钮" centerPoint3DX="140.5" centerPoint3DY="150.15">
+                  <matrix>
+                    <Matrix tx="101.5" ty="137.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	gotoAndStop(1);
+//	if (_parent.是否k点雇佣兵赚k点支付 == 1)
+//	{
+//		if (_root.金钱 < _parent.金币价格)
+//		{
+//			_root.发布消息(_root.获得翻译("金钱不足！"));
+//		}
+//		else
+//		{
+//			_parent.k点雇佣兵赚k点();
+//		}
+//	}
+//	else
+//	{
+		_parent.结算(_parent.金币价格,_parent.k点价格);
+//	}
+}
+on (press) {
+	gotoAndStop(3);
+}
+on (rollOver) {
+	gotoAndStop(2);
+}
+on (rollOut) {
+	gotoAndStop(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" centerPoint3DX="226.85" centerPoint3DY="149.65">
+                  <matrix>
+                    <Matrix tx="187.5" ty="137.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent._visible = false;
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#EEAD6A">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="302.95" height="83" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="20" ty="43"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>你确定要雇佣 XXX 吗？&#xD;&#xD;共计花费 XXX G&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="302.95" height="66" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="20" ty="43"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>请稍候，正在处理……</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="7" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="302.95" height="69" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="20" ty="43"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>正在雇佣</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="5" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="302.95" height="83" isSelectable="false" variableName="失败原因" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="20" ty="43"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>雇佣失败！&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#877DA8">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2030" symbolType="button">
+                  <matrix>
+                    <Matrix tx="338.95" ty="12.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#7982BC">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="215.15" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="28.85" ty="3.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>雇佣同伴</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#61D0BF">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="12" ty="13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#AFE065">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2028" centerPoint3DX="175.5" centerPoint3DY="85.45">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

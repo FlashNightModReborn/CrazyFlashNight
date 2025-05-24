@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 135" itemID="6577b699-000009b2" lastModified="1736866247">
+  <timeline>
+    <DOMTimeline name="Symbol 135">
+      <layers>
+        <DOMLayer name="Layer 1" color="#6B8E98" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 134" name="枪" selected="true" centerPoint3DX="31.8" centerPoint3DY="16.85">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.基本款._visible = 0;
+	var 手雷 = _parent._parent._parent.手雷_装扮;
+	if (手雷 != undefined)
+	{
+		_root.装备引用配置.配置装扮(this,手雷,"装扮","手雷_引用");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,119 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/墨绿集束爆炸" itemID="66687293-00002167" linkageExportForAS="true" linkageIdentifier="墨绿集束爆炸" lastModified="1743276348" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="墨绿集束爆炸" currentFrame="6">
+      <layers>
+        <DOMLayer name="判定" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="43.05" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="2.91539001464844" d="1.725830078125" tx="-15.25" ty="-45.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="46.7" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="6.16595458984375" d="3.37017822265625" tx="-76.6" ty="-78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="46.7" centerPoint3DY="-10.65">
+                  <matrix>
+                    <Matrix a="6.16595458984375" d="3.37017822265625" tx="-76.6" ty="-78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/毒液爆炸墨绿" centerPoint3DX="2.25" centerPoint3DY="-3.75">
+                  <matrix>
+                    <Matrix a="0.4320068359375" d="0.4320068359375" tx="-1.4" ty="-1.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.45" y="-6.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/毒液爆炸墨绿" centerPoint3DX="21.7" centerPoint3DY="-21.95">
+                  <matrix>
+                    <Matrix a="0.374114990234375" b="0.215988159179688" c="-0.215988159179688" d="0.374114990234375" tx="17.3" ty="-21.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="-6.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/毒液爆炸墨绿" centerPoint3DX="54.95" centerPoint3DY="-8.5">
+                  <matrix>
+                    <Matrix a="1.063232421875" b="-0.118118286132813" c="-0.03314208984375" d="0.668975830078125" tx="45.45" ty="-3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="-6.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/毒液爆炸墨绿" centerPoint3DX="32.75" centerPoint3DY="9.6">
+                  <matrix>
+                    <Matrix a="0.41265869140625" b="0.17437744140625" c="0.172225952148438" d="-0.384063720703125" tx="30.15" ty="5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.85" y="-6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/毒液爆炸墨绿" centerPoint3DX="87.55" centerPoint3DY="13.15">
+                  <matrix>
+                    <Matrix a="-0.431564331054688" b="0.120223999023438" c="0.1041259765625" d="0.4078369140625" tx="91.9" ty="14.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.85" y="-6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/毒液爆炸墨绿" centerPoint3DX="100.8" centerPoint3DY="-23.85">
+                  <matrix>
+                    <Matrix a="0.404022216796875" b="-0.112548828125" c="0.156570434570313" d="0.333969116210938" tx="98" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.75" y="-6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

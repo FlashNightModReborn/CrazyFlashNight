@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/武器素材/武器展开" itemID="6661cbb8-00000263" lastModified="1717685419">
+  <timeline>
+    <DOMTimeline name="武器展开">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-中部" centerPoint3DX="-6.4" centerPoint3DY="0.3">
+                  <matrix>
+                    <Matrix tx="-94.35" ty="-256"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.4" y="256.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 10" centerPoint3DX="102.8" centerPoint3DY="0.3">
+                  <matrix>
+                    <Matrix tx="70.8" ty="-86.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32" y="86.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 11" centerPoint3DX="-118.05" centerPoint3DY="0.25">
+                  <matrix>
+                    <Matrix tx="-169.4" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.35" y="69.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-下部" centerPoint3DX="-376.15" centerPoint3DY="0.3">
+                  <matrix>
+                    <Matrix tx="-645" ty="-93.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="537.75" y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-上部" centerPoint3DX="221.4" centerPoint3DY="0.3">
+                  <matrix>
+                    <Matrix tx="106.55" ty="-93.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

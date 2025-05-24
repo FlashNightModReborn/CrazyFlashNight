@@ -1,0 +1,130 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="10、任务奖励/组件/奖励物品-底框" itemID="67cd5a10-0000058c" lastModified="1742028639" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="奖励物品-底框" currentFrame="89">
+      <layers>
+        <DOMLayer name="光效" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#1.2C, 0" anchorPointA="#2.58, 0" controlPointB="#1.2C, 0" anchorPointB="#2.58, 0" isLine="true"/>
+                    <MorphCurves controlPointA="#2.58, #1.2C" anchorPointA="#2.58, #2.58" controlPointB="#2.58, #1.2C" anchorPointB="#2.58, #2.58" isLine="true"/>
+                    <MorphCurves controlPointA="#1.2C, #2.58" anchorPointA="0, #2.58" controlPointB="#1.2C, #2.58" anchorPointB="0, #2.58" isLine="true"/>
+                    <MorphCurves controlPointA="0, #1.2C" controlPointB="0, #1.2C" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.020904541015625" b="0.020904541015625" c="-0.012939453125" d="0.012939453125" tx="-2.5" ty="2.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.298039215686275" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.580392156862745"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!0 0|600 0!600 0|600 600!600 600|0 600!0 600|0 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="61" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.020904541015625" b="0.020904541015625" c="-0.012939453125" d="0.012939453125" tx="64.65" ty="65.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.298039215686275" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.580392156862745"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!0 0S2|600 0!600 0|600 600!600 600|0 600!0 600|0 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图形" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框图形" name="底框图形" centerPoint3DX="15" centerPoint3DY="15">
+                  <transformationPoint>
+                    <Point x="15" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="10" tweenType="motion" keyMode="17921" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框图形" name="底框图形">
+                  <transformationPoint>
+                    <Point x="15" y="15"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" color="#FFFFFF" distance="0" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框图形" name="底框图形">
+                  <matrix>
+                    <Matrix tx="-1.35" ty="-1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15" y="15"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框图形" name="底框图形" centerPoint3DX="13.65" centerPoint3DY="13.65">
+                  <matrix>
+                    <Matrix tx="-1.35" ty="-1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15" y="15"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="10、任务奖励/组件/奖励物品-底框图形" name="底框图形">
+                  <transformationPoint>
+                    <Point x="15" y="15"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" color="#FFFFFF" distance="0" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

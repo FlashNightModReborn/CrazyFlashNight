@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/库-UI" itemID="66795870-000009ce" lastModified="1719228557" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="库-UI" currentFrame="2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!307 0|307 272!307 272|272 272!272 272|272 0!272 0|307 0!205 161[205 277 100 277!100 277[0 277 0 165!0 165|0 0!0 0|35 0!35 0|35 164!35 164[35 245 104 245!104 245[170 245 170 166!170 166|170 0!170 0|205 0!205 0|205 161"/>
+                    <Edge cubics="!205 0(;205,0 205,161 205,161q205 0 205 161);"/>
+                    <Edge cubics="!272 0(;272,0 307,0 307,0q272 0 307 0);"/>
+                    <Edge cubics="!0 165(;0,165 0,0 0,0q0 165 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 35,0 35,0q0 0 35 0);"/>
+                    <Edge cubics="!35 0(;35,0 35,164 35,164q35 0 35 164);"/>
+                    <Edge cubics="!170 166(;170,166 170,0 170,0q170 166 170 0);"/>
+                    <Edge cubics="!307 272(;307,272 272,272 272,272q307 272 272 272);"/>
+                    <Edge cubics="!205 161(;205,238 170,277 100,277q205 161Q205 277q100 277);"/>
+                    <Edge cubics="!100 277(;33,277 0,240 0,165q100 277Q0 277q0 165);"/>
+                    <Edge cubics="!35 164(;35,218 58,245 104,245q35 164Q35 245q104 245);"/>
+                    <Edge cubics="!104 245(;148,245 170,219 170,166q104 245Q170 245q170 166);"/>
+                    <Edge cubics="!170 0(;170,0 205,0 205,0q170 0 205 0);"/>
+                    <Edge cubics="!307 0(;307,0 307,272 307,272q307 0 307 272);"/>
+                    <Edge cubics="!272 272(;272,272 272,0 272,0q272 272 272 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="import/UI组件/shopMainMC" centerPoint3DX="17.75" centerPoint3DY="8.7">
+                  <transformationPoint>
+                    <Point x="17.75" y="8.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

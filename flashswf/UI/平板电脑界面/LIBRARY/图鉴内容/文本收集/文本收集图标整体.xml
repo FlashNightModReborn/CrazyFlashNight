@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图鉴内容/文本收集/文本收集图标整体" itemID="66ff46f4-00000365" lastModified="1728005876" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="文本收集图标整体">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/文本收集/文本收集文字透明" selected="true" centerPoint3DX="90.95" centerPoint3DY="14.45">
+                  <matrix>
+                    <Matrix tx="32.6" ty="1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="58.35" y="12.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/文本收集/文本收集图标透明" selected="true" centerPoint3DX="13.05" centerPoint3DY="14.55">
+                  <matrix>
+                    <Matrix tx="1.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.75" y="14.55"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/文本收集/文本收集图标" selected="true" centerPoint3DX="11.75" centerPoint3DY="16.05">
+                  <matrix>
+                    <Matrix a="0.212265014648438" d="0.234634399414063" tx="0.4" ty="1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.45" y="60.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/文本收集/文本收集文字" selected="true" centerPoint3DX="88.9" centerPoint3DY="17.15">
+                  <matrix>
+                    <Matrix tx="30.55" ty="4.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="58.35" y="12.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

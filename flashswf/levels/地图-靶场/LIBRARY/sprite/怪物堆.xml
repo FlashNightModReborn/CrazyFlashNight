@@ -1,0 +1,87 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/怪物堆" itemID="66339dee-00000c0b" lastModified="1724945356" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="怪物堆">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="普通" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[是否为敌人 = true;
+等级 = 1;
+hp = 10000000;
+防御力 = 100;
+躲闪率 = 2;
+击中效果 = "火花";
+Z轴坐标 = this._y;
+
+function 状态改变(新状态名)
+{
+	hp = 10000000;
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 10000000;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" centerPoint3DX="-136.5" centerPoint3DY="-225.15">
+                  <matrix>
+                    <Matrix a="11.5197906494141" d="7.03628540039063" tx="-149" ty="-171.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="25.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent.hp <= 0)
+   {
+      _parent.gotoAndPlay("结束");
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/怪物堆素材" centerPoint3DX="-3.15" centerPoint3DY="-83.25">
+                  <matrix>
+                    <Matrix tx="-166.05" ty="-177.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162" y="93.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

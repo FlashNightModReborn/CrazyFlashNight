@@ -1,0 +1,1965 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="袁望surveyor/动画/被击" itemID="658ee219-0000225b" lastModified="1717319044" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="被击">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="25" name="start" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("start");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="装甲右下臂" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="-8.2" centerPoint3DY="106.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.565643310546875" b="0.16156005859375" c="0.16156005859375" d="0.565643310546875" tx="-8.15" ty="106.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="43.55" centerPoint3DY="90.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.395751953125" b="0.4351806640625" c="0.4351806640625" d="0.395751953125" tx="43.55" ty="90.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="60.5" centerPoint3DY="66.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.21063232421875" b="0.5491943359375" c="0.5491943359375" d="0.21063232421875" tx="60.35" ty="66.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="0.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="67.45" centerPoint3DY="20.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225387573242188" b="0.54327392578125" c="0.54327392578125" d="-0.225387573242188" tx="67.05" ty="20.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="0.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="55.45" centerPoint3DY="71.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225387573242188" b="0.54327392578125" c="0.54327392578125" d="-0.225387573242188" tx="55.05" ty="71.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="0.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="67.45" centerPoint3DY="20.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225387573242188" b="0.54327392578125" c="0.54327392578125" d="-0.225387573242188" tx="67.05" ty="20.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="0.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="60.5" centerPoint3DY="66.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.21063232421875" b="0.5491943359375" c="0.5491943359375" d="0.21063232421875" tx="60.35" ty="66.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="0.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="43.55" centerPoint3DY="90.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.395751953125" b="0.4351806640625" c="0.4351806640625" d="0.395751953125" tx="43.55" ty="90.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右下臂" symbolType="graphic" centerPoint3DX="-8.2" centerPoint3DY="106.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.565643310546875" b="0.16156005859375" c="0.16156005859375" d="0.565643310546875" tx="-8.15" ty="106.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="装甲右上臂" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="-35.7" centerPoint3DY="46" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5408935546875" b="0.0654754638671875" c="0.0654754638671875" d="0.5408935546875" tx="-35.6" ty="45.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="-11.6" centerPoint3DY="53.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.425323486328125" b="0.3404541015625" c="0.3404541015625" d="0.425323486328125" tx="-11.6" ty="53.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="-4.3" centerPoint3DY="52.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2725830078125" b="0.4716796875" c="0.4716796875" d="0.2725830078125" tx="-4.35" ty="52"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="10.5" centerPoint3DY="54.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1270751953125" b="0.529708862304688" c="0.529708862304688" d="-0.1270751953125" tx="10.3" ty="54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="-1.5" centerPoint3DY="105.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1270751953125" b="0.529708862304688" c="0.529708862304688" d="-0.1270751953125" tx="-1.7" ty="105.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="10.5" centerPoint3DY="54.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1270751953125" b="0.529708862304688" c="0.529708862304688" d="-0.1270751953125" tx="10.3" ty="54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="-4.3" centerPoint3DY="52.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2725830078125" b="0.4716796875" c="0.4716796875" d="0.2725830078125" tx="-4.35" ty="52"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="-11.6" centerPoint3DY="53.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.425323486328125" b="0.3404541015625" c="0.3404541015625" d="0.425323486328125" tx="-11.6" ty="53.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/装甲右上臂" symbolType="graphic" centerPoint3DX="-35.7" centerPoint3DY="46" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5408935546875" b="0.0654754638671875" c="0.0654754638671875" d="0.5408935546875" tx="-35.6" ty="45.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="激光链刃" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/激光链刃" centerPoint3DX="-70.5" centerPoint3DY="174.5">
+                  <matrix>
+                    <Matrix a="-0.86016845703125" b="0.50994873046875" c="0.50994873046875" d="0.86016845703125" tx="-26.8" ty="42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.65" y="90.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" quality="3" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子">
+                  <matrix>
+                    <Matrix a="0.050811767578125" b="-0.631866455078125" c="-0.631866455078125" d="-0.050811767578125" tx="90.65" ty="185.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.2" y="76"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子" centerPoint3DX="86.85" centerPoint3DY="90.3">
+                  <matrix>
+                    <Matrix a="-0.27191162109375" b="-0.572616577148438" c="-0.572616577148438" d="0.27191162109375" tx="151.95" ty="114.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.05" y="76.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子" centerPoint3DX="102.85" centerPoint3DY="19.55">
+                  <matrix>
+                    <Matrix a="-0.5914306640625" b="-0.22802734375" c="-0.22802734375" d="0.5914306640625" tx="166.9" ty="-7.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.9" y="76"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子" centerPoint3DX="90.85" centerPoint3DY="70.55">
+                  <matrix>
+                    <Matrix a="-0.5914306640625" b="-0.22802734375" c="-0.22802734375" d="0.5914306640625" tx="154.9" ty="43.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.9" y="76"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子" centerPoint3DX="102.85" centerPoint3DY="19.55">
+                  <matrix>
+                    <Matrix a="-0.5914306640625" b="-0.22802734375" c="-0.22802734375" d="0.5914306640625" tx="166.9" ty="-7.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.9" y="76"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子" centerPoint3DX="86.85" centerPoint3DY="90.3">
+                  <matrix>
+                    <Matrix a="-0.27191162109375" b="-0.572616577148438" c="-0.572616577148438" d="0.27191162109375" tx="151.95" ty="114.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.05" y="76.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/钩子">
+                  <matrix>
+                    <Matrix a="0.050811767578125" b="-0.631866455078125" c="-0.631866455078125" d="-0.050811767578125" tx="90.65" ty="185.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.2" y="76"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/激光链刃" centerPoint3DX="-70.5" centerPoint3DY="174.5">
+                  <matrix>
+                    <Matrix a="-0.86016845703125" b="0.50994873046875" c="0.50994873046875" d="0.86016845703125" tx="-26.8" ty="42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.65" y="90.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" quality="3" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="45.1" centerPoint3DY="-49">
+                  <matrix>
+                    <Matrix a="-1" tx="73.75" ty="-93.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.6" y="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="56.45" centerPoint3DY="-34">
+                  <matrix>
+                    <Matrix a="-0.993133544921875" b="-0.116973876953125" c="-0.116973876953125" d="0.993133544921875" tx="90" ty="-74.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.55" y="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="67.25" centerPoint3DY="-11.75">
+                  <matrix>
+                    <Matrix a="-0.9639892578125" b="-0.26580810546875" c="-0.26580810546875" d="0.9639892578125" tx="106.5" ty="-46.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="44.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="75.6" centerPoint3DY="14">
+                  <matrix>
+                    <Matrix a="-0.919601440429688" b="-0.392791748046875" c="-0.392791748046875" d="0.919601440429688" tx="119.15" ty="-15.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="63.6" centerPoint3DY="65">
+                  <matrix>
+                    <Matrix a="-0.919601440429688" b="-0.392791748046875" c="-0.392791748046875" d="0.919601440429688" tx="107.15" ty="35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="75.6" centerPoint3DY="14">
+                  <matrix>
+                    <Matrix a="-0.919601440429688" b="-0.392791748046875" c="-0.392791748046875" d="0.919601440429688" tx="119.15" ty="-15.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="67.25" centerPoint3DY="-11.75">
+                  <matrix>
+                    <Matrix a="-0.9639892578125" b="-0.26580810546875" c="-0.26580810546875" d="0.9639892578125" tx="106.5" ty="-46.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.5" y="44.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="56.45" centerPoint3DY="-34">
+                  <matrix>
+                    <Matrix a="-0.993133544921875" b="-0.116973876953125" c="-0.116973876953125" d="0.993133544921875" tx="90" ty="-74.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.55" y="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/头" centerPoint3DX="45.1" centerPoint3DY="-49">
+                  <matrix>
+                    <Matrix a="-1" tx="73.75" ty="-93.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.6" y="44.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右小腿" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-57.3" centerPoint3DY="170.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.708221435546875" b="-0.20611572265625" c="-0.185791015625" d="0.807647705078125" tx="-57.15" ty="170.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-45.6" centerPoint3DY="173.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6307373046875" b="-0.382369995117188" c="-0.388473510742188" d="0.732040405273438" tx="-45.35" ty="172.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-31.05" centerPoint3DY="174.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6307373046875" b="-0.382369995117188" c="-0.388473510742188" d="0.732040405273438" tx="-30.8" ty="174.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-39" centerPoint3DY="193.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.25604248046875" b="-0.691696166992188" c="-0.75946044921875" d="0.331588745117188" tx="-38.6" ty="193.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-41.55" centerPoint3DY="227.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.370361328125" b="-0.6378173828125" c="-0.73919677734375" d="-0.374557495117188" tx="-41.15" ty="228.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-39" centerPoint3DY="193.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.25604248046875" b="-0.691696166992188" c="-0.75946044921875" d="0.331588745117188" tx="-38.6" ty="193.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-31.05" centerPoint3DY="174.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6307373046875" b="-0.382369995117188" c="-0.388473510742188" d="0.732040405273438" tx="-30.8" ty="174.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-45.6" centerPoint3DY="173.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6307373046875" b="-0.382369995117188" c="-0.388473510742188" d="0.732040405273438" tx="-45.35" ty="172.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="-57.3" centerPoint3DY="170.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.708221435546875" b="-0.20611572265625" c="-0.185791015625" d="0.807647705078125" tx="-57.15" ty="170.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右鞋子" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-65.25" centerPoint3DY="218.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829452514648438" b="-0.1640625" c="-0.186798095703125" d="0.944488525390625" tx="-65.25" ty="217.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-65.6" centerPoint3DY="217.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.75872802734375" b="-0.37310791015625" c="-0.42486572265625" d="0.86395263671875" tx="-65.5" ty="216.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-46.9" centerPoint3DY="220.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829437255859375" b="-0.164047241210938" c="-0.186767578125" d="0.9444580078125" tx="-46.85" ty="220.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-79.85" centerPoint3DY="219.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.54742431640625" b="-0.644332885742188" c="-0.733673095703125" d="0.62335205078125" tx="-79.7" ty="219.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-87.6" centerPoint3DY="212.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.148345947265625" b="-0.832366943359375" c="-0.947784423828125" d="-0.16888427734375" tx="-87.3" ty="212.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-79.85" centerPoint3DY="219.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.54742431640625" b="-0.644332885742188" c="-0.733673095703125" d="0.62335205078125" tx="-79.7" ty="219.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-46.9" centerPoint3DY="220.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829437255859375" b="-0.164047241210938" c="-0.186767578125" d="0.9444580078125" tx="-46.85" ty="220.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-65.6" centerPoint3DY="217.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.75872802734375" b="-0.37310791015625" c="-0.42486572265625" d="0.86395263671875" tx="-65.5" ty="216.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="-65.25" centerPoint3DY="218.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829452514648438" b="-0.1640625" c="-0.186798095703125" d="0.944488525390625" tx="-65.25" ty="217.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右上臂" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-30.75" centerPoint3DY="1.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.789306640625" b="-0.1146240234375" c="-0.1146240234375" d="0.789306640625" tx="-45.7" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-22.4" y="-31.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-28.05" centerPoint3DY="9.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.77044677734375" b="-0.206161499023438" c="-0.206161499023438" d="0.77044677734375" tx="-42.6" ty="5.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-23.15" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-22.85" centerPoint3DY="18.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.73040771484375" b="-0.3203125" c="-0.3203125" d="0.73040771484375" tx="-36.6" ty="12.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-23.1" y="-28.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-7.1" centerPoint3DY="36.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.79730224609375" b="-0.019378662109375" c="-0.019378662109375" d="0.79730224609375" tx="-22" ty="36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-23" y="-28.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-19.1" centerPoint3DY="87.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.79730224609375" b="-0.019378662109375" c="-0.019378662109375" d="0.79730224609375" tx="-34" ty="87.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-23" y="-28.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-7.1" centerPoint3DY="36.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.79730224609375" b="-0.019378662109375" c="-0.019378662109375" d="0.79730224609375" tx="-22" ty="36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-23" y="-28.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-22.85" centerPoint3DY="18.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.73040771484375" b="-0.3203125" c="-0.3203125" d="0.73040771484375" tx="-36.6" ty="12.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-23.1" y="-28.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-28.05" centerPoint3DY="9.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.77044677734375" b="-0.206161499023438" c="-0.206161499023438" d="0.77044677734375" tx="-42.6" ty="5.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-23.15" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右上臂" symbolType="graphic" centerPoint3DX="-30.75" centerPoint3DY="1.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.789306640625" b="-0.1146240234375" c="-0.1146240234375" d="0.789306640625" tx="-45.7" ty="-0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-22.4" y="-31.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="1.35" centerPoint3DY="-3.6">
+                  <matrix>
+                    <Matrix a="-1" tx="39.6" ty="-56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.95" y="52.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="7.65" centerPoint3DY="5.9">
+                  <matrix>
+                    <Matrix a="-0.993133544921875" b="-0.116973876953125" c="-0.116973876953125" d="0.993133544921875" tx="51.85" ty="-42.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.95" y="52.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="12.95" centerPoint3DY="20.25">
+                  <matrix>
+                    <Matrix a="-0.9639892578125" b="-0.26580810546875" c="-0.26580810546875" d="0.9639892578125" tx="63.95" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.95" y="52.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="17.5" centerPoint3DY="38.4">
+                  <matrix>
+                    <Matrix a="-0.919601440429688" b="-0.392791748046875" c="-0.392791748046875" d="0.919601440429688" tx="73.5" ty="4.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.9" y="52.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="5.5" centerPoint3DY="89.4">
+                  <matrix>
+                    <Matrix a="-0.919601440429688" b="-0.392791748046875" c="-0.392791748046875" d="0.919601440429688" tx="61.5" ty="55.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.9" y="52.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="17.5" centerPoint3DY="38.4">
+                  <matrix>
+                    <Matrix a="-0.919601440429688" b="-0.392791748046875" c="-0.392791748046875" d="0.919601440429688" tx="73.5" ty="4.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.9" y="52.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="12.95" centerPoint3DY="20.25">
+                  <matrix>
+                    <Matrix a="-0.9639892578125" b="-0.26580810546875" c="-0.26580810546875" d="0.9639892578125" tx="63.95" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.95" y="52.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="7.65" centerPoint3DY="5.9">
+                  <matrix>
+                    <Matrix a="-0.993133544921875" b="-0.116973876953125" c="-0.116973876953125" d="0.993133544921875" tx="51.85" ty="-42.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.95" y="52.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/身体" centerPoint3DX="1.35" centerPoint3DY="-3.6">
+                  <matrix>
+                    <Matrix a="-1" tx="39.6" ty="-56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.95" y="52.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="64.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="37.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="72.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="45.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="84.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="57.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="99.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="72.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-36.5" centerPoint3DY="150.55">
+                  <matrix>
+                    <Matrix a="-1" tx="2.45" ty="123.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="99.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="72.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="84.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="57.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="72.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="45.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/屁股" centerPoint3DX="-24.5" centerPoint3DY="64.55">
+                  <matrix>
+                    <Matrix a="-1" tx="14.45" ty="37.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.9" y="27.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右大腿" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-43.45" centerPoint3DY="100.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.690765380859375" b="-0.11260986328125" c="-0.12823486328125" d="0.78656005859375" tx="-43.15" ty="100.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.05" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-37.65" centerPoint3DY="112.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.69635009765625" b="0.0699920654296875" c="0.0796966552734375" d="0.792938232421875" tx="-37.4" ty="111.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-31.1" centerPoint3DY="126.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.654510498046875" b="0.247802734375" c="0.282196044921875" d="0.745285034179688" tx="-30.95" ty="125.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-31.1" centerPoint3DY="141.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.654510498046875" b="0.247802734375" c="0.282196044921875" d="0.745285034179688" tx="-30.95" ty="140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-31.1" centerPoint3DY="203.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.654510498046875" b="0.247802734375" c="0.282196044921875" d="0.745285034179688" tx="-30.95" ty="203.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-31.1" centerPoint3DY="141.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.654510498046875" b="0.247802734375" c="0.282196044921875" d="0.745285034179688" tx="-30.95" ty="140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-31.1" centerPoint3DY="126.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.654510498046875" b="0.247802734375" c="0.282196044921875" d="0.745285034179688" tx="-30.95" ty="125.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-37.65" centerPoint3DY="112.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.69635009765625" b="0.0699920654296875" c="0.0796966552734375" d="0.792938232421875" tx="-37.4" ty="111.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/右大腿" symbolType="graphic" centerPoint3DX="-43.45" centerPoint3DY="100.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.690765380859375" b="-0.11260986328125" c="-0.12823486328125" d="0.78656005859375" tx="-43.15" ty="100.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.05" y="-28.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左小腿" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="7.7" centerPoint3DY="154.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.71533203125" b="-0.179611206054688" c="-0.155609130859375" d="0.81396484375" tx="7.75" ty="153.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="22.4" centerPoint3DY="158.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.714569091796875" b="-0.182662963867188" c="-0.1590576171875" d="0.81329345703125" tx="22.35" ty="158.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="33.7" centerPoint3DY="155.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.676177978515625" b="-0.294540405273438" c="-0.287033081054688" d="0.77740478515625" tx="33.5" ty="155.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="43.05" centerPoint3DY="153.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.676177978515625" b="-0.294540405273438" c="-0.287033081054688" d="0.77740478515625" tx="42.85" ty="153.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="46.25" centerPoint3DY="165.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.729354858398438" b="-0.1094970703125" c="-0.0760498046875" d="0.8251953125" tx="45.95" ty="165.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="43.05" centerPoint3DY="153.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.676177978515625" b="-0.294540405273438" c="-0.287033081054688" d="0.77740478515625" tx="42.85" ty="153.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="33.7" centerPoint3DY="155.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.676177978515625" b="-0.294540405273438" c="-0.287033081054688" d="0.77740478515625" tx="33.5" ty="155.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="22.4" centerPoint3DY="158.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.714569091796875" b="-0.182662963867188" c="-0.1590576171875" d="0.81329345703125" tx="22.35" ty="158.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/小腿" symbolType="graphic" centerPoint3DX="7.7" centerPoint3DY="154.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.71533203125" b="-0.179611206054688" c="-0.155609130859375" d="0.81396484375" tx="7.75" ty="153.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左鞋子" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="5.95" centerPoint3DY="204.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.84539794921875" b="0.0098724365234375" c="0.0112457275390625" d="0.96258544921875" tx="5.95" ty="204.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="20.05" centerPoint3DY="209.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.845443725585938" b="0.0063018798828125" c="0.007171630859375" d="0.962646484375" tx="20.3" ty="209.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="23.4" centerPoint3DY="205.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8355712890625" b="-0.128936767578125" c="-0.146820068359375" d="0.951416015625" tx="23.35" ty="205.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="32.75" centerPoint3DY="203.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8355712890625" b="-0.128936767578125" c="-0.146820068359375" d="0.951416015625" tx="32.7" ty="203.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="49.25" centerPoint3DY="216.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8404541015625" b="0.091705322265625" c="0.104400634765625" d="0.95697021484375" tx="49.1" ty="216.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="32.75" centerPoint3DY="203.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8355712890625" b="-0.128936767578125" c="-0.146820068359375" d="0.951416015625" tx="32.7" ty="203.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="23.4" centerPoint3DY="205.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8355712890625" b="-0.128936767578125" c="-0.146820068359375" d="0.951416015625" tx="23.35" ty="205.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="20.05" centerPoint3DY="209.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.845443725585938" b="0.0063018798828125" c="0.007171630859375" d="0.962646484375" tx="20.3" ty="209.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/鞋子" symbolType="graphic" centerPoint3DX="5.95" centerPoint3DY="204.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.84539794921875" b="0.0098724365234375" c="0.0112457275390625" d="0.96258544921875" tx="5.95" ty="204.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左大腿" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="2.55" centerPoint3DY="95.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.540252685546875" b="0.318359375" c="0.313629150390625" d="0.626129150390625" tx="2.4" ty="95.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.15" y="-23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="4.9" centerPoint3DY="102.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.483749389648438" b="0.399032592773438" c="0.407821655273438" d="0.569305419921875" tx="4.75" ty="102.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.25" y="-23.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="9.6" centerPoint3DY="110.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3087158203125" b="0.54583740234375" c="0.584686279296875" d="0.38543701171875" tx="9.3" ty="110"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.2" y="-23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="11.9" centerPoint3DY="121.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.15692138671875" b="0.60711669921875" c="0.66448974609375" d="0.220977783203125" tx="11.5" ty="121.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.15" y="-23.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="13.2" centerPoint3DY="144.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.167648315429688" b="0.604248046875" c="0.685958862304688" d="-0.140869140625" tx="12.7" ty="144.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.1" y="-23.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="11.9" centerPoint3DY="121.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.15692138671875" b="0.60711669921875" c="0.66448974609375" d="0.220977783203125" tx="11.5" ty="121.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.15" y="-23.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="9.6" centerPoint3DY="110.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3087158203125" b="0.54583740234375" c="0.584686279296875" d="0.38543701171875" tx="9.3" ty="110"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.2" y="-23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="4.9" centerPoint3DY="102.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.483749389648438" b="0.399032592773438" c="0.407821655273438" d="0.569305419921875" tx="4.75" ty="102.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.25" y="-23.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左大腿" symbolType="graphic" centerPoint3DX="2.55" centerPoint3DY="95.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.540252685546875" b="0.318359375" c="0.313629150390625" d="0.626129150390625" tx="2.4" ty="95.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.15" y="-23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="双管机枪左手" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="116.8" centerPoint3DY="78.55">
+                  <matrix>
+                    <Matrix a="0.728485107421875" b="-0.68499755859375" c="0.68499755859375" d="0.728485107421875" tx="-50.8" ty="46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="100.1" y="138.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="146.1" centerPoint3DY="36.9">
+                  <matrix>
+                    <Matrix a="-0.0473480224609375" b="-0.998825073242188" c="0.998825073242188" d="-0.0473480224609375" tx="12.9" ty="143.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="100.05" y="138.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="144.35" centerPoint3DY="56">
+                  <matrix>
+                    <Matrix a="-0.156661987304688" b="-0.987579345703125" c="0.987579345703125" d="-0.156661987304688" tx="23.65" ty="176.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.95" y="138.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="123.4" centerPoint3DY="21.85">
+                  <matrix>
+                    <Matrix a="-0.86767578125" b="-0.49688720703125" c="0.49688720703125" d="-0.86767578125" tx="141.5" ty="191.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.95" y="138.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="111.4" centerPoint3DY="72.85">
+                  <matrix>
+                    <Matrix a="-0.86767578125" b="-0.49688720703125" c="0.49688720703125" d="-0.86767578125" tx="129.5" ty="242.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.95" y="138.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="123.4" centerPoint3DY="21.85">
+                  <matrix>
+                    <Matrix a="-0.86767578125" b="-0.49688720703125" c="0.49688720703125" d="-0.86767578125" tx="141.5" ty="191.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.95" y="138.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="144.35" centerPoint3DY="56">
+                  <matrix>
+                    <Matrix a="-0.156661987304688" b="-0.987579345703125" c="0.987579345703125" d="-0.156661987304688" tx="23.65" ty="176.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.95" y="138.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="146.1" centerPoint3DY="36.9">
+                  <matrix>
+                    <Matrix a="-0.0473480224609375" b="-0.998825073242188" c="0.998825073242188" d="-0.0473480224609375" tx="12.9" ty="143.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="100.05" y="138.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/双管机枪左手" centerPoint3DX="116.8" centerPoint3DY="78.55">
+                  <matrix>
+                    <Matrix a="0.728485107421875" b="-0.68499755859375" c="0.68499755859375" d="0.728485107421875" tx="-50.8" ty="46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="100.1" y="138.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左下臂" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="90.85" centerPoint3DY="35.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.401397705078125" b="0.688827514648438" c="0.688827514648438" d="0.401397705078125" tx="90.8" ty="35.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="-26.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="96.9" centerPoint3DY="28.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.26275634765625" b="0.752655029296875" c="0.752655029296875" d="-0.26275634765625" tx="96.75" ty="28.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="-26.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="94.6" centerPoint3DY="53.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34375" b="0.719268798828125" c="0.719268798828125" d="-0.34375" tx="94.4" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="-26.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="94.7" centerPoint3DY="53.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.793426513671875" b="0.0771484375" c="0.0771484375" d="-0.793426513671875" tx="94.5" ty="53.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.25" y="-27"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="82.7" centerPoint3DY="104.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.793426513671875" b="0.0771484375" c="0.0771484375" d="-0.793426513671875" tx="82.5" ty="104.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.25" y="-27"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="94.7" centerPoint3DY="53.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.793426513671875" b="0.0771484375" c="0.0771484375" d="-0.793426513671875" tx="94.5" ty="53.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.25" y="-27"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="94.6" centerPoint3DY="53.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34375" b="0.719268798828125" c="0.719268798828125" d="-0.34375" tx="94.4" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="-26.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="96.9" centerPoint3DY="28.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.26275634765625" b="0.752655029296875" c="0.752655029296875" d="-0.26275634765625" tx="96.75" ty="28.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="-26.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左下臂" symbolType="graphic" centerPoint3DX="90.85" centerPoint3DY="35.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.401397705078125" b="0.688827514648438" c="0.688827514648438" d="0.401397705078125" tx="90.8" ty="35.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="-26.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左上臂" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="46" centerPoint3DY="-1.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.538055419921875" b="0.5882568359375" c="0.5882568359375" d="0.538055419921875" tx="45.85" ty="-1.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.4" y="-32.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="54.75" centerPoint3DY="11.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.519775390625" b="0.60443115234375" c="0.60443115234375" d="0.519775390625" tx="54.55" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.35" y="-32.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="58.7" centerPoint3DY="32.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.605224609375" b="0.51885986328125" c="0.51885986328125" d="0.605224609375" tx="58.55" ty="32.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.35" y="-32.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="68.75" centerPoint3DY="50.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4674072265625" b="0.645751953125" c="0.645751953125" d="0.4674072265625" tx="68.5" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.35" y="-32"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="56.75" centerPoint3DY="101.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4674072265625" b="0.645751953125" c="0.645751953125" d="0.4674072265625" tx="56.5" ty="101.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.35" y="-32"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="68.75" centerPoint3DY="50.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4674072265625" b="0.645751953125" c="0.645751953125" d="0.4674072265625" tx="68.5" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.35" y="-32"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="58.7" centerPoint3DY="32.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.605224609375" b="0.51885986328125" c="0.51885986328125" d="0.605224609375" tx="58.55" ty="32.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.35" y="-32.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="54.75" centerPoint3DY="11.15" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.519775390625" b="0.60443115234375" c="0.60443115234375" d="0.519775390625" tx="54.55" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.35" y="-32.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/左上臂" symbolType="graphic" centerPoint3DX="46" centerPoint3DY="-1.2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.538055419921875" b="0.5882568359375" c="0.5882568359375" d="0.538055419921875" tx="45.85" ty="-1.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.4" y="-32.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="火箭筒" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-119.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="77.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-111.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="85.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-99.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="97.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-84.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="112.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-176.5" centerPoint3DY="-33.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-29" ty="163.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-84.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="112.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-99.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="97.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-111.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="85.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-164.5" centerPoint3DY="-119.6">
+                  <matrix>
+                    <Matrix a="-0.538177490234375" b="-0.5263671875" c="-0.5263671875" d="0.538177490234375" tx="-17" ty="77.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

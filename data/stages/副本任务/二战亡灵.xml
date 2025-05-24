@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>加强抗生素药剂</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward id="5">
+            <Name>加强mp药剂</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/erzhanwangling_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种61</Type>
+                        <Interval>200</Interval>
+                        <Quantity>8</Quantity>
+                        <Level>10</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种61</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>15</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种62</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种61</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>20</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种62</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>20</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种61</Type>
+                        <Interval>500</Interval>
+                        <Quantity>8</Quantity>
+                        <Level>25</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种62</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>25</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种63</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="4">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种61</Type>
+                        <Interval>500</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种62</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种63</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="5">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种61</Type>
+                        <Interval>500</Interval>
+                        <Quantity>14</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种62</Type>
+                        <Interval>500</Interval>
+                        <Quantity>8</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种63</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>35</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

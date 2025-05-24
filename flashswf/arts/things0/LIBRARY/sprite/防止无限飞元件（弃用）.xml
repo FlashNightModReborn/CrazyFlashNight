@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/防止无限飞元件（弃用）" itemID="66b9b374-000006e4" lastModified="1723446132">
+  <timeline>
+    <DOMTimeline name="防止无限飞元件（弃用）" currentFrame="59">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BDE03A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*if (_parent.操控编号 != undefined and _parent.操控编号 != -1 and 1 == 2)
+{
+	if (_parent.防止无限飞 != true)
+	{
+		_parent.防止无限飞 = true;
+		_parent.刚体 = true;
+		_parent.无敌 = true;
+	}
+}
+stop();*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#43D3DC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#010101"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!701 -140[720 -55 720 -5!720 -5[720 224 576 434!576 434[377 724 0 724!0 724[-420 724 -610 380!-610 380[-671 268 -701 132!-701 132[-720 45 -720 -5!-720 -5[-720 -232 -576 -439!-576 -439[-377 -725 0 -725!0 -725[420 -725 610 -385!610 -385
+[672 -275 701 -140"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

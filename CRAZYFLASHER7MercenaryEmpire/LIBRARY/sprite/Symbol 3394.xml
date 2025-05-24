@@ -1,0 +1,350 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 3394" itemID="6597607e-00000e5b" lastModified="1715328726">
+  <timeline>
+    <DOMTimeline name="Symbol 3394">
+      <layers>
+        <DOMLayer name="Script Layer" color="#3AC0F4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 获取对手()
+{
+	lv = new LoadVars();
+	lv_r = new LoadVars();
+	lv.operate = "readIfYongb";
+	lv.moneyvip = 敌人同伴数;
+	lv.proRes = 敌人等级下限;
+	lv.searchIf = 敌人等级上限;
+	lv.sendAndLoad("http://" + _root.address + "/skGame/login.do?" + random(9999),lv_r,"post");
+	resultArr = [];
+	_root.押金 = 押金;
+	lv_r.onLoad = function(flag)
+	{
+		if (flag)
+		{
+			if (this.soldierData == "false")
+			{
+				发布请求 = false;
+			}
+			else
+			{
+				tempArr = this.soldierData.split("_");
+				loop = 0;
+				while (loop < tempArr.length)
+				{
+					tempArr2 = tempArr[loop].split(",");
+					tempArr2[2] = false;
+					resultArr.push(tempArr2);
+					loop++;
+				}
+				_root.金钱 -= _root.押金;
+				_root.最上层发布文字提示(_root.获得翻译("已扣除押金") + _root.押金);
+				进入决斗场(resultArr);
+				发布请求 = false;
+			}
+		}
+		else
+		{
+			发布请求 = false;
+		}
+	};
+}
+function 进入决斗场(tempArr)
+{
+	_root.当前通关的关卡 = "";
+	_root.当前关卡名 = 当前关卡名;
+	_root.角斗场奖金 = 奖金;
+	_root.场景进入位置名 = "出生地";
+	_root.敌人同伴数 = 敌人同伴数;
+	_root.敌人同伴数据 = tempArr;
+	_root.关卡类型 = "初期关卡";
+	_root.淡出动画.淡出跳转帧(淡出跳转帧);
+}
+stop();
+押金 = Math.floor(奖金 / 2);
+发布请求 = false;
+if (关卡开放条件 > Number(_root.主线任务进度))
+{
+	gotoAndStop(2);
+}
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#D59148">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="90.05" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-78.05" ty="5.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>押金：</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5473E1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="59.05" height="16" isSelectable="false" variableName="押金" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="16.45" ty="5.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B94A99">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3390" centerPoint3DX="-62.2" centerPoint3DY="-38.3">
+                  <matrix>
+                    <Matrix tx="-69.9" ty="-45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#CF8EE6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="91" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-79" ty="24"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>奖金：</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#A0AE92">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="60.25" height="16" isSelectable="false" variableName="奖金" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="16" ty="24"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#E8C10A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="130" height="16" isSelectable="false" variableName="多语言当前关卡名" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="-55" ty="-53"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>新手练习场</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#A7C1B2">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3385" centerPoint3DX="40" centerPoint3DY="85.9">
+                  <matrix>
+                    <Matrix tx="-39.5" ty="41.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   this.gotoAndStop(1);
+   if(_root.发布请求 == false)
+   {
+      if(_root.金钱 < _parent.押金)
+      {
+         _root.发布消息(_root.获得翻译("金钱不足！"));
+      }
+      else
+      {
+         _root.发布消息(_root.获得翻译("获取对手中..."));
+         _root.押金 = _parent.押金;
+         _root.角斗场奖金 = _parent.奖金;
+         _root.竞技场对手请求("#0@" + _parent.敌人等级下限 + "-" + _parent.敌人等级上限 + "%" + _parent.敌人同伴数);
+         if(_parent.关卡可获得奖励品 != undefined)
+         {
+            _root.关卡可获得奖励品 = _parent.关卡可获得奖励品;
+         }
+      }
+   }
+}
+on(press){
+   this.gotoAndStop(3);
+}
+on(rollOver){
+   this.gotoAndStop(2);
+}
+on(rollOut){
+   this.gotoAndStop(1);
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("开始挑战"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3393" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#C5C84B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="152.55" height="36" isSelectable="false" variableName="简介" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="-77.55" ty="-33"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>新手练习场</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#FD23B0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3381" centerPoint3DX="53.5" centerPoint3DY="26.45">
+                  <matrix>
+                    <Matrix a="1.56072998046875" d="1.56072998046875" ty="-5.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#666666"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

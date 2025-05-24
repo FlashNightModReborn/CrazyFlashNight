@@ -1,0 +1,2223 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/攻击动作" itemID="671dc806-00000b78" lastModified="1730206960" lastUniqueIdentifier="363">
+  <timeline>
+    <DOMTimeline name="攻击动作" currentFrame="35" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="45" name="打两下" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="45" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+	if (_parent.方向 == "右")
+	{
+		_parent.移动("右",慢速度);
+	}
+	else if (_parent.方向 == "左")
+	{
+		_parent.移动("左",慢速度);
+	}
+}
+function 攻击时四向移动(上, 下, 左, 右)
+{
+	if (上 != 0)
+	{
+		_parent.移动("上",上);
+	}
+	else if (下 != 0)
+	{
+		_parent.移动("下",下);
+	}
+	if (左 != 0)
+	{
+		_parent.方向改变("左");
+		_parent.移动("左",左);
+	}
+	else if (右 != 0)
+	{
+		_parent.方向改变("右");
+		_parent.移动("右",右);
+	}
+}
+gotoAndPlay(_parent.近战招式);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹层" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="22.65" centerPoint3DY="-8.65">
+                  <matrix>
+                    <Matrix a="0.6693115234375" d="3.57659912109375" tx="22.65" ty="-8.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="40.9" centerPoint3DY="34.05">
+                  <matrix>
+                    <Matrix a="1.04269409179688" d="2.3399658203125" tx="40.9" ty="34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="155.9" centerPoint3DY="60.75">
+                  <matrix>
+                    <Matrix a="0.33563232421875" d="0.449981689453125" tx="155.9" ty="60.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.7772216796875" b="-0.629150390625" c="0.629150390625" d="0.7772216796875" tx="33.05" ty="54.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.160446166992188" b="-0.987030029296875" c="0.987030029296875" d="-0.160446166992188" tx="51.35" ty="41.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.7410888671875" b="0.67138671875" c="-0.67138671875" d="-0.7410888671875" tx="10.85" ty="8.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.487213134765625" b="-0.873199462890625" c="0.873199462890625" d="0.487213134765625" tx="34.55" ty="51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.86468505859375" b="0.502044677734375" c="-0.502044677734375" d="0.86468505859375" tx="36.55" ty="47.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.91680908203125" b="0.3990478515625" c="-0.3990478515625" d="0.91680908203125" tx="25.6" ty="40.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.91680908203125" b="0.3990478515625" c="-0.3990478515625" d="0.91680908203125" tx="9.65" ty="31.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36993408203125" b="-0.928924560546875" c="0.928924560546875" d="0.36993408203125" tx="105.1" ty="53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1578369140625" b="-0.987335205078125" c="0.987335205078125" d="0.1578369140625" tx="120.05" ty="65.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.667953491210938" b="-0.744003295898438" c="0.744003295898438" d="0.667953491210938" tx="26.7" ty="55.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y1" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96942138671875" b="-0.2451171875" c="0.2451171875" d="0.96942138671875" tx="35.1" ty="27.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246978759765625" b="-0.968978881835938" c="0.968978881835938" d="0.246978759765625" tx="28.45" ty="27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.9998779296875" b="0.0121307373046875" c="-0.0121307373046875" d="-0.9998779296875" tx="2.55" ty="34.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.977386474609375" b="-0.211227416992188" c="0.211227416992188" d="0.977386474609375" tx="37.5" ty="24.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690292358398438" b="0.723388671875" c="-0.723388671875" d="0.690292358398438" tx="61.15" ty="36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.848480224609375" b="0.529052734375" c="-0.529052734375" d="0.848480224609375" tx="46.55" ty="23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.374267578125" b="0.92718505859375" c="-0.92718505859375" d="0.374267578125" tx="36.75" ty="29.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22100830078125" b="-0.975128173828125" c="0.975128173828125" d="0.22100830078125" tx="82" ty="39.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22100830078125" b="-0.975128173828125" c="0.975128173828125" d="0.22100830078125" tx="96.95" ty="51.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.977401733398438" b="-0.210678100585938" c="0.210678100585938" d="0.977401733398438" tx="29.8" ty="28.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="y3" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652130126953125" b="-0.856048583984375" c="0.8543701171875" d="0.65081787109375" tx="55.75" ty="76.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.469146728515625" b="-0.968505859375" c="0.966598510742188" d="-0.468231201171875" tx="81.7" ty="32.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.021728515625" b="0.337890625" c="-0.337249755859375" d="-1.01969909667969" tx="-12.2" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.01058959960938" b="-0.369903564453125" c="0.369125366210938" d="1.008544921875" tx="63.6" ty="70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.7747802734375" b="0.746810913085938" c="-0.74530029296875" d="0.773193359375" tx="20.95" ty="77.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.046142578125" b="0.25225830078125" c="-0.251754760742188" d="1.04400634765625" tx="17.9" ty="73.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.046142578125" b="0.25225830078125" c="-0.251754760742188" d="1.04400634765625" tx="1.95" ty="64"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.980880737304688" b="-0.442550659179688" c="0.441650390625" d="0.9788818359375" tx="134.5" ty="66"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.980880737304688" b="-0.442550659179688" c="0.441650390625" d="0.9788818359375" tx="151.35" ty="70.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.980880737304688" b="-0.442550659179688" c="0.441650390625" d="0.9788818359375" tx="50.05" ty="76.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="棍" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.812255859375" b="-0.583221435546875" c="0.583221435546875" d="0.812255859375" tx="56.45" ty="78.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.053131103515625" b="-0.998519897460938" c="0.998519897460938" d="-0.053131103515625" tx="83.75" ty="32.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.8135986328125" b="0.581298828125" c="-0.581298828125" d="-0.8135986328125" tx="-11.35" ty="-14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99810791015625" b="-0.0601806640625" c="0.0601806640625" d="0.99810791015625" tx="63.15" ty="72.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.563934326171875" b="0.825653076171875" c="-0.825653076171875" d="0.563934326171875" tx="21.15" ty="77.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.923919677734375" b="0.3822021484375" c="-0.3822021484375" d="0.923919677734375" tx="18.15" ty="73.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.923919677734375" b="0.3822021484375" c="-0.3822021484375" d="0.923919677734375" tx="2.2" ty="64"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99652099609375" b="-0.081207275390625" c="0.081207275390625" d="0.99652099609375" tx="136.4" ty="66.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99652099609375" b="-0.081207275390625" c="0.081207275390625" d="0.99652099609375" tx="153.25" ty="71.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99652099609375" b="-0.081207275390625" c="0.081207275390625" d="0.99652099609375" tx="51.95" ty="77.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9732666015625" b="0.229217529296875" c="-0.229217529296875" d="0.9732666015625" tx="46.85" ty="22.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.959579467773438" b="0.28118896484375" c="-0.28118896484375" d="0.959579467773438" tx="39.3" ty="20.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2293701171875" b="-0.9732666015625" c="0.9732666015625" d="0.2293701171875" tx="7.05" ty="22.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9639892578125" b="0.265777587890625" c="-0.265777587890625" d="0.9639892578125" tx="48.95" ty="18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.510711669921875" b="0.859664916992188" c="-0.859664916992188" d="0.510711669921875" tx="73.85" ty="34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.991012573242188" b="0.1331787109375" c="-0.1331787109375" d="0.991012573242188" tx="57.75" ty="17.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.991012573242188" b="0.1331787109375" c="-0.1331787109375" d="0.991012573242188" tx="46.25" ty="21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.991012573242188" b="0.1331787109375" c="-0.1331787109375" d="0.991012573242188" tx="94.65" ty="37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.993637084960938" b="0.111846923828125" c="-0.111846923828125" d="0.993637084960938" tx="109.7" ty="52.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.968856811523438" b="0.2471923828125" c="-0.2471923828125" d="0.968856811523438" tx="39.6" ty="19.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="body" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.962509155273438" b="0.27105712890625" c="-0.27105712890625" d="0.962509155273438" tx="28.75" ty="70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992721557617188" b="0.120040893554688" c="-0.120040893554688" d="0.992721557617188" tx="28.75" ty="70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.86004638671875" b="-0.510101318359375" c="0.510101318359375" d="0.86004638671875" tx="29.35" ty="68.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9776611328125" b="0.209945678710938" c="-0.209945678710938" d="0.9776611328125" tx="33.85" ty="67.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.862213134765625" b="0.506378173828125" c="-0.506378173828125" d="0.862213134765625" tx="44.1" ty="76.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986663818359375" b="0.162200927734375" c="-0.162200927734375" d="0.986663818359375" tx="45.1" ty="67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9979248046875" b="-0.062591552734375" c="0.062591552734375" d="0.9979248046875" tx="45.1" ty="72.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.866851806640625" b="0.498336791992188" c="-0.498336791992188" d="0.866851806640625" tx="65.35" ty="80.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.716354370117188" b="0.697555541992188" c="-0.697555541992188" d="0.716354370117188" tx="70.85" ty="86.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 22" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9993896484375" b="-0.0301513671875" c="0.0301513671875" d="0.9993896484375" tx="36.85" ty="71.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ass" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.964874267578125" b="-0.2626953125" c="0.2626953125" d="0.964874267578125" tx="27.4" ty="72.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.964874267578125" b="-0.2626953125" c="0.2626953125" d="0.964874267578125" tx="27.4" ty="72.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="27.4" ty="70.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="35.15" ty="71.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98712158203125" b="-0.15985107421875" c="0.15985107421875" d="0.98712158203125" tx="44.35" ty="80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98712158203125" b="-0.15985107421875" c="0.15985107421875" d="0.98712158203125" tx="45.35" ty="71.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98712158203125" b="-0.15985107421875" c="0.15985107421875" d="0.98712158203125" tx="45.35" ty="76.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98712158203125" b="-0.15985107421875" c="0.15985107421875" d="0.98712158203125" tx="65.6" ty="84.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98712158203125" b="-0.15985107421875" c="0.15985107421875" d="0.98712158203125" tx="71.1" ty="90.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98712158203125" b="-0.15985107421875" c="0.15985107421875" d="0.98712158203125" tx="37.1" ty="75.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz2" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99810791015625" b="0.06085205078125" c="-0.06085205078125" d="0.99810791015625" tx="16.15" ty="107.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99810791015625" b="0.06085205078125" c="-0.06085205078125" d="0.99810791015625" tx="23.95" ty="108.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.957275390625" b="-0.28912353515625" c="0.28912353515625" d="0.957275390625" tx="24.75" ty="103.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="26.15" ty="105.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9141845703125" b="0.40521240234375" c="-0.40521240234375" d="0.9141845703125" tx="33.2" ty="115.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998458862304688" b="0.054595947265625" c="-0.054595947265625" d="0.998458862304688" tx="32.8" ty="105.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.901763916015625" b="0.43206787109375" c="-0.43206787109375" d="0.901763916015625" tx="34.1" ty="111.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.73760986328125" b="0.67510986328125" c="-0.67510986328125" d="0.73760986328125" tx="45.35" ty="116.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.73760986328125" b="0.67510986328125" c="-0.67510986328125" d="0.73760986328125" tx="44.5" ty="118.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.985321044921875" b="0.170196533203125" c="-0.170196533203125" d="0.985321044921875" tx="21.65" ty="109.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.991180419921875" b="0.132232666015625" c="-0.132232666015625" d="0.991180419921875" tx="20.55" ty="75.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994415283203125" b="-0.1053466796875" c="0.1053466796875" d="0.994415283203125" tx="20.55" ty="75.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.989898681640625" b="-0.141693115234375" c="0.141693115234375" d="0.989898681640625" tx="20.15" ty="71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="26.15" ty="72.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992034912109375" b="0.12579345703125" c="-0.12579345703125" d="0.992034912109375" tx="37.3" ty="82.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.985824584960938" b="0.1673583984375" c="-0.1673583984375" d="0.985824584960938" tx="38.3" ty="73.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.991729736328125" b="0.127716064453125" c="-0.127716064453125" d="0.991729736328125" tx="38.3" ty="78.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.916259765625" b="0.40032958984375" c="-0.40032958984375" d="0.916259765625" tx="58.55" ty="86.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.8043212890625" b="0.593994140625" c="-0.593994140625" d="0.8043212890625" tx="64.05" ty="92.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.967254638671875" b="0.253341674804688" c="-0.253341674804688" d="0.967254638671875" tx="30.05" ty="77.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="zz3" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.7" ty="142.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.05" ty="143.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="21.1" ty="142.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="11.5" ty="141.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.980392456054688" b="0.196990966796875" c="-0.196990966796875" d="0.980392456054688" tx="5.25" ty="142.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9873046875" b="0.158721923828125" c="-0.158721923828125" d="0.9873046875" tx="16.2" ty="140.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.997360229492188" b="0.0722808837890625" c="-0.0722808837890625" d="0.997360229492188" tx="5.3" ty="137.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9967041015625" b="0.0805816650390625" c="-0.0805816650390625" d="0.9967041015625" tx="10.35" ty="132.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9967041015625" b="0.0805816650390625" c="-0.0805816650390625" d="0.9967041015625" tx="9.5" ty="135.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9967041015625" b="0.0805816650390625" c="-0.0805816650390625" d="0.9967041015625" tx="1.15" ty="141.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy2" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.993408203125" b="-0.114410400390625" c="0.114410400390625" d="0.993408203125" tx="50.3" ty="101.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99981689453125" b="0.0170440673828125" c="-0.0170440673828125" d="0.99981689453125" tx="53.15" ty="99.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.993408203125" b="-0.114410400390625" c="0.114410400390625" d="0.993408203125" tx="50.65" ty="101.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="55.5" ty="103.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.978012084960938" b="0.208419799804688" c="-0.208419799804688" d="0.978012084960938" tx="70.1" ty="108.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9962158203125" b="0.0863037109375" c="-0.0863037109375" d="0.9962158203125" tx="59.85" ty="102.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9962158203125" b="0.0863037109375" c="-0.0863037109375" d="0.9962158203125" tx="69.9" ty="105.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986862182617188" b="0.16119384765625" c="-0.16119384765625" d="0.986862182617188" tx="102.6" ty="102.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986862182617188" b="0.16119384765625" c="-0.16119384765625" d="0.986862182617188" tx="111" ty="103.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986862182617188" b="0.16119384765625" c="-0.16119384765625" d="0.986862182617188" tx="57.8" ty="105.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy1" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999252319335938" b="-0.0383758544921875" c="0.0383758544921875" d="0.999252319335938" tx="37.45" ty="70.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99090576171875" b="-0.13433837890625" c="0.13433837890625" d="0.99090576171875" tx="37.45" ty="70.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999252319335938" b="-0.0383758544921875" c="0.0383758544921875" d="0.999252319335938" tx="37.8" ty="70.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="43.8" ty="72.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9920654296875" b="-0.12542724609375" c="0.12542724609375" d="0.9920654296875" tx="54.65" ty="79.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.973907470703125" b="0.226715087890625" c="-0.226715087890625" d="0.973907470703125" tx="55.65" ty="69.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996078491210938" b="-0.08782958984375" c="0.08782958984375" d="0.996078491210938" tx="55.65" ty="75.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.837875366210938" b="-0.545745849609375" c="0.545745849609375" d="0.837875366210938" tx="75.9" ty="82.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.735504150390625" b="-0.677413940429688" c="0.677413940429688" d="0.735504150390625" tx="81.4" ty="88.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999267578125" b="0.03607177734375" c="-0.03607177734375" d="0.999267578125" tx="47.4" ty="74.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="yy3" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="44.15" ty="138.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.995590209960938" b="0.0936126708984375" c="-0.0936126708984375" d="0.995590209960938" tx="42.1" ty="135.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="44.5" ty="138.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998779296875" b="-0.04937744140625" c="0.04937744140625" d="0.998779296875" tx="45.15" ty="139.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98712158203125" b="-0.15985107421875" c="0.15985107421875" d="0.98712158203125" tx="52.4" ty="142.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9990234375" b="0.04302978515625" c="-0.04302978515625" d="0.9990234375" tx="46.4" ty="138.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9990234375" b="0.04302978515625" c="-0.04302978515625" d="0.9990234375" tx="56.45" ty="140.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9990234375" b="0.04302978515625" c="-0.04302978515625" d="0.9990234375" tx="86.5" ty="136.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994796752929688" b="-0.101364135742188" c="0.101364135742188" d="0.994796752929688" tx="94.9" ty="138.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994796752929688" b="-0.101364135742188" c="0.101364135742188" d="0.994796752929688" tx="41.7" ty="139.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z3" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.04412841796875" b="-0.109970092773438" c="0.109970092773438" d="1.04412841796875" tx="63.25" ty="87.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.0367431640625" b="-0.165634155273438" c="0.165634155273438" d="1.0367431640625" tx="63.15" ty="83"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.71759033203125" b="-0.766464233398438" c="0.766464233398438" d="0.71759033203125" tx="57.9" ty="59.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.02488708496094" b="0.228057861328125" c="-0.228057861328125" d="1.02488708496094" tx="59.3" ty="85.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.743698120117188" b="-0.741180419921875" c="0.741180419921875" d="0.743698120117188" tx="53.3" ty="95.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.02960205078125" b="-0.205673217773438" c="0.205673217773438" d="1.02960205078125" tx="71.6" ty="82.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.00054931640625" b="-0.318145751953125" c="0.318145751953125" d="1.00054931640625" tx="68.95" ty="81.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.0325927734375" b="0.18975830078125" c="-0.18975830078125" d="1.0325927734375" tx="75.05" ty="97.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.982452392578125" b="0.37030029296875" c="-0.37030029296875" d="0.982452392578125" tx="77.5" ty="99.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.624847412109375" b="-0.84375" c="0.84375" d="0.624847412109375" tx="48.65" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z2" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.990341186523438" b="-0.138031005859375" c="0.138031005859375" d="0.990341186523438" tx="54.6" ty="66.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.95916748046875" b="-0.282562255859375" c="0.282562255859375" d="0.95916748046875" tx="51.45" ty="63.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.599227905273438" b="-0.800537109375" c="0.800537109375" d="0.599227905273438" tx="38.6" ty="52.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996124267578125" b="0.0875091552734375" c="-0.0875091552734375" d="0.996124267578125" tx="55.4" ty="64.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.857208251953125" b="0.514877319335938" c="-0.514877319335938" d="0.857208251953125" tx="58.7" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999786376953125" b="-0.0177459716796875" c="0.0177459716796875" d="0.999786376953125" tx="65.65" ty="63.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.95355224609375" b="-0.300949096679688" c="0.300949096679688" d="0.95355224609375" tx="57.65" ty="63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.922042846679688" b="0.386886596679688" c="-0.386886596679688" d="0.922042846679688" tx="77.5" ty="76.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.90411376953125" b="0.427108764648438" c="-0.427108764648438" d="0.90411376953125" tx="80.85" ty="79.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.976531982421875" b="0.2149658203125" c="-0.2149658203125" d="0.976531982421875" tx="47.4" ty="62.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="z1" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998031616210938" b="-0.06170654296875" c="0.06170654296875" d="0.998031616210938" tx="51.35" ty="35.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.990020751953125" b="-0.1405029296875" c="0.1405029296875" d="0.990020751953125" tx="45.75" ty="32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.818038940429688" b="-0.575103759765625" c="0.575103759765625" d="0.818038940429688" tx="19.75" ty="28.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.97979736328125" b="0.199752807617188" c="-0.199752807617188" d="0.97979736328125" tx="60.3" ty="34.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.707275390625" b="0.706878662109375" c="-0.706878662109375" d="0.707275390625" tx="79.65" ty="53.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.984405517578125" b="0.17559814453125" c="-0.17559814453125" d="0.984405517578125" tx="69.85" ty="32.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.986846923828125" b="0.161285400390625" c="-0.161285400390625" d="0.986846923828125" tx="61.45" ty="33.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.633590698242188" b="0.7735595703125" c="-0.7735595703125" d="0.633590698242188" tx="100.6" ty="56.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20025634765625" b="0.979660034179688" c="-0.979660034179688" d="0.20025634765625" tx="110.85" ty="71.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/做的动画/未命名文件夹 1/各部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96563720703125" b="0.259521484375" c="-0.259521484375" d="0.96563720703125" tx="54.35" ty="32.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

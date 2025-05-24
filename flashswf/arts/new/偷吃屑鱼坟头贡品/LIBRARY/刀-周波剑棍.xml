@@ -1,0 +1,75 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀-周波剑棍" itemID="65f991de-00002644" linkageExportForAS="true" linkageIdentifier="刀-周波剑棍" lastModified="1710854815" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="刀-周波剑棍">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8ADE35" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置3" centerPoint3DX="-12.5" centerPoint3DY="235.5">
+                  <matrix>
+                    <Matrix a="2" d="2" tx="-25" ty="223"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#56949D" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置2" centerPoint3DX="-13" centerPoint3DY="159">
+                  <matrix>
+                    <Matrix a="2" d="2" tx="-25.5" ty="146.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#7AF9F8" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置1" centerPoint3DX="-14" centerPoint3DY="79">
+                  <matrix>
+                    <Matrix a="2" d="2" tx="-26.5" ty="66.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/周波剑" centerPoint3DX="-1.5" centerPoint3DY="106.9">
+                  <matrix>
+                    <Matrix a="0" b="4.0594482421875" c="-4.0594482421875" d="0" tx="21.55" ty="-62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.7" y="5.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="0.05"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

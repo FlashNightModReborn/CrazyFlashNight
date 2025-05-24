@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/单元体-加强普通子弹" itemID="65a27145-00000316" linkageExportForAS="true" linkageIdentifier="单元体-加强普通子弹" lastModified="1723477205">
+  <timeline>
+    <DOMTimeline name="单元体-加强普通子弹">
+      <layers>
+        <DOMLayer name="Layer 4" color="#F76FB9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="联弹/加强子弹基底" selected="true" centerPoint3DX="25.75" centerPoint3DY="0.45">
+                  <matrix>
+                    <Matrix a="1.66873168945313" d="1.66873168945313" tx="13.15" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FFFF99"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

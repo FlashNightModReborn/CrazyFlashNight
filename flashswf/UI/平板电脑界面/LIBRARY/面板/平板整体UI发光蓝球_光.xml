@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="面板/平板整体UI发光蓝球_光" itemID="66c49d6d-00001723" lastModified="1724161389">
+  <timeline>
+    <DOMTimeline name="平板整体UI发光蓝球_光">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="2.57188415527344" d="2.57188415527344"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.7" y="5.7"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0078125" d="0.0078125" tx="5.75" ty="5.75"/>
+                        </matrix>
+                        <GradientEntry color="#E1FFFF" alpha="0.8" ratio="0"/>
+                        <GradientEntry color="#E1FFFF" alpha="0" ratio="0.650980392156863"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!196 196[162 229 115 229!115 229[67 229 34 196!34 196[0 162 0 115!0 115[0 67 34 34!34 34[67 0 115 0!115 0[162 0 196 34!196 34[229 67 229 115!229 115[229 162 196 196"/>
+                    <Edge cubics="!229 115(;229,178 178,229 115,229q229 115Q229 162q196 196Q162 229q115 229);"/>
+                    <Edge cubics="!115 229(;51,229 0,178 0,115q115 229Q67 229q34 196Q0 162q0 115);"/>
+                    <Edge cubics="!0 115(;0,51 51,0 115,0q0 115Q0 67q34 34Q67 0q115 0);"/>
+                    <Edge cubics="!115 0(;178,0 229,51 229,115q115 0Q162 0q196 34Q229 67q229 115);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

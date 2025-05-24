@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/基础元件/原版的套皮部件/Symbol 384" itemID="663f041c-00005179" symbolType="graphic" lastModified="1715325722">
+  <timeline>
+    <DOMTimeline name="Symbol 384">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/元件 10" centerPoint3DX="16.6" centerPoint3DY="48.2">
+                  <matrix>
+                    <Matrix a="-1.9246826171875" b="-0.136444091796875" c="-0.0255889892578125" d="1.95292663574219" tx="43.2" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.75" y="11.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

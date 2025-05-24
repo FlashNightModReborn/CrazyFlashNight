@@ -1,0 +1,313 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁长枪兵/黑铁长枪兵/动画合集/被击" itemID="67b9e118-00000fe4" lastModified="1740230713" lastUniqueIdentifier="17">
+  <timeline>
+    <DOMTimeline name="被击" currentFrame="24" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;109&lt;/guideline&gt;&lt;guideline direction="h"&gt;98&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#C3449E" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/长枪兵左臂" centerPoint3DX="48.95" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="0.99578857421875" b="-0.00726318359375" c="0.00726318359375" d="0.99578857421875" tx="36.7" ty="-30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.15" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/长枪兵身体" centerPoint3DX="37.6" centerPoint3DY="-4.7">
+                  <matrix>
+                    <Matrix a="0.9244384765625" b="-0.381088256835938" c="0.381088256835938" d="0.9244384765625" tx="6.3" ty="-21.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.6" y="47.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/左臂下" centerPoint3DX="60.7" centerPoint3DY="-13.65">
+                  <matrix>
+                    <Matrix a="-0.323272705078125" b="-0.92938232421875" c="0.92938232421875" d="-0.323272705078125" tx="51.45" ty="7.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.95" y="10.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/未命名文件夹 1/Symbol 790" symbolType="graphic" centerPoint3DX="91.15" centerPoint3DY="87.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.524444580078125" b="0.163055419921875" c="0.162948608398438" d="0.524032592773438" tx="98.85" ty="74.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.2" y="13.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 7" centerPoint3DX="82.8" centerPoint3DY="65.05">
+                  <matrix>
+                    <Matrix a="0.952880859375" b="-0.29583740234375" c="0.29583740234375" d="0.952880859375" tx="69.8" ty="48.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.75" y="9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 9" centerPoint3DX="44.2" centerPoint3DY="71.75">
+                  <matrix>
+                    <Matrix a="0.89373779296875" b="0.4342041015625" c="-0.4342041015625" d="0.89373779296875" tx="39.7" ty="46.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/左大腿" centerPoint3DX="64.15" centerPoint3DY="37.5">
+                  <matrix>
+                    <Matrix a="0.9383544921875" b="-0.345626831054688" c="0.345626831054688" d="0.9383544921875" tx="30.5" ty="19.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="15.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/未命名文件夹 1/Symbol 789" symbolType="graphic" centerPoint3DX="46" centerPoint3DY="43.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.496444702148438" b="0.236663818359375" c="0.236419677734375" d="0.49609375" tx="47.15" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.25" y="7.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/腰部" centerPoint3DX="43.45" centerPoint3DY="16.2">
+                  <matrix>
+                    <Matrix tx="26.35" ty="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.1" y="11.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/未命名文件夹 1/Symbol 790" symbolType="graphic" centerPoint3DX="28.85" centerPoint3DY="89" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476959228515625" b="-0.264892578125" c="-0.264739990234375" d="0.476547241210938" tx="43.6" ty="85.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.5" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/左手" centerPoint3DX="62.4" centerPoint3DY="-28.05">
+                  <matrix>
+                    <Matrix a="0.578353881835938" b="-0.788375854492188" c="0.788375854492188" d="0.578353881835938" tx="51.2" ty="-26.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.5" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/长枪兵头部" centerPoint3DX="31.1" centerPoint3DY="-39.5">
+                  <matrix>
+                    <Matrix a="0.9881591796875" b="-0.123519897460938" c="0.123519897460938" d="0.9881591796875" tx="10.6" ty="-59.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="32.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/右臂上" centerPoint3DX="31.35" centerPoint3DY="-3.1">
+                  <matrix>
+                    <Matrix a="0.427886962890625" b="-0.899139404296875" c="0.899139404296875" d="0.427886962890625" tx="5.8" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.1" y="9.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/右臂下" centerPoint3DX="51.35" centerPoint3DY="13.75">
+                  <matrix>
+                    <Matrix a="0.56427001953125" b="-0.81048583984375" c="0.81048583984375" d="0.56427001953125" tx="29.4" ty="16.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 18" centerPoint3DX="60.55" centerPoint3DY="-42.4">
+                  <matrix>
+                    <Matrix a="-0.0496368408203125" b="-0.491134643554688" c="0.43701171875" d="-0.044281005859375" tx="69.4" ty="81.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97.85" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/右手" centerPoint3DX="67" centerPoint3DY="9.9">
+                  <matrix>
+                    <Matrix a="0.19940185546875" b="-0.956298828125" c="0.956298828125" d="0.19940185546875" tx="56.75" ty="17.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.6" y="5.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/长枪兵左臂" centerPoint3DX="72" centerPoint3DY="-12.85">
+                  <matrix>
+                    <Matrix a="0.829559326171875" b="0.5479736328125" c="-0.5479736328125" d="0.829559326171875" tx="69.85" ty="-31.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.1" y="8.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/长枪兵身体" centerPoint3DX="55.85" centerPoint3DY="-9.45">
+                  <matrix>
+                    <Matrix a="0.977783203125" b="0.204315185546875" c="-0.204315185546875" d="0.977783203125" tx="39.4" ty="-40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.5" y="47"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/左臂下" centerPoint3DX="80.1" centerPoint3DY="-3.85">
+                  <matrix>
+                    <Matrix a="0.249053955078125" b="-0.950302124023438" c="0.950302124023438" d="0.249053955078125" tx="60.75" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.9" y="10.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/未命名文件夹 1/Symbol 790" symbolType="graphic" centerPoint3DX="89.25" centerPoint3DY="88.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5447998046875" b="0.05804443359375" c="0.05804443359375" d="0.54437255859375" tx="99.3" ty="76.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.3" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 7" centerPoint3DX="79.85" centerPoint3DY="65.5">
+                  <matrix>
+                    <Matrix a="0.929428100585938" b="-0.3612060546875" c="0.3612060546875" d="0.929428100585938" tx="65.75" ty="49.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.8" y="9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 9" centerPoint3DX="60.55" centerPoint3DY="69.7">
+                  <matrix>
+                    <Matrix a="0.634811401367188" b="-0.763214111328125" c="0.763214111328125" d="0.634811401367188" tx="35.1" ty="68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.45" y="10.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/左大腿" centerPoint3DX="66" centerPoint3DY="34.4">
+                  <matrix>
+                    <Matrix a="0.997116088867188" b="-0.0611724853515625" c="0.0611724853515625" d="0.997116088867188" tx="39.15" ty="7.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.85" y="15.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/未命名文件夹 1/Symbol 789" symbolType="graphic" centerPoint3DX="50.25" centerPoint3DY="37.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.509613037109375" b="0.2052001953125" c="0.204986572265625" d="0.509262084960938" tx="53.15" ty="10.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.2" y="7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/腰部" centerPoint3DX="49.7" centerPoint3DY="9.8">
+                  <matrix>
+                    <Matrix a="0.99652099609375" b="0.0830230712890625" c="-0.0830230712890625" d="0.99652099609375" tx="33.65" ty="-2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.05" y="11"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/未命名文件夹 1/Symbol 790" symbolType="graphic" centerPoint3DX="71.6" centerPoint3DY="91.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.540023803710938" b="0.06280517578125" c="0.06268310546875" d="0.53961181640625" tx="81.55" ty="80.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.55" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/左手" centerPoint3DX="89.4" centerPoint3DY="-14.85">
+                  <matrix>
+                    <Matrix a="0.91802978515625" b="-0.33184814453125" c="0.33184814453125" d="0.91802978515625" tx="79.25" ty="-19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.5" y="5.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/长枪兵头部" centerPoint3DX="70" centerPoint3DY="-41.8">
+                  <matrix>
+                    <Matrix a="0.887939453125" b="0.447265625" c="-0.447265625" d="0.887939453125" tx="64.05" ty="-69.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="32.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/右臂上" centerPoint3DX="49.95" centerPoint3DY="-11.65">
+                  <matrix>
+                    <Matrix a="0.85491943359375" b="-0.50738525390625" c="0.50738525390625" d="0.85491943359375" tx="27.35" ty="-23.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="9.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/右臂下" centerPoint3DX="57.2" centerPoint3DY="13.45">
+                  <matrix>
+                    <Matrix a="0.918670654296875" b="-0.358001708984375" c="0.358001708984375" d="0.918670654296875" tx="37.45" ty="3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/乱八糟七的玩意儿/元件 18" centerPoint3DX="96.05" centerPoint3DY="-27.95">
+                  <matrix>
+                    <Matrix a="0.232040405273438" b="-0.43475341796875" c="0.386932373046875" d="0.206390380859375" tx="34.65" ty="79.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97.85" y="8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁长枪兵/长枪兵身体零件/右手" centerPoint3DX="72.35" centerPoint3DY="19">
+                  <matrix>
+                    <Matrix a="0.697296142578125" b="-0.681884765625" c="0.681884765625" d="0.697296142578125" tx="59.85" ty="19.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.6" y="5.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

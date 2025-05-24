@@ -1,0 +1,157 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1742868006" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="血槽韧性条" currentFrame="105">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#6788CD">
+          <frames>
+            <DOMFrame index="0" duration="300" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="300" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#F27FAC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="299" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="300" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = 0;
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="韧性条" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="300" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/韧性条" name="韧性条" blendMode="hardlight" centerPoint3DX="18.05" centerPoint3DY="4.7">
+                  <matrix>
+                    <Matrix a="0.500045776367188" d="0.800003051757813" tx="-22.5" ty="3.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="300" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="血槽条" color="#88E458" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="300" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 83" name="血槽条" centerPoint3DX="21.5" centerPoint3DY="1.4">
+                  <matrix>
+                    <Matrix a="0.542831420898438" d="1.19998168945313" tx="-22.5" ty="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="300" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="残余血条" color="#88E458" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="300" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="残余血槽条" name="残余血槽条" blendMode="screen" centerPoint3DX="-22.5" centerPoint3DY="0.05">
+                  <matrix>
+                    <Matrix tx="-22.5" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="300" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="血槽底" color="#FA3CAB" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="300" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/血槽底" name="血槽底" cacheAsBitmap="true" blendMode="hardlight" centerPoint3DY="3.25">
+                  <matrix>
+                    <Matrix tx="-22.5" ty="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="300" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刚体遮罩" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="300" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/刚体遮罩" name="刚体遮罩" centerPoint3DX="21.5" centerPoint3DY="4.7">
+                  <matrix>
+                    <Matrix a="0.542831420898438" d="0.800003051757813" tx="-22.5" ty="3.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="300" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="300" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!455 -5|-452 -5!-452 -5[-454 -5 -455 -2!-455 -2[-457 -1 -457 0!-457 0|-457 129!-457 129[-457 131 -455 134!-455 134[-454 135 -452 135!-452 135|455 135!455 135[457 135 459 134!459 134[459 131 459 129!459 129|459 0!459 0[459 -1 459 -2!459
+ -2[457 -5 455 -5!-447 5|450 5!450 5|450 125!450 125|-447 125!-447 125|-447 5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="300" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

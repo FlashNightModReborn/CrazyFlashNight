@@ -1,0 +1,361 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 889" itemID="6597607e-00000807" linkageExportForAS="true" linkageIdentifier="佣兵信息显示框" lastModified="1745730773">
+  <timeline>
+    <DOMTimeline name="Symbol 889">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F29F48">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BEDCE1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="451.05" centerPoint3DY="45.25">
+                  <matrix>
+                    <Matrix tx="405.25" ty="34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   显示文字 = _root.获得翻译("取消");
+}
+on(release){
+   _parent.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#14A7F4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 847" centerPoint3DX="494.05" centerPoint3DY="25.95">
+                  <matrix>
+                    <Matrix tx="481.55" ty="12.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.gotoAndStop(2);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="358.05" centerPoint3DY="45.25">
+                  <matrix>
+                    <Matrix tx="312.25" ty="34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   显示文字 = _root.获得翻译("确定");
+}
+on(release){
+   _root.删佣兵(_parent.佣兵数据[2]);
+   _parent._parent.佣兵删除记录(_parent.佣兵数据[2]);
+   _root.佣兵是否出战信息[_parent.同伴数据数组号] = 0;
+   _parent._parent.排列佣兵图标();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#D6EE96">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="104.1" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="365" ty="7.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>解雇</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="167" height="29" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="326" ty="1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>确定解雇吗？</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#9CD3C9">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="95" height="15.85" isSelectable="false" variableName="状态" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="170" ty="6.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei-Bold"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#6ADDCA">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!3967 600|3406 600!3406 600|3406 1162!3406 1162|3967 1162!3967 1162|3967 600!3967 600|4528 600!4528 600|5089 600!5089 600|5650 600!5650 600|5650 1162!5650 1162|6211 1162!6211 1162|6211 600!6211 600|5650 600!5650 1162|5089 1162!5089 1162
+|4528 1162!4528 1162|3967 1162!5089 1162|5089 600!4528 600|4528 1162!601 600|40 600!40 600|40 1162!40 1162|601 1162!601 1162|601 600!601 600|1162 600!1162 600|1723 600!1723 600|2284 600!2284 600|2284 1162!2284 1162|2845 1162!2845 1162
+|2845 600!2845 600|2284 600!2284 1162|1723 1162!1723 1162|1162 1162!1162 1162|601 1162!1723 1162|1723 600!1162 600|1162 1162!2845 600|3406 600!3406 1162|2845 1162"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#74CB8B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/通用按钮2" centerPoint3DX="317" centerPoint3DY="14.95">
+                  <matrix>
+                    <Matrix tx="271.2" ty="3.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+
+	是否刷新 = false;
+	if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == 0)
+	{
+		显示文字 = _root.获得翻译("不出战");
+		_parent.状态 = "<FONT COLOR=\'#66CCFF\'>" + _root.获得翻译("未出战") + "</FONT>";
+		_root.佣兵是否出战信息[_parent.同伴数据数组号] = 1;
+		是否刷新 = true;
+	}
+	else if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == 1)
+	{
+		显示文字 = _root.获得翻译("出战");
+		_parent.状态 = "<FONT COLOR=\'#66FF00\'>" + _root.获得翻译("出战中") + "</FONT>";
+		_root.佣兵是否出战信息[_parent.同伴数据数组号] = 0;
+		是否刷新 = true;
+	}
+	else if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == -1)
+	{
+		if (_root.singleSubmit("复活币", 1))
+		{
+			显示文字 = _root.获得翻译("出战");
+			_parent.状态 = "<FONT COLOR=\'#66FF00\'>" + _root.获得翻译("出战中") + "</FONT>";
+			_root.佣兵是否出战信息[_parent.同伴数据数组号] = 1;
+			是否刷新 = true;
+		}
+		else
+		{
+			_root.发布消息(_root.获得翻译("复活失败，请购买复活币！"));
+		}
+	}
+	if (是否刷新 == true)
+	{
+		_root.删除场景上佣兵();
+		_root.加载佣兵(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
+		_parent._parent.排列佣兵图标();
+	}
+}
+onClipEvent (load) {
+	if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == 0)
+	{
+		显示文字 = _root.获得翻译("出战");
+		_parent.状态 = "<FONT COLOR=\'#66CCFF\'>" + _root.获得翻译("未出战") + "</FONT>";
+	}
+	else if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == 1)
+	{
+		显示文字 = _root.获得翻译("不出战");
+		_parent.状态 = "<FONT COLOR=\'#66FF00\'>" + _root.获得翻译("出战中") + "</FONT>";
+	}
+	else if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == -1)
+	{
+		显示文字 = _root.获得翻译("使用复活币");
+		_parent.状态 = "<FONT COLOR=\'#FF0000\'>" + _root.获得翻译("重伤") + "</FONT>";
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#2EA5F9">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="33.05" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="98.9" ty="6.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>LV.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#C2F890">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="26.95" height="15.85" isSelectable="false" variableName="等级">
+                  <matrix>
+                    <Matrix tx="136" ty="7.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#CDA279">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="100" height="15.85" isSelectable="false" variableName="名字">
+                  <matrix>
+                    <Matrix tx="7" ty="7.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#92CA85">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.03656005859375" c="-0.30303955078125" d="0" tx="248.6" ty="30.05"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!9936 1200|6 1200!6 1200|6 2!6 2|9936 2!9936 2|9936 1200"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,132 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="6、任务信息/任务信息" itemID="67cc492d-0000053a" lastModified="1747643498" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="任务信息" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;997&lt;/guideline&gt;&lt;guideline direction="v"&gt;974&lt;/guideline&gt;&lt;guideline direction="h"&gt;207&lt;/guideline&gt;&lt;guideline direction="h"&gt;233&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.count = 0;
+function onType(){
+	this.taskDesc.htmlText = this.description.slice(0, count + 1);
+	this.count++;
+	if(this.count >= this.description.length){
+		delete this.onEnterFrame;
+	}
+}
+
+function typeDescription(desc){
+	this.taskDesc.htmlText = "";
+	this.description = desc;
+	this.count = 0;
+	this.onEnterFrame = this.onType;
+}
+
+function clearDescription(){
+	this.description = null;
+	this.taskDesc.htmlText = "";
+	this.count = 0;
+	delete this.onEnterFrame;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="任务介绍" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="taskDesc" width="673.15" height="91.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="23.75" ty="15.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="-6" size="24" bitmapSize="480" face="SourceHanSerifCN-Heavy" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter quality="3" strength="0.5"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="边角" color="#009999" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="左上" color="#FF800A" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="6、任务信息/边角" symbolType="graphic" loop="play once">
+                  <transformationPoint>
+                    <Point x="4" y="4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右上" color="#FF4FFF" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="6、任务信息/边角" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="720.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4" y="4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左下" color="#FF800A" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="6、任务信息/边角" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" ty="126"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4" y="4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右下" color="#FF4FFF" parentLayerIndex="2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="6、任务信息/边角" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="720.75" ty="126"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4" y="4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

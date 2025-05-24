@@ -1,0 +1,374 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/加载UI/新片头 1024*768" itemID="6632249c-00003eb1" linkageExportForAS="true" linkageIdentifier="新片头1024768" lastModified="1737210985" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="新片头 1024*768">
+      <layers>
+        <DOMLayer name="Script Layer" color="#A8B5E9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+var listenerObject = new Object();
+listenerObject.complete = function(eventObject)
+{
+	gotoAndStop(2);
+};
+动画.addEventListener("complete",listenerObject);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.reserved.removeMovieClip();//把depthManager杀了
+this.removeMovieClip();
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A3D48F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/加载UI/Symbol 317" name="片头动画小提示" centerPoint3DX="470.55" centerPoint3DY="567.25">
+                  <matrix>
+                    <Matrix tx="136.6" ty="551.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#AE8F69">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="968.55" centerPoint3DY="557.25">
+                  <matrix>
+                    <Matrix tx="922.75" ty="546.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	_root.注释结束();
+	_parent.gotoAndStop(2);
+}
+onClipEvent (load) {
+	显示文字 = "点击关闭动画";
+	_root.全部翻译(this);
+}
+on (rollOver) {
+	_root.注释(150,_root.获得翻译(显示文字));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A1AC76">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMCompiledClipInstance libraryItemName="FLVPlayback" uniqueID="2">
+                  <matrix>
+                    <Matrix a="2.699951171875" d="2.39996337890625" tx="80"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="160" y="120"/>
+                  </transformationPoint>
+                  <dataBindingXML><![CDATA[<component metaDataFetched='true' schemaUrl='' schemaOperation='' sceneRootLabel='Scene 1' oldCopiedComponentPath=''>
+	<eventMap>
+		<property name="bytesLoaded" value="progress" />
+		<property name="bytesTotal" value="progress" />
+		<property name="height" value="resize" />
+		<property name="paused" value="stateChange" />
+		<property name="playheadTime" value="playheadUpdate" />
+		<property name="playing" value="stateChange" />
+		<property name="preferredHeight" value="metadataReceived" />
+		<property name="preferredWidth" value="metadataReceived" />
+		<property name="scaleX" value="resize" />
+		<property name="scaleY" value="resize" />
+		<property name="state" value="stateChange" />
+		<property name="stopped" value="stateChange" />
+		<property name="totalTime" value="metadataReceived" />
+		<property name="volume" value="volumeUpdate" />
+		<property name="width" value="resize" />
+	</eventMap>
+	<property name="activeVideoPlayerIndex">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="bytesLoaded">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="bytesTotal">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="contentPath">
+<schema name="String" base="String" class="mx.data.types.Str" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxLength" value="" />
+				<property name="minLength" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="height">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="paused">
+<schema name="Boolean" base="Boolean" class="mx.data.types.Bool" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="playheadTime">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="playing">
+<schema name="Boolean" base="Boolean" class="mx.data.types.Bool" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="preferredHeight">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="preferredWidth">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="scaleX">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="scaleY">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="state">
+<schema name="String" base="String" class="mx.data.types.Str" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxLength" value="" />
+				<property name="minLength" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="stopped">
+<schema name="Boolean" base="Boolean" class="mx.data.types.Bool" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="totalTime">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="volume">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="width">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="x">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+	<property name="y">
+<schema name="Number" base="Number" class="mx.data.types.Num" required="true" readonly="false" writeonly="false" category="simple" original="true">
+			<properties>
+				<property name="defaultLabel" value="" />
+				<property name="defaultUIControl" value="" />
+				<property name="maxValue" value="" />
+				<property name="minValue" value="" />
+			</properties>
+		</schema>
+	</property>
+</component>
+]]></dataBindingXML>
+                  <parametersAsXML><![CDATA[   <property id="autoPlay">
+      <Inspectable name="autoPlay" variable="autoPlay" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="autoRewind">
+      <Inspectable name="autoRewind" variable="autoRewind" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="autoSize">
+      <Inspectable name="autoSize" variable="autoSize" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="bufferTime">
+      <Inspectable name="bufferTime" variable="bufferTime" category="" verbose="0" defaultValue="0.1" type="Number"/>
+   </property>
+   <property id="contentPath">
+      <Inspectable name="contentPath" variable="contentPath" category="" verbose="0" defaultValue="flashswf/movies/newmovie.flv" type="Video Content Path"/>
+   </property>
+   <property id="cuePoints">
+      <Inspectable name="cuePoints" variable="cuePoints" category="" verbose="0" defaultValue="" type="Video Cue Points"/>
+   </property>
+   <property id="isLive">
+      <Inspectable name="isLive" variable="isLive" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="maintainAspectRatio">
+      <Inspectable name="maintainAspectRatio" variable="maintainAspectRatio" category="" verbose="0" defaultValue="true" type="Boolean"/>
+   </property>
+   <property id="skin">
+      <Inspectable name="skin" variable="skin" category="" verbose="0" defaultValue="" type="Video Skin"/>
+   </property>
+   <property id="skinAutoHide">
+      <Inspectable name="skinAutoHide" variable="skinAutoHide" category="" verbose="0" defaultValue="false" type="Boolean"/>
+   </property>
+   <property id="totalTime">
+      <Inspectable name="totalTime" variable="totalTime" category="" verbose="0" defaultValue="0" type="Number"/>
+   </property>
+   <property id="version_1_0_2">
+      <Inspectable name="version_1_0_2" variable="version_1_0_2" category="" verbose="0" defaultValue="" type="String"/>
+   </property>
+   <property id="volume">
+      <Inspectable name="volume" variable="volume" category="" verbose="0" defaultValue="100" type="Number"/>
+   </property>
+]]></parametersAsXML>
+                </DOMCompiledClipInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#FFFF00" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 309" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.27696228027344" d="1.19525146484375" tx="512" ty="287.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press, release) {
+	gotoAndStop(2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

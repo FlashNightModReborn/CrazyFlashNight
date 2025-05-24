@@ -1,0 +1,493 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="image" itemID="65976161-00000eac"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sound" itemID="663b39d7-00000d89"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+          <DOMFolderItem name="选关界面UI" itemID="663b39d7-00000d8d" isExpanded="true"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="image/bitmap19450.png" itemID="6597607d-00000518" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap19450.png" sourceLastImported="1704419453" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap19450.png" bitmapDataHRef="M 31 1715157464.dat" frameRight="3220" frameBottom="1180"/>
+          <DOMBitmapItem name="image/bitmap3106.jpg" itemID="6597607d-0000052c" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3106.jpg" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap3106.jpg" bitmapDataHRef="M 1 1715157464.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap3108.jpg" itemID="6597607d-00000531" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3108.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3108.jpg" bitmapDataHRef="M 2 1715157464.dat" frameRight="20480" frameBottom="15360" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3110.jpg" itemID="6597607d-00000536" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3110.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3110.jpg" bitmapDataHRef="M 3 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3112.jpg" itemID="6597607d-0000053b" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3112.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3112.jpg" bitmapDataHRef="M 4 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3114.jpg" itemID="6597607d-00000540" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3114.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3114.jpg" bitmapDataHRef="M 5 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3116.jpg" itemID="6597607d-00000545" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3116.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3116.jpg" bitmapDataHRef="M 6 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3118.jpg" itemID="6597607d-0000054a" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3118.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3118.jpg" bitmapDataHRef="M 7 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3120.jpg" itemID="6597607d-0000054f" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3120.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3120.jpg" bitmapDataHRef="M 8 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3122.jpg" itemID="6597607d-00000554" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3122.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3122.jpg" bitmapDataHRef="M 9 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3124.jpg" itemID="6597607d-00000559" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3124.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3124.jpg" bitmapDataHRef="M 10 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3126.jpg" itemID="6597607d-0000055e" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3126.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3126.jpg" bitmapDataHRef="M 11 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3128.jpg" itemID="6597607d-00000563" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3128.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3128.jpg" bitmapDataHRef="M 12 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3130.jpg" itemID="6597607d-00000568" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3130.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3130.jpg" bitmapDataHRef="M 13 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3132.jpg" itemID="6597607d-0000056d" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3132.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3132.jpg" bitmapDataHRef="M 14 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3134.jpg" itemID="6597607d-00000572" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3134.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3134.jpg" bitmapDataHRef="M 15 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3136.jpg" itemID="6597607d-00000577" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3136.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3136.jpg" bitmapDataHRef="M 16 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3138.jpg" itemID="6597607d-0000057c" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3138.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3138.jpg" bitmapDataHRef="M 17 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3140.jpg" itemID="6597607d-00000581" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3140.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3140.jpg" bitmapDataHRef="M 18 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3142.jpg" itemID="6597607d-00000586" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3142.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3142.jpg" bitmapDataHRef="M 19 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3144.jpg" itemID="6597607d-0000058b" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3144.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3144.jpg" bitmapDataHRef="M 20 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3146.jpg" itemID="6597607d-00000590" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3146.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3146.jpg" bitmapDataHRef="M 21 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3148.jpg" itemID="6597607d-00000595" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3148.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3148.jpg" bitmapDataHRef="M 22 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3150.jpg" itemID="6597607d-0000059a" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3150.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3150.jpg" bitmapDataHRef="M 23 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3152.jpg" itemID="6597607d-0000059f" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3152.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3152.jpg" bitmapDataHRef="M 24 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3154.jpg" itemID="6597607d-000005a4" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3154.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3154.jpg" bitmapDataHRef="M 25 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3156.jpg" itemID="6597607d-000005a9" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3156.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3156.jpg" bitmapDataHRef="M 26 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3158.jpg" itemID="6597607d-000005ae" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3158.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3158.jpg" bitmapDataHRef="M 27 1715157464.dat" frameRight="3240" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3160.jpg" itemID="6597607d-000005b3" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3160.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3160.jpg" bitmapDataHRef="M 28 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3162.jpg" itemID="6597607d-000005b8" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3162.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3162.jpg" bitmapDataHRef="M 29 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3164.jpg" itemID="6597607d-000005bd" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3164.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3164.jpg" bitmapDataHRef="M 30 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3168.jpg" itemID="6597607d-000005c2" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3168.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3168.jpg" bitmapDataHRef="M 32 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3170.jpg" itemID="6597607d-000005c7" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3170.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3170.jpg" bitmapDataHRef="M 33 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3172.jpg" itemID="6597607d-000005cc" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3172.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3172.jpg" bitmapDataHRef="M 34 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3174.jpg" itemID="6597607d-000005d1" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3174.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3174.jpg" bitmapDataHRef="M 35 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3176.jpg" itemID="6597607d-000005d6" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3176.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3176.jpg" bitmapDataHRef="M 36 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3178.jpg" itemID="6597607d-000005db" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3178.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3178.jpg" bitmapDataHRef="M 37 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3180.jpg" itemID="6597607d-000005e0" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3180.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3180.jpg" bitmapDataHRef="M 38 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3182.jpg" itemID="6597607d-000005e5" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3182.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3182.jpg" bitmapDataHRef="M 39 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3184.jpg" itemID="6597607d-000005ea" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3184.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3184.jpg" bitmapDataHRef="M 40 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3186.jpg" itemID="6597607d-000005ef" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3186.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3186.jpg" bitmapDataHRef="M 41 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3188.jpg" itemID="6597607d-000005f4" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3188.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3188.jpg" bitmapDataHRef="M 42 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3190.jpg" itemID="6597607d-000005f9" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3190.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3190.jpg" bitmapDataHRef="M 43 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3192.jpg" itemID="6597607d-000005fe" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3192.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3192.jpg" bitmapDataHRef="M 44 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3194.jpg" itemID="6597607d-00000603" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3194.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3194.jpg" bitmapDataHRef="M 45 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3196.jpg" itemID="6597607d-00000608" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3196.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3196.jpg" bitmapDataHRef="M 46 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3198.jpg" itemID="6597607d-0000060d" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3198.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3198.jpg" bitmapDataHRef="M 47 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3200.jpg" itemID="6597607d-00000612" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3200.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3200.jpg" bitmapDataHRef="M 48 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3202.jpg" itemID="6597607d-00000617" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3202.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3202.jpg" bitmapDataHRef="M 49 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3204.jpg" itemID="6597607d-0000061c" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3204.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3204.jpg" bitmapDataHRef="M 50 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3206.jpg" itemID="6597607d-00000621" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3206.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3206.jpg" bitmapDataHRef="M 51 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3208.jpg" itemID="6597607d-00000626" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3208.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3208.jpg" bitmapDataHRef="M 52 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3210.jpg" itemID="6597607d-0000062b" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3210.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3210.jpg" bitmapDataHRef="M 53 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3212.png" itemID="6597607d-00000630" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3212.png" sourceLastImported="1704419453" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap3212.png" bitmapDataHRef="M 54 1715157464.dat" frameRight="3220" frameBottom="1180"/>
+          <DOMBitmapItem name="image/bitmap3214.jpg" itemID="6597607d-00000635" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3214.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap3214.jpg" bitmapDataHRef="M 55 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3216.jpg" itemID="6597607e-0000063a" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3216.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3216.jpg" bitmapDataHRef="M 56 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3218.jpg" itemID="6597607e-0000063f" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3218.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3218.jpg" bitmapDataHRef="M 57 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3220.jpg" itemID="6597607e-00000644" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3220.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3220.jpg" bitmapDataHRef="M 58 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3222.jpg" itemID="6597607e-00000649" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3222.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3222.jpg" bitmapDataHRef="M 59 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3224.jpg" itemID="6597607e-0000064e" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3224.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3224.jpg" bitmapDataHRef="M 60 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3226.jpg" itemID="6597607e-00000653" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3226.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3226.jpg" bitmapDataHRef="M 61 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3228.jpg" itemID="6597607e-00000658" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3228.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3228.jpg" bitmapDataHRef="M 62 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3230.jpg" itemID="6597607e-0000065d" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3230.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3230.jpg" bitmapDataHRef="M 63 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3232.jpg" itemID="6597607e-00000662" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3232.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3232.jpg" bitmapDataHRef="M 64 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3234.jpg" itemID="6597607e-00000667" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3234.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3234.jpg" bitmapDataHRef="M 65 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3236.jpg" itemID="6597607e-0000066c" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3236.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3236.jpg" bitmapDataHRef="M 66 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3238.jpg" itemID="6597607e-00000671" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3238.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3238.jpg" bitmapDataHRef="M 67 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3240.jpg" itemID="6597607e-00000676" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3240.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3240.jpg" bitmapDataHRef="M 68 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3242.jpg" itemID="6597607e-0000067b" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3242.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3242.jpg" bitmapDataHRef="M 69 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3244.jpg" itemID="6597607e-00000680" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3244.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3244.jpg" bitmapDataHRef="M 70 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3246.jpg" itemID="6597607e-00000685" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3246.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3246.jpg" bitmapDataHRef="M 71 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3248.jpg" itemID="6597607e-0000068a" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3248.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3248.jpg" bitmapDataHRef="M 72 1715157464.dat" frameRight="3220" frameBottom="1380" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3250.jpg" itemID="6597607e-0000068f" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3250.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3250.jpg" bitmapDataHRef="M 73 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3252.jpg" itemID="6597607e-00000694" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3252.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3252.jpg" bitmapDataHRef="M 74 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3254.jpg" itemID="6597607e-00000699" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3254.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3254.jpg" bitmapDataHRef="M 75 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3256.jpg" itemID="6597607e-0000069e" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3256.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3256.jpg" bitmapDataHRef="M 76 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3258.jpg" itemID="6597607e-000006a3" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3258.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3258.jpg" bitmapDataHRef="M 77 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3260.jpg" itemID="6597607e-000006a8" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3260.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3260.jpg" bitmapDataHRef="M 78 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3262.jpg" itemID="6597607e-000006ad" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3262.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3262.jpg" bitmapDataHRef="M 79 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3264.jpg" itemID="6597607e-000006b2" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3264.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3264.jpg" bitmapDataHRef="M 80 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3266.jpg" itemID="6597607e-000006b7" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3266.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3266.jpg" bitmapDataHRef="M 81 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3268.jpg" itemID="6597607e-000006bc" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3268.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3268.jpg" bitmapDataHRef="M 82 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3270.jpg" itemID="6597607e-000006c1" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3270.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3270.jpg" bitmapDataHRef="M 83 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3272.jpg" itemID="6597607e-000006c6" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3272.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3272.jpg" bitmapDataHRef="M 84 1715157464.dat" frameRight="3220" frameBottom="1180" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3302.jpg" itemID="6597607e-000006cb" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3302.jpg" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3302.jpg" bitmapDataHRef="M 89 1715157464.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap3310.jpg" itemID="6597607e-000006d0" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3310.jpg" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3310.jpg" bitmapDataHRef="M 90 1715157464.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap3314.jpg" itemID="6597607e-000006d5" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3314.jpg" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3314.jpg" bitmapDataHRef="M 91 1715157464.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap3321.png" itemID="6597607e-000006da" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3321.png" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3321.png" bitmapDataHRef="M 87 1715157464.dat" frameRight="2000" frameBottom="2000"/>
+          <DOMBitmapItem name="image/bitmap3326.jpg" itemID="6597607e-000006df" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3326.jpg" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3326.jpg" bitmapDataHRef="M 92 1715157464.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap3342.jpg" itemID="6597607e-000006e4" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3342.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3342.jpg" bitmapDataHRef="M 93 1715157464.dat" frameRight="16240" frameBottom="10680" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3352.jpg" itemID="6597607e-000006e9" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3352.jpg" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3352.jpg" bitmapDataHRef="M 94 1715157464.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap3357.jpg" itemID="6597607e-000006ee" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3357.jpg" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3357.jpg" bitmapDataHRef="M 95 1715157464.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap3366.jpg" itemID="6597607e-000006f3" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3366.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3366.jpg" bitmapDataHRef="M 96 1715157464.dat" frameRight="20000" frameBottom="12000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap3376.jpg" itemID="6597607e-000006f8" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap3376.jpg" sourceLastImported="1704419454" quality="50" href="image/bitmap3376.jpg" bitmapDataHRef="M 97 1715157464.dat" frameRight="13000" frameBottom="7780" isJPEG="true"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../选关界面/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 85 1715157464.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../选关界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 86 1715157464.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="背景-堕落城-topaz-enhance-1024w.png" itemID="663b3e1e-00002104" sourceExternalFilepath="../选关界面/LIBRARY/背景-堕落城-topaz-enhance-1024w.png" sourceLastImported="1715146732" externalFileCRC32="3827006402" externalFileSize="895895" originalCompressionType="lossless" quality="50" href="背景-堕落城-topaz-enhance-1024w.png" bitmapDataHRef="M 99 1715158558.dat" frameRight="20480" frameBottom="11040"/>
+          <DOMBitmapItem name="背景-废城-topaz-enhance-1024w.png" itemID="67a4e50f-0000029c" sourceExternalFilepath="../选关界面/LIBRARY/选关界面UI/背景-废城-topaz-enhance-1024w.png" sourceLastImported="1738859751" externalFileCRC32="3718143908" externalFileSize="658774" originalCompressionType="lossless" quality="50" href="背景-废城-topaz-enhance-1024w.png" bitmapDataHRef="M 88 1715157464.dat" frameRight="20480" frameBottom="11040"/>
+          <DOMBitmapItem name="背景-黑铁会总部-topaz-enhance-1024w.png" itemID="663b40bc-0000210b" sourceExternalFilepath="../选关界面/LIBRARY/背景-黑铁会总部-topaz-enhance-1024w.png" sourceLastImported="1715146797" externalFileCRC32="2973094475" externalFileSize="893147" originalCompressionType="lossless" quality="50" href="背景-黑铁会总部-topaz-enhance-1024w.png" bitmapDataHRef="M 100 1715159228.dat" frameRight="20480" frameBottom="11100"/>
+          <DOMBitmapItem name="背景-荒漠-topaz-enhance-1024w.png" itemID="663b41dd-00002119" sourceExternalFilepath="../选关界面/LIBRARY/背景-荒漠-topaz-enhance-1024w.png" sourceLastImported="1715146755" externalFileCRC32="1796981550" externalFileSize="794512" originalCompressionType="lossless" quality="50" href="背景-荒漠-topaz-enhance-1024w.png" bitmapDataHRef="M 102 1715159517.dat" frameRight="20480" frameBottom="11040"/>
+          <DOMBitmapItem name="背景-禁区-topaz-enhance-1024w.png" itemID="663b4167-00002112" sourceExternalFilepath="../选关界面/LIBRARY/背景-禁区-topaz-enhance-1024w.png" sourceLastImported="1715146747" externalFileCRC32="3154927726" externalFileSize="634532" originalCompressionType="lossless" quality="50" href="背景-禁区-topaz-enhance-1024w.png" bitmapDataHRef="M 101 1715159399.dat" frameRight="20480" frameBottom="11040"/>
+          <DOMBitmapItem name="背景-诺亚深处-topaz-enhance-1024w.png" itemID="663b4725-0000242d" sourceExternalFilepath="../选关界面/LIBRARY/背景-诺亚深处-topaz-enhance-1024w.png" sourceLastImported="1715146770" externalFileCRC32="3322303338" externalFileSize="839467" originalCompressionType="lossless" quality="50" href="背景-诺亚深处-topaz-enhance-1024w.png" bitmapDataHRef="M 103 1715160869.dat" frameRight="20480" frameBottom="12280"/>
+          <DOMBitmapItem name="背景-试炼场深处.png" itemID="67a4e512-0000029d" sourceExternalFilepath="../选关界面/LIBRARY/背景-试炼场深处.png" sourceLastImported="1738859792" externalFileCRC32="2383490195" externalFileSize="10012434" originalCompressionType="lossless" quality="50" href="背景-试炼场深处.png" bitmapDataHRef="M 104 1722964438.dat" frameRight="81920" frameBottom="44480"/>
+          <DOMBitmapItem name="背景-雪山-topaz-enhance-1024w.png" itemID="663b4a57-000029aa" sourceExternalFilepath="../选关界面/LIBRARY/背景-雪山-topaz-enhance-1024w.png" sourceLastImported="1715146784" externalFileCRC32="347514751" externalFileSize="988276" originalCompressionType="lossless" quality="50" href="背景-雪山-topaz-enhance-1024w.png" bitmapDataHRef="M 104 1715161687.dat" frameRight="20480" frameBottom="12280"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 3101.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e2e" lastModified="1704196122"/>
+          <Include href="button/Symbol 3102.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e2f" lastModified="1704196122"/>
+          <Include href="button/Symbol 3104.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e30" lastModified="1704196122"/>
+          <Include href="button/Symbol 3281.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e33" lastModified="1704196122"/>
+          <Include href="button/Symbol 3282.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e34" lastModified="1704196122"/>
+          <Include href="button/Symbol 3283.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e35" lastModified="1704196122"/>
+          <Include href="button/Symbol 3284.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e36" lastModified="1704196122"/>
+          <Include href="shape/Symbol 60.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000071c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 297.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000794" lastModified="1704196122"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 534.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007bf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 537.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 701.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007df" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3100.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e2d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3276.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e32" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3305.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e3f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3317.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e42" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3328.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e47" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3333.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e49" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3359.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e50" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3371.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e53" lastModified="1704196122"/>
+          <Include href="shape/Symbol 3377.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e54" lastModified="1704196122"/>
+          <Include href="shape/通用背景.xml" itemIcon="1" loadImmediate="false" itemID="659d3fae-00003178" lastModified="1710752365"/>
+          <Include href="shape/外交地图点.xml" itemIcon="1" loadImmediate="false" itemID="666ea165-0000050d" lastModified="1718526324"/>
+          <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1025.xml" loadImmediate="false" itemID="6597607e-0000083c" lastModified="1714629712"/>
+          <Include href="sprite/Symbol 2157.xml" loadImmediate="false" itemID="6597607e-00000aae" lastModified="1704196122"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
+          <Include href="sprite/通用背景mc.xml" loadImmediate="false" itemID="659d46f5-000039c6" lastModified="1704806133"/>
+          <Include href="暗色按钮用.xml" loadImmediate="false" itemID="66b25904-000002a5" lastModified="1722964228"/>
+          <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="663f1f4c-00000284" lastModified="1715412812"/>
+          <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="663f1f4c-00000286" lastModified="1715412812"/>
+          <Include href="框.xml" loadImmediate="false" itemID="66b257cd-00000288" lastModified="1722964010"/>
+          <Include href="难度提示.xml" loadImmediate="false" itemID="663f1e99-0000027f" lastModified="1715413381"/>
+          <Include href="难度遮罩.xml" loadImmediate="false" itemID="663ef594-00000681" lastModified="1715402132"/>
+          <Include href="试炼场深处按钮.xml" loadImmediate="false" itemID="66b257ea-0000028d" lastModified="1722964274"/>
+          <Include href="透明控件.xml" loadImmediate="false" itemID="664621f1-000008d3" lastModified="1715874523"/>
+          <Include href="外交地图-堕落城商业街.xml" loadImmediate="false" itemID="68145e80-0000072c" lastModified="1746165397"/>
+          <Include href="新关闭.xml" loadImmediate="false" itemID="660f801a-000025de" lastModified="1712291866"/>
+          <Include href="选关界面UI/Symbol 3274.xml" loadImmediate="false" itemID="6597607e-00000e31" lastModified="1715874518"/>
+          <Include href="选关界面UI/Symbol 3285.xml" loadImmediate="false" itemID="6597607e-00000e37" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3289.xml" loadImmediate="false" itemID="6597607e-00000e39" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3291.xml" loadImmediate="false" itemID="6597607e-00000e3a" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3307.xml" loadImmediate="false" itemID="6597607e-00000e40" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3308.xml" loadImmediate="false" itemID="6597607e-00000e41" lastModified="1722964139"/>
+          <Include href="选关界面UI/Symbol 3319.xml" loadImmediate="false" itemID="6597607e-00000e43" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3320.xml" loadImmediate="false" itemID="6597607e-00000e44" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3323.xml" loadImmediate="false" itemID="6597607e-00000e45" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3325.xml" loadImmediate="false" itemID="6597607e-00000e46" lastModified="1712292066"/>
+          <Include href="选关界面UI/Symbol 3331.xml" loadImmediate="false" itemID="6597607e-00000e48" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3335.xml" loadImmediate="false" itemID="6597607e-00000e4a" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3336.xml" loadImmediate="false" itemID="6597607e-00000e4b" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3347.xml" loadImmediate="false" itemID="6597607e-00000e4e" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3350.xml" loadImmediate="false" itemID="6597607e-00000e4f" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3361.xml" loadImmediate="false" itemID="6597607e-00000e51" lastModified="1704196122"/>
+          <Include href="选关界面UI/Symbol 3362.xml" loadImmediate="false" itemID="6597607e-00000e52" lastModified="1704196122"/>
+          <Include href="选关界面UI/凤凰10.xml" loadImmediate="false" itemID="660f7aba-000024eb" lastModified="1712290490"/>
+          <Include href="选关界面UI/凤凰16.xml" loadImmediate="false" itemID="660f79b0-000024b8" lastModified="1712291184"/>
+          <Include href="选关界面UI/魔神选关.xml" loadImmediate="false" itemID="660f6dc0-000019c9" lastModified="1712287168"/>
+          <Include href="选关界面UI/桶10.xml" loadImmediate="false" itemID="660f7acb-000024f0" lastModified="1712290507"/>
+          <Include href="选关界面UI/桶16.xml" loadImmediate="false" itemID="660f79c4-000024bd" lastModified="1712290244"/>
+          <Include href="选关界面UI/外交地图-第一防线防区.xml" loadImmediate="false" itemID="67ca8576-00000470" lastModified="1741325686"/>
+          <Include href="选关界面UI/外交地图-堕落城酒吧.xml" loadImmediate="false" itemID="666ea1ba-0000051c" lastModified="1746165382"/>
+          <Include href="选关界面UI/外交地图-军阀基地.xml" loadImmediate="false" itemID="666ea1ec-00000569" lastModified="1718526787"/>
+          <Include href="选关界面UI/外交地图-联合大学.xml" loadImmediate="false" itemID="66e79c68-000006eb" lastModified="1726454945"/>
+          <Include href="选关界面UI/外交地图-同盟外交站.xml" loadImmediate="false" itemID="6805222a-0000033c" lastModified="1746165312"/>
+          <Include href="选关界面UI/外交地图-幸存者营地.xml" loadImmediate="false" itemID="666ea362-000005b9" lastModified="1718526840"/>
+          <Include href="选关界面UI/外交地图-摇滚.xml" loadImmediate="false" itemID="666ea10b-00000507" lastModified="1718526786"/>
+          <Include href="选关界面UI/选关按钮.xml" loadImmediate="false" itemID="666ea230-0000056b" lastModified="1747051390"/>
+          <Include href="选关界面UI/选关界面 1024&amp;#042576.xml" itemID="663b46a2-000023af" lastModified="1746165665"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="选关界面UI/选关界面 1024*576" name="关卡地图MC" selected="true" centerPoint3DX="0.05" centerPoint3DY="-25.45">
+                                             <transformationPoint>
+                                                  <Point x="0.05" y="-25.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <swatchLists>
+          <swatchList>
+               <swatches>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330000" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#660000" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663333" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990000" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC0000" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993333" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3333" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3333" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996666" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6666" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6666" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9999" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9999" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem color="#20211E" hue="53" saturation="12" brightness="30"/>
+                    <SolidSwatchItem color="#22231F" hue="50" saturation="15" brightness="31"/>
+               </swatches>
+          </swatchList>
+     </swatchLists>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="2093752" publishTime="1746165294"/>
+          <PublishItem publishSize="2093606" publishTime="1741946215"/>
+          <PublishItem publishSize="2093579" publishTime="1741325539"/>
+          <PublishItem publishSize="2093591" publishTime="1741324399"/>
+          <PublishItem publishSize="2093616" publishTime="1738918937"/>
+          <PublishItem publishSize="2093827" publishTime="1738918641"/>
+          <PublishItem publishSize="2094072" publishTime="1738910047"/>
+          <PublishItem publishSize="2094251" publishTime="1737225357"/>
+          <PublishItem publishSize="2094246" publishTime="1737225344"/>
+          <PublishItem publishSize="2094289" publishTime="1726454988"/>
+          <PublishItem publishSize="2094184" publishTime="1723008075"/>
+          <PublishItem publishSize="2094205" publishTime="1722964494"/>
+          <PublishItem publishSize="1584996" publishTime="1721156362"/>
+          <PublishItem publishSize="1584984" publishTime="1721156287"/>
+          <PublishItem publishSize="1584598" publishTime="1721156256"/>
+          <PublishItem publishSize="1585003" publishTime="1718527378"/>
+          <PublishItem publishSize="1584997" publishTime="1718526848"/>
+          <PublishItem publishSize="1584829" publishTime="1718526773"/>
+          <PublishItem publishSize="1584617" publishTime="1718526638"/>
+          <PublishItem publishSize="1585630" publishTime="1718526526"/>
+     </publishHistory>
+</DOMDocument>

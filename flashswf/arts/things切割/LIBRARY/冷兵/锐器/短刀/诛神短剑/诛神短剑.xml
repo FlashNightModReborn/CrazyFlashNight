@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/短刀/诛神短剑/诛神短剑" itemID="669137be-00004041" symbolType="graphic" lastModified="1720793022">
+  <timeline>
+    <DOMTimeline name="诛神短剑">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="冷兵/锐器-重/诛神剑/bitmap3001.png" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-105.45" ty="-61.55"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!811 -211|-2109 -211!-2109 -211|-2109 -1231!-2109 -1231|811 -1231!811 -1231|811 -211"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="冷兵/锐器-重/诛神剑/bitmap3001.png" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-105.45" ty="-101.55"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!-53 3285|-48 3990!-48 3990|148 4149!148 4149|811 4149!811 4149|811 -1011!811 -1011|-2109 -1011!-2109 -1011|-2109 4149!-2109 4149|-359 4149!-359 4149[-356 4121 -309 3998!-309 3998[-254 3855 -230 3855!-230 3855[-207 3855 -193 3866!-193
+ 3866|-193 3265!-193 3265|-53 3285"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="冷兵/锐器-重/诛神剑/bitmap3001.png" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="13.9129638671875" d="13.9129638671875" tx="-72.1" ty="-132.75"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!590 5735|-1442 5735!-1442 5735|-1442 3139!-1442 3139|-180 3139!-180 3139|590 3647!590 3647|590 5735"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

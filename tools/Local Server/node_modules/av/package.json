@@ -1,0 +1,48 @@
+{
+  "name": "av",
+  "description": "Audio decoding framework",
+  "version": "0.4.9",
+  "author": {
+    "name": "Audiocogs",
+    "url": "http://audiocogs.org/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/audiocogs/aurora.js.git"
+  },
+  "bugs": "https://github.com/audiocogs/aurora.js/issues",
+  "dependencies": {
+    "coffeeify": "^0.6.0"
+  },
+  "optionalDependencies": {
+    "speaker": "^0.3.0"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "coffee-script": ">=1.0",
+    "exorcist": "^0.1.6",
+    "mocha": "^2.5.3",
+    "mochify": "^2.18.0",
+    "node-static": "^0.7.7"
+  },
+  "scripts": {
+    "prepublish": "make js",
+    "postpublish": "make clean",
+    "test": "make test"
+  },
+  "engine": [
+    "node >= v0.6.0"
+  ],
+  "main": "./node",
+  "browserify": {
+    "transform": [
+      "coffeeify"
+    ]
+  },
+  "browser": {
+    "./node": "./browser.coffee",
+    "./src/sources/node/file": "./src/sources/browser/file.coffee",
+    "./src/sources/node/http": "./src/sources/browser/http.coffee"
+  }
+}

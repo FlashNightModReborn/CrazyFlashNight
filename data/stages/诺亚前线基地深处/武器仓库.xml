@@ -1,0 +1,512 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>诺亚机枪</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库外围.swf</Background>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>就是这里了，冲进去！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>48</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种72</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>48</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库走道.swf</Background>
+            <PlayerX>780</PlayerX>
+            <PlayerY>710</PlayerY>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>往右侧走，得先去数据中心。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>明白了！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种70</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种372</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种70</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种74</Type>
+                        <Interval>200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库内部1.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种287</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种70</Type>
+                        <Interval>200</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>200</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种287</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库内部2.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种74</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种77</Type>
+                        <Interval>400</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种287</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库数据中心.swf</Background>
+            <Environment>
+                <Door>
+                    <Index>1</Index>
+                    <Direction>左</Direction>
+                </Door>
+            </Environment>
+        </BasicInformation>
+         <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>就是这里，坚持一会，你携带的纳米机器人会采集这里的数据。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种372</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种347</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种372</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种77</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>收集完成，返程吧，我们的小队应该到门口了。</Text>
+            </SubDialogue>
+        </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库内部2.swf</Background>
+            <PlayerX>1500</PlayerX>
+            <PlayerY>800</PlayerY>
+            <Environment>
+                <Door>
+                    <Index>1</Index>
+                    <Direction>左</Direction>
+                </Door>
+            </Environment>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种71</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种72</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种77</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库内部1.swf</Background>
+            <PlayerX>1300</PlayerX>
+            <PlayerY>500</PlayerY>
+            <Environment>
+                <Door>
+                    <Index>1</Index>
+                    <Direction>左</Direction>
+                </Door>
+            </Environment>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>情况不对，我们和小队失联了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>估计是有强敌来了···我得尽快到门口。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种372</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种347</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种77</Type>
+                        <Interval>600</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种287</Type>
+                        <Interval>600</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="7">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/武器仓库走道.swf</Background>
+            <PlayerX>1400</PlayerX>
+            <PlayerY>700</PlayerY>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这是？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>已确认小队失联，请尽快脱战。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>笑话，哪里跑得了，准备战斗！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种286</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>850</x>
+                        <y>720</y>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>已经把它给打跑了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>做的不错。另外已检测到其他诺亚小队正在接近，请尽快撤回。</Text>
+            </SubDialogue>
+        </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效/sprite/元件 7" itemID="664864c1-000003d8" lastModified="1716020417">
+  <timeline>
+    <DOMTimeline name="元件 7">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 6" selected="true" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.684494018554688" d="0.684494018554688" tx="1.2" ty="8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="58.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 6" selected="true" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.995162963867188" d="0.22698974609375" tx="0.6" ty="34.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="58.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 6" selected="true" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.593795776367188" d="0.5078125" tx="1.4" ty="18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="58.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 6" selected="true" blendMode="add">
+                  <matrix>
+                    <Matrix a="1.29803466796875" d="0.0848236083984375" ty="43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="58.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效/sprite/元件 6" selected="true" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.0748138427734375" d="0.8231201171875" tx="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.65" y="58.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

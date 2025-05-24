@@ -1,0 +1,117 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-诺亚新敌人" itemID="65aa1bb3-000004bb" linkageExportForAS="true" linkageIdentifier="素材库-诺亚新敌人" lastModified="1747144506" lastUniqueIdentifier="14">
+  <timeline>
+    <DOMTimeline name="素材库-诺亚新敌人" currentFrame="2">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="143.05" height="23.75" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="12" ty="13.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>诺亚新敌人</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/敌人-方舟爪豪" centerPoint3DX="207.55" centerPoint3DY="393.25">
+                  <matrix>
+                    <Matrix tx="151.65" ty="307.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="-96.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/敌人-方舟收割者" centerPoint3DX="447.25" centerPoint3DY="474.95">
+                  <matrix>
+                    <Matrix tx="147.45" ty="564.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="299.7" y="-89.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 688" centerPoint3DX="726.25" centerPoint3DY="373.95">
+                  <matrix>
+                    <Matrix tx="426.85" ty="467.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="299.3" y="-93.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/敌人-诺亚地狱三头犬" centerPoint3DX="810.45" centerPoint3DY="742.15">
+                  <matrix>
+                    <Matrix tx="412.05" ty="927.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="397.9" y="-185.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/敌人-诺亚克隆兽" selected="true" centerPoint3DX="171.5" centerPoint3DY="182.95">
+                  <matrix>
+                    <Matrix tx="166.5" ty="276.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5" y="-93.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="闪6特工/Symbol 776" centerPoint3DX="651.3" centerPoint3DY="188.95">
+                  <matrix>
+                    <Matrix tx="386.85" ty="279.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45" y="0.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/特殊敌人-兵工厂中枢" centerPoint3DX="609.95" centerPoint3DY="205.3">
+                  <matrix>
+                    <Matrix tx="607.95" ty="360.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="-155.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/特殊敌人-雕像" centerPoint3DX="759.95" centerPoint3DY="285">
+                  <matrix>
+                    <Matrix tx="758" ty="355.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

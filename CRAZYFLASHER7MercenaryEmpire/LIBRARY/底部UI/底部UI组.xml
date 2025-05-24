@@ -1,0 +1,220 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="底部UI/底部UI组" itemID="6636575b-0000211d" lastModified="1746452910" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="底部UI组" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" name="open" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" name="close" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.显示底部UI == undefined)
+{
+	_root.显示底部UI = true;
+}
+if (_root.显示底部UI)
+{
+	gotoAndStop("open");
+}
+else
+{
+	gotoAndStop("close");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="功能展开" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/佣兵按钮" centerPoint3DX="429.05" centerPoint3DY="6.65">
+                  <matrix>
+                    <Matrix tx="395" ty="-5.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="11.8"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.佣兵信息界面._visible = !_root.佣兵信息界面._visible;
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("佣兵");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("佣兵"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/战宠按钮" centerPoint3DX="351.3" centerPoint3DY="12.45">
+                  <matrix>
+                    <Matrix tx="316.25" ty="-5.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="11.8"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.宠物信息界面.排列宠物图标();
+   _root.宠物信息界面._visible = !_root.宠物信息界面._visible;
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("战宠");
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("战宠"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/装备强化按钮" centerPoint3DX="277.95" centerPoint3DY="11.15">
+                  <matrix>
+                    <Matrix tx="238.4" ty="-5.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="11.8"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.装备强化界面._visible = !_root.装备强化界面._visible;
+}
+on(rollOver){
+   _root.注释(100,_root.获得翻译("装备强化"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("装备强化");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="底部UI/平板电脑" centerPoint3DX="514.9" centerPoint3DY="9.15">
+                  <matrix>
+                    <Matrix tx="473.75" ty="-5.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="11.8"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (!_root.平板电脑界面._visible)
+	{
+		_root.平板电脑界面.初始化();
+	}
+}
+/*onClipEvent (load) {
+	显示文字 = _root.获得翻译("材料一览");
+}
+on (rollOver) {
+	_root.注释(150,_root.获得翻译(this.显示文字));
+}
+on (rollOut) {
+	_root.注释结束();
+}*/]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="底部UI/底部UI按钮1" symbolType="button">
+                  <matrix>
+                    <Matrix tx="196.15" ty="5.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.显示底部UI = false;
+	gotoAndStop("close");
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="底部UI/底部UI按钮2" symbolType="button">
+                  <matrix>
+                    <Matrix tx="196.15" ty="5.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.显示底部UI = true;
+	gotoAndStop("open");
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter alpha="0.498039215686275" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="金币" color="#74D588" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="K点" color="#2BFECF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

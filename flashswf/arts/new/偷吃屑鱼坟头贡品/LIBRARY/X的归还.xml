@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="X的归还" itemID="65feb832-00000377" lastModified="1711192176" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="X的归还">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.001922607421875" c="-0.00238037109375" d="0" tx="4.7" ty="4.85"/>
+                            </matrix>
+                            <GradientEntry color="#353535" ratio="0"/>
+                            <GradientEntry color="#4A4A4A" ratio="0.298039215686275"/>
+                            <GradientEntry color="#353535" ratio="0.541176470588235"/>
+                            <GradientEntry color="#252525" ratio="0.666666666666667"/>
+                            <GradientEntry color="#121212" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!126 136|63 136!63 136|63 58!63 58|126 58!126 58|126 136"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="4XG SHOULDER EMBLEM" centerPoint3DX="4.75" centerPoint3DY="1.8">
+                  <matrix>
+                    <Matrix a="0.715164184570313" d="0.715164184570313"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.55" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="4XG EMBLEM" centerPoint3DX="4.8" centerPoint3DY="8.1">
+                  <matrix>
+                    <Matrix tx="0.15" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.65" y="4.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

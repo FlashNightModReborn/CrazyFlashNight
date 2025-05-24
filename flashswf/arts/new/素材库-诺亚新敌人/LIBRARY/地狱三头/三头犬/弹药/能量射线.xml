@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地狱三头/三头犬/弹药/能量射线" itemID="66efd0f5-00000191" lastModified="1726992629">
+  <timeline>
+    <DOMTimeline name="能量射线">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/弹药/元件 9">
+                  <matrix>
+                    <Matrix tx="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="92.6" y="0.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="6" blurY="6" color="#FFCC33" strength="0.96"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

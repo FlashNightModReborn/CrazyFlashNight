@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk5_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>gk-9</Title>
+                <Loop>true</Loop>
+            </BGM>
+            <Environment>
+				<Xmax>1770</Xmax>
+				<Xmin>50</Xmin>
+				<Ymax>720</Ymax>
+				<Ymin>250</Ymin>
+				<Width>1770</Width>
+				<Height>730</Height>
+                <MaxIllumination>7</MaxIllumination>
+                <MinIllumination>7</MinIllumination>
+            </Environment>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种288</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种283</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

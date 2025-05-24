@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 117" itemID="6577b699-000009a3" lastModified="1702343951">
+  <timeline>
+    <DOMTimeline name="Symbol 117">
+      <layers>
+        <DOMLayer name="Layer 1" color="#AAE09E" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0086212158203125" b="0.0042266845703125" c="-0.00543212890625" d="-0.0079498291015625" tx="2.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0034027099609375" b="0.0108795166015625" c="-0.0065155029296875" d="0.0014495849609375" tx="-2.8" ty="1.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!6 199|145 98!145 98|145 -148!145 -148|6 -198"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!6 -198|-146 -148!-146 -148|-146 98!-146 98|6 199"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!6 199|6 -198"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

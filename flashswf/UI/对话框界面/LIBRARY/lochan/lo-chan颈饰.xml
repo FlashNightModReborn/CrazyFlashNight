@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan颈饰" itemID="66c0a5ce-00000427" lastModified="1723901390" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="lo-chan颈饰">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#C4C5CE"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1901 946S1|1901 987"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1901 987S5|1924 972!1924 972|1901 946"/>
+                    <Edge cubics="!1901 946(;1901,946 1901,987 1901,987q1901 946 1901 987);"/>
+                    <Edge cubics="!1924 972(;1924,972 1901,987 1901,987q1924 972 1901 987);"/>
+                    <Edge cubics="!1901 946(;1901,946 1924,972 1924,972q1901 946 1924 972);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan颈饰1" selected="true">
+                  <transformationPoint>
+                    <Point x="45.8" y="23.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan颈饰234集合" selected="true">
+                  <matrix>
+                    <Matrix tx="4" ty="22.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.8" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

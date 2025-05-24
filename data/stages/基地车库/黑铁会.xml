@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>突击步枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>手枪通用弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>冲锋枪通用弹药</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>12号霰弹弹药</Name>
+            <AcquisitionProbability>5</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>硼砂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>可塑式钢板</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk14_1_BG.swf</Background>
+            <PlayerX>200</PlayerX>
+            <PlayerY>442</PlayerY>
+            <LoadingImage>黑铁众</LoadingImage>
+            <BGM>
+                <Command>play</Command>
+                <Title>By Peace Or By Power</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1763</x>
+                <y>463</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1771</x>
+                <y>591</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>1771</x>
+                <y>720</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>黑铁死士</Name>
+                <Title>黑铁会盗贼</Title>
+                <Char>黑铁会盗贼</Char>
+                <Text>何人擅闯我黑铁会？报上名来! 我手中利刃不斩无名之辈。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>恩..我是..那个..那个...啊对“A兵团”，我是“A兵团”派来和你们谈判的！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>黑铁死士</Name>
+                <Title>黑铁会盗贼</Title>
+                <Char>黑铁会盗贼</Char>
+                <Text>哼，原来是你。教主有令，你这地位卑贱之人，没有实力和资格与我教主会谈。黑铁会只尊重强者，若想见教主，先过我们这关！</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#微笑</Char>
+                <Text>那也是说打赢你们的话就算是谈判成功了！</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>黑铁死士</Name>
+                <Title>黑铁会盗贼</Title>
+                <Char>黑铁会盗贼</Char>
+                <Text>多说无益，你这狂口小儿，接我一刀！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>22</Level>
+                        <x>469</x>
+                        <y>451</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种47</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>22</Level>
+                        <x>571</x>
+                        <y>378</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种47</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>22</Level>
+                        <x>568</x>
+                        <y>505</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种47</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种47</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种47</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种270</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>22</Level>
+                        <x>1750</x>
+                        <y>550</y>
+                        <Parameters>
+                            <掉落物>
+                                <名字>战术黑刀</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <称号>坛主</称号>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

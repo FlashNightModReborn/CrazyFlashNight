@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk4_1_BG.swf</Background>
+            <PlayerX>539</PlayerX>
+            <PlayerY>471</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>5</Level>
+                        <x>1116</x>
+                        <y>277</y>
+                        <spritename>主角-男</spritename>
+                        <Name>盗贼</Name>
+                        <IsHostile>true</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon />
+                        <SecondaryWeapon />
+                        <SecondaryWeapon2 />
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-黑暴走头</HairStyle>
+                        <HeadEquipment>红色风镜</HeadEquipment>
+                        <BodyArmor>黑短袖</BodyArmor>
+                        <LegArmor>破牛仔裤</LegArmor>
+                        <HandGear>牛皮手套</HandGear>
+                        <FootGear>新手皮鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

@@ -1,0 +1,114 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标/夜行侦查下装图标" itemID="65feb6c5-00000284" linkageExportForAS="true" linkageIdentifier="图标-夜行侦查下装" lastModified="1718288874" lastUniqueIdentifier="15">
+  <timeline>
+    <DOMTimeline name="夜行侦查下装图标">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#8CA868" parentLayerIndex="1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-夜行侦查下装左大腿" centerPoint3DX="3.65" centerPoint3DY="1.9">
+                  <matrix>
+                    <Matrix a="0.14111328125" d="0.14111328125" tx="4.2" ty="1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.85" y="2.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-夜行侦查下装屁股" centerPoint3DX="-0.2" centerPoint3DY="-6.5">
+                  <matrix>
+                    <Matrix a="0.14111328125" d="0.14111328125" tx="1.65" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.4" y="4.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-夜行侦查下装右大腿" centerPoint3DX="-5.25" centerPoint3DY="0.65">
+                  <matrix>
+                    <Matrix a="0.136306762695313" b="0.0365142822265625" c="-0.0365142822265625" d="0.136306762695313" tx="-5.15" ty="2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3" y="-9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#8BB4DA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.7244873046875" d="0.7244873046875" tx="0.95" ty="-0.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-夜行侦查下装左大腿" centerPoint3DX="3.65" centerPoint3DY="1.9">
+                  <matrix>
+                    <Matrix a="0.14111328125" d="0.14111328125" tx="4.2" ty="1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.85" y="2.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-夜行侦查下装屁股" centerPoint3DX="-0.2" centerPoint3DY="-6.5">
+                  <matrix>
+                    <Matrix a="0.14111328125" d="0.14111328125" tx="1.65" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.4" y="4.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-夜行侦查下装右大腿" centerPoint3DX="-5.25" centerPoint3DY="0.65">
+                  <matrix>
+                    <Matrix a="0.136306762695313" b="0.0365142822265625" c="-0.0365142822265625" d="0.136306762695313" tx="-5.15" ty="2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3" y="-9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

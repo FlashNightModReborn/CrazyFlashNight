@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="shape/Symbol 1080" itemID="6597607e-00000850" symbolType="graphic" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 1080">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.006561279296875" c="-0.006561279296875" d="0" tx="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FF0033" ratio="0"/>
+                        <GradientEntry color="#660000" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!108 -74|33 0!33 0|108 75!108 75|75 108!75 108|1 34!1 34|-74 108!-74 108|-107 75!-107 75|-32 0!-32 0|-107 -74!-107 -74|-74 -107!-74 -107|1 -33!1 -33|75 -107!75 -107|108 -74"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

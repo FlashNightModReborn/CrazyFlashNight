@@ -1,0 +1,91 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 28" itemID="6654a672-00000859" symbolType="graphic" lastModified="1716823666">
+  <timeline>
+    <DOMTimeline name="补间 28">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ARMS fingerC" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.905517578125" b="-0.42425537109375" c="0.42425537109375" d="0.905517578125" tx="-25.65" ty="-15.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.15" y="6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="Thunder-181 carbine right" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.905075073242188" b="0.425094604492188" c="-0.425094604492188" d="0.905075073242188" tx="-32.05" ty="-31.25"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="42.1" y="15.1"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="ARMS fingerA" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.83807373046875" b="-0.5455322265625" c="0.5455322265625" d="0.83807373046875" tx="-25.45" ty="-6.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.3" y="3.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS fingerA" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.83807373046875" b="-0.5455322265625" c="0.5455322265625" d="0.83807373046875" tx="-28.05" ty="-4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.3" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS fingerA" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.83807373046875" b="-0.5455322265625" c="0.5455322265625" d="0.83807373046875" tx="-21.25" ty="-8.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.25" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#282828"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!-493 -300S6|-513 -316!-513 -316|-500 -333!-500 -333|-474 -322!-474 -322|-480 -314!-480 -314|-421 -275!-421 -275|-421 -270!-421 -270|-409 -244!-409 -244|-493 -300"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="ARM handpartA" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.83807373046875" b="-0.5455322265625" c="0.5455322265625" d="0.83807373046875" tx="-34.6" ty="-10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.85" y="7.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

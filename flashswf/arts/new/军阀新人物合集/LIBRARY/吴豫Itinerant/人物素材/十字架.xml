@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/人物素材/十字架" itemID="665f328a-000001ac" lastModified="1717518483" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="十字架">
+      <layers>
+        <DOMLayer name="主体结构" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-中部">
+                  <matrix>
+                    <Matrix tx="453.75" ty="-146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.4" y="256.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-下部">
+                  <matrix>
+                    <Matrix tx="-54.65" ty="15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="268.85" y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-上部">
+                  <matrix>
+                    <Matrix tx="609.55" ty="15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="114.85" y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

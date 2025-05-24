@@ -1,0 +1,53 @@
+task_chains_progress = { 主线 = "77" }
+task_history = [0]
+tasks_finished = { 0 = 1 }
+
+test = [["fs",
+        "男",
+        235544,
+        90,
+        815660621,
+        175,
+        4950,
+        "菜鸟",
+        90000,
+        854059,
+        [["上键", "上键", 87],
+         ["下键", "下键", 83]]],   # 简化按键设置，只保留了“上键”和“下键”
+        0,
+        [0, 0, 0, 0, 0],
+        0,
+        true]
+
+# 任务信息，保留了3个任务用于测试
+[[tasks_to_do]]
+id = 77
+    [tasks_to_do.requirements]
+    items = []
+        [[tasks_to_do.requirements.stages]]
+        difficulty = "简单"
+        name = "深入禁区"
+
+[[tasks_to_do]]
+id = 20039
+    [tasks_to_do.requirements]
+    items = []
+        [[tasks_to_do.requirements.stages]]
+        difficulty = "简单"
+        name = "制霸黑铁会获强化石"
+
+[[tasks_to_do]]
+id = 1
+    [tasks_to_do.requirements]
+    items = []
+        [[tasks_to_do.requirements.stages]]
+        difficulty = "简单"
+        name = "新手练习场"
+
+# 商城购物车为空
+商城已购买物品 = []
+商城购物车 = []
+
+# 宠物信息，简化为只包含空值
+宠物领养限制 = 5
+战宠 = [[], [], [], [], []]

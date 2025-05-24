@@ -1,0 +1,353 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1745164278" lastUniqueIdentifier="45">
+  <timeline>
+    <DOMTimeline name="地图-彩蛋地图">
+      <layers>
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[允许通行 = true;
+_root.配置场景环境信息();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="效果层" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="效果" name="效果">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.swapDepths(100000);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹层" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹区域" name="子弹区域">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="PC" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="可互动的任务接取PC" centerPoint3DX="2145.4" centerPoint3DY="422.6">
+                  <matrix>
+                    <Matrix tx="2112.25" ty="397.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.15" y="25.4"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.加载外部UI("flashswf/UI/彩蛋地图关卡界面.swf");
+	//_root.外部导入UI界面.loadMovie("flashswf/UI/彩蛋地图关卡界面.swf");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文天" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面包机" selected="true" centerPoint3DX="1192.2" centerPoint3DY="536.05">
+                  <matrix>
+                    <Matrix tx="1154.45" ty="455"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.75" y="77.95"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "机哥";
+	身高 = 175;
+	性别 = "男";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="假兰博" selected="true" centerPoint3DX="1258.7" centerPoint3DY="461">
+                  <matrix>
+                    <Matrix tx="1256" ty="514"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.8" y="-53"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "阿波";
+	身高 = 175;
+	性别 = "男";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="假州长" selected="true" centerPoint3DX="1108.7" centerPoint3DY="445.5">
+                  <matrix>
+                    <Matrix tx="1106" ty="498.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.8" y="-53"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "排骨";
+	身高 = 175;
+	性别 = "男";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="诺艾尔" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="诺艾尔/Symbol 51652" centerPoint3DX="1012.6" centerPoint3DY="806.35">
+                  <matrix>
+                    <Matrix a="-0.236236572265625" d="0.236236572265625" tx="904.65" ty="488.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "诺艾尔";
+	商店 = "特殊武器出售";
+	身高 = 175;
+	性别 = "女";
+	方向 = "右";
+	NPC任务_任务_关卡路径 = "挑战诺艾尔";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="歌留多" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="歌留多npc" centerPoint3DX="2280.4" centerPoint3DY="686.9">
+                  <matrix>
+                    <Matrix tx="2263.2" ty="616.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="70.7"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.task_chains_progress.彩蛋 and _root.task_chains_progress.彩蛋 >= 12)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+	名字 = "歌留多";
+	身高 = 175;
+	性别 = "女";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="士力架npc" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/士力架npc" centerPoint3DX="2310.3" centerPoint3DY="439.9">
+                  <matrix>
+                    <Matrix a="-0.54180908203125" d="0.582687377929688" tx="2267.75" ty="378.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="86.55" y="104.85"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "尾上世莉架";
+	身高 = 160;
+	性别 = "女";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="霜精奸商" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/霜精素材/heeho君npc" centerPoint3DX="1922.65" centerPoint3DY="457.05">
+                  <matrix>
+                    <Matrix a="1.34300231933594" d="1.34300231933594" tx="1877.4" ty="388.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.8" y="51.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.task_chains_progress.彩蛋 and _root.task_chains_progress.彩蛋 >= 4)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+	名字 = "heeho君";
+	商店 = "特殊武器出售";
+	身高 = 120;
+	性别 = "男";
+	方向 = "右";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="门" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景门" name="门1" centerPoint3DX="771.95" centerPoint3DY="788.9">
+                  <matrix>
+                    <Matrix a="7.31060791015625" d="1.21147155761719" tx="761.45" ty="768.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("门2","地图-幸存者营地","",_root.下键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="门提示" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="门提示" centerPoint3DX="761.2" centerPoint3DY="772.45">
+                  <matrix>
+                    <Matrix a="2.29032897949219" d="2.29032897949219" tx="676.1" ty="735.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.15" y="16.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="出生点" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景门" name="出生地" centerPoint3DX="770.25" centerPoint3DY="691.8">
+                  <matrix>
+                    <Matrix a="2.72247314453125" d="1.0889892578125" tx="760.85" ty="674"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("","","","");
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="碰撞" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地图碰撞箱" name="地图" centerPoint3DX="1419.75" centerPoint3DY="481.3">
+                  <transformationPoint>
+                    <Point x="1419.75" y="481.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="尸体层" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="deadbody" name="deadbody">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="位图 1">
+                  <matrix>
+                    <Matrix tx="-636.3" ty="-473.9"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

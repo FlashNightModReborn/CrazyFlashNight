@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/基础部件/部件3/Symbol 436" itemID="6577faef-0000149b" symbolType="graphic" lastModified="1701508661">
+  <timeline>
+    <DOMTimeline name="Symbol 436">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#747577"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#474747"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!102 14|115 16!115 16|122 17!122 17|128 18!128 18|143 20!143 20|168 25!168 25|184 38!184 38|184 51"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!184 51|148 31!148 31|158 51!158 51|174 79"/>
+                    <Edge fillStyle1="1" edges="!174 79|170 83"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!170 83|154 66!154 66|116 27!116 27|114 25!114 25|102 14"/>
+                    <Edge fillStyle0="2" edges="!102 14|84 9!84 9|51 4"/>
+                    <Edge fillStyle0="1" edges="!51 4|43 4!43 4|30 4"/>
+                    <Edge fillStyle0="2" edges="!30 4|0 0"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!0 0|4 27!4 27|4 32"/>
+                    <Edge fillStyle0="2" edges="!4 32[22 70 105 102!105 102|109 104!109 104|125 111!125 111|152 97!152 97|170 83"/>
+                    <Edge fillStyle1="2" edges="!184 51|174 79"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!51 4|69 25!69 25|48 15!48 15|41 11!41 11|30 4"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

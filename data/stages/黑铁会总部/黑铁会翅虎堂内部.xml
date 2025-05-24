@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>10</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>复活币</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>战术背带</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>硫酸盐</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>铝粉</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthcftnb_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Peace For The Price Of Life</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthcftnb_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种270</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthcftnb_3_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种270</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>翅虎令</名字>
+                                <概率>25</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <称号>坛主</称号>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>32</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthcftnb_5_BG.swf</Background>
+            <PlayerX>100</PlayerX>
+            <PlayerY>470</PlayerY>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>翅虎</Name>
+                <Title>翅虎堂司暗</Title>
+                <Char>翅虎</Char>
+                <Text>情报准确无误，你这小子果然有两把刷子，闯我外堂，我今天定要将你斩杀在这翅虎堂！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>别放屁了，有什么招都使出来，你的飞刀据说比子弹还要准？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>翅虎</Name>
+                <Title>翅虎堂司暗</Title>
+                <Char>翅虎</Char>
+                <Text>小子，你把我…惹毛了！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种66</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>500</x>
+                        <y>440</y>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种64</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>550</x>
+                        <y>360</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种270</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>550</x>
+                        <y>520</y>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种270</Type>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>32</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>32</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>32</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>翅虎</Name>
+                        <Title>翅虎堂司暗</Title>
+                        <Char>翅虎</Char>
+                        <Text>情况有变，兄弟们，撤！</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR</Char>
+                        <Text>翅虎居然撤了？不能继续追了，先回去汇报情况吧！</Text>
+                    </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

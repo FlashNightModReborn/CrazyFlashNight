@@ -1,0 +1,23 @@
+{
+  "tasks": [
+    {
+      "id": 280000,
+      "title": "比武训练之不知火舞",
+      "description": "挑战不知火舞。",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_SHIRANUI_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["比武训练之不知火舞#简单"],
+      "finish_conversation": "$MERC_SHIRANUI_FINISH",
+      "finish_npc": "酒保",
+
+      "rewards": [
+        "经验值#500000"
+      ],
+
+      "chain": "委托"
+    }
+  ]
+}

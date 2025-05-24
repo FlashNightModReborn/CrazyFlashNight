@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="0.防具相关/诛神套装/Symbol 2972" itemID="668e7c1e-00000d4c" linkageExportForAS="true" linkageIdentifier="女变装-诛神腿甲右大腿" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 2972">
+      <layers>
+        <DOMLayer name="Layer 1" color="#CB0DE3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 2957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.16348266601563" b="-0.312576293945313" c="0.317550659179688" d="1.18203735351563" tx="4.1" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#EDC1C2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!458 -961[427 -1378 157 -1525!157 -1525|76 -1561!76 -1561[-167 -1565 -296 -1495!-296 -1495[-367 -1456 -402 -1395!-402 -1395[-504 -1223 -518 -1044"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-518 -1044[-533 -865 -472 -49!-472 -49|-224 1344"/>
+                    <Edge fillStyle0="1" edges="!-224 1344[39 1693 329 1447"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!329 1447[376 1279 412 1103!412 1103[596 181 458 -961"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,336 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward id="0">
+            <Name>抗生素</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>资料</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk19_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种122</Type>
+                        <Interval>400</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种124</Type>
+                        <Interval>600</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种124</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种122</Type>
+                        <Interval>800</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk19_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种122</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种124</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种123</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种124</Type>
+                        <Interval>400</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种122</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk19_3_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种122</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种124</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种123</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种124</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种122</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk19_4_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种122</Type>
+                        <Interval>400</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种124</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种123</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种124</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种122</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk19_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种122</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种124</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种123</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种124</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种122</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk19_3_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种122</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种124</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种123</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种124</Type>
+                        <Interval>400</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种122</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种123</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>54</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

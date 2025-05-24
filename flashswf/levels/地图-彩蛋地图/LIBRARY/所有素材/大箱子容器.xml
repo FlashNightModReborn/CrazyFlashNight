@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/大箱子容器" itemID="658bcf82-0000025a" lastModified="1703661442">
+  <timeline>
+    <DOMTimeline name="大箱子容器">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/大箱子1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.43389892578125" d="0.43389892578125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/发光条纹1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.43389892578125" d="0.43389892578125" tx="74.25" ty="72.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/发光条纹2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.43389892578125" d="0.43389892578125" tx="1.85" ty="51.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

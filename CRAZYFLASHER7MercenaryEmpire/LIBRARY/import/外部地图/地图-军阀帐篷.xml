@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/外部地图/地图-军阀帐篷" itemID="66f58c7a-000049f5" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="地图-军阀帐篷" linkageURL="flashswf/levels/地图-军阀帐篷.swf" lastModified="1727368314">
+  <timeline>
+    <DOMTimeline name="地图-军阀帐篷">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="643.15" height="127.7" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="0.5208740234375" d="0.5208740234375" tx="1.05" ty="1.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="321.55" y="63.85"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>地图</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="100" bitmapSize="2000" face="MicrosoftYaHeiLight" fillColor="#BA967E"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>-</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="100" bitmapSize="2000" face="MicrosoftYaHeiLight" fillColor="#BA967E"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>军阀帐篷</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="100" bitmapSize="2000" face="MicrosoftYaHeiLight" fillColor="#BA967E"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="100" bitmapSize="2000" face="MicrosoftYaHeiLight" fillColor="#BA967E"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

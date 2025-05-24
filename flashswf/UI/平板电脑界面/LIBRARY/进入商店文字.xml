@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="进入商店文字" itemID="670f9bf5-00000289" lastModified="1729076213" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="进入商店文字">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="device" width="56" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="4.5" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>进入商店</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" face="MicrosoftYaHei" fillColor="#03A6FF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" face="MicrosoftYaHei" fillColor="#03A6FF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="打开商店按钮动画" selected="true" centerPoint3DX="28.75" centerPoint3DY="9.6">
+                  <matrix>
+                    <Matrix ty="-0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.75" y="9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

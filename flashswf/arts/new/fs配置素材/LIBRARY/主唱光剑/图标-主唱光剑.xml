@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/图标-主唱光剑" itemID="65549398-0000618f" linkageExportForAS="true" linkageIdentifier="图标-主唱光剑" lastModified="1700391646" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="图标-主唱光剑">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" outline="true" useOutlineView="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 85" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主唱光剑/主唱光剑动画" selected="true" centerPoint3DX="-192.95" centerPoint3DY="98.6">
+                  <matrix>
+                    <Matrix a="0.876358032226563" b="-0.876312255859375" c="0.876312255859375" d="0.876358032226563" tx="-317" ty="81.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.4" y="79.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 770" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主唱光剑/主唱光剑" centerPoint3DX="10.45" centerPoint3DY="-114.8">
+                  <matrix>
+                    <Matrix a="0.176544189453125" d="0.176544189453125" tx="-2.4" ty="-21.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="58.65" y="127.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

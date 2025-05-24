@@ -1,0 +1,2417 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/金光紫雷/金光紫雷" itemID="653e0b5a-00001a84" linkageExportForAS="true" linkageIdentifier="金光紫雷" lastModified="1701608873" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="金光紫雷" currentFrame="7">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="4.4" centerPoint3DY="-100.8">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="-15.6" ty="-187.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="30.4" centerPoint3DY="-100.8">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="10.4" ty="-187.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-37.75" centerPoint3DY="-100.8">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="-57.75" ty="-187.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-4.1" centerPoint3DY="-99.8">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="-24.1" ty="-186.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="36" centerPoint3DY="-99.8">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="16" ty="-186.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="64.05" centerPoint3DY="-99.8">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="44.05" ty="-186.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-94.25" centerPoint3DY="-99.8">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="-114.25" ty="-186.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="32.15" centerPoint3DY="-101.15">
+                  <matrix>
+                    <Matrix d="4.33749389648438" tx="12.15" ty="-187.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="10.75" centerPoint3DY="-101.55">
+                  <matrix>
+                    <Matrix a="1.78390502929688" d="4.33749389648438" tx="-24.95" ty="-188.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-39.95" centerPoint3DY="-101.75">
+                  <matrix>
+                    <Matrix a="1.08372497558594" d="4.33749389648438" tx="-61.65" ty="-188.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="6.5" centerPoint3DY="-97.2">
+                  <matrix>
+                    <Matrix a="1.08372497558594" d="4.33749389648438" tx="-15.2" ty="-183.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#A9F106" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 34" centerPoint3DX="173.05" centerPoint3DY="-20.05">
+                  <matrix>
+                    <Matrix a="-0.06195068359375" b="-0.99786376953125" c="-0.99786376953125" d="0.06195068359375" tx="68.4" ty="-53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 38" centerPoint3DX="209.25" centerPoint3DY="6.4">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="-1" d="0" tx="79.3" ty="-10.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 44" centerPoint3DX="49.2" centerPoint3DY="6.1">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="-1" d="0" tx="-71.8" ty="-17.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 48" centerPoint3DX="161.35" centerPoint3DY="27.95">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="-1" d="0" tx="42.15" ty="3.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 56" centerPoint3DX="6.5" centerPoint3DY="-111.6">
+                  <matrix>
+                    <Matrix a="1.01025390625" d="1.01025390625" tx="-33.85" ty="-231.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 60" centerPoint3DX="-38.05" centerPoint3DY="-108.7">
+                  <matrix>
+                    <Matrix tx="-66.3" ty="-215.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 64" centerPoint3DX="6.45" centerPoint3DY="-97.2">
+                  <matrix>
+                    <Matrix tx="-16.7" ty="-190.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#0397E6" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 30" centerPoint3DX="150.45" centerPoint3DY="35.7">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="-1" d="0" tx="47.8" ty="-1.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 32" centerPoint3DX="-152.1" centerPoint3DY="-261.05">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 36" centerPoint3DX="-140.25" centerPoint3DY="-242.5">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 40" centerPoint3DX="-133.15" centerPoint3DY="-244.4">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 42" centerPoint3DX="-150.1" centerPoint3DY="-248.4">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 46" centerPoint3DX="-148.85" centerPoint3DY="-254.8">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 50" centerPoint3DX="-164.35" centerPoint3DY="-254.75">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 52" centerPoint3DX="-144.25" centerPoint3DY="-262.25">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 54" centerPoint3DX="-161.65" centerPoint3DY="-255.3">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 58" centerPoint3DX="-163" centerPoint3DY="-253.5">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 62" centerPoint3DX="-170.75" centerPoint3DY="-261">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 66" centerPoint3DX="-173.7" centerPoint3DY="-268.65">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5CA6A5" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 26" centerPoint3DX="111.9" centerPoint3DY="16.45">
+                  <matrix>
+                    <Matrix a="-0.0226593017578125" b="-1.00726318359375" c="-1.324951171875" d="0.029815673828125" tx="-10.5" ty="-6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 28" centerPoint3DX="-155.6" centerPoint3DY="-241.15">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="24.35" centerPoint3DY="-8.75">
+                  <matrix>
+                    <Matrix a="0.361114501953125" d="0.62249755859375" tx="11.85" ty="-60.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="26.7" centerPoint3DY="-7">
+                  <matrix>
+                    <Matrix a="0.39105224609375" d="0.617828369140625" tx="14.2" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="29" centerPoint3DY="-5.3">
+                  <matrix>
+                    <Matrix a="0.420989990234375" d="0.6131591796875" tx="16.5" ty="-57.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="31.35" centerPoint3DY="-3.6">
+                  <matrix>
+                    <Matrix a="0.450927734375" d="0.608505249023438" tx="18.85" ty="-55.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="33.7" centerPoint3DY="-1.9">
+                  <matrix>
+                    <Matrix a="0.480850219726563" d="0.603836059570313" tx="21.2" ty="-53.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="36.05" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="0.51080322265625" d="0.599166870117188" tx="23.55" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="38.35" centerPoint3DY="1.55">
+                  <matrix>
+                    <Matrix a="0.540740966796875" d="0.594497680664063" tx="25.85" ty="-50.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="40.7" centerPoint3DY="3.3">
+                  <matrix>
+                    <Matrix a="0.570663452148438" d="0.589828491210938" tx="28.2" ty="-48.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="43.05" centerPoint3DY="5.05">
+                  <matrix>
+                    <Matrix a="0.600601196289063" d="0.585174560546875" tx="30.55" ty="-46.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="45.4" centerPoint3DY="6.75">
+                  <matrix>
+                    <Matrix a="0.630538940429688" d="0.58050537109375" tx="32.9" ty="-45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="47.65" centerPoint3DY="8.4">
+                  <matrix>
+                    <Matrix a="0.660476684570313" d="0.575836181640625" tx="35.15" ty="-43.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C2D25C" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 24" centerPoint3DX="-155.25" centerPoint3DY="-250.65">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="3.35" centerPoint3DY="-167.75">
+                  <matrix>
+                    <Matrix a="0.361114501953125" d="1.99472045898438" tx="-9.15" ty="-219.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="7" centerPoint3DY="-166.85">
+                  <matrix>
+                    <Matrix a="0.470809936523438" d="2.00735473632813" tx="-5.5" ty="-218.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="10.65" centerPoint3DY="-165.9">
+                  <matrix>
+                    <Matrix a="0.58050537109375" d="2.01998901367188" tx="-1.85" ty="-217.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="14.25" centerPoint3DY="-165">
+                  <matrix>
+                    <Matrix a="0.690200805664063" d="2.0325927734375" tx="1.75" ty="-216.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="17.85" centerPoint3DY="-164.1">
+                  <matrix>
+                    <Matrix a="0.799896240234375" d="2.04521179199219" tx="5.35" ty="-215.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="21.5" centerPoint3DY="-163.15">
+                  <matrix>
+                    <Matrix a="0.909591674804688" d="2.05784606933594" tx="9" ty="-214.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="25.1" centerPoint3DY="-162.25">
+                  <matrix>
+                    <Matrix a="1.019287109375" d="2.07048034667969" tx="12.6" ty="-214"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="28.8" centerPoint3DY="-161.3">
+                  <matrix>
+                    <Matrix a="1.12896728515625" d="2.08311462402344" tx="16.3" ty="-213.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="32.35" centerPoint3DY="-160.4">
+                  <matrix>
+                    <Matrix a="1.23867797851563" d="2.095703125" tx="19.85" ty="-212.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="36" centerPoint3DY="-159.5">
+                  <matrix>
+                    <Matrix a="1.34837341308594" d="2.10833740234375" tx="23.5" ty="-211.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="39.65" centerPoint3DY="-158.55">
+                  <matrix>
+                    <Matrix a="1.45806884765625" d="2.12094116210938" tx="27.15" ty="-210.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#CDAD75" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 20" centerPoint3DX="171.85" centerPoint3DY="9.35">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="-1" d="0" tx="53.55" ty="-18.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 22" centerPoint3DX="-160.75" centerPoint3DY="-251.9">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="38.35" centerPoint3DY="-171.75">
+                  <matrix>
+                    <Matrix a="0.202056884765625" d="1.99472045898438" tx="25.85" ty="-223.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="42.5" centerPoint3DY="-171.6">
+                  <matrix>
+                    <Matrix a="0.3055419921875" b="0.01202392578125" d="2.00738525390625" tx="30" ty="-223.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="46.6" centerPoint3DY="-171.35">
+                  <matrix>
+                    <Matrix a="0.408294677734375" b="0.0323028564453125" d="2.01998901367188" tx="34.1" ty="-223.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="50.75" centerPoint3DY="-171.35">
+                  <matrix>
+                    <Matrix a="0.509719848632813" b="0.0606536865234375" d="2.0325927734375" tx="38.25" ty="-223.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="54.9" centerPoint3DY="-171.4">
+                  <matrix>
+                    <Matrix a="0.609329223632813" b="0.0970458984375" d="2.04521179199219" tx="42.4" ty="-223.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="59.1" centerPoint3DY="-171.55">
+                  <matrix>
+                    <Matrix a="0.706680297851563" b="0.141372680664063" d="2.05784606933594" tx="46.6" ty="-223.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="63.35" centerPoint3DY="-171.8">
+                  <matrix>
+                    <Matrix a="0.8006591796875" b="0.196151733398438" d="2.07048034667969" tx="50.85" ty="-223.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="67.7" centerPoint3DY="-172.15">
+                  <matrix>
+                    <Matrix a="0.891876220703125" b="0.256256103515625" d="2.08306884765625" tx="55.2" ty="-223.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="71.95" centerPoint3DY="-172.6">
+                  <matrix>
+                    <Matrix a="0.97943115234375" b="0.323837280273438" d="2.095703125" tx="59.45" ty="-224.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="76.35" centerPoint3DY="-173.2">
+                  <matrix>
+                    <Matrix a="1.0628662109375" b="0.398681640625" d="2.10833740234375" tx="63.85" ty="-224.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="80.6" centerPoint3DY="-173.85">
+                  <matrix>
+                    <Matrix a="1.14208984375" b="0.483566284179688" d="2.12094116210938" tx="68.1" ty="-225.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#8787CA" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 16" centerPoint3DX="113.2" centerPoint3DY="5">
+                  <matrix>
+                    <Matrix a="-0.07977294921875" b="-1.13615417480469" c="-1.13615417480469" d="0.07977294921875" tx="23.1" ty="-21.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF00FF"/>
+                    <GlowFilter blurX="10" blurY="10" color="#0000FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 18" centerPoint3DX="-161.35" centerPoint3DY="-218.4">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="8.35" centerPoint3DY="-158.5">
+                  <matrix>
+                    <Matrix a="0.202056884765625" d="1.99472045898438" tx="-4.15" ty="-210.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="12.15" centerPoint3DY="-158.2">
+                  <matrix>
+                    <Matrix a="0.317901611328125" b="-0.008636474609375" d="2.00735473632813" tx="-0.35" ty="-209.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="15.9" centerPoint3DY="-157.8">
+                  <matrix>
+                    <Matrix a="0.433242797851563" b="-0.024993896484375" d="2.01998901367188" tx="3.4" ty="-209.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="19.75" centerPoint3DY="-157.4">
+                  <matrix>
+                    <Matrix a="0.547760009765625" b="-0.0483551025390625" d="2.0325927734375" tx="7.25" ty="-209.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="23.6" centerPoint3DY="-156.8">
+                  <matrix>
+                    <Matrix a="0.661102294921875" b="-0.0787200927734375" d="2.04521179199219" tx="11.1" ty="-208.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="27.5" centerPoint3DY="-156.2">
+                  <matrix>
+                    <Matrix a="0.77301025390625" b="-0.11602783203125" d="2.05784606933594" tx="15" ty="-207.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="31.3" centerPoint3DY="-155.45">
+                  <matrix>
+                    <Matrix a="0.883102416992188" b="-0.160202026367188" d="2.07048034667969" tx="18.8" ty="-207.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="35.25" centerPoint3DY="-154.55">
+                  <matrix>
+                    <Matrix a="0.990478515625" b="-0.210800170898438" d="2.08305358886719" tx="22.75" ty="-206.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="39.15" centerPoint3DY="-153.7">
+                  <matrix>
+                    <Matrix a="1.0966796875" b="-0.268844604492188" d="2.095703125" tx="26.65" ty="-205.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="43.1" centerPoint3DY="-152.75">
+                  <matrix>
+                    <Matrix a="1.19955444335938" b="-0.333145141601563" d="2.10833740234375" tx="30.6" ty="-204.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="47" centerPoint3DY="-151.55">
+                  <matrix>
+                    <Matrix a="1.30070495605469" b="-0.40399169921875" d="2.12094116210938" tx="34.5" ty="-203.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#5591E7" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 14" centerPoint3DX="-168.35" centerPoint3DY="-236.9">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="49" centerPoint3DY="-192.5">
+                  <matrix>
+                    <Matrix a="0.202056884765625" d="1.99472045898438" tx="36.5" ty="-244.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="52.95" centerPoint3DY="-192.35">
+                  <matrix>
+                    <Matrix a="0.296066284179688" d="2.00738525390625" tx="40.45" ty="-244.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="56.9" centerPoint3DY="-192.15">
+                  <matrix>
+                    <Matrix a="0.390060424804688" d="2.01998901367188" tx="44.4" ty="-243.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="60.9" centerPoint3DY="-192.05">
+                  <matrix>
+                    <Matrix a="0.48406982421875" d="2.0325927734375" tx="48.4" ty="-243.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="64.9" centerPoint3DY="-191.8">
+                  <matrix>
+                    <Matrix a="0.57806396484375" d="2.04521179199219" tx="52.4" ty="-243.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="68.9" centerPoint3DY="-191.7">
+                  <matrix>
+                    <Matrix a="0.672073364257813" d="2.05784606933594" tx="56.4" ty="-243.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="72.8" centerPoint3DY="-191.5">
+                  <matrix>
+                    <Matrix a="0.766082763671875" d="2.07048034667969" tx="60.3" ty="-243.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="76.8" centerPoint3DY="-191.35">
+                  <matrix>
+                    <Matrix a="0.860076904296875" d="2.08306884765625" tx="64.3" ty="-243.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="80.8" centerPoint3DY="-191.2">
+                  <matrix>
+                    <Matrix a="0.954086303710938" d="2.095703125" tx="68.3" ty="-242.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="84.75" centerPoint3DY="-191">
+                  <matrix>
+                    <Matrix a="1.04808044433594" d="2.10833740234375" tx="72.25" ty="-242.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="88.6" centerPoint3DY="-190.8">
+                  <matrix>
+                    <Matrix a="1.14208984375" d="2.12094116210938" tx="76.1" ty="-242.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#FFB4AD" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-17.65" centerPoint3DY="-152.75">
+                  <matrix>
+                    <Matrix a="0.361114501953125" d="1.99472045898438" tx="-30.15" ty="-204.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-23.95" centerPoint3DY="-154.4">
+                  <matrix>
+                    <Matrix a="0.439224243164063" d="2.00735473632813" tx="-36.45" ty="-206.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-30.2" centerPoint3DY="-156.1">
+                  <matrix>
+                    <Matrix a="0.517303466796875" d="2.01998901367188" tx="-42.7" ty="-207.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-36.45" centerPoint3DY="-157.8">
+                  <matrix>
+                    <Matrix a="0.595413208007813" d="2.0325927734375" tx="-48.95" ty="-209.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-42.8" centerPoint3DY="-159.5">
+                  <matrix>
+                    <Matrix a="0.673492431640625" d="2.04521179199219" tx="-55.3" ty="-211.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-49" centerPoint3DY="-161.2">
+                  <matrix>
+                    <Matrix a="0.751602172851563" d="2.05784606933594" tx="-61.5" ty="-212.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-55.3" centerPoint3DY="-163">
+                  <matrix>
+                    <Matrix a="0.8297119140625" d="2.07048034667969" tx="-67.8" ty="-214.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-61.55" centerPoint3DY="-164.7">
+                  <matrix>
+                    <Matrix a="0.907806396484375" d="2.08311462402344" tx="-74.05" ty="-216.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-67.85" centerPoint3DY="-166.4">
+                  <matrix>
+                    <Matrix a="0.98590087890625" d="2.095703125" tx="-80.35" ty="-218.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-74.15" centerPoint3DY="-168.05">
+                  <matrix>
+                    <Matrix a="1.06396484375" d="2.10833740234375" tx="-86.65" ty="-219.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-80.4" centerPoint3DY="-169.8">
+                  <matrix>
+                    <Matrix a="1.14208984375" d="2.12094116210938" tx="-92.9" ty="-221.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 68" centerPoint3DX="-176.25" centerPoint3DY="-279.3">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#B1E53E" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-8.7" centerPoint3DY="-168.75">
+                  <matrix>
+                    <Matrix a="1.32041931152344" d="1.99472045898438" tx="-21.2" ty="-220.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-12.55" centerPoint3DY="-170.05">
+                  <matrix>
+                    <Matrix a="1.6292724609375" d="2.00738525390625" tx="-25.05" ty="-221.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-16.45" centerPoint3DY="-171.4">
+                  <matrix>
+                    <Matrix a="1.93815612792969" d="2.01998901367188" tx="-28.95" ty="-223.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-20.25" centerPoint3DY="-172.75">
+                  <matrix>
+                    <Matrix a="2.24703979492188" d="2.0325927734375" tx="-32.75" ty="-224.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-24.15" centerPoint3DY="-174">
+                  <matrix>
+                    <Matrix a="2.55587768554688" d="2.04521179199219" tx="-36.65" ty="-225.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-28" centerPoint3DY="-175.35">
+                  <matrix>
+                    <Matrix a="2.86474609375" d="2.05784606933594" tx="-40.5" ty="-227.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-31.85" centerPoint3DY="-176.65">
+                  <matrix>
+                    <Matrix a="3.17364501953125" d="2.07048034667969" tx="-44.35" ty="-228.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-35.75" centerPoint3DY="-178">
+                  <matrix>
+                    <Matrix a="3.48248291015625" d="2.08306884765625" tx="-48.25" ty="-229.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-39.6" centerPoint3DY="-179.25">
+                  <matrix>
+                    <Matrix a="3.79136657714844" d="2.095703125" tx="-52.1" ty="-231"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-43.45" centerPoint3DY="-180.65">
+                  <matrix>
+                    <Matrix a="4.1002197265625" d="2.10833740234375" tx="-55.95" ty="-232.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-47.3" centerPoint3DY="-181.8">
+                  <matrix>
+                    <Matrix a="4.4090576171875" d="2.12094116210938" tx="-59.8" ty="-233.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#09E5A7" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 8" centerPoint3DX="-178.6" centerPoint3DY="-250.15">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 10" centerPoint3DX="-163.45" centerPoint3DY="-228.85">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 12" centerPoint3DX="-167.35" centerPoint3DY="-233.65">
+                  <matrix>
+                    <Matrix tx="-203.35" ty="-287.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-8.7" centerPoint3DY="-168.75">
+                  <matrix>
+                    <Matrix a="1.32041931152344" d="1.99472045898438" tx="-21.2" ty="-220.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-13.15" centerPoint3DY="-170.35">
+                  <matrix>
+                    <Matrix a="1.67739868164063" d="2.010498046875" tx="-25.65" ty="-222.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.87890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-17.6" centerPoint3DY="-172.05">
+                  <matrix>
+                    <Matrix a="2.03436279296875" d="2.02629089355469" tx="-30.1" ty="-223.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-22.1" centerPoint3DY="-173.65">
+                  <matrix>
+                    <Matrix a="2.39134216308594" d="2.04208374023438" tx="-34.6" ty="-225.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.62890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-26.55" centerPoint3DY="-175.3">
+                  <matrix>
+                    <Matrix a="2.748291015625" d="2.05784606933594" tx="-39.05" ty="-227.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-31.05" centerPoint3DY="-176.95">
+                  <matrix>
+                    <Matrix a="3.10527038574219" d="2.0736083984375" tx="-43.55" ty="-228.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-35.5" centerPoint3DY="-178.55">
+                  <matrix>
+                    <Matrix a="3.46224975585938" d="2.08941650390625" tx="-48" ty="-230.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-39.9" centerPoint3DY="-180.2">
+                  <matrix>
+                    <Matrix a="3.81927490234375" d="2.10519409179688" tx="-52.4" ty="-231.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.12890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-44.4" centerPoint3DY="-181.8">
+                  <matrix>
+                    <Matrix a="4.1761474609375" d="2.12094116210938" tx="-56.9" ty="-233.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#D3B46A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-4.65" centerPoint3DY="-2.8">
+                  <matrix>
+                    <Matrix d="0.391311645507813" tx="-17.15" ty="-54.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-16.15" centerPoint3DY="-85.75">
+                  <matrix>
+                    <Matrix a="1.91632080078125" d="1.19302368164063" tx="-28.65" ty="-137.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-27.55" centerPoint3DY="-168.75">
+                  <matrix>
+                    <Matrix a="2.83267211914063" d="1.99472045898438" tx="-40.05" ty="-220.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-29.65" centerPoint3DY="-170.4">
+                  <matrix>
+                    <Matrix a="3.00067138671875" d="2.010498046875" tx="-42.15" ty="-222.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.87890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-31.75" centerPoint3DY="-172.05">
+                  <matrix>
+                    <Matrix a="3.16860961914063" d="2.02629089355469" tx="-44.25" ty="-223.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-33.85" centerPoint3DY="-173.65">
+                  <matrix>
+                    <Matrix a="3.33651733398438" d="2.04208374023438" tx="-46.35" ty="-225.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.62890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-35.95" centerPoint3DY="-175.3">
+                  <matrix>
+                    <Matrix a="3.50444030761719" d="2.05784606933594" tx="-48.45" ty="-227.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-38.1" centerPoint3DY="-176.95">
+                  <matrix>
+                    <Matrix a="3.67234802246094" d="2.0736083984375" tx="-50.6" ty="-228.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-40.2" centerPoint3DY="-178.55">
+                  <matrix>
+                    <Matrix a="3.84031677246094" d="2.08941650390625" tx="-52.7" ty="-230.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-42.35" centerPoint3DY="-180.25">
+                  <matrix>
+                    <Matrix a="4.00823974609375" d="2.10516357421875" tx="-54.85" ty="-232"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.12890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金光紫雷/未命名文件夹 1/Symbol 6" centerPoint3DX="-44.4" centerPoint3DY="-181.8">
+                  <matrix>
+                    <Matrix a="4.1761474609375" d="2.12094116210938" tx="-56.9" ty="-233.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

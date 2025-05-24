@@ -1,0 +1,119 @@
+{
+    "tasks": [
+        {
+            "id": 40001,
+            "title": "$SIDE_TITLE_40001",
+            "description": "$SIDE_DESCRIPTION_40001",
+
+            "get_requirements": [27],
+            "get_conversation": "$SIDE_GET_40001",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40001",
+            "finish_npc": "Bat",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "抗生素#1",
+                "肾上腺素#1",
+                "复活币#1"
+            ],
+            
+            "chain":"大学#1"
+        },
+        {
+            "id": 40002,
+            "title": "$SIDE_TITLE_40002",
+            "description": "$SIDE_DESCRIPTION_40002",
+
+            "get_requirements": [40001],
+            "get_conversation": "$SIDE_GET_40002",
+            "get_npc": "Bat",
+
+            "finish_requirements": [
+                "大学城周边#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_40002",
+            "finish_npc": "Bat",
+            "rewards": [
+                "金币#15000",
+                "经验值#5000",
+                "抗生素#2",
+                "肾上腺素#1",
+                "复活币#2"
+            ],
+            
+            "chain":"大学#2"
+        },
+        {
+            "id": 40003,
+            "title": "$SIDE_TITLE_40003",
+            "description": "$SIDE_DESCRIPTION_40003",
+
+            "get_requirements": [40002],
+            "get_conversation": "$SIDE_GET_40003",
+            "get_npc": "Bat",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40003",
+            "finish_npc": "Tomboy",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "抗生素#1",
+                "肾上腺素#1",
+                "复活币#1"
+            ],
+            
+            "chain":"大学#3"
+        },
+        {
+            "id": 40004,
+            "title": "$SIDE_TITLE_40004",
+            "description": "$SIDE_DESCRIPTION_40004",
+
+            "get_requirements": [40003],
+            "get_conversation": "$SIDE_GET_40004",
+            "get_npc": "Tomboy",
+
+            "finish_requirements": [
+                "堕落城下水道入口#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_40004",
+            "finish_npc": "Tomboy",
+            "rewards": [
+                "金币#50000",
+                "经验值#5000",
+                "抗生素#5",
+                "肾上腺素#5",
+                "复活币#5"
+            ],
+            
+            "chain":"大学#4"
+        },
+        {
+            "id": 40005,
+            "title": "$SIDE_TITLE_40005",
+            "description": "$SIDE_DESCRIPTION_40005",
+
+            "get_requirements": [40004],
+            "get_conversation": "$SIDE_GET_40005",
+            "get_npc": "Tomboy",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_40005",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "抗生素#1",
+                "肾上腺素#1",
+                "复活币#1",
+                "技能点#20"
+            ],
+            
+            "chain":"大学#5"
+        }
+    ]
+}

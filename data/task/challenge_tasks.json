@@ -1,0 +1,130 @@
+{
+    "tasks": [
+        {
+            "id": 130001,
+            "title": "$SIDE_TITLE_10009",
+            "description": "$SIDE_DESCRIPTION_10009",
+
+            "get_requirements": [21],
+            "get_conversation": "$SIDE_GET_10009",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "地铁站#修罗"
+            ],
+            "finish_conversation": "$SIDE_FINISH_10009",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "经验值#30000",
+                "A兵团制式战术背心#1",
+                "A兵团制式战术裤#1",
+                "A兵团制式战术皮鞋#1",
+                "战术猪鼻式防毒面具#1",
+                "A兵团制式战术手套#1",
+                "复活币#10"
+            ],
+            
+            "chain":"挑战#1"
+        },
+        {
+            "id": 130002,
+            "title": "$SIDE_TITLE_130002",
+            "description": "$SIDE_DESCRIPTION_130002",
+
+            "get_requirements": [26],
+            "get_conversation": "$SIDE_GET_130002",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "摇滚公园#地狱"
+            ],
+            "finish_conversation": "$SIDE_FINISH_130002",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#5000",
+                "经验值#70000",
+                "主唱光剑#1",
+                "键盘镰刀#1",
+                "吉他喷火器#1",
+                "复活币#10"
+            ],
+            
+            "chain":"挑战#2"
+        },
+        {
+            "id": 130003,
+            "title": "$SIDE_TITLE_130003",
+            "description": "$SIDE_DESCRIPTION_130003",
+
+            "get_requirements": [130001,36],
+            "get_conversation": "$SIDE_GET_130003",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "军阀前线基地#地狱"
+            ],
+            "finish_conversation": "$SIDE_FINISH_130003",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#3000",
+                "金币#50000",
+                "经验值#200000",
+                "复活币#10",
+                "技能点#50",
+                "A兵团项链#1"
+            ],
+            
+            "chain":"挑战#3"
+        },
+        {
+            "id": 130004,
+            "title": "$SIDE_TITLE_130004",
+            "description": "$SIDE_DESCRIPTION_130004",
+
+            "get_requirements": [43],
+            "get_conversation": "$SIDE_GET_130004",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "A兵团试炼场#地狱"
+            ],
+            "finish_conversation": "$SIDE_FINISH_130004",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#3000",
+                "技能点#60",
+                "LEE战服上装#1",
+                "LEE战服下装#1",
+                "LEE战靴#1",
+                "AS-闪动护目镜#1",
+                "LEE战服手套#1"
+            ],
+            
+            "chain":"挑战#4"
+        },
+        {
+            "id": 130005,
+            "title": "$SIDE_TITLE_130005",
+            "description": "$SIDE_DESCRIPTION_130005",
+
+            "get_requirements": [67],
+            "get_conversation": "$SIDE_GET_130005",
+            "get_npc": "Andy Law",
+
+            "finish_requirements": [
+                "黑铁会总堂#地狱"
+            ],
+            "finish_conversation": "$SIDE_FINISH_130005",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "K点#10000",
+                "金币#100000",
+                "经验值#1500000",
+                "复活币#20",
+                "技能点#100"
+            ],
+            
+            "chain":"挑战#5"
+        }
+    ]
+}

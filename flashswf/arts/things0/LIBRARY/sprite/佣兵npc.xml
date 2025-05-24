@@ -1,0 +1,309 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/佣兵npc" itemID="668be6be-00000638" linkageExportForAS="true" linkageIdentifier="佣兵npc" lastModified="1743161243" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="佣兵npc">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#E1529C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="10" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="10" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#41BB8B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.初始化佣兵NPC模板 = _root.初始化佣兵NPC模板;
+this.初始化佣兵NPC模板();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="34" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+Z轴坐标 = this._y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="标记" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E578B8" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="103.6" centerPoint3DY="171.9">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-47.9" ty="20.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   旧上行 = _parent.上行;
+   旧下行 = _parent.下行;
+   旧左行 = _parent.左行;
+   旧右行 = _parent.右行;
+   _parent.行走();
+   if(_root.暂停 == false)
+   {
+      if(_parent.操控编号 != -1)
+      {
+         if(_root.控制目标全自动 != true and _root.全鼠标控制 == false)
+         {
+            _parent.按键控制攻击模式();
+            if(Key.isDown(_parent.A键))
+            {
+               _parent.格斗架势 = true;
+               if(_parent.状态 == _parent.攻击模式 + "跑")
+               {
+                  _parent.状态改变(_parent.攻击模式 + "冲击");
+               }
+               else
+               {
+                  _parent.状态改变(_parent.攻击模式 + "攻击");
+               }
+            }
+            if(Key.isDown(_parent.B键))
+            {
+               _parent.跳();
+            }
+            if(Key.isDown(_parent.左键))
+            {
+               _parent.左行 = 1;
+            }
+            else
+            {
+               _parent.左行 = 0;
+            }
+            if(Key.isDown(_parent.右键))
+            {
+               _parent.右行 = 1;
+            }
+            else
+            {
+               _parent.右行 = 0;
+            }
+            if(Key.isDown(_parent.上键))
+            {
+               _parent.上行 = 1;
+            }
+            else
+            {
+               _parent.上行 = 0;
+            }
+            if(Key.isDown(_parent.下键))
+            {
+               _parent.下行 = 1;
+            }
+            else
+            {
+               _parent.下行 = 0;
+            }
+         }
+      }
+      if(_root.控制目标 == _parent._name and _root.全鼠标控制 == true and _root.控制目标全自动 != true)
+      {
+         if(_root.gameworld鼠标横向位置 < _parent._x)
+         {
+            _root.gameworld[_root.控制目标].左行 = 1;
+            _root.gameworld[_root.控制目标].右行 = 0;
+         }
+         else if(_root.gameworld鼠标横向位置 > _parent._x)
+         {
+            _root.gameworld[_root.控制目标].右行 = 1;
+            _root.gameworld[_root.控制目标].左行 = 0;
+         }
+         if(_root.gameworld鼠标纵向位置 < _parent._y)
+         {
+            _root.gameworld[_root.控制目标].上行 = 1;
+            _root.gameworld[_root.控制目标].下行 = 0;
+         }
+         else if(_root.gameworld鼠标纵向位置 > _parent._y)
+         {
+            _root.gameworld[_root.控制目标].下行 = 1;
+            _root.gameworld[_root.控制目标].上行 = 0;
+         }
+         if(Math.abs(_root.gameworld鼠标横向位置 - _parent._x) < 20)
+         {
+            _root.gameworld[_root.控制目标].右行 = 0;
+            _root.gameworld[_root.控制目标].左行 = 0;
+         }
+         if(Math.abs(_root.gameworld鼠标纵向位置 - _parent._y) < 20)
+         {
+            _root.gameworld[_root.控制目标].下行 = 0;
+            _root.gameworld[_root.控制目标].上行 = 0;
+         }
+      }
+   }
+   else if(_root.暂停 == true)
+   {
+      _root.gameworld[_root.控制目标].右行 = 0;
+      _root.gameworld[_root.控制目标].左行 = 0;
+      _root.gameworld[_root.控制目标].下行 = 0;
+      _root.gameworld[_root.控制目标].上行 = 0;
+   }
+   if(_root.me != null && (旧上行 != _parent.上行 || 旧下行 != _parent.下行 || 旧左行 != _parent.左行 || 旧右行 != _parent.右行) && _root.控制目标 == _parent._name)
+   {
+      _root.client.sendData(DataPackage.发送坐标(_parent._x,_parent._y));
+      _root.client.sendData(DataPackage.玩家移动(_root.me,_parent.方向,_parent.行走X速度,_parent.行走Y速度,_parent.跑X速度,_parent.跑Y速度,_parent.状态,_parent.攻击模式,_parent.上行,_parent.下行,_parent.左行,_parent.右行));
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B5DB29" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/思考标签" centerPoint3DX="-16.5" centerPoint3DY="28.5">
+                  <matrix>
+                    <Matrix tx="-19" ty="26"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#11C1D4" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" name="area" centerPoint3DX="-4" centerPoint3DY="-116">
+                  <matrix>
+                    <Matrix a="1.47552490234375" d="5.6412353515625" tx="-16.5" ty="-128.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#7CE962">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/新版人物文字信息" name="人物文字信息" centerPoint3DX="76.15" centerPoint3DY="-125.35">
+                  <matrix>
+                    <Matrix tx="-4.35" ty="-162.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#59B0C9" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 898" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.44000244140625" d="5.72062683105469" tx="-0.65" ty="-59.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.是否达成任务检测();
+}
+on(release){
+   _root.是否达成任务检测();
+   if(_root.点击npc后检测任务(名字) == "路过")
+   {
+      _root.NPC功能菜单._visible = 1;
+      _root.NPC功能菜单._x = _root._xmouse;
+      _root.NPC功能菜单._y = _root._ymouse;
+      _root.NPC功能菜单.当前NPC = this._name;
+      _root.NPC功能菜单.刷新显示();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#A33ABF">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 897" name="man" centerPoint3DX="183.75" centerPoint3DY="225.7">
+                  <matrix>
+                    <Matrix a="0.276885986328125" d="0.276885986328125" tx="2.25" ty="-62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.非主角外观刷新();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 120" name="man" selected="true" centerPoint3DX="154.05" centerPoint3DY="220.05">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 121" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/熔炎裂渊/Shape/shape 166" itemID="61fa3de4-00000948" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="shape 166">
+      <layers>
+        <DOMLayer name="Layer_1" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.11883544921875" d="0.11883544921875" tx="96.5" ty="96.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFB200" ratio="0"/>
+                        <GradientEntry color="#C93636" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3860 1930[3860 2729 3294 3294!3294 3294[2729 3860 1930 3860!1930 3860[1131 3860 565 3294!565 3294[0 2729 0 1930!0 1930[0 1131 565 565!565 565[1131 0 1930 0!1930 0[2729 0 3294 565!3294 565[3860 1131 3860 1930"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

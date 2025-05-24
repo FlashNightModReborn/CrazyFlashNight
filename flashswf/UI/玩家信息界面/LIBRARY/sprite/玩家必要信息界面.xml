@@ -1,0 +1,803 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/玩家必要信息界面" itemID="665210ca-00002499" lastModified="1722149757" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="玩家必要信息界面" currentFrame="22">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#697CF8" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="6" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="5" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="5" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="5" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="5" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#A5B977" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 刷新(攻击模式)
+{
+	gotoAndStop(攻击模式);
+	var 控制对象 = _root.gameworld[_root.控制目标];
+	if (控制对象.主动战技[攻击模式])
+	{
+		this.战技栏._visible = true;
+		this.战技进度条._visible = true;
+		this.战技控制器._visible = true;
+		this.战技栏.战技栏图标刷新();
+	}
+	else
+	{
+		this.战技栏._visible = false;
+		this.战技进度条._visible = false;
+		this.战技控制器._visible = false;
+	}
+}
+this.战技栏._visible = false;
+this.战技进度条._visible = false;
+this.战技控制器._visible = false;
+gotoAndStop("空手");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="战技控件" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1791" name="战技进度条" centerPoint3DX="79.35" centerPoint3DY="36.95">
+                  <matrix>
+                    <Matrix tx="66.6" ty="24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/战技控制器" name="战技控制器" centerPoint3DX="74.8" centerPoint3DY="58">
+                  <matrix>
+                    <Matrix tx="66.65" ty="47.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	扳机键 = "武器技能键";
+	控制参数 = "战技栏";
+	控制参数2 = "战技进度条";
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="战技背景" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5" alpha="0.988235294117647"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!997 140|997 -116!997 -116/1668 -116!1668 -116/1668 140"/>
+                    <Edge strokeStyle="1" edges="!1668 140/1668 818!1668 818/997 818!997 818|997 140"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1668 140/997 140"/>
+                    <Edge cubics="!997 -116(;997,-116 1668,-116 1668,-116q997 -116 1668 -116);"/>
+                    <Edge cubics="!1668 140(;1668,140 1668,818 1668,818p1668 140 1668 818);"/>
+                    <Edge cubics="!997 818(;997,818 997,140 997,140q997 818 997 140);"/>
+                    <Edge cubics="!997 140(;997,140 1668,140 1668,140p997 140 1668 140);"/>
+                    <Edge cubics="!1668 818(;1668,818 997,818 997,818p1668 818 997 818);"/>
+                    <Edge cubics="!1668 -116(;1668,-116 1668,140 1668,140p1668 -116 1668 140);"/>
+                    <Edge cubics="!997 140(;997,140 997,-116 997,-116q997 140 997 -116);"/>
+                  </edges>
+                </DOMShape>
+                <DOMStaticText fontRenderingMode="standard" left="37.9" width="24.2" height="13.35" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="16.6" ty="-8.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>战技</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" alpha="0.988235294117647" bitmapSize="240" face="思源宋体*"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" alpha="0.988235294117647" bitmapSize="240" face="思源宋体*"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="战技图标" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/战技图标" name="战技栏" centerPoint3DX="79.35" centerPoint3DY="39.05">
+                  <matrix>
+                    <Matrix tx="66.6" ty="25.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	控制器 = "战技控制器";
+	进度条 = "战技进度条";
+	function 战技栏图标刷新()
+	{
+		var 控制对象 = _root.gameworld[_root.控制目标];
+		var 当前战技 = 控制对象.主动战技[控制对象.攻击模式];
+		if (当前战技.名字)
+		{
+			this.已装备名 = 当前战技.名字;
+			this.是否装备 = 1;
+			this.数量 = 1;
+			this.冷却时间 = 当前战技.冷却时间;
+			this.消耗mp = 当前战技.消耗mp;
+		}
+		else
+		{
+			this.已装备名 = null;
+			this.是否装备 = 0;
+		}
+		装备槽类别 = this._name;
+		对应装备 = this._name;
+		/*if (已装备名 == "空" or 已装备名 == "" or 已装备名 == undefined or this.数量 == 0)
+		{
+		this.gotoAndStop(已装备名);
+		}
+		else
+		{
+		this.图标 = "图标-" + 已装备名;
+		this.gotoAndStop("默认图标");
+		}*/
+	}
+	战技栏图标刷新();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="空战技" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="-0.017120361328125" c="0.017120361328125" d="0" tx="66.6" ty="24.15"/>
+                            </matrix>
+                            <GradientEntry color="#262626" ratio="0"/>
+                            <GradientEntry color="#111111" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal">
+                            <fill>
+                              <SolidColor color="#3B3B39"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="2" edges="!1613 202|1613 763!1613 763|1052 763"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!1052 763|1052 202!1052 202|1613 202"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix tx="-0.1"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.1">
+                            <fill>
+                              <SolidColor color="#E5E5E5"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!1020 302|1020 165!1020 165|1157 165"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0" b="-1" c="1" d="0" tx="68.05" ty="23.05"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.1">
+                            <fill>
+                              <SolidColor color="#E5E5E5"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-334 -206|-334 -343!-334 -343|-197 -343"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="-1" d="-1" tx="65.6" ty="22.6"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.1">
+                            <fill>
+                              <SolidColor color="#E5E5E5"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-334 -206|-334 -343!-334 -343|-197 -343"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMStaticText fontRenderingMode="standard" left="67.7" width="8.6" height="15.55" autoExpand="true" isSelectable="false">
+                      <matrix>
+                        <Matrix tx="-5.4" ty="15.3"/>
+                      </matrix>
+                      <textRuns>
+                        <DOMTextRun>
+                          <characters>+</characters>
+                          <textAttrs>
+                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHeiLight" fillColor="#E5E5E5"/>
+                          </textAttrs>
+                        </DOMTextRun>
+                      </textRuns>
+                    </DOMStaticText>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0" b="1" c="-1" d="0" tx="90.6" ty="-42.75"/>
+                      </matrix>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.1">
+                            <fill>
+                              <SolidColor color="#E5E5E5"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!1020 302|1020 165!1020 165|1157 165"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="组件" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="通用透明组件" centerPoint3DX="10" centerPoint3DY="3.75">
+                  <matrix>
+                    <Matrix ty="-6.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="10"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.text1.text = _parent.子弹数 + " / " + _parent.弹夹数;
+	_parent.text2.text = _parent.子弹数_2 + " / " + _parent.弹夹数_2;
+}
+onClipEvent (enterFrame) {
+	_parent.text1.text = _parent.子弹数 + " / " + _parent.弹夹数;
+	_parent.text2.text = _parent.子弹数_2 + " / " + _parent.弹夹数_2;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#ADBECD" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="37" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 1809" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.86630249023438" d="2.43417358398438" tx="42.7" ty="17.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.05" y="-9.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   if(_root.全鼠标控制)
+   {
+      if(_root.gameworld[_root.控制目标].hp > 0 and _root.gameworld[_root.控制目标].浮空 != true and _root.gameworld[_root.控制目标].倒地 != true)
+      {
+         _root.gameworld[_root.控制目标].循环切换攻击模式();
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#80E0AF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="29" height="15.85" isSelectable="false" variableName="子弹数">
+                  <matrix>
+                    <Matrix tx="14.85" ty="-1.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>9999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="29.3" height="15.85" isSelectable="false" variableName="弹夹数">
+                  <matrix>
+                    <Matrix tx="14.7" ty="22"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>9999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="5" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="48.2" height="13.35" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="0.1" ty="-8.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>战斗模式</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="思源宋体*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="思源宋体*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="5" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="29.55" height="15.85" isSelectable="false" variableName="弹夹数">
+                  <matrix>
+                    <Matrix tx="16.5" ty="17.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>9999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMStaticText fontRenderingMode="standard" width="48.2" height="13.35" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="0.1" ty="-8.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>战斗模式</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="思源宋体*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="思源宋体*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="5" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="48.2" height="13.35" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="0.1" ty="-8.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>战斗模式</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="思源宋体*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="思源宋体*" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="text1" fontRenderingMode="device" width="68.75" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="14.4" ty="-3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>999 / 999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="text2" fontRenderingMode="device" width="68.75" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="14.4" ty="21.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>999 / 999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图标" color="#27A8EC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/bitmap1805.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="2.6" ty="1.95"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <BitmapFill bitmapPath="image/bitmap1804.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="2.75" ty="25.35"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!195 507|195 687!195 687|55 687!55 687|55 507!55 507|195 507"/>
+                    <Edge fillStyle1="1" edges="!172 39|172 219!172 219|52 219!52 219|52 39!52 39|172 39"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="5" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.07998657226563" d="1.07998657226563" tx="-0.85" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.05" y="25.25"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!596 273[612 271 621 278!621 278[622 281 620 282!620 282[593 295 562 304!562 304[530 313 499 325!499 325[491 327 479 325!479 325[454 320 432 310!432 310[417 302 401 297!401 297[387 293 381 282!381 282[391 277 408 278!408 278[430 278 451
+ 278!451 278[474 277 496 277!496 277|496 276!496 276[501 276 505 276!505 276|506 276!506 276[540 276 573 275!573 275[585 275 596 273!419 407[386 410 354 412!354 412[347 412 347 403!347 403[378 389 412 378!412 378[479 356 545 333!545 333
+[612 309 678 286!678 286[685 283 692 280!692 280[700 277 706 280!706 280[707 291 702 305!702 305[677 371 654 438!654 438[631 504 609 571!609 571[598 606 583 638!583 638[582 639 579 639!579 639[575 637 573 634!573 634|573 633!573 633[578
+ 588 578 544!578 544[578 543 577 542!577 542[566 542 556 548!556 548[552 550 548 547!548 547[544 545 544 539!544 539|544 538!544 538[574 478 604 419!604 419[621 387 635 352!635 352[636 352 635 351!635 351[619 354 604 363!604 363[546 394
+ 486 424!486 424[467 434 446 441!446 441[444 442 443 441!443 441[438 439 437 433!437 433|437 432!437 432[443 421 444 411!444 411|444 410!444 410[434 405 419 407!408 459[402 473 386 477!386 477[380 479 374 482!374 482[359 489 342 493!342
+ 493[341 493 340 492!340 492[339 491 340 489!340 489[361 468 387 453!387 453|387 452!387 452[402 451 408 458!408 458|408 459!483 456[538 421 592 386!592 386[596 384 600 386!600 386[599 398 591 409!591 409[555 463 520 517!520 517[504 540
+ 483 558!483 558[433 597 385 639!385 639[381 643 373 643!373 643[367 641 363 636!363 636|363 635!363 635[408 590 453 546!453 546[488 512 519 474!519 474[521 472 519 471!519 471[518 465 510 466!510 466|509 466!509 466[464 510 420 556!420
+ 556[386 590 350 623!350 623[343 619 343 608!343 608|343 607!343 607[383 558 424 509!424 509[439 491 457 475!457 475[469 464 483 456!708 365[714 370 712 382!712 382|712 384!712 384[713 389 711 392!711 392[711 411 711 430!711 430|711 432
+!711 432[712 438 710 441!710 441[710 460 710 479!710 479|710 481!710 481[711 486 709 489!709 489[709 508 709 527!709 527|709 529!709 529[710 534 708 537!708 537[708 556 708 575!708 575|708 577!708 577[709 583 707 586!707 586|707 587!707
+ 587[709 599 704 605!704 605[703 605 702 604!702 604[687 579 675 551!675 551[673 547 671 543!671 543[660 526 659 498!659 498[680 431 704 366!704 366[705 365 708 365!279 605[281 596 288 593!288 593[313 613 336 635!336 635[365 665 393 697
+!393 697[381 715 362 702!362 702[355 697 349 690!349 690[343 684 336 679!336 679[300 707 265 736!265 736|264 736!264 736[254 732 250 721!250 721|250 720!250 720[279 686 307 651!307 651|307 650!307 650[289 635 280 613!280 613[278 609 279
+ 605!530 605[526 612 521 618!521 618[510 634 494 644!494 644|493 643!493 643[492 641 492 639!492 639[505 607 521 580!521 580[523 577 527 578!527 578[539 588 530 605"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1817" centerPoint3DX="37.6" centerPoint3DY="45.9">
+                  <matrix>
+                    <Matrix a="0" b="-0.255813598632813" c="0.255813598632813" d="0" tx="5.8" ty="24.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="5" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <transformationPoint>
+                    <Point x="25.05" y="25.25"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!579 280[507 298 437 316!437 316[365 335 294 354!294 354[271 360 250 361!250 361|250 360!250 360[250 358 250 357!250 357[322 339 392 321!392 321[464 302 535 283!535 283[589 269 646 257!646 257[627 272 597 276!597 276[588 278 579 280!566
+ 264[494 280 421 297!421 297[349 314 276 332!276 332[264 335 252 334!252 334[249 317 249 296!249 296[250 276 250 256!250 256[262 251 281 251!281 251[371 253 460 253!460 253[527 252 591 254!591 254[580 260 566 264!605 363[639 412 681 453
+!681 453[678 458 674 461!674 461[648 481 605 484!605 484|605 483!605 483[585 472 572 455!572 455|572 454!572 454[576 450 582 448!582 448[595 447 602 450!602 450[613 455 619 453!619 453|619 452!619 452[612 443 602 437!602 437|602 436!602
+ 436[604 429 607 422!607 422|606 422!606 422[577 432 554 454!554 454[554 458 556 459!556 459[577 481 603 499!603 499|604 499!604 499[628 498 647 493!647 493|647 494!647 494[651 507 646 518!646 518[630 524 610 527!610 527[555 537 527 575
+!527 575[521 583 514 584!514 584[541 550 566 513!566 513|565 513!565 513[550 522 537 532!537 532[517 524 498 515!498 515[478 505 458 501!458 501|458 502!458 502[465 510 470 520!470 520[469 523 466 524!466 524[416 563 373 610!373 610[330
+ 657 291 707!291 707[272 733 250 756!250 756[249 747 252 742!252 742[287 687 327 638!327 638|326 638!326 638[285 667 252 703!252 703[249 687 250 668!250 668|250 667!250 667[250 613 250 559!250 559|251 559!251 559[252 550 257 545!257 545
+[277 523 303 507!303 507[358 473 412 437!412 437[439 420 471 408!471 408[536 383 605 362!605 362|605 363!502 341[441 370 381 399!381 399[322 429 262 458!262 458[256 461 251 464!251 464[249 452 250 437!250 437|250 436!250 436[265 422 286
+ 415!286 415[319 403 351 390!351 390[414 364 479 339!479 339[496 333 513 331!513 331[511 337 502 341!753 406[757 463 733 496!733 496[724 509 716 523!716 523[682 580 651 638!651 638[624 689 595 738!595 738[583 758 551 758!551 758[521 758
+ 493 754!493 754|493 753!493 753[535 705 575 655!575 655[614 605 652 554!652 554[689 502 724 447!724 447[738 426 753 406!341 756|341 755!341 755[386 710 432 667!432 667[456 644 481 623!481 623[482 623 483 623!483 623[481 635 472 644!472
+ 644[461 656 452 669!452 669[420 711 384 751!384 751[381 754 377 755!377 755[361 761 341 756!754 508[723 566 693 625!693 625[663 685 635 746!635 746[632 754 625 756!625 756[619 758 619 754!619 754[648 693 678 633!678 633[707 573 737 514
+!737 514[744 499 753 487!753 487[755 496 754 507!754 507|754 508!755 613[755 686 752 756!752 756[752 757 750 757!750 757[742 759 736 757!736 757[713 757 689 759!689 759[676 760 673 752!673 752[703 692 731 632!731 632[741 611 752 593!752
+ 593[755 600 755 613!493 604[501 597 499 605!499 605[497 613 494 607!494 607[493 605 493 604"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2.9" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2.9" ty="18.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#BDE6AF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.22721862792969" d="0.732147216796875" tx="29.35" ty="6.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.22721862792969" d="0.732147216796875" tx="29.35" ty="29.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="5" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" left="-9.25" width="49.5" height="5.2" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="9.2" ty="5.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>+++++++++++++++++</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" letterSpacing="0.1" size="4" bitmapSize="80" face="MicrosoftYaHeiLight" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.2236328125" d="0.732147216796875" tx="31.25" ty="25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="device" left="-9.25" width="49.5" height="5.2" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="9.2" ty="5.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>+++++++++++++++++</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" letterSpacing="0.1" size="4" bitmapSize="80" face="MicrosoftYaHeiLight" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="5" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" left="-9.25" width="49.5" height="5.2" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="9.2" ty="5.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>+++++++++++++++++</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" letterSpacing="0.1" size="4" bitmapSize="80" face="MicrosoftYaHeiLight" fillColor="#E5E5E5"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.49508666992188" d="0.732147216796875" tx="48.65" ty="4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14" y="-14"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.49508666992188" d="0.732147216796875" tx="48.65" ty="29.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14" y="-14"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,316 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2447" itemID="6597607e-00000b5f" lastModified="1714894879">
+  <timeline>
+    <DOMTimeline name="Symbol 2447" currentFrame="114">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#1C92F9">
+          <frames>
+            <DOMFrame index="0" duration="100" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="100" duration="7" name="计时开始" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="107" name="计时结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#E69C9B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.挂机中 = false;
+_root.gameworld[_root.控制目标].状态改变("空手站立");
+_root.gameworld[_parent.挂机项目].gotoAndStop("准备挂机");
+if(_parent.类别 == "加技能点")
+{
+   _parent.训练结束加技能点(_parent.将增加技能点);
+   mytext.text = "你已完成了训练，将获得 " + _parent.将增加技能点 + " 点技能点。";
+}
+else if(_parent.类别 == "加经验")
+{
+   _parent.训练结束加经验值(_parent.将增加经验值);
+   mytext.text = "你已完成了训练，将获得对应的属性提升。";
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E0F486" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="奖励10分钟" centerPoint3DX="101" centerPoint3DY="29.95">
+                  <matrix>
+                    <Matrix tx="55.2" ty="18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[/*on(release){
+   _parent._parent.停止计时();
+   _root.挂机中 = false;
+   _root.gameworld[_root.控制目标].状态改变("空手站立");
+   _root.gameworld[_parent._parent.挂机项目].gotoAndStop("准备挂机");
+   _parent._parent._visible = 0;
+   _root.挂机功能菜单._visible = 1;
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("停止训练");
+}
+*/
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="秒" color="#9BB1A4" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="秒" fontRenderingMode="device" width="27.7" height="29.85" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="130.9" ty="-30.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.1" y="15.25"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>00</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="28" bitmapSize="560" face="LcdStd" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="4"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="8" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" fontRenderingMode="device" width="195" height="46" isSelectable="false" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="4.5" ty="-33.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="分" color="#2EA1FE" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="分" fontRenderingMode="device" width="27.7" height="29.85" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="78.2" ty="-30.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.5" y="15.65"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>00</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="28" bitmapSize="560" face="LcdStd" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="4"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="时" color="#EBC2AF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="时" fontRenderingMode="device" width="27.6" height="29.85" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="25.45" ty="-30.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.35" y="15.65"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>00</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="28" bitmapSize="560" face="LcdStd" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="4"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="冒号" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="8.3" height="51.2" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="70" ty="-41.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>:</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="48" bitmapSize="960" face="LcdStd" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3"/>
+                  </filters>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="8.3" height="51.2" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="122.65" ty="-41.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>:</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="48" bitmapSize="960" face="LcdStd" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="进度条" color="#C8ADEE" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2440" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="13.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#ADB4DE">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033172607421875" d="1.91667175292969" tx="22.3" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.8455810546875" d="1.91667175292969" tx="22.3" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#6D97FB">
+          <frames>
+            <DOMFrame index="0" duration="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 321" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="3.82498168945313" d="0.143753051757813" tx="101.45" ty="19.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2445" symbolType="button">
+                  <matrix>
+                    <Matrix tx="60" ty="18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent._visible = 0;
+   _root.挂机功能菜单._visible = 1;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2028" itemID="6597607e-00000a82" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 2028">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FB5572" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.104339599609375" c="-0.2142333984375" d="0" tx="175.5" ty="85.45"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!6860 0|5455 0!5455 0|160 0!160 0[0 0 0 100!0 100|0 3319!0 3319[0 3419 160 3419!160 3419|5455 3419!5455 3419|6860 3419!6860 3419[7020 3419 7020 3319!7020 3319|7020 100!7020 100[7020 0 6860 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

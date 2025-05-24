@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/人物素材/头" itemID="664db44a-000001c5" lastModified="1722244187">
+  <timeline>
+    <DOMTimeline name="头">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 481" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.69244384765625" d="0.669326782226563" tx="25.65" ty="23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/脸" selected="true">
+                  <matrix>
+                    <Matrix a="-0.171585083007813" d="0.168212890625" tx="43.5" ty="12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.45" y="107.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/shape 351" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.363677978515625" b="0.097442626953125" c="0.0977630615234375" d="0.3648681640625" tx="83.55" ty="-19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="141.85" y="90.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/眼睛" selected="true">
+                  <matrix>
+                    <Matrix a="-0.0835418701171875" d="0.08148193359375" tx="35.1" ty="25.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="66.45" y="40.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/眉毛" selected="true" centerPoint3DX="29.75" centerPoint3DY="24.9">
+                  <matrix>
+                    <Matrix a="0.584152221679688" b="0.038665771484375" c="-0.038665771484375" d="0.584152221679688" tx="25.5" ty="24.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

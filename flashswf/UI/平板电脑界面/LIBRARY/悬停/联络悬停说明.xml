@@ -1,0 +1,175 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="悬停/联络悬停说明" itemID="66fc32b1-0000563d" lastModified="1727805157" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="联络悬停说明">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="28" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="引导线遮罩" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/补间 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-227.9" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/补间 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-20.95" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="引导线" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/悬停引导线" centerPoint3DX="-14.4" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix tx="-111.4" ty="-12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97" y="23.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/悬停引导线" centerPoint3DX="-14.4" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix tx="-111.4" ty="-12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97" y="23.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/悬停引导线" centerPoint3DX="-14.4" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix tx="-111.4" ty="-12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97" y="23.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字遮罩" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/补间 13" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-52.3" ty="13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/悬停补间/补间 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="37.7" ty="13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#4FFF4F" parentLayerIndex="3" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/联络悬停说明文字" centerPoint3DX="37.4" centerPoint3DY="14.65">
+                  <matrix>
+                    <Matrix tx="-4.5" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.9" y="5.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/联络悬停说明文字" centerPoint3DX="37.4" centerPoint3DY="14.65">
+                  <matrix>
+                    <Matrix tx="-4.5" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.9" y="5.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="悬停/联络悬停说明文字" centerPoint3DX="37.4" centerPoint3DY="14.65">
+                  <matrix>
+                    <Matrix tx="-4.5" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.9" y="5.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

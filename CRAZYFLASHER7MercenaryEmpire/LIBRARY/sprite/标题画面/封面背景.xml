@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/标题画面/封面背景" itemID="663221d4-00001c86" lastModified="1714561492">
+  <timeline>
+    <DOMTimeline name="封面背景">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BFBC45">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/标题画面/Symbol 988" centerPoint3DX="52.8" centerPoint3DY="490.75">
+                  <matrix>
+                    <Matrix a="0.636764526367188" d="0.636764526367188" tx="-286.25" ty="-161.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7A8AF9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="bitmap961.jpg" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-424" ty="-220"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!7520 6440S2|-8480 6440!-8480 6440|-8480 -4400!-8480 -4400|7520 -4400!7520 -4400|7520 6440"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

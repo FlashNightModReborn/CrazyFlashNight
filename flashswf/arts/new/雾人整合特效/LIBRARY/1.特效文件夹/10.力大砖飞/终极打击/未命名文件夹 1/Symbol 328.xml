@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/终极打击/未命名文件夹 1/Symbol 328" itemID="654b83b3-000022e9" symbolType="graphic" lastModified="1699444639">
+  <timeline>
+    <DOMTimeline name="Symbol 328">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0589599609375" d="0.0589599609375" tx="48" ty="48"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FFFFC2" ratio="0.243137254901961"/>
+                        <GradientEntry color="#FDFC45" alpha="0.611764705882353" ratio="0.431372549019608"/>
+                        <GradientEntry color="#FCFB2E" alpha="0" ratio="0.913725490196078"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.01898193359375" d="0.0589599609375" tx="48.5" ty="48"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FFFFC2" ratio="0.243137254901961"/>
+                        <GradientEntry color="#FDFC45" alpha="0.611764705882353" ratio="0.431372549019608"/>
+                        <GradientEntry color="#FCFB2E" alpha="0" ratio="0.913725490196078"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!975 0[1363 5 1639 281!1639 281[1920 562 1920 960!1920 960[1920 1358 1639 1639!1639 1639[1363 1915 975 1920"/>
+                    <Edge fillStyle1="2" edges="!975 1920|970 1920!970 1920[842 1920 751 1639!751 1639[661 1358 661 960!661 960[661 562 751 281!751 281[842 0 970 0!970 0|975 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!975 0|975 1920"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

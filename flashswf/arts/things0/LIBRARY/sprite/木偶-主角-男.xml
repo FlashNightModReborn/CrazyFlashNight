@@ -1,0 +1,1168 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/木偶-主角-男" itemID="668be718-0000065b" linkageExportForAS="true" linkageIdentifier="木偶-主角-男" lastModified="1720445240">
+  <timeline>
+    <DOMTimeline name="木偶-主角-男" currentFrame="33">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#CA26BA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="9" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="9" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" name="刷新装扮" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#CC23E0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 计算经验值()
+{
+   _root.经验值计算(最小经验值,最大经验值,等级,_root.最大等级);
+   _root.主角是否升级(_root.等级,_root.经验值);
+   this.已加经验值 = true;
+}
+function 人物暂停()
+{
+   this.上键 = 0;
+   this.下键 = 0;
+   this.左键 = 0;
+   this.右键 = 0;
+   this.A键 = 0;
+   this.B键 = 0;
+   this.C键 = 0;
+   this.切换武器键 = 0;
+   this.技能键 = 0;
+   this.物品键 = 0;
+   this.闪避键 = 0;
+   this.菜单键 = 0;
+}
+function 获取键值()
+{
+   this.上键 = _root.按键设定表[操控编号][0];
+   this.下键 = _root.按键设定表[操控编号][1];
+   this.左键 = _root.按键设定表[操控编号][2];
+   this.右键 = _root.按键设定表[操控编号][3];
+   this.A键 = _root.按键设定表[操控编号][4];
+   this.B键 = _root.按键设定表[操控编号][5];
+   this.C键 = _root.按键设定表[操控编号][6];
+   this.切换武器键 = _root.按键设定表[操控编号][7];
+   this.技能键 = _root.按键设定表[操控编号][8];
+   this.物品键 = _root.按键设定表[操控编号][9];
+   this.闪避键 = _root.按键设定表[操控编号][10];
+   this.菜单键 = _root.按键设定表[操控编号][11];
+}
+function 根据等级初始数值(等级值)
+{
+   hp基本满血值 = _root.根据等级计算值(hp_min,hp_max,等级值);
+   mp基本满血值 = _root.根据等级计算值(mp_min,mp_max,等级值);
+   hp满血值 = hp基本满血值 + hp满血值装备加层;
+   if(是否为敌人 == false and _root.控制目标 != this._name)
+   {
+      hp满血值 *= 5;
+   }
+   mp满血值 = mp基本满血值 + mp满血值装备加层;
+   空手攻击力 = _root.根据等级计算值(空手攻击力_min,空手攻击力_max,等级值);
+   行走X速度 = _root.根据等级计算值(速度_min,速度_max,等级值) / 10;
+   行走Y速度 = 行走X速度 / 2;
+   跑X速度 = 行走X速度 * 2;
+   跑Y速度 = 行走X速度;
+   被击硬直度 = _root.根据等级计算值(被击硬直度_min,被击硬直度_max,等级值);
+   起跳速度 = -10;
+   基本防御力 = _root.根据等级计算值(基本防御力_min,基本防御力_max,等级值);
+   防御力 = 基本防御力 + 装备防御力;
+   躲闪率 = _root.根据等级计算值(躲闪率_min,躲闪率_max,等级值);
+   防御上限 = _root.根据等级计算值(防御上限_min,防御上限_max,等级值);
+   if(hp == undefined)
+   {
+      hp = hp满血值;
+      changehp = 1;
+   }
+   if(mp == undefined)
+   {
+      mp = mp满血值;
+   }
+}
+function 非主角外观刷新()
+{
+   if(性别 == undefined)
+   {
+      性别 = "男";
+   }
+   _root.长枪配置(this._name,this.长枪);
+   _root.手枪配置(this._name,this.手枪);
+   _root.手枪2配置(this._name,this.手枪2);
+   _root.手雷配置(this._name,this.手雷);
+   _root.刀配置(this._name,this.刀);
+   _root.军牌配置(this._name,this.颈部装备);
+   this.脸型 = 脸型;
+   tmp_aaa = _root.根据物品名查找属性(头部装备,14);
+   if(tmp_aaa[0] == "true")
+   {
+      this.发型 = "";
+   }
+   else
+   {
+      this.发型 = 发型;
+   }
+   是同伴 = -1;
+   i = 0;
+   while(i < _root.同伴数)
+   {
+      if("同伴" + i == this._name)
+      {
+         是同伴 = i;
+         break;
+      }
+      i++;
+   }
+   var _loc3_ = 0;
+   if(this.装备缓存 != undefined)
+   {
+      _root.发布消息("缓存直读");
+      this.面具 = this.装备缓存[0];
+      this.身体 = this.装备缓存[1];
+      this.上臂 = this.装备缓存[2];
+      this.左下臂 = this.装备缓存[3];
+      this.右下臂 = this.装备缓存[4];
+      this.左手 = this.装备缓存[5];
+      this.右手 = this.装备缓存[6];
+      this.屁股 = this.装备缓存[7];
+      this.左大腿 = this.装备缓存[8];
+      this.右大腿 = this.装备缓存[9];
+      this.小腿 = this.装备缓存[10];
+      this.脚 = this.装备缓存[11];
+      this.刀_装扮 = this.装备缓存[12];
+      this.长枪_装扮 = this.装备缓存[13];
+      this.手枪_装扮 = this.装备缓存[14];
+      this.手枪2_装扮 = this.装备缓存[15];
+      this.手雷_装扮 = this.装备缓存[16];
+   }
+   else if(是同伴 != -1 && _root.同伴缓存状态[是同伴] == true)
+   {
+      _root.发布消息("读取同伴缓存！");
+      this.面具 = _root.同伴装备缓存[是同伴][0];
+      this.身体 = _root.同伴装备缓存[是同伴][1];
+      this.上臂 = _root.同伴装备缓存[是同伴][2];
+      this.左下臂 = _root.同伴装备缓存[是同伴][3];
+      this.右下臂 = _root.同伴装备缓存[是同伴][4];
+      this.左手 = _root.同伴装备缓存[是同伴][5];
+      this.右手 = _root.同伴装备缓存[是同伴][6];
+      this.屁股 = _root.同伴装备缓存[是同伴][7];
+      this.左大腿 = _root.同伴装备缓存[是同伴][8];
+      this.右大腿 = _root.同伴装备缓存[是同伴][9];
+      this.小腿 = _root.同伴装备缓存[是同伴][10];
+      this.脚 = _root.同伴装备缓存[是同伴][11];
+      this.刀_装扮 = _root.同伴装备缓存[是同伴][12];
+      this.长枪_装扮 = _root.同伴装备缓存[是同伴][13];
+      this.手枪_装扮 = _root.同伴装备缓存[是同伴][14];
+      this.手枪2_装扮 = _root.同伴装备缓存[是同伴][15];
+      this.手雷_装扮 = _root.同伴装备缓存[是同伴][16];
+      _root.同伴缓存状态[是同伴] = false;
+   }
+   else
+   {
+      _root.发布消息("写入同伴缓存！");
+      this.面具 = _root.根据物品名查找属性(头部装备,15);
+      this.身体 = this.性别 + _root.根据物品名查找属性(上装装备,15) + "身体";
+      this.上臂 = this.性别 + _root.根据物品名查找属性(上装装备,15) + "上臂";
+      this.左下臂 = this.性别 + _root.根据物品名查找属性(上装装备,15) + "左下臂";
+      this.右下臂 = this.性别 + _root.根据物品名查找属性(上装装备,15) + "右下臂";
+      this.左手 = _root.根据物品名查找属性(手部装备,15) + "左手";
+      this.右手 = _root.根据物品名查找属性(手部装备,15) + "右手";
+      this.屁股 = this.性别 + _root.根据物品名查找属性(下装装备,15) + "屁股";
+      this.左大腿 = this.性别 + _root.根据物品名查找属性(下装装备,15) + "左大腿";
+      this.右大腿 = this.性别 + _root.根据物品名查找属性(下装装备,15) + "右大腿";
+      this.小腿 = this.性别 + _root.根据物品名查找属性(下装装备,15) + "小腿";
+      this.脚 = _root.根据物品名查找属性(脚部装备,15);
+      this.刀_装扮 = _root.根据物品名查找属性(刀,15);
+      this.长枪_装扮 = _root.根据物品名查找属性(长枪,15);
+      this.手枪_装扮 = _root.根据物品名查找属性(手枪,15);
+      this.手枪2_装扮 = _root.根据物品名查找属性(手枪2,15);
+      this.手雷_装扮 = _root.根据物品名查找属性(手雷,15);
+      _loc3_ = 1;
+   }
+   this.gotoAndPlay("刷新装扮");
+   f1 = _root.根据物品名查找属性(头部装备,8);
+   f2 = _root.根据物品名查找属性(上装装备,8);
+   f3 = _root.根据物品名查找属性(手部装备,8);
+   f4 = _root.根据物品名查找属性(下装装备,8);
+   f5 = _root.根据物品名查找属性(脚部装备,8);
+   f6 = _root.根据物品名查找属性(颈部装备,8);
+   h1 = _root.根据物品名查找属性(头部装备,10);
+   h2 = _root.根据物品名查找属性(上装装备,10);
+   h3 = _root.根据物品名查找属性(手部装备,10);
+   h4 = _root.根据物品名查找属性(下装装备,10);
+   h5 = _root.根据物品名查找属性(脚部装备,10);
+   h6 = _root.根据物品名查找属性(颈部装备,10);
+   g1 = _root.根据物品名查找属性(头部装备,13);
+   g2 = _root.根据物品名查找属性(上装装备,13);
+   g3 = _root.根据物品名查找属性(手部装备,13);
+   g4 = _root.根据物品名查找属性(下装装备,13);
+   g5 = _root.根据物品名查找属性(脚部装备,13);
+   g6 = _root.根据物品名查找属性(颈部装备,13);
+   装备防御力 = 0;
+   hp满血值装备加层 = 0;
+   攻击力加层 = 0;
+   if(f1 != undefined)
+   {
+      装备防御力 += f1;
+   }
+   if(f2 != undefined)
+   {
+      装备防御力 += f2;
+   }
+   if(f3 != undefined)
+   {
+      装备防御力 += f3;
+   }
+   if(f4 != undefined)
+   {
+      装备防御力 += f4;
+   }
+   if(f5 != undefined)
+   {
+      装备防御力 += f5;
+   }
+   if(f6 != undefined)
+   {
+      装备防御力 += f6;
+   }
+   if(h1 != undefined)
+   {
+      hp满血值装备加层 += h1;
+   }
+   if(h2 != undefined)
+   {
+      hp满血值装备加层 += h2;
+   }
+   if(h3 != undefined)
+   {
+      hp满血值装备加层 += h3;
+   }
+   if(h4 != undefined)
+   {
+      hp满血值装备加层 += h4;
+   }
+   if(h5 != undefined)
+   {
+      hp满血值装备加层 += h5;
+   }
+   if(h6 != undefined)
+   {
+      hp满血值装备加层 += h6;
+   }
+   if(g1 != undefined)
+   {
+      攻击力加层 += g1;
+   }
+   if(g2 != undefined)
+   {
+      攻击力加层 += g2;
+   }
+   if(g3 != undefined)
+   {
+      攻击力加层 += g3;
+   }
+   if(g4 != undefined)
+   {
+      攻击力加层 += g4;
+   }
+   if(g5 != undefined)
+   {
+      攻击力加层 += g5;
+   }
+   if(g6 != undefined)
+   {
+      攻击力加层 += g6;
+   }
+   基本防御力 = _root.根据等级计算值(基本防御力_min,基本防御力_max,等级);
+   防御力 = 基本防御力 + 装备防御力;
+   hp基本满血值 = _root.根据等级计算值(hp_min,hp_max,等级值);
+   hp满血值 = hp基本满血值 + hp满血值装备加层;
+   if(是否为敌人 == false and _root.控制目标 != this._name)
+   {
+      hp满血值 *= 5;
+   }
+   伤害加成 = 攻击力加层;
+   if(hp == undefined || _loc3_ == 1 || changehp == 1)
+   {
+      hp = hp满血值;
+      changehp = 0;
+   }
+   if(防御力 > 防御上限)
+   {
+   }
+   if(称号 == undefined)
+   {
+      称号 = "";
+   }
+}
+function 行走()
+{
+   if(this.右行 == 1 or this.左行 == 1 or this.上行 == 1 or this.下行 == 1)
+   {
+      if(状态 == 攻击模式 + "行走")
+      {
+         if(this.右行 == 1)
+         {
+            方向改变("右");
+            状态改变(攻击模式 + "行走");
+            移动("右",行走X速度);
+         }
+         else if(this.左行 == 1)
+         {
+            方向改变("左");
+            状态改变(攻击模式 + "行走");
+            移动("左",行走X速度);
+         }
+         if(this.下行 == 1)
+         {
+            状态改变(攻击模式 + "行走");
+            移动("下",行走Y速度);
+         }
+         else if(this.上行 == 1)
+         {
+            状态改变(攻击模式 + "行走");
+            移动("上",行走Y速度);
+         }
+      }
+      else if(状态 == 攻击模式 + "跑")
+      {
+         if(this.右行 == 1)
+         {
+            方向改变("右");
+            状态改变(攻击模式 + "跑");
+            移动("右",跑X速度);
+         }
+         else if(this.左行 == 1)
+         {
+            方向改变("左");
+            状态改变(攻击模式 + "跑");
+            移动("左",跑X速度);
+         }
+         if(this.下行 == 1)
+         {
+            状态改变(攻击模式 + "跑");
+            移动("下",跑Y速度);
+         }
+         else if(this.上行 == 1)
+         {
+            状态改变(攻击模式 + "跑");
+            移动("上",跑Y速度);
+         }
+      }
+   }
+   else
+   {
+      状态改变(攻击模式 + "站立");
+   }
+}
+function 移动(移动方向, 速度)
+{
+   var _loc5_ = {x:this._x,y:this.Z轴坐标};
+   _root.gameworld.localToGlobal(_loc5_);
+   xx = _loc5_.x;
+   yy = _loc5_.y;
+   if(移动方向 == "右" and this._x + 速度 < _root.Xmax and _root.gameworld.地图.hitTest(xx + 速度,yy,true) == false)
+   {
+      this._x += 速度;
+   }
+   else if(移动方向 == "左" and this._x - 速度 > _root.Xmin and _root.gameworld.地图.hitTest(xx - 速度,yy,true) == false)
+   {
+      this._x -= 速度;
+   }
+   if(移动方向 == "下" and this._y + 速度 < _root.Ymax and _root.gameworld.地图.hitTest(xx,yy + 速度,true) == false)
+   {
+      Z轴坐标 += 速度;
+      this._y = Z轴坐标;
+      this.swapDepths(this._y);
+   }
+   else if(移动方向 == "上" and this._y - 速度 > _root.Ymin and _root.gameworld.地图.hitTest(xx,yy - 速度,true) == false)
+   {
+      Z轴坐标 -= 速度;
+      this._y = Z轴坐标;
+      this.swapDepths(this._y);
+   }
+}
+function 被击移动(移动方向, 速度, 摩擦力)
+{
+   是否被击移动 = true;
+   移动钝感硬直(_root.钝感硬直时间);
+   减速度 = 摩擦力;
+   speed = 速度;
+   if(移动方向 == "右")
+   {
+      this.onEnterFrame = function()
+      {
+         if(硬直中 == false)
+         {
+            speed -= 减速度;
+            this.移动("右",speed);
+            if(speed <= 0)
+            {
+               是否被击移动 = false;
+               delete this.onEnterFrame;
+            }
+         }
+      };
+   }
+   else
+   {
+      this.onEnterFrame = function()
+      {
+         if(硬直中 == false)
+         {
+            speed -= 减速度;
+            this.移动("左",speed);
+            if(speed <= 0)
+            {
+               是否被击移动 = false;
+               delete this.onEnterFrame;
+            }
+         }
+      };
+   }
+}
+function 拾取()
+{
+   状态改变("拾取");
+}
+function 跳()
+{
+   if(状态 == 攻击模式 + "站立")
+   {
+      跳横移速度 = 0;
+   }
+   else if(状态 == 攻击模式 + "行走")
+   {
+      跳横移速度 = 行走X速度;
+   }
+   else if(状态 == 攻击模式 + "跑")
+   {
+      跳横移速度 = 跑X速度;
+   }
+   this.动画是否正在播放 = true;
+   状态改变(攻击模式 + "跳");
+}
+function 方向改变(新方向)
+{
+   if(新方向 == "右")
+   {
+      方向 = "右";
+      this._xscale = myxscale;
+      人物文字信息._xscale = 100;
+   }
+   else if(新方向 == "左")
+   {
+      方向 = "左";
+      this._xscale = - myxscale;
+      人物文字信息._xscale = -100;
+   }
+}
+function 状态改变新状态机实装前使用(新状态名)
+{
+   旧状态 = 状态;
+   状态 = 新状态名;
+   this.gotoAndStop(新状态名);
+}
+function 动画完毕()
+{
+   状态改变(攻击模式 + "站立");
+}
+function 硬直(目标, 时间)
+{
+   function pause()
+   {
+      eval(目标).play();
+      clearInterval(pauseInterval);
+   }
+   clearInterval(pauseInterval);
+   eval(目标).stop();
+   pauseInterval = setInterval(pause,时间);
+}
+function 移动钝感硬直(时间)
+{
+   function pause2()
+   {
+      硬直中 = false;
+      clearInterval(pauseInterval2);
+   }
+   硬直中 = true;
+   clearInterval(pauseInterval2);
+   pauseInterval2 = setInterval(pause2,时间);
+}
+function 单发枪计时()
+{
+   单发枪计时_时间结束 = false;
+   单发枪间隔 = setInterval(单发枪可以射击,单发枪射击速度);
+}
+function 单发枪可以射击()
+{
+   单发枪计时_时间结束 = true;
+   clearInterval(单发枪间隔);
+}
+function 单发枪计时_2()
+{
+   单发枪计时_时间结束_2 = false;
+   单发枪间隔_2 = setInterval(单发枪可以射击_2,单发枪射击速度);
+}
+function 单发枪可以射击_2()
+{
+   单发枪计时_时间结束_2 = true;
+   clearInterval(单发枪间隔_2);
+}
+function 攻击呐喊()
+{
+   if(性别 == "女")
+   {
+      _root.播放音效(女_攻击呐喊_库[random(女_攻击呐喊_库.length)]);
+   }
+   else
+   {
+      _root.播放音效(男_攻击呐喊_库[random(男_攻击呐喊_库.length)]);
+   }
+}
+function 中招呐喊()
+{
+   if(性别 == "女")
+   {
+      _root.播放音效(女_中招呐喊_库[random(女_中招呐喊_库.length)]);
+   }
+   else
+   {
+      _root.播放音效(男_中招呐喊_库[random(男_中招呐喊_库.length)]);
+   }
+}
+function 击倒呐喊()
+{
+   if(性别 == "女")
+   {
+      _root.播放音效(女_击倒呐喊_库[random(女_击倒呐喊_库.length)]);
+   }
+   else
+   {
+      _root.播放音效(男_击倒呐喊_库[random(男_击倒呐喊_库.length)]);
+   }
+}
+function 播放二级动画(一级帧名, 二级帧名)
+{
+   this.man.gotoAndPlay(二级帧名);
+   this.二级动画帧名 = 二级帧名;
+   状态改变(一级帧名);
+   this.gotoAndStop(一级帧名);
+   this.man.gotoAndPlay(二级帧名);
+}
+function 联机数据接收处理(数据)
+{
+   if(是否允许发送联机数据 == true)
+   {
+      this._x = Number(数据[1]);
+      this._y = Number(数据[2]);
+      Z轴坐标 = Number(数据[3]);
+      左行 = Number(数据[4]);
+      右行 = Number(数据[5]);
+      上行 = Number(数据[6]);
+      下行 = Number(数据[7]);
+      播放二级动画(数据[8],Number(数据[9]));
+      if(Number(数据[10]) != undefined)
+      {
+         hp = Number(数据[10]);
+      }
+      联机2015单纯方向改变(数据[11]);
+      攻击模式 = 数据[12];
+   }
+}
+function 联机2015发送角色数据()
+{
+   if(是否允许发送联机数据 == true)
+   {
+      var _loc3_ = "2~1~0~x" + 用户ID + "," + Math.floor(this._x) + "," + Math.floor(this._y) + "," + Math.floor(Z轴坐标) + "," + 左行 + "," + 右行 + "," + 上行 + "," + 下行 + "," + 状态 + "," + this.man._currentframe + "," + hp + "," + 方向 + "," + 攻击模式;
+      联机2015新发送数据 = _loc3_ + "~" + _loc3_.length;
+      if(联机2015旧发送数据 != 联机2015新发送数据)
+      {
+         if(状态 == "被击" or 状态 == "倒地" or 状态 == "击倒" or 状态 == "血腥死" or 是否被击移动 == true)
+         {
+            _root.scock2015.sendData(联机2015新发送数据);
+            联机2015旧发送数据 = 联机2015新发送数据;
+         }
+      }
+   }
+}
+hp_min = 200;
+hp_max = 1000;
+mp_min = 100;
+mp_max = 454;
+速度_min = 40;
+速度_max = 60;
+空手攻击力_min = 10;
+空手攻击力_max = 69;
+被击硬直度_min = 1000;
+被击硬直度_max = 200;
+躲闪率_min = 10;
+躲闪率_max = 3;
+防御上限_min = 30000;
+防御上限_max = 1000000;
+最小经验值 = 100;
+最大经验值 = 4000;
+基本防御力_min = 10;
+基本防御力_max = 128;
+if(装备防御力 == undefined)
+{
+   装备防御力 = 0;
+}
+if(hp满血值装备加层 == undefined)
+{
+   hp满血值装备加层 = 0;
+}
+if(mp满血值装备加层 == undefined)
+{
+   mp满血值装备加层 = 0;
+}
+身高转换值 = _root.身高百分比转换(this.身高);
+this._xscale = 身高转换值;
+this._yscale = 身高转换值;
+myxscale = this._xscale;
+if(方向 != undefined)
+{
+   方向改变(方向);
+}
+this.swapDepths(this._y + random(10) - 5);
+根据等级初始数值(等级);
+if(_root.控制目标 == this._name)
+{
+   等级 = _root.等级;
+   是否为敌人 = false;
+   名字 = _root.角色名;
+   身高 = _root.身高;
+   _root.刷新人物装扮(this._name);
+}
+else
+{
+   非主角外观刷新();
+}
+攻击目标 = "无";
+x轴攻击范围 = 100;
+y轴攻击范围 = 10;
+x轴保持距离 = 50;
+if(攻击模式 == undefined)
+{
+   攻击模式 = "空手";
+}
+状态 = 攻击模式 + "站立";
+方向 = "右";
+格斗架势 = false;
+击中效果 = "飙血";
+Z轴坐标 = this._y;
+浮空 = false;
+倒地 = false;
+硬直中 = false;
+强制换弹夹 = false;
+if(长枪射击次数 == undefined)
+{
+   长枪射击次数 = 0;
+}
+if(手枪射击次数 == undefined)
+{
+   手枪射击次数 = 0;
+}
+if(手枪2射击次数 == undefined)
+{
+   手枪2射击次数 = 0;
+}
+手雷射击次数 = 0;
+单发枪射击速度 = 1000;
+单发枪计时_时间结束 = true;
+单发枪计时_时间结束_2 = true;
+男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
+女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
+男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
+女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
+男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
+女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+动画完毕();
+function 状态改变(新状态名)
+{
+   if(攻击模式 == undefined)
+   {
+      攻击模式 = "空手";
+   }
+   旧状态 = 状态;
+   状态 = 新状态名;
+   this.gotoAndStop(新状态名);
+   if(旧状态 != 新状态名)
+   {
+      联机2015发送角色数据();
+      state.push(新状态名);
+      if(state.length > 6)
+      {
+         state.shift();
+      }
+      allStage = [bigState,state,smallState];
+   }
+}
+function UpdateBigState(newState)
+{
+   bigState.push(newState);
+   if(bigState.length > 6)
+   {
+      bigState.shift();
+   }
+   allStage = [bigState,smallState];
+}
+function UpdateState(newState)
+{
+   状态改变(newState);
+}
+function UpdateSmallState(newState)
+{
+   smallState.push(newState);
+   if(smallState.length > 11)
+   {
+      smallState.shift();
+   }
+   allStage = [bigState,state,smallState];
+}
+function UpdateBigSmallState(newBigState, newSmallState)
+{
+   bigState.push(newBigState);
+   if(bigState.length > 6)
+   {
+      bigState.shift();
+   }
+   smallState.push(newSmallState);
+   if(smallState.length > 11)
+   {
+      smallState.shift();
+   }
+   allStage = [bigState,state,smallState];
+}
+function getBigState()
+{
+   return bigState[bigState.length - 1];
+}
+function getState()
+{
+   return state[state.length - 1];
+}
+function getSmallState()
+{
+   return smallState[smallState.length - 1];
+}
+function getAllState()
+{
+   return [bigState[bigState.length - 1],state[state.length - 1],smallState[smallState.length - 1]];
+}
+function getPastBigStates(numStates)
+{
+   return bigState[bigState.length - 1 - numStates];
+}
+function getPastStates(numStates)
+{
+   return state[state.length - 1 - numStates];
+}
+function getPastSmallStates(numStates)
+{
+   return smallState[smallState.length - 1 - numStates];
+}
+bigState = [];
+state = [];
+smallState = [];
+allStage = [bigState,state,smallState];
+useBigState = [];
+useSmallState = ["闪现中","闪现结束","六连中","六连结束","空中攻击","兵器一段中","兵器二段中","兵器三段中","兵器四段中","兵器五段中","兵器五段结束"];
+useStateWeapon = ["空手","兵器","手枪","手枪2","双枪","长枪","手雷"];
+useStateWeaponAction = ["站立","行走","攻击","跑","冲击","跳","拾取","躲闪"];
+useStateOtherType = ["技能","挂机","被击","击倒","被投","血腥死"];
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="34" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[格斗架势 = false;
+状态改变(状态);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="标记" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="42" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="20.2" height="140" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="52.2" ty="-131.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>木</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>偶</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>主</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>角</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>男</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C042FD">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 102" name="人物文字信息" centerPoint3DX="81.5" centerPoint3DY="-112.2">
+                  <matrix>
+                    <Matrix tx="1" ty="-149.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#7B3ADE">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#3982DC">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#0DF4F6">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#7EFDE7">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#A847D1">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#31DBFA">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#F17232">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#1B94E8">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#BAD381">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#525DE0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 903" name="man" centerPoint3DX="191.6" centerPoint3DY="218">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent.格斗架势 == false)
+   {
+      gotoAndStop("站立");
+      play();
+   }
+   else if(_parent.格斗架势 == true)
+   {
+      gotoAndStop("格斗架势");
+      play();
+   }
+   _parent._y = _parent.Z轴坐标;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 904" name="man" centerPoint3DX="154.05" centerPoint3DY="220.05">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 905" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 906" name="man" centerPoint3DX="261.55" centerPoint3DY="189.05">
+                  <matrix>
+                    <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.4" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent.旧状态 == _parent.攻击模式 + "站立")
+   {
+      _parent.跳横移速度 = 0;
+   }
+   else if(_parent.旧状态 == _parent.攻击模式 + "行走")
+   {
+      _parent.跳横移速度 = _parent.行走X速度;
+   }
+   else if(_parent.旧状态 == _parent.攻击模式 + "跑")
+   {
+      _parent.跳横移速度 = _parent.跑X速度;
+   }
+   if(_parent._xscale > 0)
+   {
+      _parent.移动("右",_parent.跳横移速度);
+   }
+   else
+   {
+      _parent.移动("左",_parent.跳横移速度);
+   }
+   _parent._y += 垂直速度;
+   垂直速度 += _root.重力加速度;
+   if(_parent._y >= 起始Y)
+   {
+      _parent._y = 起始Y;
+      落地 = true;
+      _parent.动画完毕();
+   }
+}
+onClipEvent(load){
+   落地 = false;
+   _parent.浮空 = true;
+   垂直速度 = _parent.起跳速度;
+   起始Y = _parent._y;
+   stop();
+   gotoAndPlay(_parent.二级动画帧名);
+}
+onClipEvent(unload){
+   _parent.浮空 = false;
+   _parent._y = _parent.Z轴坐标;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

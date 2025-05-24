@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="03.摆件/立灯/路灯组件/路灯-1-柱" itemID="66c9b2c0-00001f83" lastModified="1726411678">
+  <timeline>
+    <DOMTimeline name="路灯-1-柱">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CEC3BD"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#888380"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#615C5A"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#948F8D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1 -1578|0 -1574!0 -1574|1 -1568"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1 -1568|1 -1578"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!1 -1568[7 -1553 43 -1542!43 -1542|91 -1531"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!91 -1531[160 -1524 229 -1536"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!229 -1536|278 -1559"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!278 -1559[285 -1569 265 -1579!265 -1579[245 -1590 195 -1598!195 -1598[144 -1605 76 -1599!76 -1599[7 -1593 1 -1578"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!1 -1568|1 2832!1 2832[40 2871 91 2882"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!91 2882|91 -1531"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!91 2882[152 2896 229 2871"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!229 2871|229 -1536"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!229 2871|278 2852!278 2852|278 -1559"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="零件/带帽霜精头" itemID="65e99d6c-00000204" symbolType="graphic" lastModified="1728926532" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="带帽霜精头">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/零件/霜精头" centerPoint3DX="134.7" centerPoint3DY="177.8">
+                  <matrix>
+                    <Matrix tx="28.05" ty="72.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="106.65" y="105.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/零件/霜精帽子" selected="true" centerPoint3DX="169.05" centerPoint3DY="143">
+                  <transformationPoint>
+                    <Point x="169.05" y="143"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

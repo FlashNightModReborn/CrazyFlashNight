@@ -1,0 +1,95 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闭锁机" itemID="68078643-00000d80" lastModified="1745323587">
+  <timeline>
+    <DOMTimeline name="闭锁机">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#191919"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#1C1C1C"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#353535"/>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <SolidColor color="#202020"/>
+                        </FillStyle>
+                        <FillStyle index="5">
+                          <SolidColor color="#2F2F2F"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!415 6S6|428 6!428 6|428 87"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!428 87S6|440 101!440 101|440 274"/>
+                        <Edge fillStyle1="5" strokeStyle="1" edges="!440 274S6|450 287!450 287|450 295!450 295|414 295"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!414 295S6|35 295!35 295|19 275"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!19 275S6|19 257"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!19 257S6|10 257!10 257|10 226"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!10 226S6|0 216!0 216|0 40"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!0 40S6|28 0!28 0|415 0!415 0|415 6"/>
+                        <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!415 87S7|415 40"/>
+                        <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!415 40S7|0 40"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!415 87S7|428 87"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!415 6S7|415 40"/>
+                        <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!10 226S7|19 236!19 236|19 257"/>
+                        <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!398 275S7|19 275"/>
+                        <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!398 275S7|398 87!398 87|415 87"/>
+                        <Edge fillStyle0="3" fillStyle1="5" edges="!398 275S3|440 274"/>
+                        <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!414 295S7|398 275"/>
+                        <Edge cubics="!450 287(;450,287 440,274 440,274q450 287 440 274);"/>
+                        <Edge cubics="!440 101(;440,101 440,274 440,274q440 101 440 274);"/>
+                        <Edge cubics="!450 295(;450,295 450,287 450,287q450 295 450 287);"/>
+                        <Edge cubics="!414 295(;414,295 398,275 398,275q414 295 398 275);"/>
+                        <Edge cubics="!414 295(;414,295 450,295 450,295q414 295 450 295);"/>
+                        <Edge cubics="!398 275(398,275;398,275 440,274 440,274q398 275 440 274);"/>
+                        <Edge cubics="!398 87(398,87;398,87 415,87 415,87q398 87 415 87);"/>
+                        <Edge cubics="!415 40(415,40;415,40 415,87 415,87q415 40 415 87);"/>
+                        <Edge cubics="!398 275(398,275;398,275 398,87 398,87q398 275 398 87);"/>
+                        <Edge cubics="!415 6(415,6;415,6 428,6 428,6q415 6 428 6);"/>
+                        <Edge cubics="!415 0(;415,0 415,6 415,6q415 0 415 6);"/>
+                        <Edge cubics="!428 87(;428,87 440,101 440,101q428 87 440 101);"/>
+                        <Edge cubics="!415 87(;415,87 428,87 428,87q415 87 428 87)428,87;"/>
+                        <Edge cubics="!428 6(;428,6 428,87 428,87q428 6 428 87);"/>
+                        <Edge cubics="!415 6(;415,6 415,40 415,40q415 6 415 40);"/>
+                        <Edge cubics="!0 40(;0,40 0,216 0,216q0 40 0 216);"/>
+                        <Edge cubics="!28 0(;28,0 0,40 0,40q28 0 0 40);"/>
+                        <Edge cubics="!35 295(;35,295 19,275 19,275q35 295 19 275);"/>
+                        <Edge cubics="!19 257(19,257;19,257 10,257 10,257q19 257 10 257);"/>
+                        <Edge cubics="!19 236(19,236;19,236 10,226 10,226q19 236 10 226);"/>
+                        <Edge cubics="!10 257(;10,257 10,226 10,226q10 257 10 226);"/>
+                        <Edge cubics="!19 275(;19,275 19,257 19,257q19 275 19 257);"/>
+                        <Edge cubics="!19 257(;19,257 19,236 19,236q19 257 19 236);"/>
+                        <Edge cubics="!10 226(;10,226 0,216 0,216q10 226 0 216);"/>
+                        <Edge cubics="!415 40(;415,40 0,40 0,40q415 40 0 40);"/>
+                        <Edge cubics="!398 275(;398,275 19,275 19,275q398 275 19 275);"/>
+                        <Edge cubics="!28 0(;28,0 415,0 415,0q28 0 415 0);"/>
+                        <Edge cubics="!35 295(35,295;35,295 414,295 414,295q35 295 414 295);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

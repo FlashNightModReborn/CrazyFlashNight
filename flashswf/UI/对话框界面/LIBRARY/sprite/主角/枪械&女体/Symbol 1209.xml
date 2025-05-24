@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/枪械&amp;女体/Symbol 1209" itemID="6597607e-000008b4" linkageExportForAS="true" linkageIdentifier="女变装-裸体小腿" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 1209">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8DF616" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1208" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.05" ty="-0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

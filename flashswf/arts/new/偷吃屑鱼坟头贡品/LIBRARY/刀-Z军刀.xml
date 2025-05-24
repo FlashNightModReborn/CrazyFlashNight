@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀-Z军刀" itemID="66744f8c-000009bd" linkageExportForAS="true" linkageIdentifier="刀-Z军刀" lastModified="1718898696" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="刀-Z军刀">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8ADE35" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置3" centerPoint3DX="-3.5" centerPoint3DY="30.55">
+                  <matrix>
+                    <Matrix a="2.87484741210938" d="10.6849365234375" tx="-16" ty="18.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#56949D" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置2" centerPoint3DX="-45" centerPoint3DY="30.55">
+                  <matrix>
+                    <Matrix a="2.88566589355469" d="10.6809539794922" tx="-57.5" ty="18.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#7AF9F8" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 13" name="刀口位置1" centerPoint3DX="-2.05" centerPoint3DY="-53">
+                  <matrix>
+                    <Matrix a="1.16571044921875" d="18.1899566650391" tx="-14.55" ty="-65.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ZERO军刀" centerPoint3DX="-0.65" centerPoint3DY="165.55">
+                  <matrix>
+                    <Matrix a="0" b="3.7965087890625" c="-3.7965087890625" d="0" tx="56.85" ty="-65.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.95" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

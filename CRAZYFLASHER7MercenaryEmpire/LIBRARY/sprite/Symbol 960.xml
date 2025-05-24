@@ -1,0 +1,559 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 960" itemID="6597607e-00000821" lastModified="1740495511">
+  <timeline>
+    <DOMTimeline name="Symbol 960">
+      <layers>
+        <DOMLayer name="Script Layer" color="#692BFF" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function preloading()
+{
+	preload.onEnterFrame = function()
+	{
+		var _loc2_ = s.getBytesLoaded();
+		var _loc3_ = s.getBytesTotal();
+		this._width = _loc2_ / _loc3_ * 198;
+		if (_loc2_ == _loc3_)
+		{
+			delete this.onEnterFrame;
+		}
+	};
+}
+function loadsound(myid)
+{
+	if (mp3[myid] == undefined)
+	{
+		_root.发布消息("id为" + myid + "的音乐不存在！");
+	}
+	else
+	{
+		id = myid;
+		s.loadSound(mp3[id],false);
+		s.onSoundComplete = function()
+		{
+			var _loc1_ = 0;
+			while (mp3id[_loc1_] != id)
+			{
+				_loc1_ += 1;
+			}
+			if (_loc1_ >= mp3id.length - 1)
+			{
+				_loc1_ = -1;
+			}
+			loadsound(mp3id[_loc1_ + 1]);
+		};
+		preloading();
+		if (!paused)
+		{
+			播放按钮();
+			played = 0;
+			播放按钮();
+		}
+		played = 0;
+	}
+}
+function parseXML()
+{
+	var mp3total = myXML.firstChild.childNodes;
+	var _loc2_ = 0;
+	while (_loc2_ < mp3total.length)
+	{
+		mp3id[_loc2_] = Number(mp3total[_loc2_].childNodes[2].firstChild.nodeValue);
+		mp3name[mp3id[_loc2_]] = mp3total[_loc2_].childNodes[0].firstChild.nodeValue;
+		mp3[mp3id[_loc2_]] = "music/" + mp3total[_loc2_].childNodes[1].firstChild.nodeValue;
+		_loc2_ += 1;
+	}
+	mp3id.sort(function (a, b)
+	{
+	if (a == b)
+	{
+	return 0;
+	}
+	if (a > b)
+	{
+	return 1;
+	}
+	return -1;
+	});
+	列表.my_txt.html = true;
+	列表.my_txt.wordWarp = true;
+	列表.my_txt.multiline = true;
+	列表.my_txt.htmlText = "";
+	var i = 0;
+	while (i < mp3id.length)
+	{
+		列表.my_txt.htmlText += mp3id[i] + ". " + mp3name[mp3id[i]] + "<BR>";
+		i += 1;
+	}
+	play();
+}
+stop();
+
+//暂时屏蔽点歌器功能
+/*
+音乐列表 = new Array();
+var myXML = new XML();
+var mp3name = new Array();
+var mp3id = new Array();
+var mp3 = new Array();
+var s = new Sound();
+var url = "flashswf/musics/";
+var XMLurl = "music/list.xml";
+var id = 0;
+var played = 0;
+var paused = true;
+myXML.ignoreWhite = true;
+System.useCodepage = false;
+myXML.onLoad = function(success)
+{
+	if (success)
+	{
+		parseXML();
+	}
+};
+myXML.load(XMLurl);
+*/
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 音乐跳转(myid)
+{
+	loadsound(myid);
+}
+function 播放按钮()
+{
+	if (paused)
+	{
+		s.start(played / 1000,1);
+		trackname = id + ". " + mp3name[id];
+		mix.gotoAndPlay(1);
+		paused = false;
+		_root.是否默认播放音乐 = true;
+	}
+	else
+	{
+		played = s.position;
+		s.stop();
+		mix.gotoAndStop(1);
+		trackname = "PAUSED";
+		paused = true;
+		_root.是否默认播放音乐 = false;
+	}
+}
+btn2.onPress = function()
+{
+	_root.音乐播放界面.列表._visible = Math.abs(_root.音乐播放界面.列表._visible - 1);
+};
+btn3.onPress = function()
+{
+	播放按钮();
+};
+loadsound(mp3[id]);
+var time1 = time2 = time3 = time4 = 0;
+onEnterFrame = function ()
+{
+	time1 = int(s.position / 60000) >= 10 ? int(s.position / 60000) : "0" + int(s.position / 60000);
+	time2 = int(s.position / 1000 % 60) >= 10 ? int(s.position / 1000 % 60) : "0" + int(s.position / 1000 % 60);
+	time3 = int(s.duration / 60000) >= 10 ? int(s.duration / 60000) : "0" + int(s.duration / 60000);
+	time4 = int(s.duration / 1000 % 60) >= 10 ? int(s.duration / 1000 % 60) : "0" + int(s.duration / 1000 % 60);
+	timeline = time1 + ":" + time2 + " - " + time3 + ":" + time4;
+};
+stop();
+s.stop();
+trackname = "STOP";
+mix.gotoAndStop(1);
+played = 0;
+s = new Sound();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#90F50F" locked="true" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 959" symbolType="button">
+                  <matrix>
+                    <Matrix a="11.7057495117188" d="7.71295166015625" tx="-14.3" ty="126.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   var yaxis = _root.鼠标._y - (_root.音乐播放界面._y + _root.音乐播放界面.列表._y + _root.音乐播放界面.列表.my_txt._y);
+   var lengthPerSong = _root.音乐播放界面.列表.my_txt.textHeight / _root.音乐播放界面.mp3id.length;
+   var select = _root.音乐播放界面.列表.my_txt.scroll + int(yaxis / lengthPerSong) - 1;
+   _root.音乐播放界面.音乐跳转(_root.音乐播放界面.mp3id[select]);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#CA7A8E">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 958" name="mix" centerPoint3DX="-36.65" centerPoint3DY="40.35">
+                  <matrix>
+                    <Matrix a="0.255020141601563" d="0.255020141601563" tx="-70.85" ty="12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#77BD9C">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 952" name="列表" centerPoint3DY="119.3">
+                  <matrix>
+                    <Matrix tx="-104.5" ty="51.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#77FA84">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 941" name="btn3" symbolType="button">
+                  <matrix>
+                    <Matrix tx="69.95" ty="13.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#A0E777">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 941" name="btn2" symbolType="button">
+                  <matrix>
+                    <Matrix tx="48.95" ty="13.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#F2A899">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 939" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="59.45" ty="13.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="153" blueOffset="153" greenOffset="153"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#FBDE2B">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#A34996">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#A563E5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#55ED5F">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="69" height="14.25" isSelectable="false" variableName="timeline" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="-58.5" ty="5.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>00:00 - 00:00</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#D91ACE">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.101960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39" alpha="0.501960784313725"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor alpha="0.501960784313725"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!267 78|267 444!267 444|-1561 444"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!-1561 444|-1561 78!-1561 78|267 78"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#F49331">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="194.25" height="14.25" isSelectable="false" variableName="trackname">
+                  <matrix>
+                    <Matrix tx="-96.5" ty="-17.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>1.Music name</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#B58E3D">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 930" name="preload" centerPoint3DX="0.5" centerPoint3DY="-10.85">
+                  <matrix>
+                    <Matrix tx="-98.5" ty="-18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#C1B562">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.101960784313725"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39" alpha="0.501960784313725"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor alpha="0.501960784313725"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2005 -392|2005 -26!2005 -26|-1970 -26"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!-1970 -26|-1970 -392!-1970 -392|2005 -392"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#B0A7A8">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 928" symbolType="button">
+                  <matrix>
+                    <Matrix tx="-92.8" ty="-33.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#DACAF5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 538" symbolType="button">
+                  <matrix>
+                    <Matrix tx="93.75" ty="-33.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#FC8AFD">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="142.25" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-79.25" ty="-40.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>音乐播放器</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#E75EB0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 926" symbolType="button">
+                  <matrix>
+                    <Matrix tx="-104.3" ty="-45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#A689AF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 292">
+                  <matrix>
+                    <Matrix tx="-104.3" ty="-45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

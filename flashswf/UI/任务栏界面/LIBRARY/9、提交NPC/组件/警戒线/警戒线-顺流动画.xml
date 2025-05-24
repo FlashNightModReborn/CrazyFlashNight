@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="9、提交NPC/组件/警戒线/警戒线-顺流动画" itemID="67cccb1f-00000297" lastModified="1741465805" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="警戒线-顺流动画">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/组件/警戒线/警戒线-图形" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="96.6" y="2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="9、提交NPC/组件/警戒线/警戒线-图形" symbolType="graphic" centerPoint3DX="134.05" centerPoint3DY="2.5" loop="loop">
+                  <matrix>
+                    <Matrix tx="29.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="96.6" y="2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

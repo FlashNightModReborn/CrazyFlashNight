@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/发光条纹1" itemID="658bcf58-00000251" symbolType="graphic" lastModified="1703661400">
+  <timeline>
+    <DOMTimeline name="发光条纹1">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0506134033203125" d="0.0293121337890625" tx="42.7" ty="25.5"/>
+                        </matrix>
+                        <GradientEntry color="#65BBD2" alpha="0.72156862745098" ratio="0.0196078431372549"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.458823529411765"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1334 931[1105 1090 781 1090!781 1090[457 1090 229 931!229 931[0 771 0 545!0 545[0 318 229 159!229 159[457 0 781 0!781 0[1105 0 1334 159!1334 159[1562 318 1562 545!1562 545[1562 771 1334 931"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#ACE5FF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#65BBD2"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#326A8B"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!975 466|1065 466"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!1065 466|1122 466!1122 466|1122 526!1122 526|1086 526"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1086 526|1007 526"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1007 526|725 526"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!725 526|627 526"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!627 526|570 526!570 526|570 466!570 466|635 466"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!635 466|730 466"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!730 466|975 466"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!975 466[1008 489 1008 519!1008 519|1007 526"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!1065 466|1068 468!1068 468[1090 487 1090 508!1090 508|1086 526"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!730 466|729 468!729 468[720 489 720 515!720 515|725 526"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!635 466[624 494 624 508!624 508|627 526"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

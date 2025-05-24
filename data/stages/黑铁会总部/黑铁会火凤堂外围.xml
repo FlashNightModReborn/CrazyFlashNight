@@ -1,0 +1,288 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>10</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>高耐力橡胶</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_2_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>By Peace Or By Power</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>A兵团突击兵梅利</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>开打了，你怎么才来？</Text>
+                <Type>兵种241</Type>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>A兵团突击兵汉斯</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>再来晚点儿，我们都要打完了！</Text>
+                <Type>兵种240</Type>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这就来，兄弟们挺住！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种240</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种241</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk16_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>8</Quantity>
+                        <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种242</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种243</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk16_3_BG.swf</Background>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>A兵团重装兵拉德</Name>
+                <Title>战斗狂人</Title>
+                <Char>主角模板</Char>
+                <Text>兄弟，我们拖着这些家伙，你尽管冲进去！</Text>
+                <Type>兵种244</Type>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>多谢你们了，我这就去！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>A兵团重装兵明王</Name>
+                <Title>战斗狂人</Title>
+                <Char>主角模板</Char>
+                <Text>别废话了，快点儿行动！</Text>
+                <Type>兵种245</Type>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种244</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种245</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种270</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>33</Level>
+                        <Parameters>称号:坛主</Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk16_2_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk6_5_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种65</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种270</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>33</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>火凤堂徽章</名字>
+                                <概率>25</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <称号>坛主</称号>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种245</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

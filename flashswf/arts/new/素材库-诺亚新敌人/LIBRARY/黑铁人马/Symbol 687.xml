@@ -1,0 +1,2748 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁人马/Symbol 687" itemID="6577efbc-00000475" lastModified="1721814918" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="Symbol 687">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#A66CA8">
+          <frames>
+            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#8C9B62">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.死亡检测();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#E3D96D">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 45" centerPoint3DX="-42.2" centerPoint3DY="38.95">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-60.2" ty="20.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.控制目标 == _parent._parent._name)
+   {
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2410.5 1142.5[#97A.2E #434.18 2432 1063!2432 1063[2445 1079 2445 1090!2445 1090[2445 #448.C7 2420.5 1210.5!2420.5 1210.5[#976.52 #4C7.A6 2424 1238!2424 1238[2435 1335 2435 1396!2435 1396[2435 1415 2433 1431!2433 1431|2422 1435!2422 1435
+[#970.25 #58A.68 2402.5 1304.5!2402.5 1304.5[2393 1362 2393 1387!2393 1387|2381 1393!2381 1393[2368 1380 2368 1354!2368 1354[2368 #52F.24 2393 1218!2393 1218[2388 #491.7D 2388 1150!2388 1150[2387 1138 2388 1127!2388 1127[2390 1108 2401
+ 1100!2401 1100[#965.BF #45D.67 2410.5 1142.5!2543 1056[2546 1069 2530 1075!2530 1075[2519 1070 2517 1065!2517 1065|2486 1066!2486 1066[2481 1101 2481 1173!2481 1173[2481 1278 2499 1353!2499 1353[2517 1428 2517 1460!2517 1460[2517 #5B6.BD
+ 2507.5 1527!2507.5 1527[#9E4.82 #611.6C 2554 1605!2554 1605[2570 1645 2600 1718!2600 1718[#A33.2B #6C9.E 2621 1757.5!2621 1757.5[2631 #6AB.7F 2631 1652!2631 1652[2631 1577 2608 1505!2608 1505[2585 1432 2585 1430!2585 1430[2585 1383 2621
+ 1474!2621 1474[2656 1564 2656 1649!2656 1649[#A5B.78 #6D3.7B 2643 1805.5!2643 1805.5[#A54.F8 #712.44 2647 1815!2647 1815|2604 1815!2604 1815[#A04.6B #6B6.37 2502 1563!2502 1563[#9C5.0E #621.81 2500 1576.5!2500 1576.5[#9C1.0F #64C.1D
+ 2491.5 1632.5!2491.5 1632.5[#9B8.66 #674.B1 2485 1675!2485 1675[#9AC.14 #6C4.BB 2469 1780.5!2469 1780.5[#9BC.9 #6EF.5A 2505 1802!2505 1802[#9CB.92 #70F.77 2510 1815!2510 1815|2468 1815!2468 1815[#9A2.3C #713.81 2465 1808.5!2465 1808.5
+[#9A0.87 #713.C8 2464 1815!2464 1815|2431 1815!2431 1815[#987.7E #6E2.D5 2453 1696!2453 1696[#998.CC #68D.52 2460 1660!2460 1660[2457 1658 2456 1657!2456 1657[2455 1655 2455 1647!2455 1647[2455 1636 2466 1606!2466 1606[2476 1576 2476
+ 1543!2476 1543[2476 1451 2456 1361!2456 1361[2435 1289 2435 1284!2435 1284|2436 1272!2436 1272[#993.AD #4F1.D3 2464.5 1290.5!2464.5 1290.5[2455 #4C9.F6 2455 1171!2455 1171[2452 1125 2460 1087!2460 1087[2476 1010 2530 1038!2530 1038[2543
+ 1051 2543 1056"/>
+                    <Edge cubics="!2432 1063(;2442,1075 2445,1086 2445,1090q2432 1063Q2445 1079q2445 1090);"/>
+                    <Edge cubics="!2445 1090(;2445,1100 2417,1218 2403,1305q2445 1090 2419 1218 2403 1305);"/>
+                    <Edge cubics="!2403 1305(;2397,1340 2393,1369 2393,1387q2403 1305 2393 1387);"/>
+                    <Edge cubics="!2393 1387(;2391,1387 2387,1391 2381,1393q2393 1387 2381 1393);"/>
+                    <Edge cubics="!2381 1393(;2370,1382 2368,1357 2368,1354q2381 1393Q2368 1380q2368 1354);"/>
+                    <Edge cubics="!2368 1354(;2368,1327 2390,1226 2411,1143q2368 1354Q2368 1325q2397 1200 2411 1143);"/>
+                    <Edge cubics="!2411 1143(;2419,1106 2429,1070 2432,1063q2411 1143 2432 1063);"/>
+                    <Edge cubics="!2401 1100(;2416,1157 2435,1313 2435,1396q2401 1100Q2413 1144q2424 1238Q2435 1335q2435 1396);"/>
+                    <Edge cubics="!2435 1396(;2435,1409 2435,1415 2433,1431q2435 1396Q2435 1415q2433 1431);"/>
+                    <Edge cubics="!2433 1431(;2433,1431 2422,1435 2422,1435q2433 1431 2422 1435);"/>
+                    <Edge cubics="!2422 1435(;2416,1418 2401,1305 2393,1218q2422 1435 2402 1299 2393 1218);"/>
+                    <Edge cubics="!2393 1218(;2390,1190 2388,1162 2388,1150q2393 1218 2388 1150);"/>
+                    <Edge cubics="!2388 1150(;2388,1144 2383,1112 2401,1100q2388 1150Q2387 1138q2388 1127Q2390 1108q2401 1100);"/>
+                    <Edge cubics="!2502 1543(;2502,1551 2497,1661 2471,1661q2502 1543Q2497 1661q2471 1661);"/>
+                    <Edge cubics="!2471 1661(;2458,1661 2460,1660 2460,1660q2471 1661Q2460 1660q2460 1660);"/>
+                    <Edge cubics="!2460 1660(;2457,1655 2455,1660 2455,1647q2460 1660Q2457 1658q2456 1657Q2455 1655q2455 1647);"/>
+                    <Edge cubics="!2455 1647(;2455,1618 2476,1601 2476,1543q2455 1647Q2455 1636q2466 1606Q2476 1576q2476 1543);"/>
+                    <Edge cubics="!2476 1543(;2476,1394 2435,1293 2435,1284q2476 1543Q2476 1451q2456 1361Q2435 1289q2435 1284);"/>
+                    <Edge cubics="!2435 1284(;2435,1271 2436,1272 2436,1272q2435 1284Q2436 1272q2436 1272);"/>
+                    <Edge cubics="!2436 1272(;2488,1251 2502,1495 2502,1543q2436 1272Q2469 1259q2489 1382Q2502 1469q2502 1543);"/>
+                    <Edge cubics="!2656 1649(;2656,1655 2652,1740 2643,1806q2656 1649 2643 1806);"/>
+                    <Edge cubics="!2643 1806(;2634,1852 2624,1888 2610,1888q2643 1806Q2631 1888q2610 1888);"/>
+                    <Edge cubics="!2610 1888(;2597,1888 2600,1886 2600,1886q2610 1888Q2602 1888q2600 1887Q2600 1886q2600 1886);"/>
+                    <Edge cubics="!2600 1886(;2596,1882 2595,1886 2595,1874q2600 1886Q2597 1884q2596 1883Q2595 1882q2595 1874);"/>
+                    <Edge cubics="!2595 1874(;2595,1818 2631,1781 2631,1652q2595 1874Q2595 1855q2613 1790Q2631 1726q2631 1652);"/>
+                    <Edge cubics="!2631 1652(;2631,1527 2585,1458 2585,1430q2631 1652Q2631 1577q2608 1505Q2585 1432q2585 1430);"/>
+                    <Edge cubics="!2585 1430(;2585,1380 2656,1523 2656,1649q2585 1430Q2585 1383q2621 1474Q2656 1564q2656 1649);"/>
+                    <Edge cubics="!2530 1038(;2541,1049 2543,1051 2543,1056q2530 1038Q2543 1051q2543 1056);"/>
+                    <Edge cubics="!2543 1056(;2543,1056 2546,1069 2530,1075q2543 1056Q2546 1069q2530 1075);"/>
+                    <Edge cubics="!2530 1075(;2522,1071 2518,1067 2517,1065q2530 1075Q2519 1070q2517 1065);"/>
+                    <Edge cubics="!2517 1065(;2517,1065 2486,1066 2486,1066q2517 1065 2486 1066);"/>
+                    <Edge cubics="!2486 1066(;2481,1101 2481,1160 2481,1173q2486 1066Q2481 1101q2481 1173);"/>
+                    <Edge cubics="!2481 1173(;2481,1358 2517,1371 2517,1460q2481 1173Q2481 1278q2499 1353Q2517 1428q2517 1460);"/>
+                    <Edge cubics="!2517 1460(;2517,1465 2513,1491 2508,1527q2517 1460 2508 1527);"/>
+                    <Edge cubics="!2508 1527(;2506,1543 2503,1559 2500,1577q2508 1527 2500 1577);"/>
+                    <Edge cubics="!2500 1577(;2497,1595 2494,1614 2492,1633q2500 1577 2492 1633);"/>
+                    <Edge cubics="!2492 1633(;2484,1681 2476,1734 2469,1781q2492 1633 2485 1675 2469 1781);"/>
+                    <Edge cubics="!2469 1781(;2458,1857 2449,1925 2445,1967q2469 1781 2445 1967);"/>
+                    <Edge cubics="!2445 1967(;2441,1967 2442,1971 2430,1971q2445 1967Q2442 1971q2430 1971);"/>
+                    <Edge cubics="!2430 1971(;2417,1971 2415,1968 2415,1968q2430 1971Q2415 1968q2415 1968);"/>
+                    <Edge cubics="!2415 1968(;2415,1968 2415,1969 2415,1956q2415 1968Q2415 1969q2415 1956);"/>
+                    <Edge cubics="!2415 1956(;2415,1917 2421,1869 2431,1815q2415 1956Q2415 1910q2431 1815);"/>
+                    <Edge cubics="!2431 1815(;2451,1688 2491,1536 2491,1460q2431 1815 2453 1696Q2491 1509q2491 1460);"/>
+                    <Edge cubics="!2491 1460(;2491,1415 2476,1364 2465,1291q2491 1460 2473 1341 2465 1291);"/>
+                    <Edge cubics="!2465 1291(;2460,1260 2455,1219 2455,1171q2465 1291Q2455 1226q2455 1171);"/>
+                    <Edge cubics="!2455 1171(;2455,1167 2443,994 2530,1038q2455 1171Q2452 1125q2460 1087Q2476 1010q2530 1038);"/>
+                    <Edge cubics="!2682 1946(;2682,1946 2682,1970 2682,1970p2682 1946 2682 1970);"/>
+                    <Edge cubics="!2682 1970(;2680,1970 2682,1976 2670,1976q2682 1970Q2682 1976q2670 1976);"/>
+                    <Edge cubics="!2670 1976(;2668,1976 2486,1523 2486,1523q2670 1976Q2668 1976q2486 1523);"/>
+                    <Edge cubics="!2486 1523(;2486,1511 2487,1510 2487,1510q2486 1523 2487 1510);"/>
+                    <Edge cubics="!2487 1510(;2549,1548 2566,1656 2600,1718q2487 1510Q2524 1533q2554 1605Q2570 1645q2600 1718);"/>
+                    <Edge cubics="!2600 1718(;2638,1786 2672,1872 2682,1946q2600 1718Q2668 1839q2682 1946);"/>
+                    <Edge cubics="!2570 1953(;2570,1966 2567,1956 2566,1963q2570 1953Q2570 1960q2568 1960Q2566 1960q2566 1963);"/>
+                    <Edge cubics="!2566 1963(;2566,1963 2554,1965 2554,1965q2566 1963 2554 1965);"/>
+                    <Edge cubics="!2554 1965(;2527,1938 2460,1805 2460,1793q2554 1965Q2535 1946q2497 1873Q2460 1804q2460 1793);"/>
+                    <Edge cubics="!2460 1793(;2460,1781 2460,1790 2463,1782q2460 1793Q2460 1786q2460 1786Q2462 1785q2463 1782);"/>
+                    <Edge cubics="!2463 1782(;2506,1766 2514,1826 2518,1856q2463 1782Q2491 1772q2505 1802Q2513 1819q2518 1856);"/>
+                    <Edge cubics="!2518 1856(;2531,1878 2570,1950 2570,1953q2518 1856Q2528 1874q2549 1912Q2570 1951q2570 1953);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 13" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 298" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249649047851563" d="0.249649047851563" tx="94.3" ty="-62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 301" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249649047851563" d="0.249649047851563" tx="96.9" ty="-62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 305" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249649047851563" d="0.249649047851563" tx="87" ty="-62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 309" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249649047851563" d="0.249649047851563" tx="82.95" ty="-62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 312" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249649047851563" d="0.249649047851563" tx="87.05" ty="-62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 315" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249649047851563" d="0.249649047851563" tx="95.35" ty="-62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 318" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.631637573242188" d="0.631256103515625" tx="29.15" ty="80"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 319" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6314697265625" d="0.627944946289063" tx="29.15" ty="79.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#884AD7">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386749267578125" b="-0.23748779296875" c="-0.23748779296875" d="0.386749267578125" tx="85.55" ty="-20.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.35" y="42.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.62664794921875" b="-0.374496459960938" c="-0.374496459960938" d="0.62664794921875" tx="106.3" ty="-69.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="9.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6123046875" b="-0.391021728515625" c="-0.391021728515625" d="0.6123046875" tx="98" ty="-37.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6123046875" b="-0.391021728515625" c="-0.391021728515625" d="0.6123046875" tx="83.85" ty="-9.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="2.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飘巾" centerPoint3DX="136.5" centerPoint3DY="-5.05">
+                  <matrix>
+                    <Matrix a="-0.479629516601563" b="-0.553909301757813" c="-0.553909301757813" d="0.479629516601563" tx="108.5" ty="-99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/身体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479629516601563" b="-0.553909301757813" c="-0.553909301757813" d="0.479629516601563" tx="107.5" ty="-70.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.6" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/腰子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479629516601563" b="-0.553909301757813" c="-0.553909301757813" d="0.479629516601563" tx="79.85" ty="-45.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.95" y="27.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.383834838867188" b="-0.443313598632813" c="-0.443313598632813" d="0.383834838867188" tx="135.25" ty="-96.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.7" y="60.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪/长柄武器-重型黑铁剑枪" centerPoint3DX="80.5" centerPoint3DY="-24.45">
+                  <matrix>
+                    <Matrix a="0.19720458984375" b="0.0499267578125" c="0.0499267578125" d="-0.19720458984375" tx="-56.15" ty="-59.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="661.4" y="2.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.728530883789063" b="0.04205322265625" c="0.04205322265625" d="0.728530883789063" tx="82.05" ty="-105.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.05" y="17.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.7176513671875" b="0.1153564453125" c="0.1153564453125" d="0.7176513671875" tx="75.05" ty="-67.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.4" y="7.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.457748413085938" b="0.55389404296875" c="0.55389404296875" d="0.457748413085938" tx="80.35" ty="-40.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.45" y="11.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.434722900390625" b="0.130355834960938" c="0.130355834960938" d="0.434722900390625" tx="144.15" ty="-22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.725570678710938" b="-0.0803985595703125" c="-0.0803985595703125" d="0.725570678710938" tx="134.4" ty="-69.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="9.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.699462890625" b="0.196395874023438" c="0.196395874023438" d="0.699462890625" tx="140.05" ty="-42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.6" y="7.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.699462890625" b="0.196395874023438" c="0.196395874023438" d="0.699462890625" tx="151.65" ty="-13.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="2.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飘巾" centerPoint3DX="142.05" centerPoint3DY="9.95">
+                  <matrix>
+                    <Matrix a="-0.2557373046875" b="-0.686630249023438" c="-0.686630249023438" d="0.2557373046875" tx="148.5" ty="-89.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/身体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2557373046875" b="-0.686630249023438" c="-0.686630249023438" d="0.2557373046875" tx="137.35" ty="-62.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="63.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/腰子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2557373046875" b="-0.686630249023438" c="-0.686630249023438" d="0.2557373046875" tx="102.55" ty="-48.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.05" y="27.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.20465087890625" b="-0.549530029296875" c="-0.549530029296875" d="0.20465087890625" tx="172.4" ty="-76.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="60.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪/长柄武器-重型黑铁剑枪" centerPoint3DX="95.35" centerPoint3DY="-27.7">
+                  <matrix>
+                    <Matrix a="0.167312622070313" b="0.115707397460938" c="0.115707397460938" d="-0.167312622070313" tx="-19.9" ty="-108.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="661.45" y="2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.697265625" b="-0.215255737304688" c="-0.215255737304688" d="0.697265625" tx="125.55" ty="-103.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.1" y="17.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.712692260742188" b="-0.142791748046875" c="-0.142791748046875" d="0.712692260742188" tx="105.9" ty="-70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.35" y="8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.622482299804688" b="0.358932495117188" c="0.358932495117188" d="0.622482299804688" tx="101.1" ty="-42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.35" y="11.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.446563720703125" b="-0.080963134765625" c="-0.080963134765625" d="0.446563720703125" tx="138.7" ty="18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="42.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.610198974609375" b="-0.400711059570313" c="-0.400711059570313" d="0.610198974609375" tx="151.45" ty="-28.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.3" y="9.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.71246337890625" b="-0.142181396484375" c="-0.142181396484375" d="0.71246337890625" tx="144.25" ty="-1.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.71246337890625" b="-0.142181396484375" c="-0.142181396484375" d="0.71246337890625" tx="141.3" ty="29.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="2.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飘巾" centerPoint3DX="121.9" centerPoint3DY="46.35">
+                  <matrix>
+                    <Matrix a="0.083465576171875" b="-0.727935791015625" c="-0.727935791015625" d="-0.083465576171875" tx="172.8" ty="-39"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/身体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.083465576171875" b="-0.727935791015625" c="-0.727935791015625" d="-0.083465576171875" tx="150.65" ty="-20.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="63.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/腰子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.083465576171875" b="-0.727935791015625" c="-0.727935791015625" d="-0.083465576171875" tx="113.25" ty="-23.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.1" y="27.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.06683349609375" b="-0.582565307617188" c="-0.582565307617188" d="-0.06683349609375" tx="188.6" ty="-17.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="61.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪/长柄武器-重型黑铁剑枪" centerPoint3DX="168.95" centerPoint3DY="14.05">
+                  <matrix>
+                    <Matrix a="0.182632446289063" b="0.08953857421875" c="0.08953857421875" d="-0.182632446289063" tx="42.95" ty="-49.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="661.4" y="2.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.701889038085938" b="0.199600219726563" c="0.199600219726563" d="0.701904296875" tx="147.8" ty="-71.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.15" y="17.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6885986328125" b="0.23272705078125" c="0.23272705078125" d="0.6885986328125" tx="151.1" ty="-28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.4" y="7.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.359588623046875" b="0.622116088867188" c="0.622116088867188" d="0.359588623046875" tx="160.9" ty="-2.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="11.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.433990478515625" b="-0.13275146484375" c="-0.13275146484375" d="0.433990478515625" tx="165.5" ty="71.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="42.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.559005737304688" b="-0.469482421875" c="-0.469482421875" d="0.559005737304688" tx="183.6" ty="26.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="9.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.690887451171875" b="-0.2247314453125" c="-0.2247314453125" d="0.690887451171875" tx="173.35" ty="52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.690887451171875" b="-0.2247314453125" c="-0.2247314453125" d="0.690887451171875" tx="166.8" ty="82.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.3" y="2.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飘巾" centerPoint3DX="145" centerPoint3DY="97.3">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="206.1" ty="18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/身体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="181.9" ty="34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/腰子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="145.1" ty="27"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.1" y="27.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.134674072265625" b="-0.570724487304688" c="-0.570724487304688" d="-0.134674072265625" tx="219.25" ty="41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.75" y="61"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪/长柄武器-重型黑铁剑枪" centerPoint3DX="197.05" centerPoint3DY="69.35">
+                  <matrix>
+                    <Matrix a="0.191604614257813" b="0.0682525634765625" c="0.0682525634765625" d="-0.191604614257813" tx="64.7" ty="20.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="661.45" y="2.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.665908813476563" b="0.298446655273438" c="0.298446655273438" d="0.665924072265625" tx="181.4" ty="-17.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.2" y="17.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.711135864257813" b="0.150390625" c="0.150390625" d="0.711135864257813" tx="193.9" ty="24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.4" y="8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.71112060546875" b="0.102981567382813" c="0.102981567382813" d="0.71112060546875" tx="204.5" ty="56.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="11.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.015899658203125" b="-0.45355224609375" c="-0.45355224609375" d="-0.015899658203125" tx="170.8" ty="129"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="42.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249374389648438" b="-0.686080932617188" c="-0.686080932617188" d="0.249374389648438" tx="218.95" ty="115"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="9.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0382537841796875" b="-0.725509643554688" c="-0.725509643554688" d="-0.0382537841796875" tx="191.45" ty="131.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0382537841796875" b="-0.725509643554688" c="-0.725509643554688" d="-0.0382537841796875" tx="160" ty="133.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="2.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飘巾" centerPoint3DX="182.1" centerPoint3DY="180">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="243.2" ty="101.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/身体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="219" ty="117.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/腰子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="182.2" ty="109.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.1" y="27.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.134674072265625" b="-0.570724487304688" c="-0.570724487304688" d="-0.134674072265625" tx="256.35" ty="124.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.75" y="61"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪/长柄武器-重型黑铁剑枪" centerPoint3DX="188.5" centerPoint3DY="120.55">
+                  <matrix>
+                    <Matrix a="0.203201293945313" b="0.0085906982421875" c="0.0085906982421875" d="-0.203201293945313" tx="47.35" ty="113.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1554.15" y="11.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.508651733398438" b="-0.523208618164063" c="-0.523223876953125" d="0.5086669921875" tx="231.7" ty="75.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.2" y="17.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.540664672851563" b="0.485809326171875" c="0.485809326171875" d="0.540664672851563" tx="185.4" ty="87.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.45" y="8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.564361572265625" b="0.444732666015625" c="0.444732666015625" d="0.564361572265625" tx="210.4" ty="109.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="11.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飞镖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.015899658203125" b="-0.45355224609375" c="-0.45355224609375" d="-0.015899658203125" tx="168.85" ty="117.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="42.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0320892333984375" b="-0.729278564453125" c="-0.729278564453125" d="0.0320892333984375" tx="215.1" ty="126.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.254119873046875" b="-0.680618286132813" c="-0.680618286132813" d="-0.254119873046875" tx="183.9" ty="133.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0382537841796875" b="-0.725509643554688" c="-0.725509643554688" d="-0.0382537841796875" tx="158.05" ty="121.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="2.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/飘巾" centerPoint3DX="180.3" centerPoint3DY="189.8">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="241.4" ty="110.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/身体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="217.2" ty="127.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/腰子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.168228149414063" b="-0.713134765625" c="-0.713134765625" d="-0.168228149414063" tx="180.4" ty="119.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.1" y="27.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.134674072265625" b="-0.570724487304688" c="-0.570724487304688" d="-0.134674072265625" tx="254.55" ty="134.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.75" y="61"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪/长柄武器-重型黑铁剑枪" centerPoint3DX="188.5" centerPoint3DY="120.55">
+                  <matrix>
+                    <Matrix a="0.203201293945313" b="0.0085906982421875" c="0.0085906982421875" d="-0.203201293945313" tx="47.35" ty="113.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1554.15" y="11.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.293319702148438" b="-0.66815185546875" c="-0.668182373046875" d="0.293319702148438" tx="230.5" ty="90.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.15" y="17.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.540664672851563" b="0.485809326171875" c="0.485809326171875" d="0.540664672851563" tx="185.45" ty="82.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.45" y="8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.564361572265625" b="0.444732666015625" c="0.444732666015625" d="0.564361572265625" tx="210.4" ty="109.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="11.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 15" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="7" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#8.FC, #8.B8" startPointB="#7.97, #8.72" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#9.09, #8.AD" anchorPointA="#9.19, #8.A5" controlPointB="#7.A3, #8.65" anchorPointB="#7.B2, #8.5A"/>
+                    <MorphCurves controlPointA="#9.1C, #8.A4" anchorPointA="#9.1F, #8.A3" controlPointB="#7.B5, #8.58" anchorPointB="#7.B9, #8.56"/>
+                    <MorphCurves controlPointA="#9.57, #8.8B" anchorPointA="#9.97, #8.83" controlPointB="#7.FA, #8.32" anchorPointB="#8.46, #8.26"/>
+                    <MorphCurves controlPointA="#9.9A, #8.83" anchorPointA="#9.9C, #8.83" controlPointB="#8.49, #8.25" anchorPointB="#8.4C, #8.25"/>
+                    <MorphCurves controlPointA="#9.D1, #8.7B" anchorPointA="#A.06, #8.78" controlPointB="#8.8C, #8.19" anchorPointB="#8.CA, #8.15"/>
+                    <MorphCurves controlPointA="#A.08, #8.78" anchorPointA="#A.0A, #8.78" controlPointB="#8.CC, #8.15" anchorPointB="#8.CE, #8.15"/>
+                    <MorphCurves controlPointA="#A.2F, #8.74" anchorPointA="#A.54, #8.7" controlPointB="#8.FA, #8.0F" anchorPointB="#9.25, #8.09" isLine="true"/>
+                    <MorphCurves controlPointA="#A.55, #8.7" anchorPointA="#A.56, #8.7" controlPointB="#9.27, #8.09" anchorPointB="#9.29, #8.09" isLine="true"/>
+                    <MorphCurves controlPointA="#A.6E, #8.6A" anchorPointA="#A.85, #8.64" controlPointB="#9.45, #8.01" anchorPointB="#9.6, #7.F8" isLine="true"/>
+                    <MorphCurves controlPointA="#A.84, #8.64" anchorPointA="#A.83, #8.64" controlPointB="#9.61, #7.F8" anchorPointB="#9.62, #7.F8" isLine="true"/>
+                    <MorphCurves controlPointA="#A.56, #8.5E" anchorPointA="#A.29, #8.58" controlPointB="#9.2D, #7.F" anchorPointB="#8.F8, #7.E7" isLine="true"/>
+                    <MorphCurves controlPointA="#A.29, #8.58" anchorPointA="#A.29, #8.58" controlPointB="#8.F8, #7.E7" anchorPointB="#8.F7, #7.E7"/>
+                    <MorphCurves controlPointA="#9.F4, #8.4F" anchorPointA="#9.F3, #8.3D" controlPointB="#8.C2, #7.DC" anchorPointB="#8.B9, #7.C7"/>
+                    <MorphCurves controlPointA="#9.F3, #8.3A" anchorPointA="#9.F4, #8.38" controlPointB="#8.B8, #7.C4" anchorPointB="#8.B8, 7.75"/>
+                    <MorphCurves controlPointA="#9.FB, #8.26" anchorPointA="#A.27, #8.19" controlPointB="#8.BA, #7.A5" anchorPointB="#8.E5, #7.92"/>
+                    <MorphCurves controlPointA="#A.2E, #8.17" anchorPointA="#A.34, #8.15" controlPointB="#8.EC, #7.8F" anchorPointB="#8.F4, #7.8C"/>
+                    <MorphCurves controlPointA="#A.5F, #8.07" anchorPointA="#A.77, #8.02" controlPointB="#9.24, #7.79" anchorPointB="#9.42, #7.6F"/>
+                    <MorphCurves controlPointA="#A.7D, 8" anchorPointA="#A.85, #7.FE" controlPointB="#9.4B, #7.6C" anchorPointB="#9.52, #7.6A"/>
+                    <MorphCurves controlPointA="#A.9D, #7.F8" anchorPointA="#A.C4, #7.F3" controlPointB="#9.6B, #7.61" anchorPointB="#9.9B, #7.59"/>
+                    <MorphCurves controlPointA="#A.CC, #7.F2" anchorPointA="#A.D3, #7.F1" controlPointB="#9.A3, #7.57" anchorPointB="#9.AC, #7.55"/>
+                    <MorphCurves controlPointA="11, #7.EA" anchorPointA="#B.2D, #7.E3" controlPointB="#9.E2, #7.4B" anchorPointB="#A.17, #7.41" isLine="true"/>
+                    <MorphCurves controlPointA="#B.34, #7.E3" anchorPointA="#B.3B, #7.E3" controlPointB="#A.1F, #7.3F" anchorPointB="#A.27, #7.3D" isLine="true"/>
+                    <MorphCurves controlPointA="#B.AE, #7.DD" anchorPointA="#C.21, #7.D6" controlPointB="#A.AF, #7.34" anchorPointB="#B.37, #7.2B" isLine="true"/>
+                    <MorphCurves controlPointA="#C.27, #7.D6" anchorPointA="#C.2C, #7.D6" controlPointB="#B.3E, #7.2B" anchorPointB="#B.44, #7.2B" isLine="true"/>
+                    <MorphCurves controlPointA="#C.68, #7.DB" anchorPointA="#C.A4, #7.DF" controlPointB="#B.8C, #7.32" anchorPointB="#B.D3, #7.38" isLine="true"/>
+                    <MorphCurves controlPointA="#C.A9, #7.DF" anchorPointA="#C.AE, #7.E" controlPointB="#B.D8, #7.38" anchorPointB="#B.DD, #7.38"/>
+                    <MorphCurves controlPointA="#C.D4, #7.E4" anchorPointA="#C.F8, #7.EE" controlPointB="#C.0B, #7.3D" anchorPointB="#C.37, #7.4B"/>
+                    <MorphCurves controlPointA="#C.FC, #7.EF" anchorPointA="13, #7.F" controlPointB="#C.3B, #7.4C" anchorPointB="#C.3F, #7.4D"/>
+                    <MorphCurves controlPointA="#D.03, #7.F1" anchorPointA="#D.06, #7.F1" controlPointB="#C.43, #7.4E" anchorPointB="#C.47, #7.4F" isLine="true"/>
+                    <MorphCurves controlPointA="#D.0C, #7.F2" anchorPointA="#D.1, #7.F4" controlPointB="#C.4C, #7.51" anchorPointB="#C.5, #7.52"/>
+                    <MorphCurves controlPointA="#D.12, #7.F5" anchorPointA="#D.13, #7.F6" controlPointB="#C.53, #7.53" anchorPointB="#C.55, #7.54"/>
+                    <MorphCurves controlPointA="#D.17, #7.F7" anchorPointA="#D.1B, #7.F9" controlPointB="#C.5B, #7.56" anchorPointB="#C.5F, #7.59"/>
+                    <MorphCurves controlPointA="#D.1C, #7.F9" anchorPointA="#D.1D, #7.FA" controlPointB="#C.6, #7.59" anchorPointB="#C.61, #7.59"/>
+                    <MorphCurves controlPointA="#D.23, #7.FD" anchorPointA="#D.24, #8.03" controlPointB="#C.66, #7.5B" anchorPointB="#C.6B, #7.5F"/>
+                    <MorphCurves controlPointA="#D.24, #8.05" anchorPointA="#D.23, #8.07" controlPointB="#C.6B, #7.5F" anchorPointB="#C.6B, #7.5F"/>
+                    <MorphCurves controlPointA="#D.21, #8.0D" anchorPointA="#D.18, #8.15" controlPointB="#C.72, #7.63" anchorPointB="#C.73, #7.6C"/>
+                    <MorphCurves controlPointA="#D.17, #8.16" anchorPointA="#D.15, #8.17" controlPointB="#C.73, #7.6F" anchorPointB="#C.72, #7.72"/>
+                    <MorphCurves controlPointA="#D.0C, #8.1D" anchorPointA="13, #8.22" controlPointB="#C.6F, #7.7C" anchorPointB="#C.63, #7.87"/>
+                    <MorphCurves controlPointA="#D.02, #8.22" anchorPointA="#D.03, #8.22" controlPointB="#C.62, #7.88" anchorPointB="#C.61, #7.89"/>
+                    <MorphCurves controlPointA="#D.0C, #8.23" anchorPointA="#D.15, #8.24" controlPointB="#C.57, #7.91" anchorPointB="#C.49, #7.99"/>
+                    <MorphCurves controlPointA="#D.23, #8.26" anchorPointA="#D.31, #8.27" controlPointB="#C.5A, #7.9B" anchorPointB="#C.6B, #7.9D" isLine="true"/>
+                    <MorphCurves controlPointA="#D.3C, #8.26" anchorPointA="#D.45, #8.27" controlPointB="#C.77, #7.9F" anchorPointB="#C.82, #7.A"/>
+                    <MorphCurves controlPointA="#D.4D, #8.27" anchorPointA="#D.54, #8.27" controlPointB="#C.8A, #7.9F" anchorPointB="#C.91, #7.9F"/>
+                    <MorphCurves controlPointA="#D.5E, #8.27" anchorPointA="#D.67, #8.27" controlPointB="#C.9F, #7.9F" anchorPointB="#C.AB, #7.A"/>
+                    <MorphCurves controlPointA="#D.71, #8.27" anchorPointA="#D.7B, #8.28" controlPointB="#C.B9, #7.A" anchorPointB="#C.C5, #7.A1"/>
+                    <MorphCurves controlPointA="#D.85, #8.28" anchorPointA="#D.8E, #8.28" controlPointB="#C.CF, #7.A1" anchorPointB="#C.D9, #7.A1"/>
+                    <MorphCurves controlPointA="#D.99, #8.28" anchorPointA="#D.A3, #8.29" controlPointB="#C.E7, #7.A" anchorPointB="#C.F3, #7.A1"/>
+                    <MorphCurves controlPointA="#D.AC, #8.28" anchorPointA="#D.B4, #8.29" controlPointB="#C.FD, #7.A2" anchorPointB="#D.07, #7.A3"/>
+                    <MorphCurves controlPointA="#D.B6, #8.29" anchorPointA="#D.B7, #8.29" controlPointB="#D.0A, #7.A3" anchorPointB="#D.0D, #7.A3"/>
+                    <MorphCurves controlPointA="#D.C, #8.2A" anchorPointA="#D.C9, #8.2A" controlPointB="#D.16, #7.A1" anchorPointB="#D.1F, #7.A3"/>
+                    <MorphCurves controlPointA="#D.CC, #8.2A" anchorPointA="#D.CF, #8.2A" controlPointB="#D.23, #7.A3" anchorPointB="#D.27, #7.A3" isLine="true"/>
+                    <MorphCurves controlPointA="#D.D7, #8.29" anchorPointA="#D.E1, #8.2A" controlPointB="#D.31, #7.A4" anchorPointB="#D.3B, #7.A4"/>
+                    <MorphCurves controlPointA="#D.E8, #8.2A" anchorPointA="#D.F, #8.2A" controlPointB="#D.44, #7.A3" anchorPointB="#D.4F, #7.A4"/>
+                    <MorphCurves controlPointA="#D.F8, #8.2A" anchorPointA="14, #8.2A" controlPointB="#D.57, #7.A4" anchorPointB="#D.61, #7.A4"/>
+                    <MorphCurves controlPointA="#E.0A, #8.2A" anchorPointA="#E.12, #8.2B" controlPointB="#D.7, #7.A3" anchorPointB="#D.7C, #7.A4"/>
+                    <MorphCurves controlPointA="#E.17, #8.2B" anchorPointA="#E.1C, #8.2B" controlPointB="#D.83, #7.A5" anchorPointB="#D.89, #7.A6"/>
+                    <MorphCurves controlPointA="#E.DA, #8.34" anchorPointA="#F.98, #8.3D" controlPointB="#E.6B, #7.B3" anchorPointB="#F.4D, 7.75" isLine="true"/>
+                    <MorphCurves controlPointA="#F.9A, #8.3E" anchorPointA="#F.9C, #8.3F" controlPointB="#F.4F, 7.75" anchorPointB="#F.51, 7.75" isLine="true"/>
+                    <MorphCurves controlPointA="#F.A9, #8.42" anchorPointA="#F.B6, #8.45" controlPointB="#F.61, #7.C5" anchorPointB="#F.7, #7.C9" isLine="true"/>
+                    <MorphCurves controlPointA="#F.B9, #8.46" anchorPointA="#F.BB, #8.47" controlPointB="#F.72, #7.CA" anchorPointB="#F.74, #7.CB"/>
+                    <MorphCurves controlPointA="#F.C7, #8.4A" anchorPointA="#F.CE, #8.4D" controlPointB="#F.82, #7.D" anchorPointB="#F.8B, #7.D5"/>
+                    <MorphCurves controlPointA="#F.CE, #8.4D" anchorPointA="#F.CE, #8.4C" controlPointB="#F.8C, #7.D5" anchorPointB="#F.8C, #7.D5"/>
+                    <MorphCurves controlPointA="#F.CF, #8.4D" anchorPointA="#F.D, #8.4E" controlPointB="#F.8E, #7.D6" anchorPointB="#F.9, #7.D7"/>
+                    <MorphCurves controlPointA="#F.D1, #8.4F" anchorPointA="#F.D2, #8.5" controlPointB="#F.9, #7.D6" anchorPointB="#F.9, #7.D5" isLine="true"/>
+                    <MorphCurves controlPointA="#F.D4, #8.5" anchorPointA="#F.D4, #8.53" controlPointB="#F.92, #7.D7" anchorPointB="#F.93, #7.D9"/>
+                    <MorphCurves controlPointA="#F.D5, #8.55" anchorPointA="#F.D5, #8.56" controlPointB="#F.94, #7.DA" anchorPointB="#F.95, #7.DB"/>
+                    <MorphCurves controlPointA="#F.D6, #8.59" anchorPointA="#F.D5, #8.5A" controlPointB="#F.97, #7.DB" anchorPointB="#F.97, #7.DF"/>
+                    <MorphCurves controlPointA="#F.D5, #8.5A" anchorPointA="#F.D5, #8.5A" controlPointB="#F.97, #7.DF" anchorPointB="#F.97, #7.DF"/>
+                    <MorphCurves controlPointA="#F.D4, #8.5B" anchorPointA="#F.D4, #8.5C" controlPointB="#F.98, #7.E2" anchorPointB="#F.98, #7.E4"/>
+                    <MorphCurves controlPointA="#F.D2, #8.5E" anchorPointA="#F.D, #8.6" controlPointB="#F.99, #7.E8" anchorPointB="#F.98, #7.EA"/>
+                    <MorphCurves controlPointA="#F.CF, #8.61" anchorPointA="#F.CE, #8.62" controlPointB="#F.97, #7.EB" anchorPointB="#F.97, #7.EC"/>
+                    <MorphCurves controlPointA="#F.CC, #8.63" anchorPointA="#F.CA, #8.64" controlPointB="#F.95, #7.EE" anchorPointB="#F.93, #7.F" isLine="true"/>
+                    <MorphCurves controlPointA="#F.C6, #8.66" anchorPointA="#F.C2, #8.68" controlPointB="#F.8F, #7.F4" anchorPointB="#F.8B, #7.F8" isLine="true"/>
+                    <MorphCurves controlPointA="#F.BF, #8.69" anchorPointA="#F.BB, #8.6A" controlPointB="#F.88, #7.FA" anchorPointB="#F.84, #7.FC" isLine="true"/>
+                    <MorphCurves controlPointA="#F.BC, #8.6A" anchorPointA="#F.BC, #8.6A" controlPointB="#F.84, #7.FC" anchorPointB="#F.84, #7.FC" isLine="true"/>
+                    <MorphCurves controlPointA="#F.BC, #8.6B" anchorPointA="#F.BB, #8.6B" controlPointB="#F.84, #7.FC" anchorPointB="#F.84, #7.FC" isLine="true"/>
+                    <MorphCurves controlPointA="#F.BC, #8.6C" anchorPointA="#F.BC, #8.6C" controlPointB="#F.84, #7.FC" anchorPointB="#F.84, #7.FC" isLine="true"/>
+                    <MorphCurves controlPointA="#F.BE, #8.6D" anchorPointA="#F.BF, #8.6D" controlPointB="#F.82, #7.FD" anchorPointB="15.5, #7.FE" isLine="true"/>
+                    <MorphCurves controlPointA="#F.C1, #8.6D" anchorPointA="#F.C2, #8.6D" controlPointB="#F.7D, 8" anchorPointB="#F.7A, #8.01" isLine="true"/>
+                    <MorphCurves controlPointA="#F.C3, #8.6D" anchorPointA="#F.C4, #8.6D" controlPointB="#F.7B, #8.01" anchorPointB="#F.7B, #8.01" isLine="true"/>
+                    <MorphCurves controlPointA="#F.C4, #8.6D" anchorPointA="#F.C4, #8.6D" controlPointB="#F.7B, #8.02" anchorPointB="#F.7A, #8.02" isLine="true"/>
+                    <MorphCurves controlPointA="#F.C5, #8.6D" anchorPointA="#F.C6, #8.6D" controlPointB="#F.7B, #8.03" anchorPointB="#F.7B, #8.04" isLine="true"/>
+                    <MorphCurves controlPointA="#F.C9, #8.6F" anchorPointA="#F.CC, #8.7" controlPointB="#F.7F, #8.05" anchorPointB="#F.82, #8.06" isLine="true"/>
+                    <MorphCurves controlPointA="#F.D1, #8.71" anchorPointA="#F.D6, #8.72" controlPointB="#F.88, #8.08" anchorPointB="#F.8E, #8.09" isLine="true"/>
+                    <MorphCurves controlPointA="#10.2, #8.7C" anchorPointA="#10.69, #8.86" controlPointB="#F.E5, #8.18" anchorPointB="#10.3B, #8.27" isLine="true"/>
+                    <MorphCurves controlPointA="#10.6D, #8.87" anchorPointA="#10.71, #8.88" controlPointB="16.25, #8.28" anchorPointB="#10.45, #8.29"/>
+                    <MorphCurves controlPointA="#10.A9, #8.9" anchorPointA="#10.CA, #8.98" controlPointB="#10.8A, #8.35" anchorPointB="#10.B3, #8.41"/>
+                    <MorphCurves controlPointA="#10.CC, #8.98" anchorPointA="#10.CE, #8.99" controlPointB="#10.B5, #8.42" anchorPointB="#10.B7, #8.43"/>
+                    <MorphCurves controlPointA="#10.EF, #8.A" anchorPointA="#11.14, #8.B" controlPointB="#10.DC, #8.4C" anchorPointB="#11.07, #8.62"/>
+                    <MorphCurves controlPointA="#11.18, #8.B1" anchorPointA="#11.1C, #8.B3" controlPointB="#11.0A, #8.64" anchorPointB="#11.0D, #8.66"/>
+                    <MorphCurves controlPointA="#11.26, #8.B7" anchorPointA="#11.2D, #8.BC" controlPointB="#11.19, #8.6A" anchorPointB="#11.22, #8.7"/>
+                    <MorphCurves controlPointA="#11.31, #8.BE" anchorPointA="#11.35, #8.C1" controlPointB="#11.27, #8.73" anchorPointB="#11.2B, #8.77"/>
+                    <MorphCurves controlPointA="#11.37, #8.C2" anchorPointA="#11.38, #8.C3" controlPointB="#11.2F, #8.79" anchorPointB="#11.32, #8.7B"/>
+                    <MorphCurves controlPointA="#11.39, #8.C6" anchorPointA="#11.39, #8.C8" controlPointB="#11.35, #8.7E" anchorPointB="#11.37, #8.81"/>
+                    <MorphCurves controlPointA="#11.3A, #8.C9" anchorPointA="#11.3B, #8.CB" controlPointB="#11.37, #8.81" anchorPointB="#11.37, #8.81"/>
+                    <MorphCurves controlPointA="#11.3C, #8.CF" anchorPointA="#11.3D, #8.D3" controlPointB="#11.38, #8.85" anchorPointB="#11.39, #8.89"/>
+                    <MorphCurves controlPointA="#11.3D, #8.D3" anchorPointA="#11.3D, #8.D3" controlPointB="#11.3A, #8.8C" anchorPointB="#11.3B, #8.8F"/>
+                    <MorphCurves controlPointA="#11.3D, #8.D7" anchorPointA="#11.3C, #8.DB" controlPointB="#11.3C, #8.93" anchorPointB="#11.3D, #8.99"/>
+                    <MorphCurves controlPointA="#11.38, #8.E9" anchorPointA="#11.26, #8.F3" controlPointB="#11.3E, #8.AB" anchorPointB="#11.31, #8.BA"/>
+                    <MorphCurves controlPointA="#11.1D, #8.F7" anchorPointA="#11.14, #8.FB" controlPointB="#11.2B, #8.C1" anchorPointB="#11.22, #8.C7"/>
+                    <MorphCurves controlPointA="#11.03, #9.03" anchorPointA="#10.F1, #9.0B" controlPointB="#11.0E, #8.D3" anchorPointB="#10.FA, #8.DE" isLine="true"/>
+                    <MorphCurves controlPointA="#10.E7, #9.0E" anchorPointA="#10.DD, #9.11" controlPointB="#10.EF, #8.E4" anchorPointB="#10.E4, #8.EA" isLine="true"/>
+                    <MorphCurves controlPointA="#10.C4, #9.18" anchorPointA="#10.AA, #9.1F" controlPointB="#10.C7, #8.F5" anchorPointB="#10.A9, #8.FF" isLine="true"/>
+                    <MorphCurves controlPointA="#10.AA, #9.1F" anchorPointA="#10.A9, #9.1F" controlPointB="#10.A9, #8.FF" anchorPointB="#10.A9, #8.FF" isLine="true"/>
+                    <MorphCurves controlPointA="#10.A6, #9.1F" anchorPointA="#10.A3, #9.21" controlPointB="#10.A6, 9" anchorPointB="#10.A3, #9.01"/>
+                    <MorphCurves controlPointA="#10.9C, #9.22" anchorPointA="#10.95, #9.23" controlPointB="#10.9A, #9.04" anchorPointB="#10.91, #9.07" isLine="true"/>
+                    <MorphCurves controlPointA="#10.95, #9.23" anchorPointA="#10.95, #9.23" controlPointB="#10.91, #9.07" anchorPointB="#10.9, #9.07" isLine="true"/>
+                    <MorphCurves controlPointA="#10.93, #9.23" anchorPointA="#10.91, #9.23" controlPointB="#10.8D, #9.07" anchorPointB="#10.89, #9.09"/>
+                    <MorphCurves controlPointA="#10.29, #9.31" anchorPointA="#F.C, #9.3E" controlPointB="#10.0F, #9.1C" anchorPointB="#F.94, #9.2F" isLine="true"/>
+                    <MorphCurves controlPointA="#F.B8, #9.3E" anchorPointA="#F.B, #9.3E" controlPointB="#F.8A, #9.31" anchorPointB="15.5, #9.33" isLine="true"/>
+                    <MorphCurves controlPointA="#E.C7, #9.48" anchorPointA="#D.DE, #9.52" controlPointB="#E.6C, #9.42" anchorPointB="#D.58, #9.5" isLine="true"/>
+                    <MorphCurves controlPointA="#D.D9, #9.52" anchorPointA="#D.D4, #9.52" controlPointB="#D.52, #9.5" anchorPointB="#D.4C, #9.5"/>
+                    <MorphCurves controlPointA="#D.9D, #9.52" anchorPointA="#D.63, #9.55" controlPointB="#D.0B, #9.5" anchorPointB="#C.C6, #9.55"/>
+                    <MorphCurves controlPointA="#D.5F, #9.55" anchorPointA="#D.5B, #9.55" controlPointB="#C.C1, #9.55" anchorPointB="#C.BC, #9.55"/>
+                    <MorphCurves controlPointA="#D.1E, #9.54" anchorPointA="#C.E, #9.52" controlPointB="#C.73, #9.53" anchorPointB="#C.2A, #9.5" isLine="true"/>
+                    <MorphCurves controlPointA="#C.DD, #9.52" anchorPointA="#C.DA, #9.52" controlPointB="#C.27, #9.5" anchorPointB="#C.23, #9.5"/>
+                    <MorphCurves controlPointA="#C.9A, #9.5" anchorPointA="#C.5C, #9.5" controlPointB="#B.D7, #9.4D" anchorPointB="#B.8D, #9.4D"/>
+                    <MorphCurves controlPointA="#C.5B, #9.5" anchorPointA="#C.5A, #9.5" controlPointB="#B.8B, #9.4D" anchorPointB="#B.89, #9.4D"/>
+                    <MorphCurves controlPointA="#C.1A, #9.4E" anchorPointA="#B.DA, #9.4C" controlPointB="#B.3D, #9.4B" anchorPointB="#A.F1, #9.48" isLine="true"/>
+                    <MorphCurves controlPointA="#B.DA, #9.4C" anchorPointA="#B.D9, #9.4C" controlPointB="#A.F1, #9.48" anchorPointB="#A.F1, #9.48" isLine="true"/>
+                    <MorphCurves controlPointA="#A.B3, #9.31" anchorPointA="#9.8D, #9.16" controlPointB="#9.95, #9.21" anchorPointB="#8.39, #8.F9" isLine="true"/>
+                    <MorphCurves controlPointA="#9.8A, #9.16" anchorPointA="#9.87, #9.16" controlPointB="#8.35, #8.F8" anchorPointB="#8.31, #8.F7"/>
+                    <MorphCurves controlPointA="#9.4B, #9.0A" anchorPointA="#9.13, #8.F4" controlPointB="#7.ED, #8.E5" anchorPointB="#7.AD, #8.C5"/>
+                    <MorphCurves controlPointA="#9.11, #8.F3" anchorPointA="#9.0F, #8.F2" controlPointB="#7.AA, #8.C4" anchorPointB="#7.A8, #8.C3"/>
+                    <MorphCurves controlPointA="#8.D5, #8.DB" anchorPointA="#8.FC, #8.B8" controlPointB="#7.6D, #8.A3" anchorPointB="#7.93, #8.76"/>
+                    <MorphCurves controlPointA="#8.FC, #8.B8" anchorPointA="#8.FC, #8.B8" controlPointB="#7.93, #8.76" anchorPointB="#7.97, #8.72" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#9.1B, #8.C5" startPointB="#7.BB, #8.84" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#9.1D, #8.BE" anchorPointA="#9.24, #8.B6" controlPointB="#7.BE, #8.7A" anchorPointB="#7.C6, #8.6F"/>
+                    <MorphCurves controlPointA="#9.59, #8.9A" anchorPointA="#9.73, #8.95" controlPointB="#8.04, #8.46" anchorPointB="#8.22, #8.3F"/>
+                    <MorphCurves controlPointA="#9.87, #8.92" anchorPointA="#9.9A, #8.8E" controlPointB="#8.39, #8.3A" anchorPointB="#8.5, #8.35" isLine="true"/>
+                    <MorphCurves controlPointA="#9.EC, #8.88" anchorPointA="#A.3E, #8.81" controlPointB="#8.B, #8.2C" anchorPointB="#9.0F, #8.22" isLine="true"/>
+                    <MorphCurves controlPointA="#A.4B, 8.5" anchorPointA="#A.57, #8.82" controlPointB="#9.1F, #8.21" anchorPointB="#9.2D, #8.23"/>
+                    <MorphCurves controlPointA="#A.5B, #8.87" anchorPointA="#A.46, #8.8A" controlPointB="#9.31, #8.2B" anchorPointB="#9.19, #8.2F"/>
+                    <MorphCurves controlPointA="#9.FB, #8.96" anchorPointA="#9.AF, #8.A2" controlPointB="#8.C1, #8.41" anchorPointB="#8.68, #8.52" isLine="true"/>
+                    <MorphCurves controlPointA="#9.AC, #8.A2" anchorPointA="#9.9E, #8.A6" controlPointB="#8.65, #8.52" anchorPointB="#8.54, #8.57"/>
+                    <MorphCurves controlPointA="#9.7F, #8.B1" anchorPointA="#9.5F, #8.BB" controlPointB="#8.3, #8.67" anchorPointB="#8.0B, #8.76" isLine="true"/>
+                    <MorphCurves controlPointA="#9.58, #8.BC" anchorPointA="#9.51, #8.C2" controlPointB="#8.02, #8.77" anchorPointB="#7.FA, 8.5"/>
+                    <MorphCurves controlPointA="#9.44, #8.CD" anchorPointA="#9.41, #8.D" controlPointB="#7.EB, #8.8F" anchorPointB="#7.E8, #8.94" isLine="true"/>
+                    <MorphCurves controlPointA="9.25, #8.D3" anchorPointA="#9.3F, #8.D6" controlPointB="#7.E7, #8.99" anchorPointB="#7.E5, #8.9D" isLine="true"/>
+                    <MorphCurves controlPointA="#9.3F, #8.D8" anchorPointA="#9.3F, #8.D9" controlPointB="#7.E5, #8.9F" anchorPointB="#7.E5, #8.A1" isLine="true"/>
+                    <MorphCurves controlPointA="9.25, #8.DB" anchorPointA="9.25, #8.E" controlPointB="#7.E6, #8.A4" anchorPointB="#7.E6, #8.AB"/>
+                    <MorphCurves controlPointA="#9.41, #8.E4" anchorPointA="#9.3C, #8.E5" controlPointB="#7.E8, #8.B1" anchorPointB="#7.E2, #8.B3"/>
+                    <MorphCurves controlPointA="#9.36, #8.E3" anchorPointA="#9.3, #8.E1" controlPointB="#7.DB, #8.B" anchorPointB="#7.D4, #8.AD" isLine="true"/>
+                    <MorphCurves controlPointA="#9.29, #8.DC" anchorPointA="#9.21, #8.D7" controlPointB="#7.CB, #8.A6" anchorPointB="#7.C2, #8.9E" isLine="true"/>
+                    <MorphCurves controlPointA="#9.1C, #8.D1" anchorPointA="#9.1B, #8.CD" controlPointB="#7.BC, #8.96" anchorPointB="#7.BB, #8.9"/>
+                    <MorphCurves controlPointA="#9.1B, #8.C9" anchorPointA="#9.1B, #8.C5" controlPointB="#7.BB, #8.8A" anchorPointB="#7.BB, #8.84" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#9.1B, #8.C5" startPointB="#7.BB, #8.84" strokeIndex1="0" strokeIndex2="0" fillIndex1="1" fillIndex2="1">
+                    <MorphCurves controlPointA="#9.1D, #8.BE" anchorPointA="#9.24, #8.B6" controlPointB="#7.BE, #8.7A" anchorPointB="#7.C6, #8.6F"/>
+                    <MorphCurves controlPointA="#9.59, #8.9A" anchorPointA="#9.73, #8.95" controlPointB="#8.04, #8.46" anchorPointB="#8.22, #8.3F"/>
+                    <MorphCurves controlPointA="#9.87, #8.92" anchorPointA="#9.9A, #8.8E" controlPointB="#8.39, #8.3A" anchorPointB="#8.5, #8.35" isLine="true"/>
+                    <MorphCurves controlPointA="#9.EC, #8.88" anchorPointA="#A.3E, #8.81" controlPointB="#8.B, #8.2C" anchorPointB="#9.0F, #8.22" isLine="true"/>
+                    <MorphCurves controlPointA="#A.4B, 8.5" anchorPointA="#A.57, #8.82" controlPointB="#9.1F, #8.21" anchorPointB="#9.2D, #8.23"/>
+                    <MorphCurves controlPointA="#A.5B, #8.87" anchorPointA="#A.46, #8.8A" controlPointB="#9.31, #8.2B" anchorPointB="#9.19, #8.2F"/>
+                    <MorphCurves controlPointA="#9.FB, #8.96" anchorPointA="#9.AF, #8.A2" controlPointB="#8.C1, #8.41" anchorPointB="#8.68, #8.52" isLine="true"/>
+                    <MorphCurves controlPointA="#9.AC, #8.A2" anchorPointA="#9.9E, #8.A6" controlPointB="#8.65, #8.52" anchorPointB="#8.54, #8.57"/>
+                    <MorphCurves controlPointA="#9.7F, #8.B1" anchorPointA="#9.5F, #8.BB" controlPointB="#8.3, #8.67" anchorPointB="#8.0B, #8.76" isLine="true"/>
+                    <MorphCurves controlPointA="#9.58, #8.BC" anchorPointA="#9.51, #8.C2" controlPointB="#8.02, #8.77" anchorPointB="#7.FA, 8.5"/>
+                    <MorphCurves controlPointA="#9.44, #8.CD" anchorPointA="#9.41, #8.D" controlPointB="#7.EB, #8.8F" anchorPointB="#7.E8, #8.94" isLine="true"/>
+                    <MorphCurves controlPointA="9.25, #8.D3" anchorPointA="#9.3F, #8.D6" controlPointB="#7.E7, #8.99" anchorPointB="#7.E5, #8.9D" isLine="true"/>
+                    <MorphCurves controlPointA="#9.3F, #8.D8" anchorPointA="#9.3F, #8.D9" controlPointB="#7.E5, #8.9F" anchorPointB="#7.E5, #8.A1" isLine="true"/>
+                    <MorphCurves controlPointA="9.25, #8.DB" anchorPointA="9.25, #8.E" controlPointB="#7.E6, #8.A4" anchorPointB="#7.E6, #8.AB"/>
+                    <MorphCurves controlPointA="#9.41, #8.E4" anchorPointA="#9.3C, #8.E5" controlPointB="#7.E8, #8.B1" anchorPointB="#7.E2, #8.B3"/>
+                    <MorphCurves controlPointA="#9.36, #8.E3" anchorPointA="#9.3, #8.E1" controlPointB="#7.DB, #8.B" anchorPointB="#7.D4, #8.AD" isLine="true"/>
+                    <MorphCurves controlPointA="#9.29, #8.DC" anchorPointA="#9.21, #8.D7" controlPointB="#7.CB, #8.A6" anchorPointB="#7.C2, #8.9E" isLine="true"/>
+                    <MorphCurves controlPointA="#9.1C, #8.D1" anchorPointA="#9.1B, #8.CD" controlPointB="#7.BC, #8.96" anchorPointB="#7.BB, #8.9"/>
+                    <MorphCurves controlPointA="#9.1B, #8.C9" anchorPointA="#9.1B, #8.C5" controlPointB="#7.BB, #8.8A" anchorPointB="#7.BB, #8.84" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#A.1B, #8.32" startPointB="#8.E6, #7.B" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#A.1F, #8.27" anchorPointA="#A.52, #8.1A" controlPointB="#8.EB, #7.A" anchorPointB="#9.25, #7.8D"/>
+                    <MorphCurves controlPointA="#A.86, #8.0D" anchorPointA="#A.9E, #8.0A" controlPointB="#9.64, #7.7A" anchorPointB="9.5, #7.76"/>
+                    <MorphCurves controlPointA="#A.DD, #8.02" anchorPointA="#B.1C, #7.F9" controlPointB="#9.D, #7.68" anchorPointB="#A.1C, #7.5A" isLine="true"/>
+                    <MorphCurves controlPointA="#B.1D, #7.FC" anchorPointA="#B.1A, #7.FD" controlPointB="#A.0E, #7.64" anchorPointB="#A.0B, #7.65" isLine="true"/>
+                    <MorphCurves controlPointA="#A.E7, #8.09" anchorPointA="#A.B4, #8.14" controlPointB="#9.CF, #7.76" anchorPointB="#9.92, #7.87" isLine="true"/>
+                    <MorphCurves controlPointA="#A.7A, #8.23" anchorPointA="#A.63, #8.3A" controlPointB="#9.55, #7.9C" anchorPointB="#9.3D, #7.B9"/>
+                    <MorphCurves controlPointA="#A.6, #8.3D" anchorPointA="#A.5F, #8.3E" controlPointB="#9.3A, #7.BD" anchorPointB="#9.39, #7.BF" isLine="true"/>
+                    <MorphCurves controlPointA="#A.5E, 8.25" anchorPointA="#A.5C, #8.42" controlPointB="#9.37, #7.C1" anchorPointB="#9.35, #7.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#A.5B, #8.43" anchorPointA="#A.59, #8.43" controlPointB="#9.34, #7.C5" anchorPointB="#9.32, #7.C7"/>
+                    <MorphCurves controlPointA="#A.57, #8.44" anchorPointA="#A.52, #8.45" controlPointB="#9.3, #7.C9" anchorPointB="#9.2A, #7.CB"/>
+                    <MorphCurves controlPointA="#A.51, #8.45" anchorPointA="#A.5, #8.45" controlPointB="#9.29, #7.CB" anchorPointB="#9.27, #7.CB"/>
+                    <MorphCurves controlPointA="#A.45, #8.44" anchorPointA="#A.3A, #8.42" controlPointB="#9.1A, #7.C9" anchorPointB="#9.0D, #7.C7" isLine="true"/>
+                    <MorphCurves controlPointA="#A.3A, #8.42" anchorPointA="#A.3A, #8.42" controlPointB="#9.0C, #7.C7" anchorPointB="#9.0B, #7.C7"/>
+                    <MorphCurves controlPointA="#A.19, #8.3B" anchorPointA="#A.1B, #8.32" controlPointB="#8.E4, #7.BD" anchorPointB="#8.E6, #7.B"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#A.1B, #8.32" startPointB="#8.E6, #7.B" strokeIndex1="0" strokeIndex2="0" fillIndex1="1" fillIndex2="1">
+                    <MorphCurves controlPointA="#A.1F, #8.27" anchorPointA="#A.52, #8.1A" controlPointB="#8.EB, #7.A" anchorPointB="#9.25, #7.8D"/>
+                    <MorphCurves controlPointA="#A.86, #8.0D" anchorPointA="#A.9E, #8.0A" controlPointB="#9.64, #7.7A" anchorPointB="9.5, #7.76"/>
+                    <MorphCurves controlPointA="#A.DD, #8.02" anchorPointA="#B.1C, #7.F9" controlPointB="#9.D, #7.68" anchorPointB="#A.1C, #7.5A" isLine="true"/>
+                    <MorphCurves controlPointA="#B.1D, #7.FC" anchorPointA="#B.1A, #7.FD" controlPointB="#A.0E, #7.64" anchorPointB="#A.0B, #7.65" isLine="true"/>
+                    <MorphCurves controlPointA="#A.E7, #8.09" anchorPointA="#A.B4, #8.14" controlPointB="#9.CF, #7.76" anchorPointB="#9.92, #7.87" isLine="true"/>
+                    <MorphCurves controlPointA="#A.7A, #8.23" anchorPointA="#A.63, #8.3A" controlPointB="#9.55, #7.9C" anchorPointB="#9.3D, #7.B9"/>
+                    <MorphCurves controlPointA="#A.6, #8.3D" anchorPointA="#A.5F, #8.3E" controlPointB="#9.3A, #7.BD" anchorPointB="#9.39, #7.BF" isLine="true"/>
+                    <MorphCurves controlPointA="#A.5E, 8.25" anchorPointA="#A.5C, #8.42" controlPointB="#9.37, #7.C1" anchorPointB="#9.35, #7.C3" isLine="true"/>
+                    <MorphCurves controlPointA="#A.5B, #8.43" anchorPointA="#A.59, #8.43" controlPointB="#9.34, #7.C5" anchorPointB="#9.32, #7.C7"/>
+                    <MorphCurves controlPointA="#A.57, #8.44" anchorPointA="#A.52, #8.45" controlPointB="#9.3, #7.C9" anchorPointB="#9.2A, #7.CB"/>
+                    <MorphCurves controlPointA="#A.51, #8.45" anchorPointA="#A.5, #8.45" controlPointB="#9.29, #7.CB" anchorPointB="#9.27, #7.CB"/>
+                    <MorphCurves controlPointA="#A.45, #8.44" anchorPointA="#A.3A, #8.42" controlPointB="#9.1A, #7.C9" anchorPointB="#9.0D, #7.C7" isLine="true"/>
+                    <MorphCurves controlPointA="#A.3A, #8.42" anchorPointA="#A.3A, #8.42" controlPointB="#9.0C, #7.C7" anchorPointB="#9.0B, #7.C7"/>
+                    <MorphCurves controlPointA="#A.19, #8.3B" anchorPointA="#A.1B, #8.32" controlPointB="#8.E4, #7.BD" anchorPointB="#8.E6, #7.B"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!4372 2224S2[4388 2229 4397 2236!4397 2236[4404 2239 4408 2243!4408 2243|4409 2248!4409 2248[4412 2253 4413 2259!4413 2259[4414 2278 4390 2291!4390 2291|4337 2315!4337 2315|4266 2335!4266 2335|4265 2335!4265 2335[4262 2335 4259 2337!4259
+ 2337|4032 2366!4032 2366|3550 2386!3550 2386[3490 2386 3427 2389!3427 2389|3296 2386!3296 2386[3229 2384 3164 2384!3164 2384|3034 2380!3034 2380|2439 2326!2439 2326[2377 2313 2319 2290!2319 2290[2261 2267 2300 2232!2300 2232[2313 2221
+ 2329 2213!2329 2213[2387 2187 2455 2179!2455 2179[2511 2171 2566 2168!2566 2168|2644 2160!2644 2160|2693 2148!2693 2148|2601 2136!2601 2136[2548 2127 2547 2109!2547 2109[2549 2088 2599 2073!2599 2073[2652 2056 2679 2050!2679 2050[2705
+ 2042 2756 2035!2756 2035|2861 2019!2861 2019|3105 2006!3105 2006|3236 2015!3236 2015[3279 2019 3320 2030!3320 2030|3334 2033!3334 2033[3343 2035 3347 2038!3347 2038[3352 2039 3357 2042!3357 2042[3363 2045 3364 2051!3364 2051[3364 2060
+ 3349 2071!3349 2071[3340 2077 3328 2082!3328 2082|3377 2087!3377 2087[3397 2086 3412 2087!3412 2087[3433 2087 3451 2088!3451 2088[3472 2087 3491 2089!3491 2089[3502 2088 3511 2089!3511 2089|3535 2090!3535 2090[3549 2089 3568 2090!3568
+ 2090[3587 2089 3602 2091!3602 2091|3992 2109!3992 2109|4022 2117!4022 2117[4038 2121 4046 2125!4046 2125|4046 2124!4046 2124|4050 2128!4050 2128[4052 2128 4052 2131!4052 2131[4054 2136 4053 2138!4053 2138[4052 2139 4052 2140!4052 2140
+|4042 2148!4042 2148|4027 2154!4027 2154|4028 2154!4028 2154|4027 2155!4027 2155|4028 2156!4028 2156|4031 2157!4031 2157|4044 2160!4044 2160|4201 2182!4201 2182[4263 2191 4298 2200!4298 2200[4332 2207 4372 2224"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!2859 2040S3[2861 2041 2851 2042!2851 2042|2842 2045!2842 2045|2734 2070!2734 2070[2682 2083 2659 2106!2659 2106|2655 2110!2655 2110|2652 2114!2652 2114[2650 2116 2642 2117!2642 2117|2618 2114!2618 2114[2585 2107 2587 2098!2587 2098[2591
+ 2087 2642 2074!2642 2074[2694 2061 2718 2058!2718 2058|2852 2039!2852 2039|2859 2040!2648 2178[2651 2183 2630 2186!2630 2186|2479 2210!2479 2210[2476 2210 2462 2214!2462 2214|2399 2235!2399 2235[2392 2236 2385 2242!2385 2242[2378 2244
+ 2374 2249!2374 2249|2369 2256!2369 2256|2367 2262!2367 2262|2367 2265!2367 2265[2368 2267 2368 2272!2368 2272[2369 2276 2364 2277!2364 2277|2352 2273!2352 2273|2337 2263!2337 2263[2332 2257 2331 2253!2331 2253|2331 2245!2331 2245[2333
+ 2238 2340 2230!2340 2230[2349 2222 2369 2212!2369 2212[2393 2202 2419 2197!2419 2197|2458 2190!2458 2190|2622 2177!2622 2177[2635 2176 2647 2178!2647 2178[2648 2177 2648 2178"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!3289 1953[3313 1952 3335 1955!3335 1955[3348 1953 3359 1955!3359 1955|3387 1956!3387 1956[3403 1955 3425 1956!3425 1956[3448 1955 3465 1958!3465 1958|3921 1984!3921 1984|3956 1995!3956 1995[3975 2001 3984 2007!3984 2007|3984 2005!3984
+ 2005|3989 2011!3989 2011[3991 2011 3991 2015!3991 2015[3994 2023 3992 2026!3992 2026[3991 2027 3991 2028!3991 2028|3979 2040!3979 2040|3962 2049!3962 2049|3963 2049!3963 2049|3962 2050!3962 2050|3963 2052!3963 2052|3982 2057!3982 2057
+|4165 2089!4165 2089[4238 2102 4279 2115!4279 2115[4319 2125 4365 2150!4365 2150[4384 2157 4395 2167!4395 2167[4403 2172 4407 2177!4407 2177|4409 2185!4409 2185[4412 2192 4413 2201!4413 2201[4414 2228 4386 2247!4386 2247|4324 2282!4324
+ 2282|4241 2311!4241 2311|4240 2311!4240 2311[4237 2311 4233 2313!4233 2313|3968 2355!3968 2355|3404 2384!3404 2384[3334 2384 3260 2389!3260 2389|3107 2384!3107 2384[3029 2381 2953 2381!2953 2381|2801 2376!2801 2376|2105 2297!2105 2297
+[2033 2279 1965 2245!1965 2245[1897 2212 1943 2162!1943 2162[1958 2146 1977 2134!1977 2134[2045 2096 2124 2085!2124 2085[2190 2073 2254 2069!2254 2069|2345 2057!2345 2057|2402 2040!2402 2040|2295 2023!2295 2023[2233 2010 2232 1984!2232
+ 1984[2234 1953 2292 1932!2292 1932[2354 1907 2386 1898!2386 1898[2416 1887 2476 1877!2476 1877|2599 1853!2599 1853|2884 1835!2884 1835|3037 1848!3037 1848[3087 1853 3135 1869!3135 1869|3152 1874!3152 1874[3162 1877 3167 1881!3167 1881
+[3173 1882 3179 1887!3179 1887[3186 1891 3187 1900!3187 1900[3187 1913 3169 1929!3169 1929[3159 1937 3145 1945!3145 1945|3202 1952!3202 1952[3225 1950 3243 1952!3243 1952[3268 1952 3289 1953"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!2343 1933[2404 1914 2432 1910!2432 1910|2588 1882!2588 1882|2596 1884!2596 1884[2599 1885 2587 1887!2587 1887|2577 1891!2577 1891|2450 1927!2450 1927[2390 1946 2363 1979!2363 1979|2354 1991!2354 1991[2352 1994 2343 1995!2343 1995|2315
+ 1991!2315 1991[2276 1981 2278 1968!2278 1968[2283 1952 2343 1933!2329 2095|2152 2130!2152 2130[2149 2130 2132 2135!2132 2135|2059 2166!2059 2166[2050 2167 2042 2176!2042 2176[2034 2179 2029 2186!2029 2186|2024 2196!2024 2196|2021 2205
+!2021 2205|2021 2209!2021 2209[2022 2212 2022 2219!2022 2219[2024 2225 2018 2227!2018 2227|2004 2221!2004 2221|1986 2206!1986 2206[1980 2198 1979 2192!1979 2192|1979 2180!1979 2180[1982 2170 1990 2159!1990 2159[2000 2147 2024 2133!2024
+ 2133[2052 2118 2082 2111!2082 2111|2128 2101!2128 2101|2319 2082!2319 2082[2335 2081 2349 2083!2349 2083[2350 2082 2350 2083!2350 2083[2353 2091 2329 2095"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#EC4FDB">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="41.3" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392486572265625" b="0.0033416748046875" c="0.0033416748046875" d="0.392486572265625" tx="32.9" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385528564453125" b="-0.0736541748046875" c="-0.0736541748046875" d="0.385528564453125" tx="33" ty="-18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.333847045898438" b="-0.206390380859375" c="-0.206390380859375" d="0.333847045898438" tx="61.15" ty="20.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3919677734375" b="-0.0202789306640625" c="-0.0202789306640625" d="0.3919677734375" tx="99.55" ty="65.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3419189453125" b="-0.192718505859375" c="-0.192718505859375" d="0.3419189453125" tx="98.2" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#D8A78A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.387680053710938" b="-0.0613250732421875" c="-0.0613250732421875" d="0.387680053710938" tx="34.6" ty="59.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.371658325195313" b="-0.126205444335938" c="-0.126205444335938" d="0.371658325195313" tx="21.7" ty="44.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.154815673828125" b="-0.36065673828125" c="-0.36065673828125" d="0.154815673828125" tx="2.5" ty="36.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.015899658203125" b="-0.392166137695313" c="-0.392166137695313" d="0.015899658203125" tx="13.35" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.054443359375" b="-0.388702392578125" c="-0.388702392578125" d="-0.054443359375" tx="75" ty="112"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0592041015625" b="-0.38800048828125" c="-0.38800048828125" d="-0.0592041015625" tx="52.35" ty="104"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#C13AFB">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="39.7" ty="15.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392486572265625" b="0.0033416748046875" c="0.0033416748046875" d="0.392486572265625" tx="30.5" ty="0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385528564453125" b="-0.0736541748046875" c="-0.0736541748046875" d="0.385528564453125" tx="26.3" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.333847045898438" b="-0.206390380859375" c="-0.206390380859375" d="0.333847045898438" tx="47.2" ty="38.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3919677734375" b="-0.0202789306640625" c="-0.0202789306640625" d="0.3919677734375" tx="95.8" ty="87.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3419189453125" b="-0.192718505859375" c="-0.192718505859375" d="0.3419189453125" tx="84.9" ty="84.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#56F167">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="6.5" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="-5.35" ty="-41.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="-3.2" ty="-39.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385299682617188" b="-0.074798583984375" c="-0.074798583984375" d="0.385299682617188" tx="35.05" ty="-12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="67" ty="35.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="67" ty="38.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#C8B00C">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="-41.2" ty="-3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="-47.85" ty="-5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="-46.8" ty="-5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385299682617188" b="-0.074798583984375" c="-0.074798583984375" d="0.385299682617188" tx="-17.95" ty="4.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.365982055664063" b="-0.141815185546875" c="-0.141815185546875" d="0.365982055664063" tx="13.25" ty="57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.365982055664063" b="-0.141815185546875" c="-0.141815185546875" d="0.365982055664063" tx="13.25" ty="60.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#DB38EB">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 631" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392501831054688" d="0.392501831054688" tx="-61.9" ty="55.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 631" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36663818359375" b="-0.14007568359375" c="-0.14007568359375" d="0.36663818359375" tx="-53.7" ty="55.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 631" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0869140625" b="-0.38275146484375" c="-0.38275146484375" d="0.0869140625" tx="-38.6" ty="81.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 297" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.156539916992188" d="0.156539916992188" tx="0.75" ty="-128.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="339.55" y="265.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 303" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.156539916992188" d="0.156539916992188" tx="-15.65" ty="-139.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="348.8" y="234.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 314" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.135574340820313" b="0.0782623291015625" c="-0.0782623291015625" d="0.135574340820313" tx="103.95" ty="-46.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="305.7" y="227.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#0BF2D4">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.58172607421875" b="-0.445816040039063" c="-0.445816040039063" d="0.58172607421875" tx="74.1" ty="-30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="31.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 3" centerPoint3DX="42.55" centerPoint3DY="-8.2">
+                  <matrix>
+                    <Matrix a="-0.999343872070313" b="0.0427703857421875" c="0.0427703857421875" d="0.999343872070313" tx="76.95" ty="-45.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="35.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 2" centerPoint3DX="50.65" centerPoint3DY="-37.7">
+                  <matrix>
+                    <Matrix a="-0.999343872070313" b="0.0427703857421875" c="0.0427703857421875" d="0.999343872070313" tx="67.35" ty="-48.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.15" y="9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.6458740234375" b="-0.34637451171875" c="-0.34637451171875" d="0.6458740234375" tx="61.45" ty="-51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.65" y="31.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 3" centerPoint3DX="34" centerPoint3DY="-23.7">
+                  <matrix>
+                    <Matrix a="-0.97943115234375" b="0.203033447265625" c="0.203033447265625" d="0.97943115234375" tx="61.95" ty="-65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 2" centerPoint3DX="37.25" centerPoint3DY="-54.1">
+                  <matrix>
+                    <Matrix a="-0.97943115234375" b="0.203033447265625" c="0.203033447265625" d="0.97943115234375" tx="52.05" ty="-67.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.15" y="9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/屁股" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.634735107421875" b="-0.366348266601563" c="-0.366348266601563" d="0.634735107421875" tx="64.05" ty="-47.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.85" y="31.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 3" selected="true" centerPoint3DX="35.7" centerPoint3DY="-21.1">
+                  <matrix>
+                    <Matrix a="-0.985260009765625" b="0.172378540039063" c="0.172378540039063" d="0.985260009765625" tx="64.95" ty="-62.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 2" selected="true" centerPoint3DX="39.9" centerPoint3DY="-51.35">
+                  <matrix>
+                    <Matrix a="-0.985260009765625" b="0.172378540039063" c="0.172378540039063" d="0.985260009765625" tx="55.1" ty="-64"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.15" y="9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.462188720703125" b="-0.56878662109375" c="-0.56878662109375" d="0.462188720703125" tx="100.6" ty="4.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="31.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 3" centerPoint3DX="64.65" centerPoint3DY="19.05">
+                  <matrix>
+                    <Matrix a="-0.981918334960938" b="-0.190628051757813" c="-0.190628051757813" d="0.981918334960938" tx="106.75" ty="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 2" centerPoint3DX="79.4" centerPoint3DY="-7.7">
+                  <matrix>
+                    <Matrix a="-0.981918334960938" b="-0.190628051757813" c="-0.190628051757813" d="0.981918334960938" tx="98.05" ty="-14.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.05" y="9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.523788452148438" b="-0.512619018554688" c="-0.512619018554688" d="0.523788452148438" tx="134.05" ty="44.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="31.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 3" centerPoint3DX="99.95" centerPoint3DY="63.5">
+                  <matrix>
+                    <Matrix a="-0.997207641601563" b="-0.0778961181640625" c="-0.0778961181640625" d="0.997207641601563" tx="138.6" ty="30.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 2" centerPoint3DX="111.55" centerPoint3DY="35.25">
+                  <matrix>
+                    <Matrix a="-0.997207641601563" b="-0.0778961181640625" c="-0.0778961181640625" d="0.997207641601563" tx="129.45" ty="26.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.523788452148438" b="-0.512619018554688" c="-0.512619018554688" d="0.523788452148438" tx="134.05" ty="47.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="31.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 3" centerPoint3DX="99.95" centerPoint3DY="66">
+                  <matrix>
+                    <Matrix a="-0.997207641601563" b="-0.0778961181640625" c="-0.0778961181640625" d="0.997207641601563" tx="138.6" ty="33.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="35.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁人马/元件 2" centerPoint3DX="111.55" centerPoint3DY="37.75">
+                  <matrix>
+                    <Matrix a="-0.997207641601563" b="-0.0778961181640625" c="-0.0778961181640625" d="0.997207641601563" tx="129.45" ty="29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#2DA0F6">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="-43" ty="-14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="-51.5" ty="-16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="-50.1" ty="-16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385299682617188" b="-0.074798583984375" c="-0.074798583984375" d="0.385299682617188" tx="-17.05" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="15.8" ty="46.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="15.8" ty="49.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#A1DFA7">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 626" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="32.25" ty="-4.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 626" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="24.4" ty="-18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 626" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="25.85" ty="-16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 626" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385299682617188" b="-0.074798583984375" c="-0.074798583984375" d="0.385299682617188" tx="53.85" ty="19.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 626" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="89.35" ty="65.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 626" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="89.35" ty="68.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36" color="#E9C6F2">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 625" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="-35.9" ty="-13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 625" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="-44.3" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 625" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="-42.9" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 625" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385299682617188" b="-0.074798583984375" c="-0.074798583984375" d="0.385299682617188" tx="-10.35" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 625" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="22.75" ty="48.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 625" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="22.75" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 37" color="#6786BA">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 624" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="0.6" ty="-19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 624" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="-9.2" ty="-28.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 624" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="-7.4" ty="-26.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 624" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385299682617188" b="-0.074798583984375" c="-0.074798583984375" d="0.385299682617188" tx="26.5" ty="-1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 624" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="59.65" ty="47.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 624" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="59.65" ty="49.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 38" color="#CEC505">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 623" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="-76.15" ty="-7.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 623" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.38092041015625" b="0.0946044921875" c="0.0946044921875" d="0.38092041015625" tx="-81.9" ty="-2.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 623" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="-81.9" ty="-4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 623" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392120361328125" b="-0.0170135498046875" c="-0.0170135498046875" d="0.392120361328125" tx="-47.9" ty="-4.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 623" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.274093627929688" b="-0.280929565429688" c="-0.280929565429688" d="0.274093627929688" tx="-27.3" ty="31.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 623" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.380844116210938" b="-0.0948944091796875" c="-0.0948944091796875" d="0.380844116210938" tx="-19.9" ty="48.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#DBBC42">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 622" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="-32.35" ty="-12.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 622" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="-40.5" ty="-15.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 622" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386611938476563" b="0.0676422119140625" c="0.0676422119140625" d="0.386611938476563" tx="-39.1" ty="-15.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 622" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.385299682617188" b="-0.074798583984375" c="-0.074798583984375" d="0.385299682617188" tx="-7.25" ty="-2.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 622" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="26.1" ty="50.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 622" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.39129638671875" b="-0.0305633544921875" c="-0.0305633544921875" d="0.39129638671875" tx="26.1" ty="53.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 14" color="#808080">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#0.68, #6.F7" startPointB="#0.79, #6.F7" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#0.74, #6.ED" anchorPointA="#0.83, #6.E6" controlPointB="#0.93, #6.EC" anchorPointB="#0.B4, #6.E4"/>
+                    <MorphCurves controlPointA="#0.84, #6.E5" anchorPointA="#0.85, #6.E4" controlPointB="#0.B6, #6.E4" anchorPointB="#0.B8, #6.E4"/>
+                    <MorphCurves controlPointA="#0.BF, #6.CA" anchorPointA="#1.01, #6.C2" controlPointB="#1.2D, #6.CA" anchorPointB="#1.B6, #6.C2"/>
+                    <MorphCurves controlPointA="#1.02, #6.C2" anchorPointA="#1.03, #6.C2" controlPointB="#1.B7, #6.C2" anchorPointB="#1.B8, #6.C2"/>
+                    <MorphCurves controlPointA="#1.3B, #6.BA" anchorPointA="#1.72, #6.B7" controlPointB="#2.29, #6.BA" anchorPointB="#2.97, #6.B7"/>
+                    <MorphCurves controlPointA="#1.72, #6.B7" anchorPointA="#1.72, #6.B7" controlPointB="#2.98, #6.B7" anchorPointB="#2.99, #6.B7"/>
+                    <MorphCurves controlPointA="#1.99, #6.B3" anchorPointA="1.75, #6.AF" controlPointB="#2.E6, #6.B1" anchorPointB="#3.33, #6.AB" isLine="true"/>
+                    <MorphCurves controlPointA="#1.D9, #6.A9" anchorPointA="#1.F1, #6.A3" controlPointB="#3.65, #6.A7" anchorPointB="#3.97, #6.A3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.F, #6.A3" anchorPointA="#1.EF, #6.A3" controlPointB="#3.9A, #6.A3" anchorPointB="#3.9D, #6.A3" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C2, #6.9D" anchorPointA="#1.95, #6.97" controlPointB="#3.42, #6.9D" anchorPointB="#2.E7, #6.97" isLine="true"/>
+                    <MorphCurves controlPointA="#1.94, #6.97" anchorPointA="#1.93, #6.97" controlPointB="#2.E4, #6.97" anchorPointB="#2.E1, #6.97"/>
+                    <MorphCurves controlPointA="#1.6, #6.8E" anchorPointA="#1.5F, #6.7C" controlPointB="#2.82, #6.8F" anchorPointB="#2.74, 6.5"/>
+                    <MorphCurves controlPointA="#1.5F, #6.7B" anchorPointA="#1.5F, #6.7A" controlPointB="#2.72, #6.7E" anchorPointB="#2.72, #6.7C"/>
+                    <MorphCurves controlPointA="#1.64, #6.68" anchorPointA="#1.8B, #6.5A" controlPointB="#2.76, #6.67" anchorPointB="#2.DD, #6.58"/>
+                    <MorphCurves controlPointA="#1.8F, #6.59" anchorPointA="#1.93, #6.58" controlPointB="#2.E5, #6.57" anchorPointB="#2.ED, #6.56"/>
+                    <MorphCurves controlPointA="#1.BF, #6.4A" anchorPointA="#1.D9, #6.43" controlPointB="#3.4D, #6.47" anchorPointB="3.5, #6.41"/>
+                    <MorphCurves controlPointA="#1.DE, #6.42" anchorPointA="#1.E3, #6.41" controlPointB="#3.8A, #6.3F" anchorPointB="#3.97, #6.3E"/>
+                    <MorphCurves controlPointA="#1.FB, #6.3A" anchorPointA="#2.2A, #6.33" controlPointB="#3.CA, #6.38" anchorPointB="#4.1E, #6.32"/>
+                    <MorphCurves controlPointA="#2.2D, #6.32" anchorPointA="#2.3, #6.32" controlPointB="#4.24, #6.32" anchorPointB="#4.2A, #6.32"/>
+                    <MorphCurves controlPointA="#2.63, #6.2A" anchorPointA="#2.95, #6.22" controlPointB="#4.9, #6.2A" anchorPointB="#4.F5, #6.22" isLine="true"/>
+                    <MorphCurves controlPointA="#2.97, #6.22" anchorPointA="#2.99, #6.22" controlPointB="#4.F9, #6.22" anchorPointB="#4.FD, #6.22" isLine="true"/>
+                    <MorphCurves controlPointA="#3.13, #6.1C" anchorPointA="#3.8D, #6.15" controlPointB="#5.F3, #6.1C" anchorPointB="#6.E8, #6.15" isLine="true"/>
+                    <MorphCurves controlPointA="#3.8D, #6.15" anchorPointA="#3.8D, #6.15" controlPointB="#6.E8, #6.15" anchorPointB="#6.E8, #6.15" isLine="true"/>
+                    <MorphCurves controlPointA="#3.CF, #6.1A" anchorPointA="#4.1, #6.1E" controlPointB="#7.6B, #6.1A" anchorPointB="#7.EE, #6.1E" isLine="true"/>
+                    <MorphCurves controlPointA="#4.11, #6.1E" anchorPointA="#4.12, #6.1E" controlPointB="#7.F1, #6.1E" anchorPointB="#7.F4, #6.1E"/>
+                    <MorphCurves controlPointA="#4.3C, #6.22" anchorPointA="#4.64, #6.2D" controlPointB="#8.48, #6.22" anchorPointB="#8.9A, #6.2D"/>
+                    <MorphCurves controlPointA="#4.65, #6.2D" anchorPointA="#4.66, #6.2D" controlPointB="#8.9D, #6.2D" anchorPointB="#8.A, #6.2D"/>
+                    <MorphCurves controlPointA="#4.6C, #6.2F" anchorPointA="#4.72, #6.3" controlPointB="#8.AB, #6.2F" anchorPointB="#8.B6, #6.3" isLine="true"/>
+                    <MorphCurves controlPointA="#4.74, #6.3" anchorPointA="#4.76, #6.31" controlPointB="#8.B9, #6.3" anchorPointB="#8.BC, #6.3"/>
+                    <MorphCurves controlPointA="#4.7C, #6.33" anchorPointA="#4.7F, #6.35" controlPointB="#8.C5, #6.31" anchorPointB="#8.CC, #6.32"/>
+                    <MorphCurves controlPointA="#4.83, #6.36" anchorPointA="#4.87, #6.38" controlPointB="#8.D3, #6.33" anchorPointB="#8.D7, #6.35"/>
+                    <MorphCurves controlPointA="#4.88, #6.38" anchorPointA="#4.89, #6.39" controlPointB="#8.DA, #6.35" anchorPointB="#8.DD, #6.36"/>
+                    <MorphCurves controlPointA="#4.8E, #6.3C" anchorPointA="#4.9, 6.25" controlPointB="#8.E4, #6.37" anchorPointB="#8.EB, #6.39"/>
+                    <MorphCurves controlPointA="#4.9, #6.41" anchorPointA="#4.9, #6.42" controlPointB="#8.EC, #6.39" anchorPointB="#8.ED, #6.39"/>
+                    <MorphCurves controlPointA="#4.9, #6.46" anchorPointA="#4.8D, #6.4B" controlPointB="#8.F8, #6.3D" anchorPointB="#8.FA, #6.42"/>
+                    <MorphCurves controlPointA="#4.89, #6.5" anchorPointA="#4.81, #6.56" controlPointB="#8.FA, #6.4A" anchorPointB="#8.E2, #6.54"/>
+                    <MorphCurves controlPointA="#4.7F, #6.57" anchorPointA="#4.7D, #6.58" controlPointB="#8.DF, #6.55" anchorPointB="#8.DB, #6.56"/>
+                    <MorphCurves controlPointA="#4.76, #6.5D" anchorPointA="#4.6C, #6.61" controlPointB="#8.CF, #6.5A" anchorPointB="8.75, #6.5D"/>
+                    <MorphCurves controlPointA="#4.7, #6.61" anchorPointA="#4.74, #6.61" controlPointB="#8.B8, #6.5F" anchorPointB="#8.B, #6.61"/>
+                    <MorphCurves controlPointA="#4.89, #6.64" anchorPointA="#4.9D, #6.66" controlPointB="#8.D9, #6.63" anchorPointB="#9.02, #6.65" isLine="true"/>
+                    <MorphCurves controlPointA="#4.A2, #6.66" anchorPointA="#4.A7, #6.66" controlPointB="#9.0B, #6.66" anchorPointB="#9.14, #6.66"/>
+                    <MorphCurves controlPointA="#4.B5, #6.65" anchorPointA="4.75, #6.66" controlPointB="#9.2D, #6.65" anchorPointB="#9.42, #6.66"/>
+                    <MorphCurves controlPointA="#4.C7, #6.66" anchorPointA="#4.CE, #6.66" controlPointB="#9.5, #6.66" anchorPointB="#9.5C, #6.66"/>
+                    <MorphCurves controlPointA="#4.DB, #6.66" anchorPointA="#4.E7, #6.67" controlPointB="#9.7A, #6.66" anchorPointB="#9.95, #6.67"/>
+                    <MorphCurves controlPointA="#4.ED, #6.67" anchorPointA="#4.F2, #6.67" controlPointB="#9.A1, #6.67" anchorPointB="#9.AC, #6.67"/>
+                    <MorphCurves controlPointA="#5.01, #6.67" anchorPointA="#5.0F, #6.68" controlPointB="#9.CB, #6.66" anchorPointB="#9.E8, #6.67"/>
+                    <MorphCurves controlPointA="#5.15, #6.67" anchorPointA="#5.1B, #6.68" controlPointB="#9.F3, #6.67" anchorPointB="#9.FE, #6.68"/>
+                    <MorphCurves controlPointA="#5.1F, #6.68" anchorPointA="#5.23, #6.68" controlPointB="#A.08, #6.68" anchorPointB="#A.12, #6.68"/>
+                    <MorphCurves controlPointA="#5.29, #6.69" anchorPointA="#5.2F, #6.69" controlPointB="#A.1D, #6.67" anchorPointB="#A.27, #6.68"/>
+                    <MorphCurves controlPointA="#5.35, #6.69" anchorPointA="#5.3B, #6.69" controlPointB="#A.33, #6.68" anchorPointB="#A.3F, #6.68" isLine="true"/>
+                    <MorphCurves controlPointA="#5.41, #6.69" anchorPointA="#5.48, #6.69" controlPointB="#A.4C, #6.69" anchorPointB="#A.58, #6.69"/>
+                    <MorphCurves controlPointA="#5.51, #6.68" anchorPointA="#5.5C, #6.69" controlPointB="#A.6D, #6.68" anchorPointB="#A.88, #6.69"/>
+                    <MorphCurves controlPointA="#5.6, #6.69" anchorPointA="#5.64, #6.69" controlPointB="#A.91, #6.69" anchorPointB="#A.9B, #6.69"/>
+                    <MorphCurves controlPointA="#5.72, #6.68" anchorPointA="#5.7E, #6.6A" controlPointB="#A.BC, #6.68" anchorPointB="#A.D7, #6.6A"/>
+                    <MorphCurves controlPointA="5.5, #6.6A" anchorPointA="#5.82, #6.6A" controlPointB="#A.DC, #6.6A" anchorPointB="#A.E1, #6.6A"/>
+                    <MorphCurves controlPointA="#6.43, #6.73" anchorPointA="#7.04, #6.7C" controlPointB="#C.63, #6.73" anchorPointB="#D.E5, #6.7C" isLine="true"/>
+                    <MorphCurves controlPointA="#7.0A, #6.7E" anchorPointA="#7.1, 6.5" controlPointB="#D.F2, #6.7C" anchorPointB="#D.FF, #6.7C" isLine="true"/>
+                    <MorphCurves controlPointA="#7.19, #6.82" anchorPointA="#7.22, #6.84" controlPointB="#E.11, #6.7E" anchorPointB="#E.22, 6.5" isLine="true"/>
+                    <MorphCurves controlPointA="#7.2A, #6.86" anchorPointA="#7.3, #6.88" controlPointB="#E.2F, #6.82" anchorPointB="#E.3C, #6.84"/>
+                    <MorphCurves controlPointA="#7.36, #6.8A" anchorPointA="#7.3A, #6.8C" controlPointB="#E.48, #6.86" anchorPointB="#E.52, #6.88"/>
+                    <MorphCurves controlPointA="#7.3A, #6.8C" anchorPointA="#7.3A, #6.8B" controlPointB="#E.53, #6.88" anchorPointB="#E.54, #6.88"/>
+                    <MorphCurves controlPointA="#7.3C, #6.8D" anchorPointA="#7.3E, #6.8F" controlPointB="#E.5B, #6.89" anchorPointB="#E.61, #6.8A"/>
+                    <MorphCurves controlPointA="7.25, #6.8F" anchorPointA="7.25, #6.92" controlPointB="#E.65, #6.8B" anchorPointB="#E.69, #6.8C"/>
+                    <MorphCurves controlPointA="#7.41, #6.94" anchorPointA="#7.41, #6.95" controlPointB="#E.6B, #6.8C" anchorPointB="#E.6D, #6.8C"/>
+                    <MorphCurves controlPointA="#7.41, #6.95" anchorPointA="#7.41, #6.95" controlPointB="#E.6D, #6.8C" anchorPointB="#E.6D, #6.8B"/>
+                    <MorphCurves controlPointA="#7.42, #6.97" anchorPointA="#7.41, #6.98" controlPointB="#E.71, #6.8D" anchorPointB="#E.75, #6.8F"/>
+                    <MorphCurves controlPointA="#7.41, #6.99" anchorPointA="#7.41, #6.99" controlPointB="#E.78, #6.8F" anchorPointB="#E.79, #6.91"/>
+                    <MorphCurves controlPointA="#7.41, #6.99" anchorPointA="#7.41, #6.99" controlPointB="#E.79, #6.91" anchorPointB="#E.79, #6.92"/>
+                    <MorphCurves controlPointA="7.25, #6.9A" anchorPointA="7.25, #6.9B" controlPointB="#E.7C, #6.95" anchorPointB="#E.7C, #6.97"/>
+                    <MorphCurves controlPointA="#7.3F, #6.9C" anchorPointA="#7.3E, #6.9D" controlPointB="#E.7C, #6.98" anchorPointB="#E.7B, #6.99"/>
+                    <MorphCurves controlPointA="#7.3D, #6.9E" anchorPointA="#7.3C, #6.9F" controlPointB="#E.79, #6.9A" anchorPointB="#E.79, #6.9B"/>
+                    <MorphCurves controlPointA="#7.39, #6.A1" anchorPointA="#7.36, #6.A3" controlPointB="#E.72, #6.9E" anchorPointB="#E.6B, #6.A1" isLine="true"/>
+                    <MorphCurves controlPointA="#7.35, #6.A4" anchorPointA="#7.34, #6.A5" controlPointB="#E.68, #6.A2" anchorPointB="#E.65, #6.A3" isLine="true"/>
+                    <MorphCurves controlPointA="#7.2E, #6.A7" anchorPointA="#7.27, #6.A9" controlPointB="#E.59, #6.A5" anchorPointB="#E.4C, #6.A7" isLine="true"/>
+                    <MorphCurves controlPointA="#7.28, #6.A9" anchorPointA="#7.28, #6.A9" controlPointB="#E.4B, #6.A7" anchorPointB="#E.4A, #6.A7" isLine="true"/>
+                    <MorphCurves controlPointA="#7.28, #6.AA" anchorPointA="#7.27, #6.AA" controlPointB="#E.49, #6.A8" anchorPointB="#E.48, #6.A9" isLine="true"/>
+                    <MorphCurves controlPointA="#7.28, #6.AB" anchorPointA="#7.28, #6.AB" controlPointB="#E.47, #6.A9" anchorPointB="#E.46, #6.A9" isLine="true"/>
+                    <MorphCurves controlPointA="#7.29, #6.AB" anchorPointA="#7.29, #6.AB" controlPointB="#E.47, #6.A9" anchorPointB="#E.48, #6.A9" isLine="true"/>
+                    <MorphCurves controlPointA="#7.2A, #6.AC" anchorPointA="#7.2B, #6.AC" controlPointB="#E.47, #6.AA" anchorPointB="#E.46, #6.AA" isLine="true"/>
+                    <MorphCurves controlPointA="#7.2B, #6.AC" anchorPointA="#7.2B, #6.AC" controlPointB="#E.47, #6.AB" anchorPointB="#E.48, #6.AB" isLine="true"/>
+                    <MorphCurves controlPointA="#7.2D, #6.AC" anchorPointA="#7.2E, #6.AC" controlPointB="#E.4B, #6.AC" anchorPointB="#E.4E, #6.AC" isLine="true"/>
+                    <MorphCurves controlPointA="#7.33, #6.AE" anchorPointA="#7.38, #6.AF" controlPointB="#E.58, #6.AD" anchorPointB="#E.62, #6.AE" isLine="true"/>
+                    <MorphCurves controlPointA="#7.87, #6.BA" anchorPointA="#7.D5, #6.C5" controlPointB="#F.01, #6.BA" anchorPointB="#F.A, #6.C5" isLine="true"/>
+                    <MorphCurves controlPointA="#7.D8, #6.C5" anchorPointA="#7.DB, #6.C5" controlPointB="#F.A5, #6.C5" anchorPointB="#F.AA, #6.C5"/>
+                    <MorphCurves controlPointA="#8.15, #6.CE" anchorPointA="#8.36, #6.D7" controlPointB="#10.22, #6.CD" anchorPointB="#10.69, #6.D5"/>
+                    <MorphCurves controlPointA="#8.38, #6.D7" anchorPointA="#8.3A, #6.D8" controlPointB="#10.6D, #6.D6" anchorPointB="#10.71, #6.D7"/>
+                    <MorphCurves controlPointA="#8.5B, #6.DF" anchorPointA="8.5, #6.EF" controlPointB="#10.B2, #6.DE" anchorPointB="#10.FE, #6.ED"/>
+                    <MorphCurves controlPointA="#8.83, #6.F" anchorPointA="#8.86, #6.F1" controlPointB="#11.03, #6.EE" anchorPointB="#11.08, #6.EF"/>
+                    <MorphCurves controlPointA="#8.92, #6.F5" anchorPointA="#8.99, #6.FB" controlPointB="#11.1F, #6.F2" anchorPointB="#11.2E, #6.F7"/>
+                    <MorphCurves controlPointA="#8.9C, #6.FC" anchorPointA="#8.9F, #6.FE" controlPointB="#11.35, #6.F9" anchorPointB="#11.3B, #6.FB"/>
+                    <MorphCurves controlPointA="#8.A2, 7" anchorPointA="#8.A4, #7.02" controlPointB="#11.45, #6.FD" anchorPointB="#11.4C, 7"/>
+                    <MorphCurves controlPointA="#8.A5, #7.04" anchorPointA="#8.A5, #7.05" controlPointB="#11.4F, #7.01" anchorPointB="#11.52, #7.02"/>
+                    <MorphCurves controlPointA="#8.A5, #7.06" anchorPointA="#8.A5, #7.07" controlPointB="#11.53, #7.04" anchorPointB="#11.54, #7.06" isLine="true"/>
+                    <MorphCurves controlPointA="#8.A5, #7.07" anchorPointA="#8.A5, #7.07" controlPointB="#11.54, #7.07" anchorPointB="#11.54, #7.07"/>
+                    <MorphCurves controlPointA="#8.A7, #7.0A" anchorPointA="#8.A8, #7.0D" controlPointB="#11.5A, #7.0C" anchorPointB="#11.5C, #7.12"/>
+                    <MorphCurves controlPointA="#8.A9, #7.0F" anchorPointA="#8.A9, #7.12" controlPointB="#11.5D, #7.19" anchorPointB="#11.57, #7.1F"/>
+                    <MorphCurves controlPointA="#8.AA, #7.1D" anchorPointA="#8.A2, #7.27" controlPointB="#11.4C, #7.2A" anchorPointB="#11.2D, #7.32"/>
+                    <MorphCurves controlPointA="#8.9C, #7.2D" anchorPointA="#8.92, #7.32" controlPointB="#11.1B, #7.36" anchorPointB="#11.09, #7.3A"/>
+                    <MorphCurves controlPointA="#8.81, #7.3A" anchorPointA="#8.7, #7.42" controlPointB="#10.E5, #7.42" anchorPointB="#10.C1, #7.4A" isLine="true"/>
+                    <MorphCurves controlPointA="#8.67, #7.46" anchorPointA="#8.5D, #7.4A" controlPointB="#10.AC, #7.4D" anchorPointB="#10.97, #7.5" isLine="true"/>
+                    <MorphCurves controlPointA="#8.44, #7.51" anchorPointA="#8.2B, #7.58" controlPointB="#10.63, #7.57" anchorPointB="#10.2F, #7.5E" isLine="true"/>
+                    <MorphCurves controlPointA="#8.2B, #7.58" anchorPointA="#8.2A, #7.58" controlPointB="#10.2E, #7.5E" anchorPointB="#10.2D, #7.5E" isLine="true"/>
+                    <MorphCurves controlPointA="#8.27, #7.59" anchorPointA="#8.24, #7.5A" controlPointB="#10.27, #7.5E" anchorPointB="#10.21, #7.6"/>
+                    <MorphCurves controlPointA="#8.1D, #7.5C" anchorPointA="#8.16, #7.5E" controlPointB="#10.12, #7.61" anchorPointB="#10.03, #7.62" isLine="true"/>
+                    <MorphCurves controlPointA="#8.16, #7.5E" anchorPointA="#8.15, #7.5E" controlPointB="#10.02, #7.62" anchorPointB="#10.01, #7.62" isLine="true"/>
+                    <MorphCurves controlPointA="#8.12, #7.5E" anchorPointA="#8.0F, #7.6" controlPointB="#F.FB, #7.62" anchorPointB="#F.F5, #7.62"/>
+                    <MorphCurves controlPointA="#7.A7, #7.6E" anchorPointA="#7.3E, #7.7B" controlPointB="#F.23, #7.7" anchorPointB="#E.51, #7.7D" isLine="true"/>
+                    <MorphCurves controlPointA="#7.35, #7.7C" anchorPointA="#7.2C, #7.7D" controlPointB="#E.3E, #7.7D" anchorPointB="#E.2B, #7.7D" isLine="true"/>
+                    <MorphCurves controlPointA="6.25, #7.87" anchorPointA="#5.54, #7.91" controlPointB="#C.51, #7.87" anchorPointB="#A.76, #7.91" isLine="true"/>
+                    <MorphCurves controlPointA="#5.4F, #7.91" anchorPointA="#5.4A, #7.91" controlPointB="#A.6D, #7.91" anchorPointB="#A.64, #7.91"/>
+                    <MorphCurves controlPointA="#5.1, #7.91" anchorPointA="#4.D3, #7.94" controlPointB="#9.F3, #7.91" anchorPointB="#9.7B, #7.94"/>
+                    <MorphCurves controlPointA="#4.D1, #7.94" anchorPointA="#4.CF, #7.94" controlPointB="#9.78, #7.94" anchorPointB="#9.75, #7.94"/>
+                    <MorphCurves controlPointA="#4.8E, #7.93" anchorPointA="#4.4C, #7.91" controlPointB="#8.F2, #7.93" anchorPointB="#8.6F, #7.91" isLine="true"/>
+                    <MorphCurves controlPointA="#4.0A, #7.8F" anchorPointA="#3.CA, #7.8F" controlPointB="#7.E6, #7.8F" anchorPointB="#7.61, #7.8F"/>
+                    <MorphCurves controlPointA="#3.C9, #7.8F" anchorPointA="#3.C8, #7.8F" controlPointB="#7.6, #7.8F" anchorPointB="#7.5F, #7.8F"/>
+                    <MorphCurves controlPointA="#3.87, #7.8D" anchorPointA="#3.46, #7.8B" controlPointB="#6.DD, #7.8D" anchorPointB="#6.5B, #7.8B" isLine="true"/>
+                    <MorphCurves controlPointA="#3.46, #7.8B" anchorPointA="#3.45, #7.8B" controlPointB="#6.59, #7.8B" anchorPointB="#6.57, #7.8B" isLine="true"/>
+                    <MorphCurves controlPointA="#2.1C, #7.7" anchorPointA="#0.F3, #7.55" controlPointB="#4.01, #7.71" anchorPointB="#1.AB, #7.57" isLine="true"/>
+                    <MorphCurves controlPointA="#0.EE, #7.54" anchorPointA="#0.E9, #7.53" controlPointB="#1.A, #7.56" anchorPointB="#1.95, #7.55"/>
+                    <MorphCurves controlPointA="#0.B, #7.46" anchorPointA="#0.7B, #7.31" controlPointB="#1.25, #7.4A" anchorPointB="#0.BC, #7.37"/>
+                    <MorphCurves controlPointA="#0.75, #7.2F" anchorPointA="#0.7, #7.2C" controlPointB="#0.AE, #7.34" anchorPointB="#0.A, #7.31"/>
+                    <MorphCurves controlPointA="#0.49, #7.18" anchorPointA="#0.61, #6.FD" controlPointB="#0.29, #7.1A" anchorPointB="#0.79, #6.F7"/>
+                    <MorphCurves controlPointA="#0.61, #6.FD" anchorPointA="#0.68, #6.F7" controlPointB="#0.79, #6.F7" anchorPointB="#0.79, #6.F7" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#0.87, #7.04" startPointB="#0.B8, #7.04" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#0.88, 7" anchorPointA="#0.8B, #6.FB" controlPointB="#0.BC, #6.FD" anchorPointB="#0.CB, #6.F5"/>
+                    <MorphCurves controlPointA="#0.99, #6.ED" anchorPointA="#0.AB, #6.E3" controlPointB="#0.E9, #6.EA" anchorPointB="#1.06, #6.E3"/>
+                    <MorphCurves controlPointA="#0.C5, #6.D9" anchorPointA="#0.DF, #6.D4" controlPointB="#1.34, #6.DA" anchorPointB="#1.64, #6.D4"/>
+                    <MorphCurves controlPointA="#0.F5, #6.D1" anchorPointA="#1.06, #6.CD" controlPointB="#1.8D, #6.D2" anchorPointB="#1.AE, #6.D" isLine="true"/>
+                    <MorphCurves controlPointA="#1.58, #6.C7" anchorPointA="#1.AA, 6.75" controlPointB="#2.4C, #6.C9" anchorPointB="#2.EA, #6.C2" isLine="true"/>
+                    <MorphCurves controlPointA="#1.BF, 6.75" anchorPointA="#1.C3, #6.C1" controlPointB="#3.15, 6.75" anchorPointB="#3.1D, 6.75"/>
+                    <MorphCurves controlPointA="#1.C4, 6.75" anchorPointA="#1.C4, #6.C1" controlPointB="#3.21, 6.75" anchorPointB="#3.25, 6.75"/>
+                    <MorphCurves controlPointA="#1.C7, #6.C5" anchorPointA="#1.B8, #6.C8" controlPointB="#3.32, 6.75" anchorPointB="#3.3F, #6.C1"/>
+                    <MorphCurves controlPointA="#1.AA, #6.CA" anchorPointA="#1.A2, #6.CB" controlPointB="#3.34, #6.C7" anchorPointB="#3.1C, #6.C9"/>
+                    <MorphCurves controlPointA="#1.5F, #6.D6" anchorPointA="#1.1B, #6.E1" controlPointB="#2.99, #6.D3" anchorPointB="#2.15, #6.DD" isLine="true"/>
+                    <MorphCurves controlPointA="#1.18, #6.E1" anchorPointA="#1.0A, #6.E5" controlPointB="#2.07, #6.DE" anchorPointB="#1.F9, #6.DF"/>
+                    <MorphCurves controlPointA="#1.06, #6.E7" anchorPointA="#1.02, #6.E8" controlPointB="#1.F, #6.E" anchorPointB="#1.E7, #6.E1" isLine="true"/>
+                    <MorphCurves controlPointA="#0.FA, #6.EB" anchorPointA="#0.F1, #6.EE" controlPointB="#1.E1, #6.E1" anchorPointB="#1.C4, #6.E5"/>
+                    <MorphCurves controlPointA="#0.DE, #6.F4" anchorPointA="#0.CB, #6.FA" controlPointB="#1.9F, #6.EB" anchorPointB="#1.7A, #6.F1" isLine="true"/>
+                    <MorphCurves controlPointA="#0.C4, #6.FB" anchorPointA="#0.BD, #7.01" controlPointB="#1.6C, #6.F4" anchorPointB="#1.5E, #6.F6"/>
+                    <MorphCurves controlPointA="#0.B7, #7.03" anchorPointA="#0.B4, #7.07" controlPointB="#1.51, #6.F8" anchorPointB="#1.43, #6.FA"/>
+                    <MorphCurves controlPointA="#0.B3, #7.07" anchorPointA="#0.B2, #7.08" controlPointB="#1.41, #6.FA" anchorPointB="#1.3F, #6.FA"/>
+                    <MorphCurves controlPointA="#0.B, #7.0C" anchorPointA="#0.AD, #7.0F" controlPointB="#1.37, #6.FB" anchorPointB="#1.2F, #6.FE"/>
+                    <MorphCurves controlPointA="#0.AC, #7.11" anchorPointA="#0.AB, #7.13" controlPointB="#1.2B, #6.FF" anchorPointB="#1.27, #7.01"/>
+                    <MorphCurves controlPointA="#0.AB, #7.14" anchorPointA="#0.AB, #7.15" controlPointB="#1.25, #7.01" anchorPointB="#1.23, #7.01"/>
+                    <MorphCurves controlPointA="#0.AB, #7.17" anchorPointA="#0.AB, #7.18" controlPointB="#1.2, #7.02" anchorPointB="#1.1D, #7.03"/>
+                    <MorphCurves controlPointA="#0.AC, #7.1A" anchorPointA="#0.AC, #7.1F" controlPointB="#1.19, #7.04" anchorPointB="#1.16, #7.06"/>
+                    <MorphCurves controlPointA="#0.AC, #7.21" anchorPointA="#0.AC, #7.22" controlPointB="#1.13, #7.07" anchorPointB="#1.1, #7.08"/>
+                    <MorphCurves controlPointA="#0.AB, #7.23" anchorPointA="#0.A8, #7.24" controlPointB="#1.0B, #7.0C" anchorPointB="#1.06, #7.0F"/>
+                    <MorphCurves controlPointA="#0.A8, #7.24" anchorPointA="#0.A8, #7.24" controlPointB="#1.04, #7.12" anchorPointB="#1.02, #7.15"/>
+                    <MorphCurves controlPointA="#0.A7, #7.24" anchorPointA="#0.A6, #7.24" controlPointB="#1.02, #7.17" anchorPointB="#1.02, #7.18" isLine="true"/>
+                    <MorphCurves controlPointA="#0.A5, #7.24" anchorPointA="#0.A4, #7.24" controlPointB="#1.04, #7.1A" anchorPointB="#1.04, #7.1F"/>
+                    <MorphCurves controlPointA="#0.A2, #7.23" anchorPointA="#0.A, #7.22" controlPointB="#1.06, #7.23" anchorPointB="#0.FC, #7.24"/>
+                    <MorphCurves controlPointA="#0.9E, #7.21" anchorPointA="#0.9C, #7.2" controlPointB="#0.F8, #7.23" anchorPointB="#0.F4, #7.22" isLine="true"/>
+                    <MorphCurves controlPointA="#0.99, #7.1E" anchorPointA="#0.95, #7.1C" controlPointB="#0.EC, #7.21" anchorPointB="#0.E3, #7.2" isLine="true"/>
+                    <MorphCurves controlPointA="#0.91, #7.19" anchorPointA="#0.8D, #7.16" controlPointB="#0.DB, #7.1D" anchorPointB="#0.D3, #7.1A" isLine="true"/>
+                    <MorphCurves controlPointA="#0.8A, #7.13" anchorPointA="#0.88, #7.1" controlPointB="#0.CC, #7.18" anchorPointB="#0.C4, #7.16"/>
+                    <MorphCurves controlPointA="#0.87, #7.0E" anchorPointA="#0.87, #7.0C" controlPointB="#0.BE, #7.13" anchorPointB="#0.BB, #7.1"/>
+                    <MorphCurves controlPointA="#0.87, #7.0B" anchorPointA="#0.87, #7.0A" controlPointB="#0.B9, #7.0E" anchorPointB="#0.B8, #7.0C"/>
+                    <MorphCurves controlPointA="#0.87, #7.08" anchorPointA="#0.87, #7.06" controlPointB="#0.B8, #7.08" anchorPointB="#0.B8, #7.04" isLine="true"/>
+                    <MorphCurves controlPointA="#0.87, #7.06" anchorPointA="#0.87, #7.04" controlPointB="#0.B8, #7.04" anchorPointB="#0.B8, #7.04" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#0.87, #7.04" startPointB="#0.B8, #7.04" strokeIndex1="0" strokeIndex2="0" fillIndex1="1" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.88, 7" anchorPointA="#0.8B, #6.FB" controlPointB="#0.BC, #6.FD" anchorPointB="#0.CB, #6.F5"/>
+                    <MorphCurves controlPointA="#0.99, #6.ED" anchorPointA="#0.AB, #6.E3" controlPointB="#0.E9, #6.EA" anchorPointB="#1.06, #6.E3"/>
+                    <MorphCurves controlPointA="#0.C5, #6.D9" anchorPointA="#0.DF, #6.D4" controlPointB="#1.34, #6.DA" anchorPointB="#1.64, #6.D4"/>
+                    <MorphCurves controlPointA="#0.F5, #6.D1" anchorPointA="#1.06, #6.CD" controlPointB="#1.8D, #6.D2" anchorPointB="#1.AE, #6.D" isLine="true"/>
+                    <MorphCurves controlPointA="#1.58, #6.C7" anchorPointA="#1.AA, 6.75" controlPointB="#2.4C, #6.C9" anchorPointB="#2.EA, #6.C2" isLine="true"/>
+                    <MorphCurves controlPointA="#1.BF, 6.75" anchorPointA="#1.C3, #6.C1" controlPointB="#3.15, 6.75" anchorPointB="#3.1D, 6.75"/>
+                    <MorphCurves controlPointA="#1.C4, 6.75" anchorPointA="#1.C4, #6.C1" controlPointB="#3.21, 6.75" anchorPointB="#3.25, 6.75"/>
+                    <MorphCurves controlPointA="#1.C7, #6.C5" anchorPointA="#1.B8, #6.C8" controlPointB="#3.32, 6.75" anchorPointB="#3.3F, #6.C1"/>
+                    <MorphCurves controlPointA="#1.AA, #6.CA" anchorPointA="#1.A2, #6.CB" controlPointB="#3.34, #6.C7" anchorPointB="#3.1C, #6.C9"/>
+                    <MorphCurves controlPointA="#1.5F, #6.D6" anchorPointA="#1.1B, #6.E1" controlPointB="#2.99, #6.D3" anchorPointB="#2.15, #6.DD" isLine="true"/>
+                    <MorphCurves controlPointA="#1.18, #6.E1" anchorPointA="#1.0A, #6.E5" controlPointB="#2.07, #6.DE" anchorPointB="#1.F9, #6.DF"/>
+                    <MorphCurves controlPointA="#1.06, #6.E7" anchorPointA="#1.02, #6.E8" controlPointB="#1.F, #6.E" anchorPointB="#1.E7, #6.E1" isLine="true"/>
+                    <MorphCurves controlPointA="#0.FA, #6.EB" anchorPointA="#0.F1, #6.EE" controlPointB="#1.E1, #6.E1" anchorPointB="#1.C4, #6.E5"/>
+                    <MorphCurves controlPointA="#0.DE, #6.F4" anchorPointA="#0.CB, #6.FA" controlPointB="#1.9F, #6.EB" anchorPointB="#1.7A, #6.F1" isLine="true"/>
+                    <MorphCurves controlPointA="#0.C4, #6.FB" anchorPointA="#0.BD, #7.01" controlPointB="#1.6C, #6.F4" anchorPointB="#1.5E, #6.F6"/>
+                    <MorphCurves controlPointA="#0.B7, #7.03" anchorPointA="#0.B4, #7.07" controlPointB="#1.51, #6.F8" anchorPointB="#1.43, #6.FA"/>
+                    <MorphCurves controlPointA="#0.B3, #7.07" anchorPointA="#0.B2, #7.08" controlPointB="#1.41, #6.FA" anchorPointB="#1.3F, #6.FA"/>
+                    <MorphCurves controlPointA="#0.B, #7.0C" anchorPointA="#0.AD, #7.0F" controlPointB="#1.37, #6.FB" anchorPointB="#1.2F, #6.FE"/>
+                    <MorphCurves controlPointA="#0.AC, #7.11" anchorPointA="#0.AB, #7.13" controlPointB="#1.2B, #6.FF" anchorPointB="#1.27, #7.01"/>
+                    <MorphCurves controlPointA="#0.AB, #7.14" anchorPointA="#0.AB, #7.15" controlPointB="#1.25, #7.01" anchorPointB="#1.23, #7.01"/>
+                    <MorphCurves controlPointA="#0.AB, #7.17" anchorPointA="#0.AB, #7.18" controlPointB="#1.2, #7.02" anchorPointB="#1.1D, #7.03"/>
+                    <MorphCurves controlPointA="#0.AC, #7.1A" anchorPointA="#0.AC, #7.1F" controlPointB="#1.19, #7.04" anchorPointB="#1.16, #7.06"/>
+                    <MorphCurves controlPointA="#0.AC, #7.21" anchorPointA="#0.AC, #7.22" controlPointB="#1.13, #7.07" anchorPointB="#1.1, #7.08"/>
+                    <MorphCurves controlPointA="#0.AB, #7.23" anchorPointA="#0.A8, #7.24" controlPointB="#1.0B, #7.0C" anchorPointB="#1.06, #7.0F"/>
+                    <MorphCurves controlPointA="#0.A8, #7.24" anchorPointA="#0.A8, #7.24" controlPointB="#1.04, #7.12" anchorPointB="#1.02, #7.15"/>
+                    <MorphCurves controlPointA="#0.A7, #7.24" anchorPointA="#0.A6, #7.24" controlPointB="#1.02, #7.17" anchorPointB="#1.02, #7.18" isLine="true"/>
+                    <MorphCurves controlPointA="#0.A5, #7.24" anchorPointA="#0.A4, #7.24" controlPointB="#1.04, #7.1A" anchorPointB="#1.04, #7.1F"/>
+                    <MorphCurves controlPointA="#0.A2, #7.23" anchorPointA="#0.A, #7.22" controlPointB="#1.06, #7.23" anchorPointB="#0.FC, #7.24"/>
+                    <MorphCurves controlPointA="#0.9E, #7.21" anchorPointA="#0.9C, #7.2" controlPointB="#0.F8, #7.23" anchorPointB="#0.F4, #7.22" isLine="true"/>
+                    <MorphCurves controlPointA="#0.99, #7.1E" anchorPointA="#0.95, #7.1C" controlPointB="#0.EC, #7.21" anchorPointB="#0.E3, #7.2" isLine="true"/>
+                    <MorphCurves controlPointA="#0.91, #7.19" anchorPointA="#0.8D, #7.16" controlPointB="#0.DB, #7.1D" anchorPointB="#0.D3, #7.1A" isLine="true"/>
+                    <MorphCurves controlPointA="#0.8A, #7.13" anchorPointA="#0.88, #7.1" controlPointB="#0.CC, #7.18" anchorPointB="#0.C4, #7.16"/>
+                    <MorphCurves controlPointA="#0.87, #7.0E" anchorPointA="#0.87, #7.0C" controlPointB="#0.BE, #7.13" anchorPointB="#0.BB, #7.1"/>
+                    <MorphCurves controlPointA="#0.87, #7.0B" anchorPointA="#0.87, #7.0A" controlPointB="#0.B9, #7.0E" anchorPointB="#0.B8, #7.0C"/>
+                    <MorphCurves controlPointA="#0.87, #7.08" anchorPointA="#0.87, #7.06" controlPointB="#0.B8, #7.08" anchorPointB="#0.B8, #7.04" isLine="true"/>
+                    <MorphCurves controlPointA="#0.87, #7.06" anchorPointA="#0.87, #7.04" controlPointB="#0.B8, #7.04" anchorPointB="#0.B8, #7.04" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#1.87, #6.71" startPointB="#2.C4, #6.71" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
+                    <MorphCurves controlPointA="#1.8B, #6.66" anchorPointA="#1.BC, #6.59" controlPointB="#2.CC, #6.66" anchorPointB="#3.35, #6.59"/>
+                    <MorphCurves controlPointA="#1.F, #6.4C" anchorPointA="#2.08, #6.49" controlPointB="#3.A, #6.4C" anchorPointB="#3.D, #6.49"/>
+                    <MorphCurves controlPointA="#2.4D, 6.25" anchorPointA="#2.9, #6.36" controlPointB="#4.58, 6.25" anchorPointB="#4.DC, #6.36" isLine="true"/>
+                    <MorphCurves controlPointA="#2.9, #6.39" anchorPointA="#2.8F, #6.39" controlPointB="#4.F3, #6.38" anchorPointB="#4.EF, #6.39"/>
+                    <MorphCurves controlPointA="#2.8C, #6.3B" anchorPointA="#2.88, #6.3C" controlPointB="#4.EB, #6.39" anchorPointB="#4.E, #6.39"/>
+                    <MorphCurves controlPointA="#2.5, #6.49" anchorPointA="#2.1A, #6.55" controlPointB="#4.7, #6.46" anchorPointB="#4.03, #6.53" isLine="true"/>
+                    <MorphCurves controlPointA="#2.15, #6.56" anchorPointA="#2.1, #6.57" controlPointB="#3.FA, #6.54" anchorPointB="#3.F1, #6.55"/>
+                    <MorphCurves controlPointA="#1.E4, #6.64" anchorPointA="#1.CF, #6.79" controlPointB="#3.9A, #6.6" anchorPointB="#3.6B, #6.71"/>
+                    <MorphCurves controlPointA="#1.CD, #6.7B" anchorPointA="#1.CB, #6.7D" controlPointB="#3.65, #6.73" anchorPointB="#3.6, #6.75"/>
+                    <MorphCurves controlPointA="#1.C8, #6.81" anchorPointA="#1.C8, #6.81" controlPointB="#3.56, #6.79" anchorPointB="#3.55, #6.79" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C7, #6.82" anchorPointA="#1.C5, #6.82" controlPointB="#3.52, #6.7B" anchorPointB="#3.4F, #6.7D"/>
+                    <MorphCurves controlPointA="#1.C4, #6.83" anchorPointA="#1.C2, #6.84" controlPointB="#3.4C, #6.7F" anchorPointB="#3.49, #6.81"/>
+                    <MorphCurves controlPointA="1.75, #6.84" anchorPointA="#1.BE, #6.84" controlPointB="#3.46, #6.82" anchorPointB="#3.3D, #6.83"/>
+                    <MorphCurves controlPointA="#1.BD, #6.84" anchorPointA="#1.BC, #6.84" controlPointB="#3.3A, #6.84" anchorPointB="#3.35, #6.84"/>
+                    <MorphCurves controlPointA="#1.B1, #6.83" anchorPointA="#1.A6, #6.81" controlPointB="#3.2, #6.83" anchorPointB="#3.0B, #6.81" isLine="true"/>
+                    <MorphCurves controlPointA="#1.A4, #6.81" anchorPointA="#1.A2, #6.81" controlPointB="#3.07, #6.81" anchorPointB="#3.03, #6.81"/>
+                    <MorphCurves controlPointA="#1.85, #6.79" anchorPointA="#1.87, #6.71" controlPointB="#2.D3, #6.7C" anchorPointB="#2.C8, #6.76"/>
+                    <MorphCurves controlPointA="#1.87, #6.71" anchorPointA="#1.87, #6.71" controlPointB="#2.C8, #6.76" anchorPointB="#2.C4, #6.71" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#1.87, #6.71" startPointB="#2.C4, #6.71" strokeIndex1="0" strokeIndex2="0" fillIndex1="1" fillIndex2="1">
+                    <MorphCurves controlPointA="#1.8B, #6.66" anchorPointA="#1.BC, #6.59" controlPointB="#2.CC, #6.66" anchorPointB="#3.35, #6.59"/>
+                    <MorphCurves controlPointA="#1.F, #6.4C" anchorPointA="#2.08, #6.49" controlPointB="#3.A, #6.4C" anchorPointB="#3.D, #6.49"/>
+                    <MorphCurves controlPointA="#2.4D, 6.25" anchorPointA="#2.9, #6.36" controlPointB="#4.58, 6.25" anchorPointB="#4.DC, #6.36" isLine="true"/>
+                    <MorphCurves controlPointA="#2.9, #6.39" anchorPointA="#2.8F, #6.39" controlPointB="#4.F3, #6.38" anchorPointB="#4.EF, #6.39"/>
+                    <MorphCurves controlPointA="#2.8C, #6.3B" anchorPointA="#2.88, #6.3C" controlPointB="#4.EB, #6.39" anchorPointB="#4.E, #6.39"/>
+                    <MorphCurves controlPointA="#2.5, #6.49" anchorPointA="#2.1A, #6.55" controlPointB="#4.7, #6.46" anchorPointB="#4.03, #6.53" isLine="true"/>
+                    <MorphCurves controlPointA="#2.15, #6.56" anchorPointA="#2.1, #6.57" controlPointB="#3.FA, #6.54" anchorPointB="#3.F1, #6.55"/>
+                    <MorphCurves controlPointA="#1.E4, #6.64" anchorPointA="#1.CF, #6.79" controlPointB="#3.9A, #6.6" anchorPointB="#3.6B, #6.71"/>
+                    <MorphCurves controlPointA="#1.CD, #6.7B" anchorPointA="#1.CB, #6.7D" controlPointB="#3.65, #6.73" anchorPointB="#3.6, #6.75"/>
+                    <MorphCurves controlPointA="#1.C8, #6.81" anchorPointA="#1.C8, #6.81" controlPointB="#3.56, #6.79" anchorPointB="#3.55, #6.79" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C7, #6.82" anchorPointA="#1.C5, #6.82" controlPointB="#3.52, #6.7B" anchorPointB="#3.4F, #6.7D"/>
+                    <MorphCurves controlPointA="#1.C4, #6.83" anchorPointA="#1.C2, #6.84" controlPointB="#3.4C, #6.7F" anchorPointB="#3.49, #6.81"/>
+                    <MorphCurves controlPointA="1.75, #6.84" anchorPointA="#1.BE, #6.84" controlPointB="#3.46, #6.82" anchorPointB="#3.3D, #6.83"/>
+                    <MorphCurves controlPointA="#1.BD, #6.84" anchorPointA="#1.BC, #6.84" controlPointB="#3.3A, #6.84" anchorPointB="#3.35, #6.84"/>
+                    <MorphCurves controlPointA="#1.B1, #6.83" anchorPointA="#1.A6, #6.81" controlPointB="#3.2, #6.83" anchorPointB="#3.0B, #6.81" isLine="true"/>
+                    <MorphCurves controlPointA="#1.A4, #6.81" anchorPointA="#1.A2, #6.81" controlPointB="#3.07, #6.81" anchorPointB="#3.03, #6.81"/>
+                    <MorphCurves controlPointA="#1.85, #6.79" anchorPointA="#1.87, #6.71" controlPointB="#2.D3, #6.7C" anchorPointB="#2.C8, #6.76"/>
+                    <MorphCurves controlPointA="#1.87, #6.71" anchorPointA="#1.87, #6.71" controlPointB="#2.C8, #6.76" anchorPointB="#2.C4, #6.71" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1854 1679[1856 1679 1856 1682!1856 1682[1858 1687 1857 1689!1857 1689[1856 1690 1856 1691!1856 1691|1846 1699!1846 1699|1831 1705!1831 1705|1832 1705!1832 1705|1831 1706!1831 1706|1832 1707!1832 1707|1835 1708!1835 1708|1848 1711!1848
+ 1711|2005 1733!2005 1733[2067 1742 2102 1751!2102 1751[2136 1758 2176 1775!2176 1775[2192 1780 2201 1787!2201 1787[2208 1790 2212 1794!2212 1794|2213 1799!2213 1799[2216 1804 2217 1810!2217 1810[2218 1829 2194 1842!2194 1842|2141 1866
+!2141 1866|2070 1886!2070 1886|2069 1886!2069 1886[2066 1886 2063 1888!2063 1888|1836 1917!1836 1917|1354 1937!1354 1937[1294 1937 1231 1940!1231 1940|1100 1937!1100 1937[1033 1935 968 1935!968 1935|838 1931!838 1931|243 1877!243 1877
+[181 1864 123 1841!123 1841[65 1818 104 1783!104 1783[117 1772 133 1764!133 1764[191 1738 259 1730!259 1730[315 1722 370 1719!370 1719|448 1711!448 1711|497 1699!497 1699|405 1687!405 1687[352 1678 351 1660!351 1660[353 1639 403 1624
+!403 1624[456 1607 483 1601!483 1601[509 1593 560 1586!560 1586|665 1570!665 1570|909 1557!909 1557|1040 1566!1040 1566[1083 1570 1124 1581!1124 1581|1138 1584!1138 1584[1147 1586 1151 1589!1151 1589[1156 1590 1161 1593!1161 1593[1167
+ 1596 1168 1602!1168 1602[1168 1611 1153 1622!1153 1622[1144 1628 1132 1633!1132 1633|1181 1638!1181 1638[1201 1637 1216 1638!1216 1638[1237 1638 1255 1639!1255 1639[1276 1638 1295 1640!1295 1640[1306 1639 1315 1640!1315 1640|1339 1641
+!1339 1641[1353 1640 1372 1641!1372 1641[1391 1640 1406 1642!1406 1642|1796 1660!1796 1660|1826 1668!1826 1668[1842 1672 1850 1676!1850 1676|1850 1675!1850 1675|1854 1679"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!135 1804|135 1796!135 1796[137 1789 144 1781!144 1781[153 1773 173 1763!173 1763[197 1753 223 1748!223 1748|262 1741!262 1741|426 1728!426 1728[439 1727 451 1729!451 1729[452 1728 452 1729!452 1729[455 1734 434 1737!434 1737|283 1761
+!283 1761[280 1761 266 1765!266 1765|203 1786!203 1786[196 1787 189 1793!189 1793[182 1795 178 1800!178 1800|173 1807!173 1807|171 1813!171 1813|171 1816!171 1816[172 1818 172 1823!172 1823[173 1827 168 1828!168 1828|156 1824!156 1824
+|141 1814!141 1814[136 1808 135 1804!663 1591[665 1592 655 1593!655 1593|646 1596!646 1596|538 1621!538 1621[486 1634 463 1657!463 1657|459 1661!459 1661|456 1665!456 1665[454 1667 446 1668!446 1668|422 1665!422 1665[389 1658 391 1649
+!391 1649[395 1638 446 1625!446 1625[498 1612 522 1609!522 1609|656 1590!656 1590|663 1591"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!3644 1668[3677 1672 3693 1676!3693 1676|3693 1675!3693 1675|3701 1679!3701 1679[3705 1679 3705 1682!3705 1682[3710 1687 3707 1689!3707 1689[3705 1690 3705 1691!3705 1691|3685 1699!3685 1699|3654 1705!3654 1705|3656 1705!3656 1705|3654
+ 1706!3654 1706|3656 1707!3656 1707|3662 1708!3662 1708|4010 1733!4010 1733[4137 1742 4209 1751!4209 1751[4278 1758 4360 1775!4360 1775[4393 1780 4411 1787!4411 1787[4426 1790 4434 1794!4434 1794|4436 1799!4436 1799[4442 1804 4444 1810
+!4444 1810[4446 1829 4397 1842!4397 1842|4289 1866!4289 1866|4143 1886!4143 1886|4141 1886!4141 1886[4135 1886 4129 1888!4129 1888|3665 1917!3665 1917|2678 1937!2678 1937[2556 1937 2427 1940!2427 1940|2159 1937!2159 1937[2022 1935 1889
+ 1935!1889 1935|1623 1931!1623 1931|405 1877!405 1877[278 1864 160 1841!160 1841[41 1818 121 1783!121 1783[147 1772 180 1764!180 1764[299 1738 438 1730!438 1730[553 1722 665 1719!665 1719|925 1699!925 1699|737 1687!737 1687[628 1678 626
+ 1660!626 1660[630 1639 733 1624!733 1624[841 1607 896 1601!896 1601[949 1593 1054 1586!1054 1586|1269 1570!1269 1570|1768 1557!1768 1557|2036 1566!2036 1566[2124 1570 2208 1581!2208 1581|2236 1584!2236 1584[2255 1586 2263 1589!2263 1589
+[2273 1590 2283 1593!2283 1593[2296 1596 2298 1602!2298 1602[2298 1611 2267 1622!2267 1622[2249 1628 2224 1633!2224 1633|2324 1638!2324 1638[2365 1637 2396 1638!2396 1638[2439 1638 2476 1639!2476 1639[2519 1638 2558 1640!2558 1640[2580
+ 1639 2599 1640!2599 1640|2648 1641!2648 1641[2676 1640 2715 1641!2715 1641[2754 1640 2785 1642!2785 1642|3583 1660!3583 1660|3644 1668"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!184 1796[188 1789 203 1781!203 1781[221 1773 262 1763!262 1763[311 1753 364 1748!364 1748|780 1728!780 1728[806 1727 831 1729!831 1729[833 1728 833 1729!833 1729[839 1734 796 1737!796 1737|487 1761!487 1761[481 1761 452 1765!452 1765
+|323 1786!323 1786[309 1787 295 1793!295 1793[280 1795 272 1800!272 1800|262 1807!262 1807|258 1813!258 1813|258 1816!258 1816[260 1818 260 1823!260 1823[262 1827 252 1828!252 1828|227 1824!227 1824|196 1814!196 1814[186 1808 184 1804
+!184 1804|184 1796!708 1649[716 1638 821 1625!821 1625[927 1612 976 1609!976 1609|1250 1590!1250 1590|1265 1591!1265 1591[1269 1592 1248 1593!1248 1593|1009 1621!1009 1621[902 1634 855 1657!855 1657|847 1661!847 1661|841 1665!841 1665
+[837 1667 821 1668!821 1668|771 1665!771 1665[704 1658 708 1649"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 40" color="#CB26C6">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 621" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392501831054688" d="0.392501831054688" tx="-50.25" ty="44"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 621" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.36663818359375" b="-0.14007568359375" c="-0.14007568359375" d="0.36663818359375" tx="-38.75" ty="49.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 621" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0949554443359375" b="-0.380828857421875" c="-0.380828857421875" d="0.0949554443359375" tx="-29.35" ty="66"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 41" color="#95DB37">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 620" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.390823364257813" b="-0.0361328125" c="-0.0361328125" d="0.390823364257813" tx="46.75" ty="51.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 620" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.387130737304688" b="-0.064666748046875" c="-0.064666748046875" d="0.387130737304688" tx="44" ty="34.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 620" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.259902954101563" b="-0.294097900390625" c="-0.294097900390625" d="0.259902954101563" tx="21.1" ty="31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 620" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.15850830078125" b="-0.359054565429688" c="-0.359054565429688" d="0.15850830078125" tx="70.85" ty="70.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 620" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.157806396484375" b="0.359359741210938" c="0.359359741210938" d="0.157806396484375" tx="159.35" ty="100.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 620" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.011871337890625" b="0.392303466796875" c="0.392303466796875" d="-0.011871337890625" tx="168.15" ty="93.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 42" color="#89CCDC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 619" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.392135620117188" b="0.01678466796875" c="0.01678466796875" d="0.392135620117188" tx="53" ty="-3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 619" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384323120117188" b="0.0796661376953125" c="0.0796661376953125" d="0.384323120117188" tx="45.3" ty="-19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 619" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.390960693359375" b="-0.0345611572265625" c="-0.0345611572265625" d="0.390960693359375" tx="43" ty="-15.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 619" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.366363525390625" b="0.140823364257813" c="0.140823364257813" d="0.366363525390625" tx="78.7" ty="26.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 619" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.256057739257813" b="0.297470092773438" c="0.297470092773438" d="0.256057739257813" tx="121.3" ty="65.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 619" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.103439331054688" b="0.378616333007813" c="0.378616333007813" d="0.103439331054688" tx="118.7" ty="78"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 50" color="#E2FB4B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 16" color="#FF4F4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="21" keyMode="9728" soundName="黑铁人马/音效/sound327.mp3 副本">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

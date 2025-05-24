@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/做的动画/EDAPT objects/Center Marker" itemID="670fed0b-00000168" symbolType="graphic" lastModified="1729184233">
+  <persistentData>
+    <PD n="type" v="CenterMarker"/>
+    <PD n="signature" v="EDAPT"/>
+  </persistentData>
+  <timeline>
+    <DOMTimeline name="Center Marker">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="100" name="   &gt;&gt; http://flash-powertools.com -- this invisible object comes from EDAP Tools - extensions for Flash character animation." labelType="name" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.05" solidStyle="hairline">
+                        <fill>
+                          <SolidColor alpha="0.00392156862745098"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!30 0S4|0 0!0 0|0 30!0 120|-120 0!-120 0|0 -120!0 -120|120 0!120 0|0 120!-30 0|0 0!0 0|0 -30"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
