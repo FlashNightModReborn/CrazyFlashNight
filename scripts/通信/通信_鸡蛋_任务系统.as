@@ -180,6 +180,7 @@ _root.FinishTask = function(index){
 			_root.GetTask(nextTaskID);
 		}
 	}
+	_root.是否达成任务检测();
 	return true;
 }
 

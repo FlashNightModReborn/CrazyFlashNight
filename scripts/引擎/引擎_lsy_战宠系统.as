@@ -39,8 +39,8 @@ _root.战宠UI函数.计算战宠升级所需经验 = function(兵种,等级){
 }
 
 _root.战宠UI函数.计算战宠最大出战数 = function(){
-	if(_root.isChallengeMode()) return Math.floor(_root.等级 / 35);
-	return Math.min(Math.floor(_root.等级 / 5), 5);
+	if(_root.isChallengeMode()) return Math.ceil(_root.等级 / 35);
+	return Math.min(Math.ceil(_root.等级 / 5), 5);
 }
 
 _root.战宠UI函数.出战按钮函数 = function(是否出战:Boolean){
