@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1747717311" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1748355427" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -225,7 +225,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="PIG" color="#D2FD7B" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="PIG" color="#D2FD7B" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -251,6 +251,7 @@ onClipEvent(load){
 	刀 = "双面斧";
 	手雷 = "";
 	名字 = "Pig";
+	商店 = "重型火器出售";
 	身高 = 210;
 	性别 = "男";
 	_root.初始化NPC(this);
@@ -455,7 +456,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#A65995" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="场景" color="#A65995" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

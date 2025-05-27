@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2364" itemID="6597607e-00000b22" linkageExportForAS="true" linkageIdentifier="npc" lastModified="1740678556" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="Symbol 2364" currentFrame="1">
+    <DOMTimeline name="Symbol 2364">
       <layers>
         <DOMLayer name="Labels Layer" color="#F5B2AB">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BCA922" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BCA922">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -62,7 +62,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
