@@ -9,8 +9,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
      */
     public static function initialize(target:MovieClip):Void {
         var dispatcher:EventDispatcher = target.dispatcher;
+        var func:Function;
+        // 订阅 hit 事件到 HitUpdater 逻辑
+        if(target.兵种) {
+            func = DeathEventComponent.onDeath;
+        } else {
+            return; // 如果不是兵种，则不处理死亡事件
+        }
         // 订阅 hkil 事件到 HitUpdater 逻辑
-        dispatcher.subscribeSingle("death", DeathEventComponent.onDeath, target);
+        dispatcher.subscribeSingle("death", func, target);
     }
     
 

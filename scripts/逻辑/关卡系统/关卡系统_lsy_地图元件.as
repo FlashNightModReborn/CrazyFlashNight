@@ -193,11 +193,11 @@ _root.初始化地图元件 = function(target:MovieClip){
 	target.是否为敌人 = true;
 
 	if(isNaN(target.hp)) {
-		target.hp = target.hp满血值 = 10;
+		target.hp = target.hp满血值 = 10000;
 	}
 	
 	target.躲闪率 = 100;
-	target.击中效果 = "火花";
+	target.击中效果 = target.击中效果 || "火花";
 	target.Z轴坐标 = target._y;
 	target.unitAIType = "None";
 	StaticInitializer.initializeUnit(target);
@@ -205,29 +205,35 @@ _root.初始化地图元件 = function(target:MovieClip){
 	target.swapDepths(target._y);
 
 	target.gotoAndStop("正常");
+	target.element.stop();
 
 
-	// 初始化并校验色彩参数（默认值：乘数为1，偏移为0）
-	target.redMultiplier = isNaN(target.redMultiplier) ? 1 : target.redMultiplier;
-	target.greenMultiplier = isNaN(target.greenMultiplier) ? 1 : target.greenMultiplier;
-	target.blueMultiplier = isNaN(target.blueMultiplier) ? 1 : target.blueMultiplier;
-	target.alphaMultiplier = isNaN(target.alphaMultiplier) ? 1 : target.alphaMultiplier;
 
-	target.redOffset = isNaN(target.redOffset) ? 0 : target.redOffset;
-	target.greenOffset = isNaN(target.greenOffset) ? 0 : target.greenOffset;
-	target.blueOffset = isNaN(target.blueOffset) ? 0 : target.blueOffset;
-	target.alphaOffset = isNaN(target.alphaOffset) ? 0 : target.alphaOffset;
 
-	// 应用色彩设置
-	_root.设置色彩(target.车皮,
-				target.redMultiplier,
-				target.greenMultiplier,
-				target.blueMultiplier,
-				target.redOffset,
-				target.greenOffset,
-				target.blueOffset,
-				target.alphaMultiplier,
-				target.alphaOffset);
+	if(target.stainedTarget) {
+		// 初始化并校验色彩参数（默认值：乘数为1，偏移为0）
+		target.redMultiplier = isNaN(target.redMultiplier) ? 1 : target.redMultiplier;
+		target.greenMultiplier = isNaN(target.greenMultiplier) ? 1 : target.greenMultiplier;
+		target.blueMultiplier = isNaN(target.blueMultiplier) ? 1 : target.blueMultiplier;
+		target.alphaMultiplier = isNaN(target.alphaMultiplier) ? 1 : target.alphaMultiplier;
+
+		target.redOffset = isNaN(target.redOffset) ? 0 : target.redOffset;
+		target.greenOffset = isNaN(target.greenOffset) ? 0 : target.greenOffset;
+		target.blueOffset = isNaN(target.blueOffset) ? 0 : target.blueOffset;
+		target.alphaOffset = isNaN(target.alphaOffset) ? 0 : target.alphaOffset;
+
+			// 应用色彩设置
+		_root.设置色彩(target[target.stainedTarget],
+					target.redMultiplier,
+					target.greenMultiplier,
+					target.blueMultiplier,
+					target.redOffset,
+					target.greenOffset,
+					target.blueOffset,
+					target.alphaMultiplier,
+					target.alphaOffset);
+	}
+
 
 	// 将碰撞箱附加到地图
 	var gameworld = _root.gameworld;
@@ -271,6 +277,7 @@ _root.初始化资源箱 = function(){
 	this.unitAIType = "None";
 	StaticInitializer.initializeUnit(this);
 	gotoAndStop("正常");
+	
 }
 
 // NPC

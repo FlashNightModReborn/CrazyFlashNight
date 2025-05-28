@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748418683">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748446649">
   <timeline>
-    <DOMTimeline name="资源箱">
+    <DOMTimeline name="资源箱" currentFrame="11">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -10,10 +10,10 @@
             <DOMFrame index="1" duration="10" name="正常" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="19" name="结束" labelType="name" keyMode="9728">
+            <DOMFrame index="11" duration="115" name="结束" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="10" name="无效" labelType="name" keyMode="9728">
+            <DOMFrame index="126" duration="10" name="无效" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -23,6 +23,7 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.初始化地图元件(this);
+this.maxFrame = 12;
 ]]></script>
               </Actionscript>
               <elements/>
@@ -30,9 +31,10 @@
             <DOMFrame index="1" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="9" keyMode="9728">
+            <DOMFrame index="11" duration="112" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this._visible = true;
+this.element.gotoAndPlay("结束");
 _root.帧计时器.注销目标缓存(this);
 if (是否为敌人 && _root.gameworld[产生源])
 {
@@ -44,7 +46,7 @@ _root.创建可拾取物(内部物,数量,this._x,this._y,false);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" duration="10" keyMode="9728">
+            <DOMFrame index="123" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 _root.add2map(this,2);
@@ -52,7 +54,7 @@ this.removeMovieClip();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="10" keyMode="9728">
+            <DOMFrame index="126" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 this.removeMovieClip();
@@ -64,64 +66,19 @@ this.removeMovieClip();
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#BDD3F1">
           <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
+            <DOMFrame index="0" duration="125" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 12" symbolType="graphic" loop="loop">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="13" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 13" symbolType="graphic" loop="loop">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="15" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 14" symbolType="graphic" loop="loop">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="17" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 15" selected="true" symbolType="graphic" loop="loop">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" duration="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 16" symbolType="graphic" loop="loop">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="29" duration="11" keyMode="9728">
+            <DOMFrame index="125" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 4" color="#83C998" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
+            <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/资源箱本体素材" selected="true" centerPoint3DX="0.5" centerPoint3DY="-19.3">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱本体素材" name="element" selected="true" centerPoint3DX="0.5" centerPoint3DY="-19.3">
                   <matrix>
                     <Matrix tx="-32.4" ty="-50.1"/>
                   </matrix>
@@ -131,14 +88,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="29" keyMode="9728">
+            <DOMFrame index="126" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 5" color="#F76FB9" locked="true">
           <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
+            <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" centerPoint3DX="-14.45" centerPoint3DY="-84.05">
                   <matrix>
@@ -150,7 +107,7 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="29" keyMode="9728">
+            <DOMFrame index="126" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

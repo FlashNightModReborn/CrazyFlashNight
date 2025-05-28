@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- 无限过图数据结构文档-以摇滚公园为例 -->
 <GameStage>
-        <!-- 
+    <!-- 
 StageInfo描述场景基本信息。
 必要参数：
     Type：分为初期关卡，无限过图和外交地图
@@ -85,6 +85,112 @@ Reward的必要参数：
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>481</x>
+                <y>462</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <stainedTarget>element</stainedTarget>
+                    <redOffset>10</redOffset>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="1">
+                <x>481</x>
+                <y>562</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <stainedTarget>element</stainedTarget>
+                    <redOffset>20</redOffset>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="2">
+                <x>481</x>
+                <y>662</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <stainedTarget>element</stainedTarget>
+                    <redOffset>30</redOffset>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="3">
+                <x>481</x>
+                <y>362</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <stainedTarget>element</stainedTarget>
+                    <redOffset>40</redOffset>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="4">
+                <x>681</x>
+                <y>462</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <redOffset>50</redOffset>
+                    <stainedTarget>element</stainedTarget>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="5">
+                <x>681</x>
+                <y>562</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <redOffset>60</redOffset>
+                    <stainedTarget>element</stainedTarget>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="6">
+                <x>681</x>
+                <y>662</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <stainedTarget>element</stainedTarget>
+                    <redOffset>70</redOffset>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="7">
+                <x>681</x>
+                <y>362</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>K点</内部物>
+                    <redOffset>80</redOffset>
+                    <stainedTarget>element</stainedTarget>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+        </Instances>
         <SpawnPoint>
             <Point id="0">
                 <x>1120</x>
@@ -350,7 +456,7 @@ Instances描述额外加载的影片剪辑实例。
                 </Parameters>
             </Instance>
         </Instances>
-        
+
         <!-- 
 SpawnPoint描述敌人出生点。
 必要参数：
@@ -525,14 +631,14 @@ SubWave的必要参数：
                         <SpawnIndex>1</SpawnIndex>
                         <DifficultyMax>地狱</DifficultyMax>
                         <!-- 以下对话现在没用，触发不了-->
-						<Dialogue>
-							<SubDialogue id="0">
-								<Name>King</Name>
-								<Title>BPK战队-左前锋</Title>
-								<Char>king#愤怒</Char>
-								<Text>啥子哦，搞这么慢？</Text>
-							</SubDialogue>
-						</Dialogue>
+                        <Dialogue>
+                            <SubDialogue id="0">
+                                <Name>King</Name>
+                                <Title>BPK战队-左前锋</Title>
+                                <Char>king#愤怒</Char>
+                                <Text>啥子哦，搞这么慢？</Text>
+                            </SubDialogue>
+                        </Dialogue>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

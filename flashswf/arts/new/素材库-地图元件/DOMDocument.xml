@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="285" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="03.摆件" itemID="67321af0-00000c8d"/>
           <DOMFolderItem name="03.摆件/铁丝栏" itemID="6720aa4a-00001286"/>
@@ -24,7 +24,7 @@
      </folders>
      <media>
           <DOMBitmapItem name="箱子素材/bitmap7.png" itemID="65c8ed3c-0000063c" sourceExternalFilepath="../素材库-地图元件/LIBRARY/箱子素材/bitmap7.png" sourceLastImported="1707666748" originalCompressionType="lossless" quality="50" href="箱子素材/bitmap7.png" bitmapDataHRef="M 1 1707666854.dat" frameRight="1360" frameBottom="1260"/>
-          <DOMBitmapItem name="位图 2" itemID="6836c183-00000fa4" sourceExternalFilepath="../素材库-地图元件/LIBRARY/位图 2.png" sourceLastImported="1748418860" externalFileSize="1089363" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 2 1748418864.dat" frameRight="20480" frameBottom="20480"/>
+          <DOMBitmapItem name="位图 2" itemID="6836c183-00000fa4" sourceExternalFilepath="../素材库-地图元件/LIBRARY/位图 2.png" sourceLastImported="1748418860" externalFileSize="1089363" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 2 1748418864.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="03.摆件/栏杆.xml" loadImmediate="false" itemID="6720ab8b-0000128c" lastModified="1730195032"/>
@@ -149,7 +149,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748405596"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748433599"/>
           <Include href="跳动的火焰.xml" itemID="65c8e899-00000235" lastModified="1707665566"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
@@ -161,9 +161,9 @@
           <Include href="箱子素材/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-0000064e" lastModified="1704525302"/>
           <Include href="箱子素材/光效.xml" itemIcon="1" loadImmediate="false" itemID="66a8fe55-00001f7d" lastModified="1722425993"/>
           <Include href="箱子素材/隐藏资源点光效.xml" loadImmediate="false" itemID="66a8fe1f-00001f7b" lastModified="1722424406"/>
-          <Include href="箱子素材/资源箱本体素材.xml" loadImmediate="false" itemID="6836c077-00000f9b" lastModified="1748426443"/>
+          <Include href="箱子素材/资源箱本体素材.xml" loadImmediate="false" itemID="6836c077-00000f9b" lastModified="1748449776"/>
           <Include href="隐藏资源点.xml" itemID="66a8fec5-00001f87" lastModified="1748406317"/>
-          <Include href="资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748418683"/>
+          <Include href="资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748446649"/>
           <Include href="资源箱碎片1.xml" itemIcon="1" loadImmediate="false" itemID="6836da42-00000fe9" lastModified="1748425282"/>
           <Include href="资源箱碎片2.xml" itemIcon="1" loadImmediate="false" itemID="6836da92-00000ff0" lastModified="1748425362"/>
           <Include href="资源箱碎片3.xml" itemIcon="1" loadImmediate="false" itemID="6836dab0-00000ff5" lastModified="1748425392"/>
@@ -178,7 +178,7 @@
           <Include href="钻头素材/Symbol 12.xml" loadImmediate="false" itemID="667be1aa-000000c4" lastModified="1719394707"/>
           <Include href="钻头素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="667be1aa-000000c5" lastModified="1716307369"/>
           <Include href="钻头素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="667be0f6-00000094" lastModified="1719394551"/>
-          <Include href="钻头素材/钻头素材.xml" itemIcon="1" loadImmediate="false" itemID="667be018-00000092" lastModified="1719394724"/>
+          <Include href="钻头素材/钻头素材.xml" itemIcon="1" loadImmediate="false" itemID="667be018-00000092" lastModified="1748439612"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -601,6 +601,14 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="128170" publishTime="1748449792"/>
+          <PublishItem publishSize="128293" publishTime="1748449533"/>
+          <PublishItem publishSize="128295" publishTime="1748449439"/>
+          <PublishItem publishSize="128296" publishTime="1748449181"/>
+          <PublishItem publishSize="125881" publishTime="1748447082"/>
+          <PublishItem publishSize="125904" publishTime="1748447033"/>
+          <PublishItem publishSize="125908" publishTime="1748446674"/>
+          <PublishItem publishSize="125883" publishTime="1748446435"/>
           <PublishItem publishSize="110390" publishTime="1748418595"/>
           <PublishItem publishSize="108999" publishTime="1748416610"/>
           <PublishItem publishSize="108996" publishTime="1748415112"/>
@@ -613,13 +621,5 @@
           <PublishItem publishSize="75423" publishTime="1747378805"/>
           <PublishItem publishSize="75316" publishTime="1747378469"/>
           <PublishItem publishSize="70862" publishTime="1746606657"/>
-          <PublishItem publishSize="70940" publishTime="1743349127"/>
-          <PublishItem publishSize="70907" publishTime="1743349113"/>
-          <PublishItem publishSize="70904" publishTime="1743348378"/>
-          <PublishItem publishSize="57964" publishTime="1740850716"/>
-          <PublishItem publishSize="57964" publishTime="1733141318"/>
-          <PublishItem publishSize="43130" publishTime="1722425952"/>
-          <PublishItem publishSize="43130" publishTime="1722425812"/>
-          <PublishItem publishSize="43120" publishTime="1722425728"/>
      </publishHistory>
 </DOMDocument>

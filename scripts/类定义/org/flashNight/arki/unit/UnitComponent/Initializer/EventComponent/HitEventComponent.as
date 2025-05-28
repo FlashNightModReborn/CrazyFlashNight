@@ -7,7 +7,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
      * 初始化单位的受击事件监听
      * @param target 目标单位( MovieClip )
      */
-    public static function initialize(target:MovieClip):Void {
+    public static function initialize(target:MovieClip, shooter:MovieClip):Void {
         
         var dispatcher:EventDispatcher = target.dispatcher;
         var func:Function;
@@ -20,10 +20,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
         dispatcher.subscribeSingle("hit", func, target);
     }
 
-    public static function onMapElementHit(target:MovieClip):Void {
+    public static function onMapElementHit(target:MovieClip, shooter:MovieClip, bullet:MovieClip):Void {
         if(target.hp <= 0) {
             var dispatcher:EventDispatcher = target.dispatcher;
+            var hitDirection:Boolean = Boolean((target._x < shooter._x) ^ bullet.水平击退反向);
+            target._xscale = (hitDirection ? 100 : -100);
+
             dispatcher.publish("kill", target);
+        } else {
+            var maxFrame:Number = target.maxFrame;
+            var currentFrame:Number = target.hp / target.hp满血值 * maxFrame;
+            // _root.发布消息("受击: " + target + "，当前血量: " + target.hp + "/" + target.hp满血值 + "，当前帧: " + currentFrame);
+            target.element.gotoAndStop(maxFrame - Math.ceil(currentFrame));
         }
     }
 }
