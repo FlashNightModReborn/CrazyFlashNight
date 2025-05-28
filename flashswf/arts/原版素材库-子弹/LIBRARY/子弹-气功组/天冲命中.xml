@@ -1,0 +1,200 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/天冲命中" itemID="669d34d3-00001773" linkageExportForAS="true" linkageIdentifier="天冲命中" lastModified="1722875661">
+  <timeline>
+    <DOMTimeline name="天冲命中" currentFrame="11">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B34FAF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#F4C6E5" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-25.5" centerPoint3DY="-106.5">
+                  <matrix>
+                    <Matrix a="1.51998901367188" d="2.00006103515625" tx="-38" ty="-119"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-79.45" centerPoint3DY="-168.5">
+                  <matrix>
+                    <Matrix a="3.65997314453125" d="7.919921875" tx="-91.95" ty="-181"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#9B40EE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 654" centerPoint3DX="67.85" centerPoint3DY="-43.65">
+                  <matrix>
+                    <Matrix a="0.132537841796875" d="0.240753173828125" tx="-9.2" ty="-109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A22EBD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 652" centerPoint3DX="41.05" centerPoint3DY="-57.05">
+                  <matrix>
+                    <Matrix a="0.142364501953125" d="0.25860595703125" tx="-7.5" ty="-105.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 656" centerPoint3DX="113.35" centerPoint3DY="-25.5">
+                  <matrix>
+                    <Matrix a="-0.163894653320313" d="0.297714233398438" tx="13.45" ty="-121.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 658" centerPoint3DX="189.75" centerPoint3DY="32.25">
+                  <matrix>
+                    <Matrix a="0.165679931640625" d="0.300949096679688" tx="-28.4" ty="-142.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 660" centerPoint3DX="291.8" centerPoint3DY="260.6">
+                  <matrix>
+                    <Matrix a="0.1429443359375" b="-0.059326171875" c="0.0575714111328125" d="0.248519897460938" tx="-72.55" ty="-154.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="20" blurY="0"/>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 662" centerPoint3DX="602.15" centerPoint3DY="559.6">
+                  <matrix>
+                    <Matrix a="0.104293823242188" d="0.189437866210938" tx="-45.1" ty="-159.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 664" centerPoint3DX="356" centerPoint3DY="170.1">
+                  <matrix>
+                    <Matrix a="0.117034912109375" d="0.21258544921875" tx="-40" ty="-167.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#CCFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#C634B5">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728" soundName="3.音效相关/sound328.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

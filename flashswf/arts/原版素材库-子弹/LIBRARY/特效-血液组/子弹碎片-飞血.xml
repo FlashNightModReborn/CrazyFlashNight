@@ -1,0 +1,109 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-血液组/子弹碎片-飞血" itemID="669d3480-00001750" linkageExportForAS="true" linkageIdentifier="子弹碎片-飞血" lastModified="1722920091">
+  <timeline>
+    <DOMTimeline name="子弹碎片-飞血">
+      <layers>
+        <DOMLayer name="Script Layer" color="#92E80C" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[Z轴坐标 = _root.gameworld[this.出血来源].Z轴坐标;
+
+垂直速度 = -(random(5));
+旋转速度 = 90 - random(180);
+angle = random(360) * 3.14 / 180;
+随机速度 = random(8);
+xmov = 随机速度 * Math.cos(angle);
+ymov = 随机速度 * Math.sin(angle) / 2;
+起始Y = this._y;
+
+飞血._width = random(5) + 1;
+飞血._height = random(10) + 1;
+飞血.gotoAndStop(random(5) + 1);
+
+this.onEnterFrame = function()
+{
+	if (this._y > Z轴坐标)
+	{
+		_root.效果("血迹",this._x,this._y,this._xscale);
+		delete this.onEnterFrame;
+		this.removeMovieClip();
+	}
+	else
+	{
+		this._rotation += 旋转速度;
+		this._x += xmov;
+		this._y += ymov;
+		Z轴坐标 += ymov;
+		垂直速度 += _root.重力加速度;
+		this._y += 垂直速度;
+	}
+};
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (random(3) == 0)
+{
+	delete this.onEnterFrame;
+	this.removeMovieClip();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (random(3) == 0)
+{
+	delete this.onEnterFrame;
+	this.removeMovieClip();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (random(3) == 0)
+{
+	delete this.onEnterFrame;
+	this.removeMovieClip();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[delete this.onEnterFrame;
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C323DC">
+          <frames>
+            <DOMFrame index="0" duration="59" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 672" name="飞血" centerPoint3DX="5.15" centerPoint3DY="5.15">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

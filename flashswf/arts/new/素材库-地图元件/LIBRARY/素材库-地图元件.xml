@@ -1,0 +1,319 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748405596" lastUniqueIdentifier="43">
+  <timeline>
+    <DOMTimeline name="素材库-地图元件" currentFrame="5">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="杂项" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" name="出生点" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="7" name="出生点2" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="8" name="障碍" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="隐藏资源点" centerPoint3DX="131.25" centerPoint3DY="237.65">
+                  <matrix>
+                    <Matrix tx="-49" ty="177"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   关卡开放条件 = 3;
+   if(关卡开放条件 != _root.主线任务进度)
+   {
+   }
+   内部物 = "牛肉罐头";
+   数量 = random(3) + 1;
+   等级 = 0;
+   名字 = "木箱";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#00FF00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!5276 219[5245 216 5209 216!5209 216|5124 216!5124 216|5124 368!5124 368|5217 368!5217 368[5259 368 5318 365!5318 365|5318 419!5318 419[5270 416 5214 416!5214 416|5124 416!5124 416|5124 562!5124 562[5124 604 5127 655!5127 655|5068 655
+!5068 655[5071 604 5071 562!5071 562|5071 416!5071 416|4961 416!4961 416[4913 416 4849 419!4849 419|4849 365!4849 365[4910 368 4950 368!4950 368|5071 368!5071 368|5071 216!5071 216|4944 216!4944 216[4936 239 4896 320!4896 320[4888 312
+ 4846 295!4846 295[4874 253 4896 199!4896 199[4919 146 4936 64!4936 64[4958 78 5000 90!5000 90[4986 101 4961 168!4961 168|5071 168!5071 168|5071 112!5071 112[5071 42 5068 16!5068 16|5127 16!5127 16[5124 39 5124 109!5124 109|5124 168!5124
+ 168|5209 168!5209 168[5245 168 5276 166!5276 166|5276 219!4818 2[4851 25 4877 33!4877 33[4857 50 4815 140!4815 140|4815 523!4815 523[4815 613 4818 658!4818 658|4759 658!4759 658[4761 618 4761 526!4761 526|4761 233!4761 233[4733 275 4694
+ 326!4694 326[4680 298 4655 284!4655 284[4705 233 4747 160!4747 160[4790 87 4818 2!4548 233|4548 292!4548 292[4497 289 4463 289!4463 289|4370 289!4370 289|4370 545!4370 545[4370 585 4413 585!4413 585|4494 585!4494 585[4522 585 4534 506
+!4534 506[4565 526 4595 531!4595 531[4581 630 4508 635!4508 635|4379 635!4379 635[4314 635 4314 568!4314 568|4314 289!4314 289|4213 289!4213 289[4224 548 4013 661!4013 661[3994 635 3957 613!3957 613[4165 537 4154 289!4154 289|4081 289
+!4081 289[4039 289 3985 292!3985 292|3985 233!3985 233[4039 236 4081 236!4081 236|4463 236!4463 236[4497 236 4548 233!4491 106[4441 104 4413 104!4413 104|4123 104!4123 104[4089 104 4047 106!4047 106|4047 53!4047 53[4089 56 4120 56!4120
+ 56|4413 56!4413 56[4438 56 4491 53!4491 53|4491 106!3842 188|3842 489!3842 489[3842 576 3845 661!3845 661|3788 661!3788 661|3788 624!3788 624|3319 624!3319 624|3319 666!3319 666|3262 666!3262 666[3265 579 3265 486!3265 486|3265 188!3265
+ 188[3265 106 3262 33!3262 33|3845 33!3845 33[3842 104 3842 188!3676 213[3650 250 3597 301!3597 301[3681 343 3763 351!3763 351[3743 376 3729 405!3729 405[3625 374 3555 329!3555 329[3473 382 3380 407!3380 407[3372 382 3350 360!3350 360
+[3440 346 3515 301!3515 301[3476 264 3459 239!3459 239[3434 267 3406 295!3406 295[3386 272 3364 261!3364 261[3411 222 3445 173!3445 173[3479 123 3493 90!3493 90[3521 104 3555 115!3555 115[3538 132 3524 151!3524 151|3712 151!3712 151[3701
+ 177 3676 213!3493 196|3487 205!3487 205[3530 253 3560 272!3560 272[3597 244 3628 196!3628 196|3493 196!3521 362[3617 402 3650 413!3650 413[3636 436 3625 464!3625 464[3530 419 3496 407!3496 407[3510 388 3521 362!3448 497[3459 475 3468
+ 450!3468 450[3591 486 3653 511!3653 511[3639 534 3625 559!3625 559[3510 511 3448 497!3319 576|3788 576!3788 576|3788 78!3788 78|3319 78!3319 78|3319 576!3113 247|3113 357!3113 357[3116 430 3087 450!3087 450[3057 469 3012 481!3012 481
+[3004 452 2987 421!2987 421[3037 416 3050 406!3050 406[3063 396 3060 343!3060 343|3060 222!3060 222[3012 236 2970 250!2970 250|2970 438!2970 438[2970 489 2973 523!2973 523|2914 523!2914 523[2916 472 2916 438!2916 438|2916 267!2916 267
+|2832 298!2832 298|2832 531!2832 531[2832 587 2871 587!2871 587|3051 587!3051 587[3080 587 3088 569!3088 569[3096 551 3105 506!3105 506[3133 526 3167 531!3167 531[3150 593 3130 614!3130 614[3110 635 3068 635!3068 635|2846 635!2846 635
+[2784 635 2781 559!2781 559|2781 315!2781 315[2748 326 2731 337!2731 337[2717 303 2705 284!2705 284[2736 278 2781 261!2781 261|2781 196!2781 196[2781 146 2779 81!2779 81|2835 81!2835 81[2832 140 2832 194!2832 194|2832 244!2832 244|2916
+ 213!2916 213|2916 101!2916 101[2916 53 2914 5!2914 5|2973 5!2973 5[2970 39 2970 104!2970 104|2970 196!2970 196[3012 185 3116 149!3116 149[3113 182 3113 247!2655 208[2705 208 2736 205!2736 205|2736 258!2736 258[2705 256 2655 256!2655
+ 256|2655 489!2655 489[2694 478 2745 455!2745 455[2742 486 2742 511!2742 511[2694 528 2634 548!2634 548[2573 568 2531 590!2531 590[2523 562 2503 531!2503 531[2545 520 2599 503!2599 503|2599 256!2599 256[2545 256 2511 258!2511 258|2511
+ 205!2511 205[2545 208 2599 208!2599 208|2599 118!2599 118[2599 70 2596 22!2596 22|2658 22!2658 22[2655 59 2655 118!2655 118|2655 208!2447 354|2126 354!2126 354|2126 309!2126 309|2447 309!2447 309|2447 354!2067 135[1994 132 1952 132!1952
+ 132|1544 132!1544 132[1544 292 1538 376!1538 376[1533 461 1520 531!1520 531[1507 601 1476 663!1476 663[1454 646 1420 632!1420 632[1451 579 1462 538!1462 538[1474 497 1481 441!1481 441[1488 385 1489 315!1489 315[1490 244 1488 90!1488
+ 90|1758 90!1758 90[1749 59 1730 19!1730 19[1760 11 1789 0!1789 0[1811 50 1822 90!1822 90|1952 90!1952 90[1997 90 2067 87!2067 87|2067 135!2036 267[1991 264 1938 264!1938 264|1746 264!1746 264[1704 331 1676 371!1676 371|1794 371!1794
+ 371[1794 340 1791 301!1791 301|1850 301!1850 301[1848 337 1848 371!1848 371|1938 371!1938 371[1983 371 2014 368!2014 368|2014 419!2014 419[1988 416 1935 416!1935 416|1848 416!1848 416|1848 497!1848 497|1977 497!1977 497[2022 497 2070
+ 495!2070 495|2070 545!2070 545[2025 542 1977 542!1977 542|1848 542!1848 542|1848 596!1848 596[1848 635 1850 663!1850 663|1791 663!1791 663[1794 635 1794 596!1794 596|1794 542!1794 542|1651 542!1651 542[1606 542 1547 545!1547 545|1547
+ 495!1547 495[1600 497 1651 497!1651 497|1794 497!1794 497|1794 416!1794 416|1701 416!1701 416[1640 419 1617 427!1617 427|1597 376!1597 376[1623 368 1645 334!1645 334[1668 301 1690 264!1690 264[1620 264 1569 267!1569 267|1569 219!1569
+ 219[1620 222 1710 222!1710 222[1735 171 1744 140!1744 140[1777 157 1805 166!1805 166[1786 188 1766 222!1766 222|1940 222!1940 222[1988 222 2036 219!2036 219|2036 267!1251 219|1251 579!1251 579[1251 621 1230 635!1230 635[1209 649 1147
+ 663!1147 663[1139 630 1122 599!1122 599[1170 599 1184 593!1184 593[1198 587 1198 556!1198 556|1198 292!1198 292[1159 368 1109 434!1109 434[1060 500 987 568!987 568[973 548 942 523!942 523[1004 483 1067 405!1067 405[1130 326 1178 219
+!1178 219|1083 219!1083 219[1049 219 1004 222!1004 222|1004 168!1004 168[1049 171 1083 171!1083 171|1198 171!1198 171|1198 109!1198 109[1198 59 1195 11!1195 11|1257 11!1257 11[1251 59 1251 112!1251 112|1251 171!1251 171[1308 171 1358
+ 168!1358 168|1358 222!1358 222[1308 219 1251 219!891 11[889 56 889 104!889 104|889 171!889 171[931 171 979 168!979 168|979 222!979 222[931 219 889 219!889 219|889 315!889 315[911 301 920 289!920 289[970 354 993 388!993 388[967 405 948
+ 419!948 419[908 351 889 331!889 331|889 545!889 545[889 604 891 663!891 663|832 663!832 663[835 601 835 545!835 545|835 348!835 348[815 391 789 436!789 436[762 481 734 520!734 520[725 500 697 469!697 469[731 433 770 361!770 361[810 289
+ 830 219!830 219[770 219 720 222!720 222|720 168!720 168[776 171 835 171!835 171|835 104!835 104[835 61 832 11!832 11|891 11!576 67|576 118!576 118[531 115 489 115!489 115|337 115!337 115|337 163!337 163|450 163!450 163[489 163 540 160
+!540 160|540 205!540 205[492 202 450 202!450 202|337 202!337 202|337 247!337 247|531 247!531 247[571 247 621 244!621 244|621 292!621 292[571 289 531 289!531 289|312 289!312 289[281 315 230 346!230 346[304 343 374 340!374 340[405 329 447
+ 295!447 295[478 317 503 334!503 334[455 351 396 382!396 382|270 444!270 444[371 438 495 430!495 430[481 410 464 399!464 399[486 388 506 371!506 371[574 438 605 472!605 472[579 489 554 509!554 509[537 481 526 469!526 469[405 475 351 481
+!351 481|351 587!351 587[354 630 329 639!329 639[304 649 253 658!253 658[245 632 225 599!225 599[261 599 280 596!280 596[298 593 298 571!298 571|298 483!298 483[259 486 184 493!184 493[110 500 81 506!81 506[76 478 65 455!65 455[107 452
+ 145 444!145 444[183 436 219 423!219 423[256 410 304 382!304 382[230 385 198 388!198 388[166 391 124 396!124 396[118 362 107 343!107 343[149 343 178 329!178 329[208 315 236 289!236 289|95 289!95 289[50 289 0 292!0 292|0 244!0 244[50 247
+ 93 247!93 247|284 247!284 247|284 202!284 202|174 202!174 202[135 202 87 205!87 205|87 160!87 160[135 163 171 163!171 163|284 163!284 163|284 115!284 115|146 115!146 115[104 115 53 118!53 118|53 67!53 67[104 70 146 70!146 70|284 70!284
+ 70[284 56 281 16!281 16|340 16!340 16[337 50 337 70!337 70|486 70!486 70[531 70 576 67!42 638[31 613 3 590!3 590[53 576 101 552!101 552[149 528 180 506!180 506[200 531 219 548!219 548[183 562 139 587!139 587[95 613 42 638!613 582[593
+ 607 582 635!582 635[498 585 419 554!419 554[436 534 444 509!444 509[523 540 613 582"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪烁的灯光" centerPoint3DX="542.5" centerPoint3DY="200.9">
+                  <matrix>
+                    <Matrix tx="461" ty="155.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="生存战-迷之盔甲君" centerPoint3DX="219.2" centerPoint3DY="286.15">
+                  <matrix>
+                    <Matrix tx="134.5" ty="189"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="跳动的火焰" centerPoint3DX="358.35" centerPoint3DY="199.25">
+                  <matrix>
+                    <Matrix a="0.530288696289063" d="0.530288696289063" tx="313.6" ty="138.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(20));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="资源箱" selected="true" centerPoint3DX="-160.7" centerPoint3DY="134.1">
+                  <matrix>
+                    <Matrix tx="-160.7" ty="176.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-42.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地图箭头" centerPoint3DX="63" centerPoint3DY="293.4">
+                  <matrix>
+                    <Matrix tx="63" ty="293.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.25" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="场景素材/废弃车辆/高级轿车a/场景素材-高级轿车a" centerPoint3DX="-73" centerPoint3DY="390.95">
+                  <matrix>
+                    <Matrix tx="-56.45" ty="400.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-16.6" y="-9.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-钻头/出生点-钻头" centerPoint3DX="95.9" centerPoint3DY="185.75">
+                  <matrix>
+                    <Matrix tx="-43.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-改造僵尸管道/出生点-改造僵尸管道" centerPoint3DX="267.8" centerPoint3DY="202.7">
+                  <matrix>
+                    <Matrix tx="204.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/出生点-大机关门" centerPoint3DX="491.7" centerPoint3DY="-140">
+                  <matrix>
+                    <Matrix tx="491.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-140"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/出生点-光束发射器" centerPoint3DX="756.75" centerPoint3DY="146.2">
+                  <matrix>
+                    <Matrix tx="726.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-管道/出生点-管道" centerPoint3DX="-274.65" centerPoint3DY="174.35">
+                  <matrix>
+                    <Matrix tx="-331.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/出生点-嵌入大机关门" centerPoint3DX="931.15" centerPoint3DY="-155">
+                  <matrix>
+                    <Matrix tx="931.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-155"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-井盖/出生点-井盖" centerPoint3DX="-116.35" centerPoint3DY="225.5">
+                  <matrix>
+                    <Matrix tx="-163.85" ty="211"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.5" y="14.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-僵尸逆袭卷帘门/出生点-僵尸逆袭卷帘门" centerPoint3DX="154.75" centerPoint3DY="381.35">
+                  <matrix>
+                    <Matrix tx="55.2" ty="308.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.55" y="72.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-僵尸逆袭封死门/出生点-僵尸逆袭封死门" centerPoint3DX="317" centerPoint3DY="222.3">
+                  <matrix>
+                    <Matrix tx="318.5" ty="313.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.4" y="-91.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-防御地带/出生点-防御地带内部入口" centerPoint3DX="746.95" centerPoint3DY="349.3">
+                  <matrix>
+                    <Matrix tx="667.9" ty="275.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-防御地带/出生点-防御地带内部大门" centerPoint3DX="925.2" centerPoint3DY="195.3">
+                  <matrix>
+                    <Matrix tx="923.35" ty="269.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.65" y="-74.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/出生点-聚光灯" centerPoint3DX="215.6" centerPoint3DY="244.35">
+                  <matrix>
+                    <Matrix tx="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="205.6" y="244.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-超时空特效" selected="true" centerPoint3DX="169.95" centerPoint3DY="38.65">
+                  <matrix>
+                    <Matrix tx="161" ty="61.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="路障与通关门/横向地图路障" centerPoint3DX="146.55" centerPoint3DY="126.85">
+                  <matrix>
+                    <Matrix a="-1" tx="85.05" ty="94.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="路障与通关门/纵向地图路障" centerPoint3DX="267.25" centerPoint3DY="135.55">
+                  <matrix>
+                    <Matrix tx="224" ty="78.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="路障与通关门/关卡出口-防御地带内部大门" centerPoint3DX="539.1" centerPoint3DY="215.25">
+                  <matrix>
+                    <Matrix tx="427.25" ty="144.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="111.85" y="70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

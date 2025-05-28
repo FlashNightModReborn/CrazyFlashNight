@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="路障与通关门/纵向地图路障" itemID="674da209-000002ab" linkageExportForAS="true" linkageIdentifier="纵向地图路障" lastModified="1746607079">
+  <timeline>
+    <DOMTimeline name="纵向地图路障" currentFrame="5">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8DDB43">
+          <frames>
+            <DOMFrame index="0" duration="10" name="不允许通行" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" name="允许通行" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#A947D3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_root.stageDispatcher.subscribeOnce("StageFinished", function() {
+    this.gotoAndStop("允许通行");
+}, this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#09BDC1">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="路障与通关门/Symbol 15" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.4" ty="-16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

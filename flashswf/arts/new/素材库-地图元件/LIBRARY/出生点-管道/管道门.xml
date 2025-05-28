@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-管道/管道门" itemID="664cd402-00000a84" symbolType="graphic" lastModified="1730202585">
+  <timeline>
+    <DOMTimeline name="管道门">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.07586669921875" tx="51.05" ty="7.05"/>
+                        </matrix>
+                        <GradientEntry color="#4F4F4F" ratio="0.0588235294117647"/>
+                        <GradientEntry color="#757575" ratio="0.309803921568627"/>
+                        <GradientEntry color="#202020" ratio="0.858823529411765"/>
+                        <GradientEntry color="#434343" ratio="0.984313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!640 357[862 399 1129 399!1129 399|1129 3169!1129 3169[878 3167 668 3127!668 3127[654 3124 641 3122!641 3122[601 3114 563 3104!563 3104[543 3099 523 3094!523 3094[449 3073 353 3036!353 3036[65 2925 0 2770!0 2770|0 0!0 0[37 155 353 278
+!353 278[439 310 535 334!535 334[586 347 640 357"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!641 445[610 449 610 483!610 483[610 509 630 517!630 517|641 523!641 523|650 523!650 523[690 523 690 483!690 483[690 443 650 443!650 443|641 445!197 281[157 281 157 321!157 321[157 346 176 355!176 355|195 361!195 361[236 361 236 319!236
+ 319[236 281 197 281"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

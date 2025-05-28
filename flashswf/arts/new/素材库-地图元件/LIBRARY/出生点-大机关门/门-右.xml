@@ -1,0 +1,59 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-大机关门/门-右" itemID="66aa1ea8-00000258" symbolType="graphic" lastModified="1722425000">
+  <timeline>
+    <DOMTimeline name="门-右">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/noah" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2.6" ty="90.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.6" y="25.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#222222"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3010 100|3010 0!3010 0|840 0!840 0|840 100"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!840 100|840 900!840 900|0 1740!0 1740|0 2810!0 2810|840 3650!840 3650|840 4800!840 4800|3010 4800!3010 4800|3010 100"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!3010 100|840 100"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

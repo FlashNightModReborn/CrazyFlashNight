@@ -1,0 +1,205 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-管道/出生点-管道" itemID="664cd16d-00000a6d" linkageExportForAS="true" linkageIdentifier="出生点-管道" lastModified="1747379341" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="出生点-管道">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="23" name="开门" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#83C998" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[初始化出生点 = _root.初始化出生点;
+初始化出生点();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+Z轴坐标 = this._y;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="22" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+Z轴坐标 = this._y;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("正常");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="77">
+                  <matrix>
+                    <Matrix a="4.59994506835938" d="1.79998779296875" tx="77"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="管道门" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="20.25" ty="-144.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="7.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="-0.499969482421875" c="0.499969482421875" d="0.86602783203125" tx="17.7" ty="-129.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.1" y="12.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门2" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.991348266601563" b="-0.131179809570313" c="0.131179809570313" d="0.991348266601563" tx="18.95" ty="-140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.2" y="12.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门2" symbolType="graphic" firstFrame="6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.825836181640625" b="-0.539825439453125" c="0.273574829101563" d="1.3475341796875" tx="21.55" ty="-127.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.1" y="12.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门3" symbolType="graphic" firstFrame="8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.708328247070313" b="-0.686798095703125" c="0.634841918945313" d="1.53868103027344" tx="20.25" ty="-125.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.05" y="12.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.989120483398438" b="0.1470947265625" c="-0.1470947265625" d="0.989120483398438" tx="21.4" ty="-149.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.15" y="7.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="20.25" ty="-144.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="7.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.998123168945313" b="0.061279296875" c="-0.061279296875" d="0.998123168945313" tx="20.7" ty="-149.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="7.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道门" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="20.25" ty="-144.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="7.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道1" centerPoint3DX="76.7" centerPoint3DY="-76.65">
+                  <matrix>
+                    <Matrix tx="20" ty="-175"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.7" y="98.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-管道/管道2" centerPoint3DX="76.7" centerPoint3DY="-228.65">
+                  <matrix>
+                    <Matrix tx="20" ty="-327"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.7" y="98.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

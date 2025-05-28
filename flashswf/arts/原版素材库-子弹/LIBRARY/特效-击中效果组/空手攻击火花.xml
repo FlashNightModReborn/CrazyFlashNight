@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-击中效果组/空手攻击火花" itemID="669d340c-00001736" linkageExportForAS="true" linkageIdentifier="空手攻击火花" lastModified="1743606114">
+  <timeline>
+    <DOMTimeline name="空手攻击火花" currentFrame="3">
+      <layers>
+        <DOMLayer name="Script Layer" color="#9EDD48">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(this._y == 0)
+{
+   this.removeMovieClip();
+}
+this.火花.gotoAndPlay(1);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#54C4FC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 617" name="火花" centerPoint3DX="219.95" centerPoint3DY="252.9">
+                  <matrix>
+                    <Matrix a="0.284439086914063" d="0.284439086914063" tx="-1.2" ty="-1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._rotation = random(360);
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter color="#FFFFCC"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

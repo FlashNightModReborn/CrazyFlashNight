@@ -1,0 +1,344 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-大机关门/出生点-侧向大机关门" itemID="66ba540b-00001332" linkageExportForAS="true" linkageIdentifier="出生点-侧向大机关门" lastModified="1723487271">
+  <timeline>
+    <DOMTimeline name="出生点-侧向大机关门" currentFrame="39">
+      <layers>
+        <DOMLayer name="label" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="34" name="开门" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[初始化出生点 = _root.初始化出生点;
+初始化出生点();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(-this._y);
+Z轴坐标 = this._y;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(-this._y);
+Z轴坐标 = this._y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("正常");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#13130F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1340 -4169|1448 -4361"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1448 -4361|-706 -6537"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-706 -6537|-706 -1137"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!-706 -1137|-598 -1329"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-598 -1329|-598 -6129"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-598 -6129|-706 -6537"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1340 631|1448 1039"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1448 1039|-706 -1137!1340 631|1340 -4169!1448 -4361|1448 1039"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-598 -6129|1340 -4169"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-598 -1329|1340 631"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/Symbol 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0" b="1.03057861328125" c="-0.714279174804688" d="0" tx="77.4" ty="-83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="131" y="7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/Symbol 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.413604736328125" b="0.414901733398438" c="-0.714279174804688" d="0" tx="23.05" ty="-272.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-131" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 9" color="#4FFF4F" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-598 -6128|1341 -4169!1341 -4169|1341 631!1341 631|-598 -1328!-598 -1328|-598 -6128"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="3">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-左" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="-24.55" ty="-300.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="65.75" y="119.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-左" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="-24.55" ty="-300.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="65.75" y="119.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-左" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="-76.6" ty="-353.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="65.75" y="120"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-左" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="-76.6" ty="-353.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="65.75" y="120"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-左" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="-24.55" ty="-300.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="65.75" y="119.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="3">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-右" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="7.6" ty="-268.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.2" y="120.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-右" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="7.6" ty="-268.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.2" y="120.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-右" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="67" ty="-208.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.35" y="119.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-右" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="67" ty="-208.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.35" y="119.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/嵌入门-右" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="7.6" ty="-268.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.2" y="120.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 8" color="#FF4F4F">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/灯光" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="-27.55" ty="-413"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.25" y="115"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-大机关门/灯光" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358993530273438" b="0.36279296875" tx="-27.55" ty="-413"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.25" y="115"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#222222"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#111111"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="3" edges="!1340 -269|1340 -29"/>
+                    <Edge fillStyle1="5" edges="!1340 -29|1340 291"/>
+                    <Edge fillStyle0="2" fillStyle1="5" edges="!1340 291|-598 -1669"/>
+                    <Edge fillStyle0="2" edges="!-598 -1669|-598 -1329"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-598 -1329|1340 631"/>
+                    <Edge fillStyle0="2" edges="!1340 631|1340 291"/>
+                    <Edge fillStyle1="4" edges="!1340 -469|1340 -269"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!1340 -269|-598 -2229"/>
+                    <Edge fillStyle0="3" edges="!-598 -2229|-598 -1989"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="!-598 -1989|1340 -29"/>
+                    <Edge fillStyle1="1" edges="!-598 -2429|-598 -6429!-598 -6429|1340 -4469!1340 -4469|1340 -469"/>
+                    <Edge fillStyle1="4" edges="!-598 -2229|-598 -2429"/>
+                    <Edge fillStyle1="5" edges="!-598 -1669|-598 -1989"/>
+                    <Edge fillStyle0="1" fillStyle1="4" edges="!-598 -2429|1340 -469"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹壳/能量全威力弹壳" itemID="66357e57-00000b8b" linkageExportForAS="true" linkageIdentifier="能量全威力弹壳" lastModified="1714812151">
+  <timeline>
+    <DOMTimeline name="能量全威力弹壳">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1C2E33"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#0F2023"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#166870"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#000706"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!233 7|274 7!274 7|274 39!274 39|233 39"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!233 39|209 46"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!209 46|43 45"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!43 45|22 45!22 45|22 1!22 1|43 1"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!43 1|209 0"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!209 0|233 7"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!209 0|209 46"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!233 39|233 7"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!43 45|43 1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

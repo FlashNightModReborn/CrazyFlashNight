@@ -1,0 +1,119 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/爆炎手里剑" itemID="669d3b07-000017c2" linkageExportForAS="true" linkageIdentifier="爆炎手里剑" lastModified="1745168822">
+  <timeline>
+    <DOMTimeline name="爆炎手里剑" currentFrame="2">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#E637C5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#F66CFA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 0;
+发射效果 = "";
+子弹种类 = "火焰集束爆炸声";
+if(!子弹威力)
+{
+   子弹威力 = 100;
+}
+else
+{
+   子弹威力 *= 0.7;
+}
+子弹速度 = 0;
+击中地图效果 = "";
+Z轴攻击范围 = 100;
+击倒率 = 1;
+击中后子弹的效果 = "";
+击退初速度 = 20;
+子弹敌我属性 = 子弹敌我属性值;
+shootX = this._x;
+shootY = this._y;
+_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果,击退初速度);
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#69F2D7" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   垂直速度 = -5;
+   起始Y = _parent.Z轴坐标;
+   this.onEnterFrame = function()
+   {
+      _parent._y += 垂直速度;
+      垂直速度 += _root.重力加速度 / 2;
+      if(_parent._y >= 起始Y)
+      {
+         _parent._y = 起始Y;
+         delete this.onEnterFrame;
+         _parent.gotoAndPlay("消失");
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#D9AE78">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 633" centerPoint3DX="17.3" centerPoint3DY="14.7">
+                  <matrix>
+                    <Matrix tx="0.75" ty="-1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

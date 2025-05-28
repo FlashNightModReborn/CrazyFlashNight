@@ -1,0 +1,208 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/旋转冲击" itemID="669d3440-00001741" linkageExportForAS="true" linkageIdentifier="旋转冲击" lastModified="1721578560">
+  <timeline>
+    <DOMTimeline name="旋转冲击" currentFrame="10">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F8A674" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#49BFED">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-31.35" centerPoint3DY="-119.05">
+                  <matrix>
+                    <Matrix a="4.0245361328125" d="2.46963500976563" tx="-43.85" ty="-131.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F8DEE1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="0" color="#CCFFFF"/>
+                  </filters>
+                  <color>
+                    <Color redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="0" color="#CCFFFF"/>
+                  </filters>
+                  <color>
+                    <Color redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4964" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="0" color="#CCFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-100" redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4965" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="0" color="#CCFFFF"/>
+                  </filters>
+                  <color>
+                    <Color redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaOffset="-100" redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4967" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4968" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaOffset="-100" redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4969" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4970" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaOffset="-100" redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4971" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redOffset="-100" blueOffset="200" greenOffset="100"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

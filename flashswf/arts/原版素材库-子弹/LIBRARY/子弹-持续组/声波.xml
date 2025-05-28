@@ -1,0 +1,657 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/声波" itemID="669d34bf-0000176e" linkageExportForAS="true" linkageIdentifier="声波" lastModified="1722875808">
+  <timeline>
+    <DOMTimeline name="声波">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8ACCCE">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#CCD86F">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#B2AF8E" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="18" centerPoint3DY="13.5">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="5.5" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#8BB4BB" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="16.75" centerPoint3DY="-11.55">
+                  <matrix>
+                    <Matrix a="0.601730346679688" d="0.94232177734375" tx="4.25" ty="-24.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#CD83E0">
+          <frames>
+            <DOMFrame index="0" duration="42" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="6.65240478515625" d="6.65240478515625" tx="-39.35" ty="-179.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="36" blurY="36"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-240"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#E27C73">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="6.65240478515625" d="6.65240478515625" tx="-39.35" ty="-179.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-200"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#09B1CD">
+          <frames>
+            <DOMFrame index="0" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="6.65240478515625" d="6.65240478515625" tx="-39.35" ty="-179.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="25" blurY="25"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-160"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#D503B2">
+          <frames>
+            <DOMFrame index="0" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="6.33563232421875" d="6.33563232421875" tx="-36.9" ty="-170.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="21" blurY="21"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-120"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#F814DA">
+          <frames>
+            <DOMFrame index="0" duration="34" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="6.033935546875" d="6.033935546875" tx="-34.6" ty="-162.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="18" blurY="18"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-80"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#82EAF4">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="5.74661254882813" d="5.74661254882813" tx="-32.4" ty="-154.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="15"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-40"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#D14C70">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#EC3F9C">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#E7D433">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#6BAE8F">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#B7FF4C">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#0AE9BC">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#74F724">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#08DD9B">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#01B0EE">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#14BFC0">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#FEBCE9">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#0AF38C">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#77F734">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#3EACB2">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#F7F1EF">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#C1D7DA">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="4" ty="-26.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.21548461914063" d="1.21548461914063" tx="2.3" ty="-31.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.40707397460938" d="1.40707397460938" tx="0.8" ty="-37.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.62884521484375" d="1.62884521484375" tx="-0.9" ty="-43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.88560485839844" d="1.88560485839844" tx="-2.85" ty="-50.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.18280029296875" d="2.18280029296875" tx="-5.15" ty="-58.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.52685546875" d="2.52685546875" tx="-7.8" ty="-67.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.92515563964844" d="2.92515563964844" tx="-10.85" ty="-78.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="3.38623046875" d="3.38623046875" tx="-14.4" ty="-90.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="3.91998291015625" d="3.91998291015625" tx="-18.5" ty="-105.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.08404541015625" d="4.08404541015625" tx="-19.7" ty="-109.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.28825378417969" d="4.28825378417969" tx="-21.25" ty="-115.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.50265502929688" d="4.50265502929688" tx="-22.9" ty="-121.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="7" blurY="7"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.727783203125" d="4.727783203125" tx="-24.6" ty="-127.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="9" blurY="9"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4.96417236328125" d="4.96417236328125" tx="-26.4" ty="-133.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="11" blurY="11"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4752" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="5.47296142578125" d="5.47296142578125" tx="-30.3" ty="-147.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="13" blurY="13"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="25" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

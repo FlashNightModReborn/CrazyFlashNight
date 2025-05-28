@@ -1,0 +1,240 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-击中效果组/光剑特效" itemID="669d33f3-00001730" linkageExportForAS="true" linkageIdentifier="光剑特效" lastModified="1721648448">
+  <timeline>
+    <DOMTimeline name="光剑特效" currentFrame="21">
+      <layers>
+        <DOMLayer name="Script Layer" color="#D0639E" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+this._rotation = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BCB034">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-42" centerPoint3DY="-42">
+                  <matrix>
+                    <Matrix a="4.3599853515625" d="4.35992431640625" tx="-54.5" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#ECC1DC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4195" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603958129882813" d="0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4197" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603958129882813" d="0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4198" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603958129882813" d="0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603958129882813" d="0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603958129882813" d="0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#5CFDBF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4195" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.603958129882813" d="-0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4197" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.603958129882813" d="-0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4198" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.603958129882813" d="-0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4199" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.603958129882813" d="-0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4200" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.603958129882813" d="-0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.603958129882813" d="-0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.603958129882813" d="-0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4201" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603958129882813" d="0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.603958129882813" d="0.603958129882813" tx="-0.65" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#42F36C">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728" soundName="3.音效相关/sound4196.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

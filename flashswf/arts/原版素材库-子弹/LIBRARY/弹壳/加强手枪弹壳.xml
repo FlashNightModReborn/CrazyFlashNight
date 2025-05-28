@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹壳/加强手枪弹壳" itemID="66357cd7-00000b72" linkageExportForAS="true" linkageIdentifier="加强手枪弹壳" lastModified="1718038398">
+  <timeline>
+    <DOMTimeline name="加强手枪弹壳">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#331C1C"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#701A16"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!21 0S6|99 0!99 0|99 34!99 34|21 34"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!21 34S6|0 34!0 34|0 0!0 0|21 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!21 34S3|21 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

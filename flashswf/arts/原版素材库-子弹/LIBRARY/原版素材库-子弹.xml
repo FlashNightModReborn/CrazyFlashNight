@@ -1,0 +1,2191 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1748405333" lastUniqueIdentifier="109">
+  <timeline>
+    <DOMTimeline name="原版素材库-子弹">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" name="子弹" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" name="子弹2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" name="特效" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" name="联弹" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" name="弹壳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="129.95" ty="40.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>普通子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="75.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="131.5" ty="157.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>能量子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="129.95" ty="69.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>加强普通子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="129.95" ty="97.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>穿刺子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="129.95" ty="125.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>糖果子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="75.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="131.5" ty="194.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>巴雷特子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="158" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="127.95" ty="239.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>近战子弹（理论上已弃用）</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="91" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="146" ty="330.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>普通火箭弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="91" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="277" ty="330.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>小型导弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="32" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="439.95" ty="333.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>榴弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="91" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="25" ty="330.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>火箭弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="161" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="772.45" ty="66.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>气动波</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters> </characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>气动波爆炸</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="115.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="168.45" ty="495"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>诛神闪电</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="934.95" ty="311"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>普通弩箭</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="116" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="595.95" ty="367.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>火焰</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="71" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="41" ty="450.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>爆炎手里剑</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="105" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="828.95" ty="491.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>火力支援开始</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="105" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="833.95" ty="553.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>火力支援</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>-</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>炸弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="100.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="870.45" ty="125.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>猜猜这是啥</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="48" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="148" ty="307.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>声波</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" left="-0.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="28.85" ty="305.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>电球</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="48" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="250" ty="307.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>声波</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="113" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="424" ty="320.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>旋转冲击</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="113" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="593" ty="320.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>月光陨落</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="161" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="33.1" ty="168.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>月牙天冲</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="161" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="171.1" ty="168.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>天冲命中</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="108" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="640.95" ty="187.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>血滴落</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="108" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="877.95" ty="187.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>血爆炸</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="150" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="777.95" ty="508.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>黑铁</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>-</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>落剑素材</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="30" ty="33.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>火花</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="113" ty="33.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>飙血</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-13.6" width="48.2" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="210.95" ty="33.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>无声火花</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="306.95" ty="33.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>枪火</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="76" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="4" ty="125.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>小烟雾</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-25.6" width="72.2" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="425.95" ty="49.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>空手攻击火花</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="76" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="90" ty="125.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>击中金属</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="4" ty="211.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>子弹碎片</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>-</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>飞血</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="102" ty="211.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>血迹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-13.6" width="48.2" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="210.95" ty="127.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>拼刀火花</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="88" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="304.95" ty="135.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>灰尘</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="99" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="291.95" ty="199.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>小地震</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="72.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="16" ty="544"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>光剑特效</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="173.25" ty="558.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>骷髅特效</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="559.95" ty="161.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>升级动画</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="683.95" ty="161.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>药剂动画</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="683.95" ty="314.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>药剂动画</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>-2</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="565.05" ty="314.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>升级动画</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>2</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="120" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="885.95" ty="288.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>巴雷特子弹击中特效</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="899" ty="123.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>巴雷特枪火</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="4" ty="297.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>屎花</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="202.45" ty="297.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>屎尘</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" left="-25.6" width="118" height="33.1" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="412.55" ty="171.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>原版空手攻击火花</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>（自带血雾）</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="联弹/横向联弹" centerPoint3DX="202.8" centerPoint3DY="182.5">
+                  <matrix>
+                    <Matrix tx="192.7" ty="182.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/单元体-普通子弹" centerPoint3DX="191.35" centerPoint3DY="199.6">
+                  <matrix>
+                    <Matrix tx="178.75" ty="198.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="0.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/单元体-加强普通子弹" centerPoint3DX="189" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="177.35" ty="207.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.65" y="-0.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/单元体-穿刺子弹" centerPoint3DX="179.85" centerPoint3DY="217.9">
+                  <matrix>
+                    <Matrix tx="135.65" ty="218.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.2" y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/单元体-红色针弹" centerPoint3DX="178.55" centerPoint3DY="227.7">
+                  <matrix>
+                    <Matrix tx="134.35" ty="228.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.2" y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/近战联弹" centerPoint3DX="200.1" centerPoint3DY="145.85">
+                  <matrix>
+                    <Matrix tx="200.1" ty="145.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/白色手里剑/Symbol 1155" centerPoint3DX="133.6" centerPoint3DY="171.35">
+                  <matrix>
+                    <Matrix tx="186.75" ty="183.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/纸飞机/单元体-纸飞机" centerPoint3DX="138.65" centerPoint3DY="148.6">
+                  <matrix>
+                    <Matrix tx="190.35" ty="157.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-51.7" y="-8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/联弹爆炸/联弹爆炸" centerPoint3DX="182.65" centerPoint3DY="287.9">
+                  <matrix>
+                    <Matrix tx="187.75" ty="281.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.3" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/单元体-牛仔炸弹" centerPoint3DX="190.7" centerPoint3DY="349.75">
+                  <matrix>
+                    <Matrix tx="190.7" ty="349.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/横向机枪联弹" centerPoint3DX="153.85" centerPoint3DY="168.25">
+                  <matrix>
+                    <Matrix tx="153.85" ty="168.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-近战子弹专享座位/近战子弹" centerPoint3DX="96.8" centerPoint3DY="249.95">
+                  <matrix>
+                    <Matrix tx="96.8" ty="249.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/诛神闪电" centerPoint3DX="234.45" centerPoint3DY="432.95">
+                  <matrix>
+                    <Matrix tx="234.45" ty="432.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#00FF00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2652 230|2627 230!2627 230|2627 218!2627 218|2567 218!2567 218|2567 261!2567 261|2669 261!2669 261|2669 285!2669 285|2567 285!2567 285|2567 351!2567 351|2542 351!2542 351|2542 285!2542 285|2438 285!2438 285|2438 261!2438 261|2542 261
+!2542 261|2542 218!2542 218|2482 218!2482 218|2482 230!2482 230|2458 230!2458 230|2458 63!2458 63|2511 63!2511 63[2498 41 2480 18!2480 18|2501 4!2501 4[2518 23 2537 49!2537 49|2516 63!2516 63|2567 63!2567 63[2586 32 2602 4!2602 4|2628
+ 19!2628 19[2614 40 2597 63!2597 63|2652 63!2652 63|2652 230!2567 87|2567 129!2567 129|2627 129!2627 129|2627 87!2627 87|2567 87!2482 194|2542 194!2542 194|2542 152!2542 152|2482 152!2482 152|2482 194!2627 194|2627 152!2627 152|2567 152
+!2567 152|2567 194!2567 194|2627 194!2542 87|2482 87!2482 87|2482 129!2482 129|2542 129!2542 129|2542 87!2400 107|2400 48!2400 48|2323 48!2323 48|2323 24!2323 24|2425 24!2425 24|2425 143!2425 143|2400 143!2400 143|2400 131!2400 131|2361
+ 131!2361 131|2355 192!2355 192|2424 192!2424 192[2423 242 2421 290!2421 290[2419 344 2374 344!2374 344[2361 344 2330 343!2330 343[2328 329 2324 315!2324 315[2356 318 2369 318!2369 318[2394 318 2395 289!2395 289[2397 250 2398 216!2398
+ 216|2328 216!2328 216|2338 107!2338 107|2400 107!2272 52|2154 139!2154 139|2154 164!2154 164|2308 164!2308 164|2308 190!2308 190|2154 190!2154 190|2154 301!2154 301[2154 348 2105 348!2105 348[2089 348 2050 347!2050 347[2048 333 2045
+ 315!2045 315[2071 318 2100 319!2100 319[2125 319 2125 293!2125 293|2125 190!2125 190|1961 190!1961 190|1961 164!1961 164|2125 164!2125 164|2125 125!2125 125|2225 51!2225 51|1998 51!1998 51|1998 25!1998 25|2272 25!2272 25|2272 52!1825
+ 183|1929 183!1929 183|1929 209!1929 209|1825 209!1825 209|1825 183!1789 71|1506 71!1506 71|1506 172!1506 172[1506 293 1460 353!1460 353[1451 342 1440 329!1440 329[1478 279 1478 177!1478 177|1478 46!1478 46|1630 46!1630 46[1619 31 1606
+ 16!1606 16|1627 0!1627 0[1644 16 1658 35!1658 35|1643 46!1643 46|1789 46!1789 46|1789 71!1646 153|1675 153!1675 153|1675 198!1675 198|1771 198!1771 198|1771 223!1771 223|1675 223!1675 223|1675 260!1675 260|1788 260!1788 260|1788 286
+!1788 286|1675 286!1675 286|1675 351!1675 351|1646 351!1646 351|1646 286!1646 286|1513 286!1513 286|1513 260!1513 260|1646 260!1646 260|1646 223!1646 223|1539 223!1539 223|1539 197!1539 197[1558 171 1574 140!1574 140|1522 140!1522 140
+|1522 114!1522 114|1586 114!1586 114[1595 96 1603 75!1603 75|1631 83!1631 83[1624 99 1617 114!1617 114|1771 114!1771 114|1771 140!1771 140|1604 140!1604 140[1588 171 1571 198!1571 198|1646 198!1646 198|1646 153!1433 105|1383 105!1383
+ 105|1383 295!1383 295[1383 344 1337 344!1337 344[1317 344 1282 344!1282 344[1280 331 1276 313!1276 313[1311 315 1328 315!1328 315[1355 315 1355 293!1355 293|1355 135!1355 135[1311 231 1224 301!1224 301[1215 290 1203 277!1203 277[1295
+ 207 1341 105!1341 105|1239 105!1239 105|1239 79!1239 79|1355 79!1355 79|1355 7!1355 7|1383 7!1383 7|1383 79!1383 79|1433 79!1433 79|1433 105!1222 211[1199 183 1174 158!1174 158|1174 351!1174 351|1147 351!1147 351|1147 159!1147 159[1125
+ 221 1097 261!1097 261[1090 246 1083 230!1083 230[1124 172 1142 103!1142 103|1089 103!1089 103|1089 78!1089 78|1147 78!1147 78|1147 7!1147 7|1174 7!1174 7|1174 78!1174 78|1225 78!1225 78|1225 103!1225 103|1174 103!1174 103|1174 151!1174
+ 151|1188 138!1188 138[1218 165 1243 191!1243 191|1222 211!1031 101|912 101!912 101|912 126!912 126|1069 126!1069 126|1069 148!1069 148|879 148!879 148[844 167 806 185!806 185[860 182 922 178!922 178[950 164 977 150!977 150|997 166!997
+ 166[907 210 818 245!818 245[906 241 993 236!993 236[978 222 962 207!962 207|981 191!981 191[1022 226 1055 258!1055 258[1048 264 1034 278!1034 278[1024 267 1013 255!1013 255[960 258 917 260!917 260|917 304!917 304[917 346 873 346!873
+ 346[856 346 831 345!831 345[830 333 827 317!827 317[853 320 867 320!867 320[890 320 890 301!890 301|890 261!890 261[843 264 809 266!809 266[786 267 769 270!769 270|754 242!754 242[781 237 801 230!801 230[840 215 877 198!877 198[834 201
+ 800 204!800 204[787 206 773 208!773 208|761 182!761 182[779 178 793 171!793 171[816 160 836 148!836 148|729 148!729 148|729 126!729 126|884 126!884 126|884 101!884 101|762 101!762 101|762 79!762 79|884 79!884 79|884 56!884 56|742 56
+!742 56|742 33!742 33|884 33!884 33|884 3!884 3|912 3!912 3|912 33!912 33|1056 33!1056 33|1056 56!1056 56|912 56!912 56|912 79!912 79|1031 79!1031 79|1031 101!965 271[1002 290 1057 320!1057 320|1039 343!1039 343[989 311 949 290!949 290
+|965 271!838 292[784 325 745 344!745 344[739 335 730 322!730 322[769 305 820 273!820 273|838 292!706 44[606 55 544 56!544 56|544 114!544 114|693 114!693 114|693 135!693 135[679 220 639 271!639 271[665 298 714 320!714 320[701 334 692 346
+!692 346[647 318 622 291!622 291[593 321 542 350!542 350[534 338 525 325!525 325[578 300 606 271!606 271[571 222 561 138!561 138|544 138!544 138|544 191!544 191[544 289 499 351!499 351[491 338 481 328!481 328[504 293 512 260!512 260[520
+ 228 520 173!520 173|520 33!520 33[622 31 696 18!696 18|706 44!474 8|474 113!474 113|504 113!504 113|504 135!504 135|413 135!413 135|413 191!413 191|476 191!476 191|476 346!476 346|452 346!452 346|452 212!452 212|413 212!413 212[411 297
+ 383 351!383 351[376 341 363 330!363 330[388 286 388 197!388 197|388 17!388 17|413 17!413 17|413 113!413 113|449 113!449 113|449 8!449 8|474 8!666 138|586 138!586 138[594 206 623 251!623 251[654 209 666 138!348 52|215 52!215 52[207 71
+ 200 87!200 87|320 87!320 87|320 231!320 231|293 231!293 231|293 224!293 224|228 224!228 224|228 303!228 303[228 347 188 347!188 347[176 347 144 346!144 346[142 333 139 316!139 316[167 319 183 319!183 319[200 319 200 299!200 299|200 224
+!200 224|134 224!134 224|134 231!134 231|108 231!108 231|108 87!108 87|171 87!171 87[178 70 184 52!184 52|69 52!69 52|69 148!69 148[69 230 59 268!59 268[50 310 20 353!20 353[11 341 0 328!0 328[25 292 32 257!32 257[41 224 41 154!41 154
+|41 27!41 27|348 27!348 27|348 52!293 167|134 167!134 167|134 201!134 201|293 201!293 201|293 167!293 111|134 111!134 111|134 144!134 144|293 144!293 144|293 111!66 326[101 294 138 238!138 238|162 254!162 254[128 305 89 344!89 344[80
+ 336 66 326!254 256|275 239!275 239[321 282 353 319!353 319|330 340!330 340[296 297 254 256"/>
+                    <Edge cubics="!449 8(;449,8 474,8 474,8q449 8 474 8);"/>
+                    <Edge cubics="!348 27(;348,27 348,52 348,52q348 27 348 52);"/>
+                    <Edge cubics="!388 17(;388,17 413,17 413,17q388 17 413 17);"/>
+                    <Edge cubics="!413 135(;413,135 413,191 413,191q413 135 413 191);"/>
+                    <Edge cubics="!504 113(;504,113 504,135 504,135q504 113 504 135);"/>
+                    <Edge cubics="!474 113(;474,113 504,113 504,113q474 113 504 113);"/>
+                    <Edge cubics="!452 212(;452,212 413,212 413,212q452 212 413 212);"/>
+                    <Edge cubics="!520 173(;520,173 520,33 520,33q520 173 520 33);"/>
+                    <Edge cubics="!504 135(;504,135 413,135 413,135q504 135 413 135);"/>
+                    <Edge cubics="!413 191(;413,191 476,191 476,191q413 191 476 191);"/>
+                    <Edge cubics="!388 197(;388,197 388,17 388,17q388 197 388 17);"/>
+                    <Edge cubics="!413 17(;413,17 413,113 413,113q413 17 413 113);"/>
+                    <Edge cubics="!474 8(;474,8 474,113 474,113q474 8 474 113);"/>
+                    <Edge cubics="!449 113(;449,113 449,8 449,8q449 113 449 8);"/>
+                    <Edge cubics="!413 113(;413,113 449,113 449,113q413 113 449 113);"/>
+                    <Edge cubics="!666 138(;666,138 586,138 586,138q666 138 586 138);"/>
+                    <Edge cubics="!544 138(;544,138 544,191 544,191q544 138 544 191);"/>
+                    <Edge cubics="!561 138(;561,138 544,138 544,138q561 138 544 138);"/>
+                    <Edge cubics="!693 114(;693,114 693,135 693,135q693 114 693 135);"/>
+                    <Edge cubics="!544 114(;544,114 693,114 693,114q544 114 693 114);"/>
+                    <Edge cubics="!544 56(;544,56 544,114 544,114q544 56 544 114);"/>
+                    <Edge cubics="!706 44(;639,51 585,55 544,56q706 44Q606 55q544 56);"/>
+                    <Edge cubics="!696 18(;696,18 706,44 706,44q696 18 706 44);"/>
+                    <Edge cubics="!520 33(;588,32 647,27 696,18q520 33Q622 31q696 18);"/>
+                    <Edge cubics="!884 79(;884,79 884,56 884,56q884 79 884 56);"/>
+                    <Edge cubics="!884 33(;884,33 884,3 884,3q884 33 884 3);"/>
+                    <Edge cubics="!884 3(;884,3 912,3 912,3q884 3 912 3);"/>
+                    <Edge cubics="!912 3(;912,3 912,33 912,33q912 3 912 33);"/>
+                    <Edge cubics="!912 56(;912,56 912,79 912,79q912 56 912 79);"/>
+                    <Edge cubics="!742 56(;742,56 742,33 742,33q742 56 742 33);"/>
+                    <Edge cubics="!761 182(;773,179 784,176 793,171q761 182Q779 178q793 171);"/>
+                    <Edge cubics="!773 208(;773,208 761,182 761,182q773 208 761 182);"/>
+                    <Edge cubics="!800 204(;791,205 782,207 773,208q800 204Q787 206q773 208);"/>
+                    <Edge cubics="!729 148(;729,148 729,126 729,126q729 148 729 126);"/>
+                    <Edge cubics="!912 101(;912,101 912,126 912,126q912 101 912 126);"/>
+                    <Edge cubics="!884 126(;884,126 884,101 884,101q884 126 884 101);"/>
+                    <Edge cubics="!806 185(;842,183 881,181 922,178q806 185Q860 182q922 178);"/>
+                    <Edge cubics="!879 148(;856,161 831,173 806,185q879 148Q844 167q806 185);"/>
+                    <Edge cubics="!742 33(;742,33 884,33 884,33q742 33 884 33);"/>
+                    <Edge cubics="!884 56(;884,56 742,56 742,56q884 56 742 56);"/>
+                    <Edge cubics="!762 79(;762,79 884,79 884,79q762 79 884 79);"/>
+                    <Edge cubics="!762 101(;762,101 762,79 762,79q762 101 762 79);"/>
+                    <Edge cubics="!884 101(;884,101 762,101 762,101q884 101 762 101);"/>
+                    <Edge cubics="!877 198(;848,200 823,202 800,204q877 198Q834 201q800 204);"/>
+                    <Edge cubics="!793 171(;808,164 823,156 836,148q793 171Q816 160q836 148);"/>
+                    <Edge cubics="!836 148(;836,148 729,148 729,148q836 148 729 148);"/>
+                    <Edge cubics="!729 126(;729,126 884,126 884,126q729 126 884 126);"/>
+                    <Edge cubics="!1089 103(;1089,103 1089,78 1089,78q1089 103 1089 78);"/>
+                    <Edge cubics="!962 207(;962,207 981,191 981,191q962 207 981 191);"/>
+                    <Edge cubics="!977 150(;977,150 997,166 997,166q977 150 997 166);"/>
+                    <Edge cubics="!1069 126(;1069,126 1069,148 1069,148q1069 126 1069 148);"/>
+                    <Edge cubics="!1031 79(;1031,79 1031,101 1031,101q1031 79 1031 101);"/>
+                    <Edge cubics="!1056 33(;1056,33 1056,56 1056,56q1056 33 1056 56);"/>
+                    <Edge cubics="!922 178(;941,169 959,159 977,150q922 178Q950 164q977 150);"/>
+                    <Edge cubics="!1069 148(;1069,148 879,148 879,148q1069 148 879 148);"/>
+                    <Edge cubics="!912 126(;912,126 1069,126 1069,126q912 126 1069 126);"/>
+                    <Edge cubics="!1031 101(;1031,101 912,101 912,101q1031 101 912 101);"/>
+                    <Edge cubics="!912 79(;912,79 1031,79 1031,79q912 79 1031 79);"/>
+                    <Edge cubics="!1056 56(;1056,56 912,56 912,56q1056 56 912 56);"/>
+                    <Edge cubics="!912 33(;912,33 1056,33 1056,33q912 33 1056 33);"/>
+                    <Edge cubics="!1147 78(;1147,78 1147,7 1147,7q1147 78 1147 7);"/>
+                    <Edge cubics="!1147 7(;1147,7 1174,7 1174,7q1147 7 1174 7);"/>
+                    <Edge cubics="!1174 7(;1174,7 1174,78 1174,78q1174 7 1174 78);"/>
+                    <Edge cubics="!1174 78(;1174,78 1225,78 1225,78q1174 78 1225 78);"/>
+                    <Edge cubics="!1222 211(;1207,192 1191,175 1174,158q1222 211Q1199 183q1174 158);"/>
+                    <Edge cubics="!1225 103(;1225,103 1174,103 1174,103q1225 103 1174 103);"/>
+                    <Edge cubics="!1174 103(;1174,103 1174,151 1174,151q1174 103 1174 151);"/>
+                    <Edge cubics="!1174 151(;1174,151 1188,138 1188,138q1174 151 1188 138);"/>
+                    <Edge cubics="!1243 191(;1243,191 1222,211 1222,211q1243 191 1222 211);"/>
+                    <Edge cubics="!1188 138(;1208,156 1226,174 1243,191q1188 138Q1218 165q1243 191);"/>
+                    <Edge cubics="!1239 105(;1239,105 1239,79 1239,79q1239 105 1239 79);"/>
+                    <Edge cubics="!1225 78(;1225,78 1225,103 1225,103q1225 78 1225 103);"/>
+                    <Edge cubics="!1355 79(;1355,79 1355,7 1355,7q1355 79 1355 7);"/>
+                    <Edge cubics="!1355 7(;1355,7 1383,7 1383,7q1355 7 1383 7);"/>
+                    <Edge cubics="!1383 7(;1383,7 1383,79 1383,79q1383 7 1383 79);"/>
+                    <Edge cubics="!1522 140(;1522,140 1522,114 1522,114q1522 140 1522 114);"/>
+                    <Edge cubics="!1383 79(;1383,79 1433,79 1433,79q1383 79 1433 79);"/>
+                    <Edge cubics="!1433 79(;1433,79 1433,105 1433,105q1433 79 1433 105);"/>
+                    <Edge cubics="!1433 105(;1433,105 1383,105 1383,105q1433 105 1383 105);"/>
+                    <Edge cubics="!1478 177(;1478,177 1478,46 1478,46q1478 177 1478 46);"/>
+                    <Edge cubics="!1506 71(;1506,71 1506,172 1506,172q1506 71 1506 172);"/>
+                    <Edge cubics="!1341 105(;1341,105 1239,105 1239,105q1341 105 1239 105);"/>
+                    <Edge cubics="!1239 79(;1239,79 1355,79 1355,79q1239 79 1355 79);"/>
+                    <Edge cubics="!1658 35(;1658,35 1643,46 1643,46q1658 35 1643 46);"/>
+                    <Edge cubics="!1603 75(;1603,75 1631,83 1631,83q1603 75 1631 83);"/>
+                    <Edge cubics="!1606 16(;1606,16 1627,0 1627,0q1606 16 1627 0);"/>
+                    <Edge cubics="!1630 46(;1623,36 1615,26 1606,16q1630 46Q1619 31q1606 16);"/>
+                    <Edge cubics="!1539 197(;1552,180 1563,161 1574,140q1539 197Q1558 171q1574 140);"/>
+                    <Edge cubics="!1539 223(;1539,223 1539,197 1539,197q1539 223 1539 197);"/>
+                    <Edge cubics="!1604 140(;1593,161 1582,180 1571,198q1604 140Q1588 171q1571 198);"/>
+                    <Edge cubics="!1675 153(;1675,153 1675,198 1675,198q1675 153 1675 198);"/>
+                    <Edge cubics="!1646 153(;1646,153 1675,153 1675,153q1646 153 1675 153);"/>
+                    <Edge cubics="!1646 198(;1646,198 1646,153 1646,153q1646 198 1646 153);"/>
+                    <Edge cubics="!1627 0(;1638,11 1649,22 1658,35q1627 0Q1644 16q1658 35);"/>
+                    <Edge cubics="!1646 223(;1646,223 1539,223 1539,223q1646 223 1539 223);"/>
+                    <Edge cubics="!1586 114(;1592,102 1598,89 1603,75q1586 114Q1595 96q1603 75);"/>
+                    <Edge cubics="!1631 83(;1626,94 1622,104 1617,114q1631 83Q1624 99q1617 114);"/>
+                    <Edge cubics="!1571 198(;1571,198 1646,198 1646,198q1571 198 1646 198);"/>
+                    <Edge cubics="!1929 209(;1929,209 1825,209 1825,209q1929 209 1825 209);"/>
+                    <Edge cubics="!1825 209(;1825,209 1825,183 1825,183q1825 209 1825 183);"/>
+                    <Edge cubics="!1825 183(;1825,183 1929,183 1929,183q1825 183 1929 183);"/>
+                    <Edge cubics="!1929 183(;1929,183 1929,209 1929,209q1929 183 1929 209);"/>
+                    <Edge cubics="!1789 46(;1789,46 1789,71 1789,71q1789 46 1789 71);"/>
+                    <Edge cubics="!1771 198(;1771,198 1771,223 1771,223q1771 198 1771 223);"/>
+                    <Edge cubics="!1771 114(;1771,114 1771,140 1771,140q1771 114 1771 140);"/>
+                    <Edge cubics="!1643 46(;1643,46 1789,46 1789,46q1643 46 1789 46);"/>
+                    <Edge cubics="!1771 223(;1771,223 1675,223 1675,223q1771 223 1675 223);"/>
+                    <Edge cubics="!1675 198(;1675,198 1771,198 1771,198q1675 198 1771 198);"/>
+                    <Edge cubics="!1617 114(;1617,114 1771,114 1771,114q1617 114 1771 114);"/>
+                    <Edge cubics="!1771 140(;1771,140 1604,140 1604,140q1771 140 1604 140);"/>
+                    <Edge cubics="!1478 46(;1478,46 1630,46 1630,46q1478 46 1630 46);"/>
+                    <Edge cubics="!1789 71(;1789,71 1506,71 1506,71q1789 71 1506 71);"/>
+                    <Edge cubics="!1574 140(;1574,140 1522,140 1522,140q1574 140 1522 140);"/>
+                    <Edge cubics="!1522 114(;1522,114 1586,114 1586,114q1522 114 1586 114);"/>
+                    <Edge cubics="!1089 78(;1089,78 1147,78 1147,78q1089 78 1147 78);"/>
+                    <Edge cubics="!1142 103(;1142,103 1089,103 1089,103q1142 103 1089 103);"/>
+                    <Edge cubics="!1961 164(;1961,164 2125,164 2125,164q1961 164 2125 164);"/>
+                    <Edge cubics="!2125 164(;2125,164 2125,125 2125,125q2125 164 2125 125);"/>
+                    <Edge cubics="!1998 51(;1998,51 1998,25 1998,25q1998 51 1998 25);"/>
+                    <Edge cubics="!2125 190(;2125,190 1961,190 1961,190q2125 190 1961 190);"/>
+                    <Edge cubics="!1961 190(;1961,190 1961,164 1961,164q1961 190 1961 164);"/>
+                    <Edge cubics="!2328 216(;2328,216 2338,107 2338,107q2328 216 2338 107);"/>
+                    <Edge cubics="!2323 48(;2323,48 2323,24 2323,24q2323 48 2323 24);"/>
+                    <Edge cubics="!2272 25(;2272,25 2272,52 2272,52q2272 25 2272 52);"/>
+                    <Edge cubics="!2272 52(;2272,52 2154,139 2154,139q2272 52 2154 139);"/>
+                    <Edge cubics="!2154 139(;2154,139 2154,164 2154,164q2154 139 2154 164);"/>
+                    <Edge cubics="!2154 164(;2154,164 2308,164 2308,164q2154 164 2308 164);"/>
+                    <Edge cubics="!2308 164(;2308,164 2308,190 2308,190q2308 164 2308 190);"/>
+                    <Edge cubics="!2308 190(;2308,190 2154,190 2154,190q2308 190 2154 190);"/>
+                    <Edge cubics="!2125 125(;2125,125 2225,51 2225,51q2125 125 2225 51);"/>
+                    <Edge cubics="!2225 51(;2225,51 1998,51 1998,51q2225 51 1998 51);"/>
+                    <Edge cubics="!1998 25(;1998,25 2272,25 2272,25q1998 25 2272 25);"/>
+                    <Edge cubics="!2511 63(;2502,48 2492,33 2480,18q2511 63Q2498 41q2480 18);"/>
+                    <Edge cubics="!2458 63(;2458,63 2511,63 2511,63q2458 63 2511 63);"/>
+                    <Edge cubics="!2537 49(;2537,49 2516,63 2516,63q2537 49 2516 63);"/>
+                    <Edge cubics="!2501 4(;2512,17 2524,32 2537,49q2501 4Q2518 23q2537 49);"/>
+                    <Edge cubics="!2480 18(;2480,18 2501,4 2501,4q2480 18 2501 4);"/>
+                    <Edge cubics="!2542 87(;2542,87 2482,87 2482,87q2542 87 2482 87);"/>
+                    <Edge cubics="!2355 192(;2355,192 2424,192 2424,192q2355 192 2424 192);"/>
+                    <Edge cubics="!2361 131(;2361,131 2355,192 2355,192q2361 131 2355 192);"/>
+                    <Edge cubics="!2400 131(;2400,131 2361,131 2361,131q2400 131 2361 131);"/>
+                    <Edge cubics="!2425 143(;2425,143 2400,143 2400,143q2425 143 2400 143);"/>
+                    <Edge cubics="!2400 143(;2400,143 2400,131 2400,131q2400 143 2400 131);"/>
+                    <Edge cubics="!2482 152(;2482,152 2482,194 2482,194q2482 152 2482 194);"/>
+                    <Edge cubics="!2542 152(;2542,152 2482,152 2482,152q2542 152 2482 152);"/>
+                    <Edge cubics="!2542 194(;2542,194 2542,152 2542,152q2542 194 2542 152);"/>
+                    <Edge cubics="!2482 194(;2482,194 2542,194 2542,194q2482 194 2542 194);"/>
+                    <Edge cubics="!2482 129(;2482,129 2542,129 2542,129q2482 129 2542 129);"/>
+                    <Edge cubics="!2542 218(;2542,218 2482,218 2482,218q2542 218 2482 218);"/>
+                    <Edge cubics="!2542 129(;2542,129 2542,87 2542,87q2542 129 2542 87);"/>
+                    <Edge cubics="!2482 87(;2482,87 2482,129 2482,129q2482 87 2482 129);"/>
+                    <Edge cubics="!2400 107(;2400,107 2400,48 2400,48q2400 107 2400 48);"/>
+                    <Edge cubics="!2425 24(;2425,24 2425,143 2425,143q2425 24 2425 143);"/>
+                    <Edge cubics="!2627 87(;2627,87 2567,87 2567,87q2627 87 2567 87);"/>
+                    <Edge cubics="!2567 63(;2580,42 2591,23 2602,4q2567 63Q2586 32q2602 4);"/>
+                    <Edge cubics="!2602 4(;2602,4 2628,19 2628,19q2602 4 2628 19);"/>
+                    <Edge cubics="!2628 19(;2619,33 2608,48 2597,63q2628 19Q2614 40q2597 63);"/>
+                    <Edge cubics="!2627 152(;2627,152 2567,152 2567,152q2627 152 2567 152);"/>
+                    <Edge cubics="!2567 152(;2567,152 2567,194 2567,194q2567 152 2567 194);"/>
+                    <Edge cubics="!2567 129(;2567,129 2627,129 2627,129q2567 129 2627 129);"/>
+                    <Edge cubics="!2627 218(;2627,218 2567,218 2567,218q2627 218 2567 218);"/>
+                    <Edge cubics="!2567 194(;2567,194 2627,194 2627,194q2567 194 2627 194);"/>
+                    <Edge cubics="!2627 194(;2627,194 2627,152 2627,152q2627 194 2627 152);"/>
+                    <Edge cubics="!2627 129(;2627,129 2627,87 2627,87q2627 129 2627 87);"/>
+                    <Edge cubics="!2567 87(;2567,87 2567,129 2567,129q2567 87 2567 129);"/>
+                    <Edge cubics="!2597 63(;2597,63 2652,63 2652,63q2597 63 2652 63);"/>
+                    <Edge cubics="!2516 63(;2516,63 2567,63 2567,63q2516 63 2567 63);"/>
+                    <Edge cubics="!2400 48(;2400,48 2323,48 2323,48q2400 48 2323 48);"/>
+                    <Edge cubics="!2338 107(;2338,107 2400,107 2400,107q2338 107 2400 107);"/>
+                    <Edge cubics="!2398 216(;2398,216 2328,216 2328,216q2398 216 2328 216);"/>
+                    <Edge cubics="!2323 24(;2323,24 2425,24 2425,24q2323 24 2425 24);"/>
+                    <Edge cubics="!2669 285(;2669,285 2567,285 2567,285q2669 285 2567 285);"/>
+                    <Edge cubics="!2669 261(;2669,261 2669,285 2669,285q2669 261 2669 285);"/>
+                    <Edge cubics="!2567 261(;2567,261 2669,261 2669,261q2567 261 2669 261);"/>
+                    <Edge cubics="!2652 230(;2652,230 2627,230 2627,230q2652 230 2627 230);"/>
+                    <Edge cubics="!2567 285(;2567,285 2567,351 2567,351q2567 285 2567 351);"/>
+                    <Edge cubics="!2369 318(;2386,318 2394,308 2395,289q2369 318Q2394 318q2395 289);"/>
+                    <Edge cubics="!2421 290(;2420,326 2404,344 2374,344q2421 290Q2419 344q2374 344);"/>
+                    <Edge cubics="!2482 230(;2482,230 2458,230 2458,230q2482 230 2458 230);"/>
+                    <Edge cubics="!2542 351(;2542,351 2542,285 2542,285q2542 351 2542 285);"/>
+                    <Edge cubics="!2542 285(;2542,285 2438,285 2438,285q2542 285 2438 285);"/>
+                    <Edge cubics="!2438 285(;2438,285 2438,261 2438,261q2438 285 2438 261);"/>
+                    <Edge cubics="!2438 261(;2438,261 2542,261 2542,261q2438 261 2542 261);"/>
+                    <Edge cubics="!2567 351(;2567,351 2542,351 2542,351q2567 351 2542 351);"/>
+                    <Edge cubics="!2330 343(;2329,334 2327,324 2324,315q2330 343Q2328 329q2324 315);"/>
+                    <Edge cubics="!2100 319(;2117,319 2125,310 2125,293q2100 319Q2125 319q2125 293);"/>
+                    <Edge cubics="!2045 315(;2062,317 2081,318 2100,319q2045 315Q2071 318q2100 319);"/>
+                    <Edge cubics="!2050 347(;2049,338 2047,327 2045,315q2050 347Q2048 333q2045 315);"/>
+                    <Edge cubics="!2105 348(;2094,348 2076,348 2050,347q2105 348Q2089 348q2050 347);"/>
+                    <Edge cubics="!2154 301(;2154,332 2138,348 2105,348q2154 301Q2154 348q2105 348);"/>
+                    <Edge cubics="!2324 315(;2345,317 2360,318 2369,318q2324 315Q2356 318q2369 318);"/>
+                    <Edge cubics="!2374 344(;2365,344 2351,344 2330,343q2374 344Q2361 344q2330 343);"/>
+                    <Edge cubics="!1646 351(;1646,351 1646,286 1646,286q1646 351 1646 286);"/>
+                    <Edge cubics="!1675 351(;1675,351 1646,351 1646,351q1675 351 1646 351);"/>
+                    <Edge cubics="!1675 286(;1675,286 1675,351 1675,351q1675 286 1675 351);"/>
+                    <Edge cubics="!1788 286(;1788,286 1675,286 1675,286q1788 286 1675 286);"/>
+                    <Edge cubics="!1675 260(;1675,260 1788,260 1788,260q1675 260 1788 260);"/>
+                    <Edge cubics="!1788 260(;1788,260 1788,286 1788,286q1788 260 1788 286);"/>
+                    <Edge cubics="!1383 295(;1383,328 1368,344 1337,344q1383 295Q1383 344q1337 344);"/>
+                    <Edge cubics="!1460 353(;1454,346 1447,338 1440,329q1460 353Q1451 342q1440 329);"/>
+                    <Edge cubics="!1513 286(;1513,286 1513,260 1513,260q1513 286 1513 260);"/>
+                    <Edge cubics="!1174 351(;1174,351 1147,351 1147,351q1174 351 1147 351);"/>
+                    <Edge cubics="!1224 301(;1218,294 1211,286 1203,277q1224 301Q1215 290q1203 277);"/>
+                    <Edge cubics="!1276 313(;1299,314 1317,315 1328,315q1276 313Q1311 315q1328 315);"/>
+                    <Edge cubics="!1282 344(;1281,335 1279,325 1276,313q1282 344Q1280 331q1276 313);"/>
+                    <Edge cubics="!1328 315(;1346,315 1355,308 1355,293q1328 315Q1355 315q1355 293);"/>
+                    <Edge cubics="!1337 344(;1324,344 1305,344 1282,344q1337 344Q1317 344q1282 344);"/>
+                    <Edge cubics="!1513 260(;1513,260 1646,260 1646,260q1513 260 1646 260);"/>
+                    <Edge cubics="!1646 286(;1646,286 1513,286 1513,286q1646 286 1513 286);"/>
+                    <Edge cubics="!1097 261(;1092,251 1088,241 1083,230q1097 261Q1090 246q1083 230);"/>
+                    <Edge cubics="!1055 258(;1050,262 1043,269 1034,278q1055 258Q1048 264q1034 278);"/>
+                    <Edge cubics="!1034 278(;1027,271 1020,263 1013,255q1034 278Q1024 267q1013 255);"/>
+                    <Edge cubics="!949 290(;949,290 965,271 965,271q949 290 965 271);"/>
+                    <Edge cubics="!965 271(;990,284 1020,300 1057,320q965 271Q1002 290q1057 320);"/>
+                    <Edge cubics="!1057 320(;1057,320 1039,343 1039,343q1057 320 1039 343);"/>
+                    <Edge cubics="!1039 343(;1006,322 976,304 949,290q1039 343Q989 311q949 290);"/>
+                    <Edge cubics="!873 346(;862,346 848,346 831,345q873 346Q856 346q831 345);"/>
+                    <Edge cubics="!917 304(;917,332 902,346 873,346q917 304Q917 346q873 346);"/>
+                    <Edge cubics="!917 260(;917,260 917,304 917,304q917 260 917 304);"/>
+                    <Edge cubics="!831 345(;830,337 829,328 827,317q831 345Q830 333q827 317);"/>
+                    <Edge cubics="!827 317(;844,319 858,320 867,320q827 317Q853 320q867 320);"/>
+                    <Edge cubics="!867 320(;882,320 890,314 890,301q867 320Q890 320q890 301);"/>
+                    <Edge cubics="!890 301(;890,301 890,261 890,261q890 301 890 261);"/>
+                    <Edge cubics="!745 344(;741,338 736,331 730,322q745 344Q739 335q730 322);"/>
+                    <Edge cubics="!730 322(;756,311 786,294 820,273q730 322Q769 305q820 273);"/>
+                    <Edge cubics="!754 242(;772,239 788,235 801,230q754 242Q781 237q801 230);"/>
+                    <Edge cubics="!809 266(;794,267 780,268 769,270q809 266Q786 267q769 270);"/>
+                    <Edge cubics="!769 270(;769,270 754,242 754,242q769 270 754 242);"/>
+                    <Edge cubics="!838 292(;802,314 771,331 745,344q838 292Q784 325q745 344);"/>
+                    <Edge cubics="!820 273(;820,273 838,292 838,292q820 273 838 292);"/>
+                    <Edge cubics="!890 261(;859,263 832,265 809,266q890 261Q843 264q809 266);"/>
+                    <Edge cubics="!818 245(;877,242 935,239 993,236q818 245Q906 241q993 236);"/>
+                    <Edge cubics="!1013 255(;978,257 946,259 917,260q1013 255Q960 258q917 260);"/>
+                    <Edge cubics="!525 325(;560,308 587,290 606,271q525 325Q578 300q606 271);"/>
+                    <Edge cubics="!542 350(;537,342 531,334 525,325q542 350Q534 338q525 325);"/>
+                    <Edge cubics="!622 291(;603,311 576,331 542,350q622 291Q593 321q542 350);"/>
+                    <Edge cubics="!692 346(;662,327 639,309 622,291q692 346Q647 318q622 291);"/>
+                    <Edge cubics="!714 320(;705,329 698,338 692,346q714 320Q701 334q692 346);"/>
+                    <Edge cubics="!639 271(;656,289 681,305 714,320q639 271Q665 298q714 320);"/>
+                    <Edge cubics="!383 351(;378,344 372,337 363,330q383 351Q376 341q363 330);"/>
+                    <Edge cubics="!476 346(;476,346 452,346 452,346q476 346 452 346);"/>
+                    <Edge cubics="!481 328(;496,305 507,282 512,260q481 328Q504 293q512 260);"/>
+                    <Edge cubics="!499 351(;494,342 488,335 481,328q499 351Q491 338q481 328);"/>
+                    <Edge cubics="!353 319(;353,319 330,340 330,340q353 319 330 340);"/>
+                    <Edge cubics="!2395 289(;2396,263 2397,239 2398,216q2395 289Q2397 250q2398 216);"/>
+                    <Edge cubics="!2424 192(;2423,225 2422,258 2421,290q2424 192Q2423 242q2421 290);"/>
+                    <Edge cubics="!2458 230(;2458,230 2458,63 2458,63q2458 230 2458 63);"/>
+                    <Edge cubics="!2482 218(;2482,218 2482,230 2482,230q2482 218 2482 230);"/>
+                    <Edge cubics="!2542 261(;2542,261 2542,218 2542,218q2542 261 2542 218);"/>
+                    <Edge cubics="!2567 218(;2567,218 2567,261 2567,261q2567 218 2567 261);"/>
+                    <Edge cubics="!2627 230(;2627,230 2627,218 2627,218q2627 230 2627 218);"/>
+                    <Edge cubics="!2652 63(;2652,63 2652,230 2652,230q2652 63 2652 230);"/>
+                    <Edge cubics="!2154 190(;2154,190 2154,301 2154,301q2154 190 2154 301);"/>
+                    <Edge cubics="!2125 293(;2125,293 2125,190 2125,190q2125 293 2125 190);"/>
+                    <Edge cubics="!1440 329(;1465,296 1478,245 1478,177q1440 329Q1478 279q1478 177);"/>
+                    <Edge cubics="!1506 172(;1506,253 1491,313 1460,353q1506 172Q1506 293q1460 353);"/>
+                    <Edge cubics="!1675 223(;1675,223 1675,260 1675,260q1675 223 1675 260);"/>
+                    <Edge cubics="!1646 260(;1646,260 1646,223 1646,223q1646 260 1646 223);"/>
+                    <Edge cubics="!1147 159(;1132,200 1116,234 1097,261q1147 159Q1125 221q1097 261);"/>
+                    <Edge cubics="!1147 351(;1147,351 1147,159 1147,159q1147 351 1147 159);"/>
+                    <Edge cubics="!1174 158(;1174,158 1174,351 1174,351q1174 158 1174 351);"/>
+                    <Edge cubics="!1083 230(;1110,191 1130,149 1142,103q1083 230Q1124 172q1142 103);"/>
+                    <Edge cubics="!1203 277(;1264,230 1310,173 1341,105q1203 277Q1295 207q1341 105);"/>
+                    <Edge cubics="!1355 135(;1326,199 1282,254 1224,301q1355 135Q1311 231q1224 301);"/>
+                    <Edge cubics="!1355 293(;1355,293 1355,135 1355,135q1355 293 1355 135);"/>
+                    <Edge cubics="!1383 105(;1383,105 1383,295 1383,295q1383 105 1383 295);"/>
+                    <Edge cubics="!993 236(;983,227 973,217 962,207q993 236Q978 222q962 207);"/>
+                    <Edge cubics="!997 166(;937,195 877,222 818,245q997 166Q907 210q818 245);"/>
+                    <Edge cubics="!801 230(;827,220 852,209 877,198q801 230Q840 215q877 198);"/>
+                    <Edge cubics="!981 191(;1008,214 1033,237 1055,258q981 191Q1022 226q1055 258);"/>
+                    <Edge cubics="!623 251(;644,223 658,185 666,138q623 251Q654 209q666 138);"/>
+                    <Edge cubics="!586 138(;591,183 604,221 623,251q586 138Q594 206q623 251);"/>
+                    <Edge cubics="!476 191(;476,191 476,346 476,346q476 191 476 346);"/>
+                    <Edge cubics="!363 330(;380,301 388,256 388,197q363 330Q388 286q388 197);"/>
+                    <Edge cubics="!413 212(;412,269 402,315 383,351q413 212Q411 297q383 351);"/>
+                    <Edge cubics="!452 346(;452,346 452,212 452,212q452 346 452 212);"/>
+                    <Edge cubics="!512 260(;517,239 520,210 520,173q512 260Q520 228q520 173);"/>
+                    <Edge cubics="!544 191(;544,256 529,310 499,351q544 191Q544 289q499 351);"/>
+                    <Edge cubics="!606 271(;583,238 568,194 561,138q606 271Q571 222q561 138);"/>
+                    <Edge cubics="!693 135(;684,192 666,237 639,271q693 135Q679 220q639 271);"/>
+                    <Edge cubics="!320 87(;320,87 320,231 320,231q320 87 320 231);"/>
+                    <Edge cubics="!41 154(;41,154 41,27 41,27q41 154 41 27);"/>
+                    <Edge cubics="!69 52(;69,52 69,148 69,148q69 52 69 148);"/>
+                    <Edge cubics="!171 87(;176,76 180,64 184,52q171 87Q178 70q184 52);"/>
+                    <Edge cubics="!215 52(;210,65 205,76 200,87q215 52Q207 71q200 87);"/>
+                    <Edge cubics="!134 167(;134,167 134,201 134,201q134 167 134 201);"/>
+                    <Edge cubics="!134 111(;134,111 134,144 134,144q134 111 134 144);"/>
+                    <Edge cubics="!293 144(;293,144 293,111 293,111q293 144 293 111);"/>
+                    <Edge cubics="!293 201(;293,201 293,167 293,167q293 201 293 167);"/>
+                    <Edge cubics="!293 111(;293,111 134,111 134,111q293 111 134 111);"/>
+                    <Edge cubics="!134 144(;134,144 293,144 293,144q134 144 293 144);"/>
+                    <Edge cubics="!134 201(;134,201 293,201 293,201q134 201 293 201);"/>
+                    <Edge cubics="!293 167(;293,167 134,167 134,167q293 167 134 167);"/>
+                    <Edge cubics="!184 52(;184,52 69,52 69,52q184 52 69 52);"/>
+                    <Edge cubics="!108 87(;108,87 171,87 171,87q108 87 171 87);"/>
+                    <Edge cubics="!254 256(;254,256 275,239 275,239q254 256 275 239);"/>
+                    <Edge cubics="!293 231(;293,231 293,224 293,224q293 231 293 224);"/>
+                    <Edge cubics="!293 224(;293,224 228,224 228,224q293 224 228 224);"/>
+                    <Edge cubics="!228 224(;228,224 228,303 228,303q228 224 228 303);"/>
+                    <Edge cubics="!144 346(;143,337 141,327 139,316q144 346Q142 333q139 316);"/>
+                    <Edge cubics="!188 347(;180,347 165,347 144,346q188 347Q176 347q144 346);"/>
+                    <Edge cubics="!200 224(;200,224 134,224 134,224q200 224 134 224);"/>
+                    <Edge cubics="!200 299(;200,299 200,224 200,224q200 299 200 224);"/>
+                    <Edge cubics="!183 319(;194,319 200,312 200,299q183 319Q200 319q200 299);"/>
+                    <Edge cubics="!139 316(;158,318 172,319 183,319q139 316Q167 319q183 319);"/>
+                    <Edge cubics="!138 238(;138,238 162,254 162,254q138 238 162 254);"/>
+                    <Edge cubics="!134 224(;134,224 134,231 134,231q134 224 134 231);"/>
+                    <Edge cubics="!228 303(;228,332 215,347 188,347q228 303Q228 347q188 347);"/>
+                    <Edge cubics="!89 344(;83,339 75,333 66,326q89 344Q80 336q66 326);"/>
+                    <Edge cubics="!0 328(;17,304 27,280 32,257q0 328Q25 292q32 257);"/>
+                    <Edge cubics="!20 353(;14,345 7,337 0,328q20 353Q11 341q0 328);"/>
+                    <Edge cubics="!59 268(;53,296 40,324 20,353q59 268Q50 310q20 353);"/>
+                    <Edge cubics="!66 326(;89,305 113,275 138,238q66 326Q101 294q138 238);"/>
+                    <Edge cubics="!162 254(;139,288 115,318 89,344q162 254Q128 305q89 344);"/>
+                    <Edge cubics="!134 231(;134,231 108,231 108,231q134 231 108 231);"/>
+                    <Edge cubics="!108 231(;108,231 108,87 108,87q108 231 108 87);"/>
+                    <Edge cubics="!32 257(;38,235 41,201 41,154q32 257Q41 224q41 154);"/>
+                    <Edge cubics="!69 148(;69,203 66,243 59,268q69 148Q69 230q59 268);"/>
+                    <Edge cubics="!330 340(;307,311 282,283 254,256q330 340Q296 297q254 256);"/>
+                    <Edge cubics="!275 239(;306,268 332,294 353,319q275 239Q321 282q353 319);"/>
+                    <Edge cubics="!320 231(;320,231 293,231 293,231q320 231 293 231);"/>
+                    <Edge cubics="!200 87(;200,87 320,87 320,87q200 87 320 87);"/>
+                    <Edge cubics="!348 52(;348,52 215,52 215,52q348 52 215 52);"/>
+                    <Edge cubics="!41 27(;41,27 348,27 348,27q41 27 348 27);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/气功弹" centerPoint3DX="803.2" centerPoint3DY="41">
+                  <matrix>
+                    <Matrix tx="820.4" ty="39.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-17.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/气功弹爆炸" centerPoint3DX="915.9" centerPoint3DY="42.3">
+                  <matrix>
+                    <Matrix tx="915.9" ty="42.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/普通子弹" centerPoint3DX="83.95" centerPoint3DY="49.8">
+                  <matrix>
+                    <Matrix tx="73.85" ty="49.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/普通弩箭" centerPoint3DX="855.25" centerPoint3DY="315.15">
+                  <matrix>
+                    <Matrix tx="881.45" ty="314.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-26.2" y="0.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/能量子弹" centerPoint3DX="76.8" centerPoint3DY="165.8">
+                  <matrix>
+                    <Matrix tx="76.8" ty="165.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/普通爆炸" centerPoint3DX="482.95" centerPoint3DY="124.3">
+                  <matrix>
+                    <Matrix tx="485.55" ty="189.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.6" y="-65.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="180" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="405.95" ty="240.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>普通爆炸</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/普通火箭弹" centerPoint3DX="185" centerPoint3DY="296">
+                  <matrix>
+                    <Matrix tx="176.65" ty="303.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="-7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/小型导弹" centerPoint3DX="325.3" centerPoint3DY="300">
+                  <matrix>
+                    <Matrix tx="335.35" ty="307.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.05" y="-7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/榴弹" centerPoint3DX="454" centerPoint3DY="310">
+                  <matrix>
+                    <Matrix tx="447.8" ty="309.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.2" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/火箭弹" centerPoint3DX="75" centerPoint3DY="293">
+                  <matrix>
+                    <Matrix tx="67.15" ty="300.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.85" y="-7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/火焰" centerPoint3DX="644.95" centerPoint3DY="306.85">
+                  <matrix>
+                    <Matrix tx="582.25" ty="308.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.7" y="-2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/爆炎手里剑" centerPoint3DX="77" centerPoint3DY="430.25">
+                  <matrix>
+                    <Matrix tx="76.7" ty="430"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/加强普通子弹" centerPoint3DX="84" centerPoint3DY="79.3">
+                  <matrix>
+                    <Matrix tx="72.35" ty="79.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/穿刺子弹" centerPoint3DX="63.5" centerPoint3DY="107">
+                  <matrix>
+                    <Matrix tx="22.3" ty="107"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/糖果子弹" centerPoint3DX="95.3" centerPoint3DY="134.3">
+                  <matrix>
+                    <Matrix tx="95.3" ty="135.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-特殊组/火力支援开始" centerPoint3DX="888.95" centerPoint3DY="463">
+                  <matrix>
+                    <Matrix tx="888.95" ty="463"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-特殊组/火力支援-炸弹" centerPoint3DX="1069.9" centerPoint3DY="332.05">
+                  <matrix>
+                    <Matrix tx="1069.45" ty="546.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.45" y="-215.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/巴雷特子弹" centerPoint3DX="-63.75" centerPoint3DY="206">
+                  <matrix>
+                    <Matrix tx="-159.3" ty="204.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="95.55" y="1.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/屎块爆炸" centerPoint3DX="916.95" centerPoint3DY="104.3">
+                  <matrix>
+                    <Matrix tx="916.95" ty="104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/声波1" centerPoint3DX="171.75" centerPoint3DY="270.3">
+                  <matrix>
+                    <Matrix tx="171.75" ty="270.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/电球" centerPoint3DX="42" centerPoint3DY="270.3">
+                  <matrix>
+                    <Matrix tx="41.45" ty="270.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/声波" centerPoint3DX="268.3" centerPoint3DY="270.3">
+                  <matrix>
+                    <Matrix tx="255.9" ty="269.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/旋转冲击" centerPoint3DX="464" centerPoint3DY="272.3">
+                  <matrix>
+                    <Matrix tx="460.1" ty="373.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.2" y="-101.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/月光陨落" centerPoint3DX="662.3" centerPoint3DY="270.3">
+                  <matrix>
+                    <Matrix tx="653.7" ty="403.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.6" y="-132.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/月牙天冲" centerPoint3DX="124" centerPoint3DY="102.7">
+                  <matrix>
+                    <Matrix tx="67.5" ty="184.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.5" y="-81.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/天冲命中" centerPoint3DX="246.95" centerPoint3DY="129.3">
+                  <matrix>
+                    <Matrix tx="260.35" ty="223.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-13.4" y="-94"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/血滴落" centerPoint3DX="702.95" centerPoint3DY="23.75">
+                  <matrix>
+                    <Matrix tx="702.55" ty="99.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="-75.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-持续组/血爆炸" centerPoint3DX="931.95" centerPoint3DY="7">
+                  <matrix>
+                    <Matrix tx="932.45" ty="151"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-144"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未分类子弹或特效/黑铁-落剑素材" centerPoint3DX="800.45" centerPoint3DY="371.95">
+                  <matrix>
+                    <Matrix tx="800.45" ty="371.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/火花" selected="true">
+                  <matrix>
+                    <Matrix tx="29.5" ty="19.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-血液组/飙血" selected="true">
+                  <matrix>
+                    <Matrix tx="113.5" ty="20.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/无声火花" selected="true">
+                  <matrix>
+                    <Matrix tx="219.95" ty="22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/枪火" selected="true">
+                  <matrix>
+                    <Matrix tx="316.5" ty="25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/光剑特效" selected="true" centerPoint3DX="55.3" centerPoint3DY="509.95">
+                  <matrix>
+                    <Matrix tx="55.15" ty="473.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="29.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/骷髅特效" selected="true" centerPoint3DX="231.55" centerPoint3DY="422.4">
+                  <matrix>
+                    <Matrix tx="231.55" ty="501.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-78.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/升级动画" selected="true" centerPoint3DX="603.95" centerPoint3DY="90">
+                  <matrix>
+                    <Matrix tx="618.85" ty="156.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.9" y="-66.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/小烟雾" selected="true">
+                  <matrix>
+                    <Matrix tx="45" ty="104"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/药剂动画" selected="true" centerPoint3DX="733.95" centerPoint3DY="84.45">
+                  <matrix>
+                    <Matrix tx="737.55" ty="150.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.6" y="-65.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/空手攻击火花" selected="true" centerPoint3DX="437.95" centerPoint3DY="20.45">
+                  <matrix>
+                    <Matrix tx="438.45" ty="23"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/击中金属" selected="true">
+                  <matrix>
+                    <Matrix tx="137" ty="103"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-血液组/子弹碎片-飞血" selected="true" centerPoint3DX="45.3" centerPoint3DY="190">
+                  <matrix>
+                    <Matrix tx="45.3" ty="190"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-血液组/血迹" selected="true">
+                  <matrix>
+                    <Matrix tx="147" ty="191"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/拼刀火花" selected="true">
+                  <matrix>
+                    <Matrix tx="224.95" ty="101"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/药剂动画-2" selected="true" centerPoint3DX="739.95" centerPoint3DY="236.95">
+                  <matrix>
+                    <Matrix tx="743.55" ty="302.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.6" y="-65.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/灰尘1" selected="true" centerPoint3DX="350.25" centerPoint3DY="112">
+                  <matrix>
+                    <Matrix tx="350.25" ty="112"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/升级动画2" selected="true" centerPoint3DX="614.05" centerPoint3DY="241.95">
+                  <matrix>
+                    <Matrix tx="628.95" ty="308.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.9" y="-66.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未分类子弹或特效/小地震" selected="true">
+                  <matrix>
+                    <Matrix tx="341.95" ty="186"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/战术巴雷特击中特效" selected="true" centerPoint3DX="957.9" centerPoint3DY="228.3">
+                  <matrix>
+                    <Matrix tx="956.95" ty="228.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.95" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/巴雷特枪火" selected="true" centerPoint3DX="959.3" centerPoint3DY="68.6">
+                  <matrix>
+                    <Matrix tx="959.3" ty="68.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/屎花" selected="true">
+                  <matrix>
+                    <Matrix tx="35" ty="273.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/屎尘" selected="true" centerPoint3DX="248" centerPoint3DY="274.1">
+                  <matrix>
+                    <Matrix tx="248" ty="274.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/原版空手攻击火花" selected="true" centerPoint3DX="437.95" centerPoint3DY="134.45">
+                  <matrix>
+                    <Matrix tx="438.45" ty="137"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹壳/步枪弹壳" centerPoint3DX="468.05" centerPoint3DY="276.75">
+                  <matrix>
+                    <Matrix tx="459.5" ty="270.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.55" y="6.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/能量弹壳" centerPoint3DX="543.25" centerPoint3DY="275.5">
+                  <matrix>
+                    <Matrix tx="538.2" ty="274.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.05" y="1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/霰弹弹壳" centerPoint3DX="482.35" centerPoint3DY="289.05">
+                  <matrix>
+                    <Matrix a="1.17948913574219" tx="477.8" ty="287.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.85" y="1.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/手枪弹壳" centerPoint3DX="463.7" centerPoint3DY="271.8">
+                  <matrix>
+                    <Matrix tx="461.25" ty="270.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.45" y="0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/能量手枪弹壳" centerPoint3DX="540.65" centerPoint3DY="271.8">
+                  <matrix>
+                    <Matrix tx="538.2" ty="270.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.45" y="0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/全威力弹壳" centerPoint3DX="467.55" centerPoint3DY="279.7">
+                  <matrix>
+                    <Matrix tx="460.15" ty="278.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/重机枪弹壳" centerPoint3DX="468.65" centerPoint3DY="284.3">
+                  <matrix>
+                    <Matrix tx="456.4" ty="282.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="1.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/加强手枪弹壳" centerPoint3DX="501.9" centerPoint3DY="271.55">
+                  <matrix>
+                    <Matrix tx="499.45" ty="270.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.45" y="0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/加强弹壳" centerPoint3DX="504.5" centerPoint3DY="275.35">
+                  <matrix>
+                    <Matrix tx="499.45" ty="274.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.05" y="1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/加强全威力弹壳" centerPoint3DX="505.75" centerPoint3DY="279.45">
+                  <matrix>
+                    <Matrix tx="498.35" ty="278.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/加强重机枪弹壳" centerPoint3DX="506.8" centerPoint3DY="284.05">
+                  <matrix>
+                    <Matrix tx="494.55" ty="282.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="1.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/加强霰弹弹壳" centerPoint3DX="506" centerPoint3DY="289.4">
+                  <matrix>
+                    <Matrix tx="496.65" ty="287.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.35" y="1.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/能量全威力弹壳" centerPoint3DX="544.5" centerPoint3DY="279.5">
+                  <matrix>
+                    <Matrix tx="537.1" ty="278.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/能量重机枪弹壳" centerPoint3DX="545.55" centerPoint3DY="284">
+                  <matrix>
+                    <Matrix tx="533.3" ty="282.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="1.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/能量霰弹弹壳" centerPoint3DX="544.75" centerPoint3DY="289.25">
+                  <matrix>
+                    <Matrix tx="535.4" ty="287.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.35" y="1.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/榴弹弹壳" centerPoint3DX="473.6" centerPoint3DY="300.15">
+                  <matrix>
+                    <Matrix tx="461.4" ty="295.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="5.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/加强榴弹弹壳" centerPoint3DX="511.65" centerPoint3DY="300.15">
+                  <matrix>
+                    <Matrix tx="499.45" ty="295.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="5.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="弹壳/能量榴弹弹壳" centerPoint3DX="550.4" centerPoint3DY="300.15">
+                  <matrix>
+                    <Matrix tx="538.2" ty="295.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.2" y="5.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

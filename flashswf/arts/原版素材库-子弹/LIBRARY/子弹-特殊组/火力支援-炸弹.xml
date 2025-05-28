@@ -1,0 +1,1134 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-特殊组/火力支援-炸弹" itemID="669d345c-00001748" linkageExportForAS="true" linkageIdentifier="火力支援-炸弹" lastModified="1729338582">
+  <timeline>
+    <DOMTimeline name="火力支援-炸弹" currentFrame="65">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F9F958" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#91B5D7" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(子弹威力 == undefined)
+{
+   子弹威力 = 3000;
+}
+if(子弹敌我属性值 == undefined)
+{
+   子弹敌我属性值 = true;
+}
+if(发射者名 == undefined)
+{
+   发射者名 = _root.控制目标;
+}
+
+子弹属性 = _root.子弹属性初始化(this,"普通爆炸",发射者名);
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.发射效果 = "";
+子弹属性.子弹种类 = "普通爆炸";
+子弹属性.子弹威力 = 子弹威力;
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 120;
+子弹属性.击倒率 = 1;
+子弹属性.击中后子弹的效果 = "";
+子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.伤害类型 = "物理";
+子弹属性.shootX = this._x;
+子弹属性.shootY = this._y;
+子弹属性.shootZ = this._y;
+子弹属性.发射者 = 发射者名;
+_root.子弹区域shoot传递(子弹属性);
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EE9E14">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-273.3">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-359.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.2109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-272.9">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-359.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.23046875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-271.75">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-358.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-269.75">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-356.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.41015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-267.05">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-353.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.55859375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-263.5">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-349.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.76171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-259.2">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-345.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-245.45">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-331.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-231.75">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-318.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-218">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-304.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-204.25">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-290.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-190.55">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-276.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-176.8">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-263.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-163.05">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-249.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-149.3">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-235.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-135.6">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-221.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-121.85">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-208.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-108.1">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-194.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-94.4">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-180.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-80.65">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-166.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-66.9">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-153.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-53.2">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-139.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-39.45">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-125.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-25.7">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-112"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-11.95">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-98.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="1.75">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-84.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="15.5">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="29.25">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-57.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="42.95">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-43.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="56.7">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-29.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="自瞄准星特效/火力支援新瞄准镜" centerPoint3DX="0.45" centerPoint3DY="4.15">
+                  <matrix>
+                    <Matrix tx="-108.35" ty="-38.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="108.8" y="42.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.26953125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="自瞄准星特效/火力支援新瞄准镜" centerPoint3DX="0.45" centerPoint3DY="4.15">
+                  <matrix>
+                    <Matrix tx="-108.35" ty="-38.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="108.8" y="42.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#5BFBBB" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FF3333"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.26953125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.2890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3203125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.33984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.37109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.390625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.421875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.44921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.46875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.51953125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.55078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5703125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.62109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6484375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.671875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.71875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.76953125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8203125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.87890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.9296875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.94921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.98046875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 712" centerPoint3DX="109.45" centerPoint3DY="54.9">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="65" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#7DC96F" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="32" keyMode="9728" soundName="3.音效相关/sound715.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

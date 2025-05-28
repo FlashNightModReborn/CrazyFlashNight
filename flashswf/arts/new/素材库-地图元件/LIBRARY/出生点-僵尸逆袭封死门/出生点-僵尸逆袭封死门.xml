@@ -1,0 +1,100 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-僵尸逆袭封死门/出生点-僵尸逆袭封死门" itemID="67e962b0-000004ad" linkageExportForAS="true" linkageIdentifier="出生点-僵尸逆袭封死门" lastModified="1747387065" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="出生点-僵尸逆袭封死门" currentFrame="3">
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="15" name="开门" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 开门(){
+	gotoAndPlay("开门");
+	this.开门 = null;
+}
+初始化出生点 = _root.初始化出生点;
+初始化出生点();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(-this._y);
+Z轴坐标 = this._y;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("撞开门.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-僵尸逆袭封死门/Symbol 48" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.4346923828125" d="1.4346923828125" tx="-1.5" ty="-122.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-僵尸逆袭封死门/Symbol 48 副本" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="1.4346923828125" d="1.4346923828125" tx="-1.5" ty="-122.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-僵尸逆袭封死门/Symbol 49" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.2" ty="-83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,303 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-聚光灯/出生点-聚光灯" itemID="66653baf-0000029e" linkageExportForAS="true" linkageIdentifier="出生点-聚光灯" lastModified="1721238829" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="出生点-聚光灯">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="14" name="开门" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[初始化出生点 = _root.初始化出生点;
+初始化出生点();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(1000 + random(1000));
+Z轴坐标 = this._y;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(1000 + random(1000));
+Z轴坐标 = this._y;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("正常");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 77" blendMode="add" centerPoint3DX="-20.85" centerPoint3DY="-212">
+                  <matrix>
+                    <Matrix a="0.476318359375" b="-0.057952880859375" c="0.257583618164063" d="2.11663818359375" tx="-44.05" ty="-416.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.15" y="96.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 77" blendMode="add" centerPoint3DX="-20.85" centerPoint3DY="-212">
+                  <matrix>
+                    <Matrix a="0.476318359375" b="-0.057952880859375" c="0.257583618164063" d="2.11663818359375" tx="-44.05" ty="-416.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.15" y="96.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 77" blendMode="add" centerPoint3DX="-20.85" centerPoint3DY="-212">
+                  <matrix>
+                    <Matrix a="0.476318359375" b="-0.057952880859375" c="0.257583618164063" d="2.11663818359375" tx="-44.05" ty="-416.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.15" y="96.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Symbol 77" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 77" blendMode="add" centerPoint3DX="239.7" centerPoint3DY="-208.8">
+                  <matrix>
+                    <Matrix a="-0.547500610351563" b="-0.651382446289063" c="-1.175537109375" d="1.94879150390625" tx="167.25" ty="-319.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                    <AdjustColorFilter contrast="1" hue="-79"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 77" blendMode="add" centerPoint3DX="239.7" centerPoint3DY="-208.8">
+                  <matrix>
+                    <Matrix a="-0.547500610351563" b="-0.651382446289063" c="-1.175537109375" d="1.94879150390625" tx="167.25" ty="-319.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                    <AdjustColorFilter contrast="1" hue="-79"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 77" blendMode="add" centerPoint3DX="239.7" centerPoint3DY="-208.8">
+                  <matrix>
+                    <Matrix a="-0.297393798828125" b="-0.35382080078125" c="-1.175537109375" d="1.94879150390625" tx="167.25" ty="-319.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                    <AdjustColorFilter contrast="1" hue="-85"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="聚光灯" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/聚光灯" blendMode="add" centerPoint3DX="-92.85" centerPoint3DY="-210.85">
+                  <matrix>
+                    <Matrix a="0.580291748046875" b="-0.69036865234375" c="1.17550659179688" d="1.94883728027344" tx="-165.7" ty="-321.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                    <AdjustColorFilter contrast="1" hue="117"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/聚光灯" blendMode="add" centerPoint3DX="-92.85" centerPoint3DY="-210.85">
+                  <matrix>
+                    <Matrix a="0.580291748046875" b="-0.69036865234375" c="1.17550659179688" d="1.94883728027344" tx="-165.7" ty="-321.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                    <AdjustColorFilter contrast="1" hue="117"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/聚光灯" blendMode="add" centerPoint3DX="-92.85" centerPoint3DY="-210.85">
+                  <matrix>
+                    <Matrix a="0.297393798828125" b="-0.353805541992188" c="1.17550659179688" d="1.94883728027344" tx="-165.7" ty="-321.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                    <AdjustColorFilter contrast="1" hue="117"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Symbol 74" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 74" blendMode="add" centerPoint3DX="76.1" centerPoint3DY="35.35">
+                  <matrix>
+                    <Matrix a="1.49986267089844" d="1.50022888183594"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="-117"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 74" blendMode="add" centerPoint3DX="91.3" centerPoint3DY="42.4">
+                  <matrix>
+                    <Matrix a="1.79985046386719" d="1.80027770996094"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 74" blendMode="add" centerPoint3DX="91.3" centerPoint3DY="42.4">
+                  <matrix>
+                    <Matrix a="1.79985046386719" d="1.80027770996094"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="100"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-聚光灯/Symbol 74" blendMode="add" centerPoint3DX="91.3" centerPoint3DY="42.4">
+                  <matrix>
+                    <Matrix a="1.79985046386719" d="1.80027770996094"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="1" hue="100"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,237 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-光束发射器/出生点-光束发射器" itemID="664b2cd9-00000bca" linkageExportForAS="true" linkageIdentifier="出生点-光束发射器" lastModified="1747384529" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="出生点-光束发射器" currentFrame="6">
+      <layers>
+        <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="20" name="开门" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[初始化出生点 = _root.初始化出生点;
+初始化出生点();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(1000 + random(1000));
+Z轴坐标 = this._y;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(1000 + random(1000));]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("正常");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/Symbol 42" centerPoint3DX="72.85" centerPoint3DY="-99.65">
+                  <matrix>
+                    <Matrix a="1.15765380859375" d="1.19821166992188" ty="-210"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="15" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333"/>
+                  <Point x="0.666666666666667" y="0.333333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/Symbol 42" centerPoint3DX="72.85" centerPoint3DY="-99.65">
+                  <matrix>
+                    <Matrix a="1.15765380859375" d="1.19821166992188" ty="-210"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/Symbol 42" centerPoint3DX="72.85" centerPoint3DY="-99.65">
+                  <matrix>
+                    <Matrix a="1.15765380859375" d="1.19821166992188" ty="-210"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="30" blurY="30"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/元件 3" centerPoint3DX="-0.05" centerPoint3DY="-221.7">
+                  <transformationPoint>
+                    <Point x="-0.05" y="-221.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="26" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#529EF6"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!90 -11000|150 -11000!150 -11000|150 -5265!150 -5265[150 -5247 106 -5234!106 -5234[98 -5231 90 -5229!90 -5229|90 -4515!90 -4515|55 -4470"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!55 -4470|54 -4469!54 -4469|40 -4469"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!40 -4469[-4 -4450 -40 -4469"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!-40 -4469|-40 -4175!-40 -4175|0 -4152!0 -4152|40 -4179!40 -4179|40 -4469"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!90 -5229[74 -5225 55 -5223"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!55 -5223[30 -5220 0 -5220!0 -5220[-51 -5220 -90 -5229"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-90 -5229|-90 -4515!-90 -4515|-59 -4469!-59 -4469|-40 -4469"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="2" edges="!90 -5333|89 -5301!89 -5301|64 -5277"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!90 -5229|90 -5333"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="!90 -5333|90 -6682"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!90 -6682|90 -11000"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!90 -11000|-150 -11000!-150 -11000|-150 -5265!-150 -5265[-150 -5247 -106 -5234!-106 -5234[-98 -5232 -90 -5229"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!55 -4470|55 -5223"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="2" edges="!-110 -6609|-109 -5530!-109 -5530|-6 -5458!-6 -5458|-6 -5279"/>
+                    <Edge cubics="!106 -5234(;101,-5232 95,-5230 90,-5229q106 -5234Q98 -5231q90 -5229);"/>
+                    <Edge cubics="!-90 -5229(;-95,-5231 -101,-5233 -106,-5234q-90 -5229Q-98 -5232q-106 -5234);"/>
+                    <Edge cubics="!0 -5220(;-34,-5220 -64,-5223 -90,-5229q0 -5220Q-51 -5220q-90 -5229);"/>
+                    <Edge cubics="!-106 -5234(;-135,-5243 -150,-5253 -150,-5265q-106 -5234Q-150 -5247q-150 -5265);"/>
+                    <Edge cubics="!150 -5265(;150,-5253 135,-5243 106,-5234q150 -5265Q150 -5247q106 -5234);"/>
+                    <Edge cubics="!-90 -4515(;-90,-4515 -59,-4469 -59,-4469q-90 -4515 -59 -4469);"/>
+                    <Edge cubics="!-59 -4469(;-59,-4469 -40,-4469 -40,-4469q-59 -4469 -40 -4469);"/>
+                    <Edge cubics="!40 -4469(;40,-4469 54,-4469 54,-4469q40 -4469 54 -4469);"/>
+                    <Edge cubics="!90 -5333(;90,-5333 89,-5301 89,-5301q90 -5333 89 -5301);"/>
+                    <Edge cubics="!89 -5301(;89,-5301 64,-5277 64,-5277q89 -5301 64 -5277);"/>
+                    <Edge cubics="!90 -5229(;79,-5226 68,-5224 55,-5223q90 -5229Q74 -5225q55 -5223);"/>
+                    <Edge cubics="!55 -5223(;38,-5221 20,-5220 0,-5220q55 -5223Q30 -5220q0 -5220);"/>
+                    <Edge cubics="!90 -5333(;90,-5333 90,-5229 90,-5229q90 -5333 90 -5229);"/>
+                    <Edge cubics="!54 -4469(;54,-4469 55,-4470 55,-4470q54 -4469 55 -4470);"/>
+                    <Edge cubics="!55 -4470(;55,-4470 90,-4515 90,-4515q55 -4470 90 -4515);"/>
+                    <Edge cubics="!0 -4152(;0,-4152 40,-4179 40,-4179q0 -4152 40 -4179);"/>
+                    <Edge cubics="!55 -5223(;55,-5223 55,-4470 55,-4470q55 -5223 55 -4470);"/>
+                    <Edge cubics="!90 -6682(;90,-6682 90,-5333 90,-5333q90 -6682 90 -5333);"/>
+                    <Edge cubics="!-6 -5458(;-6,-5458 -6,-5279 -6,-5279q-6 -5458 -6 -5279);"/>
+                    <Edge cubics="!-109 -5530(;-109,-5530 -6,-5458 -6,-5458q-109 -5530 -6 -5458);"/>
+                    <Edge cubics="!-110 -6609(;-110,-6609 -109,-5530 -109,-5530q-110 -6609 -109 -5530);"/>
+                    <Edge cubics="!-40 -4469(;-16,-4456 11,-4456 40,-4469q-40 -4469Q-4 -4450q40 -4469);"/>
+                    <Edge cubics="!-40 -4175(;-40,-4175 0,-4152 0,-4152q-40 -4175 0 -4152);"/>
+                    <Edge cubics="!-40 -4469(;-40,-4469 -40,-4175 -40,-4175q-40 -4469 -40 -4175);"/>
+                    <Edge cubics="!40 -4469(;40,-4469 40,-4179 40,-4179q40 -4469 40 -4179);"/>
+                    <Edge cubics="!-90 -5229(;-90,-5229 -90,-4515 -90,-4515q-90 -5229 -90 -4515);"/>
+                    <Edge cubics="!90 -4515(;90,-4515 90,-5229 90,-5229q90 -4515 90 -5229);"/>
+                    <Edge cubics="!-150 -11760(;-150,-11760 90,-11760 90,-11760q-150 -11760 90 -11760);"/>
+                    <Edge cubics="!90 -11760(;90,-11760 150,-11760 150,-11760q90 -11760 150 -11760);"/>
+                    <Edge cubics="!-910 -11000(;-910,-11000 -150,-11000 -150,-11000q-910 -11000 -150 -11000);"/>
+                    <Edge cubics="!-150 -11000(;-150,-11000 90,-11000 90,-11000q-150 -11000 90 -11000);"/>
+                    <Edge cubics="!90 -11000(;90,-11000 150,-11000 150,-11000q90 -11000 150 -11000);"/>
+                    <Edge cubics="!150 -11000(;150,-11000 710,-11000 710,-11000q150 -11000 710 -11000);"/>
+                    <Edge cubics="!90 -11760(;90,-11760 90,-11549 90,-11549q90 -11760 90 -11549);"/>
+                    <Edge cubics="!90 -11549(;90,-11549 90,-11399 90,-11399q90 -11549 90 -11399);"/>
+                    <Edge cubics="!90 -11399(;90,-11399 90,-11000 90,-11000q90 -11399 90 -11000);"/>
+                    <Edge cubics="!150 -11760(;150,-11760 150,-11549 150,-11549q150 -11760 150 -11549);"/>
+                    <Edge cubics="!150 -11549(;150,-11549 150,-11399 150,-11399q150 -11549 150 -11399);"/>
+                    <Edge cubics="!150 -11399(;150,-11399 150,-11000 150,-11000q150 -11399 150 -11000);"/>
+                    <Edge cubics="!90 -11000(;90,-11000 90,-9819 90,-9819q90 -11000 90 -9819);"/>
+                    <Edge cubics="!90 -9819(;90,-9819 90,-6682 90,-6682q90 -9819 90 -6682);"/>
+                    <Edge cubics="!150 -11000(;150,-11000 150,-9819 150,-9819q150 -11000 150 -9819);"/>
+                    <Edge cubics="!150 -9819(;150,-9819 150,-5265 150,-5265q150 -9819 150 -5265);"/>
+                    <Edge cubics="!-150 -11000(;-150,-11000 -150,-11760 -150,-11760q-150 -11000 -150 -11760);"/>
+                    <Edge cubics="!-150 -5265(;-150,-5265 -150,-9819 -150,-9819q-150 -5265 -150 -9819);"/>
+                    <Edge cubics="!-150 -9819(;-150,-9819 -150,-11000 -150,-11000q-150 -9819 -150 -11000);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

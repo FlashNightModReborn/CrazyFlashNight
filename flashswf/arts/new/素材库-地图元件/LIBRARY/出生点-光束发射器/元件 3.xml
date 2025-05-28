@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-光束发射器/元件 3" itemID="664b2abd-00000b5e" lastModified="1716202175">
+  <timeline>
+    <DOMTimeline name="元件 3" currentFrame="80">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-30" ty="-233"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-30" ty="-231"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/元件 2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-30" ty="-233"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-30" ty="-235"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="出生点-光束发射器/元件 2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-30" ty="-233"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.95" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

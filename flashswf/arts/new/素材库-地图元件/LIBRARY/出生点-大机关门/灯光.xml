@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-大机关门/灯光" itemID="664b26df-00000b22" symbolType="graphic" lastModified="1716201230">
+  <timeline>
+    <DOMTimeline name="灯光">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.160385131835938" d="0.278640747070313" tx="130.25" ty="122.2"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" alpha="0.501960784313725" ratio="0"/>
+                        <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!5210 2444[5210 4319 4447 5643!4447 5643[3685 6970 2605 6970!2605 6970[1526 6970 763 5643!763 5643[0 4319 0 2444!0 2444[0 2296 5 2151!5 2151|5205 2151!5205 2151[5210 2296 5210 2444"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
