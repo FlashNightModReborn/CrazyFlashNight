@@ -10,6 +10,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
+
+        
         var dispatcher:EventDispatcher = target.dispatcher;
         // 订阅 UpdateEventComponent 事件到 onUpdate 逻辑
         var func:Function = UpdateEventComponent.onUpdate;

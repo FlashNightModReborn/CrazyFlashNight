@@ -8,8 +8,22 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
+        
         var dispatcher:EventDispatcher = target.dispatcher;
+        var func:Function;
         // 订阅 hit 事件到 HitUpdater 逻辑
-        dispatcher.subscribeSingle("hit", HitUpdater.getUpdater(target), target);
+        if(target.兵种) {
+            func = HitUpdater.getUpdater(target);
+        } else {
+            func = HitEventComponent.onMapElementHit;
+        }
+        dispatcher.subscribeSingle("hit", func, target);
+    }
+
+    public static function onMapElementHit(target:MovieClip):Void {
+        if(target.hp <= 0) {
+            var dispatcher:EventDispatcher = target.dispatcher;
+            dispatcher.publish("kill", target);
+        }
     }
 }

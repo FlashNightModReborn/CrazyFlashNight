@@ -9,8 +9,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
      */
     public static function initialize(target:MovieClip):Void {
         var dispatcher:EventDispatcher = target.dispatcher;
-        // 订阅 hkil 事件到 HitUpdater 逻辑
-        dispatcher.subscribeSingle("kill", KillEventComponent.onKill, target);
+
+        var func:Function;
+        
+        // 根据是否有兵种决定是单位还是地图元件
+        if(target.兵种) {
+            func = KillEventComponent.onKill;
+        } else {
+            func = KillEventComponent.onMapElementKill;
+        }
+
+        // 订阅 kill 事件到 HitUpdater 逻辑
+        dispatcher.subscribeSingle("kill", func, target);
     }
 
     public static function onKill(target:MovieClip):Void {
@@ -26,4 +36,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
         // };
         target.dispatcher.publish("death", target);
     }
+
+     public static function onMapElementKill(target:MovieClip):Void {
+        target.gotoAndPlay("结束");
+        target._killed = true;
+        if(target.垂直速度 < 0) target.垂直速度 = 0; // 让被非近战子弹击杀的单位从空中更快下落
+
+        target.dispatcher.publish("death", target);
+    }
 }
+

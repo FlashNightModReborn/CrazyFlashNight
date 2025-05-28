@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748406347">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748418683">
   <timeline>
     <DOMTimeline name="资源箱">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D4A0A9" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -22,16 +22,12 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[初始化资源箱 = _root.初始化资源箱;
-初始化资源箱();]]></script>
+                <script><![CDATA[_root.初始化地图元件(this);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="10" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[this.swapDepths(this._y);
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" duration="9" keyMode="9728">
@@ -121,36 +117,17 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#83C998">
+        <DOMLayer name="Layer 4" color="#83C998" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 11" symbolType="button">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱本体素材" selected="true" centerPoint3DX="0.5" centerPoint3DY="-19.3">
                   <matrix>
-                    <Matrix a="2.11715698242188" d="2.52435302734375" tx="-26.75" ty="-50.85"/>
+                    <Matrix tx="-32.4" ty="-50.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="32.9" y="30.8"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(是否为敌人 == true and _root.全鼠标控制 == true)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -159,7 +136,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#F76FB9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#F76FB9" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
@@ -170,40 +147,7 @@ on(rollOut){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-	if (_parent.hp <= 0)
-	{
-		_parent.gotoAndPlay("结束");
-	}
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="11" duration="29" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 6" color="#F55D7C">
-          <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <BitmapFill bitmapPath="箱子素材/bitmap7.png" bitmapIsClipped="true">
-                        <matrix>
-                          <Matrix a="-20" d="20" tx="34" ty="-51.5"/>
-                        </matrix>
-                      </BitmapFill>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!680 -1030|-680 -1030!-680 -1030|-680 230!-680 230|680 230!680 230|680 -1030"/>
-                  </edges>
-                </DOMShape>
               </elements>
             </DOMFrame>
             <DOMFrame index="11" duration="29" keyMode="9728">

@@ -8,6 +8,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HPEventC
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
+        if(!target.兵种) return;
+        
         var dispatcher:EventDispatcher = target.dispatcher;
         // 订阅 HPChanged 事件到 HitUpdater 逻辑
         dispatcher.subscribeSingle("HPChanged", InformationComponentUpdater.onHPChanged, target);
