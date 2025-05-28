@@ -193,7 +193,7 @@ _root.初始化地图元件 = function(target:MovieClip){
 	target.是否为敌人 = true;
 
 	if(isNaN(target.hp)) {
-		target.hp = target.hp满血值 = 10000;
+		target.hp = target.hp满血值 = 10;
 	}
 	
 	target.躲闪率 = 100;

@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="68368bd3-000028d2"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="68368bd3-000028d3"/>
@@ -163,9 +163,12 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
+          <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
+          <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
           <Include href="联弹/白色手里剑/Symbol 1154.xml" loadImmediate="false" itemID="6577efbc-0000059d" lastModified="1702098593"/>
           <Include href="联弹/白色手里剑/Symbol 1155.xml" itemID="6577efbc-0000059e" lastModified="1705504099"/>
+          <Include href="联弹/爆炸联弹.xml" itemID="65a892eb-000005e1" lastModified="1743038716"/>
           <Include href="联弹/单元体-穿刺子弹.xml" itemID="65a50efb-0000056e" lastModified="1723477210"/>
           <Include href="联弹/单元体-红色针弹.xml" itemID="65a53d18-00000478" lastModified="1723477207"/>
           <Include href="联弹/单元体-加强普通子弹.xml" itemID="65a27145-00000316" lastModified="1723477205"/>
@@ -173,12 +176,18 @@
           <Include href="联弹/单元体-普通子弹.xml" itemID="65a25389-00000304" lastModified="1723477051"/>
           <Include href="联弹/横向机枪联弹.xml" itemID="6634fe5c-00002247" lastModified="1743038166"/>
           <Include href="联弹/横向联弹.xml" itemID="65a09e8b-000001d6" lastModified="1743038052"/>
+          <Include href="联弹/横向手枪联弹.xml" itemID="67ee2b7e-000017e7" lastModified="1743661950"/>
+          <Include href="联弹/滑翔联弹.xml" itemID="65a7f0f4-00001300" lastModified="1743037971"/>
           <Include href="联弹/加强子弹基底.xml" loadImmediate="false" itemID="65a27169-00000317" lastModified="1705144681"/>
           <Include href="联弹/近战联弹.xml" itemID="65a674b9-00000486" lastModified="1743037862"/>
           <Include href="联弹/联弹area.xml" loadImmediate="false" itemID="65a09e83-000001d4" lastModified="1705025155"/>
           <Include href="联弹/联弹爆炸/联弹爆炸.xml" itemID="65a8e5d2-00000973" lastModified="1721575109"/>
+          <Include href="联弹/抛物联弹.xml" itemID="65a7f3c5-00001307" lastModified="1721575121"/>
           <Include href="联弹/纸飞机/单元体-纸飞机.xml" itemID="65a886f2-0000059d" lastModified="1705544164"/>
           <Include href="联弹/纸飞机/纸飞机贴图.xml" loadImmediate="false" itemID="65a88914-000005b3" lastModified="1705543956"/>
+          <Include href="联弹/纵向机枪联弹.xml" itemID="67e4c547-000044ea" lastModified="1743045959"/>
+          <Include href="联弹/纵向联弹.xml" itemID="67e4a8eb-00002ab1" lastModified="1743045959"/>
+          <Include href="联弹/纵向手枪联弹.xml" itemID="67ee2b69-000017dc" lastModified="1743661929"/>
           <Include href="特效-动画与文字组/升级动画.xml" itemID="669d33ea-0000172e" lastModified="1721578474"/>
           <Include href="特效-动画与文字组/升级动画2.xml" itemID="669d3460-00001749" lastModified="1721578592"/>
           <Include href="特效-动画与文字组/药剂动画.xml" itemID="669d3408-00001735" lastModified="1722876442"/>
@@ -502,7 +511,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1748405333"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1748451139"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1722875196"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
