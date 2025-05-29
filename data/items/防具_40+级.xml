@@ -15,9 +15,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>“末日铁拳”的拳套，据说可以轰塌一栋摩天大楼。</description>
     <skill>
       <skillname>毁天灭地</skillname>
-      <description>跃向空中，然后猛力坠落，造成大量范围伤害。核心区域内可以造成真实伤害。</description>
-      <cd>5000</cd>
-      <mp>50</mp>
+      <description>跃向空中，然后猛力坠落，造成范围真实伤害。距离落点越近伤害越高，核心区域内具有一定斩杀效果。空中时可以自由移动落点，再次按下战技键可提前坠落。</description>
+      <cd>10000</cd>
+      <mp>100</mp>
     </skill>
     <level>60</level>
     <equipped>
