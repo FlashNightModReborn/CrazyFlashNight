@@ -1,0 +1,110 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/纸箱/纸箱" itemID="683802e7-00002516" linkageExportForAS="true" linkageIdentifier="纸箱" lastModified="1748503164" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="纸箱" currentFrame="11">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#D4A0A9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="115" name="结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="126" duration="10" name="无效" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#9CD465">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.地图元件.初始化地图元件(this);
+this.maxFrame = 1;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="112" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_root.地图元件.资源箱破碎脚本(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="123" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_root.add2map(this,2);
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="126" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BDD3F1">
+          <frames>
+            <DOMFrame index="0" duration="125" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="125" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#83C998" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="126" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="箱子素材/纸箱/纸箱本体素材" name="element" selected="true" centerPoint3DX="0.5" centerPoint3DY="-19.3">
+                  <matrix>
+                    <Matrix tx="-32.4" ty="-50.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.9" y="30.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="126" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#F76FB9">
+          <frames>
+            <DOMFrame index="0" duration="126" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" centerPoint3DX="-14.45" centerPoint3DY="-84.05">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="4.32269287109375" tx="-26.95" ty="-96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="126" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
