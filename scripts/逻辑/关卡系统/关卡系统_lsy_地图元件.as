@@ -8,9 +8,9 @@ _root.pickupItemManager.count = 0;
 
 _root.pickupItemManager.createPickupItemPool = function(){
 	_root.pickupItemManager.pickupItemDict = {};
-	_root.pickupItemManager.dispatcher = new LifecycleEventDispatcher(gameworld);
+	_root.pickupItemManager.dispatcher = new LifecycleEventDispatcher(_root.gameworld);
 	org.flashNight.aven.Coordinator.EventCoordinator.addUnloadCallback(
-		gameworld, 
+		_root.gameworld, 
 		function(){
 			_root.pickupItemManager.pickupItemDict = null;
 			_root.pickupItemManager.dispatcher.destroy();
