@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748433599" lastUniqueIdentifier="44">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748486387" lastUniqueIdentifier="45">
   <timeline>
-    <DOMTimeline name="素材库-地图元件" currentFrame="1">
+    <DOMTimeline name="素材库-地图元件" currentFrame="2">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -52,6 +52,14 @@
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜" selected="true" centerPoint3DX="-260.6" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix tx="-261.1" ty="171.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.5" y="-42.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="6" duration="22" keyMode="9728">
@@ -59,7 +67,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -145,7 +153,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="资源箱" selected="true" centerPoint3DX="-160.7" centerPoint3DY="134.1">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱" centerPoint3DX="-160.7" centerPoint3DY="134.1">
                   <matrix>
                     <Matrix tx="-160.7" ty="176.25"/>
                   </matrix>

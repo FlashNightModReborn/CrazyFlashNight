@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748446649" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748495621" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="资源箱">
+    <DOMTimeline name="资源箱" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -22,7 +22,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.初始化地图元件(this);
+                <script><![CDATA[_root.地图元件.初始化地图元件(this);
 this.maxFrame = 12;
 ]]></script>
               </Actionscript>
@@ -33,16 +33,8 @@ this.maxFrame = 12;
             </DOMFrame>
             <DOMFrame index="11" duration="112" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this._visible = true;
-this.element.gotoAndPlay("结束");
-_root.帧计时器.注销目标缓存(this);
-if (是否为敌人 && _root.gameworld[产生源])
-{
-	_root.敌人死亡计数 += 1;
-	_root.gameworld[产生源].僵尸型敌人场上实际人数--;
-	_root.gameworld[产生源].僵尸型敌人总个数--;
-}
-_root.创建可拾取物(内部物,数量,this._x,this._y,false);]]></script>
+                <script><![CDATA[
+_root.地图元件.资源箱破碎脚本(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -74,11 +66,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#83C998" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#83C998">
           <frames>
             <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/资源箱本体素材" name="element" selected="true" centerPoint3DX="0.5" centerPoint3DY="-19.3">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱本体素材" name="element" centerPoint3DX="0.5" centerPoint3DY="-19.3">
                   <matrix>
                     <Matrix tx="-32.4" ty="-50.1"/>
                   </matrix>
@@ -93,11 +85,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#F76FB9" locked="true">
+        <DOMLayer name="Layer 5" color="#F76FB9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" centerPoint3DX="-14.45" centerPoint3DY="-84.05">
+                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" selected="true" centerPoint3DX="-14.45" centerPoint3DY="-84.05">
                   <matrix>
                     <Matrix a="2.11715698242188" d="4.32269287109375" tx="-26.95" ty="-96.55"/>
                   </matrix>

@@ -179,7 +179,9 @@ _root.初始化出生点 = function(){
 	}
 }
 
-_root.初始化地图元件 = function(target:MovieClip){
+_root.地图元件 = new Object();
+
+_root.地图元件.初始化地图元件 = function(target:MovieClip){
 	if (!isNaN(target.最小主线进度) && target.最小主线进度 > _root.主线任务进度){
 		target.removeMovieClip();
 		return;
@@ -194,6 +196,8 @@ _root.初始化地图元件 = function(target:MovieClip){
 
 	if(isNaN(target.hp)) {
 		target.hp = target.hp满血值 = 10;
+	} else {
+		target.hp满血值 =  target.hp;
 	}
 	
 	target.躲闪率 = 100;
@@ -201,8 +205,6 @@ _root.初始化地图元件 = function(target:MovieClip){
 	target.Z轴坐标 = target._y;
 	target.unitAIType = "None";
 	StaticInitializer.initializeUnit(target);
-
-	target.swapDepths(target._y);
 
 	target.gotoAndStop("正常");
 	target.element.stop();
@@ -255,6 +257,20 @@ _root.初始化地图元件 = function(target:MovieClip){
 	}
 
 	target.area._visible = false;
+	target.swapDepths(target._y);
+}
+
+_root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
+	target._visible = true;
+	target.element.gotoAndPlay("结束");
+	_root.帧计时器.注销目标缓存(target);
+	if (target.是否为敌人 && _root.gameworld[target.产生源])
+	{
+		_root.敌人死亡计数 += 1;
+		_root.gameworld[target.产生源].僵尸型敌人场上实际人数--;
+		_root.gameworld[target.产生源].僵尸型敌人总个数--;
+	}
+	_root.创建可拾取物(target.内部物,target.数量,target._x,target._y,false);
 }
 
 /**
@@ -263,7 +279,7 @@ _root.初始化地图元件 = function(target:MovieClip){
  * @param fragmentPrefix:String - 碎片名称前缀(如"资源箱碎片")
  * @param cfg:Object - 可选配置参数
  */
-_root.地图元件破碎动画 = function(scope:MovieClip, fragmentPrefix:String, cfg:Object):Void {
+_root.地图元件.地图元件破碎动画 = function(scope:MovieClip, fragmentPrefix:String, cfg:Object):Void {
     // 默认配置参数
     var defaultConfig:Object = {
         // 物理参数
@@ -297,7 +313,7 @@ _root.地图元件破碎动画 = function(scope:MovieClip, fragmentPrefix:String
         direction: -1,          // 主向量方向 (-1向左, 1向右)
         
         // 调试选项
-        enableDebug: true       // 是否启用调试输出
+        enableDebug: false       // 是否启用调试输出
     };
     
     // 合并配置参数

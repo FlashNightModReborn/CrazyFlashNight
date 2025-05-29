@@ -89,11 +89,11 @@ Reward的必要参数：
             <Instance id="0">
                 <x>481</x>
                 <y>462</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
-                    <redOffset>10</redOffset>
+                    <redOffset>0</redOffset>
                     <数量>1</数量>
                     <等级>1</等级>
                     <名字>木箱</名字>
@@ -102,11 +102,11 @@ Reward的必要参数：
             <Instance id="1">
                 <x>481</x>
                 <y>562</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
-                    <redOffset>20</redOffset>
+                    <redOffset>0</redOffset>
                     <数量>1</数量>
                     <等级>1</等级>
                     <名字>木箱</名字>
@@ -115,11 +115,11 @@ Reward的必要参数：
             <Instance id="2">
                 <x>481</x>
                 <y>662</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
-                    <redOffset>30</redOffset>
+                    <redOffset>0</redOffset>
                     <数量>1</数量>
                     <等级>1</等级>
                     <名字>木箱</名字>
@@ -128,11 +128,11 @@ Reward的必要参数：
             <Instance id="3">
                 <x>481</x>
                 <y>362</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
-                    <redOffset>40</redOffset>
+                    <redOffset>0</redOffset>
                     <数量>1</数量>
                     <等级>1</等级>
                     <名字>木箱</名字>
@@ -141,10 +141,10 @@ Reward的必要参数：
             <Instance id="4">
                 <x>681</x>
                 <y>462</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
-                    <redOffset>50</redOffset>
+                    <redOffset>0</redOffset>
                     <stainedTarget>element</stainedTarget>
                     <数量>1</数量>
                     <等级>1</等级>
@@ -154,10 +154,10 @@ Reward的必要参数：
             <Instance id="5">
                 <x>681</x>
                 <y>562</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
-                    <redOffset>60</redOffset>
+                    <redOffset>0</redOffset>
                     <stainedTarget>element</stainedTarget>
                     <数量>1</数量>
                     <等级>1</等级>
@@ -167,11 +167,11 @@ Reward的必要参数：
             <Instance id="6">
                 <x>681</x>
                 <y>662</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
-                    <redOffset>70</redOffset>
+                    <redOffset>0</redOffset>
                     <数量>1</数量>
                     <等级>1</等级>
                     <名字>木箱</名字>
@@ -180,16 +180,27 @@ Reward的必要参数：
             <Instance id="7">
                 <x>681</x>
                 <y>362</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>保险柜</Identifier>
                 <Parameters>
                     <内部物>K点</内部物>
-                    <redOffset>80</redOffset>
+                    <redOffset>0</redOffset>
                     <stainedTarget>element</stainedTarget>
                     <数量>1</数量>
                     <等级>1</等级>
                     <名字>木箱</名字>
                 </Parameters>
             </Instance>
+            <Instance id="8">
+                    <x>900</x>
+                    <y>500</y>
+                    <Identifier>场景素材-高级轿车a</Identifier>
+                    <Parameters>
+                        <stainedTarget>车皮</stainedTarget>
+                        <redOffset>-50</redOffset>
+                        <greenOffset>50</greenOffset>
+                        <blueOffset>100</blueOffset>
+                    </Parameters>
+                </Instance>
         </Instances>
         <SpawnPoint>
             <Point id="0">
