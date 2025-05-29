@@ -4,6 +4,7 @@ import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.unit.*;
+import org.flashNight.naki.RandomNumberEngine.*
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
@@ -478,6 +479,9 @@ _root.敌人函数.注销单位 = function(target){
 	StaticDeinitializer.deinitializeUnit(target);
 }
 
+_root.敌人函数.跳转到招式 = function(target:MovieClip, key:String, countMax:Number) {
+	target.gotoAndPlay(LinearCongruentialEngine.getInstance().randomKey(key, countMax));
+}
 
 /*
 _root.初始化可操控敌人模板 = function()

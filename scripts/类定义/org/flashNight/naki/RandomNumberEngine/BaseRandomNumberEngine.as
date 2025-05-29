@@ -298,6 +298,20 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         return nextFloat() < probability;
     }
 
+    /**
+     * 生成一个带随机索引的字符串（格式: key + [0, countMax]的随机整数）
+     * 用于随机跳转场景（如gotoAndPlay("a" + 随机索引)）
+     * 
+     * @param key 基础字符串（如"a"）
+     * @param countMax 最大索引值（包含）
+     * @return 拼接后的随机字符串（如"a2"）
+     */
+    public function randomKey(key:String, countMax:Number):String {
+        // 生成0到countMax（包含）的随机整数
+        var randomIndex:Number = randomIntegerStrict(0, countMax);
+        return key + randomIndex;
+    }
+
     // 生成指定长度的随机字符串
     // @param length: 字符串长度
     // @return 生成的随机字符串
