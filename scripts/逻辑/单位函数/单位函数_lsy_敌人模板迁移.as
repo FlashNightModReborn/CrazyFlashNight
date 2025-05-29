@@ -479,9 +479,7 @@ _root.敌人函数.注销单位 = function(target){
 	StaticDeinitializer.deinitializeUnit(target);
 }
 
-_root.敌人函数.跳转到招式 = function(target:MovieClip, key:String, countMax:Number) {
-	target.gotoAndPlay(LinearCongruentialEngine.getInstance().randomKey(key, countMax));
-}
+_root.敌人函数.跳转到招式 = _root.主角函数.跳转到招式;
 
 /*
 _root.初始化可操控敌人模板 = function()

@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/纸箱/纸箱" itemID="683802e7-00002516" linkageExportForAS="true" linkageIdentifier="纸箱" lastModified="1748503164" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="纸箱" currentFrame="11">
+    <DOMTimeline name="纸箱" currentFrame="56">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D4A0A9">
+        <DOMLayer name="Labels Layer" color="#D4A0A9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -66,11 +66,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#83C998" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#83C998">
           <frames>
             <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/纸箱/纸箱本体素材" name="element" selected="true" centerPoint3DX="0.5" centerPoint3DY="-19.3">
+                <DOMSymbolInstance libraryItemName="箱子素材/纸箱/纸箱本体素材" name="element" centerPoint3DX="0.5" centerPoint3DY="-19.3">
                   <matrix>
                     <Matrix tx="-32.4" ty="-50.1"/>
                   </matrix>

@@ -56,15 +56,15 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
-          <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="./LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
-          <DOMSoundItem name="sound/BERSERKER ON.wav" itemID="67ee2896-00000722" sourceExternalFilepath="./LIBRARY/sound/BERSERKER ON.wav" sourceLastImported="1743614072" externalFileSize="3231798" href="sound/BERSERKER ON.wav" soundDataHRef="M 106 1743661116.dat" format="44kHz 16bit Stereo" sampleCount="807930" exportFormat="5" exportBits="13"/>
+          <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
+          <DOMSoundItem name="sound/BERSERKER ON.wav" itemID="67ee2896-00000722" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERKER ON.wav" sourceLastImported="1743614072" externalFileSize="3231798" href="sound/BERSERKER ON.wav" soundDataHRef="M 106 1743661116.dat" format="44kHz 16bit Stereo" sampleCount="807930" exportFormat="5" exportBits="13"/>
           <DOMBitmapItem name="image/bitmap1263.png" itemID="67764730-00002060" sourceExternalFilepath="../../../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/image/bitmap1263.png" sourceLastImported="1736862750" externalFileCRC32="1229271075" externalFileSize="302" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1263.png" bitmapDataHRef="M 109 1702343951.dat" frameRight="4800" frameBottom="4800"/>
           <DOMBitmapItem name="image/bitmap922.png" itemID="67764730-00002061" sourceExternalFilepath="../../../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/image/bitmap922.png" sourceLastImported="1736862750" externalFileCRC32="2013754236" externalFileSize="1423" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap922.png" bitmapDataHRef="M 60 1702343951.dat" frameRight="1220" frameBottom="1680"/>
           <DOMBitmapItem name="image/bitmap923.png" itemID="67764730-00002062" sourceExternalFilepath="../../../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/image/bitmap923.png" sourceLastImported="1736862750" externalFileCRC32="2089544035" externalFileSize="7474" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap923.png" bitmapDataHRef="M 61 1702343951.dat" frameRight="10240" frameBottom="10240"/>
@@ -129,7 +129,7 @@
           <DOMSoundItem name="爆炸/爆炸 较深邃 02.mp3" itemID="656c2961-00001024" linkageExportForAS="true" linkageIdentifier="爆炸 较深邃 02.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 较深邃 02.mp3" sourceLastImported="1730486515" href="爆炸/爆炸 较深邃 02.mp3" soundDataHRef="M 108 1743861589.dat" format="44kHz 16bit Stereo" sampleCount="245376" exportFormat="5" exportBits="17" dataLength="69867" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="30672"/>
           <DOMSoundItem name="技能/背摔.wav" itemID="669ea2f2-00000988" linkageExportForAS="true" linkageIdentifier="背摔.wav" sourceExternalFilepath="G:/gunsound/things0技能/背摔.wav" sourceLastImported="1722331895" href="技能/背摔.wav" soundDataHRef="M 114 1743861968.dat" format="44kHz 16bit Mono" sampleCount="54741" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/踩人.wav" itemID="669ea2f2-0000098c" linkageExportForAS="true" linkageIdentifier="踩人.wav" sourceExternalFilepath="G:/gunsound/things0技能/踩人.wav" sourceLastImported="1722331537" href="技能/踩人.wav" soundDataHRef="M 110 1743861754.dat" format="44kHz 16bit Mono" sampleCount="29590" exportFormat="5" exportBits="17"/>
-          <DOMSoundItem name="战斗/刺拳4.wav" itemID="67bb1f4e-00003cae" linkageExportForAS="true" linkageIdentifier="刺拳4.wav" sourceExternalFilepath="./LIBRARY/战斗/刺拳4.wav" sourceLastImported="1740316493" href="战斗/刺拳4.wav" soundDataHRef="M 109 1743861663.dat" format="44kHz 16bit Mono" sampleCount="20848"/>
+          <DOMSoundItem name="战斗/刺拳4.wav" itemID="67bb1f4e-00003cae" linkageExportForAS="true" linkageIdentifier="刺拳4.wav" sourceExternalFilepath="../things0/LIBRARY/战斗/刺拳4.wav" sourceLastImported="1740316493" href="战斗/刺拳4.wav" soundDataHRef="M 109 1743861663.dat" format="44kHz 16bit Mono" sampleCount="20848"/>
           <DOMSoundItem name="技能/寸拳1.wav" itemID="669ea2f2-00000990" linkageExportForAS="true" linkageIdentifier="寸拳1.wav" sourceExternalFilepath="G:/gunsound/things0技能/寸拳1.wav" sourceLastImported="1722331752" href="技能/寸拳1.wav" soundDataHRef="M 111 1743861839.dat" format="44kHz 16bit Mono" sampleCount="59711" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/倒地.mp3" itemID="67764734-00002094" sourceExternalFilepath="../../../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/倒地.mp3" sourceLastImported="1736862764" externalFileCRC32="2117850371" externalFileSize="1976" href="sound/倒地.mp3" soundDataHRef="M 62 1702344344.dat" format="11kHz 16bit Mono" sampleCount="10944" exportFormat="1" exportBits="7" dataLength="1976" exportNative="true" cachedSampleCount="5472"/>
           <DOMSoundItem name="技能/地震1.wav" itemID="669ea2f2-00000994" linkageExportForAS="true" linkageIdentifier="地震1.wav" sourceExternalFilepath="G:/gunsound/things0技能/地震1.wav" sourceLastImported="1722331588" href="技能/地震1.wav" soundDataHRef="M 116 1743862323.dat" format="44kHz 16bit Mono" sampleCount="103565" exportFormat="5" exportBits="17"/>
@@ -178,7 +178,7 @@
           <DOMSoundItem name="sound/爪击1.wav" itemID="67764736-000020b6" sourceExternalFilepath="../../../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击1.wav" sourceLastImported="1736862780" externalFileCRC32="2033810228" externalFileSize="29108" href="sound/爪击1.wav" soundDataHRef="M 141 1715095112.dat" format="44kHz 16bit Mono" sampleCount="14532" exportFormat="5"/>
           <DOMSoundItem name="sound/爪击2.wav" itemID="67764736-000020b7" sourceExternalFilepath="../../../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击2.wav" sourceLastImported="1736862780" externalFileCRC32="1359985060" externalFileSize="20938" href="sound/爪击2.wav" soundDataHRef="M 142 1715095112.dat" format="44kHz 16bit Mono" sampleCount="10447" exportFormat="5"/>
           <DOMSoundItem name="sound/爪击3.wav" itemID="67764736-000020b8" sourceExternalFilepath="../../../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击3.wav" sourceLastImported="1736862781" externalFileCRC32="3961941549" externalFileSize="27412" href="sound/爪击3.wav" soundDataHRef="M 143 1715095112.dat" format="44kHz 16bit Mono" sampleCount="13684" exportFormat="5"/>
-          <DOMSoundItem name="sound/重武器.wav" itemID="67f13a3f-000008b7" sourceExternalFilepath="./LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5"/>
+          <DOMSoundItem name="sound/重武器.wav" itemID="67f13a3f-000008b7" sourceExternalFilepath="../things0/LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5"/>
      </media>
      <symbols>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22.xml" loadImmediate="false" itemID="654ba156-00002640" lastModified="1696643875"/>
@@ -832,7 +832,7 @@
           <Include href="sprite/Symbol 732.xml" loadImmediate="false" itemID="6577b699-00000b37" lastModified="1702343951"/>
           <Include href="sprite/Symbol 749.xml" loadImmediate="false" itemID="6577b699-00000b46" lastModified="1702343951"/>
           <Include href="sprite/Symbol 788.xml" loadImmediate="false" itemID="6577b699-00000b6a" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1720908276"/>
+          <Include href="sprite/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1748511431"/>
           <Include href="sprite/Symbol 828.xml" loadImmediate="false" itemID="6577b699-00000b91" lastModified="1702343951"/>
           <Include href="sprite/Symbol 839.xml" loadImmediate="false" itemID="6577b699-00000b94" lastModified="1720908276"/>
           <Include href="sprite/Symbol 840.xml" itemIcon="0" loadImmediate="false" itemID="6577b699-00000b95" lastModified="1702343951"/>
@@ -1072,11 +1072,11 @@
           <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
+          <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1723967476"/>
+          <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/近战子弹.xml" itemID="65a73b51-000005d4" lastModified="1706607661"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/镜芒一闪.xml" itemID="668be71d-0000065c" lastModified="1720444701"/>
-          <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1723967476"/>
-          <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1732399183"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1720445240"/>
@@ -1114,8 +1114,8 @@
           <Include href="sprite/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1707754293"/>
           <Include href="sprite/手雷-普通手雷.xml" itemID="668be6c3-0000063a" lastModified="1720444611"/>
           <Include href="sprite/手雷攻击.xml" loadImmediate="false" itemID="66a5d6cd-00000693" lastModified="1746218452"/>
-          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1722144439"/>
           <Include href="sprite/手雷行走.xml" loadImmediate="false" itemID="66a5d6a9-0000068e" lastModified="1722144425"/>
+          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1722144439"/>
           <Include href="sprite/手雷站立.xml" loadImmediate="false" itemID="66a5d699-0000068d" lastModified="1730475516"/>
           <Include href="sprite/手枪站立.xml" loadImmediate="false" itemID="66576860-000009ef" lastModified="1720908276"/>
           <Include href="sprite/思考标签.xml" loadImmediate="false" itemID="67e68767-000009ec" lastModified="1743161769"/>
@@ -1338,15 +1338,15 @@
           <Include href="重复项目文件夹/Symbol 70.xml" loadImmediate="false" itemID="66a1fb3c-00001f67" lastModified="1718634470"/>
           <Include href="重复项目文件夹/Symbol 71.xml" loadImmediate="false" itemID="66a1fb3c-00001f66" lastModified="1718938968"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1732287107"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1744635819"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1748510147"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1720908276"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1720908276"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
           <Include href="主角动画层/手枪行走.xml" loadImmediate="false" itemID="66573878-00000631" lastModified="1720908276"/>
           <Include href="主角动画层/双枪攻击.xml" loadImmediate="false" itemID="66577cf3-00002e53" lastModified="1720908276"/>
+          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪跑.xml" loadImmediate="false" itemID="66577d03-00002e56" lastModified="1721546826"/>
           <Include href="主角动画层/双枪跳.xml" loadImmediate="false" itemID="66577d06-00002e57" lastModified="1720908276"/>
-          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪站立.xml" loadImmediate="false" itemID="66577cfd-00002e55" lastModified="1720908276"/>
           <Include href="主角动画层/长枪攻击.xml" loadImmediate="false" itemID="66560654-000014f8" lastModified="1726418405"/>
           <Include href="主角动画层/长枪行走.xml" loadImmediate="false" itemID="665602cc-0000109b" lastModified="1720908276"/>
@@ -1457,7 +1457,7 @@
                               </DOMFrame>
                               <DOMFrame index="5" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/手雷站立" centerPoint3DX="-377.45" centerPoint3DY="174">
+                                        <DOMSymbolInstance libraryItemName="sprite/手雷站立" selected="true" centerPoint3DX="-377.45" centerPoint3DY="174">
                                              <matrix>
                                                   <Matrix tx="-371.45" ty="175.25"/>
                                              </matrix>
@@ -1832,25 +1832,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="2741723" publishTime="1747750482"/>
-          <PublishItem publishSize="2741696" publishTime="1747651228"/>
-          <PublishItem publishSize="2744248" publishTime="1747465613"/>
-          <PublishItem publishSize="2743897" publishTime="1746218324"/>
-          <PublishItem publishSize="2743707" publishTime="1744724011"/>
-          <PublishItem publishSize="2743594" publishTime="1744721409"/>
-          <PublishItem publishSize="2743462" publishTime="1744658167"/>
-          <PublishItem publishSize="2743470" publishTime="1744635745"/>
-          <PublishItem publishSize="2743564" publishTime="1744635241"/>
-          <PublishItem publishSize="2743494" publishTime="1744634299"/>
-          <PublishItem publishSize="2743497" publishTime="1744633766"/>
-          <PublishItem publishSize="2743464" publishTime="1744633601"/>
-          <PublishItem publishSize="2743459" publishTime="1744633275"/>
-          <PublishItem publishSize="2742035" publishTime="1744530214"/>
-          <PublishItem publishSize="2741648" publishTime="1744529468"/>
-          <PublishItem publishSize="2741660" publishTime="1744528931"/>
-          <PublishItem publishSize="2741661" publishTime="1744528669"/>
-          <PublishItem publishSize="2738618" publishTime="1744524279"/>
-          <PublishItem publishSize="2738608" publishTime="1744524190"/>
-          <PublishItem publishSize="2738660" publishTime="1744524073"/>
+          <PublishItem publishSize="2741983" publishTime="1748511460"/>
+          <PublishItem publishSize="2742031" publishTime="1748510690"/>
+          <PublishItem publishSize="2742048" publishTime="1748510162"/>
+          <PublishItem publishSize="2742039" publishTime="1748509891"/>
+          <PublishItem publishSize="2742015" publishTime="1748509867"/>
+          <PublishItem publishSize="2742046" publishTime="1748509737"/>
+          <PublishItem publishSize="2742045" publishTime="1748509668"/>
+          <PublishItem publishSize="2742187" publishTime="1748509270"/>
+          <PublishItem publishSize="2742188" publishTime="1748509238"/>
+          <PublishItem publishSize="2742188" publishTime="1748509160"/>
+          <PublishItem publishSize="2742187" publishTime="1748509107"/>
+          <PublishItem publishSize="2742182" publishTime="1748509015"/>
+          <PublishItem publishSize="2742134" publishTime="1748508898"/>
+          <PublishItem publishSize="2742092" publishTime="1748508745"/>
+          <PublishItem publishSize="2742067" publishTime="1748508663"/>
+          <PublishItem publishSize="2742135" publishTime="1748508571"/>
+          <PublishItem publishSize="2742137" publishTime="1748508469"/>
+          <PublishItem publishSize="2742134" publishTime="1748508407"/>
+          <PublishItem publishSize="2742131" publishTime="1748508306"/>
+          <PublishItem publishSize="2741968" publishTime="1748508245"/>
      </publishHistory>
 </DOMDocument>
