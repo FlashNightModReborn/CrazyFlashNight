@@ -95,6 +95,38 @@
     </equipped>
   </item>
   <item>
+    <id>8203</id>
+    <name>Podbyrin</name>
+    <displayname>红场特警</displayname>
+    <icon>Podbyrin</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>12</weight>
+    <price>26000</price>
+    <description>一把诞生于上世纪CW末期A国电影的虚构枪械，设定上是由SV国研发的大口径手枪，发射独有的9.2mm大口径手枪弹。在不知何时被不知何人以不明的目的作为实际的武器制造出来，在审判日中流落至此。</description>
+    <level>35</level>
+    <data>
+      <capacity>12</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>250</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>26</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>podbyrin_ok.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>马格南手枪弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>1000</power>
+      <impact>20</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-Podbyrin</dressup>
+      <slay>10</slay>
+    </equipped>
+  </item>
+  <item>
     <id>2529</id>
     <name>极品UZI的KING版</name>
     <displayname>极品UZI战术版</displayname>
@@ -1971,7 +2003,7 @@
       <velocity>30</velocity>
       <bullet>横向联弹-普通子弹</bullet>
       <bulletrename>普通子弹</bulletrename>
-      <sound>m3-1.wav</sound>
+      <sound>supershorty.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>12号霰弹弹药</clipname>

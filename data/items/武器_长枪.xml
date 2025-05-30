@@ -51,7 +51,7 @@
       <interval>250</interval>
       <velocity>50</velocity>
       <bullet>精制子弹</bullet>
-      <sound>g3sg1-1.wav</sound>
+      <sound>g3sg.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>狙击步枪通用弹药</clipname>
@@ -2710,15 +2710,22 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <price>187200</price>
     <description>大口径冲锋枪，附带下挂榴弹发射器。
 	在科技高度发达的这一时代，影视业的演员受益于医学与生物工学的发展而无需担忧生命安全。加上科技发展使得使用实物拍摄的成本大幅度下降，在拍摄影视剧过程中使用能够发射甚至具备实际战斗能力的影视道具在这个时代不再少见。一家名叫咸鱼重工的武器作坊专门为这些剧组设计制造相应的“道具”，而这些道具最终也随着审判日的动乱流落各地，并最终作为某人手中的杀人武器被使用。
-	给冲锋枪挂上榴弹发射器很少见，大口径的冲锋枪同样少见，而这两者出现在同一把武器上的情况有多稀有自然就不言自明。当两种破坏性的特征出现在一把武器上时，你就明白事情是真的大条了。
+	大口径的冲锋枪很少见，给冲锋枪挂上榴弹发射器更少见，而这两者出现在同一把武器上的情况有多稀有自然就不言自明。当两种破坏性的特征出现在一把武器上时，你就明白事情是真的大条了。
 	“再击坠1机我也是ACE了。”</description>
     <skill>
       <skillname>发射榴弹</skillname>
-      <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击一发，换弹后可再次发射。</description>
+      <description>持枪瞄准时可以发射榴弹，可射击一发，换弹后可再次发射，需消耗榴弹弹药。</description>
       <cd>1000</cd>
       <mp>0</mp>
-      <power>3000</power>
+      <power>3500</power>
       <bulletsize>1</bulletsize>
+      <clipname>榴弹弹药</clipname>
+      <bullet>榴弹</bullet>
+      <sound>shoot.wav</sound>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <velocity>20</velocity>
+      <impact>10</impact>
     </skill>
     <level>30</level>
     <data>
@@ -2750,17 +2757,24 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <use>长枪</use>
     <weight>20</weight>
     <price>449820</price>
-    <description>弹匣式能量步枪，附带榴弹发射器。
+    <description>弹匣式能量步枪，附带导弹发射器。
 	在科技高度发达的这一时代，影视业的演员受益于医学与生物工学的发展而无需担忧生命安全。加上科技发展使得使用实物拍摄的成本大幅度下降，在拍摄影视剧过程中使用能够发射甚至具备实际战斗能力的影视道具在这个时代不再少见。一家名叫咸鱼重工的武器作坊专门为这些剧组设计制造相应的“道具”，而这些道具最终也随着审判日的动乱流落各地，并最终作为某人手中的杀人武器被使用。
 	一批起源成谜的能量步枪。由于交付订单时恰好审判日发生，因此并没有像其他的咸鱼重工制品一样被赋予代号和名字。
 	考虑到其和实弹武器几乎无异的反常外观，市面上将其称为非规格步枪。</description>
     <skill>
       <skillname>发射榴弹</skillname>
-      <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击一发，换弹后可再次发射。</description>
+      <description>持枪瞄准时可以发射微型导弹，每弹夹消耗1发导弹弹药，可射击一发，换弹后可再次发射。</description>
       <cd>1000</cd>
       <mp>0</mp>
-      <power>5000</power>
+      <power>12000</power>
       <bulletsize>1</bulletsize>
+      <clipname>导弹弹药</clipname>
+      <bullet>微型导弹</bullet>
+      <sound>shoot.wav</sound>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <velocity>30</velocity>
+      <impact>0</impact>
     </skill>
     <level>45</level>
     <data>
@@ -2804,7 +2818,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <singleshoot>true</singleshoot>
       <velocity>40</velocity>
       <bullet>普通子弹</bullet>
-      <sound>re_sniper_m14.wav</sound>
+      <sound>chauchat.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>机枪通用弹药</clipname>
@@ -4870,7 +4884,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <velocity>50</velocity>
       <bullet>横向联弹-普通子弹</bullet>
       <bulletrename>普通子弹</bulletrename>
-      <sound>re_shotgun_swanoff.wav</sound>
+      <sound>easyshot.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>12号霰弹弹药</clipname>
@@ -4900,7 +4914,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <interval>1000</interval>
       <velocity>50</velocity>
       <bullet>普通子弹</bullet>
-      <sound>re_shotgun_swanoff.wav</sound>
+      <sound>singleshot.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
@@ -5094,7 +5108,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <interval>120</interval>
       <velocity>50</velocity>
       <bullet>普通子弹</bullet>
-      <sound>re_Rifle_QBZ95.wav</sound>
+      <sound>FAMAS.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
@@ -5216,7 +5230,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <interval>355</interval>
       <velocity>50</velocity>
       <bullet>普通子弹</bullet>
-      <sound>re_Rifle_g36.wav</sound>
+      <sound>SL8_ok.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
@@ -5247,7 +5261,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <interval>200</interval>
       <velocity>50</velocity>
       <bullet>普通子弹</bullet>
-      <sound>re_Rifle_xm8.wav</sound>
+      <sound>g3sg.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
@@ -5288,6 +5302,259 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     <equipped>
       <dressup>枪-长枪-MP510</dressup>
       <criticalhit>20</criticalhit>
+    </equipped>
+  </item>
+  <item>
+    <id>8067</id>
+    <name>HKSL8EX</name>
+    <displayname>猎魂骑士EX</displayname>
+    <icon>HKSL8EX</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>6</weight>
+    <price>234000</price>
+    <description>进一步改造的猎魂骑士，加装大量战术配件，精确而且致命。</description>
+    <level>35</level>
+    <data>
+      <capacity>40</capacity>
+      <split>1</split>
+      <diffusion>2</diffusion>
+      <interval>250</interval>
+      <velocity>40</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>Sl8ex_1.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>500</power>
+      <impact>5</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-HKSL8EX</dressup>
+      <criticalhit>20</criticalhit>
+    </equipped>
+  </item>
+  <item>
+    <id>8068</id>
+    <name>MK48</name>
+    <displayname>MK48</displayname>
+    <icon>MK48</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>21</weight>
+    <price>124800</price>
+    <description>MK48机枪是MK46的大口径改型，后者是A国服役已久的M249机枪的轻量化改进型号，前者在这一改进的基础上改用了N协定制式7.62x51mm步枪弹，在保证相同火力的情况下比其他使用同种弹药的机枪更轻，适合机动作战。</description>
+    <level>20</level>
+    <data>
+      <capacity>200</capacity>
+      <split>1</split>
+      <diffusion>6</diffusion>
+      <interval>80</interval>
+      <velocity>33</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>mk48_ok.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>230</power>
+      <impact>5</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-MK48</dressup>
+      <evasion>-10</evasion>
+      <accuracy>-5</accuracy>
+    </equipped>
+  </item>
+  <item>
+    <id>8069</id>
+    <name>M202FLASH</name>
+    <displayname>M202FLASH</displayname>
+    <icon>M202FLASH</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>12</weight>
+    <price>374000</price>
+    <description>VN战争时期A国研发的肩射式火焰攻击武器。虽然它威猛的外表使其常在动作电影中作为一种“大杀器”出现，但真正的M202火箭发射器并不发射传统意义上的“火箭弹”。这种四管火箭发射器实际上发射的是一种基于火箭投射的液态燃烧弹。这种燃烧弹能够在长射程上有效投放，从而作为传统喷火器的替代品使用。</description>
+    <level>40</level>
+    <data>
+      <capacity>4</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>1500</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>燃烧火箭弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>700</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-M202FLASH</dressup>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </equipped>
+  </item>
+  <item>
+    <id>8070</id>
+    <name>ValmetM78</name>
+    <displayname>瓦尔梅特M78</displayname>
+    <icon>ValmetM78</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>5</weight>
+    <price>204750</price>
+    <description>瓦尔梅特M78是类似于RPK的轻机枪，是M76的变形枪，在1978年至1986年间生产，有两种7.62mm和一种5.56mm共三种口径，M78保留了M76的大部分结构特点，主要不同之处是：枪管加长、加重，装有提把和两脚架，护木为整体塑料件，其上有散热孔。</description>
+    <level>35</level>
+    <data>
+      <capacity>120</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>100</interval>
+      <velocity>35</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>M78.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>500</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-ValmetM78</dressup>
+      <criticalhit>5</criticalhit>
+    </equipped>
+  </item>
+  <item>
+    <id>8071</id>
+    <name>M60E3</name>
+    <displayname>M60E3</displayname>
+    <icon>M60E3</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>36</weight>
+    <price>390000</price>
+    <description>M60E3与原型的M60一样是轻重两用机枪，但主要是作为地面部队的轻型机枪使用，虽然M60E3改进了M60的许多缺点，并减轻了射手的的负荷，但减轻重量是要以限制陆战队员的持续火力为代价的——新的轻型枪管只能够速射100发弹，如果持续速射200-300发弹而不更换枪管会严重损坏枪管，甚至使枪管作废，因此安全的战斗射速往往达不到一分钟200发。这一支似乎经过了特别改造，能够发挥出与原型完全无关的强大性能。</description>
+    <level>40</level>
+    <data>
+      <capacity>100</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>120</interval>
+      <velocity>35</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>m60e3.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪贫铀穿甲弹</clipname>
+      <bulletsize>30</bulletsize>
+      <power>500</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-M60E3</dressup>
+      <evasion>-30</evasion>
+      <accuracy>-15</accuracy>
+    </equipped>
+  </item>
+  <item>
+    <id>8072</id>
+    <name>HK23</name>
+    <displayname>HK23</displayname>
+    <icon>HK23</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>9</weight>
+    <price>99450</price>
+    <description>HK23是HK21A1的5.56mm口径型号。最初是为了参与A国军方的班组自动武器（SAW）计划而研制，但落了选。后来A国军方否决了6mm口径，把SAW定为5.56mm口径后，HK公司再次加入这项竞标。他们用向A国军方展示了一种改装套件，可以在一分钟内不需要专门工具就把7.62mm口径的HK21A1变换为5.56mm口径，需要时，仍然可以重新改成7.62mm口径。这种样枪被命名为XM262。不过SAW计划最终由FN Minimi（XM249）获胜。由于DEU军也没有采用HK23作为制式武器，只有像KSK这样的单位极少量地采购，所以实际上一直以来所生产的就只有出口到其他国家的HK23E。</description>
+    <level>17</level>
+    <data>
+      <capacity>100</capacity>
+      <split>1</split>
+      <diffusion>8</diffusion>
+      <interval>80</interval>
+      <velocity>33</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>HK13.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>190</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-HK23</dressup>
+      <evasion>-5</evasion>
+      <accuracy>-10</accuracy>
+    </equipped>
+  </item>
+  <item>
+    <id>8073</id>
+    <name>HKSL8BLACK</name>
+    <displayname>猎魂骑士SL8</displayname>
+    <icon>HKSL8BLACK</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>4</weight>
+    <price>156000</price>
+    <description>一把经过改造的SL8运动步枪，在枪身下方刻有“猎魂骑士”字样。</description>
+    <level>20</level>
+    <data>
+      <capacity>20</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>300</interval>
+      <velocity>20</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>Sl8_1.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>340</power>
+      <impact>15</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-HKSL8BLACK</dressup>
+      <criticalhit>满血暴击</criticalhit>
+    </equipped>
+  </item>
+  <item>
+    <id>8074</id>
+    <name>HKSL8GOLD</name>
+    <displayname>猎魂金骑</displayname>
+    <icon>HKSL8GOLD</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>24</weight>
+    <price>234000</price>
+    <description>进一步改造的猎魂骑士，枪体全身覆盖着黄金质感的涂层，沉重而且威力十足。</description>
+    <level>35</level>
+    <data>
+      <capacity>25</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>300</interval>
+      <velocity>25</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>Sl8_1.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>800</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-HKSL8GOLD</dressup>
+      <criticalhit>满血暴击</criticalhit>
     </equipped>
   </item>
 </root>
