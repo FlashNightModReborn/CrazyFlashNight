@@ -6,6 +6,7 @@ import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.naki.RandomNumberEngine.*
+import org.flashNight.arki.spatial.animation.*;
 
 // _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
@@ -2397,21 +2398,31 @@ _root.主角函数.检查弹匣数量 = function(使用弹匣名称){
 	return org.flashNight.arki.item.ItemUtil.getTotal(使用弹匣名称);
 }
 
-_root.主角函数.破碎动画 = function(scope:MovieClip, fragmentPrefix:String){
-	var customConfig:Object = {
-		gravity: 2.8,
-		fragmentCount: 15,     
-		groundY: 330,
-		baseVelocityX: 26,
-		velocityXRange: 14,
-		rotationRange: 48,
-		bounce: 0.25,
-		collisionProbability: 0,
-		massScale: 400
-	};
 
-	_root.地图元件.地图元件破碎动画(scope, fragmentPrefix, customConfig);
-}
+var config:FragmentConfig = new FragmentConfig();
+
+// 直接设置属性，避免loadFromObject的开销
+config.gravity = 2.8;
+config.fragmentCount = 15;
+config.groundY = 330;
+config.baseVelocityX = 26;
+config.velocityXRange = 14;
+config.rotationRange = 48;
+config.bounce = 0.25;
+config.collisionProbability = 0; // 无碰撞，性能最优
+config.massScale = 400;
+
+// 缓存配置对象
+_root.主角函数._主角破碎配置缓存 = config;
+
+_root.主角函数.破碎动画 = function(scope:MovieClip, fragmentPrefix:String):Number {
+    
+    // 最简验证
+    if (!scope || !fragmentPrefix) return -1;
+    
+    // 直接使用缓存的配置
+    return FragmentAnimator.startAnimation(scope, fragmentPrefix, _root.主角函数._主角破碎配置缓存);
+};
 
 _root.主角函数.跳转到招式 = function(target:MovieClip, key:String, countMax:Number) {
 	var frame:String = LinearCongruentialEngine.getInstance().randomKey(key, countMax);
