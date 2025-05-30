@@ -231,10 +231,6 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 		}
 	}
 
-	target.onEnterFrame = function() {
-		target.swapDepths(target._y);
-	}
-
 	target.dispatcher.subscribe("pickUp", pickFunc, target);
 
 	if(target.stainedTarget) {

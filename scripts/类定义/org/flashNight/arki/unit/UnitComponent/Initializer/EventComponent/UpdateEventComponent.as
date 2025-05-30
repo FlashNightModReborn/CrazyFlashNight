@@ -14,9 +14,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         
         var dispatcher:EventDispatcher = target.dispatcher;
         // 订阅 UpdateEventComponent 事件到 onUpdate 逻辑
-        var func:Function = UpdateEventComponent.onUpdate;
-        if(target._name === _root.控制目标) func = UpdateEventComponent.onHeroUpdate;
+        var func;
+        if(target._name === _root.控制目标) {
+            func = UpdateEventComponent.onHeroUpdate;
+        } else if(target.兵种) {
+            func = UpdateEventComponent.onUpdate;
+        } else {
+            func = UpdateEventComponent.onMapElementUpdate;
+        }
         dispatcher.subscribeSingle("UpdateEventComponent", func, target);
+
         
         // 主角换装不会销毁自身，因此直接使用相同的标签会导致生命周期函数多次设置
         // 利用版本号进行区分
@@ -50,5 +57,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         ImpactUpdater.updateHero(target);
         InformationComponentUpdater.update(target);
         WatchDogUpdater.update(target);
+    }
+
+    public static function onMapElementUpdate(target:MovieClip):Void {
+        target.swapDepths(target._y);
     }
 }
