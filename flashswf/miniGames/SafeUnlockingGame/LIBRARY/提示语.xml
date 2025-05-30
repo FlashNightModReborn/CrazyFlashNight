@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="提示语" itemID="6839ba15-00000308" lastModified="1748616130">
+  <timeline>
+    <DOMTimeline name="提示语">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" width="462.95" height="168" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-310" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>DEFAULT CODE = (BATCH + DATE × 2)  MOD  10</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="24" bitmapSize="480" face="LcdStd" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

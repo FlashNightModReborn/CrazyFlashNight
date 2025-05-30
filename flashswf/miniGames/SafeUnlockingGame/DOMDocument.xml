@@ -1,0 +1,91 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" previewMode="anti alias" nextSceneIdentifier="2" viewOptionsButtonsActive="true" playOptionsPlayLoop="false" playOptionsPlayPages="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="箱子素材" itemID="6839b564-000002ac" isExpanded="true"/>
+          <DOMFolderItem name="箱子素材/保险柜" itemID="6839b564-000002ad" isExpanded="true"/>
+     </folders>
+     <symbols>
+          <Include href="保险柜.xml" loadImmediate="false" itemID="6839b5dc-000002c4" lastModified="1748617438"/>
+          <Include href="保险柜轮盘.xml" loadImmediate="false" itemID="683925e9-00004728" lastModified="1748575721"/>
+          <Include href="保险柜门面.xml" loadImmediate="false" itemID="683925ff-00004730" lastModified="1748616903"/>
+          <Include href="保险柜门页.xml" loadImmediate="false" itemID="683925f2-0000472c" lastModified="1748575730"/>
+          <Include href="保险柜锁盘.xml" loadImmediate="false" itemID="683925df-00004724" lastModified="1748617117"/>
+          <Include href="当前刻度.xml" loadImmediate="false" itemID="6839b6c3-000002fd" lastModified="1748616642"/>
+          <Include href="辅助色条.xml" loadImmediate="false" itemID="6839bcc4-000003e8" lastModified="1748614578"/>
+          <Include href="提示语.xml" loadImmediate="false" itemID="6839ba15-00000308" lastModified="1748616130"/>
+          <Include href="箱子素材/保险柜/保险柜本体素材.xml" loadImmediate="false" itemID="6837c90b-00001932" lastModified="1748615602"/>
+          <Include href="型号.xml" loadImmediate="false" itemID="6839c15c-0000041a" lastModified="1748615591"/>
+          <Include href="序列号.xml" loadImmediate="false" itemID="6839b76d-00000301" lastModified="1748615554"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 2" color="#9933CC" locked="true" layerType="mask">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMShape selected="true" isFloating="true">
+                                             <matrix>
+                                                  <Matrix d="1.00625610351563"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="273.95" y="198.95"/>
+                                             </transformationPoint>
+                                             <fills>
+                                                  <FillStyle index="1">
+                                                       <SolidColor color="#ABAB9F"/>
+                                                  </FillStyle>
+                                             </fills>
+                                             <edges>
+                                                  <Edge fillStyle1="1" edges="!10999 -20S2|10999 7979!10999 7979|-40 7979!-40 7979|-40 -20!-40 -20|10999 -20"/>
+                                             </edges>
+                                        </DOMShape>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="0" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="保险柜" selected="true" centerPoint3DX="91.8" centerPoint3DY="290.05">
+                                             <matrix>
+                                                  <Matrix a="0.78704833984375" d="0.78704833984375" tx="-209.3" ty="-78.2"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="928.15" y="467.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="9713" publishTime="1748617440"/>
+          <PublishItem publishSize="9514" publishTime="1748617304"/>
+          <PublishItem publishSize="9517" publishTime="1748617174"/>
+          <PublishItem publishSize="9503" publishTime="1748617128"/>
+          <PublishItem publishSize="9513" publishTime="1748617093"/>
+          <PublishItem publishSize="8587" publishTime="1748617017"/>
+          <PublishItem publishSize="8577" publishTime="1748616916"/>
+          <PublishItem publishSize="8577" publishTime="1748616858"/>
+          <PublishItem publishSize="8551" publishTime="1748616139"/>
+          <PublishItem publishSize="8245" publishTime="1748615816"/>
+          <PublishItem publishSize="8247" publishTime="1748615799"/>
+          <PublishItem publishSize="8247" publishTime="1748615658"/>
+          <PublishItem publishSize="8230" publishTime="1748615613"/>
+          <PublishItem publishSize="7904" publishTime="1748615544"/>
+          <PublishItem publishSize="7649" publishTime="1748615436"/>
+          <PublishItem publishSize="7636" publishTime="1748615401"/>
+          <PublishItem publishSize="7636" publishTime="1748615311"/>
+          <PublishItem publishSize="7626" publishTime="1748615165"/>
+          <PublishItem publishSize="7622" publishTime="1748615142"/>
+          <PublishItem publishSize="7622" publishTime="1748615105"/>
+     </publishHistory>
+</DOMDocument>

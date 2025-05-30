@@ -1,0 +1,403 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="保险柜" itemID="6839b5dc-000002c4" lastModified="1748617438" lastUniqueIdentifier="20">
+  <timeline>
+    <DOMTimeline name="保险柜" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;353&lt;/guideline&gt;&lt;guideline direction="h"&gt;239&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// AS2 轮盘拖拽旋转系统
+// 变量定义
+isDragging = false;
+isReturning = false; // 是否正在回零
+lastAngle = 0;
+currentAngle = 0;
+targetAngle = 0; // 目标角度（用于回零动画）
+centerX = 锁盘._x;  // 轮盘中心X坐标
+centerY = 锁盘._y;  // 轮盘中心Y坐标
+
+// 鼠标事件设置
+锁盘.onPress = function() {
+    isDragging = true;
+    isReturning = false; // 停止回零动画
+    lastAngle = getMouseAngle();
+};
+
+锁盘.onRelease = function() {
+    isDragging = false;
+    startReturnToZero(); // 开始回零动画
+};
+
+锁盘.onReleaseOutside = function() {
+    isDragging = false;
+    startReturnToZero(); // 开始回零动画
+};
+
+// 主循环事件
+this.onEnterFrame = function() {
+    if (isDragging) {
+        // 拖拽模式
+        newAngle = getMouseAngle();
+        angleDiff = newAngle - lastAngle;
+        
+        // 处理角度跨越问题（从359度到1度）
+        if (angleDiff > 180) {
+            angleDiff -= 360;
+        } else if (angleDiff < -180) {
+            angleDiff += 360;
+        }
+        
+        // 更新当前角度
+        currentAngle += angleDiff;
+        锁盘._rotation = currentAngle;
+        
+        // 更新上一次角度
+        lastAngle = newAngle;
+        
+        // 检查是否到达目标位置
+        checkTargetPosition();
+        
+    } else if (isReturning) {
+        // 回零动画模式
+        var angleDiff = targetAngle - currentAngle;
+        
+        // 处理角度跨越问题
+        if (angleDiff > 180) {
+            angleDiff -= 360;
+        } else if (angleDiff < -180) {
+            angleDiff += 360;
+        }
+        
+        // 缓慢移动到目标位置
+        currentAngle += angleDiff * 0.1; // 调整这个值控制回零速度
+        锁盘._rotation = currentAngle;
+        
+        // 检查是否到达目标位置
+        if (Math.abs(angleDiff) < 1) {
+            currentAngle = targetAngle;
+            锁盘._rotation = currentAngle;
+            isReturning = false;
+        }
+    }
+    
+    // 实时更新显示的数字
+    当前操作刻度.num = getCurrentNumber();
+};
+
+// 开始回零动画
+function startReturnToZero() {
+    // 计算最短路径到0度
+    var normalizedCurrent = ((currentAngle % 360) + 360) % 360;
+    
+    if (normalizedCurrent <= 180) {
+        // 顺时针回零
+        targetAngle = Math.floor(currentAngle / 360) * 360;
+    } else {
+        // 逆时针回零
+        targetAngle = Math.ceil(currentAngle / 360) * 360;
+    }
+    
+    isReturning = true;
+}
+
+// 计算鼠标相对于轮盘中心的角度
+function getMouseAngle() {
+    dx = _xmouse - centerX;
+    dy = _ymouse - centerY;
+    angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    
+    // 转换为0-360度
+    if (angle < 0) {
+        angle += 360;
+    }
+    
+    return angle;
+}
+
+// 将旋转角度转换为轮盘上的数字（0-9）
+function getCurrentNumber() {
+    // 标准化角度到0-360度
+    normalizedAngle = ((currentAngle % 360) + 360) % 360;
+    
+    // 转换为0-9的数字（每36度一个数字）
+    // 添加18度偏移，让0点在正上方
+    adjustedAngle = (normalizedAngle + 18) % 360;
+    number = Math.floor(adjustedAngle / 36) % 10;
+    
+    return number;
+}
+
+// 检查是否到达目标位置
+function checkTargetPosition() {
+    currentNum = getCurrentNumber();
+    targetNumbers = [1, 5, 6]; // 你的目标密码数字
+    
+    // 检查是否等于当前步骤的目标数字
+    if (currentStep < targetNumbers.length && currentNum == targetNumbers[currentStep]) {
+        // 到达目标位置，添加视觉反馈
+        addTargetFeedback(currentNum);
+    }
+}
+
+// 添加目标位置的视觉反馈
+function addTargetFeedback(targetNum) {
+    // 轮盘边缘发光效果
+    if (锁盘.glow_mc != undefined) {
+        锁盘.glow_mc._visible = true;
+        锁盘.glow_mc._alpha = 80;
+    }
+    
+    // 轻微震动效果
+    锁盘._x = centerX + (Math.random() - 0.5) * 3;
+    锁盘._y = centerY + (Math.random() - 0.5) * 3;
+    
+    // 创建延时器恢复原位
+    shakeCounter = 0;
+    this.onEnterFrame2 = function() {
+        shakeCounter++;
+        if (shakeCounter >= 3) { // 3帧后恢复
+            锁盘._x = centerX;
+            锁盘._y = centerY;
+            if (锁盘.glow_mc != undefined) {
+                锁盘.glow_mc._visible = false;
+            }
+            delete this.onEnterFrame2;
+        }
+    };
+    
+    trace("到达目标位置: " + targetNum + " (完整映射0-9可用)");
+}
+
+// 获取当前轮盘指向的数字（用于调试和显示）
+function getDisplayNumber() {
+    return getCurrentNumber();
+}
+
+// 设置新的目标密码（供外部调用）
+function setTargetCode(code1, code2, code3) {
+    targetNumbers = [code1, code2, code3];
+    currentStep = 0; // 重置当前步骤
+    trace("新密码设置为: " + code1 + "-" + code2 + "-" + code3);
+}
+
+// 初始化变量
+var currentStep = 0; // 当前密码输入步骤
+var targetNumbers = [1, 5, 6]; // 默认目标密码]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 7" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="当前刻度" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="当前刻度" blendMode="add" centerPoint3DX="825.55" centerPoint3DY="280.7">
+                  <matrix>
+                    <Matrix a="0.521865844726563" d="0.521865844726563" tx="808.25" ty="246.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.15" y="65.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="当前刻度" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="当前刻度" blendMode="add" centerPoint3DX="764.15" centerPoint3DY="280.7">
+                  <matrix>
+                    <Matrix a="0.521865844726563" d="0.521865844726563" tx="746.85" ty="246.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.15" y="65.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="当前刻度" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="当前刻度" blendMode="add" centerPoint3DX="701.6" centerPoint3DY="280.7">
+                  <matrix>
+                    <Matrix a="0.521865844726563" d="0.521865844726563" tx="684.3" ty="246.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.15" y="65.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="提示语" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="提示语" blendMode="lighten" centerPoint3DX="1041.2" centerPoint3DY="218.85">
+                  <matrix>
+                    <Matrix tx="841.75" ty="132.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="199.45" y="86"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="序列号" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="序列号" blendMode="hardlight" centerPoint3DX="473.35" centerPoint3DY="186.55">
+                  <matrix>
+                    <Matrix tx="273.9" ty="132.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="199.45" y="53.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="型号" blendMode="lighten" centerPoint3DX="340.95" centerPoint3DY="161.45">
+                  <matrix>
+                    <Matrix tx="294.2" ty="132.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="46.75" y="28.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="当前刻度" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="当前刻度" name="当前操作刻度" blendMode="add" centerPoint3DX="640.95" centerPoint3DY="601.55">
+                  <matrix>
+                    <Matrix tx="607.8" ty="536.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.15" y="65.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="17" blurY="17" color="#00FF00" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保险柜轮盘" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜轮盘" centerPoint3DX="598" centerPoint3DY="551.8">
+                  <matrix>
+                    <Matrix a="13.6200103759766" d="13.6200103759766" tx="429.05" ty="355.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.55" y="14.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保险柜锁盘" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜锁盘" name="锁盘" centerPoint3DX="620.95" centerPoint3DY="505.55">
+                  <matrix>
+                    <Matrix a="13.6200103759766" d="13.6200103759766" tx="477.7" ty="363.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保险柜门页" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门页" centerPoint3DX="930.5" centerPoint3DY="516.9">
+                  <matrix>
+                    <Matrix a="13.6200103759766" d="13.6200103759766" tx="887.35" ty="236.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.4" y="20.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="14" blurY="14" quality="3" angle="27.9999994308176" highlightColor="#42444F"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保险柜门面" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门面" centerPoint3DX="615.2" centerPoint3DY="487.15">
+                  <matrix>
+                    <Matrix a="13.6200103759766" d="13.6200103759766" tx="296.25" ty="180.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.45" y="22.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter quality="3" distance="26" highlightColor="#4D4F5C" strength="0.47"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="element" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜本体素材" name="element" centerPoint3DX="1866.2" centerPoint3DY="348.8">
+                  <matrix>
+                    <Matrix a="13.6200103759766" d="13.6200103759766" tx="1415.1" ty="-71.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.9" y="30.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

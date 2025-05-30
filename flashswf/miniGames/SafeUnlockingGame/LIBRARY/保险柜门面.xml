@@ -1,0 +1,174 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="保险柜门面" itemID="683925ff-00004730" lastModified="1748616903" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="保险柜门面">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辅助色条" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="辅助色条" selected="true" blendMode="multiply" centerPoint3DX="34.85" centerPoint3DY="5.9">
+                  <matrix>
+                    <Matrix a="0.31591796875" d="1.83319091796875" tx="27.55" ty="3.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.2" y="1.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="2" blurY="2" quality="3" angle="0" highlightColor="#42444F" shadowColor="#4E505D" strength="0.65"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辅助色条" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="辅助色条" blendMode="difference" centerPoint3DX="39" centerPoint3DY="5.8">
+                  <matrix>
+                    <Matrix a="0.0760650634765625" d="1.45831298828125" tx="37.25" ty="4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.65" y="1.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="2" blurY="2" quality="3" angle="0" highlightColor="#000000"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辅助色条" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="辅助色条" blendMode="difference" centerPoint3DX="34.45" centerPoint3DY="5.8">
+                  <matrix>
+                    <Matrix a="0.0760650634765625" d="1.45831298828125" tx="32.7" ty="4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.65" y="1.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="2" blurY="2" quality="3" angle="0" highlightColor="#000000"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辅助色条" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="辅助色条" blendMode="difference" centerPoint3DX="29.85" centerPoint3DY="5.8">
+                  <matrix>
+                    <Matrix a="0.0760650634765625" d="1.45831298828125" tx="28.1" ty="4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.65" y="1.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="2" blurY="2" quality="3" angle="0" highlightColor="#000000"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="辅助色条" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="辅助色条" blendMode="multiply" centerPoint3DX="34.85" centerPoint3DY="5.9">
+                  <matrix>
+                    <Matrix a="0.336410522460938" d="2.12669372558594" tx="27.1" ty="3.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.25" y="1.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="2" blurY="2" quality="3" angle="0" highlightColor="#42444F" shadowColor="#4E505D" strength="0.65"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#42444F"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#474954"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#7D8589"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#1E2427"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#4E505D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!939 51S2|939 223"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!939 223|939 526"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!939 526|939 882"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!939 882|939 915!939 915|36 915"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!36 915|0 915!0 915|0 892"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!0 892|0 0!0 0|939 0!939 0|939 51"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!873 29S2|897 29!897 29|939 51"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!407 26|581 27"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="!581 27|873 29"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!165 24|28 320"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!28 320|33 639"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!33 639|407 26"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!407 26|165 24"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!28 320|24 23!24 23|165 24"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!36 892|36 915"/>
+                    <Edge fillStyle0="4" fillStyle1="5" edges="!311 887|36 892"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!0 892|36 892"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="!36 892|36 858"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!36 858|33 639"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!699 885|497 887"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!497 887S2|311 887"/>
+                    <Edge fillStyle0="5" fillStyle1="1" edges="!581 27|36 858"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!939 223S2|497 887"/>
+                    <Edge fillStyle0="5" fillStyle1="1" edges="!311 887S2|873 29"/>
+                    <Edge fillStyle0="1" fillStyle1="4" edges="!699 885|939 882"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!939 526|699 885"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="当前刻度" itemID="6839b6c3-000002fd" lastModified="1748616642">
+  <timeline>
+    <DOMTimeline name="当前刻度">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" left="27.95" width="62.3" height="70.35" variableName="num">
+                  <matrix>
+                    <Matrix tx="-25.95" ty="-8.35"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>9</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="66" bitmapSize="1320" face="LcdStd" fillColor="#66FF00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
