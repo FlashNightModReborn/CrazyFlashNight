@@ -195,12 +195,14 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 
 	target.是否为敌人 = true;
 
-	if(isNaN(target.hp)) {
-		target.hp = target.hp满血值 = 10;
+	if(isNaN(target.hitPoint)) {
+		target.hitPoint = target.hitPointMax = 10;
 	} else {
-		target.hp满血值 =  target.hp;
+		target.hitPointMax =  target.hitPoint;
 	}
 	
+	target.hp = 9999999;
+
 	target.躲闪率 = 100;
 	target.击中效果 = target.击中效果 || "火花";
 	target.Z轴坐标 = target._y;
@@ -210,8 +212,30 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 	target.gotoAndStop("正常");
 	target.element.stop();
 
+	var pickUpFunc:Function = function():Void {
+		if(this._killed) return; // 避免多次触发
 
+		var focusedObject:MovieClip = _root.gameworld[_root.控制目标];
+		if (Math.abs(this.Z轴坐标 - focusedObject.Z轴坐标) < 50 && focusedObject.area.hitTest(this.area)){
+			this.dispatcher.publish("pickUp", this);
+		}
+	};
 
+	target.dispatcher.subscribeGlobal("interactionKeyDown", pickUpFunc, target);
+
+	var pickFunc:Function;
+
+	if(true) {
+		pickFunc = function(target:MovieClip):Void {
+			target.dispatcher.publish("kill", target);
+		}
+	}
+
+	target.onEnterFrame = function() {
+		target.swapDepths(target._y);
+	}
+
+	target.dispatcher.subscribe("pickUp", pickFunc, target);
 
 	if(target.stainedTarget) {
 		// 初始化并校验色彩参数（默认值：乘数为1，偏移为0）
@@ -263,7 +287,8 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 	target._visible = true;
-	target.element.gotoAndPlay("结束");
+
+
 	_root.帧计时器.注销目标缓存(target);
 	if (target.是否为敌人 && _root.gameworld[target.产生源])
 	{
@@ -271,7 +296,7 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 		_root.gameworld[target.产生源].僵尸型敌人场上实际人数--;
 		_root.gameworld[target.产生源].僵尸型敌人总个数--;
 	}
-	_root.创建可拾取物(target.内部物,target.数量,target._x,target._y,false);
+	_root.创建可拾取物(target.内部物,   target.数量,target._x,target._y, true);
 }
 
 /**

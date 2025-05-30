@@ -38,7 +38,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
     }
 
      public static function onMapElementKill(target:MovieClip):Void {
-        target.gotoAndPlay("结束");
+
+        if(target.hitPoint <= 0 ) {
+            // 击毁动画
+            target.gotoAndPlay("破碎");
+            target.element.gotoAndPlay("破碎");
+        } else {
+            // 交互结束
+            target.gotoAndPlay("结束");
+        }
         target._killed = true;
         if(target.垂直速度 < 0) target.垂直速度 = 0; // 让被非近战子弹击杀的单位从空中更快下落
 

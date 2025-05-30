@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748505371" lastUniqueIdentifier="47">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748505371" lastUniqueIdentifier="48">
   <timeline>
-    <DOMTimeline name="素材库-地图元件" currentFrame="3">
+    <DOMTimeline name="素材库-地图元件" currentFrame="5">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -52,7 +52,7 @@
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜" selected="true" centerPoint3DX="-426.35" centerPoint3DY="132.3">
+                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜" centerPoint3DX="-426.35" centerPoint3DY="132.3">
                   <matrix>
                     <Matrix tx="-426.85" ty="174.8"/>
                   </matrix>
@@ -67,7 +67,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -153,7 +153,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱" centerPoint3DX="-217.15" centerPoint3DY="134.1">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱" selected="true" centerPoint3DX="-217.15" centerPoint3DY="134.1">
                   <matrix>
                     <Matrix tx="-217.15" ty="176.25"/>
                   </matrix>

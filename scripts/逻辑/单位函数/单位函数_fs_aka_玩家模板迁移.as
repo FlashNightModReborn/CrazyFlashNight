@@ -2419,13 +2419,17 @@ _root.主角函数.破碎动画 = function(scope:MovieClip, fragmentPrefix:Strin
     
     // 最简验证
     if (!scope || !fragmentPrefix) return -1;
+
+	var config:FragmentConfig = _root.主角函数._主角破碎配置缓存;
+	// config.groundY = scope._parent._y;
     
     // 直接使用缓存的配置
-    return FragmentAnimator.startAnimation(scope, fragmentPrefix, _root.主角函数._主角破碎配置缓存);
+    return FragmentAnimator.startAnimation(scope, fragmentPrefix, config);
 };
 
 _root.主角函数.跳转到招式 = function(target:MovieClip, key:String, countMax:Number) {
 	var frame:String = LinearCongruentialEngine.getInstance().randomKey(key, countMax);
+	// frame = "a7";
 	target.gotoAndPlay(frame);
 }
 

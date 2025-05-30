@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748497329" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748594981" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="保险柜">
+    <DOMTimeline name="保险柜" currentFrame="54">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D4A0A9">
+        <DOMLayer name="Labels Layer" color="#D4A0A9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -10,21 +10,25 @@
             <DOMFrame index="1" duration="10" name="正常" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="115" name="结束" labelType="name" keyMode="9728">
+            <DOMFrame index="11" duration="87" name="结束" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="126" duration="10" name="无效" labelType="name" keyMode="9728">
+            <DOMFrame index="98" duration="83" name="破碎" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="181" duration="10" name="无效" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#9CD465">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 this.maxFrame = 12;
-this.hp = 10000;
+this.hitPoint = 100;
+
 _root.地图元件.初始化地图元件(this);]]></script>
               </Actionscript>
               <elements/>
@@ -32,14 +36,23 @@ _root.地图元件.初始化地图元件(this);]]></script>
             <DOMFrame index="1" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="112" keyMode="9728">
+            <DOMFrame index="11" duration="46" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-_root.地图元件.资源箱破碎脚本(this);]]></script>
+                <script><![CDATA[if (this.hitPoint <= 0)
+{
+	this.gotoAndPlay("破碎");
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="123" duration="3" keyMode="9728">
+            <DOMFrame index="57" duration="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.地图元件.资源箱破碎脚本(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="96" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 _root.add2map(this,2);
@@ -47,7 +60,22 @@ this.removeMovieClip();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="126" duration="10" keyMode="9728">
+            <DOMFrame index="98" duration="80" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.地图元件.资源箱破碎脚本(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="178" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_root.add2map(this,2);
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="181" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 this.removeMovieClip();
@@ -59,17 +87,295 @@ this.removeMovieClip();
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#BDD3F1">
           <frames>
-            <DOMFrame index="0" duration="125" keyMode="9728">
+            <DOMFrame index="0" duration="98" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="125" duration="11" keyMode="9728">
+            <DOMFrame index="98" duration="82" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="180" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#83C998">
+        <DOMLayer name="保险柜轮盘" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="126" keyMode="9728">
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜轮盘" centerPoint3DX="13.05" centerPoint3DY="-13.15">
+                  <matrix>
+                    <Matrix tx="0.5" ty="-27.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.55" y="14.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="25" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="2" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1851"/>
+                  <Point x="0.1084" y="0.3231"/>
+                  <Point x="0.2602" y="0.5651"/>
+                  <Point x="0.4217" y="0.8226"/>
+                  <Point x="0.8114" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜轮盘" centerPoint3DX="13.05" centerPoint3DY="-13.15">
+                  <matrix>
+                    <Matrix tx="0.5" ty="-27.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜轮盘" selected="true" centerPoint3DX="13.05" centerPoint3DY="-13.15">
+                  <matrix>
+                    <Matrix tx="0.5" ty="-27.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="40" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.286"/>
+                  <Point x="0.1514" y="0.5374"/>
+                  <Point x="0.3801" y="0.8288"/>
+                  <Point x="0.4712" y="0.9449"/>
+                  <Point x="0.8824" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜轮盘" centerPoint3DX="13.05" centerPoint3DY="-13.15">
+                  <matrix>
+                    <Matrix tx="0.5" ty="-27.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.75" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="93" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜轮盘" centerPoint3DX="30.3" centerPoint3DY="-10.5">
+                  <matrix>
+                    <Matrix a="0.2662353515625" b="-0.100143432617188" tx="27.8" ty="-23.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.4" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="98" duration="93" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保险柜锁盘" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜锁盘" centerPoint3DX="5.5" centerPoint3DY="-25.6">
+                  <matrix>
+                    <Matrix tx="-5.1" ty="-36.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="26" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="2" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1992"/>
+                  <Point x="0.1788" y="0.2951"/>
+                  <Point x="0.2988" y="0.5548"/>
+                  <Point x="0.4473" y="0.8762"/>
+                  <Point x="0.7846" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜锁盘" centerPoint3DX="5.5" centerPoint3DY="-25.6">
+                  <matrix>
+                    <Matrix tx="-5.1" ty="-36.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜锁盘" centerPoint3DX="5.5" centerPoint3DY="-25.6">
+                  <matrix>
+                    <Matrix tx="-5.1" ty="-36.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="40" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.286"/>
+                  <Point x="0.1514" y="0.5374"/>
+                  <Point x="0.3801" y="0.8288"/>
+                  <Point x="0.4712" y="0.9449"/>
+                  <Point x="0.8824" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜锁盘" centerPoint3DX="5.5" centerPoint3DY="-25.6">
+                  <matrix>
+                    <Matrix tx="-5.1" ty="-36.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="10.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="93" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜锁盘" centerPoint3DX="29.85" centerPoint3DY="-45.8">
+                  <matrix>
+                    <Matrix a="0.2662353515625" b="-0.100143432617188" tx="26.2" ty="-32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.9" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="98" duration="93" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保险柜门页" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门页" centerPoint3DX="37.3" centerPoint3DY="-15.7">
+                  <matrix>
+                    <Matrix tx="34.15" ty="-36.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.4" y="20.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="87" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门页" centerPoint3DX="37.3" centerPoint3DY="-15.7">
+                  <matrix>
+                    <Matrix tx="34.15" ty="-36.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.4" y="20.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="98" duration="93" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保险柜门面" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门面" centerPoint3DX="14.2" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix tx="-9.25" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.45" y="22.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门面" centerPoint3DX="14.2" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix tx="-9.25" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.45" y="22.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="40" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.286"/>
+                  <Point x="0.1514" y="0.5374"/>
+                  <Point x="0.3801" y="0.8288"/>
+                  <Point x="0.4712" y="0.9449"/>
+                  <Point x="0.8824" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门面" centerPoint3DX="14.2" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix tx="-9.25" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.45" y="22.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="93" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保险柜门面" centerPoint3DX="30.55" centerPoint3DY="-26.85">
+                  <matrix>
+                    <Matrix a="0.2662353515625" b="-0.100143432617188" tx="25.2" ty="-35.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.5" y="22.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="98" duration="93" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="element" color="#83C998" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜本体素材" name="element" centerPoint3DX="105.8" centerPoint3DY="-28.05">
                   <matrix>
@@ -81,14 +387,33 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="126" duration="10" keyMode="9728">
+            <DOMFrame index="11" duration="170" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜本体素材" name="element" centerPoint3DX="105.8" centerPoint3DY="-28.05">
+                  <matrix>
+                    <Matrix tx="72.9" ty="-58.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.9" y="30.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="181" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="box" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="191" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 5" color="#F76FB9" locked="true" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="126" keyMode="9728">
+            <DOMFrame index="0" duration="181" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" centerPoint3DX="-14.45" centerPoint3DY="-84.05">
                   <matrix>
@@ -100,7 +425,7 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="126" duration="10" keyMode="9728">
+            <DOMFrame index="181" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

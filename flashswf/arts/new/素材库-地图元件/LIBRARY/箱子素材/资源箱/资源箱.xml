@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748495621" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748594012" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="资源箱" currentFrame="2">
+    <DOMTimeline name="资源箱" currentFrame="12">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -10,43 +10,56 @@
             <DOMFrame index="1" duration="10" name="正常" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="115" name="结束" labelType="name" keyMode="9728">
+            <DOMFrame index="11" duration="6" name="结束" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="126" duration="10" name="无效" labelType="name" keyMode="9728">
+            <DOMFrame index="17" duration="108" name="破碎" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.地图元件.资源箱破碎脚本(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="125" duration="11" name="无效" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465">
+        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.地图元件.初始化地图元件(this);
 this.maxFrame = 12;
-]]></script>
+this.hitPoint = 10;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="11" duration="112" keyMode="9728">
+            <DOMFrame index="11" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
-_root.地图元件.资源箱破碎脚本(this);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="123" duration="3" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[stop();
+_root.地图元件.资源箱破碎脚本(this);
+stop();
 _root.add2map(this,2);
 this.removeMovieClip();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="126" duration="10" keyMode="9728">
+            <DOMFrame index="17" duration="105" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="122" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_root.地图元件.资源箱破碎脚本(this);
+_root.add2map(this,2);
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="125" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 this.removeMovieClip();
@@ -85,11 +98,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#F76FB9" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#F76FB9">
           <frames>
             <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" selected="true" centerPoint3DX="-14.45" centerPoint3DY="-84.05">
+                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" centerPoint3DX="-14.45" centerPoint3DY="-84.05">
                   <matrix>
                     <Matrix a="2.11715698242188" d="4.32269287109375" tx="-26.95" ty="-96.55"/>
                   </matrix>
