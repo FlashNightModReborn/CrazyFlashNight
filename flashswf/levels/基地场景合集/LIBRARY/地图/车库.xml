@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1748355427" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1748629747" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -113,7 +113,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="冷兵器商人" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -146,8 +146,8 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="BPK" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="KING" color="#BA6078" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="BPK" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="KING" color="#BA6078" parentLayerIndex="7" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -186,7 +186,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="BOY" color="#A91BDC" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="BOY" color="#A91BDC" parentLayerIndex="7" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -225,7 +225,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="PIG" color="#D2FD7B" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="PIG" color="#D2FD7B" parentLayerIndex="7" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -262,7 +262,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图区域" color="#A78BCA" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图区域" color="#A78BCA" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -298,9 +298,9 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/自行车" centerPoint3DX="1091.35" centerPoint3DY="709.9">
+                <DOMSymbolInstance libraryItemName="sprite/自行车" centerPoint3DX="1091.35" centerPoint3DY="689.9">
                   <matrix>
-                    <Matrix a="0.508346557617188" d="0.508346557617188" tx="1013.1" ty="663.2"/>
+                    <Matrix a="0.508346557617188" d="0.508346557617188" tx="1013.1" ty="643.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="151.75" y="92.45"/>
@@ -338,9 +338,9 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" centerPoint3DX="905.25" centerPoint3DY="755.95">
+                <DOMSymbolInstance libraryItemName="sprite/越野摩托车" centerPoint3DX="905.25" centerPoint3DY="735.95">
                   <matrix>
-                    <Matrix a="0.247238159179688" d="0.247238159179688" tx="770.95" ty="664.85"/>
+                    <Matrix a="0.247238159179688" d="0.247238159179688" tx="770.95" ty="644.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="453.6" y="368.45"/>
@@ -387,9 +387,9 @@ on (rollOut) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="318.3" centerPoint3DY="717.45">
+                <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="318.3" centerPoint3DY="697.45">
                   <matrix>
-                    <Matrix a="-0.808090209960938" d="0.783767700195313" tx="376.3" ty="680.55"/>
+                    <Matrix a="-0.808090209960938" d="0.783767700195313" tx="376.3" ty="660.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="271.4" y="119.25"/>
@@ -456,11 +456,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#A65995" autoNamed="false">
+        <DOMLayer name="场景" color="#A65995" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/车库背景" centerPoint3DX="577.8" centerPoint3DY="269.6" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="sprite/车库背景" selected="true" centerPoint3DX="577.8" centerPoint3DY="269.6" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="937.7" ty="245.1"/>
                   </matrix>
