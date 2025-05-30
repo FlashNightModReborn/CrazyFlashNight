@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1747717349" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1748603530" lastUniqueIdentifier="22">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
@@ -398,11 +398,11 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="16" autoNamed="false">
+        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2716" centerPoint3DX="274.05" centerPoint3DY="613.95">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2716" selected="true" centerPoint3DX="274.05" centerPoint3DY="613.95">
                   <matrix>
                     <Matrix tx="213.45" ty="508"/>
                   </matrix>
@@ -416,7 +416,7 @@ onClipEvent (load) {
 	商店 = "服装出售";
 	身高 = 175;
 	性别 = "男";
-	方向 = "左";
+	方向 = "右";
 	NPC任务_任务_关卡路径 = "制霸黑铁会";
 	_root.初始化NPC(this);
 }]]></script>
@@ -718,7 +718,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#AB9E98" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="背景" color="#AB9E98" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
