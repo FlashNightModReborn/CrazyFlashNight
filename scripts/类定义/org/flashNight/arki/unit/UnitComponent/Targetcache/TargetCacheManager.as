@@ -404,4 +404,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     ):Object { 
         return findNearestTarget(t, interval, "全体"); 
     }
+
+
+    /**
+     * 查找主角
+     * @return {Object} 主角的引用，若不存在返回null
+     */
+    public static function findHero():Object { 
+        return _root.gameworld[_root.控制目标] || null; 
+    }
 }

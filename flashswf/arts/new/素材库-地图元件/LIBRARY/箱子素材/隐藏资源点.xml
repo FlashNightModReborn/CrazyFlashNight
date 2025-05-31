@@ -1,0 +1,135 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/隐藏资源点" itemID="66a8fec5-00001f87" linkageExportForAS="true" linkageIdentifier="隐藏资源点" lastModified="1748690640" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="隐藏资源点">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#D4A0A9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="6" name="结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[强制移动方向 = null;
+this.强制移动 = function(移动方向)
+{
+	if (this.hp > 0)
+	{
+		if (移动方向 === "左" || 移动方向 === "右")
+		{
+			this.强制移动方向 = 移动方向;
+			this.hp = 0;
+			gotoAndPlay("结束");
+			this.强制移动 = null;
+		}
+	}
+}
+this.maxFrame = 1;
+this.element = "隐藏资源点";
+this.hitPoint = 1;
+_root.地图元件.初始化地图元件(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = true;
+_root.帧计时器.注销目标缓存(this);
+if (是否为敌人 && _root.gameworld[产生源])
+{
+	_root.敌人死亡计数 += 1;
+	_root.gameworld[产生源].僵尸型敌人场上实际人数--;
+	_root.gameworld[产生源].僵尸型敌人总个数--;
+}
+
+var 参数对象 = {垂直速度:-15};
+if (强制移动方向 === "左")
+{
+	参数对象.xmov = -10 - random(5);
+}
+else if (强制移动方向 === "右")
+{
+	参数对象.xmov = 10 + random(5);
+}
+_root.创建可拾取物(内部物,数量,this._x,this._y,true,参数对象);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="箱子素材/隐藏资源点光效" centerPoint3DY="-50">
+                  <matrix>
+                    <Matrix ty="-50"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#F76FB9" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" centerPoint3DX="-13.95" centerPoint3DY="-84.05">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="4.32269287109375" tx="-26.45" ty="-96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent.hp <= 0)
+	{
+		_parent.gotoAndPlay("结束");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
