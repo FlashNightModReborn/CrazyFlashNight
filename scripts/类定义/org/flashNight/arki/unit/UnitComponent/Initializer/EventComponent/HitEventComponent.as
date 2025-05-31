@@ -11,11 +11,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
         
         var dispatcher:EventDispatcher = target.dispatcher;
         var func:Function;
-        // 订阅 hit 事件到 HitUpdater 逻辑
-        if(target.兵种) {
-            func = HitUpdater.getUpdater(target);
-        } else {
+        // 根据地图元件标签 订阅 hit 事件到 HitUpdater 逻辑
+        if(target.element) {
             func = HitEventComponent.onMapElementHit;
+        } else {
+            func = HitUpdater.getUpdater(target);
         }
         dispatcher.subscribeSingle("hit", func, target);
     }
@@ -23,6 +23,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
     public static function onMapElementHit(target:MovieClip, shooter:MovieClip, bullet:MovieClip):Void {
 
         target.hitPoint--;
+
 
         if(target.hitPoint <= 0) {
             var dispatcher:EventDispatcher = target.dispatcher;

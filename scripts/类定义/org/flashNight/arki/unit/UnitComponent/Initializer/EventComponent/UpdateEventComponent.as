@@ -17,10 +17,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         var func;
         if(target._name === _root.控制目标) {
             func = UpdateEventComponent.onHeroUpdate;
-        } else if(target.兵种) {
-            func = UpdateEventComponent.onUpdate;
-        } else {
+        } else if(target.element) {
             func = UpdateEventComponent.onMapElementUpdate;
+        } else {
+            func = UpdateEventComponent.onUpdate;
         }
         dispatcher.subscribeSingle("UpdateEventComponent", func, target);
 

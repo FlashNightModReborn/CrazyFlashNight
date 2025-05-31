@@ -12,11 +12,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
 
         var func:Function;
         
-        // 根据是否有兵种决定是单位还是地图元件
-        if(target.兵种) {
-            func = KillEventComponent.onKill;
-        } else {
+        // 根据地图元件标签决定是单位还是地图元件
+        if(target.element) {
             func = KillEventComponent.onMapElementKill;
+        } else {
+            func = KillEventComponent.onKill;
         }
 
         // 订阅 kill 事件到 HitUpdater 逻辑

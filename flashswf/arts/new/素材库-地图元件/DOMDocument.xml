@@ -3,6 +3,7 @@
           <DOMFolderItem name="03.摆件" itemID="67321af0-00000c8d"/>
           <DOMFolderItem name="03.摆件/铁丝栏" itemID="6720aa4a-00001286"/>
           <DOMFolderItem name="shape" itemID="670d4052-0000141f"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
           <DOMFolderItem name="场景素材" itemID="68368d0c-00002c15"/>
           <DOMFolderItem name="场景素材/废弃车辆" itemID="68368d0c-00002c16"/>
           <DOMFolderItem name="场景素材/废弃车辆/高级轿车a" itemID="68368d0c-00002c17"/>
@@ -36,6 +37,11 @@
           <Include href="03.摆件/铁丝栏/铁丝-1.xml" loadImmediate="false" itemID="66c1e0f3-00000e8d" lastModified="1730194497"/>
           <Include href="area.xml" loadImmediate="false" itemID="6697f8e4-00000250" lastModified="1721235704"/>
           <Include href="shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2365.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b23" lastModified="1704196122"/>
+          <Include href="sprite/健身房沙袋.xml" itemID="66a8ed03-0000125e" lastModified="1748690096"/>
+          <Include href="sprite/健身房沙袋 强制移动.xml" loadImmediate="false" itemID="66a8ed0d-00001267" lastModified="1722347298"/>
+          <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="保险柜轮盘.xml" loadImmediate="false" itemID="683925e9-00004728" lastModified="1748575721"/>
           <Include href="保险柜门面.xml" loadImmediate="false" itemID="683925ff-00004730" lastModified="1748575743"/>
           <Include href="保险柜门页.xml" loadImmediate="false" itemID="683925f2-0000472c" lastModified="1748575730"/>
@@ -121,6 +127,7 @@
           <Include href="歌留多/歌留多左小臂.xml" itemIcon="1" loadImmediate="false" itemID="67096488-00000035" lastModified="1728926122"/>
           <Include href="歌留多/髅髅宫歌留多-站立动画.xml" itemID="670cf4d1-000003f7" lastModified="1728926159"/>
           <Include href="互动提示/互动提示-高亮.xml" itemIcon="1" loadImmediate="false" itemID="676c09fa-00000f73" lastModified="1737857518"/>
+          <Include href="健身房沙袋.xml" loadImmediate="false" itemID="65a79007-00000b58" lastModified="1748690444"/>
           <Include href="路障与通关门/Symbol 15.xml" itemIcon="1" loadImmediate="false" itemID="674da036-0000029d" lastModified="1727496595"/>
           <Include href="路障与通关门/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="674d9efc-000001f6" lastModified="1727496595"/>
           <Include href="路障与通关门/防御地带内部大门右.xml" loadImmediate="false" itemID="678f644a-00000a14" lastModified="1737450570"/>
@@ -160,7 +167,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748505371"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748690065"/>
           <Include href="跳动的火焰.xml" itemID="65c8e899-00000235" lastModified="1707665566"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
@@ -170,7 +177,7 @@
           <Include href="箱子素材/Symbol 14.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-0000064c" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 15.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-0000064d" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-0000064e" lastModified="1704525302"/>
-          <Include href="箱子素材/保险柜/保险柜.xml" itemID="6837c8d0-00001906" lastModified="1748594981"/>
+          <Include href="箱子素材/保险柜/保险柜.xml" itemID="6837c8d0-00001906" lastModified="1748690537"/>
           <Include href="箱子素材/保险柜/保险柜本体素材.xml" loadImmediate="false" itemID="6837c90b-00001932" lastModified="1748594179"/>
           <Include href="箱子素材/保险柜/保险箱碎片1.xml" itemIcon="1" loadImmediate="false" itemID="6837e9ba-00001b6d" lastModified="1748494778"/>
           <Include href="箱子素材/保险柜/保险箱碎片2.xml" itemIcon="1" loadImmediate="false" itemID="6837e9d1-00001b72" lastModified="1748494801"/>
@@ -186,10 +193,10 @@
           <Include href="箱子素材/保险柜/保险箱碎片12.xml" itemIcon="1" loadImmediate="false" itemID="6837ebc1-00001bb1" lastModified="1748495297"/>
           <Include href="箱子素材/保险柜/保险箱碎片13.xml" itemIcon="1" loadImmediate="false" itemID="6837edcc-00001d41" lastModified="1748495820"/>
           <Include href="箱子素材/光效.xml" itemIcon="1" loadImmediate="false" itemID="66a8fe55-00001f7d" lastModified="1722425993"/>
-          <Include href="箱子素材/生存箱/生存箱.xml" itemID="683812e1-0000276e" lastModified="1748574977"/>
+          <Include href="箱子素材/生存箱/生存箱.xml" itemID="683812e1-0000276e" lastModified="1748690562"/>
           <Include href="箱子素材/生存箱/生存箱本体素材.xml" loadImmediate="false" itemID="683812f0-00002783" lastModified="1748505563"/>
           <Include href="箱子素材/隐藏资源点光效.xml" loadImmediate="false" itemID="66a8fe1f-00001f7b" lastModified="1722424406"/>
-          <Include href="箱子素材/纸箱/纸箱.xml" itemID="683802e7-00002516" lastModified="1748594314"/>
+          <Include href="箱子素材/纸箱/纸箱.xml" itemID="683802e7-00002516" lastModified="1748690619"/>
           <Include href="箱子素材/纸箱/纸箱本体素材.xml" loadImmediate="false" itemID="683802fa-00002528" lastModified="1748594200"/>
           <Include href="箱子素材/纸箱/纸箱碎片1.xml" loadImmediate="false" itemID="68380ac7-00002610" lastModified="1748503240"/>
           <Include href="箱子素材/纸箱/纸箱碎片2.xml" loadImmediate="false" itemID="68380b38-00002618" lastModified="1748503352"/>
@@ -199,7 +206,7 @@
           <Include href="箱子素材/纸箱/纸箱碎片6.xml" loadImmediate="false" itemID="68380bf7-00002628" lastModified="1748503543"/>
           <Include href="箱子素材/纸箱/纸箱碎片7.xml" loadImmediate="false" itemID="68380c1e-0000262c" lastModified="1748503582"/>
           <Include href="箱子素材/纸箱/纸箱碎片8.xml" loadImmediate="false" itemID="68380c46-00002630" lastModified="1748503622"/>
-          <Include href="箱子素材/资源箱/资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748594012"/>
+          <Include href="箱子素材/资源箱/资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748690576"/>
           <Include href="箱子素材/资源箱/资源箱本体素材.xml" loadImmediate="false" itemID="6836c077-00000f9b" lastModified="1748594188"/>
           <Include href="箱子素材/资源箱/资源箱碎片1.xml" itemIcon="1" loadImmediate="false" itemID="6836da42-00000fe9" lastModified="1748425282"/>
           <Include href="箱子素材/资源箱/资源箱碎片2.xml" itemIcon="1" loadImmediate="false" itemID="6836da92-00000ff0" lastModified="1748425362"/>
@@ -211,7 +218,7 @@
           <Include href="箱子素材/资源箱/资源箱碎片8.xml" itemIcon="1" loadImmediate="false" itemID="6836db61-00001009" lastModified="1748425569"/>
           <Include href="箱子素材/资源箱/资源箱碎片9.xml" itemIcon="1" loadImmediate="false" itemID="6836db71-0000100d" lastModified="1748425585"/>
           <Include href="箱子素材/资源箱/资源箱碎片10.xml" itemIcon="1" loadImmediate="false" itemID="6836db88-00001011" lastModified="1748425608"/>
-          <Include href="隐藏资源点.xml" itemID="66a8fec5-00001f87" lastModified="1748485500"/>
+          <Include href="隐藏资源点.xml" itemID="66a8fec5-00001f87" lastModified="1748690640"/>
           <Include href="钻头素材/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="667be1aa-000000c6" lastModified="1704897454"/>
           <Include href="钻头素材/Symbol 12.xml" loadImmediate="false" itemID="667be1aa-000000c4" lastModified="1719394707"/>
           <Include href="钻头素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="667be1aa-000000c5" lastModified="1716307369"/>
@@ -707,6 +714,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="232051" publishTime="1748690541"/>
+          <PublishItem publishSize="232041" publishTime="1748690452"/>
+          <PublishItem publishSize="232057" publishTime="1748690156"/>
           <PublishItem publishSize="230053" publishTime="1748594452"/>
           <PublishItem publishSize="230050" publishTime="1748594226"/>
           <PublishItem publishSize="230050" publishTime="1748594222"/>
@@ -724,8 +734,5 @@
           <PublishItem publishSize="230046" publishTime="1748588251"/>
           <PublishItem publishSize="230066" publishTime="1748587974"/>
           <PublishItem publishSize="230064" publishTime="1748585485"/>
-          <PublishItem publishSize="230059" publishTime="1748585176"/>
-          <PublishItem publishSize="230074" publishTime="1748585151"/>
-          <PublishItem publishSize="230074" publishTime="1748585006"/>
      </publishHistory>
 </DOMDocument>

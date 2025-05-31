@@ -19,7 +19,7 @@
           <DOMFolderItem name="NPC/杂项" itemID="66631720-00001160"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6597612c-00000e9d"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
           <DOMFolderItem name="sprite/理发师" itemID="668aace0-0000626a"/>
           <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4"/>
           <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa"/>
@@ -756,7 +756,7 @@
           <Include href="sprite/地下2层地图碰撞箱.xml" loadImmediate="false" itemID="65d0b4f2-000014ce" lastModified="1742200453"/>
           <Include href="sprite/基地1层背景.xml" loadImmediate="false" itemID="682c0cd1-000006b9" lastModified="1747717329"/>
           <Include href="sprite/健身房背景.xml" loadImmediate="false" itemID="682c108e-000006cb" lastModified="1747718286"/>
-          <Include href="sprite/健身房沙袋.xml" loadImmediate="false" itemID="66a8ed03-0000125e" lastModified="1722346755"/>
+          <Include href="sprite/健身房沙袋.xml" itemID="66a8ed03-0000125e" lastModified="1748690144"/>
           <Include href="sprite/健身房沙袋 强制移动.xml" loadImmediate="false" itemID="66a8ed0d-00001267" lastModified="1722347298"/>
           <Include href="sprite/理发师/理发师-NPC.xml" loadImmediate="false" itemID="668aace8-0000626b" lastModified="1736955547"/>
           <Include href="sprite/男变装-沙漠军装皮鞋.xml" loadImmediate="false" itemID="67d7c60f-00000559" lastModified="1742194191"/>
@@ -828,11 +828,11 @@
           <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1748603530"/>
           <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1747718602"/>
           <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1743585946"/>
-          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1747718294"/>
+          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1748690144"/>
           <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1742200440"/>
-          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1742200609"/>
           <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1747717252"/>
           <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1747718297"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1742200609"/>
           <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1747717315"/>
           <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1747718311"/>
           <Include href="房间摆件/摆件茶壶.xml" loadImmediate="false" itemID="663347f0-000017f6" lastModified="1714636784"/>

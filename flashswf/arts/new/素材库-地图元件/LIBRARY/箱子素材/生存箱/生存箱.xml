@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/生存箱/生存箱" itemID="683812e1-0000276e" linkageExportForAS="true" linkageIdentifier="生存箱" lastModified="1748574977" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/生存箱/生存箱" itemID="683812e1-0000276e" linkageExportForAS="true" linkageIdentifier="生存箱" lastModified="1748690562" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="生存箱">
       <layers>
@@ -25,6 +25,7 @@
                 <script><![CDATA[
 this.maxFrame = 12;
 this.hitPoint = 100;
+this.element = "生存箱";
 _root.地图元件.初始化地图元件(this);]]></script>
               </Actionscript>
               <elements/>

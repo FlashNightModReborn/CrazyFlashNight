@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1747718294" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1748690144" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="健身房">
       <layers>
@@ -95,11 +95,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B947D1">
+        <DOMLayer name="Layer 5" color="#B947D1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="健身房沙袋" name="沙袋" centerPoint3DX="1249.55" centerPoint3DY="612.45">
+                <DOMSymbolInstance libraryItemName="健身房沙袋" name="沙袋" selected="true" centerPoint3DX="1249.55" centerPoint3DY="612.45">
                   <matrix>
                     <Matrix tx="1189.35" ty="486.75"/>
                   </matrix>
@@ -318,7 +318,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#EF85C4" current="true" isSelected="true">
+        <DOMLayer name="Layer 17" color="#EF85C4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748594012" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748690576" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="资源箱" currentFrame="12">
+    <DOMTimeline name="资源箱">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -30,6 +30,7 @@
               <Actionscript>
                 <script><![CDATA[_root.地图元件.初始化地图元件(this);
 this.maxFrame = 12;
+this.element = "资源箱";
 this.hitPoint = 10;]]></script>
               </Actionscript>
               <elements/>

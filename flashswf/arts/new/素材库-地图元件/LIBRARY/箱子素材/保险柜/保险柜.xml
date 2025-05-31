@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748594981" lastUniqueIdentifier="18">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748690537" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="保险柜" currentFrame="54">
+    <DOMTimeline name="保险柜">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D4A0A9" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -21,13 +21,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465">
+        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 this.maxFrame = 12;
 this.hitPoint = 100;
+this.element = "保险柜";
 
 _root.地图元件.初始化地图元件(this);]]></script>
               </Actionscript>

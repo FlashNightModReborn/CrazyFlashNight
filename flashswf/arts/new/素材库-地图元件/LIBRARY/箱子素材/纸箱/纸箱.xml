@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/纸箱/纸箱" itemID="683802e7-00002516" linkageExportForAS="true" linkageIdentifier="纸箱" lastModified="1748594314" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/纸箱/纸箱" itemID="683802e7-00002516" linkageExportForAS="true" linkageIdentifier="纸箱" lastModified="1748690619" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="纸箱" currentFrame="130">
+    <DOMTimeline name="纸箱">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -25,9 +25,11 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.地图元件.初始化地图元件(this);
-this.maxFrame = 1;
-this.hitPoint = 1;]]></script>
+                <script><![CDATA[this.maxFrame = 1;
+this.element = "纸箱";
+this.hitPoint = 1;
+_root.地图元件.初始化地图元件(this);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
