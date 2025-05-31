@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼大叔" itemID="67ac3e61-0000062f" linkageExportForAS="true" linkageIdentifier="敌人-盗贼大叔" lastModified="1747143227">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼大叔" itemID="67ac3e61-0000062f" linkageExportForAS="true" linkageIdentifier="敌人-盗贼大叔" lastModified="1748676084">
   <timeline>
-    <DOMTimeline name="敌人-盗贼大叔" currentFrame="92">
+    <DOMTimeline name="敌人-盗贼大叔">
       <layers>
         <DOMLayer name="Labels Layer" color="#E0FB44">
           <frames>
@@ -90,13 +90,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#69C956">
+        <DOMLayer name="Script Layer" color="#69C956" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[x轴攻击范围 = 200;
-y轴攻击范围 = 10;
-x轴保持距离 = 50;
+                <script><![CDATA[x轴攻击范围 = 120;
+
+手枪威力表 = {
+	双管猎枪: 45,
+	M79式榴弹发射器: 1000
+}
+if(手枪威力表[this.手枪] == null) this.手枪 = "双管猎枪";
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
@@ -104,14 +108,11 @@ x轴保持距离 = 50;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="1" duration="119" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 ]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="118" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" keyMode="9728">
@@ -297,7 +298,7 @@ x轴保持距离 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#B984AF" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#B984AF">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -362,13 +363,6 @@ x轴保持距离 = 50;
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-}
-onClipEvent(unload){
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
@@ -395,7 +389,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 17" name="man" centerPoint3DX="36.4" centerPoint3DY="20.85">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 17" name="man" selected="true" centerPoint3DX="36.4" centerPoint3DY="20.85">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -441,7 +435,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 53" name="man" selected="true" centerPoint3DX="71.1" centerPoint3DY="72">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 53" name="man" centerPoint3DX="71.1" centerPoint3DY="72">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>

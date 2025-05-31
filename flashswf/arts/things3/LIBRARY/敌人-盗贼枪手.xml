@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼枪手" itemID="67ac3e5b-0000062e" linkageExportForAS="true" linkageIdentifier="敌人-盗贼枪手" lastModified="1747143212">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼枪手" itemID="67ac3e5b-0000062e" linkageExportForAS="true" linkageIdentifier="敌人-盗贼枪手" lastModified="1748675286">
   <timeline>
-    <DOMTimeline name="敌人-盗贼枪手" currentFrame="88">
+    <DOMTimeline name="敌人-盗贼枪手">
       <layers>
         <DOMLayer name="Labels Layer" color="#A0E0D0" outline="true" useOutlineView="true">
           <frames>
@@ -90,21 +90,20 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#CCA8BF" outline="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#CCA8BF" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[x轴攻击范围 = 150;
-y轴攻击范围 = 30;
-x轴保持距离 = 50;
+                <script><![CDATA[男_攻击呐喊_库 = ["11_kda_a_1-22.wav", "23_kda_sy_1-22.wav", "01_kyn_a_2-22.wav", "25_kyo_sb-22.wav", "20_kyn_h_9-22.wav"];
+男_中招呐喊_库 = ["男-主角-0.wav", "男-主角-1.wav", "男-主角-2.wav", "主角中招0.wav", "主角中招1.wav", "主角中招2.wav"];
+男_击倒呐喊_库 = ["08_kyo_d_f-22.wav", "07_ben_d_f-22.wav", "06_cla_d_f-22.wav", "04_and_df1-22.wav"];
 
-男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
-男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
-男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
+手枪威力表 = {};
+手枪威力表["COLT PYTHON"] = 120;
+if(手枪威力表[this.手枪] == null) this.手枪 = "COLT PYTHON";
 
 初始化敌人模板 = _root.初始化敌人模板;
-初始化敌人模板();
-]]></script>
+初始化敌人模板();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -146,7 +145,7 @@ x轴保持距离 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B5BD4F" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#B5BD4F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -356,13 +355,6 @@ x轴保持距离 = 50;
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-}
-onClipEvent(unload){
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
@@ -371,7 +363,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 154" name="man" selected="true" centerPoint3DX="75.3" centerPoint3DY="44.15">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 154" name="man" centerPoint3DX="75.3" centerPoint3DY="44.15">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>

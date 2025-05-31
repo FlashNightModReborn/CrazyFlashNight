@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 53" itemID="6577faef-000013d7" lastModified="1701508661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 53" itemID="6577faef-000013d7" lastModified="1748674565">
   <timeline>
     <DOMTimeline name="Symbol 53">
       <layers>
@@ -147,11 +147,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#B68555">
+        <DOMLayer name="Layer 4" color="#B68555" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳" centerPoint3DX="9.9" centerPoint3DY="-77.9">
                   <matrix>
                     <Matrix a="-0.140472412109375" b="0.352706909179688" c="0.352706909179688" d="0.140472412109375" tx="-7.6" ty="-103.75"/>
                   </matrix>
@@ -355,7 +355,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#E6BA98" current="true" isSelected="true">
+        <DOMLayer name="Layer 17" color="#E6BA98">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements>

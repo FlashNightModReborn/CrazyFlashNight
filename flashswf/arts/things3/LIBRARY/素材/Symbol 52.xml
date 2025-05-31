@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 52" itemID="6577faef-000013d6" lastModified="1701508661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 52" itemID="6577faef-000013d6" lastModified="1748674555">
   <timeline>
-    <DOMTimeline name="Symbol 52">
+    <DOMTimeline name="Symbol 52" currentFrame="31">
       <layers>
         <DOMLayer name="Labels Layer" color="#E1FA9F">
           <frames>
@@ -67,11 +67,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#97AFFA">
+        <DOMLayer name="Layer 4" color="#97AFFA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳" centerPoint3DX="4.1" centerPoint3DY="2.1">
                   <matrix>
                     <Matrix a="-0.26812744140625" b="0.269485473632813" c="0.269485473632813" d="0.26812744140625" tx="-1.85" ty="-28.55"/>
                   </matrix>
@@ -83,7 +83,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳" centerPoint3DX="34.95" centerPoint3DY="-5.35">
                   <matrix>
                     <Matrix a="-0.286697387695313" b="0.249420166015625" c="0.249420166015625" d="0.286697387695313" tx="31.2" ty="-36.35"/>
                   </matrix>
@@ -459,7 +459,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#6E7EAD" current="true" isSelected="true">
+        <DOMLayer name="Layer 18" color="#6E7EAD">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements>

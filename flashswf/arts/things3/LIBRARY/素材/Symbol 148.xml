@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 148" itemID="6577faef-00001406" lastModified="1729927849">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 148" itemID="6577faef-00001406" lastModified="1748671704">
   <timeline>
-    <DOMTimeline name="Symbol 148" currentFrame="32">
+    <DOMTimeline name="Symbol 148" currentFrame="3">
       <layers>
         <DOMLayer name="Labels Layer" color="#679EE0">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#80C2CD">
+        <DOMLayer name="Script Layer" color="#80C2CD" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -45,6 +45,26 @@ gotoAndPlay(_parent.近战招式);
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="61" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 射击(){
+	var itemData = _root.getItemData(_parent.手枪).data;
+	var 子弹属性 = _root.子弹属性初始化(this.攻击点);
+	
+	子弹属性.声音 = itemData.sound;
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = itemData.diffusion;
+	子弹属性.发射效果 = itemData.muzzle;
+	子弹属性.子弹种类 = "穿刺子弹";
+	子弹属性.子弹威力 = _parent.手枪威力表[_parent.手枪];
+	子弹属性.子弹速度 = 40;
+	子弹属性.Z轴攻击范围 = 25;
+	子弹属性.击倒率 = 7;
+
+	子弹属性.斩杀 = 5;
+
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="62" keyMode="9728">
@@ -78,7 +98,25 @@ gotoAndPlay(_parent.近战招式);
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#F7FC81">
           <frames>
-            <DOMFrame index="0" duration="179" keyMode="9728">
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[射击();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[射击();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="147" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[射击();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="179" keyMode="9728">
@@ -227,12 +265,12 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A39FF0" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#A39FF0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
+            <DOMFrame index="18" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="素材/近战子弹" name="攻击点" centerPoint3DX="33.75" centerPoint3DY="107.1">
                   <matrix>
@@ -241,159 +279,6 @@ gotoAndPlay(_parent.近战招式);
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	子弹属性 = _root.子弹属性初始化(this);
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "deagle-1.wav";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 10;
-	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "穿刺子弹";
-	子弹属性.子弹威力 = 120;
-	子弹属性.子弹速度 = 40;
-	子弹属性.Z轴攻击范围 = 25;
-	子弹属性.击倒率 = 7;
-	子弹属性.水平击退速度 = NaN;
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.斩杀 = 5;
-
-	//非常用
-	/*
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.击中后子弹的效果 = "".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	子弹属性.区域定位area = this.area;
-	*/
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/
-	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" duration="6" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="25" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" name="攻击点" centerPoint3DX="35.05" centerPoint3DY="107.85">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="22.55" ty="95.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	子弹属性 = _root.子弹属性初始化(this);
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "deagle-1.wav";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 10;
-	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "穿刺子弹";
-	子弹属性.子弹威力 = 120;
-	子弹属性.子弹速度 = 40;
-	子弹属性.Z轴攻击范围 = 25;
-	子弹属性.击倒率 = 7;
-	子弹属性.水平击退速度 = NaN;
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.斩杀 = 5;
-
-	//非常用
-	/*
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.击中后子弹的效果 = "".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	子弹属性.区域定位area = this.area;
-	*/
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/
-	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="26" duration="6" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" name="攻击点" selected="true" centerPoint3DX="36.7" centerPoint3DY="106.85">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="24.2" ty="94.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	子弹属性 = _root.子弹属性初始化(this);
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "deagle-1.wav";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 10;
-	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "穿刺子弹";
-	子弹属性.子弹威力 = 120;
-	子弹属性.子弹速度 = 40;
-	子弹属性.Z轴攻击范围 = 25;
-	子弹属性.击倒率 = 7;
-	子弹属性.水平击退速度 = NaN;
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.斩杀 = 5;
-
-	//非常用
-	/*
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.击中后子弹的效果 = "".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	子弹属性.区域定位area = this.area;
-	*/
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/
-	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
-                  </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
                   </color>
@@ -619,148 +504,6 @@ gotoAndPlay(_parent.近战招式);
               </elements>
             </DOMFrame>
             <DOMFrame index="172" duration="40" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 6" color="#E9A6CF">
-          <frames>
-            <DOMFrame index="0" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="18" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="76.65" centerPoint3DY="136.5">
-                  <matrix>
-                    <Matrix a="-1" tx="18.7" ty="94.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="23" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="25" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="76.9" centerPoint3DY="136">
-                  <matrix>
-                    <Matrix a="-1" tx="18.95" ty="93.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="30" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="32" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="77.15" centerPoint3DY="136.25">
-                  <matrix>
-                    <Matrix a="-1" tx="19.2" ty="93.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="37" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="78" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="76.65" centerPoint3DY="136.5">
-                  <matrix>
-                    <Matrix a="-1" tx="18.7" ty="94.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="85" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="76.9" centerPoint3DY="136">
-                  <matrix>
-                    <Matrix a="-1" tx="18.95" ty="93.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="90" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="92" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="77.15" centerPoint3DY="136.25">
-                  <matrix>
-                    <Matrix a="-1" tx="19.2" ty="93.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="97" duration="41" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="138" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="76.65" centerPoint3DY="136.5">
-                  <matrix>
-                    <Matrix a="-1" tx="18.7" ty="94.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="143" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="145" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="76.9" centerPoint3DY="136">
-                  <matrix>
-                    <Matrix a="-1" tx="18.95" ty="93.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="150" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="152" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 46" centerPoint3DX="77.15" centerPoint3DY="136.25">
-                  <matrix>
-                    <Matrix a="-1" tx="19.2" ty="93.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="157" duration="55" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -3330,7 +3073,7 @@ gotoAndPlay(_parent.近战招式);
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.12847900390625" b="0.060028076171875" c="-0.060028076171875" d="0.12847900390625" tx="49.25" ty="109.65"/>
                   </matrix>
@@ -3342,7 +3085,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110794067382813" b="0.088348388671875" c="-0.088348388671875" d="0.110794067382813" tx="45.55" ty="110.85"/>
                   </matrix>
@@ -3354,7 +3097,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0555419921875" b="0.130218505859375" c="-0.130218505859375" d="0.0555419921875" tx="40.75" ty="102.25"/>
                   </matrix>
@@ -3366,7 +3109,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0069580078125" b="0.141250610351563" c="-0.141250610351563" d="0.0069580078125" tx="46.9" ty="98.05"/>
                   </matrix>
@@ -4460,7 +4203,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="8" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -4472,7 +4215,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="19" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -4484,7 +4227,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="21" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -4496,7 +4239,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="26" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -4508,7 +4251,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="28" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -4520,7 +4263,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -4532,7 +4275,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="35" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -4544,7 +4287,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="41" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0069580078125" b="0.141250610351563" c="-0.141250610351563" d="0.0069580078125" tx="46.9" ty="98.05"/>
                   </matrix>
@@ -4556,7 +4299,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="43" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0555419921875" b="0.130218505859375" c="-0.130218505859375" d="0.0555419921875" tx="40.75" ty="102.25"/>
                   </matrix>
@@ -4568,7 +4311,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="45" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110794067382813" b="0.088348388671875" c="-0.088348388671875" d="0.110794067382813" tx="45.55" ty="110.85"/>
                   </matrix>
@@ -4580,7 +4323,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="47" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.12847900390625" b="0.060028076171875" c="-0.060028076171875" d="0.12847900390625" tx="49.25" ty="109.65"/>
                   </matrix>
@@ -4592,7 +4335,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="62" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110794067382813" b="0.088348388671875" c="-0.088348388671875" d="0.110794067382813" tx="45.55" ty="110.85"/>
                   </matrix>
@@ -4604,7 +4347,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="64" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0555419921875" b="0.130218505859375" c="-0.130218505859375" d="0.0555419921875" tx="40.75" ty="102.25"/>
                   </matrix>
@@ -4616,7 +4359,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="66" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0069580078125" b="0.141250610351563" c="-0.141250610351563" d="0.0069580078125" tx="46.9" ty="98.05"/>
                   </matrix>
@@ -5788,7 +5531,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="68" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -5800,7 +5543,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -5812,7 +5555,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="81" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -5824,7 +5567,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="86" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -5836,7 +5579,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="88" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -5848,7 +5591,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="93" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -5860,7 +5603,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="95" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -5872,7 +5615,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="101" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0069580078125" b="0.141250610351563" c="-0.141250610351563" d="0.0069580078125" tx="46.9" ty="98.05"/>
                   </matrix>
@@ -5884,7 +5627,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="103" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0555419921875" b="0.130218505859375" c="-0.130218505859375" d="0.0555419921875" tx="40.75" ty="102.25"/>
                   </matrix>
@@ -5896,7 +5639,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="105" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110794067382813" b="0.088348388671875" c="-0.088348388671875" d="0.110794067382813" tx="45.55" ty="110.85"/>
                   </matrix>
@@ -5908,7 +5651,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="107" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.12847900390625" b="0.060028076171875" c="-0.060028076171875" d="0.12847900390625" tx="49.25" ty="109.65"/>
                   </matrix>
@@ -5920,7 +5663,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="122" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110794067382813" b="0.088348388671875" c="-0.088348388671875" d="0.110794067382813" tx="45.55" ty="110.85"/>
                   </matrix>
@@ -5932,7 +5675,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="124" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0555419921875" b="0.130218505859375" c="-0.130218505859375" d="0.0555419921875" tx="40.75" ty="102.25"/>
                   </matrix>
@@ -5944,7 +5687,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="126" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0069580078125" b="0.141250610351563" c="-0.141250610351563" d="0.0069580078125" tx="46.9" ty="98.05"/>
                   </matrix>
@@ -6564,7 +6307,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="128" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -6576,7 +6319,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="139" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -6588,7 +6331,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="141" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -6600,7 +6343,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="146" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -6612,7 +6355,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="148" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -6624,7 +6367,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="153" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.01544189453125" b="0.139923095703125" c="-0.139923095703125" d="-0.01544189453125" tx="58" ty="83.85"/>
                   </matrix>
@@ -6636,7 +6379,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="155" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0116729736328125" b="0.140380859375" c="-0.140380859375" d="0.0116729736328125" tx="54" ty="89.05"/>
                   </matrix>
@@ -6648,7 +6391,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="161" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0069580078125" b="0.141250610351563" c="-0.141250610351563" d="0.0069580078125" tx="46.9" ty="98.05"/>
                   </matrix>
@@ -6660,7 +6403,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="163" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0555419921875" b="0.130218505859375" c="-0.130218505859375" d="0.0555419921875" tx="40.75" ty="102.25"/>
                   </matrix>
@@ -6672,7 +6415,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="165" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110794067382813" b="0.088348388671875" c="-0.088348388671875" d="0.110794067382813" tx="45.55" ty="110.85"/>
                   </matrix>
@@ -6684,7 +6427,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="167" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 133" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-左轮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.12847900390625" b="0.060028076171875" c="-0.060028076171875" d="0.12847900390625" tx="49.25" ty="109.65"/>
                   </matrix>

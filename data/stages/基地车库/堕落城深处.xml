@@ -59,25 +59,13 @@
                     <Enemy>
                         <Type>兵种44</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>5</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种44</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种45</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
                         <Level>35</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -97,25 +85,13 @@
                     <Enemy>
                         <Type>兵种48</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种49</Type>
-                        <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种48</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>5</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种49</Type>
                         <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>4</Quantity>
                         <Level>35</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -140,44 +116,34 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种48</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种49</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种44</Type>
-                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <手枪>加强版mp7</手枪>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <手枪>P90战术版</手枪>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种49</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>1</Quantity>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
                         <Level>35</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -195,28 +161,24 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种44</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
                         <Type>兵种45</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <手枪>P90战术版</手枪>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>35</Level>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种49</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>35</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <手枪>M79式榴弹发射器</手枪>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

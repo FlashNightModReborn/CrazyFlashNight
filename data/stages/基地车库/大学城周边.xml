@@ -12,26 +12,6 @@
             <QuantityMax>3</QuantityMax>
         </Reward>
         <Reward>
-            <Name>突击步枪通用弹药</Name>
-            <AcquisitionProbability>5</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
-        </Reward>
-        <Reward>
-            <Name>手枪通用弹药</Name>
-            <AcquisitionProbability>5</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
-        </Reward>
-        <Reward>
-            <Name>冲锋枪通用弹药</Name>
-            <AcquisitionProbability>8</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
-        </Reward>
-        <Reward>
-            <Name>12号霰弹弹药</Name>
-            <AcquisitionProbability>5</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
-        </Reward>
-        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
@@ -81,21 +61,21 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>200</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
-                        <Interval>200</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种49</Type>
-                        <Interval>600</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>3</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>

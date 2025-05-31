@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 56" itemID="6577faef-000013d9" lastModified="1701508661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 56" itemID="6577faef-000013d9" lastModified="1748674578">
   <timeline>
     <DOMTimeline name="Symbol 56">
       <layers>
-        <DOMLayer name="Script Layer" color="#29F9D9">
+        <DOMLayer name="Script Layer" color="#29F9D9" locked="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -67,7 +67,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#99E2A2">
+        <DOMLayer name="Layer 2" color="#99E2A2" locked="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -98,7 +98,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#DA89AB">
+        <DOMLayer name="Layer 3" color="#DA89AB" locked="true">
           <frames>
             <DOMFrame index="0" duration="66" keyMode="9728">
               <elements>
@@ -130,7 +130,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#B28BFF">
+        <DOMLayer name="Layer 4" color="#B28BFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -290,11 +290,11 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#EEB681">
+        <DOMLayer name="Layer 5" color="#EEB681" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.140472412109375" b="0.352706909179688" c="0.352706909179688" d="0.140472412109375" tx="-443.55" ty="-319.4"/>
                   </matrix>
@@ -306,7 +306,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="0.158096313476563" b="0.344284057617188" c="0.344284057617188" d="-0.158096313476563" tx="-463.95" ty="-307.45"/>
                   </matrix>
@@ -318,7 +318,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="0.186126708984375" b="0.329849243164063" c="0.329849243164063" d="-0.186126708984375" tx="-467.45" ty="-284.25"/>
                   </matrix>
@@ -330,7 +330,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="0.186126708984375" b="0.329849243164063" c="0.329849243164063" d="-0.186126708984375" tx="-467.45" ty="-247.25"/>
                   </matrix>
@@ -342,7 +342,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="0.175674438476563" b="0.333892822265625" c="0.333892822265625" d="-0.175674438476563" tx="-462.9" ty="-246.2"/>
                   </matrix>
@@ -354,7 +354,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="10" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.0573577880859375" b="0.372390747070313" c="0.372390747070313" d="0.0573577880859375" tx="-441.25" ty="-204.6"/>
                   </matrix>
@@ -366,7 +366,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="12" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.011077880859375" b="0.376480102539063" c="0.376480102539063" d="0.011077880859375" tx="-445.35" ty="-213.7"/>
                   </matrix>
@@ -378,7 +378,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="14" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.0573577880859375" b="0.372390747070313" c="0.372390747070313" d="0.0573577880859375" tx="-441.25" ty="-204.6"/>
                   </matrix>
@@ -390,7 +390,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="30" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.117599487304688" b="0.356918334960938" c="0.356918334960938" d="0.117599487304688" tx="-455" ty="-206.65"/>
                   </matrix>
@@ -402,7 +402,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="33" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.267547607421875" b="0.262115478515625" c="0.262115478515625" d="0.267547607421875" tx="-462.8" ty="-215.5"/>
                   </matrix>
@@ -414,7 +414,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="36" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.37335205078125" b="-0.0145111083984375" c="-0.0145111083984375" d="0.37335205078125" tx="-456.2" ty="-248.45"/>
                   </matrix>
@@ -426,7 +426,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="39" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳">
                   <matrix>
                     <Matrix a="-0.373092651367188" b="0.014739990234375" c="0.014739990234375" d="0.373092651367188" tx="-451.9" ty="-261.6"/>
                   </matrix>
@@ -438,7 +438,7 @@ if(_parent.hp < 0)
             </DOMFrame>
             <DOMFrame index="42" duration="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 15" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-铁拳" centerPoint3DX="-451.85" centerPoint3DY="-237.15">
                   <matrix>
                     <Matrix a="-0.380905151367188" d="0.380905151367188" tx="-434.25" ty="-263.05"/>
                   </matrix>
@@ -450,7 +450,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#2BD7AD">
+        <DOMLayer name="Layer 6" color="#2BD7AD" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -610,7 +610,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#50CACE">
+        <DOMLayer name="Layer 7" color="#50CACE" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -770,7 +770,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#CF4B92">
+        <DOMLayer name="Layer 8" color="#CF4B92" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -930,7 +930,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#EECCB6">
+        <DOMLayer name="Layer 9" color="#EECCB6" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1078,7 +1078,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#5785BA">
+        <DOMLayer name="Layer 10" color="#5785BA" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1238,7 +1238,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#F48A15">
+        <DOMLayer name="Layer 11" color="#F48A15" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1386,7 +1386,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#A86B9E">
+        <DOMLayer name="Layer 12" color="#A86B9E" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1534,7 +1534,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#10CBE5">
+        <DOMLayer name="Layer 13" color="#10CBE5" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1601,7 +1601,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#8CEE2C">
+        <DOMLayer name="Layer 14" color="#8CEE2C" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1668,7 +1668,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#F66A8A">
+        <DOMLayer name="Layer 15" color="#F66A8A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1819,7 +1819,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#2AD38D">
+        <DOMLayer name="Layer 16" color="#2AD38D" locked="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1922,7 +1922,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#70CEB3">
+        <DOMLayer name="Layer 17" color="#70CEB3" locked="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -2025,7 +2025,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#A2B5AA">
+        <DOMLayer name="Layer 18" color="#A2B5AA" locked="true">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
@@ -2044,7 +2044,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#E40ECB">
+        <DOMLayer name="Layer 19" color="#E40ECB" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2192,7 +2192,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#6FD5D8">
+        <DOMLayer name="Layer 20" color="#6FD5D8" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2340,7 +2340,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#B8C92A" current="true" isSelected="true">
+        <DOMLayer name="Layer 21" color="#B8C92A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

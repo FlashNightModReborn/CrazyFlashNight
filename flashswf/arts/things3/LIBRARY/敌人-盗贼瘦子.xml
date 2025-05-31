@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼瘦子" itemID="67ac3e57-0000062d" linkageExportForAS="true" linkageIdentifier="敌人-盗贼瘦子" lastModified="1747143198">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼瘦子" itemID="67ac3e57-0000062d" linkageExportForAS="true" linkageIdentifier="敌人-盗贼瘦子" lastModified="1748679001">
   <timeline>
-    <DOMTimeline name="敌人-盗贼瘦子" currentFrame="90">
+    <DOMTimeline name="敌人-盗贼瘦子">
       <layers>
         <DOMLayer name="Labels Layer" color="#94FB0D">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#82D558">
+        <DOMLayer name="Script Layer" color="#82D558" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -101,6 +101,12 @@ x轴保持距离 = 50;
 男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
 男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
 男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
+
+手枪威力表 = {
+	UZI: 40,
+	加强版mp7: 100
+}
+if(手枪威力表[this.手枪] == null) this.手枪 = "UZI";
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
@@ -230,7 +236,7 @@ x轴保持距离 = 50;
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -301,7 +307,7 @@ x轴保持距离 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#7D46F9" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#7D46F9">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -359,20 +365,13 @@ x轴保持距离 = 50;
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 234" name="man" centerPoint3DX="274.65" centerPoint3DY="-83.5">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 234" name="man" selected="true" centerPoint3DX="274.65" centerPoint3DY="-83.5">
                   <matrix>
                     <Matrix a="-1" tx="88.45" ty="-173.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-}
-onClipEvent(unload){
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
@@ -445,7 +444,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 242" name="man" selected="true" centerPoint3DX="75.1" centerPoint3DY="56.7">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 242" name="man" centerPoint3DX="75.1" centerPoint3DY="56.7">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -506,7 +505,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 291" centerPoint3DX="264.05" centerPoint3DY="63.55">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 291" selected="true" centerPoint3DX="264.05" centerPoint3DY="63.55">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>

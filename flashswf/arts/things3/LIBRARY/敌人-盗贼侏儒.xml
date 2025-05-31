@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼侏儒" itemID="67ac3e53-0000062c" linkageExportForAS="true" linkageIdentifier="敌人-盗贼侏儒" lastModified="1747143183">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-盗贼侏儒" itemID="67ac3e53-0000062c" linkageExportForAS="true" linkageIdentifier="敌人-盗贼侏儒" lastModified="1748679519">
   <timeline>
-    <DOMTimeline name="敌人-盗贼侏儒" currentFrame="85">
+    <DOMTimeline name="敌人-盗贼侏儒">
       <layers>
         <DOMLayer name="Labels Layer" color="#CC2CA8">
           <frames>
@@ -90,23 +90,26 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#6AD8D4">
+        <DOMLayer name="Script Layer" color="#6AD8D4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[初始化敌人模板 = _root.初始化敌人模板;
+                <script><![CDATA[手枪威力表 = {
+	MAC10: 30,
+	P90战术版: 90
+}
+if(手枪威力表[this.手枪] == null) this.手枪 = "MAC10";
+
+初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="1" duration="115" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 ]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" duration="114" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="116" keyMode="9728">
@@ -163,7 +166,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="90" duration="33" keyMode="9728">
+            <DOMFrame index="90" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 58" name="area" centerPoint3DX="12.5" centerPoint3DY="15.15">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="3.8133544921875" ty="2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   this._rotation = _parent.man._rotation;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" duration="24" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -228,28 +249,7 @@
         </DOMLayer>
         <DOMLayer name="Layer 8" color="#B639F5">
           <frames>
-            <DOMFrame index="0" duration="90" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="90" duration="9" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 58" name="area" centerPoint3DX="12.5" centerPoint3DY="15.15">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="3.8133544921875" ty="2.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   this._rotation = _parent.man._rotation;
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="99" duration="24" keyMode="9728">
+            <DOMFrame index="0" duration="123" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -282,7 +282,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#5FF848" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#5FF848">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -299,9 +299,6 @@
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -314,9 +311,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -329,9 +323,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -347,16 +338,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-}
-onClipEvent(unload){
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -382,9 +363,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -403,15 +381,12 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="75" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 313" name="man" selected="true" centerPoint3DX="48.05" centerPoint3DY="35.35">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 313" name="man" centerPoint3DX="48.05" centerPoint3DY="35.35">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -423,9 +398,6 @@ onClipEvent(unload){
 	_parent.击飞浮空();
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -443,15 +415,12 @@ onClipEvent(unload){
 	_parent.击飞倒地();
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="91" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 316" name="man" centerPoint3DX="33.85" centerPoint3DY="45.85">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 316" name="man" selected="true" centerPoint3DX="33.85" centerPoint3DY="45.85">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>
@@ -464,9 +433,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -485,9 +451,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

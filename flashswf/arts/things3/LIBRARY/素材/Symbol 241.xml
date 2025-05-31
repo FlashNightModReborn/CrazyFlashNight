@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 241" itemID="6577faef-00001437" lastModified="1701508661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 241" itemID="6577faef-00001437" lastModified="1748676271">
   <timeline>
-    <DOMTimeline name="Symbol 241">
+    <DOMTimeline name="Symbol 241" currentFrame="24">
       <layers>
         <DOMLayer name="Labels Layer" color="#AAA957">
           <frames>
@@ -159,11 +159,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C5B0AA">
+        <DOMLayer name="Layer 6" color="#C5B0AA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 225" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-杀手" centerPoint3DX="7.3" centerPoint3DY="-61.75">
                   <matrix>
                     <Matrix a="-0.075897216796875" b="0.30865478515625" c="0.30865478515625" d="0.075897216796875" tx="-2.9" ty="-85.05"/>
                   </matrix>
@@ -175,7 +175,7 @@
             </DOMFrame>
             <DOMFrame index="15" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 225" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-杀手" centerPoint3DX="40.25" centerPoint3DY="-3.35">
                   <matrix>
                     <Matrix a="-0.2864990234375" b="-0.138656616210938" c="-0.138656616210938" d="0.2864990234375" tx="65.2" ty="-8.5"/>
                   </matrix>
@@ -187,7 +187,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 225" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="盗贼手枪素材/手枪-杀手" centerPoint3DX="38.45" centerPoint3DY="-8.45">
                   <matrix>
                     <Matrix a="-0.2864990234375" b="-0.138656616210938" c="-0.138656616210938" d="0.2864990234375" tx="63.4" ty="-13.6"/>
                   </matrix>
@@ -639,7 +639,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#E469AC" current="true" isSelected="true">
+        <DOMLayer name="Layer 18" color="#E469AC">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements>
