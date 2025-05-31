@@ -1,0 +1,86 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="汽车炸弹/敌人-汽车炸弹" itemID="683affa3-00000226" linkageExportForAS="true" linkageIdentifier="敌人-汽车炸弹" lastModified="1748704798" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="敌人-汽车炸弹">
+      <layers>
+        <DOMLayer name="label" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" name="登场" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.不掉钱 = true;
+
+this.unitAIType = "None";
+
+this.初始化敌人模板 = _root.初始化敌人模板;
+this.初始化敌人模板();
+
+this.锁定方向 = true;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="箱子素材/Symbol 10" name="area" centerPoint3DX="-21" centerPoint3DY="-28.8">
+                  <matrix>
+                    <Matrix a="3.20071411132813" d="1.44024658203125" tx="-40" ty="-33"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="汽车炸弹/登场" name="man" centerPoint3DX="-12.4" centerPoint3DY="-34.65">
+                  <matrix>
+                    <Matrix a="-0.340606689453125" d="0.340606689453125" tx="34.25" ty="-30.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.15" y="97.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="汽车炸弹/爆了" name="man" selected="true" centerPoint3DX="-12.4" centerPoint3DY="-34.65">
+                  <matrix>
+                    <Matrix a="-0.340606689453125" d="0.340606689453125" tx="34.25" ty="-30.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.15" y="97.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

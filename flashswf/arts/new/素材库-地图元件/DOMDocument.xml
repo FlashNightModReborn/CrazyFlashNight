@@ -20,6 +20,8 @@
           <DOMFolderItem name="歌留多" itemID="670cf9e4-000003c2"/>
           <DOMFolderItem name="互动提示" itemID="6839711f-00006add"/>
           <DOMFolderItem name="路障与通关门" itemID="6826dd3d-00000322"/>
+          <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc"/>
+          <DOMFolderItem name="汽车炸弹/变形动画" itemID="683b12eb-00000b92"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
           <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a" isExpanded="true"/>
           <DOMFolderItem name="箱子素材/保险柜" itemID="6837c8e0-0000190a"/>
@@ -135,6 +137,19 @@
           <Include href="路障与通关门/关卡出口-防御地带内部大门.xml" itemID="6826e09a-000002b5" lastModified="1747378330"/>
           <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1747377517"/>
           <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1746607079"/>
+          <Include href="汽车炸弹/zsgdrxtjyuh.xml" itemIcon="1" loadImmediate="false" itemID="4b4a8548-00000123" lastModified="1264754687"/>
+          <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1748704360"/>
+          <Include href="汽车炸弹/变形动画/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="683b1047-00000a82" lastModified="1748701423"/>
+          <Include href="汽车炸弹/变形动画/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="683b1055-00000a86" lastModified="1748701269"/>
+          <Include href="汽车炸弹/变形动画/元件 3.xml" itemIcon="1" loadImmediate="false" itemID="683b107a-00000a8d" lastModified="1748701306"/>
+          <Include href="汽车炸弹/变形动画/元件 4.xml" itemIcon="1" loadImmediate="false" itemID="683b1190-00000a94" lastModified="1748701597"/>
+          <Include href="汽车炸弹/变形动画/元件 5.xml" itemIcon="1" loadImmediate="false" itemID="683b11a2-00000a9a" lastModified="1748701602"/>
+          <Include href="汽车炸弹/车轮1.xml" itemIcon="1" loadImmediate="false" itemID="6809392c-000008ad" lastModified="1745436711"/>
+          <Include href="汽车炸弹/车身.xml" itemIcon="1" loadImmediate="false" itemID="683b0f97-00000a78" lastModified="1748701079"/>
+          <Include href="汽车炸弹/车身 变形.xml" itemIcon="1" loadImmediate="false" itemID="683b0f9f-00000a7e" lastModified="1748701899"/>
+          <Include href="汽车炸弹/登场.xml" loadImmediate="false" itemID="683b09e3-000002d4" lastModified="1748701945"/>
+          <Include href="汽车炸弹/敌人-汽车炸弹.xml" itemID="683affa3-00000226" lastModified="1748704798"/>
+          <Include href="汽车炸弹/空中小火焰爆炸.xml" itemIcon="1" loadImmediate="false" itemID="65742c41-000007ce" lastModified="1748698817"/>
           <Include href="闪烁的灯光.xml" itemID="65c24acf-00000ce6" lastModified="1716200766"/>
           <Include href="生存战-迷之盔甲君.xml" itemID="65c24b22-00000ce9" lastModified="1740850734"/>
           <Include href="生存战素材/Symbol 2.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cbd" lastModified="1699960314"/>
@@ -167,7 +182,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748690065"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748704913"/>
           <Include href="跳动的火焰.xml" itemID="65c8e899-00000235" lastModified="1707665566"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>

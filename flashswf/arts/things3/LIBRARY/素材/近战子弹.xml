@@ -1,24 +1,17 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/近战子弹" itemID="65c3743d-000024bd" lastModified="1707308093" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/近战子弹" itemID="65c3743d-000024bd" lastModified="1748702816" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="近战子弹">
       <layers>
         <DOMLayer name="Script Layer" color="#5AD2ED">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[this.removeMovieClip();
-]]></script>
-              </Actionscript>
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 2" color="#936BEA" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="素材/Symbol 25" name="area">
                   <matrix>
@@ -29,9 +22,6 @@
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

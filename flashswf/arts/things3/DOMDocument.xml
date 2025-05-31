@@ -5,6 +5,7 @@
           <DOMFolderItem name="吉他喷火" itemID="672d0146-000002e6"/>
           <DOMFolderItem name="军阀精英敌人" itemID="65bf512d-00000c0f"/>
           <DOMFolderItem name="军阀精英敌人/重甲" itemID="65bf512d-00000c10" isExpanded="true"/>
+          <DOMFolderItem name="汽车炸弹" itemID="683b1252-00000aa1"/>
           <DOMFolderItem name="素材" itemID="67ac3e72-00000634"/>
           <DOMFolderItem name="特效" itemID="671689bc-0000172a"/>
           <DOMFolderItem name="特效/sprite" itemID="671689bc-0000172d"/>
@@ -56,13 +57,14 @@
           <Include href="盗贼手枪素材/M79（加边缘线处理）.xml" itemIcon="1" loadImmediate="false" itemID="683aa986-00001340" lastModified="1748674950"/>
           <Include href="盗贼手枪素材/P90战术版（去除瞄具）.xml" itemIcon="1" loadImmediate="false" itemID="683ab56b-00000f40" lastModified="1748678066"/>
           <Include href="盗贼手枪素材/加强版MP7（换色）.xml" itemIcon="1" loadImmediate="false" itemID="683ab1e2-00000845" lastModified="1748677425"/>
+          <Include href="盗贼手枪素材/汽车炸弹（未变形）.xml" itemIcon="1" loadImmediate="false" itemID="683b1367-00000b99" lastModified="1748702055"/>
           <Include href="盗贼手枪素材/手枪-杀手.xml" loadImmediate="false" itemID="683a949c-000005fc" lastModified="1748678749"/>
           <Include href="盗贼手枪素材/手枪-跳蚤.xml" loadImmediate="false" itemID="683a94d1-00000604" lastModified="1748678679"/>
           <Include href="盗贼手枪素材/手枪-铁拳.xml" loadImmediate="false" itemID="683a94e7-00000608" lastModified="1748678642"/>
           <Include href="盗贼手枪素材/手枪-左轮.xml" itemIcon="1" loadImmediate="false" itemID="683a94b8-00000600" lastModified="1748672205"/>
           <Include href="敌人-辫子姑娘.xml" itemID="67ac3e65-00000630" lastModified="1747143242"/>
           <Include href="敌人-盗贼大叔.xml" itemID="67ac3e61-0000062f" lastModified="1748676084"/>
-          <Include href="敌人-盗贼枪手.xml" itemID="67ac3e5b-0000062e" lastModified="1748675286"/>
+          <Include href="敌人-盗贼枪手.xml" itemID="67ac3e5b-0000062e" lastModified="1748703164"/>
           <Include href="敌人-盗贼瘦子.xml" itemID="67ac3e57-0000062d" lastModified="1748679001"/>
           <Include href="敌人-盗贼侏儒.xml" itemID="67ac3e53-0000062c" lastModified="1748679519"/>
           <Include href="敌人-黑铁会死士.xml" itemID="67ac3e4f-0000062b" lastModified="1747143166"/>
@@ -105,6 +107,8 @@
           <Include href="加载MC库-3.xml" itemID="67ac3e17-0000061e" lastModified="1739341335"/>
           <Include href="军阀精英敌人/重甲/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="656aaaf8-00000089" lastModified="1700331558"/>
           <Include href="军阀精英敌人/重甲/Symbol 25.xml" loadImmediate="false" itemID="656aaaf8-0000008a" lastModified="1700331558"/>
+          <Include href="汽车炸弹/车轮1.xml" itemIcon="1" loadImmediate="false" itemID="6809392c-000008ad" lastModified="1745436711"/>
+          <Include href="汽车炸弹/车身 变形.xml" itemIcon="1" loadImmediate="false" itemID="683b0f9f-00000a7e" lastModified="1748701729"/>
           <Include href="手雷-地瓜手雷.xml" itemID="6724eb77-00004b04" lastModified="1730474622"/>
           <Include href="思考标签.xml" loadImmediate="false" itemID="67e2b780-000010a7" lastModified="1742912305"/>
           <Include href="素材/Symbol 2.xml" loadImmediate="false" itemID="6577faef-000013b3" lastModified="1701508661"/>
@@ -183,7 +187,7 @@
           <Include href="素材/Symbol 144.xml" loadImmediate="false" itemID="6577faef-00001402" lastModified="1748669632"/>
           <Include href="素材/Symbol 146.xml" loadImmediate="false" itemID="6577faef-00001404" lastModified="1701508661"/>
           <Include href="素材/Symbol 147.xml" loadImmediate="false" itemID="6577faef-00001405" lastModified="1701508661"/>
-          <Include href="素材/Symbol 148.xml" loadImmediate="false" itemID="6577faef-00001406" lastModified="1748671704"/>
+          <Include href="素材/Symbol 148.xml" loadImmediate="false" itemID="6577faef-00001406" lastModified="1748703999"/>
           <Include href="素材/Symbol 150.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001407" lastModified="1701508661"/>
           <Include href="素材/Symbol 152.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001408" lastModified="1701508661"/>
           <Include href="素材/Symbol 154.xml" loadImmediate="false" itemID="6577faef-00001409" lastModified="1722430743"/>
@@ -679,7 +683,7 @@
           <Include href="素材/Symbol 950.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001607" lastModified="1701508661"/>
           <Include href="素材/Symbol 951.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001608" lastModified="1701508661"/>
           <Include href="素材/Symbol 952.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001609" lastModified="1701508661"/>
-          <Include href="素材/Symbol 953.xml" loadImmediate="false" itemID="6577faef-0000160a" lastModified="1747143117"/>
+          <Include href="素材/Symbol 953.xml" loadImmediate="false" itemID="6577faef-0000160a" lastModified="1748702890"/>
           <Include href="素材/Symbol 954.xml" loadImmediate="false" itemID="6577faef-0000160b" lastModified="1722419277"/>
           <Include href="素材/Symbol 955.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000160c" lastModified="1701508661"/>
           <Include href="素材/Symbol 956.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000160d" lastModified="1701508661"/>
@@ -1025,7 +1029,7 @@
           <Include href="素材/地瓜手雷素材.xml" loadImmediate="false" itemID="6724f246-00008154" lastModified="1730474566"/>
           <Include href="素材/激光刀光.xml" loadImmediate="false" itemID="6727a7da-00000178" lastModified="1730654198"/>
           <Include href="素材/键盘新招数.xml" loadImmediate="false" itemID="6728e3d4-0000062c" lastModified="1741544031"/>
-          <Include href="素材/近战子弹.xml" loadImmediate="false" itemID="65c3743d-000024bd" lastModified="1707308093"/>
+          <Include href="素材/近战子弹.xml" loadImmediate="false" itemID="65c3743d-000024bd" lastModified="1748702816"/>
           <Include href="素材/镰刀变形.xml" loadImmediate="false" itemID="6726452b-00000155" lastModified="1730564244"/>
           <Include href="素材/镰刀变形 复制.xml" loadImmediate="false" itemID="672660f7-000002c6" lastModified="1730568853"/>
           <Include href="素材/麦克风.xml" loadImmediate="false" itemID="672b987f-000006a8" lastModified="1730910335"/>
@@ -1046,6 +1050,11 @@
           <Include href="图标-地瓜手雷.xml" itemID="6724e82b-00003828" lastModified="1730474436"/>
           <Include href="无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
+          <Include href="元件 1.xml" itemIcon="1" loadImmediate="false" itemID="683b1047-00000a82" lastModified="1748701423"/>
+          <Include href="元件 2.xml" itemIcon="1" loadImmediate="false" itemID="683b1055-00000a86" lastModified="1748701269"/>
+          <Include href="元件 3.xml" itemIcon="1" loadImmediate="false" itemID="683b107a-00000a8d" lastModified="1748701306"/>
+          <Include href="元件 4.xml" itemIcon="1" loadImmediate="false" itemID="683b1190-00000a94" lastModified="1748701597"/>
+          <Include href="元件 5.xml" itemIcon="1" loadImmediate="false" itemID="683b11a2-00000a9a" lastModified="1748701602"/>
           <Include href="重复项目文件夹/次元斩.xml" loadImmediate="false" itemID="672cfb71-00000339" lastModified="1730912805"/>
           <Include href="重复项目文件夹/次元斩刀光.xml" loadImmediate="false" itemID="672cfb71-0000033c" lastModified="1730912796"/>
           <Include href="重复项目文件夹/刀光.xml" loadImmediate="false" itemID="67335adc-000008b7" lastModified="1730910693"/>
@@ -1344,6 +1353,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1760407" publishTime="1748703861"/>
+          <PublishItem publishSize="1760398" publishTime="1748703583"/>
+          <PublishItem publishSize="1760389" publishTime="1748703318"/>
+          <PublishItem publishSize="1760412" publishTime="1748703223"/>
           <PublishItem publishSize="1752679" publishTime="1748679500"/>
           <PublishItem publishSize="1752600" publishTime="1748678715"/>
           <PublishItem publishSize="1739793" publishTime="1748675501"/>
@@ -1360,9 +1373,5 @@
           <PublishItem publishSize="1725487" publishTime="1731346502"/>
           <PublishItem publishSize="1725492" publishTime="1731346469"/>
           <PublishItem publishSize="1725568" publishTime="1731337804"/>
-          <PublishItem publishSize="1725544" publishTime="1731337563"/>
-          <PublishItem publishSize="1725544" publishTime="1731337348"/>
-          <PublishItem publishSize="1725523" publishTime="1731337075"/>
-          <PublishItem publishSize="1725532" publishTime="1731336645"/>
      </publishHistory>
 </DOMDocument>

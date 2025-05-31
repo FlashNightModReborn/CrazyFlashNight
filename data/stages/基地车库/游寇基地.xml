@@ -113,6 +113,9 @@
                         <Level>20</Level>
                         <x>1293</x>
                         <y>650</y>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种45</Type>
@@ -197,6 +200,9 @@
                         <Quantity>2</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
