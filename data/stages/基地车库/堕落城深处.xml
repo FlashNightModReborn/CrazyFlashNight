@@ -154,6 +154,13 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/gk15_1_BG.swf</Background>
         </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>750</x>
+                <y>450</y>
+                <url>flashswf/movies/堕落城深处尸体堆.swf</url>
+            </Instance>
+        </Instances>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -207,6 +214,7 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
