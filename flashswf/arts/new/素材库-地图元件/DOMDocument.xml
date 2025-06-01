@@ -20,10 +20,10 @@
           <DOMFolderItem name="歌留多" itemID="670cf9e4-000003c2"/>
           <DOMFolderItem name="互动提示" itemID="6839711f-00006add"/>
           <DOMFolderItem name="路障与通关门" itemID="6826dd3d-00000322"/>
-          <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc"/>
+          <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc" isExpanded="true"/>
           <DOMFolderItem name="汽车炸弹/变形动画" itemID="683b12eb-00000b92"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
-          <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a" isExpanded="true"/>
+          <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a"/>
           <DOMFolderItem name="箱子素材/保险柜" itemID="6837c8e0-0000190a"/>
           <DOMFolderItem name="箱子素材/生存箱" itemID="68381308-00002787" isExpanded="true"/>
           <DOMFolderItem name="箱子素材/纸箱" itemID="68380307-0000252c"/>
@@ -133,16 +133,16 @@
           <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1747377517"/>
           <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1746607079"/>
           <Include href="汽车炸弹/zsgdrxtjyuh.xml" itemIcon="1" loadImmediate="false" itemID="4b4a8548-00000123" lastModified="1264754687"/>
-          <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1748704360"/>
-          <Include href="汽车炸弹/变形动画/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="683b1047-00000a82" lastModified="1748701423"/>
-          <Include href="汽车炸弹/变形动画/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="683b1055-00000a86" lastModified="1748701269"/>
-          <Include href="汽车炸弹/变形动画/元件 3.xml" itemIcon="1" loadImmediate="false" itemID="683b107a-00000a8d" lastModified="1748701306"/>
-          <Include href="汽车炸弹/变形动画/元件 4.xml" itemIcon="1" loadImmediate="false" itemID="683b1190-00000a94" lastModified="1748701597"/>
-          <Include href="汽车炸弹/变形动画/元件 5.xml" itemIcon="1" loadImmediate="false" itemID="683b11a2-00000a9a" lastModified="1748701602"/>
+          <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1748758274"/>
+          <Include href="汽车炸弹/变形动画/部件1.xml" itemIcon="1" loadImmediate="false" itemID="683be9a4-00000a62" lastModified="1748756900"/>
+          <Include href="汽车炸弹/变形动画/部件2.xml" itemIcon="1" loadImmediate="false" itemID="683be9a6-00000a63" lastModified="1748756902"/>
+          <Include href="汽车炸弹/变形动画/部件3.xml" itemIcon="1" loadImmediate="false" itemID="683be9a8-00000a64" lastModified="1748756904"/>
+          <Include href="汽车炸弹/变形动画/部件4.xml" itemIcon="1" loadImmediate="false" itemID="683be9ac-00000a65" lastModified="1748756908"/>
+          <Include href="汽车炸弹/变形动画/车身.xml" itemIcon="1" loadImmediate="false" itemID="683be9af-00000a66" lastModified="1748756911"/>
           <Include href="汽车炸弹/车轮1.xml" itemIcon="1" loadImmediate="false" itemID="6809392c-000008ad" lastModified="1745436711"/>
           <Include href="汽车炸弹/车身.xml" itemIcon="1" loadImmediate="false" itemID="683b0f97-00000a78" lastModified="1748701079"/>
           <Include href="汽车炸弹/车身 变形.xml" itemIcon="1" loadImmediate="false" itemID="683b0f9f-00000a7e" lastModified="1748701899"/>
-          <Include href="汽车炸弹/登场.xml" loadImmediate="false" itemID="683b09e3-000002d4" lastModified="1748705544"/>
+          <Include href="汽车炸弹/登场.xml" loadImmediate="false" itemID="683b09e3-000002d4" lastModified="1748758415"/>
           <Include href="汽车炸弹/敌人-汽车炸弹.xml" itemID="683affa3-00000226" lastModified="1748704798"/>
           <Include href="汽车炸弹/空中小火焰爆炸.xml" itemIcon="1" loadImmediate="false" itemID="65742c41-000007ce" lastModified="1748698817"/>
           <Include href="闪烁的灯光.xml" itemID="65c24acf-00000ce6" lastModified="1716200766"/>
@@ -253,7 +253,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="素材库-地图元件" selected="true" centerPoint3DX="132.95" centerPoint3DY="16.65">
+                                        <DOMSymbolInstance libraryItemName="素材库-地图元件" centerPoint3DX="132.95" centerPoint3DY="16.65">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -735,6 +735,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="341411" publishTime="1748758296"/>
           <PublishItem publishSize="386155" publishTime="1748750013"/>
           <PublishItem publishSize="386160" publishTime="1748749934"/>
           <PublishItem publishSize="386160" publishTime="1748749422"/>
@@ -754,6 +755,5 @@
           <PublishItem publishSize="374807" publishTime="1748746044"/>
           <PublishItem publishSize="374713" publishTime="1748745246"/>
           <PublishItem publishSize="374650" publishTime="1748745099"/>
-          <PublishItem publishSize="374584" publishTime="1748744811"/>
      </publishHistory>
 </DOMDocument>

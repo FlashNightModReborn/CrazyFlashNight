@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="汽车炸弹/登场" itemID="683b09e3-000002d4" lastModified="1748705544" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="汽车炸弹/登场" itemID="683b09e3-000002d4" lastModified="1748758415" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="登场" currentFrame="14">
+    <DOMTimeline name="登场" currentFrame="1">
       <layers>
         <DOMLayer name="tag" color="#9933CC" autoNamed="false">
           <frames>
@@ -23,7 +23,7 @@
             <DOMFrame index="1" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.攻击时移动 = _root.敌人二级函数.攻击时移动;
-this.speed = 8;]]></script>
+this.speed = 12;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -35,7 +35,7 @@ this.speed = 8;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -63,7 +63,7 @@ this.speed = 8;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="车轮1" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="车轮1" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -89,26 +89,14 @@ this.speed = 8;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button" centerPoint3DX="174.3" centerPoint3DY="33.75">
+                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button" centerPoint3DX="174.3" centerPoint3DY="58.75">
                   <matrix>
-                    <Matrix a="-0.98834228515625" b="0.144027709960938" c="-0.144012451171875" d="-0.98834228515625" tx="199.85" ty="52.9"/>
+                    <Matrix a="-0.98834228515625" b="0.144027709960938" c="-0.144012451171875" d="-0.98834228515625" tx="199.85" ty="77.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.6" y="22.4"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button" centerPoint3DX="163.55" centerPoint3DY="72.25">
-                  <matrix>
-                    <Matrix a="-0.997390747070313" b="-0.0520172119140625" c="0.052032470703125" d="-0.997390747070313" tx="184.7" ty="95.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="22.55" y="22.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -127,9 +115,9 @@ this.speed = 8;]]></script>
             </DOMFrame>
             <DOMFrame index="11" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button" centerPoint3DX="165.6" centerPoint3DY="76.85">
+                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button" centerPoint3DX="165.6" centerPoint3DY="78.5">
                   <matrix>
-                    <Matrix a="-0.977310180664063" b="-0.205963134765625" c="0.205978393554688" d="-0.977310180664063" tx="183.15" ty="103.7"/>
+                    <Matrix a="-0.977310180664063" b="-0.205963134765625" c="0.205978393554688" d="-0.977310180664063" tx="183.15" ty="105.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.6" y="22.4"/>
@@ -139,7 +127,7 @@ this.speed = 8;]]></script>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" selected="true" symbolType="button" centerPoint3DX="168.55" centerPoint3DY="73.75">
+                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button" centerPoint3DX="168.55" centerPoint3DY="73.75">
                   <matrix>
                     <Matrix a="-0.991943359375" b="-0.116668701171875" c="0.116683959960938" d="-0.991943359375" tx="188.35" ty="98.85"/>
                   </matrix>
@@ -177,26 +165,14 @@ this.speed = 8;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button">
                   <matrix>
-                    <Matrix a="-0.9990234375" b="0.043914794921875" c="-0.043914794921875" d="-0.9990234375" tx="94.35" ty="97.95"/>
+                    <Matrix a="-0.9990234375" b="0.043914794921875" c="-0.043914794921875" d="-0.9990234375" tx="94.35" ty="127.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.6" y="22.5"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button">
-                  <matrix>
-                    <Matrix a="-0.988601684570313" b="-0.148712158203125" c="0.148712158203125" d="-0.988601684570313" tx="61.5" ty="98.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="22.55" y="22.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -217,7 +193,7 @@ this.speed = 8;]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="汽车炸弹/车轮1" symbolType="button">
                   <matrix>
-                    <Matrix a="-0.952774047851563" b="-0.303619384765625" c="0.303619384765625" d="-0.952774047851563" tx="48.65" ty="107.35"/>
+                    <Matrix a="-0.952774047851563" b="-0.303619384765625" c="0.303619384765625" d="-0.952774047851563" tx="45.4" ty="94.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.55" y="22.55"/>
@@ -265,23 +241,11 @@ this.speed = 8;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="汽车炸弹/车身 变形" symbolType="graphic" firstFrame="6" loop="loop">
                   <matrix>
-                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="113.1" ty="9.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="汽车炸弹/车身 变形" symbolType="graphic" firstFrame="7" loop="loop">
-                  <matrix>
-                    <Matrix a="0.997634887695313" b="-0.0622406005859375" c="0.0622406005859375" d="0.997634887695313" tx="107.6" ty="36.45"/>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="113.1" ty="39.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

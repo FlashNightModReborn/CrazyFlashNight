@@ -161,7 +161,7 @@ _root.子弹生命周期 = function()
     }
     
     var gameWorld = _root.gameworld;
-    var shooter = gameWorld[this.发射者名];;
+    var shooter = gameWorld[this.发射者名];
     var rangeResult:Object;
     if(this.友军伤害) {
         rangeResult = TargetCacheManager.getCachedAllFromIndex(shooter, 1, areaAABB);
