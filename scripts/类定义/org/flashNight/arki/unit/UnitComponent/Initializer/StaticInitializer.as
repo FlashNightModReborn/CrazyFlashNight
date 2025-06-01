@@ -10,6 +10,9 @@ import org.flashNight.arki.unit.UnitComponent.Updater.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
+import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.*;
+
+
 class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer {
     public static var factory:IColliderFactory;
 
@@ -28,133 +31,147 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         TargetCacheUpdater.addUnit(target);
     }
 
+    /**
+     * 初始化地图元件的主方法
+     * @param target 要初始化的地图元件MovieClip
+     */
     public static function initializeMapElement(target:MovieClip):Void {
-        // 检查主线任务进度限制
-        if (
-            (!isNaN(target.最小主线进度) && _root.主线任务进度 < target.最小主线进度) ||
-            (!isNaN(target.最大主线进度) && _root.主线任务进度 > target.最大主线进度)
-        ) {
-            target.removeMovieClip();
+        // 1. 验证进度要求 - 如果不满足则直接移除并返回
+        if (!ProgressValidator.validate(target)) {
             return;
         }
 
-        // 设置随机数量
-        if (target.数量_min > 0 && target.数量_max > 0) {
-            target.数量 = target.数量_min + random(target.数量_max - target.数量_min + 1);
-        }
+        // 2. 设置随机数量
+        QuantityRandomizer.randomizeQuantity(target);
 
-        // 设置基本属性
-        target.是否为敌人 = true;
-
-        // 初始化生命值
-        if (isNaN(target.hitPoint)) {
-            target.hitPoint = target.hitPointMax = 10;
-        } else {
-            target.hitPointMax = target.hitPoint;
-        }
-
-        // 设置特殊属性
-        target.hp = 9999999;
-        target.防御力 = 99999;
-        target.躲闪率 = 100;
-        target.击中效果 = target.击中效果 || "火花";
-        target.Z轴坐标 = target._y;
-        target.unitAIType = "None";
+        // 3. 初始化基础属性
+        BasicAttributeInitializer.initialize(target);
         
-        // 初始化单位组件
+        // 4. 初始化单位组件
         StaticInitializer.initializeUnit(target);
 
-        // 设置显示状态
-        target.gotoAndStop("正常");
-        target.element.stop();
+        // 5. 设置交互功能
+        InteractionHandler.initialize(target);
 
-        // 设置拾取功能
-        var pickUpFunc:Function = function():Void {
-            if (this._killed) return; // 避免多次触发
+        // 6. 应用染色效果
+        ColorStainer.applyStaining(target);
 
-            var focusedObject:MovieClip = TargetCacheManager.findHero();
-            if (Math.abs(this.Z轴坐标 - focusedObject.Z轴坐标) < 50 && focusedObject.area.hitTest(this.area)) {
-                this.dispatcher.publish("pickUp", this);
+        // 7. 渲染障碍物
+        ObstacleRenderer.renderObstacle(target);
+
+        // 8. 设置显示控制
+        DisplayController.initialize(target);
+    }
+
+    /**
+     * 快速初始化地图元件（跳过某些步骤以提高性能）
+     * @param target 要初始化的地图元件MovieClip
+     * @param skipInteraction 是否跳过交互初始化
+     * @param skipObstacle 是否跳过障碍物渲染
+     */
+    public static function initializeMapElementFast(target:MovieClip, skipInteraction:Boolean, skipObstacle:Boolean):Void {
+        // 必要的验证和初始化
+        if (!ProgressValidator.validate(target)) {
+            return;
+        }
+
+        QuantityRandomizer.randomizeQuantity(target);
+        BasicAttributeInitializer.initialize(target);
+        StaticInitializer.initializeUnit(target);
+
+        // 可选的功能
+        if (!skipInteraction) {
+            InteractionHandler.initialize(target);
+        }
+
+        ColorStainer.applyStaining(target);
+
+        if (!skipObstacle) {
+            ObstacleRenderer.renderObstacle(target);
+        }
+
+        DisplayController.initialize(target);
+    }
+
+    /**
+     * 批量初始化地图元件
+     * @param targets 要初始化的地图元件数组
+     * @param useFastMode 是否使用快速模式
+     */
+    public static function batchInitializeMapElements(targets:Array, useFastMode:Boolean):Void {
+        if (!targets || targets.length == 0) return;
+
+        for (var i:Number = 0; i < targets.length; i++) {
+            var target:MovieClip = targets[i];
+            if (target) {
+                if (useFastMode) {
+                    StaticInitializer.initializeMapElementFast(target, false, true);
+                } else {
+                    StaticInitializer.initializeMapElement(target);
+                }
             }
-        };
-
-        target.dispatcher.subscribeGlobal("interactionKeyDown", pickUpFunc, target);
-
-        // 设置拾取处理
-        var pickFunc:Function = function(target:MovieClip):Void {
-            target.dispatcher.publish("kill", target);
-
-            var scavenger:MovieClip = TargetCacheManager.findHero();
-            var audio:String = target.audio || "拾取音效";
-            _root.播放音效(audio);
-
-            scavenger.拾取();
-        };
-
-        target.dispatcher.subscribe("pickUp", pickFunc, target);
-
-        // 处理染色目标
-        if (target.stainedTarget) {
-            // 初始化并校验色彩参数（默认值：乘数为1，偏移为0）
-            target.redMultiplier = isNaN(target.redMultiplier) ? 1 : target.redMultiplier;
-            target.greenMultiplier = isNaN(target.greenMultiplier) ? 1 : target.greenMultiplier;
-            target.blueMultiplier = isNaN(target.blueMultiplier) ? 1 : target.blueMultiplier;
-            target.alphaMultiplier = isNaN(target.alphaMultiplier) ? 1 : target.alphaMultiplier;
-
-            target.redOffset = isNaN(target.redOffset) ? 0 : target.redOffset;
-            target.greenOffset = isNaN(target.greenOffset) ? 0 : target.greenOffset;
-            target.blueOffset = isNaN(target.blueOffset) ? 0 : target.blueOffset;
-            target.alphaOffset = isNaN(target.alphaOffset) ? 0 : target.alphaOffset;
-
-            // 应用色彩设置
-            _root.设置色彩(target[target.stainedTarget],
-                        target.redMultiplier,
-                        target.greenMultiplier,
-                        target.blueMultiplier,
-                        target.redOffset,
-                        target.greenOffset,
-                        target.blueOffset,
-                        target.alphaMultiplier,
-                        target.alphaOffset);
         }
 
-        // 将碰撞箱附加到地图
-        var gameworld = _root.gameworld;
-
-        if (target.obstacle && target.area) {
-            var rect = target.area.getRect(gameworld);
-            var 地图 = gameworld.地图;
-
-            // 设置 `地图` 为不可枚举
-            _global.ASSetPropFlags(gameworld, ["地图"], 1, false);
-
-            地图.beginFill(0x000000);
-            地图.moveTo(rect.xMin, rect.yMin);
-            地图.lineTo(rect.xMax, rect.yMin);
-            地图.lineTo(rect.xMax, rect.yMax);
-            地图.lineTo(rect.xMin, rect.yMax);
-            地图.lineTo(rect.xMin, rect.yMin);
-            地图.endFill();
+        // 批量渲染障碍物（如果使用快速模式）
+        if (useFastMode) {
+            ObstacleRenderer.renderMultipleObstacles(targets);
         }
+    }
 
-        // 设置区域不可见并调整深度
-        target.area._visible = false;
-        target.swapDepths(target._y);
+    /**
+     * 重新初始化地图元件（用于运行时更新）
+     * @param target 要重新初始化的地图元件MovieClip
+     */
+    public static function reinitializeMapElement(target:MovieClip):Void {
+        if (!target) return;
+
+        // 清理现有状态
+        InteractionHandler.cleanup(target);
+
+        // 重新初始化
+        StaticInitializer.initializeMapElement(target);
     }
 
     public static function initializeGameWorldUnit():Void {
         var gameworld:MovieClip = _root.gameworld;
-        
         for (var each in gameworld) {
             var target = gameworld[each];
-            if (target.hp > 0) {
-                if(target.element) {
-                    StaticInitializer.initializeMapElement(target);
-                } else {
-                    StaticInitializer.initializeUnit(target);
-                }
+            if (target.hp > 0) StaticInitializer.initializeUnit(target);
+        }
+    }
+
+    /**
+     * 初始化游戏世界中的所有地图元件
+     */
+    public static function initializeGameWorldMapElements():Void {
+        var gameworld:MovieClip = _root.gameworld;
+        if (!gameworld) return;
+
+        var mapElements:Array = [];
+        
+        // 收集所有地图元件
+        for (var each in gameworld) {
+            var target:MovieClip = gameworld[each];
+            if (target && StaticInitializer.isMapElement(target)) {
+                mapElements.push(target);
             }
         }
+
+        // 批量初始化
+        StaticInitializer.batchInitializeMapElements(mapElements, true);
+    }
+
+    /**
+     * 判断目标是否为地图元件
+     * @param target 要判断的目标MovieClip
+     * @return Boolean 如果是地图元件返回true
+     */
+    private static function isMapElement(target:MovieClip):Boolean {
+        // 可以根据具体需求调整判断条件
+        return target.是否为地图元件 === true || 
+               target.obstacle !== undefined || 
+               target.stainedTarget !== undefined ||
+               (target.数量_min !== undefined && target.数量_max !== undefined);
     }
 
     public static function onSceneChanged():Void {
@@ -162,5 +179,27 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         StaticInitializer.factory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
         StaticInitializer.onSceneChanged = StaticInitializer.initializeGameWorldUnit;
         StaticInitializer.initializeGameWorldUnit();
+        
+        // 同时初始化地图元件
+        StaticInitializer.initializeGameWorldMapElements();
+    }
+
+    /**
+     * 清理所有地图元件相关资源
+     */
+    public static function cleanupMapElements():Void {
+        var gameworld:MovieClip = _root.gameworld;
+        if (!gameworld) return;
+
+        // 清理障碍物
+        ObstacleRenderer.clearAllObstacles(gameworld);
+
+        // 清理交互监听器
+        for (var each in gameworld) {
+            var target:MovieClip = gameworld[each];
+            if (target && StaticInitializer.isMapElement(target)) {
+                InteractionHandler.cleanup(target);
+            }
+        }
     }
 }
