@@ -202,6 +202,7 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 	}
 	
 	target.hp = 9999999;
+	target.防御力 = 99999;
 
 	target.躲闪率 = 100;
 	target.击中效果 = target.击中效果 || "火花";
@@ -228,6 +229,11 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 	if(true) {
 		pickFunc = function(target:MovieClip):Void {
 			target.dispatcher.publish("kill", target);
+
+			var scavenger:MovieClip = _root.gameworld[_root.控制目标];
+			_root.播放音效("拾取音效");
+
+			scavenger.拾取();
 		}
 	}
 
@@ -284,7 +290,6 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 	target._visible = true;
 
-
 	_root.帧计时器.注销目标缓存(target);
 	if (target.是否为敌人 && _root.gameworld[target.产生源])
 	{
@@ -292,6 +297,7 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 		_root.gameworld[target.产生源].僵尸型敌人场上实际人数--;
 		_root.gameworld[target.产生源].僵尸型敌人总个数--;
 	}
+
 	_root.创建可拾取物(target.内部物,   target.数量,target._x,target._y, true);
 }
 
