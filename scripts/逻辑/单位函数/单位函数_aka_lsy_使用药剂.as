@@ -1,5 +1,7 @@
-﻿_root.使用药剂 = function(物品名){
-	var 控制对象 = _root.gameworld[_root.控制目标];
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.使用药剂 = function(物品名){
+	var 控制对象 = TargetCacheManager.findHero();
 	if (控制对象.hp <= 0) return;
 	
 	var 炼金等级 = 0;

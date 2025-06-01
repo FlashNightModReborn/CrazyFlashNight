@@ -1,4 +1,6 @@
-﻿_root.写入装备缓存 = function()
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.写入装备缓存 = function()
 {
 	// 统一装备字段列表
 	var equipmentFields = [
@@ -8,7 +10,7 @@
 	];
 
 	// 缓存主角装备
-	var hero:MovieClip = _root.gameworld[_root.控制目标];
+	var hero:MovieClip = TargetCacheManager.findHero();
 	var heroCache:Object = [];
 	for (var i:Number = 0; i < equipmentFields.length; i++) {
 		heroCache.push(hero[equipmentFields[i]]);

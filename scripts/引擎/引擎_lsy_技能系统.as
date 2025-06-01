@@ -1,4 +1,6 @@
-﻿_root.根据技能名查找主角技能等级 = function(技能名){
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.根据技能名查找主角技能等级 = function(技能名){
 	var 主角技能表 = _root.主角技能表;
 	for(var i = 0; i < 主角技能表.length; i++){
 		if (主角技能表[i][0] == 技能名){
@@ -62,8 +64,10 @@ _root.更新主角被动技能 = function(){
 			}
 		}
 	}
-	_root.gameworld[_root.控制目标].被动技能 = _root.主角被动技能;
-	_root.gameworld[_root.控制目标].读取被动效果();
+
+	var hero:Object = TargetCacheManager.findHero();
+	hero.被动技能 = _root.主角被动技能;
+	hero.读取被动效果();
 }
 
 _root.排列技能图标 = function(){
@@ -104,7 +108,7 @@ _root.排列技能图标 = function(){
 			}
 		}
 	}
-	_root.gameworld[_root.控制目标].读取被动效果();
+	TargetCacheManager.findHero().读取被动效果();
 }
 
 _root.删除技能图标 = function(){

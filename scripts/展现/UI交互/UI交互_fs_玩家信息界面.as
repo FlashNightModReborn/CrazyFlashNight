@@ -1,7 +1,9 @@
-﻿_root.UI系统 = {};
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.UI系统 = {};
 _root.UI系统.血条刷新显示 = function() 
 {
-    var 控制对象 = _root.gameworld[_root.控制目标];
+    var 控制对象 = TargetCacheManager.findHero();
     var 血槽数字当前HP = 控制对象.hp;
     var 血槽数字最大HP = 控制对象.hp满血值;
 
@@ -21,7 +23,7 @@ _root.UI系统.血条刷新显示 = function()
 
 _root.UI系统.蓝条刷新显示 = function() 
 {
-    var 控制对象 = _root.gameworld[_root.控制目标];
+    var 控制对象 = TargetCacheManager.findHero();
     var 蓝条数字当前MP = 控制对象.mp;
     var 蓝条数字最大MP = 控制对象.mp满血值;
 
@@ -45,7 +47,7 @@ _root.UI系统.蓝条刷新显示 = function()
 
 _root.UI系统.韧性刷新显示 = function() 
 {
-    var target:MovieClip = _root.gameworld[_root.控制目标];
+    var target:MovieClip = TargetCacheManager.findHero();
     var poiseNumber:Number = target.nonlinearMappingResilience; // 获取韧性百分比
 
     // _root.发布消息("韧性百分比", poiseNumber); // 发布韧性百分比消息

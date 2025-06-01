@@ -463,7 +463,7 @@ _root.帧计时器.定期更新天气 = function()
 
 _root.帧计时器.键盘输入控制目标 = function()
 {
-    var 控制对象 = _root.gameworld[_root.控制目标];
+    var 控制对象 = TargetCacheManager.findHero()
     if(!控制对象) return;
 
     if(_root.暂停){

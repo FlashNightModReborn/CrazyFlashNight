@@ -1,4 +1,6 @@
 ﻿import org.flashNight.gesh.string.EvalParser;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
 _root.cheatFunction = new Object();
 
 _root.cheatFunction.hardmode = function(){
@@ -34,7 +36,9 @@ _root.cheatFunction.add1 = function(){
 	var add1僵尸是否为敌人 = true;
 	var add1僵尸身高 = 175;
 	var add1僵尸僵尸型敌人newname = this._name + 兵种;
-	_root.加载游戏世界人物(add1僵尸兵种,add1僵尸僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x: _root.gameworld[_root.控制目标]._x ,_y:_root.gameworld[_root.控制目标]._y,等级:add1僵尸等级,名字:add1僵尸名字,是否为敌人:add1僵尸是否为敌人,身高:add1僵尸身高,产生源:null});
+
+	var hero:MovieClip = TargetCacheManager.findHero();
+	_root.加载游戏世界人物(add1僵尸兵种,add1僵尸僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x: hero._x ,_y:hero._y,等级:add1僵尸等级,名字:add1僵尸名字,是否为敌人:add1僵尸是否为敌人,身高:add1僵尸身高,产生源:null});
 	_root.最上层发布文字提示("添加一个僵尸！");
 }
 

@@ -1,13 +1,15 @@
-﻿_root.人物信息函数 = new Object();
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.人物信息函数 = new Object();
 
 _root.人物信息函数.获得韧性负荷 = function(自机){
-	var 自机 = _root.gameworld[_root.控制目标];
+	var 自机 = TargetCacheManager.findHero();
 	var 韧性上限 = 自机.韧性系数 * 自机.hp / _root.防御减伤比(自机.防御力 / 1000);
 	return Math.floor(韧性上限 / 自机.躲闪率) + " / " + Math.floor(韧性上限);
 };
 
 _root.人物信息函数.获得综合防御力 = function(自机){
-	var 自机 = _root.gameworld[_root.控制目标];
+	var 自机 = TargetCacheManager.findHero();
 	var buff数值 = Math.floor(自机.防御力 - 自机.基本防御力 - 自机.装备防御力);
 	var buff字符 = buff数值 > 1 ? " + " + buff数值 : ( buff数值 < -1? buff数值: "" );
 	return 自机.基本防御力 + " + " + 自机.装备防御力 + buff字符;
@@ -74,7 +76,7 @@ _root.人物信息函数.显示负重情况 = function(目标:MovieClip,自机:M
 }
 
 _root.人物信息函数.获取人物信息 = function(目标:MovieClip){
-	var 自机 = _root.gameworld[_root.控制目标];
+	var 自机 = TargetCacheManager.findHero();
 	目标.等级 = _root.等级;
 	目标.身高 = _root.人物信息函数.获得身高();
 	目标.称号 = _root.人物信息函数.获得称号(自机);

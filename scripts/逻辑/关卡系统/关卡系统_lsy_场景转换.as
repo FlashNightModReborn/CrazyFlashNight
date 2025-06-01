@@ -2,6 +2,8 @@
 
 _root.操控目标表 = [_root.控制目标];
 
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
 _root.转场景记录数据 = function(){
 	转场景记录数据第一次记录 = true;
 	var i = 0;
@@ -33,8 +35,10 @@ _root.转场景数据传递 = function(){
 	if (_root.新出生){
 		_root.转场景数据 = [[0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0]];
 		佣兵同伴血量记录 = [-1, -1, -1];
-		_root.场景转换_主角hp = _root.gameworld[_root.控制目标].hp满血值;
-		_root.场景转换_主角mp = _root.gameworld[_root.控制目标].mp满血值;
+
+		var hero:MovieClip = TargetCacheManager.findHero();
+		_root.场景转换_主角hp = hero.hp满血值;
+		_root.场景转换_主角mp = hero.mp满血值;
 		_root.场景转换_主角长枪射击次数 = 0;
 		_root.场景转换_主角手枪射击次数 = 0;
 		_root.场景转换_主角手枪2射击次数 = 0;
@@ -245,7 +249,7 @@ _root.返回基地 = function(){
 	}
 	_root.场景进入位置名 = "出生地";
 	_root.关卡类型 = "";
-	if (_root.gameworld[_root.控制目标].hp == 0){
+	if (TargetCacheManager.findHero().hp == 0){
 		_root.淡出动画.淡出跳转帧("医务室");
 	}else{
 		_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);

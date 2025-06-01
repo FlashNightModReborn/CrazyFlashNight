@@ -1,5 +1,7 @@
 ﻿import org.flashNight.gesh.object.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
 
 _root.最大等级 = 60;
 _root.等级限制 = 100;
@@ -48,7 +50,7 @@ _root.健身房主角是否升级 = function()
 
 	if (是否升级) {
 		_root.身价 = _root.基础身价值 * _root.等级;
-		var 控制对象 = _root.gameworld[_root.控制目标];
+		var 控制对象 = TargetCacheManager.findHero();
 		控制对象.等级 = _root.等级;
 		控制对象.根据等级初始数值(_root.等级);
 		if(!控制对象.hp || 控制对象.hp < 控制对象.hp满血值) 控制对象.hp = 控制对象.hp满血值;
@@ -74,7 +76,7 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 		_root.等级++;
 		_root.技能点数 += _root.根据等级计算获得技能点(_root.等级);
 
-		var 控制对象 = _root.gameworld[_root.控制目标];
+		var 控制对象 = TargetCacheManager.findHero();
 		_root.身价 = _root.基础身价值 * _root.等级;
 		控制对象.等级 = _root.等级;
 		控制对象.根据等级初始数值(_root.等级);

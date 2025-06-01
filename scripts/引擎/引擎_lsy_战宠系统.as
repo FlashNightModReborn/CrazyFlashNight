@@ -1,4 +1,6 @@
-﻿_root.战宠UI函数 = new Object();
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.战宠UI函数 = new Object();
 
 _root.开宠物格子 = function(){
 	_root.宠物领养限制 += 1;
@@ -57,7 +59,8 @@ _root.战宠UI函数.出战按钮函数 = function(是否出战:Boolean){
 			return;
 		}else{
 			当前宠物信息[4] = 1;
-			success = _root.战宠UI函数.设置宠物出战(_parent.宠物信息数组号,true,_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
+			var hero:MovieClip = TargetCacheManager.findHero();
+			success = _root.战宠UI函数.设置宠物出战(_parent.宠物信息数组号,true, hero._x, hero._y);
 		}
 	}else if (当前宠物信息[4] == 1){
 		当前宠物信息[4] = 0;

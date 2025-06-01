@@ -2,6 +2,9 @@
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.unit.*;
 import org.flashNight.arki.spatial.animation.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+TargetCacheManager.findHero();
 
 // 拾取相关函数
 _root.pickupItemManager = new Object();
@@ -42,7 +45,7 @@ _root.pickupItemManager.pickup = function(target, 拾取者, 播放拾取动画)
 	}
 	// 销毁对象
 	_root.发布消息(str);
-	var 控制对象 = _root.gameworld[_root.控制目标];
+	var 控制对象 = TargetCacheManager.findHero();
 	target.gotoAndPlay("消失");
 	delete _root.pickupItemManager.pickupItemDict[target.index];
 	_root.播放音效("拾取音效");
@@ -63,7 +66,7 @@ _root.pickupItemManager.拾取并装备 = function(itemName, value){
 			}
 			_root.刷新人物装扮(_root.控制目标);
 			if(itemData.type == "武器" || itemData.use == "手雷"){
-				_root.gameworld[_root.控制目标].攻击模式切换(itemData.use);
+				TargetCacheManager.findHero().攻击模式切换(itemData.use);
 			}
 		}
 		else if(装备 && itemData.use){
@@ -82,7 +85,7 @@ _root.pickupItemManager.拾取并装备 = function(itemName, value){
 			}
 			_root.刷新人物装扮(_root.控制目标);
 			if(itemData.type == "武器" || itemData.use == "手雷"){
-				_root.gameworld[_root.控制目标].攻击模式切换(itemData.use);
+				TargetCacheManager.findHero().攻击模式切换(itemData.use);
 			}
 		}
 		else{
@@ -126,7 +129,7 @@ _root.创建可拾取物 = function(物品名, 数量, X位置, Y位置, 是否�
 
 	var pickUpFunc:Function = function():Void{
 		// _root.发布消息("开始碰撞检测");
-		var focusedObject:MovieClip = gameworld[_root.控制目标];
+		var focusedObject:MovieClip = TargetCacheManager.findHero();
 		var mc:MovieClip = this.焦点高亮框;
 		mc.play();
 		this.焦点高亮框._visible = true;
@@ -183,13 +186,15 @@ _root.初始化出生点 = function(){
 _root.地图元件 = new Object();
 
 _root.地图元件.初始化地图元件 = function(target:MovieClip){
-	if (!isNaN(target.最小主线进度) && target.最小主线进度 > _root.主线任务进度){
+	if (
+		(!isNaN(target.最小主线进度) && _root.主线任务进度 < target.最小主线进度) ||
+		(!isNaN(target.最大主线进度) && _root.主线任务进度 > target.最大主线进度)
+	) {
 		target.removeMovieClip();
 		return;
-	}else if (!isNaN(target.最大主线进度) && target.最大主线进度 < _root.主线任务进度){
-		target.removeMovieClip();
-		return;
-	}if (target.数量_min > 0 && target.数量_max > 0){
+	}
+
+	if (target.数量_min > 0 && target.数量_max > 0){
 		target.数量 = target.数量_min + random(target.数量_max - target.数量_min + 1);
 	}
 
@@ -216,7 +221,7 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 	var pickUpFunc:Function = function():Void {
 		if(this._killed) return; // 避免多次触发
 
-		var focusedObject:MovieClip = _root.gameworld[_root.控制目标];
+		var focusedObject:MovieClip = TargetCacheManager.findHero();
 		if (Math.abs(this.Z轴坐标 - focusedObject.Z轴坐标) < 50 && focusedObject.area.hitTest(this.area)){
 			this.dispatcher.publish("pickUp", this);
 		}
@@ -230,7 +235,7 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 		pickFunc = function(target:MovieClip):Void {
 			target.dispatcher.publish("kill", target);
 
-			var scavenger:MovieClip = _root.gameworld[_root.控制目标];
+			var scavenger:MovieClip = TargetCacheManager.findHero();
 			var audio:String = target.audio || "拾取音效";
 			_root.播放音效(audio);
 
@@ -291,12 +296,13 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 	target._visible = true;
 
-	_root.帧计时器.注销目标缓存(target);
-	if (target.是否为敌人 && _root.gameworld[target.产生源])
+	var source:MovieClip = _root.gameworld[target.产生源];
+
+	if (target.是否为敌人 && source)
 	{
 		_root.敌人死亡计数 += 1;
-		_root.gameworld[target.产生源].僵尸型敌人场上实际人数--;
-		_root.gameworld[target.产生源].僵尸型敌人总个数--;
+		source.僵尸型敌人场上实际人数--;
+		source.僵尸型敌人总个数--;
 	}
 
 	_root.创建可拾取物(target.内部物,   target.数量,target._x,target._y, true);
@@ -499,29 +505,6 @@ _root.地图元件.地图元件破碎动画 = function(scope:MovieClip, fragment
         return -1;
     }
 };
-
-// 资源箱
-_root.初始化资源箱 = function(){
-	if (!isNaN(最小主线进度) && 最小主线进度 > _root.主线任务进度){
-		this.removeMovieClip();
-		return;
-	}else if (!isNaN(最大主线进度) && 最大主线进度 < _root.主线任务进度){
-		this.removeMovieClip();
-		return;
-	}if (数量_min > 0 and 数量_max > 0){
-		数量 = 数量_min + random(数量_max - 数量_min + 1);
-	}
-
-	是否为敌人 = true;
-	hp = hp满血值 = 10;
-	躲闪率 = 100;
-	击中效果 = "火花";
-	Z轴坐标 = this._y;
-	this.unitAIType = "None";
-	StaticInitializer.initializeUnit(this);
-	gotoAndStop("正常");
-	
-}
 
 // NPC
 //_root.初始化NPC(this);

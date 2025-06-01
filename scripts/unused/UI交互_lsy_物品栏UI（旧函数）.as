@@ -1,4 +1,6 @@
-﻿_root.物品图标UI函数 = new Object();
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.物品图标UI函数 = new Object();
 _root.物品图标UI函数.点击函数 = new Object();
 _root.物品图标UI函数.释放函数 = new Object();
 
@@ -391,7 +393,7 @@ _root.物品图标UI函数.装备槽对应物品类别 = function(类别, 强化
 			}
 			else if (类别 == "颈部装备")
 			{
-				var 控制对象 = _root.gameworld[_root.控制目标];
+				var 控制对象 = TargetCacheManager.findHero();
 				控制对象.称号 = _root.根据物品名查找属性(当前物品格[0], 14);
 				控制对象.称号 = 控制对象.称号[0];
 				_root.玩家称号 = 控制对象.称号;

@@ -2,6 +2,8 @@
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.itemCollection.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
 /*
  * ItemUtil 静态类，存储物品数据与物品工具函数
  * 
@@ -68,7 +70,7 @@ class org.flashNight.arki.item.ItemUtil{
         if(itemData.type == "防具"){
             音效 = "ammopickup1.wav";
             if (use == "颈部装备"){
-                var 控制对象 = _root.gameworld[_root.控制目标];
+                var 控制对象 = TargetCacheManager.findHero();
                 控制对象.称号 = itemData.equipped.title;
                 _root.玩家称号 = 控制对象.称号;
             }

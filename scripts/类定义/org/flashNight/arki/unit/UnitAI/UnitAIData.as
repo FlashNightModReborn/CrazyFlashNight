@@ -1,4 +1,6 @@
-﻿class org.flashNight.arki.unit.UnitAI.UnitAIData{
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
     // 自身引用
     public var self:MovieClip;
@@ -58,7 +60,7 @@
         // this.attackmode = self.攻击模式;
         this.target = null;
         // this.target_name = null;
-        this.player = _root.gameworld[_root.控制目标];
+        this.player = TargetCacheManager.findHero();
         //初始化ai参数
         this.xrange = self.x轴攻击范围;
         this.xdistance = self.x轴保持距离;

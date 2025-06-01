@@ -408,9 +408,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找主角
-     * @return {Object} 主角的引用，若不存在返回null
+     * @return {MovieClip} 主角的引用，若不存在返回null
      */
-    public static function findHero():Object { 
+    public static function findHero():MovieClip { 
         return _root.gameworld[_root.控制目标] || null; 
     }
 }

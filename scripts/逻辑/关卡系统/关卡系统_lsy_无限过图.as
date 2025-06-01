@@ -1,5 +1,6 @@
 ﻿//迁移了所有生存模式与无限过图的函数，以及4个难度关卡按钮里的函数
 import org.flashNight.neur.Event.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.开启生存模式 = function(模式) {
     _root.当前为战斗地图 = true;
@@ -518,7 +519,8 @@ _root.无限过图模式过关 = function(){
 	}else{
 		// _root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！"); //已经不需要这种东西了
 		_root.gameworld.允许通行 = true;
-		_root.效果("小过关提示动画",_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,100);
+		var hero:MovieClip = TargetCacheManager.findHero();
+		_root.效果("小过关提示动画", hero._x, hero._y,100);
 		_root.stageDispatcher.publish("StageFinished");
 	}
 };

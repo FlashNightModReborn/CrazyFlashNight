@@ -1,4 +1,6 @@
-﻿_root.关卡回调函数 = new Object();
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+_root.关卡回调函数 = new Object();
 
 _root.关卡回调函数.新手练习场_1 = function(){
 	_root.新手引导界面.显示指引("拾取",800);
@@ -24,7 +26,7 @@ _root.关卡回调函数.贫民窟_3 = function(){
 _root.关卡回调函数.贫民窟_6 = function(){
 	var 事件mc = _root.gameworld.createEmptyMovieClip("事件_贫民窟_6",_root.gameworld.getNextHighestDepth());
 	事件mc.onEnterFrame = function(){
-		var 控制对象 = _root.gameworld[_root.控制目标];
+		var 控制对象 = TargetCacheManager.findHero();
 		if(!控制对象) return;
 		if(控制对象._x < 300){
 			_root.生存模式OBJ.FinishRequirement = 99;
