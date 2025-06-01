@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="统合logo" itemID="683c67c1-00000209" symbolType="graphic" lastModified="1748789185">
+  <timeline>
+    <DOMTimeline name="统合logo">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网节点球" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="352.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="66.35" y="113.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="天网辐射" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="283.8" ty="38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="135" y="63.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地球" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.2" ty="716.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="417" y="122.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巴别塔" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="40.4" ty="196.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="386.5" y="304.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
