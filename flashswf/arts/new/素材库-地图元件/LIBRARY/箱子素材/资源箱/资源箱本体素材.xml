@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱本体素材" itemID="6836c077-00000f9b" lastModified="1748708086" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱本体素材" itemID="6836c077-00000f9b" lastModified="1748749376" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="资源箱本体素材" currentFrame="71">
+    <DOMTimeline name="资源箱本体素材" currentFrame="67">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -43,6 +43,25 @@ _parent.removeMovieClip();]]></script>
                 <script><![CDATA[stop();
 _root.add2map(_parent,2);
 _parent.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="54" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("木箱破损1.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="68" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("木箱破损2.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

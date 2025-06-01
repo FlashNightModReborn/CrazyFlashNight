@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="208" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="03.摆件" itemID="67321af0-00000c8d"/>
+          <DOMFolderItem name="03.摆件" itemID="67321af0-00000c8d" isExpanded="true"/>
           <DOMFolderItem name="03.摆件/铁丝栏" itemID="6720aa4a-00001286"/>
           <DOMFolderItem name="shape" itemID="670d4052-0000141f"/>
           <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
@@ -187,7 +187,7 @@
           <Include href="箱子素材/Symbol 14.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-0000064c" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 15.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-0000064d" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-0000064e" lastModified="1704525302"/>
-          <Include href="箱子素材/保险柜/保险柜.xml" itemID="6837c8d0-00001906" lastModified="1748708220"/>
+          <Include href="箱子素材/保险柜/保险柜.xml" itemID="6837c8d0-00001906" lastModified="1748750077"/>
           <Include href="箱子素材/保险柜/保险柜本体素材.xml" loadImmediate="false" itemID="6837c90b-00001932" lastModified="1748594179"/>
           <Include href="箱子素材/保险柜/保险柜轮盘.xml" loadImmediate="false" itemID="683925e9-00004728" lastModified="1748575721"/>
           <Include href="箱子素材/保险柜/保险柜门面.xml" loadImmediate="false" itemID="683925ff-00004730" lastModified="1748575743"/>
@@ -212,7 +212,7 @@
           <Include href="箱子素材/生存箱/生存箱本体素材.xml" loadImmediate="false" itemID="683812f0-00002783" lastModified="1748505563"/>
           <Include href="箱子素材/隐藏资源点.xml" itemID="66a8fec5-00001f87" lastModified="1748690640"/>
           <Include href="箱子素材/隐藏资源点光效.xml" loadImmediate="false" itemID="66a8fe1f-00001f7b" lastModified="1722424406"/>
-          <Include href="箱子素材/纸箱/纸箱.xml" itemID="683802e7-00002516" lastModified="1748748143"/>
+          <Include href="箱子素材/纸箱/纸箱.xml" itemID="683802e7-00002516" lastModified="1748748147"/>
           <Include href="箱子素材/纸箱/纸箱板1.xml" loadImmediate="false" itemID="683bb32a-00001a3c" lastModified="1748742954"/>
           <Include href="箱子素材/纸箱/纸箱板2.xml" loadImmediate="false" itemID="683bb350-00001a3e" lastModified="1748742992"/>
           <Include href="箱子素材/纸箱/纸箱本体素材.xml" loadImmediate="false" itemID="683802fa-00002528" lastModified="1748746329"/>
@@ -225,7 +225,7 @@
           <Include href="箱子素材/纸箱/纸箱碎片7.xml" loadImmediate="false" itemID="68380c1e-0000262c" lastModified="1748503582"/>
           <Include href="箱子素材/纸箱/纸箱碎片8.xml" loadImmediate="false" itemID="68380c46-00002630" lastModified="1748503622"/>
           <Include href="箱子素材/资源箱/资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748708300"/>
-          <Include href="箱子素材/资源箱/资源箱本体素材.xml" loadImmediate="false" itemID="6836c077-00000f9b" lastModified="1748708086"/>
+          <Include href="箱子素材/资源箱/资源箱本体素材.xml" loadImmediate="false" itemID="6836c077-00000f9b" lastModified="1748749376"/>
           <Include href="箱子素材/资源箱/资源箱盖子1.xml" loadImmediate="false" itemID="683b287b-00001a1b" lastModified="1748707451"/>
           <Include href="箱子素材/资源箱/资源箱盖子2.xml" loadImmediate="false" itemID="683b28ad-00001a1f" lastModified="1748707501"/>
           <Include href="箱子素材/资源箱/资源箱盖子3.xml" loadImmediate="false" itemID="683b2984-00001a25" lastModified="1748707716"/>
@@ -735,6 +735,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="386155" publishTime="1748750013"/>
+          <PublishItem publishSize="386160" publishTime="1748749934"/>
+          <PublishItem publishSize="386160" publishTime="1748749422"/>
+          <PublishItem publishSize="386090" publishTime="1748748152"/>
           <PublishItem publishSize="386092" publishTime="1748747970"/>
           <PublishItem publishSize="386111" publishTime="1748747686"/>
           <PublishItem publishSize="393195" publishTime="1748747488"/>
@@ -751,9 +755,5 @@
           <PublishItem publishSize="374713" publishTime="1748745246"/>
           <PublishItem publishSize="374650" publishTime="1748745099"/>
           <PublishItem publishSize="374584" publishTime="1748744811"/>
-          <PublishItem publishSize="374581" publishTime="1748744760"/>
-          <PublishItem publishSize="374526" publishTime="1748744632"/>
-          <PublishItem publishSize="374488" publishTime="1748744529"/>
-          <PublishItem publishSize="374258" publishTime="1748744318"/>
      </publishHistory>
 </DOMDocument>

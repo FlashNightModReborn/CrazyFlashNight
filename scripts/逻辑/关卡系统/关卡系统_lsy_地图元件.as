@@ -231,7 +231,8 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip){
 			target.dispatcher.publish("kill", target);
 
 			var scavenger:MovieClip = _root.gameworld[_root.控制目标];
-			_root.播放音效("拾取音效");
+			var audio:String = target.audio || "拾取音效";
+			_root.播放音效(audio);
 
 			scavenger.拾取();
 		}

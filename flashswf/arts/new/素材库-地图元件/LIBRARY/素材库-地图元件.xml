@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -55,7 +55,7 @@
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜" centerPoint3DX="-426.35" centerPoint3DY="132.3">
+                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜" selected="true" centerPoint3DX="-426.35" centerPoint3DY="132.3">
                   <matrix>
                     <Matrix tx="-426.85" ty="174.8"/>
                   </matrix>
@@ -78,7 +78,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -188,7 +188,7 @@
                     <Point x="-16.6" y="-9.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="箱子素材/纸箱/纸箱" selected="true" centerPoint3DX="-127.7" centerPoint3DY="134.45">
+                <DOMSymbolInstance libraryItemName="箱子素材/纸箱/纸箱" centerPoint3DX="-127.7" centerPoint3DY="134.45">
                   <matrix>
                     <Matrix tx="-128.2" ty="176.95"/>
                   </matrix>
