@@ -1,18 +1,21 @@
 ﻿/**
  * 路径: org/flashNight/arki/unit/Action/PickUp/PickUpManager.as
  */
+
+import org.flashNight.neur.Event.*;
+import org.flashNight.aven.Coordinator.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
 class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     
     private var count:Number;
     private var pickupItemDict:Object;
     private var dispatcher:Object; // LifecycleEventDispatcher
-    private var gameworld:MovieClip;
     
     /**
      * 构造函数
      */
-    function PickUpManager(gameworld:MovieClip) {
-        this.gameworld = gameworld;
+    function PickUpManager() {
         this.count = 0;
         this.createPickupItemPool();
     }
@@ -22,11 +25,11 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
      */
     function createPickupItemPool():Void {
         this.pickupItemDict = {};
-        this.dispatcher = new org.flashNight.nane.util.LifecycleEventDispatcher(this.gameworld);
+        this.dispatcher = new LifecycleEventDispatcher(_root.gameworld);
         
-        var self:org.flashNight.arki.unit.Action.PickUpManager = this;
-        org.flashNight.aven.Coordinator.EventCoordinator.addUnloadCallback(
-            this.gameworld, 
+        var self:PickUpManager = this;
+        EventCoordinator.addUnloadCallback(
+            _root.gameworld, 
             function():Void {
                 self.pickupItemDict = null;
                 self.dispatcher.destroy();
@@ -156,10 +159,10 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         parameterObject.数量 = Number(数量);
         parameterObject.在飞 = Boolean(是否飞出);
         
-        var pickupItem:MovieClip = this.gameworld.attachMovie(
+        var pickupItem:MovieClip = _root.gameworld.attachMovie(
             "可拾取物2", 
             "可拾取物" + this.count, 
-            this.gameworld.getNextHighestDepth(), 
+            _root.gameworld.getNextHighestDepth(), 
             parameterObject
         );
         
@@ -173,7 +176,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         this.pickupItemDict[this.count] = pickupItem;
         pickupItem.焦点高亮框._visible = false;
         
-        var self:org.flashNight.arki.unit.Action.PickUpManager = this;
+        var self:PickUpManager = this;
         
         var pickUpFunc:Function = function():Void {
             var focusedObject:MovieClip = TargetCacheManager.findHero();
@@ -222,6 +225,5 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             this.dispatcher = null;
         }
         this.pickupItemDict = null;
-        this.gameworld = null;
     }
 }
