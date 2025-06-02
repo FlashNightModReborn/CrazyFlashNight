@@ -10,7 +10,7 @@ _root.pickupItemManager = new PickUpManager();
 
 // 保持原有全局函数调用方式的兼容性
 _root.创建可拾取物 = function(物品名, 数量, X位置, Y位置, 是否飞出, parameterObject) {
-    return _root.pickupItemManager.创建可拾取物(物品名, 数量, X位置, Y位置, 是否飞出, parameterObject);
+    return _root.pickupItemManager.createCollectible(物品名, 数量, X位置, Y位置, 是否飞出, parameterObject);
 };
 
 
@@ -65,7 +65,8 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 		source.僵尸型敌人总个数--;
 	}
 
-	_root.创建可拾取物(target.内部物,   target.数量,target._x,target._y, true);
+    // _root.发布消息("资源箱破碎: " + target._name);
+	_root.pickupItemManager.createCollectible(target.内部物,   target.数量,target._x,target._y, true);
 }
 
 

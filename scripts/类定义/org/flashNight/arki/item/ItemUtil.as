@@ -76,7 +76,7 @@ class org.flashNight.arki.item.ItemUtil{
             }
         }
         // _root[index] = name;
-        _root.播放音效(音效);
+        _root.soundEffectManager.playSound(音效);
         _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");
         _root.刷新人物装扮(_root.控制目标);
         return true;

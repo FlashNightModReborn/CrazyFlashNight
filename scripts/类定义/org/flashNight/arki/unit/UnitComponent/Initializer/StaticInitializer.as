@@ -231,10 +231,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
      */
     private static function isMapElement(target:MovieClip):Boolean {
         // 可以根据具体需求调整判断条件
-        return target.是否为地图元件 === true || 
-               target.obstacle !== undefined || 
-               target.stainedTarget !== undefined ||
-               (target.数量_min !== undefined && target.数量_max !== undefined);
+        return !!(target.element);
     }
 
     public static function onSceneChanged():Void {

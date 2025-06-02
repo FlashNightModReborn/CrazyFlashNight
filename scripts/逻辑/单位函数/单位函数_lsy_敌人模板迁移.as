@@ -173,7 +173,7 @@ _root.敌人函数.随机掉钱 = function(){
 		//_root.发布消息("金币时间倍率" + 金币时间倍率);
 		var 昼夜爆金币 = this.hp满血值 * 金币时间倍率 / 5;
 		
-		_root.创建可拾取物("金钱",random(昼夜爆金币),this._x,this._y,true);
+		_root.pickupItemManager.createCollectible("金钱",random(昼夜爆金币),this._x,this._y,true);
 	}
 };
 
@@ -190,30 +190,22 @@ _root.敌人函数.计算经验值 = function(){
 };
 
 _root.敌人函数.攻击呐喊 = function(){
-	if (性别 === "女"){
-		_root.播放音效(女_攻击呐喊_库[random(女_攻击呐喊_库.length)]);
-	}else{
-		_root.播放音效(男_攻击呐喊_库[random(男_攻击呐喊_库.length)]);
-	}
+	var arr:Array = 性别 === "女" ? 女_攻击呐喊_库 : 男_攻击呐喊_库;
+	_root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
 
 _root.敌人函数.中招呐喊 = function(){
-	if (性别 === "女"){
-		_root.播放音效(女_中招呐喊_库[random(女_中招呐喊_库.length)]);
-	}else{
-		_root.播放音效(男_中招呐喊_库[random(男_中招呐喊_库.length)]);
-	}
+	var arr:Array = 性别 === "女" ? 女_中招呐喊_库 : 男_中招呐喊_库;
+	_root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
 
 _root.敌人函数.击倒呐喊 = function(){
 	var time = getTimer();
 	if(time - this.上次击倒呐喊时间 < 300) return; // 击倒呐喊的最低间隔为300毫秒
 	this.上次击倒呐喊时间 = time;
-	if (性别 === "女"){
-		_root.播放音效(女_击倒呐喊_库[random(女_击倒呐喊_库.length)]);
-	}else{
-		_root.播放音效(男_击倒呐喊_库[random(男_击倒呐喊_库.length)]);
-	}
+
+	var arr:Array = 性别 === "女" ? 女_击倒音效_库 : 男_击倒音效_库;
+	_root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
 
 
@@ -262,7 +254,7 @@ _root.敌人函数.掉落物品 = function(item){
 		if(item.总数 < 数量) 数量 = item.总数;
 		item.总数 -= 数量;
 		var yoffset = random(21) - 10;
-		_root.创建可拾取物(item.名字,数量,this._x, this._y + yoffset, true);
+		_root.pickupItemManager.createCollectible(item.名字,数量,this._x, this._y + yoffset, true);
 	}
 }
 

@@ -4,8 +4,8 @@ _root.关卡回调函数 = new Object();
 
 _root.关卡回调函数.新手练习场_1 = function(){
 	_root.新手引导界面.显示指引("拾取",800);
-	_root.创建可拾取物("金钱",10,700,400,false);
-	_root.创建可拾取物("砖",2,750,500,false);
+	_root.pickupItemManager.createCollectible("金钱",10,700,400,false);
+	_root.pickupItemManager.createCollectible("砖",2,750,500,false);
 }
 
 _root.关卡回调函数.新手练习场_2 = function(){
@@ -20,7 +20,7 @@ _root.关卡回调函数.AVP_重设光照 = function(最大光照,最小光照){
 }
 
 _root.关卡回调函数.贫民窟_3 = function(){
-	_root.创建可拾取物("资料",5,1438,400,false);
+	_root.pickupItemManager.createCollectible("资料",5,1438,400,false);
 }
 
 _root.关卡回调函数.贫民窟_6 = function(){

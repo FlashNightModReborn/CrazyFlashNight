@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱本体素材" itemID="6836c077-00000f9b" lastModified="1748833505" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="资源箱本体素材" currentFrame="67">
+    <DOMTimeline name="资源箱本体素材" currentFrame="69">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF">
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -95,7 +95,7 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
             </DOMFrame>
             <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱碎片3" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱碎片3" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.622756958007813" b="0.77935791015625" c="-0.779342651367188" d="0.622756958007813" tx="12.9" ty="17.1"/>
                   </matrix>
@@ -922,7 +922,7 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="资源箱碎片8" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="资源箱碎片8" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -1612,22 +1612,22 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!90 206[#71.C5 206 137 206!137 206|203 207!203 207[224 207 245 207!245 207|470 207!470 207[477 207 484 207!484 207[582 207 680 207!680 207[789 207 897 207!897 207|971 207"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!971 207|1000 229"/>
                     <Edge fillStyle1="1" edges="!1000 229|1000 228"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!1000 228|1222.5 433"/>
                     <Edge fillStyle1="1" edges="!1222.5 433[#4C0.8B #1B0.F8 1210.5 433"/>
                     <Edge fillStyle1="2" edges="!1210.5 433[#4A2.16 #1B0.C4 1161.5 432.5!1161.5 432.5|1096 432!1096 432[#432.A #1AF.E7 1053.5 432!1053.5 432|829 432!829 432[822 #1AF.F6 815 432!815 432[717 #1AF.E6 619 432!619 432[#200.62 #1AF.F1 406 432"/>
                     <Edge fillStyle1="1" edges="!406 432[#138.69 #1A5.DD 326 421!326 421|73.5 206"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!73.5 206[#51.C9 206 90 206"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!90 206[#71.C5 206 137 206!137 206|203 207!203 207[224 207 245 207!245 207|470 207!470 207[477 207 484 207!484 207[582 207 680 207!680 207[789 207 897 207!897 207|971 207"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!971 207|1000 229"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!1210.5 433|1086 402"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!1086 402|340 397"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!340 397|406 432"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!971 207|952 265"/>
                     <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!952 265|1086 402"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!90 206|212 265"/>
-                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!212 265|952 265"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!971 207|952 265"/>
                     <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!340 397|212 265"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!212 265|90 206"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!212 265|952 265"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1793,33 +1793,34 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle1="11" strokeStyle="1" edges="!0 463|0 425"/>
                     <Edge fillStyle1="14" strokeStyle="1" edges="!0 425|79 425"/>
                     <Edge fillStyle1="13" strokeStyle="1" edges="!79 425|79 211"/>
-                    <Edge strokeStyle="1" edges="!79 211|73.5 206!829 432|854.5 431.5"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!854.5 431.5|1053 432"/>
-                    <Edge fillStyle1="5" edges="!1053 432|1053.5 432"/>
-                    <Edge fillStyle1="5" strokeStyle="1" edges="!1053.5 432[#432.A #1AF.E7 1096 432"/>
+                    <Edge strokeStyle="1" edges="!79 211|73.5 206"/>
+                    <Edge fillStyle1="1" edges="!843 432|854.5 431.5"/>
+                    <Edge strokeStyle="1" edges="!854.5 431.5|829 432"/>
+                    <Edge fillStyle1="10" edges="!829 432|843 432"/>
+                    <Edge fillStyle1="10" strokeStyle="1" edges="!619 432[717 #1AF.E6 815 432!815 432[822 #1AF.F6 829 432"/>
+                    <Edge fillStyle0="5" edges="!1145 432.5|1096 433!1096 433|1096 432"/>
+                    <Edge fillStyle0="5" strokeStyle="1" edges="!1096 432[#432.A #1AF.E7 1053.5 432"/>
+                    <Edge fillStyle0="5" edges="!1053.5 432|1053 432"/>
+                    <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="!1053 432|1053 714"/>
+                    <Edge fillStyle0="5" fillStyle1="2" strokeStyle="1" edges="!1053 714|1227 714"/>
+                    <Edge fillStyle0="5" fillStyle1="6" strokeStyle="1" edges="!1227 714|1227 640"/>
                     <Edge strokeStyle="1" edges="!1096 432|1145 432.5"/>
                     <Edge fillStyle1="5" strokeStyle="1" edges="!1145 432.5|1161.5 432.5!1161.5 432.5[#4A2.16 #1B0.C4 1210.5 433"/>
                     <Edge strokeStyle="1" edges="!1210.5 433[#4C0.8B #1B0.F8 1222.5 433"/>
-                    <Edge fillStyle1="10" strokeStyle="1" edges="!619 432[717 #1AF.E6 815 432!815 432[822 #1AF.F6 829 432"/>
-                    <Edge fillStyle1="10" edges="!829 432|843 432"/>
-                    <Edge fillStyle1="1" edges="!843 432|854.5 431.5"/>
-                    <Edge fillStyle0="5" edges="!1145 432.5|1096 433!1096 433|1096 432"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!843 714|1053 714"/>
-                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="!1053 714|1053 432"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!854.5 431.5|1053 432"/>
                     <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!1059 820|843 820"/>
                     <Edge fillStyle0="3" fillStyle1="39" strokeStyle="1" edges="!843 820|843 1018"/>
                     <Edge fillStyle0="3" fillStyle1="31" strokeStyle="1" edges="!843 1018|1059 1018"/>
                     <Edge fillStyle0="3" fillStyle1="9" strokeStyle="1" edges="!1059 1018|1059 820"/>
-                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="!1227 640|1227 714"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!843 714|1053 714"/>
                     <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!1227 714|1247 714"/>
                     <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="!1247 714|1317 714"/>
-                    <Edge fillStyle0="8" fillStyle1="4" edges="!1247 752|1247 820"/>
                     <Edge fillStyle0="7" fillStyle1="8" edges="!1247 752|1317 752"/>
+                    <Edge fillStyle0="8" fillStyle1="4" edges="!1247 752|1247 820"/>
                     <Edge fillStyle0="2" fillStyle1="7" edges="!1247 752|1247 714"/>
-                    <Edge fillStyle0="9" fillStyle1="4" strokeStyle="1" edges="!1227 820|1059 820"/>
-                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!1227 714|1053 714"/>
-                    <Edge fillStyle1="5" strokeStyle="1" edges="!1210.5 433|1227 437"/>
                     <Edge fillStyle0="1" fillStyle1="10" strokeStyle="1" edges="!843 432|843 714"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!1210.5 433|1227 437"/>
+                    <Edge fillStyle0="9" fillStyle1="4" strokeStyle="1" edges="!1227 820|1059 820"/>
                     <Edge fillStyle0="13" fillStyle1="12" strokeStyle="1" edges="!145 271|145 270"/>
                     <Edge fillStyle0="13" edges="!145 270|120 248"/>
                     <Edge fillStyle0="13" fillStyle1="13" strokeStyle="1" edges="!120 248|145 271"/>
@@ -1829,6 +1830,7 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="12" edges="!209 328|145 270"/>
                     <Edge fillStyle0="16" fillStyle1="15" strokeStyle="1" edges="!299 410.5|299 410"/>
                     <Edge fillStyle0="16" edges="!299 410|209 328"/>
+                    <Edge fillStyle0="15" strokeStyle="1" edges="!402 432|328 432"/>
                     <Edge fillStyle0="15" edges="!328 432|319 432"/>
                     <Edge fillStyle0="15" strokeStyle="1" edges="!319 432|319 428!319 428|328 432!328 432|315.5 424.5!315.5 424.5[#138.69 #1A5.DD 309.5 419"/>
                     <Edge fillStyle0="15" fillStyle1="15" strokeStyle="1" edges="!309.5 419|299 410.5"/>
@@ -1836,70 +1838,69 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="15" fillStyle1="14" strokeStyle="1" edges="!299 623|401 714"/>
                     <Edge fillStyle0="15" fillStyle1="17" strokeStyle="1" edges="!401 714|402 714"/>
                     <Edge fillStyle0="15" fillStyle1="28" strokeStyle="1" edges="!402 714|402 432"/>
-                    <Edge fillStyle0="15" strokeStyle="1" edges="!402 432|328 432"/>
-                    <Edge fillStyle0="16" fillStyle1="16" strokeStyle="1" edges="!209 329|299 410.5"/>
                     <Edge fillStyle1="15" strokeStyle="1" edges="!299 410|309.5 419"/>
-                    <Edge fillStyle0="13" strokeStyle="1" edges="!120 248|79 211"/>
+                    <Edge fillStyle0="16" fillStyle1="16" strokeStyle="1" edges="!209 329|299 410.5"/>
                     <Edge fillStyle0="12" fillStyle1="12" strokeStyle="1" edges="!145 271|209 329"/>
+                    <Edge fillStyle0="13" strokeStyle="1" edges="!120 248|79 211"/>
+                    <Edge fillStyle0="17" fillStyle1="14" strokeStyle="1" edges="!401 714|319 714"/>
+                    <Edge fillStyle0="17" fillStyle1="18" strokeStyle="1" edges="!319 714|319 752"/>
+                    <Edge fillStyle0="17" fillStyle1="23" edges="!319 752|402 752"/>
+                    <Edge fillStyle0="17" fillStyle1="2" edges="!402 752|402 714"/>
+                    <Edge fillStyle0="16" fillStyle1="14" strokeStyle="1" edges="!208 541|299 623"/>
+                    <Edge fillStyle0="18" fillStyle1="14" strokeStyle="1" edges="!319 714|299 696"/>
                     <Edge fillStyle0="18" fillStyle1="11" edges="!299 696|299 734"/>
                     <Edge fillStyle0="18" fillStyle1="20" edges="!299 734|299 800"/>
                     <Edge fillStyle0="18" fillStyle1="24" strokeStyle="1" edges="!299 800|319 818"/>
                     <Edge fillStyle0="18" fillStyle1="23" strokeStyle="1" edges="!319 818|319 752"/>
-                    <Edge fillStyle0="18" fillStyle1="17" strokeStyle="1" edges="!319 752|319 714"/>
-                    <Edge fillStyle0="18" fillStyle1="14" strokeStyle="1" edges="!319 714|299 696"/>
-                    <Edge fillStyle0="16" fillStyle1="14" strokeStyle="1" edges="!208 541|299 623"/>
-                    <Edge fillStyle0="17" fillStyle1="14" strokeStyle="1" edges="!401 714|319 714"/>
                     <Edge fillStyle0="19" fillStyle1="20" strokeStyle="1" edges="!144 660|79 601"/>
-                    <Edge fillStyle0="24" fillStyle1="23" strokeStyle="1" edges="!402 820|319 820!319 820|319 818"/>
-                    <Edge fillStyle0="24" fillStyle1="25" strokeStyle="1" edges="!299 800|299 926"/>
-                    <Edge fillStyle0="24" fillStyle1="21" strokeStyle="1" edges="!299 926|401 1018"/>
-                    <Edge fillStyle0="24" strokeStyle="1" edges="!401 1018|402 1018"/>
-                    <Edge fillStyle0="24" fillStyle1="29" strokeStyle="1" edges="!402 1018|402 820"/>
-                    <Edge fillStyle0="25" fillStyle1="21" strokeStyle="1" edges="!208 843|299 926"/>
-                    <Edge fillStyle0="23" fillStyle1="17" edges="!402 752|319 752"/>
                     <Edge fillStyle0="23" fillStyle1="4" edges="!402 820|402 752"/>
+                    <Edge fillStyle0="25" fillStyle1="21" strokeStyle="1" edges="!208 843|299 926"/>
+                    <Edge fillStyle0="25" fillStyle1="24" strokeStyle="1" edges="!299 926|299 800"/>
                     <Edge fillStyle0="25" fillStyle1="20" strokeStyle="1" edges="!299 800|208 718"/>
                     <Edge fillStyle0="25" fillStyle1="26" strokeStyle="1" edges="!208 718|208 843"/>
-                    <Edge fillStyle0="26" fillStyle1="19" strokeStyle="1" edges="!144 660|144 785"/>
-                    <Edge fillStyle0="26" fillStyle1="21" strokeStyle="1" edges="!144 785|208 843"/>
-                    <Edge fillStyle0="26" fillStyle1="20" strokeStyle="1" edges="!208 718|144 660"/>
+                    <Edge fillStyle0="24" fillStyle1="23" strokeStyle="1" edges="!402 820|319 820!319 820|319 818"/>
                     <Edge fillStyle0="19" fillStyle1="21" strokeStyle="1" edges="!79 726|144 785"/>
-                    <Edge fillStyle0="2" fillStyle1="17" edges="!402 714|402 752"/>
-                    <Edge fillStyle0="2" fillStyle1="4" edges="!402 752|1247 752"/>
-                    <Edge fillStyle0="28" strokeStyle="1" edges="!619 432[#1FE.61 #1AF.F1 402 432"/>
-                    <Edge fillStyle0="28" fillStyle1="10" strokeStyle="1" edges="!619 714|619 432"/>
-                    <Edge fillStyle0="20" fillStyle1="11" edges="!299 734|0 463"/>
-                    <Edge fillStyle0="16" fillStyle1="12" strokeStyle="1" edges="!209 329|208 541"/>
-                    <Edge fillStyle0="29" fillStyle1="4" strokeStyle="1" edges="!621 820|402 820"/>
-                    <Edge fillStyle0="2" fillStyle1="28" strokeStyle="1" edges="!619 714|402 714"/>
-                    <Edge fillStyle0="11" fillStyle1="14" strokeStyle="1" edges="!299 696|0 425"/>
+                    <Edge fillStyle0="19" fillStyle1="26" strokeStyle="1" edges="!144 785|144 660"/>
+                    <Edge fillStyle0="26" fillStyle1="20" strokeStyle="1" edges="!208 718|144 660"/>
+                    <Edge fillStyle0="26" fillStyle1="21" strokeStyle="1" edges="!144 785|208 843"/>
                     <Edge fillStyle0="12" fillStyle1="14" strokeStyle="1" edges="!144 484|208 541"/>
+                    <Edge fillStyle0="12" fillStyle1="16" strokeStyle="1" edges="!208 541|209 329"/>
+                    <Edge fillStyle0="11" fillStyle1="14" strokeStyle="1" edges="!299 696|0 425"/>
+                    <Edge fillStyle0="2" fillStyle1="28" strokeStyle="1" edges="!619 714|402 714"/>
+                    <Edge fillStyle0="29" fillStyle1="4" strokeStyle="1" edges="!621 820|402 820"/>
+                    <Edge fillStyle0="29" fillStyle1="24" strokeStyle="1" edges="!402 820|402 1018"/>
+                    <Edge fillStyle0="29" fillStyle1="31" strokeStyle="1" edges="!402 1018|621 1018"/>
+                    <Edge fillStyle0="29" fillStyle1="39" strokeStyle="1" edges="!621 1018|621 820"/>
+                    <Edge fillStyle0="20" fillStyle1="11" edges="!299 734|0 463"/>
+                    <Edge fillStyle0="28" fillStyle1="10" strokeStyle="1" edges="!619 714|619 432"/>
+                    <Edge fillStyle0="28" strokeStyle="1" edges="!619 432[#1FE.61 #1AF.F1 402 432"/>
+                    <Edge fillStyle0="31" strokeStyle="1" edges="!402 1018|402 1019"/>
+                    <Edge fillStyle0="31" fillStyle1="30" edges="!402 1019|402 1061"/>
+                    <Edge fillStyle0="31" fillStyle1="35" edges="!402 1061|1242 1061"/>
+                    <Edge fillStyle0="31" fillStyle1="36" edges="!1242 1061|1242 1018"/>
+                    <Edge fillStyle0="31" fillStyle1="37" strokeStyle="1" edges="!1242 1018|1227 1018"/>
+                    <Edge fillStyle0="31" fillStyle1="9" strokeStyle="1" edges="!1227 1018|1059 1018"/>
+                    <Edge fillStyle0="24" strokeStyle="1" edges="!401 1018|402 1018"/>
                     <Edge fillStyle0="30" strokeStyle="1" edges="!402 1019|401 1018"/>
                     <Edge fillStyle0="30" fillStyle1="21" strokeStyle="1" edges="!401 1018|321 1018"/>
                     <Edge fillStyle0="30" fillStyle1="27" strokeStyle="1" edges="!321 1018|319 1018!319 1018|319 1061"/>
                     <Edge fillStyle0="30" fillStyle1="32" edges="!319 1061|402 1061"/>
-                    <Edge fillStyle0="30" fillStyle1="31" edges="!402 1061|402 1019"/>
-                    <Edge fillStyle0="31" strokeStyle="1" edges="!402 1018|402 1019"/>
-                    <Edge fillStyle0="32" fillStyle1="33" strokeStyle="1" edges="!319 1118|402 1124"/>
-                    <Edge fillStyle0="32" fillStyle1="35" edges="!402 1124|402 1061"/>
                     <Edge fillStyle0="33" fillStyle1="34" strokeStyle="1" edges="!402 1178|402 1124"/>
+                    <Edge fillStyle0="33" fillStyle1="32" strokeStyle="1" edges="!402 1124|319 1118"/>
                     <Edge fillStyle0="32" fillStyle1="22" strokeStyle="1" edges="!319 1061|319 1118"/>
-                    <Edge fillStyle0="29" fillStyle1="31" strokeStyle="1" edges="!402 1018|621 1018"/>
-                    <Edge fillStyle0="29" fillStyle1="39" strokeStyle="1" edges="!621 1018|621 820"/>
-                    <Edge fillStyle0="31" fillStyle1="36" edges="!1242 1061|1242 1018"/>
-                    <Edge fillStyle0="31" fillStyle1="37" strokeStyle="1" edges="!1242 1018|1227 1018"/>
-                    <Edge fillStyle0="31" fillStyle1="9" strokeStyle="1" edges="!1227 1018|1059 1018"/>
+                    <Edge fillStyle0="32" fillStyle1="35" edges="!402 1124|402 1061"/>
                     <Edge fillStyle0="37" fillStyle1="36" strokeStyle="1" edges="!1242 1018|1308 1018"/>
-                    <Edge fillStyle0="35" fillStyle1="38" edges="!1242 1124|1242 1061"/>
-                    <Edge fillStyle0="35" fillStyle1="31" edges="!1242 1061|402 1061"/>
                     <Edge fillStyle0="38" fillStyle1="36" edges="!1317 1061|1242 1061"/>
-                    <Edge fillStyle0="39" fillStyle1="31" strokeStyle="1" edges="!621 1018|843 1018"/>
-                    <Edge fillStyle0="35" fillStyle1="34" strokeStyle="1" edges="!402 1124|1242 1124"/>
-                    <Edge fillStyle0="27" fillStyle1="22" edges="!0 763|319 1061"/>
-                    <Edge fillStyle0="27" fillStyle1="21" strokeStyle="1" edges="!321 1018|0 725"/>
-                    <Edge fillStyle0="37" fillStyle1="9" strokeStyle="1" edges="!1227 937|1227 1018"/>
-                    <Edge fillStyle0="39" fillStyle1="4" strokeStyle="1" edges="!843 820|621 820"/>
+                    <Edge fillStyle0="38" fillStyle1="35" edges="!1242 1061|1242 1124"/>
                     <Edge fillStyle0="2" fillStyle1="10" strokeStyle="1" edges="!843 714|619 714"/>
+                    <Edge fillStyle0="39" fillStyle1="4" strokeStyle="1" edges="!843 820|621 820"/>
+                    <Edge fillStyle0="37" fillStyle1="9" strokeStyle="1" edges="!1227 937|1227 1018"/>
+                    <Edge fillStyle0="27" fillStyle1="21" strokeStyle="1" edges="!321 1018|0 725"/>
+                    <Edge fillStyle0="27" fillStyle1="22" edges="!0 763|319 1061"/>
+                    <Edge fillStyle0="35" fillStyle1="34" strokeStyle="1" edges="!402 1124|1242 1124"/>
+                    <Edge fillStyle0="39" fillStyle1="31" strokeStyle="1" edges="!621 1018|843 1018"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!402 752|1247 752"/>
+                    <Edge fillStyle0="24" fillStyle1="21" strokeStyle="1" edges="!299 926|401 1018"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2051,11 +2052,11 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!843 432|1053 432"/>
                     <Edge fillStyle0="1" fillStyle1="7" strokeStyle="1" edges="!1053 432|1227 432"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!1227 432|1240 432"/>
+                    <Edge fillStyle0="2" fillStyle1="16" strokeStyle="1" edges="!843 502|870 495!870 495|867 509!867 509|867 510!867 510|893 502!893 502|912 473!912 473|923 493!923 493|924 493"/>
                     <Edge fillStyle0="2" fillStyle1="42" strokeStyle="1" edges="!924 493|927 492!927 492|925 497"/>
                     <Edge fillStyle0="2" fillStyle1="16" strokeStyle="1" edges="!925 497|972 578"/>
                     <Edge fillStyle0="2" fillStyle1="42" strokeStyle="1" edges="!972 578|993.5 568.5"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!993.5 568.5|1007 555"/>
-                    <Edge fillStyle0="2" fillStyle1="16" strokeStyle="1" edges="!843 502|870 495!870 495|867 509!867 509|867 510!867 510|893 502!893 502|912 473!912 473|923 493!923 493|924 493"/>
                     <Edge fillStyle0="42" fillStyle1="2" strokeStyle="1" edges="!1053 590.5|1031 579!1031 579|1034 577!1034 577|1027 577!1027 577|1001 565!1001 565|993.5 568.5"/>
                     <Edge fillStyle0="42" fillStyle1="42" strokeStyle="1" edges="!993.5 568.5|978 584"/>
                     <Edge fillStyle0="42" fillStyle1="16" edges="!978 584|843 717.5"/>
@@ -2103,88 +2104,88 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="5" fillStyle1="6" strokeStyle="1" edges="!1247 714|1227 714"/>
                     <Edge fillStyle0="5" fillStyle1="7" strokeStyle="1" edges="!1227 714|1123 714"/>
                     <Edge fillStyle0="6" fillStyle1="8" strokeStyle="1" edges="!1247 714|1317 714"/>
+                    <Edge fillStyle0="8" fillStyle1="9" edges="!1247 752|1317 752"/>
                     <Edge fillStyle0="4" fillStyle1="9" edges="!1247 820|1247 752"/>
                     <Edge fillStyle0="4" fillStyle1="5" edges="!1247 752|963 752"/>
-                    <Edge fillStyle0="8" fillStyle1="9" edges="!1247 752|1317 752"/>
                     <Edge fillStyle0="5" fillStyle1="8" edges="!1247 752|1247 714"/>
-                    <Edge fillStyle0="10" fillStyle1="4" strokeStyle="1" edges="!1227 820|1059 820"/>
-                    <Edge fillStyle0="11" fillStyle1="2" strokeStyle="1" edges="!843 502|843 432"/>
-                    <Edge fillStyle0="7" fillStyle1="2" strokeStyle="1" edges="!1053 432|1053 590.5"/>
                     <Edge fillStyle0="16" fillStyle1="42" edges="!925 497|924 493"/>
+                    <Edge fillStyle0="7" fillStyle1="2" strokeStyle="1" edges="!1053 432|1053 590.5"/>
+                    <Edge fillStyle0="11" fillStyle1="2" strokeStyle="1" edges="!843 502|843 432"/>
+                    <Edge fillStyle0="10" fillStyle1="4" strokeStyle="1" edges="!1227 820|1059 820"/>
+                    <Edge fillStyle0="13" fillStyle1="12" strokeStyle="1" edges="!79 425|144 484"/>
                     <Edge fillStyle0="13" fillStyle1="14" strokeStyle="1" edges="!144 484|145 270"/>
                     <Edge fillStyle0="13" strokeStyle="1" edges="!145 270|79 211"/>
-                    <Edge fillStyle0="13" fillStyle1="12" strokeStyle="1" edges="!79 425|144 484"/>
-                    <Edge fillStyle1="17" strokeStyle="1" edges="!209 328|299 410"/>
                     <Edge fillStyle1="16" strokeStyle="1" edges="!299 410|319 428!319 428|319 432!319 432|402 432"/>
+                    <Edge fillStyle1="17" strokeStyle="1" edges="!209 328|299 410"/>
                     <Edge fillStyle1="14" strokeStyle="1" edges="!145 270|209 328"/>
+                    <Edge fillStyle0="19" fillStyle1="12" strokeStyle="1" edges="!401 714|319 714"/>
+                    <Edge fillStyle0="19" fillStyle1="18" strokeStyle="1" edges="!319 714|319 752"/>
+                    <Edge fillStyle0="19" fillStyle1="26" edges="!319 752|402 752"/>
+                    <Edge fillStyle0="19" fillStyle1="5" edges="!402 752|402 714"/>
+                    <Edge fillStyle0="19" fillStyle1="16" strokeStyle="1" edges="!402 714|401 714"/>
+                    <Edge fillStyle0="12" fillStyle1="17" strokeStyle="1" edges="!299 623|208 541"/>
+                    <Edge fillStyle0="12" fillStyle1="14" strokeStyle="1" edges="!208 541|144 484"/>
+                    <Edge fillStyle0="12" fillStyle1="16" strokeStyle="1" edges="!401 714|299 623"/>
                     <Edge fillStyle0="18" fillStyle1="12" strokeStyle="1" edges="!319 714|299 696"/>
                     <Edge fillStyle0="18" fillStyle1="15" edges="!299 696|299 734"/>
                     <Edge fillStyle0="18" fillStyle1="21" edges="!299 734|299 800"/>
                     <Edge fillStyle0="18" fillStyle1="24" strokeStyle="1" edges="!299 800|319 818"/>
                     <Edge fillStyle0="18" fillStyle1="26" strokeStyle="1" edges="!319 818|319 752"/>
-                    <Edge fillStyle0="18" fillStyle1="19" strokeStyle="1" edges="!319 752|319 714"/>
-                    <Edge fillStyle0="12" fillStyle1="16" strokeStyle="1" edges="!401 714|299 623"/>
-                    <Edge fillStyle0="12" fillStyle1="17" strokeStyle="1" edges="!299 623|208 541"/>
-                    <Edge fillStyle0="12" fillStyle1="14" strokeStyle="1" edges="!208 541|144 484"/>
-                    <Edge fillStyle0="19" fillStyle1="16" strokeStyle="1" edges="!402 714|401 714"/>
-                    <Edge fillStyle0="19" fillStyle1="12" strokeStyle="1" edges="!401 714|319 714"/>
                     <Edge fillStyle0="20" fillStyle1="21" strokeStyle="1" edges="!144 660|79 601"/>
-                    <Edge fillStyle0="22" fillStyle1="25" strokeStyle="1" edges="!299 926|208 843"/>
-                    <Edge fillStyle0="22" fillStyle1="27" strokeStyle="1" edges="!208 843|144 785"/>
-                    <Edge fillStyle0="22" fillStyle1="20" strokeStyle="1" edges="!144 785|79 726"/>
-                    <Edge fillStyle0="26" fillStyle1="24" strokeStyle="1" edges="!319 818|319 820!319 820|402 820"/>
-                    <Edge fillStyle0="26" fillStyle1="4" edges="!402 820|402 752"/>
-                    <Edge fillStyle0="26" fillStyle1="19" edges="!402 752|319 752"/>
                     <Edge fillStyle0="25" fillStyle1="24" strokeStyle="1" edges="!299 926|299 800"/>
                     <Edge fillStyle0="25" fillStyle1="21" strokeStyle="1" edges="!299 800|208 718"/>
                     <Edge fillStyle0="25" fillStyle1="27" strokeStyle="1" edges="!208 718|208 843"/>
-                    <Edge fillStyle0="27" fillStyle1="20" strokeStyle="1" edges="!144 660|144 785"/>
+                    <Edge fillStyle0="25" fillStyle1="22" strokeStyle="1" edges="!208 843|299 926"/>
+                    <Edge fillStyle0="26" fillStyle1="4" edges="!402 820|402 752"/>
+                    <Edge fillStyle0="26" fillStyle1="24" strokeStyle="1" edges="!319 818|319 820!319 820|402 820"/>
                     <Edge fillStyle0="27" fillStyle1="21" strokeStyle="1" edges="!208 718|144 660"/>
-                    <Edge fillStyle0="19" fillStyle1="5" edges="!402 752|402 714"/>
+                    <Edge fillStyle0="27" fillStyle1="20" strokeStyle="1" edges="!144 660|144 785"/>
+                    <Edge fillStyle0="27" fillStyle1="22" strokeStyle="1" edges="!144 785|208 843"/>
+                    <Edge fillStyle0="22" fillStyle1="20" strokeStyle="1" edges="!144 785|79 726"/>
                     <Edge fillStyle0="11" fillStyle1="16" strokeStyle="1" edges="!793 658|798 650!798 650|637 599!637 599|802 586!802 586|747 526!747 526|843 502"/>
+                    <Edge fillStyle0="5" fillStyle1="41" strokeStyle="1" edges="!793 717|789 717!789 717|802 730!802 730|739 741!739 741|747 729!747 729|619 735!619 735|666.5 714"/>
                     <Edge fillStyle0="5" fillStyle1="11" strokeStyle="1" edges="!666.5 714|619 714"/>
                     <Edge fillStyle0="5" fillStyle1="29" strokeStyle="1" edges="!619 714|402 714"/>
-                    <Edge fillStyle0="5" fillStyle1="41" strokeStyle="1" edges="!793 717|789 717!789 717|802 730!802 730|739 741!739 741|747 729!747 729|619 735!619 735|666.5 714"/>
                     <Edge fillStyle0="41" fillStyle1="16" edges="!793 717|793 658"/>
                     <Edge fillStyle0="41" fillStyle1="11" strokeStyle="1" edges="!793 658|666.5 714"/>
-                    <Edge fillStyle0="14" fillStyle1="17" strokeStyle="1" edges="!208 541|209 328"/>
-                    <Edge fillStyle0="21" fillStyle1="15" edges="!299 734|0 463"/>
-                    <Edge fillStyle0="12" fillStyle1="15" strokeStyle="1" edges="!0 425|299 696"/>
+                    <Edge fillStyle0="17" fillStyle1="16" strokeStyle="1" edges="!299 623|299 410"/>
+                    <Edge fillStyle0="29" fillStyle1="16" strokeStyle="1" edges="!402 432|402 714"/>
+                    <Edge fillStyle0="11" fillStyle1="29" strokeStyle="1" edges="!619 432|619 714"/>
                     <Edge fillStyle0="30" fillStyle1="4" strokeStyle="1" edges="!621 820|402 820"/>
                     <Edge fillStyle0="30" fillStyle1="24" strokeStyle="1" edges="!402 820|402 1018"/>
                     <Edge fillStyle0="30" fillStyle1="31" strokeStyle="1" edges="!402 1018|621 1018"/>
                     <Edge fillStyle0="30" fillStyle1="40" strokeStyle="1" edges="!621 1018|621 820"/>
-                    <Edge fillStyle0="11" fillStyle1="29" strokeStyle="1" edges="!619 432|619 714"/>
-                    <Edge fillStyle0="29" fillStyle1="16" strokeStyle="1" edges="!402 432|402 714"/>
-                    <Edge fillStyle0="17" fillStyle1="16" strokeStyle="1" edges="!299 623|299 410"/>
-                    <Edge fillStyle1="31" strokeStyle="1" edges="!402 1019|402 1018"/>
-                    <Edge fillStyle1="24" strokeStyle="1" edges="!402 1018|401 1018"/>
-                    <Edge fillStyle1="32" strokeStyle="1" edges="!401 1018|402 1019"/>
-                    <Edge fillStyle0="22" fillStyle1="32" strokeStyle="1" edges="!321 1018|401 1018"/>
-                    <Edge fillStyle0="22" fillStyle1="24" strokeStyle="1" edges="!401 1018|299 926"/>
-                    <Edge fillStyle0="28" fillStyle1="32" strokeStyle="1" edges="!319 1061|319 1018!319 1018|321 1018"/>
-                    <Edge fillStyle0="28" fillStyle1="22" strokeStyle="1" edges="!321 1018|0 725"/>
-                    <Edge fillStyle0="33" fillStyle1="32" edges="!402 1061|319 1061"/>
-                    <Edge fillStyle0="33" fillStyle1="23" strokeStyle="1" edges="!319 1061|319 1118"/>
-                    <Edge fillStyle0="33" fillStyle1="34" strokeStyle="1" edges="!319 1118|402 1124"/>
-                    <Edge fillStyle0="33" fillStyle1="36" edges="!402 1124|402 1061"/>
+                    <Edge fillStyle0="12" fillStyle1="15" strokeStyle="1" edges="!0 425|299 696"/>
+                    <Edge fillStyle0="21" fillStyle1="15" edges="!299 734|0 463"/>
+                    <Edge fillStyle0="14" fillStyle1="17" strokeStyle="1" edges="!208 541|209 328"/>
                     <Edge fillStyle0="31" fillStyle1="32" edges="!402 1019|402 1061"/>
                     <Edge fillStyle0="31" fillStyle1="36" edges="!402 1061|1242 1061"/>
                     <Edge fillStyle0="31" fillStyle1="37" edges="!1242 1061|1242 1018"/>
                     <Edge fillStyle0="31" fillStyle1="38" strokeStyle="1" edges="!1242 1018|1227 1018"/>
                     <Edge fillStyle0="31" fillStyle1="10" strokeStyle="1" edges="!1227 1018|1059 1018"/>
+                    <Edge fillStyle0="33" fillStyle1="32" edges="!402 1061|319 1061"/>
+                    <Edge fillStyle0="33" fillStyle1="23" strokeStyle="1" edges="!319 1061|319 1118"/>
+                    <Edge fillStyle0="33" fillStyle1="34" strokeStyle="1" edges="!319 1118|402 1124"/>
+                    <Edge fillStyle0="33" fillStyle1="36" edges="!402 1124|402 1061"/>
+                    <Edge fillStyle0="28" fillStyle1="32" strokeStyle="1" edges="!319 1061|319 1018!319 1018|321 1018"/>
+                    <Edge fillStyle0="28" fillStyle1="22" strokeStyle="1" edges="!321 1018|0 725"/>
+                    <Edge fillStyle0="22" fillStyle1="32" strokeStyle="1" edges="!321 1018|401 1018"/>
+                    <Edge fillStyle0="22" fillStyle1="24" strokeStyle="1" edges="!401 1018|299 926"/>
+                    <Edge fillStyle1="32" strokeStyle="1" edges="!401 1018|402 1019"/>
+                    <Edge fillStyle1="31" strokeStyle="1" edges="!402 1019|402 1018"/>
+                    <Edge fillStyle1="24" strokeStyle="1" edges="!402 1018|401 1018"/>
                     <Edge fillStyle0="34" fillStyle1="35" strokeStyle="1" edges="!402 1178|402 1124"/>
                     <Edge fillStyle0="37" fillStyle1="38" strokeStyle="1" edges="!1308 1018|1242 1018"/>
-                    <Edge fillStyle0="37" edges="!1317 1027|1308 1018"/>
-                    <Edge fillStyle0="36" fillStyle1="39" edges="!1242 1124|1242 1061"/>
                     <Edge fillStyle0="37" fillStyle1="39" edges="!1242 1061|1317 1061"/>
-                    <Edge fillStyle0="40" fillStyle1="31" strokeStyle="1" edges="!621 1018|843 1018"/>
-                    <Edge fillStyle0="10" fillStyle1="38" strokeStyle="1" edges="!1227 1018|1227 937"/>
-                    <Edge fillStyle0="35" fillStyle1="36" strokeStyle="1" edges="!1242 1124|402 1124"/>
-                    <Edge fillStyle0="28" fillStyle1="23" edges="!0 763|319 1061"/>
-                    <Edge fillStyle0="40" fillStyle1="4" strokeStyle="1" edges="!843 820|621 820"/>
-                    <Edge fillStyle0="5" fillStyle1="16" strokeStyle="1" edges="!843 717.5|793 717"/>
+                    <Edge fillStyle0="36" fillStyle1="39" edges="!1242 1124|1242 1061"/>
+                    <Edge fillStyle0="37" edges="!1317 1027|1308 1018"/>
                     <Edge fillStyle0="4" fillStyle1="5" edges="!952 752|402 752"/>
+                    <Edge fillStyle0="5" fillStyle1="16" strokeStyle="1" edges="!843 717.5|793 717"/>
+                    <Edge fillStyle0="40" fillStyle1="4" strokeStyle="1" edges="!843 820|621 820"/>
+                    <Edge fillStyle0="28" fillStyle1="23" edges="!0 763|319 1061"/>
+                    <Edge fillStyle0="35" fillStyle1="36" strokeStyle="1" edges="!1242 1124|402 1124"/>
+                    <Edge fillStyle0="10" fillStyle1="38" strokeStyle="1" edges="!1227 1018|1227 937"/>
+                    <Edge fillStyle0="40" fillStyle1="31" strokeStyle="1" edges="!621 1018|843 1018"/>
                     <Edge cubics="!1240 432(;1240,432 1227,432 1227,432q1240 432 1227 432);"/>
                     <Edge cubics="!1317 363(;1317,363 1240,363 1240,363q1317 363 1240 363);"/>
                     <Edge cubics="!1317 432(;1317,432 1317,363 1317,363q1317 432 1317 363);"/>
@@ -2640,14 +2641,13 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     </StrokeStyle>
                   </strokes>
                   <edges>
+                    <Edge fillStyle0="1" fillStyle1="16" edges="!923 493|924 493!924 493|925 497"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!925 497|927 492!927 492|923 493"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="!1053 432|843 432"/>
                     <Edge fillStyle0="2" fillStyle1="11" strokeStyle="1" edges="!843 432|843 502"/>
                     <Edge fillStyle0="2" fillStyle1="16" strokeStyle="1" edges="!843 502|870 495!870 495|867 509!867 509|867 510!867 510|893 502!893 502|912 473!912 473|923 493"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!923 493|927 492!927 492|925 497"/>
-                    <Edge fillStyle0="2" fillStyle1="16" strokeStyle="1" edges="!925 497|972 578"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!972 578|1001 565!1001 565|1027 577!1027 577|1034 577!1034 577|1031 579!1031 579|1053 590.5"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!1053 590.5|1053 432"/>
-                    <Edge fillStyle0="1" fillStyle1="16" edges="!923 493|924 493!924 493|925 497"/>
                     <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!1081 714|1090.5 714"/>
                     <Edge fillStyle0="3" fillStyle1="1" edges="!1090.5 714|1125 708!1125 708|1123 714"/>
                     <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!1123 714|1227 714"/>
@@ -2655,6 +2655,7 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="3" strokeStyle="1" edges="!1227 640|1227 432!1227 432|1053 432"/>
                     <Edge fillStyle0="4" fillStyle1="1" edges="!1081 714|1079 716!1079 716|1090.5 714"/>
                     <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!1053 590.5|1139 635!1139 635|1106 635!1106 635|1141 651!1141 651|1143 651!1143 651|1143 652!1143 652|1178 669!1178 669|1125 669!1125 669|1081 714"/>
+                    <Edge fillStyle0="2" fillStyle1="16" strokeStyle="1" edges="!925 497|972 578"/>
                     <Edge fillStyle0="1" fillStyle1="16" edges="!972 578|978 584!978 584|843 717.5"/>
                     <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!843 717.5|921 718!921 718|952 752"/>
                     <Edge fillStyle0="1" fillStyle1="5" edges="!952 752|962 763!962 763|963 752"/>
@@ -2688,7 +2689,6 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="6" fillStyle1="20" strokeStyle="1" edges="!898.5 937|914 940!914 940|906 935"/>
                     <Edge fillStyle0="6" fillStyle1="41" strokeStyle="1" edges="!906 935|897 929!897 929|907.5 933"/>
                     <Edge fillStyle0="6" fillStyle1="20" strokeStyle="1" edges="!907.5 933|930 941!930 941|910.5 928"/>
-                    <Edge fillStyle0="42" fillStyle1="40" strokeStyle="1" edges="!722 934|802 960!802 960|811 931!811 931|778 936!778 936|811 903!811 903|843 903"/>
                     <Edge fillStyle0="42" fillStyle1="40" edges="!843 900|824 891!824 891|824 890!824 890|822 890!822 890|797 879!797 879|821 879!821 879|744 839"/>
                     <Edge fillStyle0="42" fillStyle1="1" edges="!744 839|741 837"/>
                     <Edge fillStyle0="42" fillStyle1="40" edges="!741 837|737 836!737 836|743 824!743 824|719 822!719 822|716.5 820"/>
@@ -2704,13 +2704,13 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="42" fillStyle1="1" edges="!721.5 1018|724 1018"/>
                     <Edge fillStyle0="42" fillStyle1="40" strokeStyle="1" edges="!724 1018|721 936"/>
                     <Edge fillStyle0="42" fillStyle1="1" edges="!721 936|722 934"/>
+                    <Edge fillStyle0="42" fillStyle1="40" strokeStyle="1" edges="!722 934|802 960!802 960|811 931!811 931|778 936!778 936|811 903!811 903|843 903"/>
                     <Edge fillStyle0="20" fillStyle1="41" edges="!907.5 933|906 935"/>
                     <Edge fillStyle0="41" fillStyle1="20" edges="!898 940.5|898.5 937!895 956|898 941"/>
                     <Edge fillStyle0="41" edges="!880 936.5|878.5 944"/>
                     <Edge fillStyle0="20" fillStyle1="41" edges="!906 976|900 987"/>
                     <Edge fillStyle0="20" edges="!876.5 951.5|874 962"/>
                     <Edge fillStyle0="20" fillStyle1="41" edges="!957 916|942 920!915 921|910.5 928!1060 966|1059 964"/>
-                    <Edge fillStyle0="7" fillStyle1="41" edges="!1109 975|1108.5 965.5"/>
                     <Edge fillStyle0="7" fillStyle1="10" strokeStyle="1" edges="!1108.5 965.5|1085 967!1085 967|1078 957"/>
                     <Edge fillStyle0="7" fillStyle1="41" strokeStyle="1" edges="!1078 957|1060 966"/>
                     <Edge fillStyle0="7" fillStyle1="20" edges="!1060 966|898 1049.5"/>
@@ -2745,14 +2745,18 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1250 977|1227 979.5"/>
                     <Edge fillStyle0="7" fillStyle1="10" strokeStyle="1" edges="
 !1227 979.5|1161 986!1161 986|1146 986!1146 986|1170 955!1170 955|1118 978!1118 978|1109 975"/>
+                    <Edge fillStyle0="7" fillStyle1="41" edges="
+!1109 975|1108.5 965.5"/>
                     <Edge fillStyle0="41" fillStyle1="10" strokeStyle="1" edges="
 !1078 957|1059 964"/>
                     <Edge fillStyle0="10" fillStyle1="41" strokeStyle="1" edges="
 !1108.5 965.5|1134 964!1134 964|1109 975"/>
-                    <Edge fillStyle1="7" strokeStyle="1" edges="
-!1227 640|1317 714"/>
-                    <Edge fillStyle1="8" strokeStyle="1" edges="
-!1317 714|1317 752"/>
+                    <Edge fillStyle0="4" fillStyle1="7" strokeStyle="1" edges="
+!1247 714|1227 714"/>
+                    <Edge fillStyle0="7" fillStyle1="8" strokeStyle="1" edges="
+!1247 714|1317 714"/>
+                    <Edge fillStyle0="7" strokeStyle="1" edges="
+!1317 714|1227 640"/>
                     <Edge fillStyle1="9" strokeStyle="1" edges="
 !1317 752|1317 820!1317 820|1247 820"/>
                     <Edge fillStyle1="5" strokeStyle="1" edges="
@@ -2763,10 +2767,6 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1227 937|1264 974"/>
                     <Edge fillStyle1="38" edges="
 !1264 974|1250 977"/>
-                    <Edge fillStyle0="7" fillStyle1="8" strokeStyle="1" edges="
-!1247 714|1317 714"/>
-                    <Edge fillStyle0="4" fillStyle1="7" strokeStyle="1" edges="
-!1247 714|1227 714"/>
                     <Edge fillStyle0="5" fillStyle1="9" edges="
 !1247 820|1247 752"/>
                     <Edge fillStyle0="5" fillStyle1="4" edges="
@@ -2785,6 +2785,8 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1317 752|1247 752"/>
                     <Edge fillStyle0="4" fillStyle1="8" edges="
 !1247 752|1247 714"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="
+!1317 714|1317 752"/>
                     <Edge fillStyle0="10" fillStyle1="5" strokeStyle="1" edges="
 !1227 820|1059 820"/>
                     <Edge strokeStyle="1" edges="
@@ -2872,16 +2874,16 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !299 696|132.5 545.5"/>
                     <Edge fillStyle1="12" edges="
 !132 387|118.5 377"/>
-                    <Edge fillStyle0="12" fillStyle1="15" strokeStyle="1" edges="
-!144 484|144 477"/>
                     <Edge fillStyle0="12" fillStyle1="14" strokeStyle="1" edges="
 !139 479.5|144 484"/>
+                    <Edge fillStyle0="12" fillStyle1="15" strokeStyle="1" edges="
+!144 484|144 477"/>
                     <Edge fillStyle0="14" fillStyle1="15" strokeStyle="1" edges="
 !153.5 492|144 484"/>
                     <Edge fillStyle0="15" fillStyle1="12" strokeStyle="1" edges="
 !144.5 362.5|144.5 377"/>
                     <Edge fillStyle0="17" strokeStyle="1" edges="
-!250.5 365.5|209 328!255.5 370|252.5 367.5!299 410|263 377"/>
+!255.5 370|252.5 367.5!250.5 365.5|209 328!299 410|263 377"/>
                     <Edge fillStyle0="17" fillStyle1="16" strokeStyle="1" edges="
 !299 448|299 410"/>
                     <Edge fillStyle0="16" strokeStyle="1" edges="
@@ -2926,44 +2928,34 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !319 1118|319 1061"/>
                     <Edge fillStyle0="23" fillStyle1="28" edges="
 !319 1061|0 763"/>
+                    <Edge fillStyle0="25" fillStyle1="22" strokeStyle="1" edges="
+!208 843|299 926"/>
+                    <Edge fillStyle0="25" fillStyle1="24" strokeStyle="1" edges="
+!299 926|299 800"/>
+                    <Edge fillStyle0="19" fillStyle1="24" strokeStyle="1" edges="
+!299 800|319 818"/>
                     <Edge fillStyle0="19" fillStyle1="26" strokeStyle="1" edges="
 !319 818|319 752"/>
                     <Edge fillStyle0="19" fillStyle1="18" strokeStyle="1" edges="
 !319 752|319 714"/>
-                    <Edge fillStyle0="18" fillStyle1="26" edges="
-!319 752|402 752"/>
-                    <Edge fillStyle0="18" fillStyle1="4" edges="
-!402 752|402 714"/>
-                    <Edge fillStyle0="5" fillStyle1="26" edges="
-!402 752|402 820"/>
-                    <Edge fillStyle0="5" fillStyle1="30" strokeStyle="1" edges="
-!402 820|522 820"/>
-                    <Edge fillStyle0="5" fillStyle1="41" strokeStyle="1" edges="
-!522 820|521 819"/>
-                    <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="
-!521 819|516 813!516 813|527 814"/>
-                    <Edge fillStyle0="5" fillStyle1="41" strokeStyle="1" edges="
-!527 814|486.5 752"/>
-                    <Edge fillStyle0="5" fillStyle1="4" edges="
-!486.5 752|402 752"/>
                     <Edge fillStyle0="26" fillStyle1="24" strokeStyle="1" edges="
 !319 818|319 820!319 820|402 820"/>
-                    <Edge fillStyle0="19" fillStyle1="24" strokeStyle="1" edges="
-!299 800|319 818"/>
-                    <Edge fillStyle0="25" fillStyle1="24" strokeStyle="1" edges="
-!299 926|299 800"/>
-                    <Edge fillStyle0="25" fillStyle1="22" strokeStyle="1" edges="
-!208 843|299 926"/>
-                    <Edge fillStyle0="25" fillStyle1="27" strokeStyle="1" edges="
-!208 718|208 843"/>
-                    <Edge fillStyle0="28" strokeStyle="1" edges="
-!0 725|0 763"/>
-                    <Edge fillStyle0="27" fillStyle1="20" strokeStyle="1" edges="
-!144 660|144 785"/>
-                    <Edge fillStyle0="27" fillStyle1="22" strokeStyle="1" edges="
-!144 785|208 843"/>
+                    <Edge fillStyle0="26" fillStyle1="5" edges="
+!402 820|402 752"/>
+                    <Edge fillStyle0="26" fillStyle1="18" edges="
+!402 752|319 752"/>
                     <Edge fillStyle0="20" fillStyle1="22" strokeStyle="1" edges="
 !79 726|144 785"/>
+                    <Edge fillStyle0="20" fillStyle1="27" strokeStyle="1" edges="
+!144 785|144 660"/>
+                    <Edge fillStyle0="27" fillStyle1="22" strokeStyle="1" edges="
+!144 785|208 843"/>
+                    <Edge fillStyle0="27" fillStyle1="25" strokeStyle="1" edges="
+!208 843|208 718"/>
+                    <Edge fillStyle0="28" strokeStyle="1" edges="
+!0 725|0 763"/>
+                    <Edge fillStyle0="18" fillStyle1="4" edges="
+!402 752|402 714"/>
                     <Edge fillStyle0="11" fillStyle1="16" strokeStyle="1" edges="
 !793 658|798 650!798 650|637 599!637 599|802 586!802 586|747 526!747 526|843 502"/>
                     <Edge fillStyle0="4" fillStyle1="11" strokeStyle="1" edges="
@@ -2984,22 +2976,24 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !793 717|793 658"/>
                     <Edge fillStyle0="1" fillStyle1="11" strokeStyle="1" edges="
 !793 658|666.5 714"/>
-                    <Edge fillStyle0="41" fillStyle1="1" edges="
-!577.5 714|571 715.5"/>
-                    <Edge fillStyle0="41" fillStyle1="4" edges="
-!571 715.5|579 752"/>
+                    <Edge fillStyle0="1" fillStyle1="4" edges="
+!570.5 714|571 715.5"/>
+                    <Edge fillStyle0="1" fillStyle1="41" edges="
+!571 715.5|577.5 714"/>
+                    <Edge fillStyle0="1" fillStyle1="29" edges="
+!577.5 714|567 699!567 699|570.5 714"/>
                     <Edge fillStyle0="41" fillStyle1="5" strokeStyle="1" edges="
 !579 752|587 789!587 789|559 797!559 797|497.5 752"/>
                     <Edge fillStyle0="41" fillStyle1="4" edges="
 !497.5 752|490.5 747"/>
                     <Edge fillStyle0="41" fillStyle1="1" edges="
 !490.5 747|486.5 752"/>
-                    <Edge fillStyle0="29" fillStyle1="1" edges="
-!570.5 714|567 699!567 699|577.5 714"/>
-                    <Edge fillStyle0="1" fillStyle1="4" edges="
-!570.5 714|571 715.5"/>
+                    <Edge fillStyle0="41" fillStyle1="5" strokeStyle="1" edges="
+!486.5 752|527 814"/>
                     <Edge fillStyle0="41" fillStyle1="1" edges="
 !527 814|521 819"/>
+                    <Edge fillStyle0="41" fillStyle1="5" strokeStyle="1" edges="
+!521 819|522 820"/>
                     <Edge fillStyle0="41" fillStyle1="30" strokeStyle="1" edges="
 !522 820|545 846!545 846|463 853!463 853|577 889!577 889|574 895!574 895|450 950!450 950|541 946"/>
                     <Edge fillStyle0="41" fillStyle1="1" edges="
@@ -3014,6 +3008,8 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !586 937|587.5 935.5"/>
                     <Edge fillStyle0="41" fillStyle1="30" edges="
 !546 846|549 835!549 835|555 846!555 846|546 846"/>
+                    <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="
+!521 819|516 813!516 813|527 814"/>
                     <Edge fillStyle0="1" fillStyle1="30" strokeStyle="1" edges="
 !541 946|535 954!535 954|542 952.5"/>
                     <Edge fillStyle0="30" fillStyle1="1" strokeStyle="1" edges="
@@ -3024,60 +3020,66 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !578.5 944.5|580 946!580 946|576.5 946.5"/>
                     <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="
 !579 752|497.5 752"/>
-                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="
-!712.5 806.5|714 806!714 806|713.5 805.5"/>
                     <Edge fillStyle0="1" fillStyle1="41" strokeStyle="1" edges="
 !713.5 805.5|712.5 806.5"/>
+                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="
+!712.5 806.5|714 806!714 806|713.5 805.5"/>
                     <Edge fillStyle0="1" fillStyle1="40" edges="
 !744 839|746 837!746 837|741 837"/>
                     <Edge fillStyle0="41" fillStyle1="5" strokeStyle="1" edges="
-!707.5 812|704 809!704 809|705 809!705 809|712.5 806.5!648.5 752|638 786!638 786|630 789!630 789|627 787!627 787|629 779!629 779|623 780!623 780|603.5 752"/>
+!648.5 752|638 786!638 786|630 789!630 789|627 787!627 787|629 779!629 779|623 780!623 780|603.5 752!707.5 812|704 809!704 809|705 809!705 809|712.5 806.5"/>
                     <Edge fillStyle0="1" fillStyle1="40" strokeStyle="1" edges="
 !721 936|722 936!722 936|722 934"/>
-                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="
-!712.5 806.5|707.5 812"/>
                     <Edge fillStyle0="41" fillStyle1="5" strokeStyle="1" edges="
 !713.5 805.5|662.5 752"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="
+!712.5 806.5|707.5 812"/>
                     <Edge fillStyle0="1" fillStyle1="4" edges="
 !490.5 747|477 737!477 737|486.5 752"/>
-                    <Edge fillStyle0="29" fillStyle1="11" strokeStyle="1" edges="
-!619 714|619 432"/>
-                    <Edge fillStyle0="29" strokeStyle="1" edges="
-!619 432|402 432"/>
-                    <Edge fillStyle0="29" fillStyle1="4" strokeStyle="1" edges="
-!402 714|570.5 714"/>
+                    <Edge fillStyle0="41" fillStyle1="4" edges="
+!571 715.5|579 752"/>
                     <Edge fillStyle0="16" fillStyle1="17" strokeStyle="1" edges="
 !299 449|299 623"/>
+                    <Edge fillStyle0="29" fillStyle1="4" strokeStyle="1" edges="
+!402 714|570.5 714"/>
+                    <Edge fillStyle0="29" strokeStyle="1" edges="
+!619 432|402 432"/>
+                    <Edge fillStyle0="29" fillStyle1="11" strokeStyle="1" edges="
+!619 714|619 432"/>
+                    <Edge fillStyle0="5" fillStyle1="4" edges="
+!486.5 752|402 752"/>
+                    <Edge fillStyle0="5" fillStyle1="30" strokeStyle="1" edges="
+!402 820|522 820"/>
                     <Edge fillStyle0="40" fillStyle1="34" strokeStyle="1" edges="
 !714 1018|721.5 1018"/>
                     <Edge fillStyle0="1" fillStyle1="34" edges="
 !721.5 1018|724 1022!724 1022|724 1018"/>
                     <Edge fillStyle0="40" fillStyle1="34" strokeStyle="1" edges="
-!621 1018|638.5 1018!657 1018|670.5 1018"/>
-                    <Edge fillStyle1="31" edges="
-!682.5 1232.5|665 1226!665 1226|666.5 1232.5"/>
+!657 1018|670.5 1018!621 1018|638.5 1018"/>
                     <Edge fillStyle1="31" strokeStyle="1" edges="
 !666.5 1232.5|623.5 1232.5!623.5 1232.5|532 1178!532 1178|545.5 1233!545.5 1233|467 1233!467 1233|402 1178"/>
                     <Edge fillStyle1="35" strokeStyle="1" edges="
 !402 1178|319 1118"/>
+                    <Edge fillStyle1="31" edges="
+!682.5 1232.5|665 1226!665 1226|666.5 1232.5"/>
+                    <Edge fillStyle1="34" strokeStyle="1" edges="
+!402 1019|402 1018"/>
+                    <Edge fillStyle1="24" strokeStyle="1" edges="
+!402 1018|401 1018"/>
+                    <Edge fillStyle1="32" strokeStyle="1" edges="
+!401 1018|402 1019"/>
+                    <Edge fillStyle0="32" fillStyle1="22" strokeStyle="1" edges="
+!401 1018|321 1018"/>
                     <Edge fillStyle0="32" fillStyle1="28" strokeStyle="1" edges="
 !321 1018|319 1018!319 1018|319 1061"/>
                     <Edge fillStyle0="32" fillStyle1="33" edges="
 !319 1061|402 1061"/>
                     <Edge fillStyle0="32" fillStyle1="34" edges="
 !402 1061|402 1019"/>
-                    <Edge fillStyle0="32" strokeStyle="1" edges="
-!402 1019|401 1018"/>
-                    <Edge fillStyle0="32" fillStyle1="22" strokeStyle="1" edges="
-!401 1018|321 1018"/>
-                    <Edge fillStyle1="24" strokeStyle="1" edges="
-!402 1018|401 1018"/>
-                    <Edge fillStyle1="34" strokeStyle="1" edges="
-!402 1019|402 1018"/>
-                    <Edge fillStyle0="35" fillStyle1="33" strokeStyle="1" edges="
-!402 1124|319 1118"/>
                     <Edge fillStyle0="35" fillStyle1="31" strokeStyle="1" edges="
 !402 1178|402 1124"/>
+                    <Edge fillStyle0="35" fillStyle1="33" strokeStyle="1" edges="
+!402 1124|319 1118"/>
                     <Edge fillStyle0="36" fillStyle1="33" strokeStyle="1" edges="
 !402 1061|402 1124"/>
                     <Edge fillStyle0="36" fillStyle1="31" strokeStyle="1" edges="
@@ -3090,24 +3092,26 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !402 1018|621 1018"/>
                     <Edge fillStyle0="30" fillStyle1="40" strokeStyle="1" edges="
 !621 1018|621 941"/>
-                    <Edge strokeStyle="1" edges="
-!1308 1018|1317 1018!1317 1018|1317 1027"/>
-                    <Edge fillStyle1="37" strokeStyle="1" edges="
-!1317 1027|1317 1029"/>
                     <Edge fillStyle0="37" strokeStyle="1" edges="
-!1317 1052|1317 1035.5!1317 1061|1317 1052"/>
+!1317 1061|1317 1052"/>
                     <Edge fillStyle0="37" edges="
 !1317 1052|1302 1052!1302 1052|1316 1055!1316 1055|1292 1053!1292 1053|1287 1056!1287 1056|1261 1053"/>
+                    <Edge fillStyle0="37" strokeStyle="1" edges="
+!1317 1052|1317 1035.5"/>
+                    <Edge fillStyle1="37" strokeStyle="1" edges="
+!1317 1027|1317 1029"/>
+                    <Edge strokeStyle="1" edges="
+!1308 1018|1317 1018!1317 1018|1317 1027"/>
                     <Edge fillStyle0="38" strokeStyle="1" edges="
 !1308 1018|1296 1006"/>
                     <Edge fillStyle0="38" edges="
 !1296 1006|1275.5 1009.5!1275.5 1009.5|1274 1009.5!1274 1009.5|1255 1012.5"/>
                     <Edge fillStyle0="37" edges="
 !1269 1043|1279 1046!1279 1046|1298 1045!1298 1045|1295 1049!1295 1049|1317 1052"/>
-                    <Edge fillStyle0="41" fillStyle1="38" edges="
-!1269 1018|1301 1015!1301 1015|1269 1013.5"/>
                     <Edge fillStyle0="37" fillStyle1="38" strokeStyle="1" edges="
 !1308 1018|1269 1018"/>
+                    <Edge fillStyle0="41" fillStyle1="38" edges="
+!1269 1018|1301 1015!1301 1015|1269 1013.5"/>
                     <Edge fillStyle1="37" edges="
 !1261 1061|1254.5 1061"/>
                     <Edge fillStyle1="41" edges="
@@ -3116,18 +3120,18 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1250 1067|1255 1068!1255 1068|1251 1067!1251 1067|1261 1061"/>
                     <Edge fillStyle0="34" fillStyle1="37" edges="
 !1242 1061|1242 1056.5"/>
+                    <Edge fillStyle0="39" fillStyle1="41" edges="
+!1250 1067|1242 1070.5"/>
                     <Edge fillStyle0="41" fillStyle1="37" edges="
 !1254.5 1061|1242 1061"/>
                     <Edge fillStyle0="41" fillStyle1="34" edges="
 !1242 1061|1235 1061"/>
-                    <Edge fillStyle0="39" fillStyle1="41" edges="
-!1250 1067|1242 1070.5"/>
-                    <Edge fillStyle0="39" strokeStyle="1" edges="
-!1242 1124|1317 1124!1317 1124|1317 1061"/>
-                    <Edge fillStyle0="39" fillStyle1="37" strokeStyle="1" edges="
-!1317 1061|1261 1061"/>
                     <Edge fillStyle0="37" edges="
 !1317 1027|1308 1018"/>
+                    <Edge fillStyle0="39" fillStyle1="37" strokeStyle="1" edges="
+!1317 1061|1261 1061"/>
+                    <Edge fillStyle0="39" strokeStyle="1" edges="
+!1242 1124|1317 1124!1317 1124|1317 1061"/>
                     <Edge fillStyle1="31" strokeStyle="1" edges="
 !1101 1232|1099 1232!1099 1232|1072 1223!1072 1223|1049 1206!1049 1206|1043 1206!1043 1206|1023 1192!1023 1192|1034 1202!1034 1202|1021 1195!1021 1195|1038 1209!1038 1209|1034 1210!1034 1210|1051 1219!1051 1219|1058 1227!1058 1227|1055
  1226!1055 1226|1041 1217!1041 1217|1048 1224!1048 1224|1036 1221!1036 1221|986 1195!986 1195|991 1199!991 1199|986 1196!986 1196|1009 1215!1009 1215|1012 1216!1012 1216|1033.5 1232!1033.5 1232|1032.5 1232"/>
@@ -3136,15 +3140,13 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle1="31" strokeStyle="1" edges="
 !1026.5 1232|682.5 1232.5"/>
                     <Edge fillStyle1="31" edges="
-!1114.5 1232|1096 1216!1096 1216|1074 1215!1074 1215|1096 1228!1096 1228|1101 1232"/>
-                    <Edge fillStyle1="31" strokeStyle="1" edges="
-!1159 1232|1114.5 1232"/>
-                    <Edge fillStyle1="31" edges="
-!1162.5 1232|1160 1227!1160 1227|1159 1232"/>
+!1114.5 1232|1096 1216!1096 1216|1074 1215!1074 1215|1096 1228!1096 1228|1101 1232!1170 1229|1165 1223!1165 1223|1168 1232"/>
                     <Edge fillStyle1="31" strokeStyle="1" edges="
 !1168 1232|1162.5 1232"/>
                     <Edge fillStyle1="31" edges="
-!1170 1229|1165 1223!1165 1223|1168 1232"/>
+!1162.5 1232|1160 1227!1160 1227|1159 1232"/>
+                    <Edge fillStyle1="31" strokeStyle="1" edges="
+!1159 1232|1114.5 1232"/>
                     <Edge fillStyle0="41" fillStyle1="36" strokeStyle="1" edges="
 !912 1067|920 1071!920 1071|928.5 1069.5!1004 1081|982 1099!982 1099|1007 1090.5"/>
                     <Edge fillStyle0="20" edges="
@@ -3160,34 +3162,36 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="20" fillStyle1="41" edges="
 !897 1050|898 1049.5"/>
                     <Edge fillStyle0="34" strokeStyle="1" edges="
-!882 1040|870 1037!870 1037|812 1034!812 1034|819 1033!819 1033|815 1033!815 1033|845 1029!845 1029|847 1029!847 1029|880 1025!880 1025|849 1025!849 1025|884 1019!900 1053|874 1056!874 1056|869 1053!869 1053|845 1055!845 1055|859 1052
-!859 1052|843 1052!843 1052|866 1049!866 1049|863 1045!863 1045|882 1046!882 1046|891 1043!900 1061|907 1061"/>
-                    <Edge fillStyle0="34" fillStyle1="41" strokeStyle="1" edges="
-!907 1061|927 1061"/>
+!900 1053|874 1056!874 1056|869 1053!869 1053|845 1055!845 1055|859 1052!859 1052|843 1052!843 1052|866 1049!866 1049|863 1045!863 1045|882 1046!882 1046|891 1043!882 1040|870 1037!870 1037|812 1034!812 1034|819 1033!819 1033|815 1033
+!815 1033|845 1029!845 1029|847 1029!847 1029|880 1025!880 1025|849 1025!849 1025|884 1019"/>
                     <Edge fillStyle1="36" strokeStyle="1" edges="
 !900 1061|910 1067!910 1067|905 1068!905 1068|912 1067"/>
                     <Edge fillStyle1="41" edges="
 !912 1067|907 1061"/>
+                    <Edge fillStyle1="34" strokeStyle="1" edges="
+!907 1061|900 1061"/>
                     <Edge fillStyle0="41" edges="
 !897 1050|900 1053"/>
+                    <Edge fillStyle0="34" fillStyle1="41" strokeStyle="1" edges="
+!907 1061|927 1061"/>
                     <Edge fillStyle1="31" strokeStyle="1" edges="
 !1242 1124|1170 1229"/>
-                    <Edge fillStyle0="34" fillStyle1="36" strokeStyle="1" edges="
-!402 1061|900 1061"/>
-                    <Edge fillStyle0="40" fillStyle1="34" strokeStyle="1" edges="
-!724 1018|843 1018"/>
-                    <Edge fillStyle0="30" fillStyle1="24" strokeStyle="1" edges="
-!402 820|402 1018"/>
-                    <Edge fillStyle0="28" fillStyle1="22" strokeStyle="1" edges="
-!321 1018|0 725"/>
-                    <Edge fillStyle0="24" fillStyle1="22" strokeStyle="1" edges="
-!299 926|401 1018"/>
-                    <Edge fillStyle0="5" fillStyle1="40" strokeStyle="1" edges="
-!716.5 820|843 820"/>
-                    <Edge fillStyle0="11" strokeStyle="1" edges="
-!843 432|619 432"/>
                     <Edge fillStyle0="4" fillStyle1="16" strokeStyle="1" edges="
 !843 717.5|793 717"/>
+                    <Edge fillStyle0="11" strokeStyle="1" edges="
+!843 432|619 432"/>
+                    <Edge fillStyle0="5" fillStyle1="40" strokeStyle="1" edges="
+!716.5 820|843 820"/>
+                    <Edge fillStyle0="24" fillStyle1="22" strokeStyle="1" edges="
+!299 926|401 1018"/>
+                    <Edge fillStyle0="28" fillStyle1="22" strokeStyle="1" edges="
+!321 1018|0 725"/>
+                    <Edge fillStyle0="30" fillStyle1="24" strokeStyle="1" edges="
+!402 820|402 1018"/>
+                    <Edge fillStyle0="40" fillStyle1="34" strokeStyle="1" edges="
+!724 1018|843 1018"/>
+                    <Edge fillStyle0="34" fillStyle1="36" strokeStyle="1" edges="
+!402 1061|900 1061"/>
                     <Edge cubics="!1240 432(;1240,432 1227,432 1227,432q1240 432 1227 432);"/>
                     <Edge cubics="!1317 363(;1317,363 1240,363 1240,363q1317 363 1240 363);"/>
                     <Edge cubics="!1317 432(;1317,432 1317,363 1317,363q1317 432 1317 363);"/>
@@ -4437,8 +4441,6 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="31" fillStyle1="1" edges="
-!925 497|924 493!924 493|923 493"/>
                     <Edge fillStyle0="31" fillStyle1="2" strokeStyle="1" edges="
 !923 493|912 473!912 473|893 502!893 502|867 510!867 510|867 509!867 509|870 495!870 495|843 502"/>
                     <Edge fillStyle0="31" fillStyle1="16" strokeStyle="1" edges="
@@ -4475,16 +4477,14 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !882.5 679|978 584!978 584|972 578"/>
                     <Edge fillStyle0="31" fillStyle1="2" strokeStyle="1" edges="
 !972 578|925 497"/>
+                    <Edge fillStyle0="31" fillStyle1="1" edges="
+!925 497|924 493!924 493|923 493"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
 !923 493|927 492!927 492|925 497"/>
-                    <Edge fillStyle0="44" fillStyle1="1" edges="
-!1164 452|1168 451"/>
-                    <Edge fillStyle0="44" strokeStyle="1" edges="
-!1168 451|1158 415"/>
-                    <Edge fillStyle0="44" edges="
-!1158 415|1105.5 415!1105.5 415|1132.5 432"/>
-                    <Edge fillStyle0="44" fillStyle1="4" strokeStyle="1" edges="
-!1132.5 432|1164 452"/>
+                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
+!1190 530|1143 517!1143 517|1157 460!1157 460|1157 459!1157 459|1164 452"/>
+                    <Edge fillStyle0="4" fillStyle1="44" strokeStyle="1" edges="
+!1164 452|1132.5 432"/>
                     <Edge fillStyle0="4" strokeStyle="1" edges="
 !1132.5 432|1053 432"/>
                     <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="
@@ -4503,8 +4503,12 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1227 714|1227 640"/>
                     <Edge fillStyle0="4" strokeStyle="1" edges="
 !1227 640|1227 508.5!1227 508.5|1190 530"/>
-                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
-!1190 530|1143 517!1143 517|1157 460!1157 460|1157 459!1157 459|1164 452"/>
+                    <Edge fillStyle0="44" fillStyle1="1" edges="
+!1164 452|1168 451"/>
+                    <Edge fillStyle0="44" strokeStyle="1" edges="
+!1168 451|1158 415"/>
+                    <Edge fillStyle0="44" edges="
+!1158 415|1105.5 415!1105.5 415|1132.5 432"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="
 !1053 432|843 432"/>
                     <Edge fillStyle0="2" fillStyle1="16" strokeStyle="1" edges="
@@ -4513,12 +4517,10 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !972 578|1001 565!1001 565|1027 577!1027 577|1034 577!1034 577|1031 579!1031 579|1053 590.5"/>
                     <Edge fillStyle0="5" fillStyle1="17" edges="
 !1081 714|1079 716!1079 716|1090.5 714"/>
-                    <Edge fillStyle0="17" fillStyle1="44" edges="
-!882.5 679|966 678!966 678|973.5 704.5"/>
-                    <Edge fillStyle0="17" fillStyle1="2" edges="
-!973.5 704.5|1002.5 714"/>
-                    <Edge fillStyle0="17" fillStyle1="5" strokeStyle="1" edges="
-!1002.5 714|1113 749!1113 749|1123 714"/>
+                    <Edge fillStyle0="44" fillStyle1="2" edges="
+!976 714|973.5 704.5"/>
+                    <Edge fillStyle0="44" fillStyle1="17" edges="
+!973.5 704.5|966 678!966 678|882.5 679"/>
                     <Edge fillStyle0="5" fillStyle1="2" strokeStyle="1" edges="
 !1002.5 714|976 714"/>
                     <Edge fillStyle0="5" fillStyle1="44" edges="
@@ -4529,8 +4531,10 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1247 752|1247 714"/>
                     <Edge fillStyle0="5" fillStyle1="11" strokeStyle="1" edges="
 !1247 714|1227 714"/>
-                    <Edge fillStyle0="44" fillStyle1="2" edges="
-!976 714|973.5 704.5"/>
+                    <Edge fillStyle0="17" fillStyle1="2" edges="
+!973.5 704.5|1002.5 714"/>
+                    <Edge fillStyle0="17" fillStyle1="5" strokeStyle="1" edges="
+!1002.5 714|1113 749!1113 749|1123 714"/>
                     <Edge fillStyle0="6" fillStyle1="44" edges="
 !986.5 752|1005 820"/>
                     <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="
@@ -4609,28 +4613,26 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1055.5 968.5|1053 963"/>
                     <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
 !878.5 944|886 948!886 948|892 953!892 953|882 953!882 953|895 956!907.5 933|897 929!897 929|906 935"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!876.5 951.5|876 951!876 951|875 956!875 956|858 952!858 952|868 956!868 956|857 955!857 955|874 959!874 959|874 962!880 936.5|878 936!878 936|877 936!877 936|876 937!876 937|862 933"/>
                     <Edge fillStyle1="8" edges="
 !878.5 944|880 936.5"/>
-                    <Edge fillStyle1="7" strokeStyle="1" edges="
-!880 936.5|878 936!878 936|877 936!877 936|876 937!876 937|862 933!876.5 951.5|876 951!876 951|875 956!875 956|858 952!858 952|868 956!868 956|857 955!857 955|874 959!874 959|874 962"/>
                     <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
 !889 979|885 979!885 979|865 977!865 977|900 987"/>
                     <Edge fillStyle0="8" fillStyle1="7" edges="
 !887 975|889 979"/>
                     <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
-!906 976|878 970!878 970|887 975!898.5 937|883 934!883 934|898 940.5!898 941|880 936.5"/>
+!898 941|880 936.5!898.5 937|883 934!883 934|898 940.5!906 976|878 970!878 970|887 975"/>
                     <Edge fillStyle1="7" strokeStyle="1" edges="
 !860 934.5|878.5 944"/>
                     <Edge fillStyle0="3" fillStyle1="8" edges="
-!957 916|942 920"/>
+!957 916|942 920!915 921|910.5 928"/>
+                    <Edge fillStyle0="3" fillStyle1="7" strokeStyle="1" edges="
+!910.5 928|930 941!930 941|907.5 933"/>
                     <Edge fillStyle0="44" fillStyle1="42" edges="
 !871.5 682|911 827!911 827|887 869!887 869|843 846!843 846|767 890!767 890|754 901.5"/>
                     <Edge fillStyle0="44" fillStyle1="43" edges="
 !754 901.5|754 902!754 902|744.5 941.5"/>
-                    <Edge fillStyle0="3" fillStyle1="7" strokeStyle="1" edges="
-!910.5 928|930 941!930 941|907.5 933"/>
-                    <Edge fillStyle0="3" fillStyle1="8" edges="
-!915 921|910.5 928"/>
                     <Edge fillStyle0="8" fillStyle1="10" edges="
 !1060 966|1055.5 968.5!1059 964|1060 966"/>
                     <Edge fillStyle0="8" fillStyle1="8" strokeStyle="1" edges="
@@ -4647,14 +4649,14 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !1247 820|1317 820!1317 820|1317 752"/>
                     <Edge fillStyle0="14" fillStyle1="13" edges="
 !1317 752|1247 752"/>
+                    <Edge fillStyle0="15" strokeStyle="1" edges="
+!1264 974|1227 937"/>
                     <Edge fillStyle0="15" fillStyle1="12" strokeStyle="1" edges="
 !1227 937|1227 979.5"/>
                     <Edge fillStyle0="15" fillStyle1="11" edges="
 !1227 979.5|1250 977"/>
                     <Edge fillStyle0="15" edges="
 !1250 977|1264 974"/>
-                    <Edge fillStyle0="15" strokeStyle="1" edges="
-!1264 974|1227 937"/>
                     <Edge fillStyle1="11" strokeStyle="1" edges="
 !1250 977|1251 985"/>
                     <Edge fillStyle1="14" strokeStyle="1" edges="
@@ -4749,23 +4751,25 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="15" edges="
 !1267.5 977.5|1266 978!1266 978|1265.5 978.5!1265.5 978.5|1262 980!1262 980|1266 980!1266 980|1269.5 979.5"/>
                     <Edge fillStyle0="15" strokeStyle="1" edges="
-!1269.5 979.5|1267.5 977.5!1275 985|1273.5 983.5"/>
+!1269.5 979.5|1267.5 977.5"/>
                     <Edge fillStyle0="15" edges="
 !1273.5 983.5|1271 984.5!1271 984.5|1270.5 984.5!1270.5 984.5|1268 985!1268 985|1275 985"/>
+                    <Edge fillStyle0="15" strokeStyle="1" edges="
+!1275 985|1273.5 983.5"/>
                     <Edge fillStyle1="12" strokeStyle="1" edges="
 !1227 820|1227 937"/>
                     <Edge fillStyle1="13" strokeStyle="1" edges="
 !1317 714|1317 752"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="
-!1190 530|1168 451"/>
-                    <Edge fillStyle0="12" fillStyle1="11" strokeStyle="1" edges="
-!1192 983|1227 979.5"/>
                     <Edge fillStyle0="11" fillStyle1="14" strokeStyle="1" edges="
 !1192 984|1251 985"/>
-                    <Edge fillStyle0="19" fillStyle1="1" edges="
-!144.5 362.5|137 331!137 331|144.5 341.5"/>
+                    <Edge fillStyle0="12" fillStyle1="11" strokeStyle="1" edges="
+!1192 983|1227 979.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!1190 530|1168 451"/>
                     <Edge fillStyle0="19" fillStyle1="18" strokeStyle="1" edges="
 !144.5 341.5|145 270"/>
+                    <Edge fillStyle0="19" fillStyle1="1" edges="
+!144.5 362.5|137 331!137 331|144.5 341.5"/>
                     <Edge fillStyle0="18" fillStyle1="1" strokeStyle="1" edges="
 !144.5 341.5|170 377!170 377|173 377!173 377|173 378!173 378|179 378!179 378|186 355!186 355|209 379"/>
                     <Edge fillStyle0="18" fillStyle1="22" strokeStyle="1" edges="
@@ -4775,11 +4779,13 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
                     <Edge fillStyle0="1" fillStyle1="19" edges="
 !144.5 377|130 377!130 377|135 387!135 387|132 387"/>
                     <Edge fillStyle1="19" edges="
-!110 401|109 398!109 398|111 401!111 401|110 401!105 383|114 397!114 397|108.5 397!108.5 397|105 384!105 384|105 383"/>
-                    <Edge fillStyle0="1" fillStyle1="20" strokeStyle="1" edges="
-!126.5 486|139 479.5"/>
-                    <Edge fillStyle0="1" fillStyle1="19" edges="
-!139 479.5|144 477"/>
+!105 383|114 397!114 397|108.5 397!108.5 397|105 384!105 384|105 383!110 401|109 398!109 398|111 401!111 401|110 401"/>
+                    <Edge fillStyle0="19" fillStyle1="20" strokeStyle="1" edges="
+!139 479.5|144 484"/>
+                    <Edge fillStyle0="19" fillStyle1="18" strokeStyle="1" edges="
+!144 484|144 477"/>
+                    <Edge fillStyle0="19" fillStyle1="1" edges="
+!144 477|139 479.5"/>
                     <Edge fillStyle0="1" fillStyle1="18" edges="
 !144 477|148 475!148 475|146 481!146 481|160 475!160 475|153.5 492"/>
                     <Edge fillStyle0="1" fillStyle1="20" strokeStyle="1" edges="
@@ -4799,26 +4805,28 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !299 449|301 449!301 449|299 448"/>
                     <Edge fillStyle0="1" fillStyle1="22" edges="
 !299 448|286 442!286 442|286 441!286 441|285 441!285 441|270 435!270 435|284 435!284 435|254 419!254 419|281 405!281 405|272 390!272 390|261 405!261 405|261 379!261 379|263 377"/>
-                    <Edge fillStyle0="18" fillStyle1="19" strokeStyle="1" edges="
-!144 477|144 484"/>
+                    <Edge fillStyle0="1" fillStyle1="20" strokeStyle="1" edges="
+!126.5 486|139 479.5"/>
                     <Edge fillStyle0="18" fillStyle1="20" strokeStyle="1" edges="
 !144 484|153.5 492"/>
-                    <Edge fillStyle0="19" fillStyle1="20" strokeStyle="1" edges="
-!139 479.5|144 484"/>
                     <Edge fillStyle0="19" fillStyle1="18" strokeStyle="1" edges="
 !144.5 377|144.5 362.5"/>
                     <Edge fillStyle0="22" fillStyle1="3" strokeStyle="1" edges="
 !299 448|299 410"/>
-                    <Edge fillStyle0="1" fillStyle1="22" edges="
-!255.5 370|246 374!246 374|252.5 367.5"/>
                     <Edge fillStyle0="22" fillStyle1="1" edges="
 !209 379|250.5 365.5"/>
+                    <Edge fillStyle0="1" fillStyle1="22" edges="
+!255.5 370|246 374!246 374|252.5 367.5"/>
                     <Edge fillStyle0="18" fillStyle1="22" strokeStyle="1" edges="
 !208 541|208 518.5"/>
                     <Edge fillStyle0="21" fillStyle1="23" edges="
 !299 734|299 696"/>
                     <Edge fillStyle0="21" fillStyle1="20" strokeStyle="1" edges="
 !299 696|132.5 545.5!132.5 545.5|90 507"/>
+                    <Edge fillStyle0="3" fillStyle1="24" strokeStyle="1" edges="
+!401 714|402 714"/>
+                    <Edge fillStyle0="3" fillStyle1="33" strokeStyle="1" edges="
+!402 714|402 432"/>
                     <Edge fillStyle0="20" fillStyle1="24" strokeStyle="1" edges="
 !319 714|401 714"/>
                     <Edge fillStyle0="20" fillStyle1="3" strokeStyle="1" edges="
@@ -4827,10 +4835,6 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !299 623|208 541"/>
                     <Edge fillStyle0="20" fillStyle1="18" strokeStyle="1" edges="
 !208 541|194.5 529"/>
-                    <Edge fillStyle0="3" fillStyle1="24" strokeStyle="1" edges="
-!401 714|402 714"/>
-                    <Edge fillStyle0="3" fillStyle1="33" strokeStyle="1" edges="
-!402 714|402 432"/>
                     <Edge fillStyle0="20" fillStyle1="23" strokeStyle="1" edges="
 !299 696|319 714"/>
                     <Edge fillStyle0="20" fillStyle1="18" strokeStyle="1" edges="
@@ -4851,6 +4855,20 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !402 820|402 752"/>
                     <Edge fillStyle0="30" fillStyle1="24" edges="
 !402 752|319 752"/>
+                    <Edge fillStyle0="26" fillStyle1="14" edges="
+!194.5 902.5|213 913!213 913|221 916!221 916|218.5 924.5"/>
+                    <Edge fillStyle0="26" fillStyle1="32" strokeStyle="1" edges="
+!218.5 924.5|321 1018"/>
+                    <Edge fillStyle0="26" fillStyle1="37" strokeStyle="1" edges="
+!321 1018|401 1018"/>
+                    <Edge fillStyle0="26" fillStyle1="28" strokeStyle="1" edges="
+!401 1018|299 926"/>
+                    <Edge fillStyle0="26" fillStyle1="29" strokeStyle="1" edges="
+!299 926|208 843"/>
+                    <Edge fillStyle0="26" fillStyle1="31" strokeStyle="1" edges="
+!208 843|144 785"/>
+                    <Edge fillStyle0="26" fillStyle1="10" strokeStyle="1" edges="
+!144 785|79 726"/>
                     <Edge fillStyle0="27" fillStyle1="14" strokeStyle="1" edges="
 !209.5 958.5|206.5 970"/>
                     <Edge fillStyle0="27" fillStyle1="27" strokeStyle="1" edges="
@@ -4861,50 +4879,34 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !209.5 958.5|319 1061"/>
                     <Edge fillStyle0="32" fillStyle1="37" strokeStyle="1" edges="
 !319 1061|319 1018!319 1018|321 1018"/>
-                    <Edge fillStyle0="32" fillStyle1="26" strokeStyle="1" edges="
-!321 1018|218.5 924.5"/>
-                    <Edge fillStyle0="26" fillStyle1="14" edges="
-!194.5 902.5|213 913!213 913|221 916!221 916|218.5 924.5"/>
-                    <Edge fillStyle0="28" fillStyle1="23" strokeStyle="1" edges="
-!319 818|299 800"/>
                     <Edge fillStyle0="28" fillStyle1="29" strokeStyle="1" edges="
 !299 800|299 926"/>
-                    <Edge fillStyle0="28" fillStyle1="26" strokeStyle="1" edges="
-!299 926|401 1018"/>
-                    <Edge fillStyle0="28" strokeStyle="1" edges="
-!401 1018|402 1018"/>
-                    <Edge fillStyle0="28" fillStyle1="34" strokeStyle="1" edges="
-!402 1018|402 820"/>
-                    <Edge fillStyle0="29" fillStyle1="26" strokeStyle="1" edges="
-!208 843|299 926"/>
-                    <Edge fillStyle0="26" fillStyle1="32" strokeStyle="1" edges="
-!0 725|194.5 902.5"/>
-                    <Edge fillStyle0="24" fillStyle1="5" edges="
-!402 752|402 714"/>
-                    <Edge fillStyle0="31" fillStyle1="10" strokeStyle="1" edges="
-!144 660|144 785"/>
-                    <Edge fillStyle0="31" fillStyle1="26" strokeStyle="1" edges="
-!144 785|208 843"/>
-                    <Edge fillStyle0="31" fillStyle1="29" strokeStyle="1" edges="
-!208 843|208 718"/>
-                    <Edge fillStyle0="31" fillStyle1="25" strokeStyle="1" edges="
-!208 718|144 660"/>
-                    <Edge fillStyle0="10" fillStyle1="26" strokeStyle="1" edges="
-!79 726|144 785"/>
-                    <Edge fillStyle0="21" fillStyle1="25" edges="
-!64.5 521.5|299 734"/>
-                    <Edge fillStyle0="29" fillStyle1="25" strokeStyle="1" edges="
-!299 800|208 718"/>
-                    <Edge fillStyle0="24" fillStyle1="23" strokeStyle="1" edges="
-!319 714|319 752"/>
+                    <Edge fillStyle0="28" fillStyle1="23" strokeStyle="1" edges="
+!319 818|299 800"/>
                     <Edge fillStyle0="25" fillStyle1="23" edges="
 !299 800|299 734"/>
+                    <Edge fillStyle0="25" fillStyle1="21" edges="
+!299 734|64.5 521.5"/>
+                    <Edge fillStyle0="24" fillStyle1="23" strokeStyle="1" edges="
+!319 714|319 752"/>
+                    <Edge fillStyle0="29" fillStyle1="25" strokeStyle="1" edges="
+!299 800|208 718"/>
+                    <Edge fillStyle0="29" fillStyle1="31" strokeStyle="1" edges="
+!208 718|208 843"/>
+                    <Edge fillStyle0="31" fillStyle1="25" strokeStyle="1" edges="
+!208 718|144 660"/>
+                    <Edge fillStyle0="31" fillStyle1="10" strokeStyle="1" edges="
+!144 660|144 785"/>
+                    <Edge fillStyle0="24" fillStyle1="5" edges="
+!402 752|402 714"/>
+                    <Edge fillStyle0="26" fillStyle1="32" strokeStyle="1" edges="
+!0 725|194.5 902.5"/>
+                    <Edge fillStyle0="3" fillStyle1="42" edges="
+!640 728|640 727"/>
                     <Edge fillStyle0="31" fillStyle1="16" edges="
 !719.5 625|694 626!694 626|695 625!695 625|698.5 618.5"/>
                     <Edge fillStyle0="31" fillStyle1="16" strokeStyle="1" edges="
 !698.5 618.5|719.5 625"/>
-                    <Edge fillStyle0="3" fillStyle1="42" edges="
-!640 728|640 727"/>
                     <Edge fillStyle0="16" fillStyle1="42" edges="
 !758.5 644.5|760 645!760 645|781.5 645"/>
                     <Edge fillStyle0="6" fillStyle1="8" strokeStyle="1" edges="
@@ -4919,8 +4921,12 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !524.5 772|514 770!514 770|522.5 775.5"/>
                     <Edge fillStyle0="3" fillStyle1="42" edges="
 !522.5 775.5|524.5 772"/>
-                    <Edge fillStyle0="8" fillStyle1="34" edges="
-!546 846|549 835!549 835|555 846!555 846|546 846"/>
+                    <Edge fillStyle0="1" fillStyle1="8" edges="
+!521 819|527 814"/>
+                    <Edge fillStyle0="1" fillStyle1="6" strokeStyle="1" edges="
+!527 814|516 813!516 813|521 819"/>
+                    <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
+!521 819|522 820"/>
                     <Edge fillStyle0="8" fillStyle1="34" strokeStyle="1" edges="
 !522 820|545 846!545 846|463 853!463 853|577 889!577 889|574 895!574 895|450 950!450 950|541 946"/>
                     <Edge fillStyle0="8" fillStyle1="1" edges="
@@ -4941,26 +4947,24 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !576.5 810|570 808!570 808|570.5 806"/>
                     <Edge fillStyle0="8" fillStyle1="42" edges="
 !570.5 806|522.5 775.5"/>
-                    <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
-!521 819|522 820"/>
-                    <Edge fillStyle0="1" fillStyle1="6" strokeStyle="1" edges="
-!527 814|516 813!516 813|521 819"/>
-                    <Edge fillStyle0="1" fillStyle1="8" edges="
-!521 819|527 814"/>
+                    <Edge fillStyle0="8" fillStyle1="34" edges="
+!546 846|549 835!549 835|555 846!555 846|546 846"/>
                     <Edge fillStyle0="41" fillStyle1="42" edges="
 !576.5 810|570.5 806"/>
-                    <Edge fillStyle0="8" fillStyle1="5" edges="
-!497.5 752|490.5 747"/>
                     <Edge fillStyle0="8" fillStyle1="1" edges="
 !490.5 747|486.5 752"/>
                     <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
 !486.5 752|527 814"/>
+                    <Edge fillStyle0="8" fillStyle1="5" edges="
+!497.5 752|490.5 747"/>
                     <Edge fillStyle0="1" fillStyle1="34" strokeStyle="1" edges="
 !541 946|535 954!535 954|542 952.5!586 937|589 937"/>
                     <Edge fillStyle0="1" fillStyle1="43" edges="
 !589 937|587.5 935.5"/>
                     <Edge fillStyle0="1" fillStyle1="34" strokeStyle="1" edges="
 !576.5 946.5|580 946!580 946|578.5 944.5"/>
+                    <Edge fillStyle0="34" fillStyle1="34" strokeStyle="1" edges="
+!578.5 944.5|586 937"/>
                     <Edge fillStyle0="43" fillStyle1="34" strokeStyle="1" edges="
 !589 937|582 959!582 959|621 941"/>
                     <Edge fillStyle0="43" fillStyle1="9" edges="
@@ -4981,62 +4985,64 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !721 936|722 934"/>
                     <Edge fillStyle0="43" fillStyle1="9" strokeStyle="1" edges="
 !722 934|744.5 941.5"/>
-                    <Edge fillStyle0="34" fillStyle1="34" strokeStyle="1" edges="
-!578.5 944.5|586 937"/>
                     <Edge fillStyle0="8" fillStyle1="42" edges="
 !661 796|677 799!677 799|672 789.5"/>
                     <Edge fillStyle0="43" fillStyle1="42" edges="
 !754 901.5|705 946!705 946|719 917!719 917|682 938!682 938|635 925!635 925|647.5 873.5"/>
                     <Edge fillStyle0="9" fillStyle1="1" strokeStyle="1" edges="
 !722 934|722 936!722 936|721 936"/>
-                    <Edge fillStyle0="1" fillStyle1="5" edges="
-!490.5 747|477 737!477 737|486.5 752"/>
                     <Edge fillStyle0="8" fillStyle1="5" edges="
 !575 732.5|579 752"/>
-                    <Edge fillStyle0="33" fillStyle1="16" strokeStyle="1" edges="
-!619 610.5|619 432"/>
-                    <Edge fillStyle0="34" fillStyle1="6" strokeStyle="1" edges="
-!522 820|402 820"/>
-                    <Edge fillStyle0="6" fillStyle1="5" edges="
-!486.5 752|402 752"/>
-                    <Edge fillStyle0="33" fillStyle1="5" strokeStyle="1" edges="
-!402 714|545.5 714"/>
+                    <Edge fillStyle0="1" fillStyle1="5" edges="
+!490.5 747|477 737!477 737|486.5 752"/>
                     <Edge fillStyle0="3" fillStyle1="22" strokeStyle="1" edges="
 !299 449|299 623"/>
+                    <Edge fillStyle0="33" fillStyle1="5" strokeStyle="1" edges="
+!402 714|545.5 714"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!486.5 752|402 752"/>
+                    <Edge fillStyle0="34" fillStyle1="6" strokeStyle="1" edges="
+!522 820|402 820"/>
+                    <Edge fillStyle0="34" fillStyle1="28" strokeStyle="1" edges="
+!402 820|402 1018"/>
+                    <Edge fillStyle0="34" fillStyle1="35" strokeStyle="1" edges="
+!402 1018|621 1018"/>
+                    <Edge fillStyle0="34" fillStyle1="9" strokeStyle="1" edges="
+!621 1018|621 941"/>
+                    <Edge fillStyle0="33" fillStyle1="16" strokeStyle="1" edges="
+!619 610.5|619 432"/>
                     <Edge fillStyle0="35" fillStyle1="9" strokeStyle="1" edges="
 !721.5 1018|714 1018"/>
                     <Edge fillStyle0="35" fillStyle1="1" edges="
 !724 1018|724 1022!724 1022|721.5 1018"/>
                     <Edge fillStyle0="9" fillStyle1="35" strokeStyle="1" edges="
-!657 1018|670.5 1018!621 1018|638.5 1018"/>
+!621 1018|638.5 1018!657 1018|670.5 1018"/>
                     <Edge fillStyle0="36" fillStyle1="14" strokeStyle="1" edges="
 !744 1147|768 1151!768 1151|767 1149!767 1149|771 1150!771 1150|872 1149"/>
                     <Edge fillStyle0="36" fillStyle1="14" edges="
 !872 1149|881.5 1184.5"/>
+                    <Edge fillStyle0="14" edges="
+!754 1208|754.5 1210.5"/>
                     <Edge fillStyle0="36" strokeStyle="1" edges="
 !737.5 1214|742 1196!742 1196|754 1208"/>
                     <Edge fillStyle0="36" fillStyle1="14" strokeStyle="1" edges="
 !754 1208|760 1181"/>
                     <Edge fillStyle0="36" fillStyle1="14" edges="
 !760 1181|744 1147"/>
-                    <Edge fillStyle0="14" edges="
-!754 1208|754.5 1210.5"/>
-                    <Edge fillStyle0="26" fillStyle1="37" strokeStyle="1" edges="
-!321 1018|401 1018"/>
-                    <Edge fillStyle0="37" fillStyle1="38" edges="
-!319 1061|402 1061"/>
-                    <Edge fillStyle0="37" fillStyle1="35" edges="
-!402 1061|402 1019"/>
                     <Edge fillStyle0="37" strokeStyle="1" edges="
 !402 1019|401 1018"/>
+                    <Edge fillStyle0="37" fillStyle1="35" edges="
+!402 1061|402 1019"/>
+                    <Edge fillStyle0="37" fillStyle1="38" edges="
+!319 1061|402 1061"/>
+                    <Edge fillStyle0="28" strokeStyle="1" edges="
+!401 1018|402 1018"/>
                     <Edge fillStyle1="35" strokeStyle="1" edges="
 !402 1019|402 1018"/>
-                    <Edge fillStyle0="39" fillStyle1="36" strokeStyle="1" edges="
-!402 1178|402 1124"/>
                     <Edge fillStyle0="39" fillStyle1="38" strokeStyle="1" edges="
 !402 1124|319 1118"/>
-                    <Edge fillStyle0="27" fillStyle1="38" strokeStyle="1" edges="
-!319 1118|319 1061"/>
+                    <Edge fillStyle0="39" fillStyle1="36" strokeStyle="1" edges="
+!402 1178|402 1124"/>
                     <Edge fillStyle0="40" fillStyle1="38" strokeStyle="1" edges="
 !402 1061|402 1124"/>
                     <Edge fillStyle0="40" fillStyle1="36" strokeStyle="1" edges="
@@ -5054,14 +5060,14 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !912 1067|905 1068!905 1068|910 1067!910 1067|900 1061"/>
                     <Edge fillStyle0="40" fillStyle1="35" strokeStyle="1" edges="
 !900 1061|402 1061"/>
-                    <Edge fillStyle0="35" fillStyle1="34" strokeStyle="1" edges="
-!621 1018|402 1018"/>
+                    <Edge fillStyle0="27" fillStyle1="38" strokeStyle="1" edges="
+!319 1118|319 1061"/>
                     <Edge fillStyle0="8" fillStyle1="8" strokeStyle="1" edges="
 !1222 1040.5|1215 1053.5"/>
-                    <Edge fillStyle0="14" fillStyle1="11" edges="
-!1129 1066.5|1170.5 1092.5"/>
                     <Edge fillStyle0="11" fillStyle1="8" edges="
 !1129 1066.5|1121 1079"/>
+                    <Edge fillStyle0="14" fillStyle1="11" edges="
+!1129 1066.5|1170.5 1092.5"/>
                     <Edge fillStyle0="36" fillStyle1="40" strokeStyle="1" edges="
 !1202 1124|1177.5 1124"/>
                     <Edge fillStyle0="36" fillStyle1="36" strokeStyle="1" edges="
@@ -5084,26 +5090,24 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
 !856 1005|892 1010"/>
                     <Edge fillStyle0="35" strokeStyle="1" edges="
 !882 1040|870 1037!870 1037|812 1034!812 1034|819 1033!819 1033|815 1033!815 1033|845 1029!845 1029|847 1029!847 1029|880 1025!880 1025|849 1025!849 1025|884 1019!900 1061|907 1061"/>
-                    <Edge fillStyle0="8" fillStyle1="11" edges="
-!900 1053|898 1049.5"/>
-                    <Edge fillStyle1="8" edges="
-!900 1053|897 1050"/>
-                    <Edge fillStyle0="11" fillStyle1="8" edges="
-!902 1053|899.5 1048.5"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!891.5 1014|860 1015!860 1015|891 1018"/>
                     <Edge fillStyle0="35" fillStyle1="7" strokeStyle="1" edges="
 !891 1018|843 1018"/>
                     <Edge fillStyle0="35" fillStyle1="9" strokeStyle="1" edges="
 !843 1018|724 1018"/>
-                    <Edge fillStyle1="7" strokeStyle="1" edges="
-!891.5 1014|860 1015!860 1015|891 1018"/>
+                    <Edge fillStyle0="11" fillStyle1="8" edges="
+!902 1053|899.5 1048.5"/>
+                    <Edge fillStyle1="8" edges="
+!900 1053|897 1050"/>
+                    <Edge fillStyle0="8" fillStyle1="11" edges="
+!900 1053|898 1049.5"/>
                     <Edge fillStyle1="8" edges="
 !912 1067|907 1061"/>
-                    <Edge fillStyle0="9" fillStyle1="34" strokeStyle="1" edges="
-!621 941|621 1018"/>
-                    <Edge fillStyle0="8" fillStyle1="14" edges="
-!1222 1040.5|1192 984"/>
                     <Edge fillStyle0="7" fillStyle1="9" strokeStyle="1" edges="
 !843 950|843 1018"/>
+                    <Edge fillStyle0="8" fillStyle1="14" edges="
+!1222 1040.5|1192 984"/>
                     <Edge cubics="!1053 432(;1053,432 843,432 843,432q1053 432 843 432);"/>
                     <Edge cubics="!1227 640(;1227,640 1317,714 1317,714q1227 640 1317 714);"/>
                     <Edge cubics="!1227 714(;1227,714 1227,640 1227,640q1227 714 1227 640);"/>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748833395" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="保险柜">
+    <DOMTimeline name="保险柜" currentFrame="98">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465">
+        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -359,7 +359,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="element" color="#83C998" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="element" color="#83C998" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>

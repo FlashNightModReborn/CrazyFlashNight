@@ -5,6 +5,7 @@
 import org.flashNight.neur.Event.*;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.naki.RandomNumberEngine.*;
 
 class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     
@@ -69,7 +70,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         var 控制对象:MovieClip = TargetCacheManager.findHero();
         target.gotoAndPlay("消失");
         delete this.pickupItemDict[target.index];
-        _root.播放音效("拾取音效");
+        _root.soundEffectManager.playSound("拾取音效");
         
         if (!拾取者 && 播放拾取动画) {
             控制对象.拾取();
@@ -139,12 +140,14 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 创建可拾取物
      */
-    function 创建可拾取物(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean, parameterObject:Object):Void {
+    function createCollectible(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean, parameterObject:Object):Void {
         if (数量 <= 0) {
             数量 = 1;
         }
+
+        _root.发布消息("创建" + 物品名);
         
-        if (物品名 === "金钱" && random(_root.打怪掉钱机率) == 0) {
+        if (物品名 === "金钱" && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
             物品名 = "K点";
         }
         
@@ -166,7 +169,8 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             parameterObject
         );
         
-        pickupItem.焦点高亮框.gotoAndPlay(_root.随机整数(1, 59));
+        pickupItem.焦点高亮框.gotoAndPlay(
+            LinearCongruentialEngine.instance.randomInteger(1, 59));
         
         // 创建可拾取物池
         if (this.dispatcher.isDestroyed() || this.dispatcher == null) {

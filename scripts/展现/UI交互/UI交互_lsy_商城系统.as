@@ -120,7 +120,7 @@ _root.购物车结账 = function()
 	{
 		单机版之商城购物车买单();
 		_root.最上层发布文字提示(_root.获得翻译("购买成功！"));
-		_root.播放音效("收银机.mp3");
+		_root.soundEffectManager.playSound("收银机.mp3");
 		_root.获取虚拟币值();
 		_root.清空购物车();
 		_root.保存购物车();

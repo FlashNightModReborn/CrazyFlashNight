@@ -102,7 +102,7 @@ _root.子弹区域shoot传递 = function(Obj){
     var effect:MovieClip = EffectSystem.Effect(Obj.发射效果, shootX, shootY, xscale);
     if(effect) effect._rotation = Obj.角度偏移;
     ShellSystem.launchShell(Obj.子弹种类, shootX, shootY, xscale);
-    _root.播放音效(Obj.声音);
+    _root.soundEffectManager.playSound(Obj.声音);
 
     // 设置子弹类型标志
     BulletTypesetter.setTypeFlags(Obj);

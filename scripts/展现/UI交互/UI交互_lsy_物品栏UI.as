@@ -77,7 +77,7 @@ _root.物品UI函数.出售物品 = function(){
 		this.sellCollection.remove(this.sellIndex);
 	}
 	_root.金钱 += this.总价;
-	_root.播放音效("收银机.mp3");
+	_root.soundEffectManager.playSound("收银机.mp3");
 	this.gotoAndStop("空");
 	this.showtext.text = "出售成功，获得 $" + this.总价;
 	this.物品名 = null;

@@ -99,9 +99,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
      */
     private static function playPickupAudio(target:MovieClip):Void {
         var audio:String = target.audio || DEFAULT_PICKUP_AUDIO;
-        if (_root.播放音效) {
-            _root.播放音效(audio);
-        }
+        _root.soundEffectManager.playSound(audio);
+
     }
     
     /**

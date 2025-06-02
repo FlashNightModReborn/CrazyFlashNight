@@ -1975,47 +1975,33 @@ _root.主角函数.随机切换攻击模式 = function()
 };
 
 _root.主角函数.攻击呐喊 = function(){
-	if (性别 === "女"){
-		_root.播放音效(女_攻击呐喊_库[random(女_攻击呐喊_库.length)]);
-	}else{
-		_root.播放音效(男_攻击呐喊_库[random(男_攻击呐喊_库.length)]);
-	}
+	var arr:Array = 性别 === "女" ? 女_攻击呐喊_库 : 男_攻击呐喊_库;
+	_root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
+
 _root.主角函数.中招呐喊 = function(){
-	if (性别 === "女"){
-		_root.播放音效(女_中招呐喊_库[random(女_中招呐喊_库.length)]);
-	}else{
-		_root.播放音效(男_中招呐喊_库[random(男_中招呐喊_库.length)]);
-	}
+	var arr:Array = 性别 === "女" ? 女_中招呐喊_库 : 男_中招呐喊_库;
+	_root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
+
 _root.主角函数.击倒呐喊 = function(){
 	var time = getTimer();
 	if(time - this.上次击倒呐喊时间 < 300) return; // 击倒呐喊的最低间隔为300毫秒
 	this.上次击倒呐喊时间 = time;
-	if (性别 === "女"){
-		_root.播放音效(女_击倒呐喊_库[random(女_击倒呐喊_库.length)]);
-	}else{
-		_root.播放音效(男_击倒呐喊_库[random(男_击倒呐喊_库.length)]);
-	}
+	var arr:Array = 性别 === "女" ? 女_击倒音效_库 : 男_击倒音效_库;
+	_root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
-_root.主角函数.跑步音效 = function(type){
-	if(this._name !== _root.控制目标) return;
-	var 音效名 = null;
-	if (type == 0){
-		if(this.性别 == "男"){
-			音效名 = "soundfootstep.wav";
-		}else if(this.性别 == "女"){
-			音效名 = "soundfootstep_female.wav";
-		}
-	}else{
-		if(this.性别 == "男"){
-			音效名 = "soundfootstep1.wav";
-		}else if(this.性别 == "女"){
-			音效名 = "soundfootstep_female1.wav";
-		}
-	}
-	_root.播放音效(音效名);
+
+_root.主角函数.跑步音效 = function(type) {
+	if (this._name !== _root.控制目标) return;
+
+	var 性别后缀 = (this.性别 == "女") ? "_female" : "";
+	var 音效编号 = (type == 0) ? "" : "1";
+	var 音效名 = "soundfootstep" + 性别后缀 + 音效编号 + ".wav";
+
+	_root.soundEffectManager.playSound(音效名);
 };
+
 
 _root.主角函数.获取佣兵装备属性 = function(id){
 	var _loc4_ = undefined;
