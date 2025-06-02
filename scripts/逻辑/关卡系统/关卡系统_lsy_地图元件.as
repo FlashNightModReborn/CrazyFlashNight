@@ -4,8 +4,6 @@ import org.flashNight.arki.unit.*;
 import org.flashNight.arki.spatial.animation.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
-TargetCacheManager.findHero();
-
 // 拾取相关函数
 _root.pickupItemManager = new Object();
 _root.pickupItemManager.count = 0;
