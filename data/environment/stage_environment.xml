@@ -1222,6 +1222,29 @@
         <Height>850</Height>
     </Environment>
     <!-- 基地-->
+     <Environment>
+        <BackgroundURL>gk20_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>940</Xmax>
+        <Ymin>360</Ymin>
+        <Ymax>620</Ymax>
+        <Width>1024</Width>
+        <Height>630</Height>
+        <Collision>
+            <Point>0,350</Point>
+            <Point>245,350</Point>
+            <Point>0,630</Point>
+        </Collision>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+            <x0>100</x0>
+            <y0>345</y0>
+            <x1>240</x1>
+            <y1>520</y1>
+        </Door>
+    </Environment>
     <Environment>
         <BackgroundURL>gk20_2_BG.swf</BackgroundURL>
         <WeatherCondition>正常</WeatherCondition>
@@ -1233,6 +1256,9 @@
     <Environment>
         <BackgroundURL>gk20_3_BG.swf</BackgroundURL>
         <SpaceCondition>室内</SpaceCondition>
+        <VisualCondition>光照</VisualCondition>
+        <MaxIllumination>8</MaxIllumination>
+        <MinIllumination>4</MinIllumination>
     </Environment>
     <Environment>
         <BackgroundURL>gk20_4_BG.swf</BackgroundURL>
