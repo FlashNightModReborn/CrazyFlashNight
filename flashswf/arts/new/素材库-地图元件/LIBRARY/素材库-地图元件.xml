@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748704913" lastUniqueIdentifier="52">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748874884" lastUniqueIdentifier="53">
   <timeline>
     <DOMTimeline name="素材库-地图元件" currentFrame="5">
       <layers>
@@ -196,12 +196,20 @@
                     <Point x="0.5" y="-42.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="箱子素材/生存箱/生存箱" selected="true" centerPoint3DX="-313.2" centerPoint3DY="132.65">
+                <DOMSymbolInstance libraryItemName="箱子素材/生存箱/生存箱" centerPoint3DX="-319.3" centerPoint3DY="91.65">
                   <matrix>
-                    <Matrix tx="-318.8" ty="173.4"/>
+                    <Matrix tx="-324.9" ty="132.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.15" y="-40.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="箱子素材/装备箱/装备箱" selected="true" centerPoint3DX="-319.4" centerPoint3DY="183.4">
+                  <matrix>
+                    <Matrix tx="-324.9" ty="223.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.75" y="-39.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
