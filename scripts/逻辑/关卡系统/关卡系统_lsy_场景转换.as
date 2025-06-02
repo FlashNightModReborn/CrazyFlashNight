@@ -2,6 +2,7 @@
 
 _root.操控目标表 = [_root.控制目标];
 
+import org.flashNight.arki.stage.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.转场景记录数据 = function(){
@@ -357,8 +358,9 @@ _root.跳转地图 = function(跳转帧){
 }
 
 _root.加载共享场景 = function(加载场景名){
-	var 游戏世界 = _root.attachMovie(加载场景名,"gameworld",_root.getNextHighestDepth());
-	游戏世界.swapDepths(_root.gameworld层级定位器);
+	var gw = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth());
+	gw.swapDepths(_root.gameworld层级定位器);
+	SceneManager.getInstance().initScene(gw);
 }
 
 
@@ -366,8 +368,7 @@ _root.加载共享场景 = function(加载场景名){
 // 转换场景画面完全淡出时移除组件
 _root.清除游戏世界组件 = function(){
 	// 彻底移除gameworld
-	_root.gameworld.swapDepths(_root.getNextHighestDepth());
-	_root.gameworld.removeMovieClip();
+	SceneManager.getInstance().removeGameWorld();
 	
 	// 清除游戏世界相关组件
 	_root.gameworld层级定位器.removeMovieClip();

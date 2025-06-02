@@ -788,11 +788,19 @@
         <Ymax>720</Ymax>
         <Width>2000</Width>
         <Height>720</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>右</Direction>
+            <x0>1250</x0>
+            <y0>300</y0>
+            <x1>1350</x1>
+            <y1>480</y1>
+        </Door>
     </Environment>
     <Environment>
         <BackgroundURL>gk11_2_BG.swf</BackgroundURL>
         <Alignment>false</Alignment>
-        <Xmin>50</Xmin>
+        <Xmin>230</Xmin>
         <Xmax>2000</Xmax>
         <Ymin>300</Ymin>
         <Ymax>710</Ymax>

@@ -8,6 +8,7 @@
           <DOMFolderItem name="场景素材/废弃车辆" itemID="68368d0c-00002c16"/>
           <DOMFolderItem name="场景素材/废弃车辆/高级轿车a" itemID="68368d0c-00002c17"/>
           <DOMFolderItem name="出生点-大机关门" itemID="664b226f-00000b0d"/>
+          <DOMFolderItem name="出生点-地铁门" itemID="683dc300-0000047c"/>
           <DOMFolderItem name="出生点-防御地带" itemID="6826dc85-0000031b" isExpanded="true"/>
           <DOMFolderItem name="出生点-改造僵尸管道" itemID="664b1c32-00000329"/>
           <DOMFolderItem name="出生点-管道" itemID="664cd5f3-00000ab5"/>
@@ -59,6 +60,8 @@
           <Include href="出生点-大机关门/门-左.xml" itemIcon="1" loadImmediate="false" itemID="66aa1ea5-00000257" lastModified="1722424997"/>
           <Include href="出生点-大机关门/嵌入门-右.xml" itemIcon="1" loadImmediate="false" itemID="66aa1eb3-0000025a" lastModified="1722425483"/>
           <Include href="出生点-大机关门/嵌入门-左.xml" itemIcon="1" loadImmediate="false" itemID="66aa1eb1-00000259" lastModified="1722425441"/>
+          <Include href="出生点-地铁门/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="683dbd90-00000206" lastModified="1748346493"/>
+          <Include href="出生点-地铁门/出生点-地铁门.xml" itemID="683dc091-00000344" lastModified="1748878108"/>
           <Include href="出生点-防御地带/出生点-防御地带内部大门.xml" itemID="6826e0af-000002be" lastModified="1747378799"/>
           <Include href="出生点-防御地带/出生点-防御地带内部入口.xml" itemID="6826dc87-0000031d" lastModified="1747378426"/>
           <Include href="出生点-防御地带/防御地带内部入口门右.xml" itemIcon="1" loadImmediate="false" itemID="678f66f6-00000a3c" lastModified="1747376780"/>
@@ -178,7 +181,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748874884"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748878094"/>
           <Include href="跳动的火焰.xml" itemID="65c8e899-00000235" lastModified="1707665566"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
