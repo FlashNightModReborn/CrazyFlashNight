@@ -185,8 +185,8 @@ _root.初始化出生点 = function(){
 
 _root.地图元件 = new Object();
 
-_root.地图元件.初始化地图元件 = function(target:MovieClip){
-	StaticInitializer.initializeMapElement(target);
+_root.地图元件.初始化地图元件 = function(target:MovieClip, presetName:String):Void {
+	StaticInitializer.initializeMapElement(target, presetName);
 }
 
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
@@ -203,6 +203,14 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 
 	_root.创建可拾取物(target.内部物,   target.数量,target._x,target._y, true);
 }
+
+
+_root.地图元件.资源箱贴背景图 = function(target:MovieClip) {
+	target.stop();
+	_root.add2map(target,2);
+	target.removeMovieClip();
+}
+
 
 /**
  * 地图元件破碎动画包装方法

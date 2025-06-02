@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748750077" lastUniqueIdentifier="18">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748833395" lastUniqueIdentifier="18">
   <timeline>
     <DOMTimeline name="保险柜">
       <layers>
@@ -21,16 +21,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#9CD465">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-this.maxFrame = 12;
-this.hitPoint = 100;
-this.audio = "保险柜打开.wav";
-
-_root.地图元件.初始化地图元件(this);]]></script>
+                <script><![CDATA[_root.地图元件.初始化地图元件(this, "保险柜");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -49,9 +44,7 @@ _root.地图元件.初始化地图元件(this);]]></script>
             </DOMFrame>
             <DOMFrame index="96" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[stop();
-_root.add2map(this,2);
-this.removeMovieClip();]]></script>
+                <script><![CDATA[_root.地图元件.资源箱贴背景图(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -64,9 +57,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="178" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[stop();
-_root.add2map(this,2);
-this.removeMovieClip();]]></script>
+                <script><![CDATA[_root.地图元件.资源箱贴背景图(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -368,7 +359,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="element" color="#83C998" autoNamed="false">
+        <DOMLayer name="element" color="#83C998" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
