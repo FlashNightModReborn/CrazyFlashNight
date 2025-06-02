@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/生存箱/生存箱碎片7" itemID="683da1ff-0000101d" symbolType="graphic" lastModified="1748869631">
+  <timeline>
+    <DOMTimeline name="生存箱碎片7">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#16140F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!0 22S1|0 163!0 163|128 220!128 220|248 200!248 200|323 282!323 282|539 282"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!539 282S5|111 0!111 0|0 22"/>
+                    <Edge cubics="!0 163(;0,163 128,220 128,220q0 163 128 220);"/>
+                    <Edge cubics="!0 22(;0,22 111,0 111,0q0 22 111 0);"/>
+                    <Edge cubics="!0 163(;0,163 0,22 0,22q0 163 0 22);"/>
+                    <Edge cubics="!128 220(;128,220 248,200 248,200q128 220 248 200);"/>
+                    <Edge cubics="!248 200(;248,200 323,282 323,282q248 200 323 282);"/>
+                    <Edge cubics="!111 0(;111,0 539,282 539,282q111 0 539 282);"/>
+                    <Edge cubics="!323 282(;323,282 539,282 539,282q323 282 539 282);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

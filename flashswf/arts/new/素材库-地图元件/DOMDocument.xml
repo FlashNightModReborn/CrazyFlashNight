@@ -27,7 +27,7 @@
           <DOMFolderItem name="箱子素材/保险柜" itemID="6837c8e0-0000190a"/>
           <DOMFolderItem name="箱子素材/生存箱" itemID="68381308-00002787" isExpanded="true"/>
           <DOMFolderItem name="箱子素材/纸箱" itemID="68380307-0000252c"/>
-          <DOMFolderItem name="箱子素材/资源箱" itemID="6837c8c3-000018f1" isExpanded="true"/>
+          <DOMFolderItem name="箱子素材/资源箱" itemID="6837c8c3-000018f1"/>
           <DOMFolderItem name="钻头素材" itemID="667bdf9c-00000066" isExpanded="true"/>
      </folders>
      <media>
@@ -207,8 +207,24 @@
           <Include href="箱子素材/保险柜/保险箱碎片12.xml" itemIcon="1" loadImmediate="false" itemID="6837ebc1-00001bb1" lastModified="1748495297"/>
           <Include href="箱子素材/保险柜/保险箱碎片13.xml" itemIcon="1" loadImmediate="false" itemID="6837edcc-00001d41" lastModified="1748495820"/>
           <Include href="箱子素材/光效.xml" itemIcon="1" loadImmediate="false" itemID="66a8fe55-00001f7d" lastModified="1722425993"/>
-          <Include href="箱子素材/生存箱/生存箱.xml" itemID="683812e1-0000276e" lastModified="1748857195"/>
-          <Include href="箱子素材/生存箱/生存箱本体素材.xml" loadImmediate="false" itemID="683812f0-00002783" lastModified="1748863134"/>
+          <Include href="箱子素材/生存箱/生存箱.xml" itemID="683812e1-0000276e" lastModified="1748870737"/>
+          <Include href="箱子素材/生存箱/生存箱本体素材.xml" loadImmediate="false" itemID="683812f0-00002783" lastModified="1748870654"/>
+          <Include href="箱子素材/生存箱/生存箱盖子1.xml" loadImmediate="false" itemID="683da595-0000106d" lastModified="1748870549"/>
+          <Include href="箱子素材/生存箱/生存箱盖子2.xml" loadImmediate="false" itemID="683da5a0-00001071" lastModified="1748870560"/>
+          <Include href="箱子素材/生存箱/生存箱盖子3.xml" loadImmediate="false" itemID="683da5a6-00001075" lastModified="1748870566"/>
+          <Include href="箱子素材/生存箱/生存箱盖子4.xml" loadImmediate="false" itemID="683da5ac-00001079" lastModified="1748870572"/>
+          <Include href="箱子素材/生存箱/生存箱碎片1.xml" itemIcon="1" loadImmediate="false" itemID="683d9f08-00000d85" lastModified="1748868872"/>
+          <Include href="箱子素材/生存箱/生存箱碎片2.xml" itemIcon="1" loadImmediate="false" itemID="683d9f76-00000f45" lastModified="1748868982"/>
+          <Include href="箱子素材/生存箱/生存箱碎片3.xml" itemIcon="1" loadImmediate="false" itemID="683d9fdb-00000f51" lastModified="1748869083"/>
+          <Include href="箱子素材/生存箱/生存箱碎片4.xml" itemIcon="1" loadImmediate="false" itemID="683da085-00000f65" lastModified="1748869254"/>
+          <Include href="箱子素材/生存箱/生存箱碎片5.xml" itemIcon="1" loadImmediate="false" itemID="683da10d-00001000" lastModified="1748869389"/>
+          <Include href="箱子素材/生存箱/生存箱碎片6.xml" itemIcon="1" loadImmediate="false" itemID="683da1a5-0000100e" lastModified="1748869541"/>
+          <Include href="箱子素材/生存箱/生存箱碎片7.xml" itemIcon="1" loadImmediate="false" itemID="683da1ff-0000101d" lastModified="1748869631"/>
+          <Include href="箱子素材/生存箱/生存箱碎片8.xml" itemIcon="1" loadImmediate="false" itemID="683da215-00001027" lastModified="1748869653"/>
+          <Include href="箱子素材/生存箱/生存箱碎片9.xml" itemIcon="1" loadImmediate="false" itemID="683da296-00001037" lastModified="1748869782"/>
+          <Include href="箱子素材/生存箱/生存箱碎片10.xml" itemIcon="1" loadImmediate="false" itemID="683da335-00001045" lastModified="1748869941"/>
+          <Include href="箱子素材/生存箱/生存箱碎片11.xml" itemIcon="1" loadImmediate="false" itemID="683da344-0000104f" lastModified="1748869956"/>
+          <Include href="箱子素材/生存箱/生存箱碎片12.xml" itemIcon="1" loadImmediate="false" itemID="683da3e7-00001063" lastModified="1748870119"/>
           <Include href="箱子素材/隐藏资源点.xml" itemID="66a8fec5-00001f87" lastModified="1748833671"/>
           <Include href="箱子素材/隐藏资源点光效.xml" loadImmediate="false" itemID="66a8fe1f-00001f7b" lastModified="1722424406"/>
           <Include href="箱子素材/纸箱/纸箱.xml" itemID="683802e7-00002516" lastModified="1748855765"/>
@@ -223,7 +239,7 @@
           <Include href="箱子素材/纸箱/纸箱碎片6.xml" loadImmediate="false" itemID="68380bf7-00002628" lastModified="1748503543"/>
           <Include href="箱子素材/纸箱/纸箱碎片7.xml" loadImmediate="false" itemID="68380c1e-0000262c" lastModified="1748503582"/>
           <Include href="箱子素材/纸箱/纸箱碎片8.xml" loadImmediate="false" itemID="68380c46-00002630" lastModified="1748503622"/>
-          <Include href="箱子素材/资源箱/资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748855772"/>
+          <Include href="箱子素材/资源箱/资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748865263"/>
           <Include href="箱子素材/资源箱/资源箱本体素材.xml" loadImmediate="false" itemID="6836c077-00000f9b" lastModified="1748833505"/>
           <Include href="箱子素材/资源箱/资源箱盖子1.xml" loadImmediate="false" itemID="683b287b-00001a1b" lastModified="1748707451"/>
           <Include href="箱子素材/资源箱/资源箱盖子2.xml" loadImmediate="false" itemID="683b28ad-00001a1f" lastModified="1748707501"/>
@@ -796,6 +812,13 @@
                     <SolidSwatchItem color="#302C24" hue="26" saturation="33" brightness="40"/>
                     <SolidSwatchItem color="#211E16" hue="28" saturation="46" brightness="26"/>
                     <SolidSwatchItem color="#13120F" hue="30" saturation="30" brightness="16"/>
+                    <SolidSwatchItem color="#19131C" hue="190" saturation="44" brightness="22"/>
+                    <SolidSwatchItem color="#250D09" hue="6" saturation="151" brightness="22"/>
+                    <SolidSwatchItem color="#020000" saturation="239" brightness="1"/>
+                    <SolidSwatchItem color="#23130E" hue="10" saturation="104" brightness="23"/>
+                    <SolidSwatchItem color="#07130E" hue="102" saturation="106" brightness="13"/>
+                    <SolidSwatchItem color="#38130E" hue="5" saturation="145" brightness="33"/>
+                    <SolidSwatchItem color="#4F322B" hue="8" saturation="72" brightness="57"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -853,6 +876,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="302574" publishTime="1748870746"/>
+          <PublishItem publishSize="273320" publishTime="1748865219"/>
           <PublishItem publishSize="340953" publishTime="1748855777"/>
           <PublishItem publishSize="340957" publishTime="1748855411"/>
           <PublishItem publishSize="341111" publishTime="1748833519"/>
@@ -871,7 +896,5 @@
           <PublishItem publishSize="374822" publishTime="1748746680"/>
           <PublishItem publishSize="374831" publishTime="1748746417"/>
           <PublishItem publishSize="374835" publishTime="1748746332"/>
-          <PublishItem publishSize="374824" publishTime="1748746231"/>
-          <PublishItem publishSize="374807" publishTime="1748746134"/>
      </publishHistory>
 </DOMDocument>

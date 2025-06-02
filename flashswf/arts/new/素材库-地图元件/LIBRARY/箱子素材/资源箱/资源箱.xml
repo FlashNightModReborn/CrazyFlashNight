@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748855772" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748865263" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="资源箱" currentFrame="26">
+    <DOMTimeline name="资源箱" currentFrame="51">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465">
+        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -33,6 +33,17 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var customConfig = {
+    fragmentCount: 1,     
+	baseVelocityX: 3,
+	velocityYMax: 6,
+	energyLoss: 0.3,
+	massScale: 1 
+};
+
+_root.地图元件.地图元件破碎动画(this.element, "资源箱盖子碎片", customConfig);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="29" keyMode="9728">
@@ -82,11 +93,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#83C998" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#83C998">
           <frames>
             <DOMFrame index="0" duration="161" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱本体素材" name="element" selected="true" centerPoint3DX="0.5" centerPoint3DY="-19.3">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱本体素材" name="element" centerPoint3DX="0.5" centerPoint3DY="-19.3">
                   <matrix>
                     <Matrix tx="-32.4" ty="-50.1"/>
                   </matrix>

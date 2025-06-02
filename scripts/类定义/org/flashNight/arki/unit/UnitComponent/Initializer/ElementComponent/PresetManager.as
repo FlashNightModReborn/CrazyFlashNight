@@ -40,7 +40,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Preset
         
         // 生存箱预设
         PresetManager.registerPreset("生存箱", {
-            hitPoint: 100,
+            hitPoint: 50,
             maxFrame: 12
         });
 
