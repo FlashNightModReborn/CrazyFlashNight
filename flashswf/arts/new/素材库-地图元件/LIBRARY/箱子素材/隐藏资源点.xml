@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/隐藏资源点" itemID="66a8fec5-00001f87" linkageExportForAS="true" linkageIdentifier="隐藏资源点" lastModified="1748690640" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/隐藏资源点" itemID="66a8fec5-00001f87" linkageExportForAS="true" linkageIdentifier="隐藏资源点" lastModified="1748833671" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="隐藏资源点">
       <layers>
@@ -33,10 +33,8 @@ this.强制移动 = function(移动方向)
 		}
 	}
 }
-this.maxFrame = 1;
 this.element = "隐藏资源点";
-this.hitPoint = 1;
-_root.地图元件.初始化地图元件(this);
+_root.地图元件.初始化地图元件(this, "纸箱");
 ]]></script>
               </Actionscript>
               <elements/>

@@ -29,9 +29,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Quanti
      * @return Boolean 如果有有效数量范围返回true
      */
     public static function hasQuantityRange(target:MovieClip):Boolean {
-        return target.数量_min > 0 && target.数量_max > 0 && target.数量_max >= target.数量_min;
+        return target.数量_min > 0 && target.数量_max >= target.数量_min;
     }
-    
+
     /**
      * 获取目标的数量范围信息
      * @param target 要检查的目标MovieClip

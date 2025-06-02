@@ -9,7 +9,6 @@ import org.flashNight.gesh.func.*;
 import org.flashNight.arki.unit.UnitComponent.Updater.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.*;
 
 
@@ -32,10 +31,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     }
 
     /**
-     * 初始化地图元件的主方法
+     * 初始化地图元件的主方法（支持预设）
      * @param target 要初始化的地图元件MovieClip
+     * @param presetName 预设名称，如果不提供则使用目标现有属性
      */
-    public static function initializeMapElement(target:MovieClip):Void {
+    public static function initializeMapElement(target:MovieClip, presetName:String):Void {
+        // 应用预设配置（如果提供了预设名称）
+        if (presetName) {
+            StaticInitializer.applyPreset(target, presetName);
+        }
+
         // 1. 验证进度要求 - 如果不满足则直接移除并返回
         if (!ProgressValidator.validate(target)) {
             return;
@@ -64,12 +69,37 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     }
 
     /**
+     * 应用预设到目标
+     * @param target 目标MovieClip
+     * @param presetName 预设名称
+     * @return Boolean 如果成功应用预设返回true
+     */
+    public static function applyPreset(target:MovieClip, presetName:String):Boolean {
+        if (!target || !presetName) return false;
+
+        var preset:ElementPreset = PresetManager.getPreset(presetName);
+        if (!preset) {
+            trace("警告: 未找到预设 '" + presetName + "'，使用默认配置");
+            return false;
+        }
+
+        preset.applyTo(target);
+        return true;
+    }
+
+    /**
      * 快速初始化地图元件（跳过某些步骤以提高性能）
      * @param target 要初始化的地图元件MovieClip
+     * @param presetName 预设名称
      * @param skipInteraction 是否跳过交互初始化
      * @param skipObstacle 是否跳过障碍物渲染
      */
-    public static function initializeMapElementFast(target:MovieClip, skipInteraction:Boolean, skipObstacle:Boolean):Void {
+    public static function initializeMapElementFast(target:MovieClip, presetName:String, skipInteraction:Boolean, skipObstacle:Boolean):Void {
+        // 应用预设配置
+        if (presetName) {
+            StaticInitializer.applyPreset(target, presetName);
+        }
+
         // 必要的验证和初始化
         if (!ProgressValidator.validate(target)) {
             return;
@@ -96,18 +126,51 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     /**
      * 批量初始化地图元件
      * @param targets 要初始化的地图元件数组
+     * @param presetName 预设名称（应用到所有目标）
      * @param useFastMode 是否使用快速模式
      */
-    public static function batchInitializeMapElements(targets:Array, useFastMode:Boolean):Void {
+    public static function batchInitializeMapElements(targets:Array, presetName:String, useFastMode:Boolean):Void {
         if (!targets || targets.length == 0) return;
 
         for (var i:Number = 0; i < targets.length; i++) {
             var target:MovieClip = targets[i];
             if (target) {
                 if (useFastMode) {
-                    StaticInitializer.initializeMapElementFast(target, false, true);
+                    StaticInitializer.initializeMapElementFast(target, presetName, false, true);
                 } else {
-                    StaticInitializer.initializeMapElement(target);
+                    StaticInitializer.initializeMapElement(target, presetName);
+                }
+            }
+        }
+
+        // 批量渲染障碍物（如果使用快速模式）
+        if (useFastMode) {
+            ObstacleRenderer.renderMultipleObstacles(targets);
+        }
+    }
+
+    /**
+     * 批量初始化地图元件（支持不同预设）
+     * @param targetsWithPresets 包含{target, preset}对象的数组
+     * @param useFastMode 是否使用快速模式
+     */
+    public static function batchInitializeMapElementsWithPresets(targetsWithPresets:Array, useFastMode:Boolean):Void {
+        if (!targetsWithPresets || targetsWithPresets.length == 0) return;
+
+        var targets:Array = [];
+        
+        for (var i:Number = 0; i < targetsWithPresets.length; i++) {
+            var item:Object = targetsWithPresets[i];
+            var target:MovieClip = item.target;
+            var presetName:String = item.preset;
+            
+            if (target) {
+                targets.push(target);
+                
+                if (useFastMode) {
+                    StaticInitializer.initializeMapElementFast(target, presetName, false, true);
+                } else {
+                    StaticInitializer.initializeMapElement(target, presetName);
                 }
             }
         }
@@ -158,7 +221,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         }
 
         // 批量初始化
-        StaticInitializer.batchInitializeMapElements(mapElements, true);
+        StaticInitializer.batchInitializeMapElements(mapElements, null, true);
     }
 
     /**
