@@ -4,6 +4,110 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
 预留ID区间：15004-15300-->
 <root>
   <item>
+    <id>8509</id>
+    <name>废城加强军装脚</name>
+    <displayname>EEEA式战靴加强版</displayname>
+    <icon>废城加强军装脚</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <weight>3</weight>
+    <price>33000</price>
+    <description>加强后的统合制式军装，防御力更高。</description>
+    <level>13</level>
+    <equipped>
+      <dressup>男变装-废城加强军装脚</dressup>
+      <hp>25</hp>
+      <mp>5</mp>
+      <damage>30</damage>
+      <defence>120</defence>
+      <bullet>0</bullet>
+    </equipped>
+  </item>
+  <item>
+    <id>8508</id>
+    <name>废城加强军装手套</name>
+    <displayname>EEEA式战术手套加强版</displayname>
+    <icon>废城加强军装手套</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <weight>3</weight>
+    <price>33000</price>
+    <actiontype>拳击</actiontype>
+    <description>加强后的统合制式军装，防御力更高。</description>
+    <level>13</level>
+    <equipped>
+      <dressup>男变装-废城加强军装手套</dressup>
+      <hp>25</hp>
+      <mp>0</mp>
+      <damage>45</damage>
+      <defence>100</defence>
+      <bullet>0</bullet>
+    </equipped>
+  </item>
+  <item>
+    <id>8507</id>
+    <name>废城加强军装下装</name>
+    <displayname>EEEA式军装下装加强版</displayname>
+    <icon>废城加强军装下装</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <weight>3</weight>
+    <price>33000</price>
+    <description>加强后的统合制式军装，防御力更高。</description>
+    <level>13</level>
+    <equipped>
+      <dressup>变装-废城加强军装下装</dressup>
+      <hp>50</hp>
+      <mp>20</mp>
+      <damage>30</damage>
+      <defence>100</defence>
+      <bullet>0</bullet>
+    </equipped>
+  </item>
+  <item>
+    <id>8506</id>
+    <name>废城防弹军装上装</name>
+    <displayname>EEEA式军装上装+防弹衣</displayname>
+    <icon>废城防弹军装上装</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <weight>6</weight>
+    <price>33000</price>
+    <description>加强后的统合制式军装，防御力更高。</description>
+    <level>13</level>
+    <equipped>
+      <dressup>变装-废城防弹军装上装</dressup>
+      <hp>25</hp>
+      <mp>5</mp>
+      <damage>30</damage>
+      <defence>140</defence>
+      <bullet>0</bullet>
+    </equipped>
+  </item>
+  <item>
+    <id>8505</id>
+    <name>废城军装面具帽</name>
+    <displayname>EEEA式军帽+防毒面具</displayname>
+    <icon>废城军装面具帽</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <weight>3</weight>
+    <price>33000</price>
+    <description>加强后的统合制式军装，防御力更高。</description>
+    <level>13</level>
+    <equipped>
+      <dressup>男变装-废城军装面具帽</dressup>
+      <hp>25</hp>
+      <mp>5</mp>
+      <damage>30</damage>
+      <defence>120</defence>
+      <magicdefence>
+        <毒>25</毒>
+      </magicdefence>
+      <bullet>0</bullet>
+    </equipped>
+  </item>
+  <item>
     <id>8504</id>
     <name>废城军装鞋</name>
     <displayname>EEEA式战靴</displayname>
@@ -13,7 +117,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <weight>2</weight>
     <price>13000</price>
     <description>统合制式军装之一，根据三E一A（东E洲+东A洲）的概念研发。</description>
-    <level>1</level>
+    <level>5</level>
     <equipped>
       <dressup>男变装-废城军装脚</dressup>
       <hp>5</hp>
@@ -32,7 +136,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <weight>2</weight>
     <price>13000</price>
     <description>统合制式军装之一，根据三E一A（东E洲+东A洲）的概念研发。</description>
-    <level>1</level>
+    <level>5</level>
     <equipped>
       <dressup>男变装-废城军装手套</dressup>
       <hp>5</hp>

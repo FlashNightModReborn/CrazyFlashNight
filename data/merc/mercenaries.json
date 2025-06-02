@@ -4176,5 +4176,85 @@
       "手枪2": 13,
       "刀": 13
     }
+  },
+  {
+    "level": 30,
+    "name": "MASTERSON",
+    "id": 5639,
+    "height": 180,
+    "face": 1,
+    "hair": 4,
+    "gender": 1,
+    "equipment": {
+      "head": "废城军装帽",
+      "body": "废城防弹军装上装",
+      "hand": "废城军装手套",
+      "leg": "废城军装下装",
+      "foot": "废城军装鞋",
+      "neck": "克隆体",
+      "primary": "L85A1",
+      "secondary1": "m9",
+      "secondary2": "m9",
+      "melee": "匕首",
+      "grenade": null
+    },
+    "price": 2.5,
+    "hidden": true,
+    "enhancement": {
+      "头部装备": 7,
+      "上装装备": 7,
+      "手部装备": 7,
+      "下装装备": 7,
+      "脚部装备": 7,
+      "颈部装备": 7,
+      "长枪": 7,
+      "手枪": 7,
+      "手枪2": 7,
+      "刀": 7
+    }
+  },
+  {
+    "level": 7,
+    "name": "兵痞",
+    "id": 5640,
+    "height": 165,
+    "face": 1,
+    "hair": 4,
+    "gender": 1,
+    "equipment": {
+      "head": "废城军装帽",
+      "body": "废城军装上装",
+      "hand": "废城军装手套",
+      "leg": "废城军装下装",
+      "foot": "废城军装鞋",
+      "neck": "僵尸割草机军牌",
+      "primary": "L85A1",
+      "secondary1": "m9",
+      "secondary2": null,
+      "melee": "匕首",
+      "grenade": null
+    },
+  },
+  {
+    "level": 15,
+    "name": "扫地工",
+    "id": 5641,
+    "height": 175,
+    "face": 1,
+    "hair": 4,
+    "gender": 1,
+    "equipment": {
+      "head": "废城军装面具帽",
+      "body": "废城防弹军装上装",
+      "hand": "废城加强军装手套",
+      "leg": "废城加强军装下装",
+      "foot": "废城加强军装脚",
+      "neck": "僵尸克星军牌",
+      "primary": "M3 Rocket Launcher",
+      "secondary1": "双管猎枪",
+      "secondary2": null,
+      "melee": "消防斧",
+      "grenade": null
+    },
   }
 ]

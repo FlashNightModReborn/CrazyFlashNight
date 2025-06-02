@@ -682,6 +682,34 @@
     </equipped>
   </item>
   <item>
+    <id>8900</id>
+    <name>克隆体</name>
+    <displayname>克隆体</displayname>
+    <icon>接触者精修</icon>
+    <type>防具</type>
+    <use>颈部装备</use>
+    <weight>0</weight>
+    <price>0</price>
+    <description>克隆体。</description>
+    <level>1</level>
+    <equipped>
+      <dressup />
+      <hp>750</hp>
+      <mp>500</mp>
+      <poison>50</poison>
+      <force>50</force>
+      <damage>500</damage>
+      <gunpower>600</gunpower>
+      <knifepower>400</knifepower>
+      <defence>1500</defence>
+      <bullet>0</bullet>
+      <title>&lt;FONT COLOR='#C80000'&gt;克隆体&lt;/FONT&gt;</title>
+      <magicdefence>
+        <全属性>25</全属性>
+      </magicdefence>
+    </equipped>
+  </item>
+  <item>
     <id>5501</id>
     <name>余烬-“与光同尘”</name>
     <displayname>余烬-“与光同尘”</displayname>
