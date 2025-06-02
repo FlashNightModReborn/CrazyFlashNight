@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-地图元件" itemID="65c24b72-00000cf2" linkageExportForAS="true" linkageIdentifier="素材库-地图元件" lastModified="1748704913" lastUniqueIdentifier="52">
   <timeline>
-    <DOMTimeline name="素材库-地图元件" currentFrame="3">
+    <DOMTimeline name="素材库-地图元件" currentFrame="4">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -164,7 +164,7 @@
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱" selected="true" centerPoint3DX="-217.15" centerPoint3DY="134.1">
+                <DOMSymbolInstance libraryItemName="箱子素材/资源箱/资源箱" centerPoint3DX="-217.15" centerPoint3DY="134.1">
                   <matrix>
                     <Matrix tx="-217.15" ty="176.25"/>
                   </matrix>
@@ -196,7 +196,7 @@
                     <Point x="0.5" y="-42.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="箱子素材/生存箱/生存箱" centerPoint3DX="-313.2" centerPoint3DY="132.65">
+                <DOMSymbolInstance libraryItemName="箱子素材/生存箱/生存箱" selected="true" centerPoint3DX="-313.2" centerPoint3DY="132.65">
                   <matrix>
                     <Matrix tx="-318.8" ty="173.4"/>
                   </matrix>

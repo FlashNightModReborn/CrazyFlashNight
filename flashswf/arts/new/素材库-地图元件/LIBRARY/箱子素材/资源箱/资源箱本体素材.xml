@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱本体素材" itemID="6836c077-00000f9b" lastModified="1748833505" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="资源箱本体素材" currentFrame="69">
+    <DOMTimeline name="资源箱本体素材">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -76,7 +76,7 @@ _root.敌人函数.跳转到招式(this, "a", 1);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="资源箱碎片3" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="资源箱碎片3" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>

@@ -23,7 +23,7 @@
           <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc" isExpanded="true"/>
           <DOMFolderItem name="汽车炸弹/变形动画" itemID="683b12eb-00000b92"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
-          <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a"/>
+          <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a" isExpanded="true"/>
           <DOMFolderItem name="箱子素材/保险柜" itemID="6837c8e0-0000190a"/>
           <DOMFolderItem name="箱子素材/生存箱" itemID="68381308-00002787" isExpanded="true"/>
           <DOMFolderItem name="箱子素材/纸箱" itemID="68380307-0000252c"/>
@@ -32,7 +32,6 @@
      </folders>
      <media>
           <DOMBitmapItem name="箱子素材/bitmap7.png" itemID="65c8ed3c-0000063c" sourceExternalFilepath="../素材库-地图元件/LIBRARY/箱子素材/bitmap7.png" sourceLastImported="1707666748" originalCompressionType="lossless" quality="50" href="箱子素材/bitmap7.png" bitmapDataHRef="M 1 1707666854.dat" frameRight="1360" frameBottom="1260"/>
-          <DOMBitmapItem name="箱子素材/生存箱/位图 10" itemID="68381349-00002870" sourceExternalFilepath="Users/iuo/AppData/Local/Temp/flash0.png" sourceLastImported="1748505417" originalCompressionType="lossless" quality="50" href="箱子素材/生存箱/位图 10.png" bitmapDataHRef="M 10 1748505417.dat" frameRight="20480" frameBottom="20480"/>
      </media>
      <symbols>
           <Include href="03.摆件/栏杆.xml" loadImmediate="false" itemID="6720ab8b-0000128c" lastModified="1730195032"/>
@@ -208,8 +207,8 @@
           <Include href="箱子素材/保险柜/保险箱碎片12.xml" itemIcon="1" loadImmediate="false" itemID="6837ebc1-00001bb1" lastModified="1748495297"/>
           <Include href="箱子素材/保险柜/保险箱碎片13.xml" itemIcon="1" loadImmediate="false" itemID="6837edcc-00001d41" lastModified="1748495820"/>
           <Include href="箱子素材/光效.xml" itemIcon="1" loadImmediate="false" itemID="66a8fe55-00001f7d" lastModified="1722425993"/>
-          <Include href="箱子素材/生存箱/生存箱.xml" itemID="683812e1-0000276e" lastModified="1748833413"/>
-          <Include href="箱子素材/生存箱/生存箱本体素材.xml" loadImmediate="false" itemID="683812f0-00002783" lastModified="1748505563"/>
+          <Include href="箱子素材/生存箱/生存箱.xml" itemID="683812e1-0000276e" lastModified="1748857195"/>
+          <Include href="箱子素材/生存箱/生存箱本体素材.xml" loadImmediate="false" itemID="683812f0-00002783" lastModified="1748863134"/>
           <Include href="箱子素材/隐藏资源点.xml" itemID="66a8fec5-00001f87" lastModified="1748833671"/>
           <Include href="箱子素材/隐藏资源点光效.xml" loadImmediate="false" itemID="66a8fe1f-00001f7b" lastModified="1722424406"/>
           <Include href="箱子素材/纸箱/纸箱.xml" itemID="683802e7-00002516" lastModified="1748855765"/>
@@ -678,6 +677,125 @@
                     <SolidSwatchItem color="#A88148" hue="24" saturation="96" brightness="113"/>
                     <SolidSwatchItem color="#876735" hue="24" saturation="104" brightness="89"/>
                     <SolidSwatchItem color="#6A4E24" hue="24" saturation="118" brightness="67"/>
+                    <SolidSwatchItem color="#817663" hue="26" saturation="31" brightness="107"/>
+                    <SolidSwatchItem color="#5D392C" hue="11" saturation="87" brightness="65"/>
+                    <SolidSwatchItem color="#413C32" hue="26" saturation="31" brightness="54"/>
+                    <SolidSwatchItem color="#9C907B" hue="26" saturation="34" brightness="132"/>
+                    <SolidSwatchItem color="#A29680" hue="26" saturation="37" brightness="136"/>
+                    <SolidSwatchItem color="#362D20" hue="23" saturation="62" brightness="41"/>
+                    <SolidSwatchItem color="#36281D" hue="18" saturation="74" brightness="39"/>
+                    <SolidSwatchItem color="#3D3A33" hue="31" saturation="21" brightness="53"/>
+                    <SolidSwatchItem color="#37322A" hue="23" saturation="31" brightness="46"/>
+                    <SolidSwatchItem color="#37332B" hue="27" saturation="31" brightness="46"/>
+                    <SolidSwatchItem color="#27251B" hue="33" saturation="46" brightness="31"/>
+                    <SolidSwatchItem color="#2B261E" hue="27" saturation="42" brightness="34"/>
+                    <SolidSwatchItem color="#14130D" hue="34" saturation="54" brightness="16"/>
+                    <SolidSwatchItem color="#2B2922" hue="35" saturation="27" brightness="36"/>
+                    <SolidSwatchItem color="#22211B" hue="34" saturation="29" brightness="29"/>
+                    <SolidSwatchItem color="#1D1E17" hue="47" saturation="29" brightness="25"/>
+                    <SolidSwatchItem color="#4A453C" hue="26" saturation="27" brightness="63"/>
+                    <SolidSwatchItem color="#524637" hue="22" saturation="47" brightness="65"/>
+                    <SolidSwatchItem color="#544F44" hue="27" saturation="25" brightness="72"/>
+                    <SolidSwatchItem color="#5B5446" hue="26" saturation="32" brightness="76"/>
+                    <SolidSwatchItem color="#413021" hue="19" saturation="78" brightness="46"/>
+                    <SolidSwatchItem color="#5E594D" hue="30" saturation="24" brightness="80"/>
+                    <SolidSwatchItem color="#22211C" hue="33" saturation="25" brightness="29"/>
+                    <SolidSwatchItem color="#1B1A14" hue="33" saturation="33" brightness="22"/>
+                    <SolidSwatchItem color="#0D0D09" hue="40" saturation="48" brightness="10"/>
+                    <SolidSwatchItem color="#3E352B" hue="22" saturation="44" brightness="49"/>
+                    <SolidSwatchItem color="#35332A" hue="32" saturation="27" brightness="45"/>
+                    <SolidSwatchItem color="#2E2216" hue="20" saturation="83" brightness="32"/>
+                    <SolidSwatchItem color="#35332B" hue="32" saturation="27" brightness="45"/>
+                    <SolidSwatchItem color="#1A1710" hue="31" saturation="55" brightness="20"/>
+                    <SolidSwatchItem color="#38342C" hue="27" saturation="31" brightness="47"/>
+                    <SolidSwatchItem color="#38322B" hue="22" saturation="34" brightness="47"/>
+                    <SolidSwatchItem color="#58534B" hue="23" saturation="19" brightness="77"/>
+                    <SolidSwatchItem color="#564E42" hue="23" saturation="32" brightness="72"/>
+                    <SolidSwatchItem color="#443222" hue="19" saturation="80" brightness="48"/>
+                    <SolidSwatchItem color="#261A0E" hue="19" saturation="113" brightness="25"/>
+                    <SolidSwatchItem color="#12130E" hue="48" saturation="39" brightness="16"/>
+                    <SolidSwatchItem color="#443E36" hue="22" saturation="27" brightness="58"/>
+                    <SolidSwatchItem color="#34281C" hue="21" saturation="74" brightness="38"/>
+                    <SolidSwatchItem color="#221B12" hue="21" saturation="73" brightness="25"/>
+                    <SolidSwatchItem color="#64615E" hue="20" saturation="8" brightness="91"/>
+                    <SolidSwatchItem color="#5D4E3D" hue="21" saturation="51" brightness="73"/>
+                    <SolidSwatchItem color="#3B2B1B" hue="19" saturation="92" brightness="41"/>
+                    <SolidSwatchItem color="#1B150E" hue="23" saturation="76" brightness="19"/>
+                    <SolidSwatchItem color="#1F1D17" hue="29" saturation="33" brightness="26"/>
+                    <SolidSwatchItem color="#1D1C15" hue="34" saturation="36" brightness="24"/>
+                    <SolidSwatchItem color="#39362E" hue="29" saturation="27" brightness="49"/>
+                    <SolidSwatchItem color="#392A1B" hue="21" saturation="88" brightness="40"/>
+                    <SolidSwatchItem color="#14130F" hue="32" saturation="36" brightness="17"/>
+                    <SolidSwatchItem color="#22201C" hue="27" saturation="25" brightness="29"/>
+                    <SolidSwatchItem color="#575249" hue="25" saturation="21" brightness="76"/>
+                    <SolidSwatchItem color="#231B12" hue="20" saturation="77" brightness="25"/>
+                    <SolidSwatchItem color="#241F15" hue="26" saturation="62" brightness="27"/>
+                    <SolidSwatchItem color="#352F26" hue="23" saturation="39" brightness="43"/>
+                    <SolidSwatchItem color="#343129" hue="28" saturation="27" brightness="44"/>
+                    <SolidSwatchItem color="#3D3227" hue="20" saturation="51" brightness="47"/>
+                    <SolidSwatchItem color="#58493A" hue="20" saturation="49" brightness="69"/>
+                    <SolidSwatchItem color="#312619" hue="22" saturation="75" brightness="35"/>
+                    <SolidSwatchItem color="#696152" hue="26" saturation="30" brightness="88"/>
+                    <SolidSwatchItem color="#44331F" hue="22" saturation="90" brightness="47"/>
+                    <SolidSwatchItem color="#231E14" hue="26" saturation="65" brightness="26"/>
+                    <SolidSwatchItem color="#2C2A24" hue="34" saturation="22" brightness="38"/>
+                    <SolidSwatchItem color="#27221B" hue="23" saturation="46" brightness="31"/>
+                    <SolidSwatchItem color="#22211D" hue="32" saturation="20" brightness="30"/>
+                    <SolidSwatchItem color="#2B1C13" hue="15" saturation="91" brightness="29"/>
+                    <SolidSwatchItem color="#1A1912" hue="40" saturation="41" brightness="21"/>
+                    <SolidSwatchItem color="#231C15" hue="19" saturation="59" brightness="27"/>
+                    <SolidSwatchItem color="#16140F" hue="29" saturation="48" brightness="18"/>
+                    <SolidSwatchItem color="#2E2015" hue="17" saturation="88" brightness="32"/>
+                    <SolidSwatchItem color="#2A2018" hue="17" saturation="65" brightness="32"/>
+                    <SolidSwatchItem color="#25241B" hue="36" saturation="40" brightness="30"/>
+                    <SolidSwatchItem color="#0A0805" hue="30" saturation="69" brightness="7"/>
+                    <SolidSwatchItem color="#373630" hue="34" saturation="17" brightness="49"/>
+                    <SolidSwatchItem color="#34271A" hue="21" saturation="82" brightness="37"/>
+                    <SolidSwatchItem color="#2D2115" hue="20" saturation="85" brightness="31"/>
+                    <SolidSwatchItem color="#23190F" hue="21" saturation="97" brightness="24"/>
+                    <SolidSwatchItem color="#251B13" hue="17" saturation="77" brightness="27"/>
+                    <SolidSwatchItem color="#25241D" hue="35" saturation="31" brightness="31"/>
+                    <SolidSwatchItem color="#211F1B" hue="27" saturation="26" brightness="28"/>
+                    <SolidSwatchItem color="#181714" hue="30" saturation="23" brightness="21"/>
+                    <SolidSwatchItem color="#2B2722" hue="25" saturation="27" brightness="36"/>
+                    <SolidSwatchItem color="#1C1B15" hue="33" saturation="31" brightness="23"/>
+                    <SolidSwatchItem color="#2D2117" hue="18" saturation="75" brightness="32"/>
+                    <SolidSwatchItem color="#262319" hue="30" saturation="48" brightness="30"/>
+                    <SolidSwatchItem color="#1E1A15" hue="20" saturation="40" brightness="24"/>
+                    <SolidSwatchItem color="#31281B" hue="25" saturation="71" brightness="36"/>
+                    <SolidSwatchItem color="#483B2B" hue="23" saturation="62" brightness="54"/>
+                    <SolidSwatchItem color="#191713" hue="27" saturation="34" brightness="21"/>
+                    <SolidSwatchItem color="#0A0B08" hue="60" saturation="27" brightness="9"/>
+                    <SolidSwatchItem color="#1C1B17" hue="30" saturation="20" brightness="24"/>
+                    <SolidSwatchItem color="#252017" hue="25" saturation="55" brightness="29"/>
+                    <SolidSwatchItem color="#25211C" hue="22" saturation="35" brightness="31"/>
+                    <SolidSwatchItem color="#27241E" hue="27" saturation="33" brightness="33"/>
+                    <SolidSwatchItem color="#211911" hue="21" saturation="77" brightness="24"/>
+                    <SolidSwatchItem color="#110F0B" hue="27" saturation="55" brightness="13"/>
+                    <SolidSwatchItem color="#17150F" hue="30" saturation="53" brightness="18"/>
+                    <SolidSwatchItem color="#1A1911" hue="40" saturation="48" brightness="20"/>
+                    <SolidSwatchItem color="#0C0B04" hue="34" saturation="112" brightness="8"/>
+                    <SolidSwatchItem color="#251C13" hue="19" saturation="77" brightness="27"/>
+                    <SolidSwatchItem color="#272118" hue="23" saturation="56" brightness="30"/>
+                    <SolidSwatchItem color="#1B1C15" hue="47" saturation="31" brightness="23"/>
+                    <SolidSwatchItem color="#281D18" hue="11" saturation="59" brightness="31"/>
+                    <SolidSwatchItem color="#231F17" hue="26" saturation="48" brightness="28"/>
+                    <SolidSwatchItem color="#25221A" hue="29" saturation="45" brightness="30"/>
+                    <SolidSwatchItem color="#23221C" hue="34" saturation="28" brightness="30"/>
+                    <SolidSwatchItem color="#3C352C" hue="24" saturation="37" brightness="49"/>
+                    <SolidSwatchItem color="#26231B" hue="29" saturation="43" brightness="31"/>
+                    <SolidSwatchItem color="#242018" hue="26" saturation="46" brightness="29"/>
+                    <SolidSwatchItem color="#241E14" hue="24" saturation="68" brightness="27"/>
+                    <SolidSwatchItem color="#1E1B13" hue="28" saturation="52" brightness="23"/>
+                    <SolidSwatchItem color="#1D1810" hue="27" saturation="69" brightness="21"/>
+                    <SolidSwatchItem color="#1A1C12" hue="49" saturation="50" brightness="22"/>
+                    <SolidSwatchItem color="#151007" hue="25" saturation="116" brightness="14"/>
+                    <SolidSwatchItem color="#434038" hue="28" saturation="21" brightness="58"/>
+                    <SolidSwatchItem color="#1F1A15" hue="18" saturation="44" brightness="25"/>
+                    <SolidSwatchItem color="#3E3831" hue="23" saturation="28" brightness="52"/>
+                    <SolidSwatchItem color="#302C24" hue="26" saturation="33" brightness="40"/>
+                    <SolidSwatchItem color="#211E16" hue="28" saturation="46" brightness="26"/>
+                    <SolidSwatchItem color="#13120F" hue="30" saturation="30" brightness="16"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -735,6 +853,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="340953" publishTime="1748855777"/>
           <PublishItem publishSize="340957" publishTime="1748855411"/>
           <PublishItem publishSize="341111" publishTime="1748833519"/>
           <PublishItem publishSize="341411" publishTime="1748758296"/>
@@ -754,6 +873,5 @@
           <PublishItem publishSize="374835" publishTime="1748746332"/>
           <PublishItem publishSize="374824" publishTime="1748746231"/>
           <PublishItem publishSize="374807" publishTime="1748746134"/>
-          <PublishItem publishSize="374807" publishTime="1748746044"/>
      </publishHistory>
 </DOMDocument>

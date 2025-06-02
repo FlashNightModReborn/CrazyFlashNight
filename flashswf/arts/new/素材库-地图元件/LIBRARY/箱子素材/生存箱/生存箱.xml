@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/生存箱/生存箱" itemID="683812e1-0000276e" linkageExportForAS="true" linkageIdentifier="生存箱" lastModified="1748833413" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/生存箱/生存箱" itemID="683812e1-0000276e" linkageExportForAS="true" linkageIdentifier="生存箱" lastModified="1748857195" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="生存箱" currentFrame="11">
+    <DOMTimeline name="生存箱">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#9CD465">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -62,11 +62,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#83C998">
+        <DOMLayer name="Layer 4" color="#83C998" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/生存箱/生存箱本体素材" name="element" centerPoint3DX="105.8" centerPoint3DY="-28.05">
+                <DOMSymbolInstance libraryItemName="箱子素材/生存箱/生存箱本体素材" name="element" selected="true" centerPoint3DX="105.8" centerPoint3DY="-28.05">
                   <matrix>
                     <Matrix tx="72.9" ty="-58.85"/>
                   </matrix>
