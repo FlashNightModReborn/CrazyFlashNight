@@ -45,6 +45,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Preset
         });
 
         // 资源箱预设
+        PresetManager.registerPreset("装备箱", {
+            hitPoint: 30,
+            maxFrame: 12
+        });
+
+        // 资源箱预设
         PresetManager.registerPreset("资源箱", {
             hitPoint: 10,
             maxFrame: 12

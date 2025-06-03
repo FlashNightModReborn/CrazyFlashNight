@@ -180,7 +180,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748933460"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1748934048"/>
           <Include href="跳动的火焰.xml" itemID="65c8e899-00000235" lastModified="1707665566"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
@@ -243,8 +243,22 @@
           <Include href="箱子素材/纸箱/纸箱碎片6.xml" loadImmediate="false" itemID="68380bf7-00002628" lastModified="1748503543"/>
           <Include href="箱子素材/纸箱/纸箱碎片7.xml" loadImmediate="false" itemID="68380c1e-0000262c" lastModified="1748503582"/>
           <Include href="箱子素材/纸箱/纸箱碎片8.xml" loadImmediate="false" itemID="68380c46-00002630" lastModified="1748503622"/>
-          <Include href="箱子素材/装备箱/装备箱.xml" loadImmediate="false" itemID="683db66e-00001406" lastModified="1748912044"/>
-          <Include href="箱子素材/装备箱/装备箱本体素材.xml" loadImmediate="false" itemID="683db6a3-0000143d" lastModified="1748933609"/>
+          <Include href="箱子素材/装备箱/装备箱.xml" itemID="683db66e-00001406" lastModified="1748944145"/>
+          <Include href="箱子素材/装备箱/装备箱本体素材.xml" loadImmediate="false" itemID="683db6a3-0000143d" lastModified="1748944129"/>
+          <Include href="箱子素材/装备箱/装备箱盖子1.xml" loadImmediate="false" itemID="683ea39b-000074da" lastModified="1748935579"/>
+          <Include href="箱子素材/装备箱/装备箱盖子2.xml" loadImmediate="false" itemID="683ea3af-000074e0" lastModified="1748935599"/>
+          <Include href="箱子素材/装备箱/装备箱盖子3.xml" loadImmediate="false" itemID="683ea704-000074fc" lastModified="1748936452"/>
+          <Include href="箱子素材/装备箱/装备箱盖子4.xml" loadImmediate="false" itemID="683eac62-00007522" lastModified="1748937826"/>
+          <Include href="箱子素材/装备箱/装备箱卡扣.xml" loadImmediate="false" itemID="683e9dff-000074b8" lastModified="1748934143"/>
+          <Include href="箱子素材/装备箱/装备箱碎片1.xml" loadImmediate="false" itemID="683eb70e-000076b7" lastModified="1748940558"/>
+          <Include href="箱子素材/装备箱/装备箱碎片2.xml" loadImmediate="false" itemID="683ead7f-00007537" lastModified="1748938111"/>
+          <Include href="箱子素材/装备箱/装备箱碎片3.xml" loadImmediate="false" itemID="683eb460-0000753d" lastModified="1748939872"/>
+          <Include href="箱子素材/装备箱/装备箱碎片4.xml" loadImmediate="false" itemID="683eb4f6-00007558" lastModified="1748940022"/>
+          <Include href="箱子素材/装备箱/装备箱碎片5.xml" loadImmediate="false" itemID="683eb723-000076b9" lastModified="1748940579"/>
+          <Include href="箱子素材/装备箱/装备箱碎片6.xml" loadImmediate="false" itemID="683eb66c-00007691" lastModified="1748940396"/>
+          <Include href="箱子素材/装备箱/装备箱碎片7.xml" loadImmediate="false" itemID="683eb8c6-000076d1" lastModified="1748940998"/>
+          <Include href="箱子素材/装备箱/装备箱碎片8.xml" loadImmediate="false" itemID="683ebb44-000076e7" lastModified="1748941636"/>
+          <Include href="箱子素材/装备箱/装备箱碎片9.xml" loadImmediate="false" itemID="683ebc6c-000076fb" lastModified="1748941932"/>
           <Include href="箱子素材/资源箱/资源箱.xml" itemID="66a8fec3-00001f86" lastModified="1748865263"/>
           <Include href="箱子素材/资源箱/资源箱本体素材.xml" loadImmediate="false" itemID="6836c077-00000f9b" lastModified="1748833505"/>
           <Include href="箱子素材/资源箱/资源箱盖子1.xml" loadImmediate="false" itemID="683b287b-00001a1b" lastModified="1748707451"/>
@@ -1057,6 +1071,17 @@
                     <SolidSwatchItem color="#303125" hue="44" saturation="33" brightness="41"/>
                     <SolidSwatchItem color="#3F4233" hue="49" saturation="31" brightness="55"/>
                     <SolidSwatchItem color="#35362A" hue="44" saturation="29" brightness="46"/>
+                    <SolidSwatchItem color="#353535" brightness="50"/>
+                    <SolidSwatchItem color="#121007" hue="32" saturation="100" brightness="12"/>
+                    <SolidSwatchItem color="#292929" brightness="39"/>
+                    <SolidSwatchItem color="#481C25" hue="232" saturation="107" brightness="47"/>
+                    <SolidSwatchItem color="#404110" hue="41" saturation="145" brightness="38"/>
+                    <SolidSwatchItem color="#2A1316" hue="235" saturation="91" brightness="29"/>
+                    <SolidSwatchItem color="#1C1B0E" hue="37" saturation="80" brightness="20"/>
+                    <SolidSwatchItem color="#332C12" hue="31" saturation="114" brightness="33"/>
+                    <SolidSwatchItem color="#270F14" hue="231" saturation="108" brightness="26"/>
+                    <SolidSwatchItem color="#1F0D0D" saturation="100" brightness="21"/>
+                    <SolidSwatchItem color="#200801" hue="10" saturation="225" brightness="16"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1114,6 +1139,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="349156" publishTime="1748943920"/>
+          <PublishItem publishSize="343717" publishTime="1748942816"/>
+          <PublishItem publishSize="343717" publishTime="1748942729"/>
+          <PublishItem publishSize="343884" publishTime="1748942633"/>
           <PublishItem publishSize="302574" publishTime="1748870746"/>
           <PublishItem publishSize="273320" publishTime="1748865219"/>
           <PublishItem publishSize="340953" publishTime="1748855777"/>
@@ -1130,9 +1159,5 @@
           <PublishItem publishSize="393362" publishTime="1748747248"/>
           <PublishItem publishSize="391396" publishTime="1748747133"/>
           <PublishItem publishSize="389366" publishTime="1748747040"/>
-          <PublishItem publishSize="389346" publishTime="1748746939"/>
-          <PublishItem publishSize="374822" publishTime="1748746680"/>
-          <PublishItem publishSize="374831" publishTime="1748746417"/>
-          <PublishItem publishSize="374835" publishTime="1748746332"/>
      </publishHistory>
 </DOMDocument>
