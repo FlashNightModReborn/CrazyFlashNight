@@ -413,4 +413,164 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     public static function findHero():MovieClip { 
         return _root.gameworld[_root.控制目标] || null; 
     }
+
+
+    // 在 TargetCacheManager 类中添加以下方法
+
+    // ------------------------------------------------------------------
+    //  最远单位查询 ★
+    // ------------------------------------------------------------------
+
+    /**
+     * 按X轴快速查找与目标单位最远的单位
+     * 利用排序数组特性：最远单位必定是首元素或尾元素，实现O(1)查询
+     * @param {Object} target - 当前单位
+     * @param {Number} updateInterval - 缓存失效帧间隔
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @return {Object} 最远单位对象，若不存在返回null
+     */
+    public static function findFarthestTarget(
+        target:Object,
+        updateInterval:Number,
+        requestType:String
+    ):Object {
+        // 确定目标状态
+        var targetStatus:String = (requestType == "全体")
+            ? "all"
+            : target.是否为敌人.toString();
+
+        // 获取缓存项并确保最新
+        if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
+        var stateCache:Object = _targetCaches[targetStatus];
+        var cacheEntry:Object = stateCache[requestType];
+        if (!cacheEntry) cacheEntry = stateCache[requestType] = _createCacheEntry();
+
+        // 检查是否需要更新缓存
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        if ((currentFrame - cacheEntry.lastUpdatedFrame) >= updateInterval) {
+            updateTargetCache(target, requestType, targetStatus);
+        }
+
+        var list:Array = cacheEntry.data;
+        if (list.length <= 1) return null; // 列表为空或只有一个单位
+
+        // --- 快速定位自身索引 ---
+        var idx:Number = cacheEntry.nameIndex[target._name];
+        var lx:Number = target.aabbCollider.left; // 目标X坐标
+        
+        if (idx == undefined) {
+            // 如果自身不在列表中，则进行全表扫描查找最远单位
+            var maxDist:Number = -1;
+            var farthest:Object = null;
+            
+            for (var i:Number = 0; i < list.length; i++) {
+                if (list[i] == target) continue; // 跳过自身
+                var d:Number = Math.abs(list[i].aabbCollider.left - lx);
+                if (d > maxDist) { 
+                    maxDist = d;
+                    farthest = list[i];
+                }
+            }
+            return farthest;
+        }
+
+        // --- O(1)核心算法：最远单位必定是首元素或尾元素 ---
+        var firstObj:Object = list[0];
+        var lastObj:Object = list[list.length - 1];
+        
+        // 特殊情况：如果自己就是首元素，最远的是尾元素
+        if (idx == 0) return (list.length > 1) ? lastObj : null;
+        
+        // 特殊情况：如果自己就是尾元素，最远的是首元素  
+        if (idx == list.length - 1) return firstObj;
+        
+        // 一般情况：自己在中间，比较到首尾的距离
+        var d1:Number = Math.abs(firstObj.aabbCollider.left - lx);
+        var d2:Number = Math.abs(lastObj.aabbCollider.left - lx);
+        
+        return (d1 >= d2) ? firstObj : lastObj;
+    }
+
+    /**
+     * 查找X轴上最远的敌人单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Object} 最远的敌人单位，若不存在返回null
+     */
+    public static function findFarthestEnemy(
+        t:Object, interval:Number
+    ):Object { 
+        return findFarthestTarget(t, interval, "敌人"); 
+    }
+
+    /**
+     * 查找X轴上最远的友军单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Object} 最远的友军单位，若不存在返回null
+     */
+    public static function findFarthestAlly(
+        t:Object, interval:Number
+    ):Object { 
+        return findFarthestTarget(t, interval, "友军"); 
+    }
+
+    /**
+     * 查找X轴上最远的全体单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Object} 最远的全体单位，若不存在返回null
+     */
+    public static function findFarthestAll(
+        t:Object, interval:Number
+    ):Object { 
+        return findFarthestTarget(t, interval, "全体"); 
+    }
+
+    // ------------------------------------------------------------------
+    // ★ 补充 · 范围查询优化方法 ★
+    // ------------------------------------------------------------------
+
+    /**
+     * 查找指定范围内的最近单位
+     * 结合范围查询和最近单位查找，适用于有距离限制的场景
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔
+     * @param {String} requestType - 请求类型
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最近的单位，超出范围返回null
+     */
+    public static function findNearestTargetInRange(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        maxDistance:Number
+    ):Object {
+        var nearest:Object = findNearestTarget(target, updateInterval, requestType);
+        if (!nearest) return null;
+        
+        var distance:Number = Math.abs(nearest.aabbCollider.left - target.aabbCollider.left);
+        return (distance <= maxDistance) ? nearest : null;
+    }
+
+    /**
+     * 查找指定范围内的最远单位
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔
+     * @param {String} requestType - 请求类型
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最远的单位，超出范围返回null
+     */
+    public static function findFarthestTargetInRange(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        maxDistance:Number
+    ):Object {
+        var farthest:Object = findFarthestTarget(target, updateInterval, requestType);
+        if (!farthest) return null;
+        
+        var distance:Number = Math.abs(farthest.aabbCollider.left - target.aabbCollider.left);
+        return (distance <= maxDistance) ? farthest : null;
+    }
 }
