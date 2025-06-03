@@ -331,10 +331,10 @@ Z轴坐标 = this._y;
                     <Edge fillStyle1="3" edges="!-2700 -760|-2700 -1000"/>
                     <Edge fillStyle1="4" edges="!-2700 -1000|-2700 -1200"/>
                     <Edge fillStyle1="1" edges="!-2700 -1200|-2700 -5200!-2700 -5200|2700 -5200!2700 -5200|2700 -1200"/>
-                    <Edge fillStyle0="5" fillStyle1="3" edges="!2700 -760|-2700 -760"/>
-                    <Edge fillStyle0="5" fillStyle1="2" edges="!-2700 -440|2700 -440"/>
-                    <Edge fillStyle0="1" fillStyle1="4" edges="!-2700 -1200|2700 -1200"/>
                     <Edge fillStyle0="3" fillStyle1="4" edges="!2700 -1000|-2700 -1000"/>
+                    <Edge fillStyle0="1" fillStyle1="4" edges="!-2700 -1200|2700 -1200"/>
+                    <Edge fillStyle0="5" fillStyle1="2" edges="!-2700 -440|2700 -440"/>
+                    <Edge fillStyle0="5" fillStyle1="3" edges="!2700 -760|-2700 -760"/>
                   </edges>
                 </DOMShape>
               </elements>
