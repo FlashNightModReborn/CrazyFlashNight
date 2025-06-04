@@ -449,8 +449,6 @@ _root.帧计时器.定期更新天气 = function()
 
             Delegate.clearCache();
             Dictionary.destroyStatic();
-
-            this.eventBus.publish("SceneChanged");
             // _root.服务器.发布服务器消息("SceneChanged")
         }
         
