@@ -1,14 +1,18 @@
 ﻿// ============================================================================
-// 目标缓存管理器（升级版）
+// 目标缓存管理器（增强重构版）
 // ----------------------------------------------------------------------------
-// 1. 管理敌人 / 友军 / 全体三大类缓存
-// 2. 提供「最近单位」快速查询 API：
-//    • findNearestTarget : 按 X 轴查最近单位（核心）
-//    • findNearestEnemy  : 便捷封装（敌人）
-//    • findNearestAlly   : 便捷封装（友军）
-//    • findNearestAll    : 便捷封装（全体）
-// 3. 依赖 TargetCacheUpdater 生成的 nameIndex，可 O(1) 拿到目标在
-//    排序数组中的位置，仅需对左右相邻元素做常数级比较
+// 功能概述：
+// 1. 缓存管理：管理敌人/友军/全体三大类目标缓存，支持按帧自动更新
+// 2. 基础查询：获取指定类型的所有单位列表（已按X轴排序）
+// 3. 范围查询：从指定索引开始获取单位，支持二分查找优化
+// 4. 邻近查询：O(1)查找最近/最远单位，利用有序性和nameIndex
+// 5. 区域搜索：查找指定范围内的所有单位或最近/最远单位
+// 
+// 性能优化：
+// - 利用nameIndex实现O(1)索引查找
+// - 二分查找定位范围起始位置
+// - 有序数组特性实现最远单位O(1)查询
+// - 静态对象复用减少GC压力
 // ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.gesh.object.*;
@@ -17,9 +21,10 @@ import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
-    // ------------------------------------------------------------------
-    // 静态成员
-    // ------------------------------------------------------------------
+    // ========================================================================
+    // 静态成员定义
+    // ========================================================================
+    
     /**
      * 目标缓存集合
      * 结构: {状态键:{敌人/友军/全体:cacheEntry}}
@@ -34,10 +39,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     
     /**
      * 缓存状态键数组
-     * "true" - 敌人状态
-     * "false" - 友军状态
-     * "all" - 全体状态
-     * "undefined" - 未定义状态
+     * - "true"      : 敌人状态
+     * - "false"     : 友军状态
+     * - "all"       : 全体状态
+     * - "undefined" : 未定义状态
      */
     private static var _STATUS_KEYS:Array = ["undefined", "true", "false", "all"];
 
@@ -50,10 +55,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         nameIndex:   {},   // 名称到索引的映射: {_name: index}，用于O(1)时间查找单位位置
         lastUpdatedFrame: 0 // 缓存最后更新的帧数
     };
+    
+    /**
+     * 静态复用对象，减少GC压力
+     */
+    private static var _emptyResult:Object = { data: [], startIndex: 0 };
+    private static var _resultCache:Object = { data: null, startIndex: 0 };
 
-    // ------------------------------------------------------------------
-    // 初始化
-    // ------------------------------------------------------------------
+    // ========================================================================
+    // 初始化方法
+    // ========================================================================
+    
     /**
      * 初始化目标缓存管理器
      * 为每个状态键创建敌人、友军和全体的缓存结构
@@ -86,9 +98,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         };
     }
 
-    // ------------------------------------------------------------------
-    // 对外 · 更新接口 —— 直接强制更新
-    // ------------------------------------------------------------------
+    // ========================================================================
+    // 缓存更新方法
+    // ========================================================================
+    
     /**
      * 强制更新目标缓存
      * 不检查更新间隔，直接更新缓存数据
@@ -119,9 +132,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         );
     }
 
-    // ------------------------------------------------------------------
-    // 对外 · 读取接口 —— 带自动按帧更新
-    // ------------------------------------------------------------------
+    // ========================================================================
+    // 基础查询方法
+    // ========================================================================
+    
     /**
      * 获取缓存的目标单位列表
      * 根据更新间隔检查是否需要刷新缓存
@@ -152,7 +166,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
             updateTargetCache(target, requestType, targetStatus);
         }
 
-        // _root.服务器.发布服务器消息(ObjectUtil.toString(cacheEntry))
         return cacheEntry.data; // 返回缓存数据
     }
 
@@ -186,11 +199,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         return getCachedTargets(t, i, "全体"); 
     }
 
-    // 范围查询方法 - 只查找起始索引，利用有序性提前退出
-
-    // 静态复用对象，减少GC压力
-    private static var _emptyResult:Object = { data: [], startIndex: 0 };
-    private static var _resultCache:Object = { data: null, startIndex: 0 };
+    // ========================================================================
+    // 范围查询方法（索引定位）
+    // ========================================================================
     
     /**
      * 获取从指定起始索引开始的缓存目标单位
@@ -275,9 +286,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         return resultCache;
     }
 
-    // 便捷封装方法
     /**
      * 获取从指定索引开始的敌人单位
+     * @param {Object} t - 目标单位
+     * @param {Number} i - 更新间隔(帧数)
+     * @param {AABBCollider} aabb - 查询用的AABB碰撞器
+     * @return {Object} 包含data数组、startIndex的结果对象
      */
     public static function getCachedEnemyFromIndex(t:Object, i:Number, aabb:AABBCollider):Object {
         return getCachedTargetsFromIndex(t, i, "敌人", aabb);
@@ -285,6 +299,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 获取从指定索引开始的友军单位
+     * @param {Object} t - 目标单位
+     * @param {Number} i - 更新间隔(帧数)
+     * @param {AABBCollider} aabb - 查询用的AABB碰撞器
+     * @return {Object} 包含data数组、startIndex的结果对象
      */
     public static function getCachedAllyFromIndex(t:Object, i:Number, aabb:AABBCollider):Object {
         return getCachedTargetsFromIndex(t, i, "友军", aabb);
@@ -292,14 +310,19 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 获取从指定索引开始的全体单位
+     * @param {Object} t - 目标单位
+     * @param {Number} i - 更新间隔(帧数)
+     * @param {AABBCollider} aabb - 查询用的AABB碰撞器
+     * @return {Object} 包含data数组、startIndex的结果对象
      */
     public static function getCachedAllFromIndex(t:Object, i:Number, aabb:AABBCollider):Object {
         return getCachedTargetsFromIndex(t, i, "全体", aabb);
     }
 
-    // ------------------------------------------------------------------
-    // ★ 新增 · 最近单位查询 ★
-    // ------------------------------------------------------------------
+    // ========================================================================
+    // 最近单位查询
+    // ========================================================================
+    
     /**
      * 按X轴快速查找与目标单位最近的单位
      * 利用nameIndex实现O(1)邻居查找，或在目标不在列表时进行全表扫描
@@ -375,9 +398,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @param {Number} interval - 更新间隔(帧数)
      * @return {Object} 最近的敌人单位，若不存在返回null
      */
-    public static function findNearestEnemy(
-        t:Object, interval:Number
-    ):Object { 
+    public static function findNearestEnemy(t:Object, interval:Number):Object { 
         return findNearestTarget(t, interval, "敌人"); 
     }
 
@@ -387,9 +408,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @param {Number} interval - 更新间隔(帧数)
      * @return {Object} 最近的友军单位，若不存在返回null
      */
-    public static function findNearestAlly(
-        t:Object, interval:Number
-    ):Object { 
+    public static function findNearestAlly(t:Object, interval:Number):Object { 
         return findNearestTarget(t, interval, "友军"); 
     }
 
@@ -399,27 +418,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @param {Number} interval - 更新间隔(帧数)
      * @return {Object} 最近的全体单位，若不存在返回null
      */
-    public static function findNearestAll(
-        t:Object, interval:Number
-    ):Object { 
+    public static function findNearestAll(t:Object, interval:Number):Object { 
         return findNearestTarget(t, interval, "全体"); 
     }
 
-
-    /**
-     * 查找主角
-     * @return {MovieClip} 主角的引用，若不存在返回null
-     */
-    public static function findHero():MovieClip { 
-        return _root.gameworld[_root.控制目标] || null; 
-    }
-
-
-    // 在 TargetCacheManager 类中添加以下方法
-
-    // ------------------------------------------------------------------
-    //  最远单位查询 ★
-    // ------------------------------------------------------------------
+    // ========================================================================
+    // 最远单位查询
+    // ========================================================================
 
     /**
      * 按X轴快速查找与目标单位最远的单位
@@ -497,9 +502,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @param {Number} interval - 更新间隔(帧数)
      * @return {Object} 最远的敌人单位，若不存在返回null
      */
-    public static function findFarthestEnemy(
-        t:Object, interval:Number
-    ):Object { 
+    public static function findFarthestEnemy(t:Object, interval:Number):Object { 
         return findFarthestTarget(t, interval, "敌人"); 
     }
 
@@ -509,9 +512,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @param {Number} interval - 更新间隔(帧数)
      * @return {Object} 最远的友军单位，若不存在返回null
      */
-    public static function findFarthestAlly(
-        t:Object, interval:Number
-    ):Object { 
+    public static function findFarthestAlly(t:Object, interval:Number):Object { 
         return findFarthestTarget(t, interval, "友军"); 
     }
 
@@ -521,15 +522,178 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @param {Number} interval - 更新间隔(帧数)
      * @return {Object} 最远的全体单位，若不存在返回null
      */
-    public static function findFarthestAll(
-        t:Object, interval:Number
-    ):Object { 
+    public static function findFarthestAll(t:Object, interval:Number):Object { 
         return findFarthestTarget(t, interval, "全体"); 
     }
 
-    // ------------------------------------------------------------------
-    // ★ 补充 · 范围查询优化方法 ★
-    // ------------------------------------------------------------------
+    // ========================================================================
+    // 区域搜索方法（新增）
+    // ========================================================================
+
+    /**
+     * 查找指定X轴范围内的所有单位
+     * 利用有序数组特性，使用二分查找定位起始和结束位置
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @param {Number} leftRange - 左侧搜索范围（相对于目标的距离）
+     * @param {Number} rightRange - 右侧搜索范围（相对于目标的距离）
+     * @return {Array} 范围内的单位数组
+     */
+    public static function findTargetsInRange(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        leftRange:Number,
+        rightRange:Number
+    ):Array {
+        var list:Array = getCachedTargets(target, updateInterval, requestType);
+        var len:Number = list.length;
+        if (len == 0) return [];
+
+        var targetX:Number = target.aabbCollider.left;
+        var leftBound:Number = targetX - leftRange;
+        var rightBound:Number = targetX + rightRange;
+
+        // === 左边界二分查找 (>= leftBound) ===
+        var startIdx:Number;
+        if (list[0].aabbCollider.left >= leftBound) {
+            startIdx = 0;
+        } else if (list[len - 1].aabbCollider.left < leftBound) {
+            return [];
+        } else {
+            var l:Number = 0;
+            var r:Number = len - 1;
+            while (l < r) {
+                var m:Number = (l + r) >> 1;
+                var v:Number = list[m].aabbCollider.left;
+                if (v < leftBound) l = m + 1;
+                else r = m;
+            }
+            startIdx = l;
+        }
+
+        // === 右边界二分查找 (> rightBound) ===
+        var endIdx:Number;
+        if (list[len - 1].aabbCollider.left <= rightBound) {
+            endIdx = len;
+        } else {
+            var l2:Number = startIdx; // 优化：从 startIdx 开始
+            var r2:Number = len - 1;
+            while (l2 < r2) {
+                var m2:Number = (l2 + r2) >> 1;
+                var v2:Number = list[m2].aabbCollider.left;
+                if (v2 <= rightBound) l2 = m2 + 1;
+                else r2 = m2;
+            }
+            endIdx = l2;
+        }
+
+        // === 构建结果数组 ===
+        var result:Array = [];
+        for (var i:Number = startIdx; i < endIdx; i++) {
+            var unit:Object = list[i];
+            if (unit != target) result.push(unit);
+        }
+
+        return result;
+    }
+
+    /**
+     * 查找指定半径范围内的所有单位
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @param {Number} radius - 搜索半径
+     * @return {Array} 范围内的单位数组
+     */
+    public static function findTargetsInRadius(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        radius:Number
+    ):Array {
+        return findTargetsInRange(target, updateInterval, requestType, radius, radius);
+    }
+
+    /**
+     * 查找指定X轴范围内的敌人单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} leftRange - 左侧搜索范围
+     * @param {Number} rightRange - 右侧搜索范围
+     * @return {Array} 范围内的敌人数组
+     */
+    public static function findEnemiesInRange(
+        t:Object, interval:Number, leftRange:Number, rightRange:Number
+    ):Array {
+        return findTargetsInRange(t, interval, "敌人", leftRange, rightRange);
+    }
+
+    /**
+     * 查找指定X轴范围内的友军单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} leftRange - 左侧搜索范围
+     * @param {Number} rightRange - 右侧搜索范围
+     * @return {Array} 范围内的友军数组
+     */
+    public static function findAlliesInRange(
+        t:Object, interval:Number, leftRange:Number, rightRange:Number
+    ):Array {
+        return findTargetsInRange(t, interval, "友军", leftRange, rightRange);
+    }
+
+    /**
+     * 查找指定X轴范围内的全体单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} leftRange - 左侧搜索范围
+     * @param {Number} rightRange - 右侧搜索范围
+     * @return {Array} 范围内的全体单位数组
+     */
+    public static function findAllInRange(
+        t:Object, interval:Number, leftRange:Number, rightRange:Number
+    ):Array {
+        return findTargetsInRange(t, interval, "全体", leftRange, rightRange);
+    }
+
+    /**
+     * 查找指定半径内的敌人单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} radius - 搜索半径
+     * @return {Array} 半径内的敌人数组
+     */
+    public static function findEnemiesInRadius(t:Object, interval:Number, radius:Number):Array {
+        return findTargetsInRadius(t, interval, "敌人", radius);
+    }
+
+    /**
+     * 查找指定半径内的友军单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} radius - 搜索半径
+     * @return {Array} 半径内的友军数组
+     */
+    public static function findAlliesInRadius(t:Object, interval:Number, radius:Number):Array {
+        return findTargetsInRadius(t, interval, "友军", radius);
+    }
+
+    /**
+     * 查找指定半径内的全体单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} radius - 搜索半径
+     * @return {Array} 半径内的全体单位数组
+     */
+    public static function findAllInRadius(t:Object, interval:Number, radius:Number):Array {
+        return findTargetsInRadius(t, interval, "全体", radius);
+    }
+
+    // ========================================================================
+    // 范围限制查询方法
+    // ========================================================================
 
     /**
      * 查找指定范围内的最近单位
@@ -554,6 +718,45 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     /**
+     * 查找指定范围内的最近敌人
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最近的敌人，超出范围返回null
+     */
+    public static function findNearestEnemyInRange(
+        t:Object, interval:Number, maxDistance:Number
+    ):Object {
+        return findNearestTargetInRange(t, interval, "敌人", maxDistance);
+    }
+
+    /**
+     * 查找指定范围内的最近友军
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最近的友军，超出范围返回null
+     */
+    public static function findNearestAllyInRange(
+        t:Object, interval:Number, maxDistance:Number
+    ):Object {
+        return findNearestTargetInRange(t, interval, "友军", maxDistance);
+    }
+
+    /**
+     * 查找指定范围内的最近全体单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最近的全体单位，超出范围返回null
+     */
+    public static function findNearestAllInRange(
+        t:Object, interval:Number, maxDistance:Number
+    ):Object {
+        return findNearestTargetInRange(t, interval, "全体", maxDistance);
+    }
+
+    /**
      * 查找指定范围内的最远单位
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔
@@ -572,5 +775,56 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         
         var distance:Number = Math.abs(farthest.aabbCollider.left - target.aabbCollider.left);
         return (distance <= maxDistance) ? farthest : null;
+    }
+
+    /**
+     * 查找指定范围内的最远敌人
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最远的敌人，超出范围返回null
+     */
+    public static function findFarthestEnemyInRange(
+        t:Object, interval:Number, maxDistance:Number
+    ):Object {
+        return findFarthestTargetInRange(t, interval, "敌人", maxDistance);
+    }
+
+    /**
+     * 查找指定范围内的最远友军
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最远的友军，超出范围返回null
+     */
+    public static function findFarthestAllyInRange(
+        t:Object, interval:Number, maxDistance:Number
+    ):Object {
+        return findFarthestTargetInRange(t, interval, "友军", maxDistance);
+    }
+
+    /**
+     * 查找指定范围内的最远全体单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} maxDistance - 最大搜索距离
+     * @return {Object} 范围内最远的全体单位，超出范围返回null
+     */
+    public static function findFarthestAllInRange(
+        t:Object, interval:Number, maxDistance:Number
+    ):Object {
+        return findFarthestTargetInRange(t, interval, "全体", maxDistance);
+    }
+
+    // ========================================================================
+    // 其他方法
+    // ========================================================================
+
+    /**
+     * 查找主角
+     * @return {MovieClip} 主角的引用，若不存在返回null
+     */
+    public static function findHero():MovieClip { 
+        return _root.gameworld[_root.控制目标] || null; 
     }
 }
