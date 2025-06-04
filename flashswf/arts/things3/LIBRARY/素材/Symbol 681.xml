@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 681" itemID="6577faef-0000154d" lastModified="1741544021" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 681" itemID="6577faef-0000154d" lastModified="1749003614" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="Symbol 681" currentFrame="175">
+    <DOMTimeline name="Symbol 681" currentFrame="205">
       <layers>
         <DOMLayer name="Labels Layer" color="#FD57B3" locked="true" visible="false">
           <frames>
@@ -60,27 +60,7 @@
       _parent.移动("左",慢速度);
    }
 }
-function 百分比集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp * 加血值;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+百分比集体加血 = _root.加血动作.主唱百分比集体加血;
 
 gotoAndPlay(_parent.近战招式);
 ]]></script>
@@ -102,27 +82,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp满血值 * 0.03;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+                <script><![CDATA[集体加血 = _root.加血动作.主唱集体加血;
 集体加血(900,600,300);
 ]]></script>
               </Actionscript>
@@ -143,27 +103,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp * 0.03;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+                <script><![CDATA[集体加血 = _root.加血动作.主唱集体加血;
 ]]></script>
               </Actionscript>
               <elements/>
@@ -183,27 +123,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="19" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp满血值 * 0.03;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+                <script><![CDATA[集体加血 = _root.加血动作.主唱集体加血;
 集体加血(900,600,100);
 ]]></script>
               </Actionscript>
@@ -224,27 +144,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp满血值 * 0.03;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+                <script><![CDATA[集体加血 = _root.加血动作.主唱集体加血;
 集体加血(900,600,300);
 ]]></script>
               </Actionscript>
@@ -275,28 +175,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="77" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp * 0.01;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
-]]></script>
+                <script><![CDATA[集体加血 = _root.加血动作.主唱集体加血;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -350,27 +229,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="89" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp满血值 * 0.03;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+                <script><![CDATA[集体加血 = _root.加血动作.主唱集体加血;
 集体加血(900,600,100);
 ]]></script>
               </Actionscript>
@@ -481,27 +340,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="171" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp满血值 * 0.05;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+                <script><![CDATA[集体加血 = _root.加血动作.主唱集体加血;
 if(random(100) < 50)
 {
    集体加血(900,600,300);
@@ -5711,7 +5550,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!3315 1399[2622 563 1458 109!1458 109[304 -350 -644 -160!-644 -160[-1590 37 -1773 760!-1773 760[-1952 1492 -1261 2333!-1261 2333[-576 3174 588 3623!588 3623[1744 4086 2693 3891!2693 3891[3638 3698 3821 2973!3821 2973[4001 2243 3315 1399"/>
+!-1261 2333[-576 3174 588 3623!588 3623[1744 4086 2693 3891!2693 3891[3638 3698 3821 2973!3821 2973[4001 2243 3315 1399!3315 1399[2622 563 1458 109!1458 109[304 -350 -644 -160!-644 -160[-1590 37 -1773 760!-1773 760[-1952 1492 -1261 2333"/>
                   </edges>
                 </DOMShape>
               </elements>

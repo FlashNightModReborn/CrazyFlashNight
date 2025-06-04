@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 613" itemID="6577faef-0000151c" lastModified="1731248994">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 613" itemID="6577faef-0000151c" lastModified="1749003729">
   <timeline>
-    <DOMTimeline name="Symbol 613" currentFrame="141">
+    <DOMTimeline name="Symbol 613" currentFrame="160">
       <layers>
         <DOMLayer name="Labels Layer" color="#FF099F">
           <frames>
@@ -190,27 +190,8 @@ _root.效果("天蓝增幅",_parent._x,_parent._y,100);
             </DOMFrame>
             <DOMFrame index="160" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 集体加血(加血距离X, 加血距离Y, 加血值)
-{
-   for(each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
-      {
-         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
-         {
-            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
-            {
-               _root.gameworld[each].hp += _root.gameworld[each].hp满血值 * 0.05;
-               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
-               {
-                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
-               }
-               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
-            }
-         }
-      }
-   }
-}
+                <script><![CDATA[集体加血 = _root.加血动作.键盘集体加血;
+
 if(_parent.行走X速度 < _parent.基本速度 * 2)
 {
    _parent.行走X速度 += 1;

@@ -145,7 +145,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             数量 = 1;
         }
 
-        _root.发布消息("创建" + 物品名);
+        // _root.发布消息("创建" + 物品名);
         
         if (物品名 === "金钱" && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
             物品名 = "K点";

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园御姐" itemID="67ac3e1e-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园御姐" lastModified="1747143283" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-摇滚公园御姐" currentFrame="84" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-摇滚公园御姐" currentFrame="41" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#E1FF16">
           <frames>
@@ -587,7 +587,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 652" name="man" selected="true" centerPoint3DX="61.7" centerPoint3DY="18.7">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 652" name="man" centerPoint3DX="61.7" centerPoint3DY="18.7">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
@@ -605,7 +605,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 681" name="man" selected="true" centerPoint3DX="328" centerPoint3DY="-11.3">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 681" name="man" centerPoint3DX="328" centerPoint3DY="-11.3">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-170.1"/>
                   </matrix>
@@ -629,7 +629,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 684" name="man" centerPoint3DX="163.8" centerPoint3DY="32.6">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 684" name="man" selected="true" centerPoint3DX="163.8" centerPoint3DY="32.6">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>

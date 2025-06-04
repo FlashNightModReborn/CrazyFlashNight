@@ -251,14 +251,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#CBE9BF">
+        <DOMLayer name="Layer 9" color="#CBE9BF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-摇滚公园御姐" centerPoint3DX="-499.45" centerPoint3DY="899.95">
+                <DOMSymbolInstance libraryItemName="敌人-摇滚公园御姐" selected="true" centerPoint3DX="-499.45" centerPoint3DY="899.95">
                   <matrix>
                     <Matrix tx="-774.25" ty="741.15"/>
                   </matrix>
@@ -540,14 +540,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#EF3DEA" current="true" isSelected="true">
+        <DOMLayer name="Layer 19" color="#EF3DEA">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-盗贼瘦子" selected="true" centerPoint3DX="648.45" centerPoint3DY="330.3">
+                <DOMSymbolInstance libraryItemName="敌人-盗贼瘦子" centerPoint3DX="648.45" centerPoint3DY="330.3">
                   <matrix>
                     <Matrix tx="162.2" ty="189.4"/>
                   </matrix>
