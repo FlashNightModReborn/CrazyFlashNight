@@ -1,0 +1,127 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="AR排障杆" itemID="5f003ee6-000001fa" lastModified="1593946671">
+  <timeline>
+    <DOMTimeline name="AR排障杆">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.00079345703125" c="-0.003997802734375" d="0" tx="2.65" ty="1"/>
+                            </matrix>
+                            <GradientEntry color="#333333" ratio="0"/>
+                            <GradientEntry color="#585858" ratio="0.537254901960784"/>
+                            <GradientEntry color="#333333" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#666666"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="-0.00067138671875" c="0.00042724609375" d="0" tx="-0.3" ty="1.05"/>
+                            </matrix>
+                            <GradientEntry color="#222222" ratio="0"/>
+                            <GradientEntry color="#494949" ratio="0.537254901960784"/>
+                            <GradientEntry color="#222222" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.3">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="3">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!-1 7|113 12!113 12[122 21 113 33!113 33|-1 34"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!-1 34[-6 40 -12 39"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!-12 39|-13 39!-13 39[-15 39 -16 33!-16 33[-17 28 -17 21!-17 21[-17 14 -16 8!-16 8[-15 3 -13 3"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!-13 3[-7 -1 -1 7"/>
+                        <Edge fillStyle0="3" fillStyle1="2" strokeStyle="2" edges="!-13 3[-11 4 -10 8!-10 8[-9 14 -9 21!-9 21[-9 28 -10 33!-10 33[-11 37 -12 39"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="3" edges="!-1 7[4 21 -1 34"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.00115966796875" c="-0.00445556640625" d="0" tx="4.1" ty="0.9"/>
+                            </matrix>
+                            <GradientEntry color="#222222" ratio="0"/>
+                            <GradientEntry color="#494949" ratio="0.537254901960784"/>
+                            <GradientEntry color="#222222" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="-0.00067138671875" c="0.000396728515625" d="0" tx="0.9" ty="1"/>
+                            </matrix>
+                            <GradientEntry color="#222222" ratio="0"/>
+                            <GradientEntry color="#636363" ratio="0.537254901960784"/>
+                            <GradientEntry color="#4E4E4E" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.4">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!21 -1[9 -5 12 4!12 4[21 22 10 38!10 38[9 45 21 41"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="!21 41[29 20 21 -1"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!21 41|137 37!137 37[155 35 155 20!155 20[156 2 137 2!137 2|21 -1"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

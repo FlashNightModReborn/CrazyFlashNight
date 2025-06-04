@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="M14 /锁扣" itemID="6807c2de-0000042d" lastModified="1745340573">
+  <timeline>
+    <DOMTimeline name="锁扣">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0001373291015625" b="-7.62939453125e-005" c="0.000701904296875" d="0.0011749267578125" tx="1.2" ty="0.75"/>
+                            </matrix>
+                            <GradientEntry color="#191919" ratio="0.258823529411765"/>
+                            <GradientEntry color="#2E2E2E" ratio="0.564705882352941"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="2">
+                          <SolidStroke scaleMode="normal" weight="0.3">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!26 13|18 13!18 13|18 0!18 0|7 0!7 0|7 14!7 14[-3 16 1 26!1 26|14 40!14 40[22 47 30 40!30 40|38 35!38 35[45 32 33 21!33 21|26 13"/>
+                        <Edge fillStyle1="1" strokeStyle="2" edges="!12 22[12 24 13 24!13 24|20 33!20 33[21 34 24 34!24 34[25 34 26 34!26 34|27 33!27 33[27 32 27 31!27 31[27 29 27 28!27 28|19 19!19 19|16 18!16 18[14 18 14 19!14 19|13 19!13 19[12 20 12 22"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

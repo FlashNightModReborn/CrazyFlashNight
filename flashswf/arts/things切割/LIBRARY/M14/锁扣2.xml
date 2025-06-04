@@ -1,0 +1,60 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="M14 /锁扣2" itemID="6807c2ef-00000432" lastModified="1745339169">
+  <timeline>
+    <DOMTimeline name="锁扣2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!16 -5[21 0 21 6!21 6[21 12 16 16!16 16[12 21 6 21!6 21[0 21 -5 16!-5 16[-9 12 -9 6!-9 6[-9 0 -5 -5!-5 -5[0 -9 6 -9!6 -9[12 -9 16 -5"/>
+                  </edges>
+                </DOMShape>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.000732421875" c="-0.000335693359375" d="0" tx="0.3" ty="0.85"/>
+                            </matrix>
+                            <GradientEntry color="#333333" ratio="0.313725490196078"/>
+                            <GradientEntry color="#525252" ratio="0.568627450980392"/>
+                            <GradientEntry color="#333333" ratio="0.831372549019608"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.4">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!5 0[3 0 1 1!1 1[0 3 0 5!0 5|0 35!0 35[0 37 1 38!1 38[3 40 5 40!5 40|6 40!6 40[8 40 9 38!9 38[11 37 11 35!11 35|11 5!11 5[11 3 9 1!9 1[8 0 6 0!6 0|5 0"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
