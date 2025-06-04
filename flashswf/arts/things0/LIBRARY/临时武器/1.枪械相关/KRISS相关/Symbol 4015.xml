@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="临时武器/1.枪械相关/KRISS相关/Symbol 4015" itemID="668e7c1e-00000ff6" linkageExportForAS="true" linkageIdentifier="枪-手枪-KRISS" linkageClassName="枪-手枪-KRISS" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 4015">
+      <layers>
+        <DOMLayer name="Layer_1" color="#2FDFE0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="临时武器/无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="178.65" centerPoint3DY="-2.65">
+                  <matrix>
+                    <Matrix tx="166.15" ty="-15.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#C95D78" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="临时武器/无AS链接/Symbol 4014" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.88458251953125" d="0.88458251953125" tx="24.95" ty="-3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
