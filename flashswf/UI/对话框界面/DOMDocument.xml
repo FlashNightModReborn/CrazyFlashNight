@@ -139,6 +139,8 @@
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪" itemID="6577c619-0000070a"/>
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪/Revision 4" itemID="6577c619-0000070b"/>
           <DOMFolderItem name="新地图素材/女仆黑/弹药" itemID="6577dc9d-00000575"/>
+          <DOMFolderItem name="幸存老兵6.svg" itemID="68407439-00000a3e"/>
+          <DOMFolderItem name="幸存老兵6.svg/Layer 1" itemID="68407439-00000a3f"/>
           <DOMFolderItem name="学生妹.svg_0" itemID="682430b9-0000135d"/>
           <DOMFolderItem name="学生妹.svg_0/Layer 1" itemID="682430b9-0000135e"/>
           <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
@@ -1741,7 +1743,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1747122337"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1747903526"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1749054650"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc29fa-0000103b" lastModified="1740384762"/>
@@ -1867,7 +1869,7 @@
           <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="682edc39-00000acf" lastModified="1747901497"/>
           <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="682edc39-00000ad0" lastModified="1747901497"/>
           <Include href="牛仔背景2.xml" itemIcon="1" loadImmediate="false" itemID="682edfce-00000d5a" lastModified="1747902418"/>
-          <Include href="牛仔前景.xml" itemIcon="1" loadImmediate="false" itemID="682eda86-00000234" lastModified="1747901063"/>
+          <Include href="牛仔前景.xml" itemIcon="1" loadImmediate="false" itemID="682eda86-00000234" lastModified="1747903975"/>
           <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="682edc39-00000ad1" lastModified="1747901497"/>
           <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="682edc39-00000ad2" lastModified="1747901497"/>
           <Include href="牛仔前景.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="682edc39-00000ad3" lastModified="1747901497"/>
@@ -2035,6 +2037,48 @@
           <Include href="新地图素材/武装jk肖像.xml" loadImmediate="false" itemID="65bbe55d-00001871" lastModified="1706813310"/>
           <Include href="新地图素材/腰带.xml" itemIcon="1" loadImmediate="false" itemID="6594182f-000001c5" lastModified="1704204501"/>
           <Include href="新地图素材/医疗女仆白肖像.xml" loadImmediate="false" itemID="65bbe61b-00002b67" lastModified="1706812955"/>
+          <Include href="幸存老兵.xml" itemIcon="1" loadImmediate="false" itemID="68407473-00000a96" lastModified="1749054580"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="68407439-00000a6a" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="68407439-00000a6b" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="68407439-00000a6c" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_0.xml" loadImmediate="false" itemID="68407439-00000a74" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="68407439-00000a6d" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="68407439-00000a6e" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="68407439-00000a6f" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="68407439-00000a70" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="68407439-00000a71" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7.xml" loadImmediate="false" itemID="68407439-00000a72" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="68407439-00000a73" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9.xml" loadImmediate="false" itemID="68407439-00000a75" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_10.xml" loadImmediate="false" itemID="68407439-00000a76" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_11.xml" loadImmediate="false" itemID="68407439-00000a77" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_12.xml" loadImmediate="false" itemID="68407439-00000a78" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_13.xml" loadImmediate="false" itemID="68407439-00000a79" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_14.xml" loadImmediate="false" itemID="68407439-00000a7a" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_15.xml" loadImmediate="false" itemID="68407439-00000a7b" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_16.xml" loadImmediate="false" itemID="68407439-00000a7c" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_17.xml" loadImmediate="false" itemID="68407439-00000a7d" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_18.xml" loadImmediate="false" itemID="68407439-00000a7e" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_19.xml" loadImmediate="false" itemID="68407439-00000a7f" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_20.xml" loadImmediate="false" itemID="68407439-00000a80" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_21.xml" loadImmediate="false" itemID="68407439-00000a81" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_22.xml" loadImmediate="false" itemID="68407439-00000a82" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_23.xml" loadImmediate="false" itemID="68407439-00000a83" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_24.xml" loadImmediate="false" itemID="68407439-00000a84" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_25.xml" loadImmediate="false" itemID="68407439-00000a85" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_26.xml" loadImmediate="false" itemID="68407439-00000a86" lastModified="1749054521"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_27.xml" loadImmediate="false" itemID="6840743a-00000a87" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_28.xml" loadImmediate="false" itemID="6840743a-00000a88" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_29.xml" loadImmediate="false" itemID="6840743a-00000a89" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_30.xml" loadImmediate="false" itemID="6840743a-00000a8a" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_31.xml" loadImmediate="false" itemID="6840743a-00000a8b" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_32.xml" loadImmediate="false" itemID="6840743a-00000a8c" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_33.xml" loadImmediate="false" itemID="6840743a-00000a8d" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_34.xml" loadImmediate="false" itemID="6840743a-00000a8e" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_35.xml" loadImmediate="false" itemID="6840743a-00000a8f" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_36.xml" loadImmediate="false" itemID="6840743a-00000a90" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_37.xml" loadImmediate="false" itemID="6840743a-00000a91" lastModified="1749054522"/>
+          <Include href="幸存老兵6.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_38.xml" loadImmediate="false" itemID="6840743a-00000a92" lastModified="1749054522"/>
           <Include href="学生妹.xml" itemIcon="1" loadImmediate="false" itemID="682430c0-000013c3" lastModified="1747202240"/>
           <Include href="学生妹.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="682430b9-00001390" lastModified="1747202233"/>
           <Include href="学生妹.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="682430b9-00001391" lastModified="1747202233"/>
@@ -2531,6 +2575,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3342327" publishTime="1749054694"/>
           <PublishItem publishSize="3254180" publishTime="1747902707"/>
           <PublishItem publishSize="2897668" publishTime="1747202318"/>
           <PublishItem publishSize="2814378" publishTime="1747123493"/>
@@ -2550,6 +2595,5 @@
           <PublishItem publishSize="2220472" publishTime="1739526131"/>
           <PublishItem publishSize="2220471" publishTime="1739526026"/>
           <PublishItem publishSize="2224551" publishTime="1739459042"/>
-          <PublishItem publishSize="2224575" publishTime="1739458913"/>
      </publishHistory>
 </DOMDocument>

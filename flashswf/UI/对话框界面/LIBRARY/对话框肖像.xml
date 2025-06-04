@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1747902768" lastUniqueIdentifier="185">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1749054650" lastUniqueIdentifier="226">
   <timeline>
     <DOMTimeline name="对话框肖像" currentFrame="356">
       <layers>
@@ -271,7 +271,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
+                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -587,7 +587,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="206" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="将军" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="将军" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.110092163085938" d="0.110092163085938" tx="-131.3" ty="-196.35"/>
                   </matrix>
@@ -617,12 +617,12 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="231" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/对话-幸存老兵" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="幸存老兵" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-41.8" ty="-107"/>
+                    <Matrix a="0.94769287109375" d="0.94769287109375" tx="-47.15" ty="-223.2"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="106.05" y="240.45"/>
+                    <Point x="169.25" y="176"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
