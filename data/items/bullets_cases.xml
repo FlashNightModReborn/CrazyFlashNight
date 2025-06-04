@@ -95,7 +95,7 @@
     <bullet>
         <name>纵向联弹-穿刺子弹</name>
         <shell>
-            <casing>能量霰弹弹壳</casing>
+            <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
@@ -104,7 +104,7 @@
     <bullet>
         <name>纵向机枪联弹-穿刺子弹</name>
         <shell>
-            <casing>能量霰弹弹壳</casing>
+            <casing>能量重机枪弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
@@ -113,7 +113,7 @@
     <bullet>
         <name>横向机枪联弹-穿刺子弹</name>
         <shell>
-            <casing>能量弹壳</casing>
+            <casing>能量霰弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
@@ -131,7 +131,7 @@
     <bullet>
         <name>横向机枪联弹-普通子弹</name>
         <shell>
-            <casing>步枪弹壳</casing>
+            <casing>重机枪弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
@@ -176,7 +176,7 @@
     <bullet>
         <name>纵向联弹-加强普通子弹</name>
         <shell>
-            <casing>加强霰弹弹壳</casing>
+            <casing>加强步枪弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
@@ -185,7 +185,7 @@
     <bullet>
         <name>纵向手枪联弹-加强普通子弹</name>
         <shell>
-            <casing>加强霰弹弹壳</casing>
+            <casing>加强手枪弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
