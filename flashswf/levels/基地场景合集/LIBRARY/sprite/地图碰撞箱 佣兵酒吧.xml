@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/地图碰撞箱 佣兵酒吧" itemID="67d7c5ec-00000551" lastModified="1742200704">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/地图碰撞箱 佣兵酒吧" itemID="67d7c5ec-00000551" lastModified="1749102526">
   <timeline>
     <DOMTimeline name="地图碰撞箱 佣兵酒吧">
       <layers>
@@ -13,8 +13,9 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!30767 4001|23644 4001!23644 4001|23656 4379!23656 4379|29147 10992!29147 10992|22619 10992!22619 10992|22619 8654!22619 8654|7189 8654!7189 8654|10479 5097!10479 5097|10479 4077!10479 4077|120 4227.5!120 4227.5|120.5 12851!120.5 12851
-|30767.5 12851!30767.5 12851|30767 4001"/>
+                    <Edge fillStyle1="1" edges="!28200 9851.5|24836 5800!24836 5800|28200 5800!28200 5800|28200 9851.5"/>
+                    <Edge fillStyle0="1" edges="!22619 8654|6900 8654!6900 8654|6900 10960!6900 10960|22619 10960!22619 10960|22619 8654"/>
+                    <Edge fillStyle1="1" edges="!9662.5 5800|6900 8179.5!6900 8179.5|6900 5800!6900 5800|9662.5 5800"/>
                   </edges>
                 </DOMShape>
               </elements>

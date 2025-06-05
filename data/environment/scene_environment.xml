@@ -5,14 +5,25 @@
         <BackgroundURL>房间</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>150</Xmin>
-        <Xmax>775</Xmax>
-        <Ymin>223</Ymin>
-        <Ymax>628</Ymax>
+        <Xmax>880</Xmax>
+        <Ymin>310</Ymin>
+        <Ymax>488</Ymax>
         <Width>1024</Width>
         <Height>512</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <Collision>
+            <Point>240,490</Point>
+            <Point>140,320</Point>
+            <Point>140,490</Point>
+        </Collision>
+        <Collision>
+            <Point>727,310</Point>
+            <Point>913,310</Point>
+            <Point>913,490</Point>
+            <Point>880,490</Point>
+        </Collision>
         <BGM>stop</BGM>
     </Environment>
     <Environment>
@@ -27,6 +38,19 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>1449,204</Point>
+            <Point>1535,204</Point>
+            <Point>1535,279</Point>
+            <Point>1521,279</Point>
+            <Point>1521,250</Point>
+            <Point>1449,250</Point>
+        </Collision>
+        <Collision>
+            <Point>282,222</Point>
+            <Point>17,548</Point>
+            <Point>17,222</Point>
+        </Collision>
         <MercenaryRefresh>
             <AreaMultiplier>1.2</AreaMultiplier>
             <Initial>1</Initial>
@@ -46,6 +70,23 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>0,225</Point>
+            <Point>0,552</Point>
+            <Point>20,529</Point>
+            <Point>110,529</Point>
+            <Point>110,423</Point>
+            <Point>171,423</Point>
+            <Point>171,404</Point>
+            <Point>908,404</Point>
+            <Point>939,329</Point>
+            <Point>973,225</Point>
+        </Collision>
+        <Collision>
+            <Point>1225,352</Point>
+            <Point>1119,225</Point>
+            <Point>1225,225</Point>
+        </Collision>
         <MercenaryRefresh>
             <Initial>8</Initial>
             <Entrance>10</Entrance>
@@ -58,7 +99,7 @@
         <Xmin>640</Xmin>
         <Xmax>1025</Xmax>
         <Ymin>330</Ymin>
-        <Ymax>400</Ymax>
+        <Ymax>370</Ymax>
         <Width>1025</Width>
         <Height>500</Height>
         <SpaceCondition>室内</SpaceCondition>
@@ -81,6 +122,32 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>0,228</Point>
+            <Point>0,546</Point>
+            <Point>13,546</Point>
+            <Point>80,462</Point>
+            <Point>236,462</Point>
+            <Point>262,386</Point>
+            <Point>272,244</Point>
+            <Point>386,282</Point>
+            <Point>452,367</Point>
+            <Point>498,359</Point>
+            <Point>474,228</Point>
+        </Collision>
+        <Collision>
+            <Point>546,228</Point>
+            <Point>600,266</Point>
+            <Point>694,266</Point>
+            <Point>714,282</Point>
+            <Point>726,334</Point>
+            <Point>787,347</Point>
+            <Point>838,430</Point>
+            <Point>903,534</Point>
+            <Point>987,546</Point>
+            <Point>1088,546</Point>
+            <Point>1088,228</Point>
+        </Collision>
         <MercenaryRefresh>
             <Initial>8</Initial>
             <Entrance>15</Entrance>
@@ -99,6 +166,11 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>1537,220</Point>
+            <Point>1813,550</Point>
+            <Point>1813,220</Point>
+        </Collision>
         <MercenaryRefresh>
             <AreaMultiplier>1.2</AreaMultiplier>
             <Entrance>10</Entrance>
@@ -117,6 +189,22 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>1131,433</Point>
+            <Point>345,433</Point>
+            <Point>345,548</Point>
+            <Point>1131,548</Point>
+        </Collision>
+        <Collision>
+            <Point>483,290</Point>
+            <Point>345,409</Point>
+            <Point>345,290</Point>
+        </Collision>
+        <Collision>
+            <Point>1410,493</Point>
+            <Point>1242,290</Point>
+            <Point>1410,290</Point>
+        </Collision>
         <MercenaryRefresh>
             <AreaMultiplier>2</AreaMultiplier>
             <Initial>8</Initial>
@@ -130,12 +218,24 @@
         <Xmin>300</Xmin>
         <Xmax>850</Xmax>
         <Ymin>310</Ymin>
-        <Ymax>547</Ymax>
+        <Ymax>544</Ymax>
         <Width>1100</Width>
-        <Height>547</Height>
+        <Height>545</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <Collision>
+            <Point>775,280</Point>
+            <Point>900,280</Point>
+            <Point>900,524</Point>
+            <Point>775,347</Point>
+        </Collision>
+        <Collision>
+            <Point>260,280</Point>
+            <Point>417,280</Point>
+            <Point>416,339</Point>
+            <Point>260,538</Point>
+        </Collision>
         <MercenaryRefresh>
             <Initial>8</Initial>
             <Entrance>10</Entrance>
@@ -149,11 +249,55 @@
         <Xmax>1750</Xmax>
         <Ymin>200</Ymin>
         <Ymax>500</Ymax>
-        <Width>1750</Width>
+        <Width>1635</Width>
         <Height>600</Height>
         <Horizon>240</Horizon>
         <MaxIllumination>9</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <Collision>
+            <Point>100,195</Point>
+            <Point>235,195</Point>
+            <Point>158,309</Point>
+            <Point>158,397</Point>
+            <Point>300,397</Point>
+            <Point>300,430</Point>
+            <Point>337,430</Point>
+            <Point>337,460</Point>
+            <Point>549,460</Point>
+            <Point>549,505</Point>
+            <Point>100,505</Point>
+        </Collision>
+        <Collision>
+            <Point>1144,195</Point>
+            <Point>1390,195</Point>
+            <Point>1390,346</Point>
+            <Point>1144,346</Point>
+        </Collision>
+        <Collision>
+            <Point>1480,420</Point>
+            <Point>1640,420</Point>
+            <Point>1640,505</Point>
+            <Point>1328,505</Point>
+            <Point>1328,476</Point>
+            <Point>1480,476</Point>
+        </Collision>
+        <Collision>
+            <Point>1523,195</Point>
+            <Point>1640,195</Point>
+            <Point>1640,410</Point>
+        </Collision>
+        <Collision>
+            <Point>313,195</Point>
+            <Point>890,195</Point>
+            <Point>890,231</Point>
+            <Point>842,231</Point>
+            <Point>842,300</Point>
+            <Point>791,300</Point>
+            <Point>791,271</Point>
+            <Point>521,271</Point>
+            <Point>521,282</Point>
+            <Point>313,282</Point>
+        </Collision>
         <MercenaryRefresh>
             <AreaMultiplier>0.6</AreaMultiplier>
             <Initial>8</Initial>
@@ -167,12 +311,33 @@
         <Xmin>50</Xmin>
         <Xmax>1250</Xmax>
         <Ymin>280</Ymin>
-        <Ymax>700</Ymax>
+        <Ymax>600</Ymax>
         <Width>1250</Width>
         <Height>700</Height>
         <Horizon>140</Horizon>
         <MaxIllumination>9</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <Collision>
+            <Point>976,294</Point>
+            <Point>971,278</Point>
+            <Point>1260,278</Point>
+            <Point>1260,386</Point>
+            <Point>1146,386</Point>
+            <Point>1075,296</Point>
+        </Collision>
+        <Collision>
+            <Point>4,278</Point>
+            <Point>839,278</Point>
+            <Point>827,306</Point>
+            <Point>769,338</Point>
+            <Point>420,341</Point>
+            <Point>399,309</Point>
+            <Point>285,309</Point>
+            <Point>246,339</Point>
+            <Point>133,339</Point>
+            <Point>114,357</Point>
+            <Point>4,357</Point>
+        </Collision>
         <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
@@ -187,6 +352,11 @@
         <Horizon>140</Horizon>
         <MaxIllumination>9</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <Collision>
+            <Point>287,302</Point>
+            <Point>17,615</Point>
+            <Point>17,300</Point>
+        </Collision>
         <MercenaryRefresh>
             <AreaMultiplier>1.5</AreaMultiplier>
             <Initial>8</Initial>

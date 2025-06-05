@@ -357,22 +357,17 @@ _root.跳转地图 = function(跳转帧){
 	_root.gotoAndPlay(跳转帧);
 }
 
-_root.切换游戏世界 = function() {
-	_root.gameworld = _root.camera.gameworld;
-
-	_root.collisionLayer.clear();
-	_root.帧计时器.eventBus.publish("SceneChanged");
-}
 
 _root.加载共享场景 = function(加载场景名){
-	//_root.camera.removeMovieClip();
-	// 清除之前的游戏世界
 	var camera:MovieClip = _root.createEmptyMovieClip("camera", _root.getNextHighestDepth());
 	var gw:MovieClip = camera.attachMovie(加载场景名, "gameworld", camera.getNextHighestDepth());
 	camera.swapDepths(_root.gameworld层级定位器);
+	_root.gameworld = _root.camera.gameworld;
+	// var gw:MovieClip = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth());
+	// gw.swapDepths(_root.gameworld层级定位器);
 	SceneManager.getInstance().initScene(gw);
 
-	_root.切换游戏世界();
+	_root.帧计时器.eventBus.publish("SceneChanged");
 }
 
 
@@ -383,6 +378,7 @@ _root.清除游戏世界组件 = function(){
 	SceneManager.getInstance().removeGameWorld();
 	
 	// 清除游戏世界相关组件
+	_root.collisionLayer.clear();
 	_root.gameworld层级定位器.removeMovieClip();
 	_root.层级管理器.检查层级范围();
 	_root.卸载后景();

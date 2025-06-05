@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/溶洞" itemID="668aa0c1-000051a2" linkageExportForAS="true" linkageIdentifier="基地场景-地下2层" lastModified="1742200440">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/溶洞" itemID="668aa0c1-000051a2" linkageExportForAS="true" linkageIdentifier="基地场景-地下2层" lastModified="1749102262">
   <timeline>
     <DOMTimeline name="溶洞">
       <layers>
@@ -125,7 +125,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地下2层地图碰撞箱" name="地图" selected="true" centerPoint3DX="344.45" centerPoint3DY="128.9">
+                <DOMSymbolInstance libraryItemName="sprite/地下2层地图碰撞箱" name="地图" centerPoint3DX="344.45" centerPoint3DY="128.9">
                   <matrix>
                     <Matrix d="1.0001220703125"/>
                   </matrix>

@@ -118,7 +118,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#30F174" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#30F174" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -138,7 +138,7 @@ onClipEvent (load) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门10" selected="true" centerPoint3DX="1394.45" centerPoint3DY="441.5">
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门10" centerPoint3DX="1394.45" centerPoint3DY="441.5">
                   <matrix>
                     <Matrix a="7.31272888183594" d="1.25515747070313" tx="1407.25" ty="460.45"/>
                   </matrix>
@@ -331,11 +331,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#9FA94F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#9FA94F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 基地房顶" name="地图" centerPoint3DX="905.95" centerPoint3DY="288.3">
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 基地房顶" name="地图" selected="true" centerPoint3DX="905.95" centerPoint3DY="288.3">
                   <matrix>
                     <Matrix d="1.0001220703125"/>
                   </matrix>

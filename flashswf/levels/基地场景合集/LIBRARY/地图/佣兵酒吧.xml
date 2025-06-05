@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1747718311" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1749102505" lastUniqueIdentifier="11">
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
@@ -231,11 +231,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图碰撞箱" color="#79F7C2" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图碰撞箱" color="#79F7C2" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 佣兵酒吧" name="地图" centerPoint3DX="864.85" centerPoint3DY="407.25">
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 佣兵酒吧" name="地图" selected="true" centerPoint3DX="864.85" centerPoint3DY="407.25">
                   <matrix>
                     <Matrix d="1.0001220703125"/>
                   </matrix>
@@ -263,7 +263,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#73C0B1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="场景" color="#73C0B1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

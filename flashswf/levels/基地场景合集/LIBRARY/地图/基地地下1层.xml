@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1747718602" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1749101795" lastUniqueIdentifier="24">
   <timeline>
     <DOMTimeline name="基地地下1层">
       <layers>
@@ -372,7 +372,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#E8922C" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#E8922C" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -503,7 +503,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#BA12CB" current="true" isSelected="true">
+        <DOMLayer name="Layer 23" color="#BA12CB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

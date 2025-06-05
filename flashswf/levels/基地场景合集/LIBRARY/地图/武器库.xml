@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1747718297" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1749099055" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
@@ -171,7 +171,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#60EFAF" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#60EFAF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -352,9 +352,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

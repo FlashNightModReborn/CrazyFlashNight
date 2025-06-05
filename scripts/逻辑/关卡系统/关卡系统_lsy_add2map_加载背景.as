@@ -87,7 +87,7 @@ _root.绘制地图碰撞箱 = function () {
 
 
 _root.通过数组绘制地图碰撞箱 = function(arr:Array) {
-    var 游戏世界地图 = _root.gameworld.地图;
+    // var 游戏世界地图 = _root.gameworld.地图;
 	var collisionLayer = _root.collisionLayer;
     if (arr.length > 0) {
         for (var i = 0; i < arr.length; i++) {
@@ -175,6 +175,8 @@ _root.配置场景环境信息 = function(){
 		//配置天气和后景
 		_root.天气系统.配置环境(环境信息);
 		_root.加载后景(环境信息);
+		// 配置碰撞箱
+		if(环境信息.Collision) _root.通过数组绘制地图碰撞箱(环境信息.Collision);
 		//加载随机佣兵
 		游戏世界.面积系数 = isNaN(环境信息.佣兵刷新数据.AreaMultiplier) ? 1 : 环境信息.佣兵刷新数据.AreaMultiplier;
 		if(!isNaN(环境信息.佣兵刷新数据.Initial)){
