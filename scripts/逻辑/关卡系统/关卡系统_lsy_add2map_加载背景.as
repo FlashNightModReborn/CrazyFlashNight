@@ -5,6 +5,7 @@ import org.flashNight.sara.util.*;
 import org.flashNight.neur.Event.*;
 import flash.geom.Matrix;
 import flash.display.BitmapData;
+import org.flashNight.gesh.object.*;
 
 // 原 add2map 的重构
 _root.add2map = function(tg, ln) {
@@ -163,6 +164,7 @@ _root.配置场景环境信息 = function(){
 			出生点列表.push(出生点);
 		}
 	}
+
 	游戏世界.出生点列表 = 出生点列表;
 	if(环境信息){
 		//配置地图尺寸
@@ -176,7 +178,8 @@ _root.配置场景环境信息 = function(){
 		_root.天气系统.配置环境(环境信息);
 		_root.加载后景(环境信息);
 		// 配置碰撞箱
-		if(环境信息.Collision) _root.通过数组绘制地图碰撞箱(环境信息.Collision);
+		var collision = 环境信息.Collision || 环境信息.地图碰撞箱 || null
+		if(collision) _root.通过数组绘制地图碰撞箱(collision);
 		//加载随机佣兵
 		游戏世界.面积系数 = isNaN(环境信息.佣兵刷新数据.AreaMultiplier) ? 1 : 环境信息.佣兵刷新数据.AreaMultiplier;
 		if(!isNaN(环境信息.佣兵刷新数据.Initial)){

@@ -144,9 +144,10 @@ class org.flashNight.arki.stage.SceneManager {
         // 将 'deadbody' 设置为不可枚举
         _global.ASSetPropFlags(gameworld, ["deadbody"], 1, false);
 
+        _root.发布消息("环境信息.地图碰撞箱")
         // 绘制地图碰撞箱
         var 地图碰撞箱数组 = 环境信息.地图碰撞箱;
-        var 游戏世界地图 = gameworld.地图;
+        var 游戏世界地图 = _root.collisionLayer;
         if (地图碰撞箱数组.length > 0) {
             for (var i = 0; i < 地图碰撞箱数组.length; i++) {
                 var 多边形 = 地图碰撞箱数组[i].Point;
@@ -168,7 +169,7 @@ class org.flashNight.arki.stage.SceneManager {
         游戏世界地图._visible = false;
 
         // 将 '地图' 设置为不可枚举
-        _global.ASSetPropFlags(gameworld, ["地图"], 1, false);
+        _global.ASSetPropFlags(gameworld, ["collisionLayer"], 1, false);
 
         // 确定左右刷怪线
         if (环境信息.左侧出生线) {
