@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="216" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="216" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="1.冷兵器" itemID="66f2d400-00001015"/>
           <DOMFolderItem name="1.冷兵器/钝器" itemID="66f61336-0000049b"/>
@@ -36,7 +36,7 @@
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
-          <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2"/>
+          <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/01.白净色系" itemID="6634d11f-000008c3"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/上勾拳特效组件" itemID="668c195d-00001fc7"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/突刺用特效" itemID="6666075a-0000150d"/>
@@ -50,8 +50,8 @@
           <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬" itemID="66fc24d5-000017a5"/>
           <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬/Graphic" itemID="66fc24d5-000017a6"/>
           <DOMFolderItem name="特效与子弹/裂地拳特效" itemID="668be6aa-00000635" isExpanded="true"/>
-          <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e" isExpanded="true"/>
-          <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="673f5879-00000b0f"/>
+          <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e"/>
+          <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="673f5879-00000b0f" isExpanded="true"/>
           <DOMFolderItem name="新霸体特效" itemID="66c19db5-000017a9"/>
           <DOMFolderItem name="移动射击动画层" itemID="66577cc3-00002e4e"/>
           <DOMFolderItem name="音效" itemID="6634d292-00000a12"/>
@@ -62,11 +62,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
           <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
      </fonts>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
@@ -255,10 +255,10 @@
           <Include href="Graphic/shape 2025.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e9" lastModified="1477651346"/>
           <Include href="Graphic/shape 2026.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007ea" lastModified="1477651346"/>
           <Include href="Graphic/shape 2027.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007eb" lastModified="1477651346"/>
-          <Include href="MovieClip/sprite 216.xml" itemID="58132b8a-000000d8" lastModified="1712222906"/>
-          <Include href="MovieClip/sprite 224.xml" itemID="58132b8a-000000e0" lastModified="1712222825"/>
-          <Include href="MovieClip/sprite 724.xml" itemID="58132bff-000002d4" lastModified="1726479156"/>
-          <Include href="MovieClip/sprite 2028.xml" itemID="58132b92-000007ec" lastModified="1715356826"/>
+          <Include href="MovieClip/sprite 216.xml" loadImmediate="false" itemID="58132b8a-000000d8" lastModified="1749127541"/>
+          <Include href="MovieClip/sprite 224.xml" loadImmediate="false" itemID="58132b8a-000000e0" lastModified="1749127492"/>
+          <Include href="MovieClip/sprite 724.xml" loadImmediate="false" itemID="58132bff-000002d4" lastModified="1749127399"/>
+          <Include href="MovieClip/sprite 2028.xml" loadImmediate="false" itemID="58132b92-000007ec" lastModified="1749127392"/>
           <Include href="MovieClip/元件 1.xml" loadImmediate="false" itemID="581339df-00001c10" lastModified="1477655007"/>
           <Include href="P90.xml" itemIcon="1" loadImmediate="false" itemID="681b4b4a-00001004" lastModified="1746619210"/>
           <Include href="shape/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000957" lastModified="1702343951"/>
@@ -700,7 +700,7 @@
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1732399262"/>
           <Include href="sprite/Symbol 121.xml" loadImmediate="false" itemID="6577b699-000009a6" lastModified="1722447121"/>
           <Include href="sprite/Symbol 124.xml" loadImmediate="false" itemID="6577b699-000009a8" lastModified="1747750846"/>
-          <Include href="sprite/Symbol 129.xml" loadImmediate="false" itemID="6577b699-000009ad" lastModified="1747750352"/>
+          <Include href="sprite/Symbol 129.xml" loadImmediate="false" itemID="6577b699-000009ad" lastModified="1749128790"/>
           <Include href="sprite/Symbol 130.xml" loadImmediate="false" itemID="6577b699-000009ae" lastModified="1720908276"/>
           <Include href="sprite/Symbol 131.xml" loadImmediate="false" itemID="6577b699-000009af" lastModified="1725366840"/>
           <Include href="sprite/Symbol 134.xml" loadImmediate="false" itemID="6577b699-000009b1" lastModified="1702343951"/>
@@ -843,7 +843,7 @@
           <Include href="sprite/Symbol 559.xml" loadImmediate="false" itemID="6577b699-00000ac3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 561.xml" loadImmediate="false" itemID="6577b699-00000ac4" lastModified="1702343951"/>
           <Include href="sprite/Symbol 563.xml" loadImmediate="false" itemID="6577b699-00000ac5" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1749041584"/>
+          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1749127154"/>
           <Include href="sprite/Symbol 618.xml" loadImmediate="false" itemID="6577b699-00000add" lastModified="1720908276"/>
           <Include href="sprite/Symbol 619.xml" loadImmediate="false" itemID="6577b699-00000ade" lastModified="1720908276"/>
           <Include href="sprite/Symbol 620.xml" loadImmediate="false" itemID="6577b699-00000adf" lastModified="1702343951"/>
@@ -1097,7 +1097,7 @@
           <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1747750462"/>
           <Include href="sprite/持械待机.xml" loadImmediate="false" itemID="6693d49e-00000af1" lastModified="1720966607"/>
           <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1742889188"/>
-          <Include href="sprite/大地震.xml" itemID="668be732-00000660" lastModified="1720444962"/>
+          <Include href="sprite/大地震.xml" itemID="668be732-00000660" lastModified="1749127630"/>
           <Include href="sprite/弹壳.xml" itemID="64d9ee41-00000a13" lastModified="1693577774"/>
           <Include href="sprite/弹壳贴图.xml" loadImmediate="false" itemID="64d9fd11-00001953" lastModified="1692007732"/>
           <Include href="sprite/刀-新手刀.xml" itemID="668be726-0000065e" lastModified="1720444710"/>
@@ -1164,7 +1164,7 @@
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
           <Include href="sprite/圆柱体特效.xml" loadImmediate="false" itemID="68386174-00000fee" lastModified="1748527452"/>
-          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1749041836"/>
+          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1749128042"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1741161249"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289c" lastModified="1726480498"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289e" lastModified="1726480498"/>
@@ -1198,11 +1198,11 @@
           <Include href="火舞旋风刀光特效.xml" loadImmediate="false" itemID="673b1fad-000023a8" lastModified="1731928029"/>
           <Include href="火舞旋风刀光特效 黑.xml" loadImmediate="false" itemID="68166a6b-00000ce4" lastModified="1746299499"/>
           <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1743161763"/>
-          <Include href="临时武器/1.枪械相关/KRISS相关/Symbol 4015.xml" itemID="668e7c1e-00000ff6" lastModified="1720533000"/>
-          <Include href="临时武器/1.枪械相关/手枪/Symbol 3805.xml" itemID="668e7c1e-00000f6a" lastModified="1720533000"/>
-          <Include href="临时武器/1.枪械相关/手枪/Symbol 3817.xml" itemID="668e7c1e-00000f71" lastModified="1720533000"/>
-          <Include href="临时武器/1.枪械相关/长枪/枪-长枪-AK74.xml" itemID="66b46890-00000cac" lastModified="1723099372"/>
-          <Include href="临时武器/1.枪械相关/长枪/枪-长枪-M249.xml" itemID="66b46762-000011ea" lastModified="1723098978"/>
+          <Include href="临时武器/1.枪械相关/KRISS相关/Symbol 4015.xml" loadImmediate="false" itemID="668e7c1e-00000ff6" lastModified="1749127422"/>
+          <Include href="临时武器/1.枪械相关/手枪/Symbol 3805枪-手枪-Glock 18.xml" loadImmediate="false" itemID="68419130-0000075c" lastModified="1749127477"/>
+          <Include href="临时武器/1.枪械相关/手枪/Symbol 3817枪-手枪-P90.xml" loadImmediate="false" itemID="684190c2-0000074b" lastModified="1749127362"/>
+          <Include href="临时武器/1.枪械相关/长枪/枪-长枪-AK74.xml" loadImmediate="false" itemID="66b46890-00000cac" lastModified="1749127458"/>
+          <Include href="临时武器/1.枪械相关/长枪/枪-长枪-M249.xml" loadImmediate="false" itemID="66b46762-000011ea" lastModified="1749127438"/>
           <Include href="临时武器/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="66bf5472-00001bed" lastModified="1746620761"/>
           <Include href="临时武器/无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="临时武器/无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
@@ -1873,6 +1873,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2893038" publishTime="1749128067"/>
+          <PublishItem publishSize="2893038" publishTime="1749127737"/>
+          <PublishItem publishSize="2893039" publishTime="1749127523"/>
+          <PublishItem publishSize="2893844" publishTime="1749127242"/>
+          <PublishItem publishSize="2893844" publishTime="1749127055"/>
           <PublishItem publishSize="2749320" publishTime="1748537724"/>
           <PublishItem publishSize="2749337" publishTime="1748537251"/>
           <PublishItem publishSize="2751719" publishTime="1748534560"/>
@@ -1888,10 +1893,5 @@
           <PublishItem publishSize="2751118" publishTime="1748530240"/>
           <PublishItem publishSize="2751035" publishTime="1748529961"/>
           <PublishItem publishSize="2750118" publishTime="1748529522"/>
-          <PublishItem publishSize="2750119" publishTime="1748529387"/>
-          <PublishItem publishSize="2750080" publishTime="1748529192"/>
-          <PublishItem publishSize="2750100" publishTime="1748528836"/>
-          <PublishItem publishSize="2750096" publishTime="1748528796"/>
-          <PublishItem publishSize="2741983" publishTime="1748511460"/>
      </publishHistory>
 </DOMDocument>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/大地震" itemID="668be732-00000660" linkageExportForAS="true" linkageIdentifier="大地震" lastModified="1720444962" lastUniqueIdentifier="257">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/大地震" itemID="668be732-00000660" linkageExportForAS="true" linkageIdentifier="大地震" lastModified="1749127630" lastUniqueIdentifier="257">
   <timeline>
-    <DOMTimeline name="大地震" currentFrame="1">
+    <DOMTimeline name="大地震" currentFrame="36">
       <layers>
         <DOMLayer name="Script Layer" color="#47CFB7">
           <frames>
@@ -1016,7 +1016,7 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 431" selected="true" centerPoint3DX="37.55" centerPoint3DY="101">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 431" centerPoint3DX="37.55" centerPoint3DY="101">
                   <matrix>
                     <Matrix a="0.339981079101563" d="0.339981079101563" tx="-14.15" ty="-119.15"/>
                   </matrix>
