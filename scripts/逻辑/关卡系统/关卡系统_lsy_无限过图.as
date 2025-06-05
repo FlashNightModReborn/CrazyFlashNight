@@ -4,7 +4,6 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.开启生存模式 = function(模式) {
     _root.当前为战斗地图 = true;
-	_root.帧计时器.eventBus.publish("SceneChanged");
 
     //_root.d_波次._visible = _root.调试模式;
     //_root.d_剩余敌人数._visible = _root.调试模式;
@@ -154,8 +153,10 @@ _root.开启生存模式 = function(模式) {
         基本配置.PlayerX = _root.Xmin + 50;
         基本配置.PlayerY = _root.Ymin + 60;
     }
+	游戏世界.出生地.是否从门加载主角 = true;
     游戏世界.出生地._x = 基本配置.PlayerX;
     游戏世界.出生地._y = 基本配置.PlayerY;
+	游戏世界.出生地.是否从门加载角色 = _root.场景转换函数.是否从门加载角色;
     游戏世界.出生地.是否从门加载角色();
     
     // 将 '出生地' 设置为不可枚举
