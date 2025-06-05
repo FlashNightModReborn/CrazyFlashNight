@@ -254,7 +254,7 @@ _root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor, zoomS
     var distance = (Math.abs(scrollObj._x - farthestEnemy._x) + Math.abs(scrollObj._y - farthestEnemy._y)) || 99999;
     var normalizedDistance = Math.max(1, distance / 100); // 归一化距离
     var logScale = Math.log(normalizedDistance) / Math.log(10); // 以10为底的对数
-    var targetZoomScale = Math.min(2, Math.max(1, 2 - logScale * 1.11)); // 800像素时缩放为1
+    var targetZoomScale = Math.min(1.5, Math.max(1, 2 - logScale * 1.11)); // 800像素时缩放为1
 
     if(!gameWorld.lastScale) gameWorld.lastScale = targetZoomScale;
     
@@ -288,7 +288,7 @@ _root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor, zoomS
     var maxScrollY:Number = 0;
     
     // 3) 缩放中心点补偿处理
-    var scaleChanged = Math.abs(newScale - oldScale) > 0.001;
+    var scaleChanged = Math.abs(newScale - oldScale) > 0.005;
     var worldOffsetX = 0;
     var worldOffsetY = 0;
     

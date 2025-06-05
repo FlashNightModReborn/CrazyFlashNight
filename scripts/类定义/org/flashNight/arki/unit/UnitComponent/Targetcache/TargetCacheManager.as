@@ -203,14 +203,87 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     // 范围查询方法（索引定位）
     // ========================================================================
     
+    // =========================================================================
+    // 缓存相关的静态变量
+    // =========================================================================
+
     /**
-     * 获取从指定起始索引开始的缓存目标单位
-     * 利用二分查找快速定位第一个可能碰撞的单位，后续利用isOrdered机制提前退出
-     * @param {Object} target - 目标单位
-     * @param {Number} updateInterval - 更新间隔(帧数)
-     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
-     * @param {AABBCollider} query - 查询用的AABB碰撞器
-     * @return {Object} 包含data数组、startIndex的结果对象
+     * 上一次查询的左边界值
+     * 用于判断本次查询是否可以利用缓存进行增量扫描
+     * 初始值设为负无穷，确保第一次查询不会误判为缓存命中
+     */
+    private static var _lastQueryLeft:Number = -Infinity;
+
+    /**
+     * 上一次查询结果的索引位置
+     * 表示上次找到的第一个满足 aabbCollider.right >= queryLeft 的元素索引
+     * 配合 _lastQueryLeft 使用，作为增量扫描的起始位置
+     */
+    private static var _lastIndex:Number = 0;
+
+    /**
+     * 缓存有效性阈值（单位：像素）
+     * 当本次查询的 queryLeft 与上次相差在此阈值内时，认为可以使用缓存
+     * 该值可根据实际场景动态调整，建议范围：30-200
+     * - 较小值：更精确，但缓存命中率低
+     * - 较大值：缓存命中率高，但可能增加扫描距离
+     */
+    private static var _THRESHOLD:Number = 100;
+
+    /**
+     * 性能统计对象
+     * 包含详细的查询统计信息，用于分析和优化算法性能
+     * 
+     * @property totalQueries      总查询次数
+     * @property smallArrays       小数组优化次数（<=8个元素）
+     * @property cacheHits         缓存命中次数（使用增量线性扫描）
+     * @property cacheMisses       缓存未命中次数（退化到其他查找方式）
+     * @property firstElementHits  首元素命中次数
+     * @property lastElementHits   尾元素命中次数
+     * @property binarySearches    二分查找次数
+     * @property avgScanDistance   平均线性扫描距离
+     * @property maxScanDistance   最大线性扫描距离
+     */
+    private static var _stats:Object = {
+        totalQueries: 0,
+        smallArrays: 0,
+        cacheHits: 0,
+        cacheMisses: 0,
+        firstElementHits: 0,
+        lastElementHits: 0,
+        binarySearches: 0,
+        avgScanDistance: 0,
+        maxScanDistance: 0
+    };
+
+    /**
+     * 从指定位置开始获取满足条件的目标列表
+     * 
+     * 该方法在一个按 aabbCollider.right 升序排列的数组中，查找第一个
+     * 满足 aabbCollider.right >= query.left 条件的元素索引。
+     * 
+     * 性能优化策略：
+     * 1. 小数组（<=8个元素）：直接线性扫描，避免二分查找开销
+     * 2. 缓存命中：当查询位置变化很小时，从上次位置开始线性扫描
+     * 3. 边界快速检查：检查首尾元素，快速处理极端情况
+     * 4. 二分查找：其他情况使用标准二分查找
+     * 
+     * @param target         当前查询发起者（如玩家单位）
+     * @param updateInterval 缓存更新间隔（帧数），控制缓存刷新频率
+     * @param requestType    目标类型："敌人"、"友军"或"全体"
+     * @param query          查询碰撞盒，使用其 left 属性作为查询边界
+     * 
+     * @return {Object} 返回结果缓存对象，包含：
+     *         - data: {Array} 完整的目标列表（引用原数组，未复制）
+     *         - startIndex: {Number} 第一个满足条件的元素索引
+     *                      如果为 n（数组长度），表示没有满足条件的元素
+     * 
+     * @example
+     * var result = getCachedTargetsFromIndex(player, 5, "敌人", queryBox);
+     * var targets = result.data;
+     * for (var i = result.startIndex; i < targets.length; i++) {
+     *     processTarget(targets[i]);
+     * }
      */
     public static function getCachedTargetsFromIndex(
         target:Object,
@@ -218,72 +291,265 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         requestType:String,
         query:AABBCollider
     ):Object {
+        // 获取已缓存的目标列表（已按 aabbCollider.right 升序排列）
         var list:Array = getCachedTargets(target, updateInterval, requestType);
         var n:Number = list.length;
         
-        if (n == 0) return _emptyResult;
+        // 增加总查询计数
+        // _stats.totalQueries++;
         
+        // 空数组快速返回
+        if (n == 0) {
+            return _emptyResult;
+        }
+        
+        // 提取查询参数
         var queryLeft:Number = query.left;
-        var resultCache:Object = _resultCache; // 局部化变量
+        var resultCache:Object = _resultCache;  // 使用预分配的结果对象，避免频繁创建
         
-        // 小数组线性查找优化
+        // =====================================================================
+        // 策略1：小数组优化（<=8个元素）
+        // 对于小数组，线性扫描比二分查找更快，因为：
+        // - 避免了二分查找的逻辑开销
+        // - CPU缓存友好，连续访问效率高
+        // - 减少了分支预测失败的可能
+        // =====================================================================
         if (n <= 8) {
+            // _stats.smallArrays++;
             var i:Number = 0;
             do {
                 if (list[i].aabbCollider.right >= queryLeft) {
+                    // 找到第一个满足条件的元素
                     resultCache.data = list;
                     resultCache.startIndex = i;
+                    // 更新缓存，为下次查询做准备
+                    _lastQueryLeft = queryLeft;
+                    _lastIndex = i;
                     return resultCache;
                 }
             } while (++i < n);
             
+            // 所有元素都不满足条件
             resultCache.data = list;
             resultCache.startIndex = n;
+            _lastQueryLeft = queryLeft;
+            _lastIndex = n;
             return resultCache;
         }
         
-        // 先检查首元素，避免在二分查找中重复检查
+        // =====================================================================
+        // 策略2：缓存优化 - 增量线性扫描
+        // 当查询位置变化很小时，从上次结果附近开始扫描
+        // 这在子弹密集的游戏中特别有效，因为查询位置通常是连续变化的
+        // =====================================================================
+        
+        // 检查缓存是否有效
+        var cacheValid:Boolean = (!isNaN(_lastQueryLeft) &&  // 有上次查询记录
+                                _lastIndex >= 0 &&           // 索引在有效范围内
+                                _lastIndex < n);              // 索引未越界
+        
+        if (cacheValid) {
+            // 计算查询位置的变化量
+            var deltaQuery:Number = Math.abs(queryLeft - _lastQueryLeft);
+            
+            // 只有变化量在阈值内才使用缓存
+            if (deltaQuery <= _THRESHOLD) {
+                // _stats.cacheHits++;  // 记录缓存命中
+                
+                // 获取缓存位置的右边界值
+                var cachedRight:Number = list[_lastIndex].aabbCollider.right;
+                var scanDistance:Number = 0;  // 记录扫描距离，用于性能分析
+                
+                // -------------------------------------------------------------
+                // 情况A：查询位置右移（queryLeft > 上次位置）
+                // 需要向后扫描，找到新的起始位置
+                // -------------------------------------------------------------
+                if (cachedRight < queryLeft) {
+                    var idxForward:Number = _lastIndex;
+                    
+                    // 向后扫描，跳过所有不满足条件的元素
+                    while (idxForward < n && list[idxForward].aabbCollider.right < queryLeft) {
+                        idxForward++;
+                        scanDistance++;
+                    }
+                    
+                    // 确保找到的是第一个满足条件的元素
+                    // 可能存在多个元素的 right 值相同的情况
+                    if (idxForward > 0 && idxForward < n) {
+                        while (idxForward > 0 && list[idxForward - 1].aabbCollider.right >= queryLeft) {
+                            idxForward--;
+                            scanDistance++;
+                        }
+                    }
+                    
+                    // 返回结果并更新缓存
+                    resultCache.data = list;
+                    resultCache.startIndex = idxForward;
+                    _lastQueryLeft = queryLeft;
+                    _lastIndex = idxForward;
+                    return resultCache;
+                    
+                // -------------------------------------------------------------
+                // 情况B：查询位置左移或不变（queryLeft <= 上次位置）
+                // 需要向前扫描，找到新的起始位置
+                // -------------------------------------------------------------
+                } else {
+                    var idxBackward:Number = _lastIndex;
+                    
+                    // 向前扫描，找到第一个满足条件的元素
+                    while (idxBackward > 0 && list[idxBackward - 1].aabbCollider.right >= queryLeft) {
+                        idxBackward--;
+                        scanDistance++;
+                    }
+                    
+                    // 返回结果并更新缓存
+                    resultCache.data = list;
+                    resultCache.startIndex = idxBackward;
+                    _lastQueryLeft = queryLeft;
+                    _lastIndex = idxBackward;
+                    return resultCache;
+                }
+            } else {
+                // 查询位置变化过大，缓存失效
+                // _stats.cacheMisses++;
+            }
+        } else {
+            // 缓存完全无效（首次查询或数组大小变化）
+            // _stats.cacheMisses++;
+        }
+        
+        // =====================================================================
+        // 策略3：边界元素快速检查
+        // 在进行完整二分查找前，先检查首尾元素
+        // 可以快速处理一些特殊情况，避免不必要的二分查找
+        // =====================================================================
+        
+        // 检查第一个元素
         var firstUnit:Object = list[0];
         if (firstUnit.aabbCollider.right >= queryLeft) {
+            // _stats.firstElementHits++;
             resultCache.data = list;
             resultCache.startIndex = 0;
+            _lastQueryLeft = queryLeft;
+            _lastIndex = 0;
             return resultCache;
         }
         
-        // 再检查尾元素
+        // 检查最后一个元素
         var lastUnit:Object = list[n - 1];
         if (lastUnit.aabbCollider.right < queryLeft) {
+            // _stats.lastElementHits++;
             resultCache.data = list;
-            resultCache.startIndex = n;
+            resultCache.startIndex = n;  // 所有元素都不满足
+            _lastQueryLeft = queryLeft;
+            _lastIndex = n;
             return resultCache;
         }
         
-        // 此时确保: list[0].right < queryLeft && list[n-1].right >= queryLeft
-        // 在 [1, n-1] 范围内一定有解，使用 do-while
+        // =====================================================================
+        // 策略4：标准二分查找
+        // 当缓存失效且不是边界情况时，使用二分查找
+        // 在 [1, n-1] 区间内查找（因为已经检查过首尾元素）
+        // =====================================================================
+        // _stats.binarySearches++;
         var l:Number = 1;
         var r:Number = n - 1;
         
         do {
-            var m:Number = (l + r) >> 1;
+            var m:Number = (l + r) >> 1;  // 位运算实现除2，更快
             var unitRight:Number = list[m].aabbCollider.right;
             
             if (unitRight >= queryLeft) {
-                // l >= 1，所以 m >= 1，无需检查 m == 0
+                // 检查是否是第一个满足条件的元素
                 if (list[m - 1].aabbCollider.right < queryLeft) {
+                    // 找到目标！
                     resultCache.data = list;
                     resultCache.startIndex = m;
+                    _lastQueryLeft = queryLeft;
+                    _lastIndex = m;
                     return resultCache;
                 }
+                // 继续在左半部分查找
                 r = m - 1;
             } else {
+                // 在右半部分查找
                 l = m + 1;
             }
         } while (l <= r);
         
-        // 理论上不会到达这里，但保持代码健壮性
+        // 理论上不会执行到这里，但为了代码健壮性仍然处理
         resultCache.data = list;
         resultCache.startIndex = l;
+        _lastQueryLeft = queryLeft;
+        _lastIndex = l;
         return resultCache;
+    }
+
+    /**
+     * 更新线性扫描距离的统计信息
+     * 
+     * 用于分析缓存命中时的扫描效率，帮助调整阈值参数
+     * 
+     * @param distance 本次线性扫描的距离（扫描的元素个数）
+     * @private
+     */
+    private static function _updateScanStats(distance:Number):Void {
+        // 更新最大扫描距离
+        if (distance > _stats.maxScanDistance) {
+            _stats.maxScanDistance = distance;
+        }
+        
+        // 计算平均扫描距离（增量平均）
+        var totalScans:Number = _stats.cacheHits;
+        _stats.avgScanDistance = (_stats.avgScanDistance * (totalScans - 1) + distance) / totalScans;
+    }
+
+    /**
+     * 更新性能统计的调试输出
+     * 
+     * 将关键性能指标输出到游戏界面，便于实时监控和优化
+     * 输出内容包括：缓存命中率、二分查找率、平均/最大扫描距离
+     * 
+     * @private
+     */
+    private static function _updateDebugOutput():Void {
+        // 计算有效查询次数（排除小数组）
+        var effectiveQueries:Number = _stats.totalQueries - _stats.smallArrays;
+        if (effectiveQueries <= 0) return;
+        
+        // 计算各项指标的百分比
+        var cacheHitRate:Number = (_stats.cacheHits / effectiveQueries) * 100;
+        var binarySearchRate:Number = (_stats.binarySearches / effectiveQueries) * 100;
+        
+        // 构建并输出统计信息
+        _root.发布消息(
+            "缓存命中率: " + cacheHitRate + "% | " +
+            "二分查找率: " + binarySearchRate + "% | " +
+            "平均扫描距离: " + _stats.avgScanDistance + " | " +
+            "最大扫描距离: " + _stats.maxScanDistance
+        );
+    }
+
+    /**
+     * 重置所有性能统计数据
+     * 
+     * 在场景切换、关卡重新开始或需要重新评估性能时调用
+     * 清空所有统计计数器，开始新的统计周期
+     * 
+     * @example
+     * // 在新关卡开始时重置统计
+     * TargetQueryCache.resetStats();
+     */
+    public static function resetStats():Void {
+        _stats.totalQueries = 0;
+        _stats.smallArrays = 0;
+        _stats.cacheHits = 0;
+        _stats.cacheMisses = 0;
+        _stats.firstElementHits = 0;
+        _stats.lastElementHits = 0;
+        _stats.binarySearches = 0;
+        _stats.avgScanDistance = 0;
+        _stats.maxScanDistance = 0;
     }
 
     /**
