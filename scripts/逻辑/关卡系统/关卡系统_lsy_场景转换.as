@@ -367,6 +367,9 @@ _root.加载共享场景 = function(加载场景名){
 	camera.swapDepths(_root.gameworld层级定位器);
 	SceneManager.getInstance().initScene(gw);
 
+	var collisionLayer = _root.collisionLayer;
+	if(collisionLayer.bitmapData) collisionLayer.bitmapData.dispose();
+
 	_root.帧计时器.eventBus.publish("SceneChanged");
 }
 

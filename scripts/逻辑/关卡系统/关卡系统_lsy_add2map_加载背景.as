@@ -3,6 +3,8 @@ import org.flashNight.arki.corpse.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Event.*;
+import flash.geom.Matrix;
+import flash.display.BitmapData;
 
 // 原 add2map 的重构
 _root.add2map = function(tg, ln) {
@@ -23,34 +25,10 @@ _root.add2map3 = function(tg, ln) {
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
 _root.add2map3 = DeathEffectRenderer.renderRotatedCorpse;
 
+_root.createEmptyMovieClip("collisionLayer", _root.getNextHighestDepth());
 
-
-
-_root.贴背景图 = function(){
-	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
-	var 游戏世界 = _root.gameworld;
-	var 背景层 = 游戏世界.背景;
-	var 天气系统 = _root.天气系统;
-
-	if(背景层 != null && !背景层.已更新环境配置){
-		if(_root.天空盒){
-			天气系统.空间情况 = "室外";
-			天气系统.视觉情况 = "光照";
-			天气系统.最大光照 = 9;
-			天气系统.最小光照 = 0;
-		}else{
-			天气系统.空间情况 = "室内";
-			天气系统.视觉情况 = "灯光";
-			天气系统.最大光照 = 8;
-			天气系统.最小光照 = 5;		
-		}
-	}
-
-	游戏世界.已更新天气 = false;
-	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域", "已更新天气"], 1, false);
-
-	//
-	var 地图 = 游戏世界.地图;
+_root.绘制地图碰撞箱 = function () {
+	var 地图 = _root.gameworld.地图;
 	if(地图.初始化完毕 !== true){
 		var point:Vector = SceneCoordinateManager.calculateOffset();
 
@@ -90,14 +68,109 @@ _root.贴背景图 = function(){
 		// 结束填充
 		地图.endFill();
 
-		if(_root.调试模式) {
-			地图._visible = true;  // 显示地图
-			地图._alpha = 66;     // 让地图本身半透明
-		}else{
-			地图._visible = false;
-		}
+        // === 创建碰撞层位图数据并绘制整个地图 ===
+        
+        // 清理之前的碰撞层位图数据
+        if (_root.collisionLayer.bitmapData) {
+            _root.collisionLayer.bitmapData.dispose();
+        }
+        
+        // 获取地图的边界框
+        var mapBounds = 地图.getBounds(_root);
+        var bitmapWidth = Math.ceil(mapBounds.xMax - mapBounds.xMin);
+        var bitmapHeight = Math.ceil(mapBounds.yMax - mapBounds.yMin);
+        
+        // 创建新的透明位图数据
+        var collisionBitmapData:BitmapData = new BitmapData(bitmapWidth, bitmapHeight, true, 0x00000000);
+        
+        // 创建变换矩阵，用于调整绘制位置
+        var matrix:Matrix = new Matrix();
+        matrix.translate(-mapBounds.xMin, -mapBounds.yMin);
+        
+        // 将整个地图（包括自带图块和边界）绘制到位图数据中
+        collisionBitmapData.draw(地图, matrix);
+        
+        // 将位图数据附加到碰撞层
+        _root.collisionLayer.attachBitmap(collisionBitmapData, _root.collisionLayer.getNextHighestDepth());
+        
+        // 设置碰撞层位置，使其与地图对齐
+        _root.collisionLayer._x = mapBounds.xMin;
+        _root.collisionLayer._y = mapBounds.yMin;
+        
+        // 保存位图数据引用和位置信息以便后续使用
+        _root.collisionLayer.bitmapData = collisionBitmapData;
+        _root.collisionLayer.offsetX = mapBounds.xMin;
+        _root.collisionLayer.offsetY = mapBounds.yMin;
+        _root.collisionLayer.bitmapWidth = bitmapWidth;
+        _root.collisionLayer.bitmapHeight = bitmapHeight;
+
+
+        // 设置碰撞层可见性
+        if(_root.调试模式) {
+			_root.collisionLayer._visible = true;
+			_root.collisionLayer._alpha = 50; // 调试时显示为半透明
+            // 地图本身也可以显示
+            地图._visible = true;
+            地图._alpha = 66;
+        } else {
+            _root.collisionLayer._visible = false;
+            地图._visible = false;
+        }
+
 		地图.初始化完毕 = true;
 	}
+}
+
+
+_root.通过数组绘制地图碰撞箱 = function(arr:Array) {
+    var 游戏世界地图 = _root.gameworld.地图;
+
+    if (arr.length > 0) {
+        for (var i = 0; i < arr.length; i++) {
+            var 多边形 = arr[i].Point;
+            if (多边形.length < 3) continue;
+            游戏世界地图.beginFill(0x000000);
+            var pt = 多边形[0].split(",");
+            var px = Number(pt[0]);
+            var py = Number(pt[1]);
+            游戏世界地图.moveTo(px, py);
+            for (var j = 多边形.length - 1; j >= 0; j--) {
+                var pt = 多边形[j].split(",");
+                var px = Number(pt[0]);
+                var py = Number(pt[1]);
+                游戏世界地图.lineTo(px, py);
+            }
+            游戏世界地图.endFill();
+        }
+    }
+    游戏世界地图._visible = false;
+}
+
+_root.贴背景图 = function(){
+	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
+	var 游戏世界 = _root.gameworld;
+	var 背景层 = 游戏世界.背景;
+	var 天气系统 = _root.天气系统;
+
+	if(背景层 != null && !背景层.已更新环境配置){
+		if(_root.天空盒){
+			天气系统.空间情况 = "室外";
+			天气系统.视觉情况 = "光照";
+			天气系统.最大光照 = 9;
+			天气系统.最小光照 = 0;
+		}else{
+			天气系统.空间情况 = "室内";
+			天气系统.视觉情况 = "灯光";
+			天气系统.最大光照 = 8;
+			天气系统.最小光照 = 5;		
+		}
+	}
+
+	游戏世界.已更新天气 = false;
+	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域", "已更新天气"], 1, false);
+
+	//
+	_root.绘制地图碰撞箱();
 
 	if (背景层._width <= 1300) return;
 

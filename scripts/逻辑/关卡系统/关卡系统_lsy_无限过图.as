@@ -6,6 +6,10 @@ _root.开启生存模式 = function(模式) {
     _root.当前为战斗地图 = true;
 	_root.gameworld = _root.camera.gameworld;
 	_root.帧计时器.eventBus.publish("SceneChanged");
+
+	var collisionLayer = _root.collisionLayer;
+	if(collisionLayer.bitmapData) collisionLayer.bitmapData.dispose();
+
     //_root.d_波次._visible = _root.调试模式;
     //_root.d_剩余敌人数._visible = _root.调试模式;
     _root.d_倒计时显示._visible = false;
@@ -112,28 +116,7 @@ _root.开启生存模式 = function(模式) {
     // 将 'deadbody' 设置为不可枚举
     _global.ASSetPropFlags(游戏世界, ["deadbody"], 1, false);
 
-    // 绘制地图碰撞箱
-    var 地图碰撞箱数组 = 环境信息.地图碰撞箱;
-    var 游戏世界地图 = 游戏世界.地图;
-    if (地图碰撞箱数组.length > 0) {
-        for (var i = 0; i < 地图碰撞箱数组.length; i++) {
-            var 多边形 = 地图碰撞箱数组[i].Point;
-            if (多边形.length < 3) continue;
-            游戏世界地图.beginFill(0x000000);
-            var pt = 多边形[0].split(",");
-            var px = Number(pt[0]);
-            var py = Number(pt[1]);
-            游戏世界地图.moveTo(px, py);
-            for (var j = 多边形.length - 1; j >= 0; j--) {
-                var pt = 多边形[j].split(",");
-                var px = Number(pt[0]);
-                var py = Number(pt[1]);
-                游戏世界地图.lineTo(px, py);
-            }
-            游戏世界地图.endFill();
-        }
-    }
-    游戏世界地图._visible = false;
+	_root.通过数组绘制地图碰撞箱(环境信息.地图碰撞箱);
 
     // 将 '地图' 设置为不可枚举
     _global.ASSetPropFlags(游戏世界, ["地图"], 1, false);
