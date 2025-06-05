@@ -93,7 +93,6 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
      * @return Boolean 是否发生地图碰撞
      */
     private function checkMapCollision(target:MovieClip):Boolean {
-        var gameworld:Object = _root.gameworld;
         var Z轴坐标:Number = target.Z轴坐标;
 
         // 非近战子弹的Y轴检测
@@ -102,7 +101,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
         } 
         // 精确碰撞检测
         else {
-            return gameworld.地图.hitTest(target._x + gameworld._x, Z轴坐标 + gameworld._y, true);
+            return _root.collisionLayer.hitTest(target._x, Z轴坐标, true);
         }
     }    
 }

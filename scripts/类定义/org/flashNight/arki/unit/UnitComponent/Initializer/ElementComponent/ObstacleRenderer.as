@@ -19,7 +19,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Obstac
         
         var gameworld:MovieClip = _root.gameworld;
         var rect:Object = target.area.getRect(gameworld);
-        var mapGraphics:MovieClip = ObstacleRenderer.getMapGraphics(gameworld);
+        var mapGraphics:MovieClip = ObstacleRenderer.getMapGraphics(_root);
         
         if (mapGraphics) {
             ObstacleRenderer.drawObstacleRect(mapGraphics, rect);
@@ -41,11 +41,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Obstac
      * @return MovieClip 地图绘图对象
      */
     private static function getMapGraphics(gameworld:MovieClip):MovieClip {
-        var mapGraphics:MovieClip = gameworld.地图;
-        
-        if (!mapGraphics) {
-            mapGraphics = gameworld.createEmptyMovieClip("地图", gameworld.getNextHighestDepth());
-        }
+        var mapGraphics:MovieClip = gameworld.collisionLayer;
         
         // 设置地图为不可枚举
         ObstacleRenderer.setMapNonEnumerable(gameworld);
@@ -59,7 +55,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Obstac
      */
     private static function setMapNonEnumerable(gameworld:MovieClip):Void {
         if (_global.ASSetPropFlags) {
-            _global.ASSetPropFlags(gameworld, ["地图"], 1, false);
+            _global.ASSetPropFlags(gameworld, ["collisionLayer"], 1, false);
         }
     }
     

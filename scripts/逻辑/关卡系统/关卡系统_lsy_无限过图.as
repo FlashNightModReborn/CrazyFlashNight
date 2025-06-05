@@ -4,11 +4,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.开启生存模式 = function(模式) {
     _root.当前为战斗地图 = true;
-	_root.gameworld = _root.camera.gameworld;
-	_root.帧计时器.eventBus.publish("SceneChanged");
-
-	var collisionLayer = _root.collisionLayer;
-	if(collisionLayer.bitmapData) collisionLayer.bitmapData.dispose();
+	_root.切换游戏世界();
 
     //_root.d_波次._visible = _root.调试模式;
     //_root.d_剩余敌人数._visible = _root.调试模式;

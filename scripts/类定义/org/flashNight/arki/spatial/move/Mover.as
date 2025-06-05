@@ -107,12 +107,9 @@ class org.flashNight.arki.spatial.move.Mover {
         // _root.服务器.发布服务器消息("move2D: " + entity.起始Y);
         var vx:Number = dir.x * speed;
         var vy:Number = dir.y * speed;
-        var gameworld:MovieClip = _root.gameworld;
-        var gwx:Number = entity._x + gameworld._x;
-        var gwy:Number = entity.Z轴坐标 + gameworld._y;
 
         // 执行碰撞检测：若目标位置无碰撞，则更新实体位置
-        if (!gameworld.地图.hitTest(gwx + vx, gwy + vy, true)) {
+        if (!_root.collisionLayer.hitTest(entity._x + vx, entity.Z轴坐标 + vy, true)) {
             if (vx === 0) {
                 // 垂直移动：更新 Z轴 和 _y 坐标，并调整显示层次
                 entity.swapDepths(entity._y = (entity.Z轴坐标 += vy));
@@ -125,7 +122,7 @@ class org.flashNight.arki.spatial.move.Mover {
             return;
         }
         // 若检测到碰撞，则调用碰撞挤出处理
-        resolveCollision(entity, gwx, gwy, speed, dir);
+        resolveCollision(entity, entity._x, entity.Z轴坐标, speed, dir);
     }
 
     /**
@@ -152,15 +149,10 @@ class org.flashNight.arki.spatial.move.Mover {
         // 计算水平与垂直位移
         var dx:Number = dir.x * speed;
         var dy:Number = dir.y * speed;
-        var gameworld:MovieClip = _root.gameworld;
-        var gwx:Number = entity._x + gameworld._x;
-        var gwy:Number = entity.Z轴坐标 + gameworld._y;
-
         // _root.服务器.发布服务器消息("move25D: " + entity.起始Y);
 
-        
         // 执行碰撞检测：若目标位置无碰撞，则更新实体坐标
-        if (!gameworld.地图.hitTest(gwx + dx, gwy + dy, true)) {
+        if (!_root.collisionLayer.hitTest(entity._x + dx, entity.Z轴坐标 + dy, true)) {
             var dz:Number = dir.z * speed;
             // 若为垂直方向移动（"上" 或 "下"），则处理跳跃/高度变化逻辑
             if (dy | dz) {
@@ -191,7 +183,7 @@ class org.flashNight.arki.spatial.move.Mover {
             return;
         }
         // 若检测到碰撞，则调用碰撞挤出处理
-        resolveCollision(entity, gwx, gwy, speed, dir);
+        resolveCollision(entity, entity._x, entity.Z轴坐标, speed, dir);
     }
 
     /**
@@ -246,12 +238,8 @@ class org.flashNight.arki.spatial.move.Mover {
             var targetX:Number = prevX + stepX * i;
             var targetZ:Number = prevZ + stepY * i;
             
-            // 计算全局坐标
-            var gwx:Number = targetX + gameworld._x;
-            var gwy:Number = targetZ + gameworld._y;
-            
             // 检测碰撞
-            if (gameworld.地图.hitTest(gwx, gwy, true)) {
+            if (_root.collisionLayer.hitTest(targetX, targetZ, true)) {
                 // 发现碰撞，回退到上一步位置
                 break;
             }
@@ -326,12 +314,8 @@ class org.flashNight.arki.spatial.move.Mover {
             var targetX:Number = prevX + stepX * i;
             var targetZ:Number = prevZ + stepY * i;
             
-            // 计算全局坐标
-            var gwx:Number = targetX + gameworld._x;
-            var gwy:Number = targetZ + gameworld._y;
-            
             // 检测碰撞
-            if (gameworld.地图.hitTest(gwx, gwy, true)) {
+            if (_root.collisionLayer.hitTest(targetX, targetZ, true)) {
                 // 发现碰撞，回退到上一步位置
                 break;
             }
@@ -381,7 +365,7 @@ class org.flashNight.arki.spatial.move.Mover {
                                              speed:Number,
                                              dir:Vector
     ):Void {
-        if (!_root.gameworld.地图.hitTest(x, y, true)) {
+        if (!_root.collisionLayer.hitTest(x, y, true)) {
             // 若当前坐标无碰撞，直接返回
             return;
         }
@@ -427,7 +411,7 @@ class org.flashNight.arki.spatial.move.Mover {
      */
     public static function isPointValid(globalX:Number, globalY:Number):Boolean {
         // 使用地图的 hitTest 方法检测碰撞，返回取反结果
-        return !_root.gameworld.地图.hitTest(globalX, globalY, true);
+        return !_root.collisionLayer.hitTest(globalX, globalY, true);
     }
 
     /**
@@ -443,7 +427,7 @@ class org.flashNight.arki.spatial.move.Mover {
         // 将本地坐标转换为全局坐标（考虑所有父级的位移/缩放/旋转）
         mc.localToGlobal(localPoint);
         
-        return !_root.gameworld.地图.hitTest(localPoint.x, localPoint.y, true);
+        return !_root.collisionLayer.hitTest(localPoint.x, localPoint.y, true);
     }
 
     /**
@@ -453,7 +437,7 @@ class org.flashNight.arki.spatial.move.Mover {
      * @return Boolean 如果碰撞箱与地图碰撞，返回 true；否则返回 false
      */
     public static function isMovieClipValid(clip:MovieClip):Boolean {
-        return !clip.hitTest(_root.gameworld.地图, true);
+        return !clip.hitTest(_root.collisionLayer, true);
     }
 
 

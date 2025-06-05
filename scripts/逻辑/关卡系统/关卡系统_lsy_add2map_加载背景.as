@@ -29,6 +29,7 @@ _root.createEmptyMovieClip("collisionLayer", _root.getNextHighestDepth());
 
 _root.绘制地图碰撞箱 = function () {
 	var 地图 = _root.gameworld.地图;
+	var collisionLayer = _root.collisionLayer;
 	if(地图.初始化完毕 !== true){
 		var point:Vector = SceneCoordinateManager.calculateOffset();
 
@@ -46,64 +47,27 @@ _root.绘制地图碰撞箱 = function () {
 		var outerBottom = ymax + margin;
 
 		// 为了可视化调试，设置较明显的线条和半透明填充
-		地图.lineStyle(2, 0xFF0000, 100);   // 红色边线，不透明
-		地图.beginFill(0x66CC66, 100);      // 半透明绿色填充
+		collisionLayer.lineStyle(2, 0xFF0000, 100);   // 红色边线，不透明
+		collisionLayer.beginFill(0x66CC66, 100);      // 半透明绿色填充
 
 		// ------ 先绘制外框 (顺时针) ------
 		// 例如：从左上 -> 右上 -> 右下 -> 左下 -> 回到左上
-		地图.moveTo(outerLeft,  outerTop);
-		地图.lineTo(outerRight, outerTop);
-		地图.lineTo(outerRight, outerBottom);
-		地图.lineTo(outerLeft,  outerBottom);
-		地图.lineTo(outerLeft,  outerTop);
+		collisionLayer.moveTo(outerLeft,  outerTop);
+		collisionLayer.lineTo(outerRight, outerTop);
+		collisionLayer.lineTo(outerRight, outerBottom);
+		collisionLayer.lineTo(outerLeft,  outerBottom);
+		collisionLayer.lineTo(outerLeft,  outerTop);
 
 		// ------ 再绘制内框 (逆时针)，产生“中空”效果 ------
 		// 如果外框是顺时针，这里反向绘制才能在非零环绕规则下形成洞
-		地图.moveTo(xmin, ymin);
-		地图.lineTo(xmax, ymin);
-		地图.lineTo(xmax, ymax);
-		地图.lineTo(xmin, ymax);
-		地图.lineTo(xmin, ymin);
+		collisionLayer.moveTo(xmin, ymin);
+		collisionLayer.lineTo(xmax, ymin);
+		collisionLayer.lineTo(xmax, ymax);
+		collisionLayer.lineTo(xmin, ymax);
+		collisionLayer.lineTo(xmin, ymin);
 
 		// 结束填充
-		地图.endFill();
-
-        // === 创建碰撞层位图数据并绘制整个地图 ===
-        
-        // 清理之前的碰撞层位图数据
-        if (_root.collisionLayer.bitmapData) {
-            _root.collisionLayer.bitmapData.dispose();
-        }
-        
-        // 获取地图的边界框
-        var mapBounds = 地图.getBounds(_root);
-        var bitmapWidth = Math.ceil(mapBounds.xMax - mapBounds.xMin);
-        var bitmapHeight = Math.ceil(mapBounds.yMax - mapBounds.yMin);
-        
-        // 创建新的透明位图数据
-        var collisionBitmapData:BitmapData = new BitmapData(bitmapWidth, bitmapHeight, true, 0x00000000);
-        
-        // 创建变换矩阵，用于调整绘制位置
-        var matrix:Matrix = new Matrix();
-        matrix.translate(-mapBounds.xMin, -mapBounds.yMin);
-        
-        // 将整个地图（包括自带图块和边界）绘制到位图数据中
-        collisionBitmapData.draw(地图, matrix);
-        
-        // 将位图数据附加到碰撞层
-        _root.collisionLayer.attachBitmap(collisionBitmapData, _root.collisionLayer.getNextHighestDepth());
-        
-        // 设置碰撞层位置，使其与地图对齐
-        _root.collisionLayer._x = mapBounds.xMin;
-        _root.collisionLayer._y = mapBounds.yMin;
-        
-        // 保存位图数据引用和位置信息以便后续使用
-        _root.collisionLayer.bitmapData = collisionBitmapData;
-        _root.collisionLayer.offsetX = mapBounds.xMin;
-        _root.collisionLayer.offsetY = mapBounds.yMin;
-        _root.collisionLayer.bitmapWidth = bitmapWidth;
-        _root.collisionLayer.bitmapHeight = bitmapHeight;
-
+		collisionLayer.endFill();
 
         // 设置碰撞层可见性
         if(_root.调试模式) {
@@ -124,26 +88,26 @@ _root.绘制地图碰撞箱 = function () {
 
 _root.通过数组绘制地图碰撞箱 = function(arr:Array) {
     var 游戏世界地图 = _root.gameworld.地图;
-
+	var collisionLayer = _root.collisionLayer;
     if (arr.length > 0) {
         for (var i = 0; i < arr.length; i++) {
             var 多边形 = arr[i].Point;
             if (多边形.length < 3) continue;
-            游戏世界地图.beginFill(0x000000);
+            collisionLayer.beginFill(0x000000);
             var pt = 多边形[0].split(",");
             var px = Number(pt[0]);
             var py = Number(pt[1]);
-            游戏世界地图.moveTo(px, py);
+            collisionLayer.moveTo(px, py);
             for (var j = 多边形.length - 1; j >= 0; j--) {
                 var pt = 多边形[j].split(",");
                 var px = Number(pt[0]);
                 var py = Number(pt[1]);
-                游戏世界地图.lineTo(px, py);
+                collisionLayer.lineTo(px, py);
             }
-            游戏世界地图.endFill();
+            collisionLayer.endFill();
         }
     }
-    游戏世界地图._visible = false;
+    collisionLayer._visible = false;
 }
 
 _root.贴背景图 = function(){
