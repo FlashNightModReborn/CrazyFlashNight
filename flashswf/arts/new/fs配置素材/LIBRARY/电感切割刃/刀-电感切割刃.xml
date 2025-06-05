@@ -9,11 +9,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#FFFF00" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#FFFF00" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置3" centerPoint3DX="-12.05" centerPoint3DY="341.05">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置3" selected="true" centerPoint3DX="-12.05" centerPoint3DY="341.05">
                   <matrix>
                     <Matrix tx="-24.55" ty="328.55"/>
                   </matrix>
@@ -57,7 +57,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#FFFF00">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>

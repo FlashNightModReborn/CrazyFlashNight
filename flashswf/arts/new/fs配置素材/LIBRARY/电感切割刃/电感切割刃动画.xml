@@ -26,7 +26,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="电感" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="电感" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -36,7 +36,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="电感切割刃/元件 8" centerPoint3DX="373.9" centerPoint3DY="10.45">
+                <DOMSymbolInstance libraryItemName="电感切割刃/元件 8" selected="true" centerPoint3DX="373.9" centerPoint3DY="10.45">
                   <matrix>
                     <Matrix tx="359.55" ty="6.35"/>
                   </matrix>
@@ -140,7 +140,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC" locked="true" current="true" isSelected="true" layerType="mask">
+        <DOMLayer name="图层 10" color="#9933CC" locked="true" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
