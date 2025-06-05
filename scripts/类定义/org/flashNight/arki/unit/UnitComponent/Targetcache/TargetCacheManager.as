@@ -457,7 +457,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         }
 
         var list:Array = cacheEntry.data;
-        if (list.length <= 1) return null; // 列表为空或只有一个单位
+        if (list.length <= 1) {
+            return list[0] || null;
+        }
+         // 列表为空或只有一个单位
 
         // --- 快速定位自身索引 ---
         var idx:Number = cacheEntry.nameIndex[target._name];

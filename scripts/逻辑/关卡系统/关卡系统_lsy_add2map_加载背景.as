@@ -6,6 +6,7 @@ import org.flashNight.neur.Event.*;
 import flash.geom.Matrix;
 import flash.display.BitmapData;
 import org.flashNight.gesh.object.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 // 原 add2map 的重构
 _root.add2map = function(tg, ln) {
@@ -243,74 +244,142 @@ _root.加载背景元素 = function(url, 实例名, x, y, 层级){
     instance.swapDepths(depth);
 }
 
-
-_root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor)
+_root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor, zoomScale)
 {
+    // 1) 处理缩放参数默认值
+    var gameWorld = _root.gameworld;
+    var scrollObj = gameWorld[scrollTarget];
+
+    var farthestEnemy = TargetCacheManager.findFarthestEnemy(scrollObj, 5);
+    var distance = (Math.abs(scrollObj._x - farthestEnemy._x) + Math.abs(scrollObj._y - farthestEnemy._y)) || 99999;
+    var normalizedDistance = Math.max(1, distance / 100); // 归一化距离
+    var logScale = Math.log(normalizedDistance) / Math.log(10); // 以10为底的对数
+    var targetZoomScale = Math.min(2, Math.max(1, 2 - logScale * 1.11)); // 800像素时缩放为1
+
+    if(!gameWorld.lastScale) gameWorld.lastScale = targetZoomScale;
+    
+    // 记录缩放前的状态
+    var oldScale = gameWorld.lastScale;
+	var deltaSscale = (gameWorld.lastScale - targetZoomScale) / easeFactor;
+	var deltaMax = 0.1;
+	if(deltaSscale > deltaMax) deltaSscale = deltaMax;
+	else if(deltaSscale < -deltaMax) deltaSscale = -deltaMax;
+	
+	
+    var newScale:Number = gameWorld.lastScale + (targetZoomScale - gameWorld.lastScale) / easeFactor;
     var frameTimer = _root.帧计时器;
     var frame:Number = frameTimer.当前帧数;
-
-	/*
-    
-    // 1) 控制帧频滚动的间隔：如果没到指定的帧，就不执行
-    if(frame % frameTimer.scrollDelay !== 0) {
-        return;
-    }
-
-	*/
     
     // 2) 舞台显示区域（假设顶部有UI占64像素）
     var stageWidth:Number  = Stage.width;
     var stageHeight:Number = Stage.height - 64;
     
-    // 若背景尺寸比可用舞台更小或正好匹配，则无需卷屏
-    if (stageWidth >= bgWidth && stageHeight >= bgHeight) {
-        return;
-    }
-    
-    // 3) 获取游戏世界与要跟踪的目标
-    var gameWorld = _root.gameworld;
-    var scrollObj = gameWorld[scrollTarget];
-
-	// _root.发布消息("x: " + scrollObj._x + " | " + _root.Xmin + " | " + _root.Xmax);
-	// _root.发布消息("y: " + scrollObj._y + " | " + _root.Ymin + " | " + _root.Ymax);
-    
-    // 如果目标还没准备好（可能是 null 或尚未初始化 _x），就不进行处理
+    // 如果目标还没准备好，就不进行处理
     if (!scrollObj || scrollObj._x == undefined) {
         return;
     }
     
-    // 4) 卷屏边界（camera 的移动范围）
-    //    minScrollX / minScrollY 表示左上角最大可移动的负值
-    //    maxScrollX / maxScrollY 表示最小值(一般为0)
-    var minScrollX:Number = stageWidth  - bgWidth;
-    var minScrollY:Number = stageHeight - bgHeight;
+    // 2.5) 提前计算边界范围 - 用于缩放补偿的边界检查
+    var effBgW:Number = bgWidth * newScale;
+    var effBgH:Number = bgHeight * newScale;
+    var minScrollX:Number = stageWidth  - effBgW;
+    var minScrollY:Number = stageHeight - effBgH;
     var maxScrollX:Number = 0;
     var maxScrollY:Number = 0;
     
-    // 5) 容差
+    // 3) 缩放中心点补偿处理
+    var scaleChanged = Math.abs(newScale - oldScale) > 0.001;
+    var worldOffsetX = 0;
+    var worldOffsetY = 0;
+    
+	if (scaleChanged) {
+		// 1) 记录缩放前屏幕坐标
+		var preScalePt:Object = { x:0, y:0 };
+		scrollObj.localToGlobal(preScalePt);
+
+		// 2) 应用新的缩放
+		var newScalePercent:Number = newScale * 100;
+		gameWorld._xscale = gameWorld._yscale = newScalePercent;
+		bgLayer._xscale   = bgLayer._yscale   = newScalePercent;   // ★ 同步缩放
+
+		// 3) 记录缩放后屏幕坐标
+		var postScalePt:Object = { x:0, y:0 };
+		scrollObj.localToGlobal(postScalePt);
+
+		// 4) 计算补偿
+		worldOffsetX = preScalePt.x - postScalePt.x;
+		worldOffsetY = preScalePt.y - postScalePt.y;
+
+		// 5) ★ 新增：计算补偿后的坐标并应用边界检查
+		var compensatedX:Number = gameWorld._x + worldOffsetX;
+		var compensatedY:Number = gameWorld._y + worldOffsetY;
+		
+		// 边界检查 - X方向
+		if (stageWidth < effBgW) {
+			if (compensatedX < minScrollX) {
+				compensatedX = minScrollX;
+			} else if (compensatedX > maxScrollX) {
+				compensatedX = maxScrollX;
+			}
+		}
+		
+		// 边界检查 - Y方向  
+		if (stageHeight < effBgH) {
+			if (compensatedY < minScrollY) {
+				compensatedY = minScrollY;
+			} else if (compensatedY > maxScrollY) {
+				compensatedY = maxScrollY;
+			}
+		}
+
+		// 6) 应用边界约束后的坐标到 gameWorld
+		gameWorld._x = compensatedX;
+		gameWorld._y = compensatedY;
+
+		// 7) ★ 同步到天空盒根节点
+		bgLayer._x = compensatedX;                // 与世界保持相对位置
+		bgLayer._y = compensatedY + bgLayer.地平线高度;
+
+		// 8) ★ 立即刷新视差子层 (和 onScrollX 共用一段逻辑)
+		var bgList = bgLayer.后景移动速度列表;
+		var len    = bgList.length;
+		for (var i = 0; i < len; i++) {
+			var info = bgList[i];
+			info.mc._x = compensatedX / info.speedrate;
+		}
+
+		// 9) 更新 lastScale
+		gameWorld.lastScale = newScale;
+	}
+
+    // 若背景尺寸比可用舞台更小或正好匹配，则无需卷屏
+    if (stageWidth >= effBgW && stageHeight >= effBgH) {
+        return;
+    }
+    
+    // 6) 容差
     var offsetTolerance:Number = frameTimer.offsetTolerance; 
     
-    // 6) 设定卷屏的「中心点」
+    // 7) 设定卷屏的「中心点」
     var LEFT_SCROLL_CENTER:Number   = stageWidth  * 0.5 + 100;
     var RIGHT_SCROLL_CENTER:Number  = stageWidth  * 0.5 - 100;
     var VERTICAL_SCROLL_CENTER:Number = stageHeight - 100;
     
-    // 7) 获取玩家(或目标) 在全局坐标下的位置
+    // 8) 获取玩家(或目标) 在全局坐标下的位置
     var pt:Object = { x: 0, y: 0 };
     scrollObj.localToGlobal(pt);
     
-    // 8) 根据角色朝向决定“目标中心”在哪侧
+    // 9) 根据角色朝向决定"目标中心"在哪侧
     var isRightDirection = (scrollObj._xscale > 0);
     var targetX = isRightDirection ? RIGHT_SCROLL_CENTER : LEFT_SCROLL_CENTER;
     
-    // 9) 计算与目标中心点的差值 (deltaX/deltaY)
+    // 10) 计算与目标中心点的差值 (deltaX/deltaY)
     var deltaX:Number = targetX - pt.x;
     var deltaY:Number = VERTICAL_SCROLL_CENTER - pt.y;
     var adx:Number = Math.abs(deltaX);
     var ady:Number = Math.abs(deltaY);
     
-    // 10) 分别判断 X / Y 是否需要移动
-    //     如果都没超过容差，则不做任何操作（在边界或移动极小）
+    // 11) 分别判断 X / Y 是否需要移动
     var needMoveX:Boolean = (adx > offsetTolerance);
     var needMoveY:Boolean = (ady > offsetTolerance);
     if (!needMoveX && !needMoveY) {
@@ -350,12 +419,12 @@ _root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor)
         return;
     }
     
-    // 11) 计算新的世界坐标（尚未约束到边界）
+    // 12) 计算新的世界坐标（尚未约束到边界）
     var newX:Number = oldX + dx;
     var newY:Number = oldY + dy;
     
     // ---- X 方向边界限定 ----
-    if (stageWidth < bgWidth) {
+    if (stageWidth < effBgW) {
         // 如果背景比舞台宽，要在 [minScrollX, maxScrollX] 区间内移动
         if (newX < minScrollX) {
             newX = minScrollX;
@@ -368,7 +437,7 @@ _root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor)
     }
     
     // ---- Y 方向边界限定 ----
-    if (stageHeight < bgHeight) {
+    if (stageHeight < effBgH) {
         if (newY < minScrollY) {
             newY = minScrollY;
         } else if (newY > maxScrollY) {
@@ -379,84 +448,71 @@ _root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor)
         newY = oldY;
     }
 
-	var onScrollX:Boolean = (newX != oldX);
-	var onScrollY:Boolean = (newY != oldY);
+    var onScrollX:Boolean = (newX != oldX);
+    var onScrollY:Boolean = (newY != oldY);
     
-    // 12) 如果实际计算后 newX/newY 与当前 gameWorld 的坐标并无变化，
+    // 13) 如果实际计算后 newX/newY 与当前 gameWorld 的坐标并无变化，
     //     说明已经在边界，或者移动微乎其微，跳过后续操作。
     if (newX == oldX && newY == oldY) {
         return;
     }
 
-	var bgLayer:MovieClip = _root.天空盒;
-
-	if(onScrollX)
-	{
-		gameWorld._x = newX;
-		if(onScrollY)
-		{
-			gameWorld._y = newY;
-			bgLayer._y = gameWorld._y + bgLayer.地平线高度;
-		}
-	}
-	else
-	{
-		if(onScrollY)
-		{
-			gameWorld._y = newY;
-			bgLayer._y = gameWorld._y + bgLayer.地平线高度;
-		}
-		else
-		{
-			return;
-		}
-	}
+    var bgLayer:MovieClip = _root.天空盒;
     
-    // 13) （可选）发布消息以便 Debug 或查看实际移动量
-	/*
+    if (bgLayer._xscale != newScale * 100) {
+       	bgLayer._xscale = bgLayer._yscale = newScale * 100;
+    }
 
-    _root.发布消息("deltaX: " + (targetX - pt.x)
-                    + ", deltaY: " + (VERTICAL_SCROLL_CENTER - pt.y)
-                    + ", offsetTolerance: " + offsetTolerance);
-
-	*/
+    if(onScrollX)
+    {
+        gameWorld._x = newX;
+        if(onScrollY)
+        {
+            gameWorld._y = newY;
+            bgLayer._y = gameWorld._y + bgLayer.地平线高度;
+        }
+    }
+    else
+    {
+        if(onScrollY)
+        {
+            gameWorld._y = newY;
+            bgLayer._y = gameWorld._y + bgLayer.地平线高度;
+        }
+        else
+        {
+            return;
+        }
+    }
     
-    // 14) 后景(天空盒/视差背景)处理
+    // 14) （可选）发布消息以便 Debug 或查看实际移动量
+    /*
+    if (scaleChanged) {
+        _root.发布消息("缩放补偿 - offsetX: " + worldOffsetX 
+                        + ", offsetY: " + worldOffsetY
+                        + ", 新缩放: " + newScale.toFixed(3));
+    }
+    */
+    
+    // 15) 后景(天空盒/视差背景)处理
     if (_root.启用后景)
     {
-
-		
-		// 让后景的 Y 跟随世界移动
-
-		if(onScrollX)
-		{
-			var backgroundList = bgLayer.后景移动速度列表;
-			var currentFrame = _root.帧计时器.当前帧数;
-			var worldX:Number = gameWorld._x;
-			var len:Number = backgroundList.length;
-			
-			for (var i = 0; i < len; i++)
-			{
-				var bgInfo = backgroundList[i];
-				if (currentFrame % bgInfo.delay === 0)
-				{
-					bgInfo.mc._x = worldX / bgInfo.speedrate;
-				}
-			}
-		}
-	}
-    
+        // 让后景的 Y 跟随世界移动
+        if(onScrollX)
+        {
+            var backgroundList = bgLayer.后景移动速度列表;
+            var currentFrame = _root.帧计时器.当前帧数;
+            var worldX:Number = gameWorld._x;
+            var len:Number = backgroundList.length;
+            
+            for (var i = 0; i < len; i++)
+            {
+                var bgInfo = backgroundList[i];
+                if (currentFrame % bgInfo.delay === 0)
+                {
+                    bgInfo.mc._x = worldX / bgInfo.speedrate;
+                }
+            }
+        }
+    }
 };
-
-
-
-_root.缩放画面 = function(放大倍数){
-	var 游戏世界 = _root.gameworld;
-	游戏世界.背景长 *= 放大倍数;
-	游戏世界.背景高 *= 放大倍数;
-	游戏世界._width *= 放大倍数;
-	游戏世界._height *= 放大倍数;
-	_root.横版卷屏(_root.控制目标,游戏世界.背景长,游戏世界.背景高,1);
-}
-
-//Stage.align = "TL";
