@@ -117,7 +117,7 @@
           <DOMFolderItem name="牛仔前景.svg/Layer 1" itemID="682eda6d-0000021a"/>
           <DOMFolderItem name="普通.svg_0" itemID="67bc27cb-00000fad"/>
           <DOMFolderItem name="普通.svg_0/Layer 1" itemID="67bc27cb-00000fae" isExpanded="true"/>
-          <DOMFolderItem name="失落.svg" itemID="67bc2b49-00001055" isExpanded="true"/>
+          <DOMFolderItem name="失落.svg" itemID="67bc2b49-00001055"/>
           <DOMFolderItem name="失落.svg/Layer 1" itemID="67bc2b49-00001056" isExpanded="true"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="笑.svg" itemID="67bc28df-00000fe5"/>
@@ -139,14 +139,14 @@
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪" itemID="6577c619-0000070a"/>
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪/Revision 4" itemID="6577c619-0000070b"/>
           <DOMFolderItem name="新地图素材/女仆黑/弹药" itemID="6577dc9d-00000575"/>
-          <DOMFolderItem name="幸存老兵6.svg" itemID="68407439-00000a3e"/>
-          <DOMFolderItem name="幸存老兵6.svg/Layer 1" itemID="68407439-00000a3f"/>
+          <DOMFolderItem name="幸存老兵6.svg" itemID="68407439-00000a3e" isExpanded="true"/>
+          <DOMFolderItem name="幸存老兵6.svg/Layer 1" itemID="68407439-00000a3f" isExpanded="true"/>
           <DOMFolderItem name="学生妹.svg_0" itemID="682430b9-0000135d"/>
           <DOMFolderItem name="学生妹.svg_0/Layer 1" itemID="682430b9-0000135e"/>
           <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
-          <DOMFolderItem name="治安官.svg" itemID="67dc4ca1-000009a1" isExpanded="true"/>
+          <DOMFolderItem name="治安官.svg" itemID="67dc4ca1-000009a1"/>
           <DOMFolderItem name="治安官.svg/Layer 1" itemID="67dc4ca1-000009a2" isExpanded="true"/>
-          <DOMFolderItem name="主唱3.svg" itemID="67dc4ba0-00000973" isExpanded="true"/>
+          <DOMFolderItem name="主唱3.svg" itemID="67dc4ba0-00000973"/>
           <DOMFolderItem name="主唱3.svg/Layer 1" itemID="67dc4ba0-00000974" isExpanded="true"/>
      </folders>
      <media>
@@ -891,7 +891,7 @@
           <Include href="lochan/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-0000065e" lastModified="1726068284"/>
           <Include href="lochan/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000662" lastModified="1726068284"/>
           <Include href="lochan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
-          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1747904530"/>
+          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1749084650"/>
           <Include href="Pig表情悲伤.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebbe-00000d0d" lastModified="1739844542"/>
           <Include href="Pig表情愤怒.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebae-00000d01" lastModified="1739844526"/>
           <Include href="Pig表情坏笑.xml" itemIcon="1" loadImmediate="false" itemID="67b3eb92-00000cf3" lastModified="1739844498"/>
@@ -1743,7 +1743,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1747122337"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1749054650"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1749084518"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc29fa-0000103b" lastModified="1740384762"/>
@@ -2575,6 +2575,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3317333" publishTime="1749084698"/>
           <PublishItem publishSize="3342327" publishTime="1749054694"/>
           <PublishItem publishSize="3254180" publishTime="1747902707"/>
           <PublishItem publishSize="2897668" publishTime="1747202318"/>
@@ -2594,6 +2595,5 @@
           <PublishItem publishSize="2220473" publishTime="1739526309"/>
           <PublishItem publishSize="2220472" publishTime="1739526131"/>
           <PublishItem publishSize="2220471" publishTime="1739526026"/>
-          <PublishItem publishSize="2224551" publishTime="1739459042"/>
      </publishHistory>
 </DOMDocument>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1749054650" lastUniqueIdentifier="226">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1749084518" lastUniqueIdentifier="226">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="356">
+    <DOMTimeline name="对话框肖像" currentFrame="330">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -271,14 +271,14 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
+                    <Edge fillStyle1="1" edges="!5804 -5026S2|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2">
+        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -617,7 +617,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="231" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="幸存老兵" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="幸存老兵" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.94769287109375" d="0.94769287109375" tx="-47.15" ty="-223.2"/>
                   </matrix>
@@ -891,7 +891,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="325" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 35532" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 35532" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="2.283935546875" d="2.2349853515625" tx="60.6" ty="295.35"/>
                   </matrix>
