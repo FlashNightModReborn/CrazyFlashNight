@@ -24,10 +24,10 @@ _root.加载后景 = function(环境信息){
         return;
     }
     
-    // 初始化后景列表和后景移动速度列表（若尚未初始化）
-    if(!_root.天空盒.后景列表) {
-        _root.天空盒.后景列表 = [];
-        _root.天空盒.后景移动速度列表 = [];
+    // 初始化bgLayerList和后景速度列表（若尚未初始化）
+    if(!_root.天空盒.bgLayerList) {
+        _root.天空盒.bgLayerList = [];
+        _root.天空盒.bgParallaxList = [];
     }
     
     // 设置后景的最大速度比阈值（有效 speedrate 最大为 maxSpeedRate - 1）
@@ -58,7 +58,7 @@ _root.加载后景 = function(环境信息){
         
         // 根据游戏世界的 x 坐标和 speedrate 计算后景的初始水平位置，实现视差效果
         bgMc._x = gwx / speedrate;
-        _root.天空盒.后景列表.push(bgMc);
+        _root.天空盒.bgLayerList.push(bgMc);
         
         // 对于有效的 speedrate（大于 0），计算并记录渲染延迟信息，用于分帧渲染以优化性能
         if(speedrate > 0)
@@ -96,7 +96,7 @@ _root.加载后景 = function(环境信息){
                 1 : // 当 speedrate ≤ 4 时，每帧渲染
                 Math.ceil( Math.log(speedrate / 2) / Math.LN2 );
             
-            _root.天空盒.后景移动速度列表.push(infoObj);
+            _root.天空盒.bgParallaxList.push(infoObj);
         }
     }
 }
@@ -108,7 +108,7 @@ EventBus.getInstance().subscribe("SceneChanged", function()
 	var bgLayer:MovieClip = _root.天空盒;
 	var gameWorld = _root.gameworld;
 	bgLayer._y = gameWorld._y + bgLayer.地平线高度;
-	var backgroundList = bgLayer.后景移动速度列表;
+	var backgroundList = bgLayer.bgParallaxList;
 	var currentFrame = _root.帧计时器.当前帧数;
 	var worldX:Number = gameWorld._x;
 	var len:Number = backgroundList.length;
@@ -124,9 +124,9 @@ EventBus.getInstance().subscribe("SceneChanged", function()
 }, _root); 
 
 _root.卸载后景 = function(){
-	for(var i=0; i<_root.天空盒.后景列表.length; i++){
-		_root.天空盒.后景列表[i].removeMovieClip();
+	for(var i=0; i<_root.天空盒.bgLayerList.length; i++){
+		_root.天空盒.bgLayerList[i].removeMovieClip();
 	}
-	_root.天空盒.后景列表 = null;
-	_root.天空盒.后景移动速度列表 = null;
+	_root.天空盒.bgLayerList = null;
+	_root.天空盒.bgParallaxList = null;
 }

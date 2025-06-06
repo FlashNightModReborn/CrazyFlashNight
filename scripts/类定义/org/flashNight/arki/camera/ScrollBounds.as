@@ -34,18 +34,13 @@ class org.flashNight.arki.camera.ScrollBounds {
         var effBgW:Number = bgWidth  * newScale;
         var effBgH:Number = bgHeight * newScale;
 
-        var minX:Number = stageWidth - effBgW;
-        var maxX:Number = 0;
-        var minY:Number = stageHeight - effBgH;
-        var maxY:Number = 0;
-
         return {
             effBgW: effBgW,
             effBgH: effBgH,
-            minX:   minX,
-            maxX:   maxX,
-            minY:   minY,
-            maxY:   maxY
+            minX:   stageWidth - effBgW,
+            maxX:   0,
+            minY:   stageHeight - effBgH,
+            maxY:   0
         };
     }
 

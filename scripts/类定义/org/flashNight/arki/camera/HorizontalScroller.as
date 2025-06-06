@@ -411,12 +411,12 @@ class org.flashNight.arki.camera.HorizontalScroller {
 
     private static function _logDebug(message:String):Void {
         if (_debugMode) {
-            trace("[HorizontalScroller DEBUG] " + message);
+            _root.发布消息("[HorizontalScroller DEBUG] " + message);
         }
     }
 
     private static function _logError(message:String):Void {
-        trace("[HorizontalScroller ERROR] " + message);
+        _root.发布消息("[HorizontalScroller ERROR] " + message);
     }
 
     // ==================== 原有的更新逻辑 ====================

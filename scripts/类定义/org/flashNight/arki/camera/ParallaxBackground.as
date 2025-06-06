@@ -10,7 +10,7 @@ class org.flashNight.arki.camera.ParallaxBackground {
     /**
      * 滚动时更新后景视差位置（只在需要时调用，每帧滚动时）
      *
-     * @param bgLayer         “天空盒”根节点，需包含 “后景移动速度列表”（Array of { mc:MovieClip, speedrate:Number, delay:Number }）
+     * @param bgLayer         “天空盒”根节点，需包含 “bgParallaxList”（Array of { mc:MovieClip, speedrate:Number, delay:Number }）
      * @param currentFrame    当前帧编号（用于判断是否满足 delay）
      * @param worldX          gameWorld._x（全局世界 X 坐标，用于做视差计算）
      */
@@ -19,7 +19,7 @@ class org.flashNight.arki.camera.ParallaxBackground {
         currentFrame:Number,
         worldX:Number
     ):Void {
-        var bgList:Array = bgLayer.后景移动速度列表;
+        var bgList:Array = bgLayer.bgParallaxList;
         var len:Number = bgList.length;
         for (var i:Number = 0; i < len; i++) {
             var info:Object = bgList[i];
@@ -40,7 +40,7 @@ class org.flashNight.arki.camera.ParallaxBackground {
         bgLayer:MovieClip,
         worldX:Number
     ):Void {
-        var bgList:Array = bgLayer.后景移动速度列表;
+        var bgList:Array = bgLayer.bgParallaxList;
         var len:Number = bgList.length;
         for (var i:Number = 0; i < len; i++) {
             var info:Object = bgList[i];
