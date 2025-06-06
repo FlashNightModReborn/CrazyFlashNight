@@ -2533,4 +2533,43 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
+    <Dialogues>
+        <Name>soldier</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>平时这边特无聊，等僵尸来了又忙的要死，舒适度这块的上不去下不来卡在这了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>我觉得进探索队挺好，往底了说也不用在这站着等着僵尸来。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>哎呦，这也太累了吧这个。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>上次送货来的韭菜盒子还给我少了两块，那我缺的营养这块的谁给我补啊。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>没有公社，我们吃什么？</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
 </root>

@@ -52,9 +52,9 @@
           <DOMFolderItem name="Pig立绘表情普通(1).svg/Layer 1" itemID="67b3e424-00000c57"/>
           <DOMFolderItem name="Pig立绘表情笑(1).svg" itemID="67b3e550-00000c6a"/>
           <DOMFolderItem name="Pig立绘表情笑(1).svg/Layer 1" itemID="67b3e550-00000c6b"/>
-          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3" isExpanded="true"/>
           <DOMFolderItem name="sound" itemID="6652e52e-00000bd5"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
           <DOMFolderItem name="sprite/悬浮UI" itemID="6652e52e-00000bd7"/>
           <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4"/>
           <DOMFolderItem name="sprite/主角/shape" itemID="65a6bb2a-00001374"/>
@@ -93,6 +93,7 @@
           <DOMFolderItem name="对话框UI/新增头像（黑铁会）/火凤头像" itemID="65c1d28f-00001ef5"/>
           <DOMFolderItem name="对话框UI/阎凝儿gazer" itemID="66629852-00000806"/>
           <DOMFolderItem name="对话框UI/袁望surveyor" itemID="66532e8b-0000050a"/>
+          <DOMFolderItem name="发型" itemID="68423071-00000b24"/>
           <DOMFolderItem name="愤怒.svg" itemID="67bc29fa-0000101d"/>
           <DOMFolderItem name="愤怒.svg/Layer 1" itemID="67bc29fa-0000101e"/>
           <DOMFolderItem name="歌留多" itemID="670d0c79-000005fd"/>
@@ -167,6 +168,12 @@
      <symbols>
           <Include href="3.防具/10.军阀系列/未命名文件夹 1/director大腿素材.xml" itemIcon="1" loadImmediate="false" itemID="66f591ee-0000565d" lastModified="1727369710"/>
           <Include href="4.发型相关/黑猫王头.xml" itemID="67331fd4-00000725" lastModified="1731403732"/>
+          <Include href="AK74M.xml" loadImmediate="false" itemID="67076bd2-0000040d" lastModified="1729265645"/>
+          <Include href="AK74M 5.45x39mm 30rds弹匣.xml" loadImmediate="false" itemID="67077736-0000045f" lastModified="1728542705"/>
+          <Include href="AK74M背带扣.xml" loadImmediate="false" itemID="6707748e-00000452" lastModified="1728541937"/>
+          <Include href="AK74M标尺.xml" loadImmediate="false" itemID="67076aaf-00000407" lastModified="1728539331"/>
+          <Include href="AK74M标尺锁定机构.xml" loadImmediate="false" itemID="670765b3-000003c4" lastModified="1728538036"/>
+          <Include href="AK74快慢机.xml" loadImmediate="false" itemID="66fe4dbe-00000442" lastModified="1727942141"/>
           <Include href="artist素材/artist.xml" loadImmediate="false" itemID="67cd7c36-00000ab6" lastModified="1741519926"/>
           <Include href="artist素材/artist头.xml" loadImmediate="false" itemID="67ca7cf3-00000302" lastModified="1741520072"/>
           <Include href="artist素材/Symbol 1112.xml" loadImmediate="false" itemID="66631a4d-0000183d" lastModified="1741519975"/>
@@ -891,7 +898,9 @@
           <Include href="lochan/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-0000065e" lastModified="1726068284"/>
           <Include href="lochan/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000662" lastModified="1726068284"/>
           <Include href="lochan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
-          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1749084650"/>
+          <Include href="NPCAK74M.xml" loadImmediate="false" itemID="6842337c-00001118" lastModified="1749169020"/>
+          <Include href="NPC士兵头.xml" loadImmediate="false" itemID="68423429-00001123" lastModified="1749169193"/>
+          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1749173728"/>
           <Include href="Pig表情悲伤.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebbe-00000d0d" lastModified="1739844542"/>
           <Include href="Pig表情愤怒.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebae-00000d01" lastModified="1739844526"/>
           <Include href="Pig表情坏笑.xml" itemIcon="1" loadImmediate="false" itemID="67b3eb92-00000cf3" lastModified="1739844498"/>
@@ -1222,6 +1231,7 @@
           <Include href="shape/Symbol 35550.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d64" lastModified="1704196122"/>
           <Include href="shape/Symbol 35551.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d66" lastModified="1704196122"/>
           <Include href="shape/爱国青年.xml" itemIcon="1" loadImmediate="false" itemID="65f80264-00000b6d" lastModified="1712045693"/>
+          <Include href="soldier.xml" loadImmediate="false" itemID="68423840-0000159c" lastModified="1749173472"/>
           <Include href="sprite/Symbol 477.xml" loadImmediate="false" itemID="6597607e-000007a6" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1103.xml" loadImmediate="false" itemID="6597607e-00000865" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1232.xml" loadImmediate="false" itemID="6597607e-000008c6" lastModified="1704196122"/>
@@ -1257,7 +1267,9 @@
           <Include href="sprite/Symbol 51645.xml" loadImmediate="false" itemID="6597607e-00000b85" lastModified="1704196122"/>
           <Include href="sprite/男变装-基本脸型.xml" loadImmediate="false" itemID="668be716-0000065a" lastModified="1726470590"/>
           <Include href="sprite/男变装-裸体右手.xml" loadImmediate="false" itemID="668be707-00000653" lastModified="1726469978"/>
+          <Include href="sprite/男变装-裸体右下臂.xml" loadImmediate="false" itemID="668be704-00000652" lastModified="1749173472"/>
           <Include href="sprite/男变装-裸体左手.xml" loadImmediate="false" itemID="668be700-00000650" lastModified="1726469977"/>
+          <Include href="sprite/男变装-裸体左下臂.xml" loadImmediate="false" itemID="668be6fe-0000064f" lastModified="1749173468"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="sprite/悬浮UI/Symbol 880.xml" loadImmediate="false" itemID="6597607e-00000806" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/Symbol 1883.xml" loadImmediate="false" itemID="6597607e-00000a36" lastModified="1732286486"/>
@@ -1743,7 +1755,8 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1747122337"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1749084518"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1749173775"/>
+          <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc29fa-0000103b" lastModified="1740384762"/>
@@ -1859,6 +1872,16 @@
           <Include href="冷兵/钝器/棒球棒/棒球棒.xml" itemIcon="1" loadImmediate="false" itemID="660f7d90-000019bc" lastModified="1712291609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棍末端.xml" loadImmediate="false" itemID="64b91170-00001168" lastModified="1690285773"/>
           <Include href="轮子.xml" loadImmediate="false" itemID="67683bc4-000001e3" lastModified="1734884292"/>
+          <Include href="男变装-废城防弹军装上装身体.xml" loadImmediate="false" itemID="683d062f-00001dae" lastModified="1749173491"/>
+          <Include href="男变装-废城军装脚.xml" loadImmediate="false" itemID="683c1518-000017e2" lastModified="1749173491"/>
+          <Include href="男变装-废城军装面具帽.xml" loadImmediate="false" itemID="683d1078-00002732" lastModified="1749173491"/>
+          <Include href="男变装-废城军装屁股.xml" loadImmediate="false" itemID="683c0fc1-000017ba" lastModified="1749173491"/>
+          <Include href="男变装-废城军装上装上臂.xml" loadImmediate="false" itemID="683c3afe-000021ec" lastModified="1749173491"/>
+          <Include href="男变装-废城军装手套右手.xml" loadImmediate="false" itemID="683c364d-00001e48" lastModified="1749173491"/>
+          <Include href="男变装-废城军装手套左手.xml" loadImmediate="false" itemID="683c3653-00001e49" lastModified="1749173491"/>
+          <Include href="男变装-废城军装下装小腿.xml" loadImmediate="false" itemID="683c35d1-00001e47" lastModified="1749173491"/>
+          <Include href="男变装-废城军装下装右大腿.xml" loadImmediate="false" itemID="683c35c6-00001e44" lastModified="1749173491"/>
+          <Include href="男变装-废城军装下装左大腿.xml" loadImmediate="false" itemID="683c373f-000021ce" lastModified="1749173491"/>
           <Include href="牛仔.xml" itemIcon="1" loadImmediate="false" itemID="682ed9c0-0000020c" lastModified="1747900865"/>
           <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="682edc39-00000ac9" lastModified="1747901497"/>
           <Include href="牛仔.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="682edc39-00000aca" lastModified="1747901497"/>
@@ -2575,6 +2598,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3353064" publishTime="1749173425"/>
           <PublishItem publishSize="3317333" publishTime="1749084698"/>
           <PublishItem publishSize="3342327" publishTime="1749054694"/>
           <PublishItem publishSize="3254180" publishTime="1747902707"/>
@@ -2594,6 +2618,5 @@
           <PublishItem publishSize="1407337" publishTime="1740115073"/>
           <PublishItem publishSize="2220473" publishTime="1739526309"/>
           <PublishItem publishSize="2220472" publishTime="1739526131"/>
-          <PublishItem publishSize="2220471" publishTime="1739526026"/>
      </publishHistory>
 </DOMDocument>
