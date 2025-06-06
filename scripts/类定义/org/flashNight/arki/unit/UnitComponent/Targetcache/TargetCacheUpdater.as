@@ -14,7 +14,6 @@
 // - 保持数据局部性，优化 CPU 缓存命中率
 // - 自适应阈值，平衡缓存命中率和扫描效率
 // ============================================================================
-import org.flashNight.naki.Sort.InsertionSort;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
 
@@ -121,7 +120,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         }
 
         // (2) 生成复合键以对应临时列表
-        // 使用复合键可以避免重复收集相同类型的数据
         var cacheKey:String = isAllRequest
             ? _ALL_TYPE
             : requestType + "_" + effectiveFaction.toString();
@@ -132,59 +130,78 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         }
         var cacheTypeData:Object = _cachePool[cacheKey];
 
-        // (3) 版本号判定 —— 只在版本号变化时重新收集
-        // 全体请求: 使用敌人+友军版本号总和（任一阵营变化都需要更新）
-        // 敌人/友军请求: 使用对应阵营的版本号
+        // (3) 版本号判定
         var currentVersion:Number = isAllRequest
             ? _enemyVersion + _allyVersion
             : (effectiveFaction ? _enemyVersion : _allyVersion);
 
         // 检查是否需要更新临时列表
         if (cacheTypeData.tempVersion < currentVersion) {
-            // -------- 重新收集有效单位 --------
-            cacheTypeData.tempList.length = 0; // 清空列表，准备重新收集
+            // 重新收集有效单位
+            cacheTypeData.tempList.length = 0;
 
             // 根据请求类型收集单位
             if (isAllRequest) {
-                // 收集所有有效单位（不区分阵营）
                 _collectAllValidUnits(gameWorld, cacheTypeData.tempList);
             } else {
-                // 根据请求类型和目标阵营收集特定阵营单位
                 _collectValidUnits(
                     gameWorld,
-                    targetIsEnemy,   // 请求者阵营
-                    isEnemyRequest,  // 是否请求敌人
+                    targetIsEnemy,
+                    isEnemyRequest,
                     cacheTypeData.tempList
                 );
             }
-            // 更新临时列表版本号，标记为最新
+            // 更新临时列表版本号
             cacheTypeData.tempVersion = currentVersion;
         }
 
         // (4) 插入排序（按 left 升序）
-        // 使用插入排序因为单位列表通常是部分有序的
         var list:Array = cacheTypeData.tempList;
         var len:Number = list.length;
         if (len > 1) {
             var i:Number = 1;
             do {
                 var key:Object = list[i];
-                var keyVal:Number = key.aabbCollider.left;
+                var leftVal:Number = key.aabbCollider.left;
                 var j:Number = i - 1;
-                // 将大于当前值的元素后移
-                while (j >= 0 && list[j].aabbCollider.left > keyVal) {
+                while (j >= 0 && list[j].aabbCollider.left > leftVal) {
                     list[j + 1] = list[j--];
                 }
                 list[j + 1] = key;
             } while (++i < len);
         }
 
-        // (5) 分析单位分布特征并自适应调整阈值
-        _updateAdaptiveThreshold(list);
+        // ========================================================================
+        // ===== 核心优化：单循环完成所有数据提取 =====
+        // ========================================================================
+        var leftValues:Array = [];      // left 坐标值数组
+        var rightValues:Array = [];     // right 坐标值数组  
+        var newNameIndex:Object = {};   // 名称到索引的映射
+        
+        // 单次遍历，一次性完成所有数据提取
+        // 性能优势：最大化数据局部性，最小化循环开销
+        for (var k:Number = 0; k < len; k++) {
+            var unit:Object = list[k];
+            var collider:Object = unit.aabbCollider;
+            
+            // 一次访问单位对象，完成所有数据提取
+            leftValues[k] = collider.left;          // 用于自适应阈值分析
+            rightValues[k] = collider.right;        // 用于查询性能优化
+            newNameIndex[unit._name] = k;           // 用于O(1)名称索引
+        }
 
-        // (6) 构建最终 cacheEntry（含 nameIndex 和 rightValues）
-        _rebuildCacheData(list, cacheEntry, currentFrame);
+        // (5) 分析单位分布特征并自适应调整阈值
+        _updateAdaptiveThreshold(leftValues);
+
+        // (6) 直接更新缓存项
+        // 所有数据已在上面的单循环中准备完毕
+        cacheEntry.data              = list;           // 单位数组引用
+        cacheEntry.nameIndex         = newNameIndex;   // 名称索引映射
+        cacheEntry.rightValues       = rightValues;    // right 值数组
+        cacheEntry.leftValues        = leftValues;     // left 值数组
+        cacheEntry.lastUpdatedFrame  = currentFrame;   // 更新时间戳
     }
+
 
     // ========================================================================
     // 自适应阈值调整
@@ -192,6 +209,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     
     /**
      * 根据单位分布特征更新自适应阈值
+     * 接收 leftValues 数组
      * 使用指数移动平均（EMA）来平滑阈值变化
      * 
      * 算法说明：
@@ -200,60 +218,58 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      * 3. 根据密度计算新阈值
      * 4. 应用边界限制确保阈值在合理范围内
      * 
-     * @param {Array} sortedList - 已按 left 升序排序的单位列表
+     * @param {Array} leftValues - 已按 left 升序排序的单位列表
      * @private
      */
-    private static function _updateAdaptiveThreshold(sortedList:Array):Void {
-        var len:Number = sortedList.length;
-        
-        // 需要至少2个单位才能计算间距
+    private static function _updateAdaptiveThreshold(leftValues:Array):Void {
+        var len:Number = leftValues.length;
+        // 需要至少 2 个单位才能计算相邻间距
         if (len < 2) return;
-        
+
         // ===== 计算当前分布密度 =====
         var totalSpacing:Number = 0;
         var spacingCount:Number = 0;
-        
+
         // 计算所有相邻单位的间距
         for (var i:Number = 1; i < len; i++) {
-            var spacing:Number = sortedList[i].aabbCollider.left - 
-                               sortedList[i-1].aabbCollider.left;
-            // 只统计有效间距（排除重叠的单位）
+            // 直接用数字数组计算差值
+            var spacing:Number = leftValues[i] - leftValues[i - 1];
+            // 只统计有效间距（排除重叠单位）
             if (spacing > 0) {
                 totalSpacing += spacing;
                 spacingCount++;
             }
         }
-        
-        // 如果没有有效间距，保持当前阈值
+        // 如果没有有效间距，就保持当前阈值不变
         if (spacingCount == 0) return;
-        
+
         // 计算平均间距
         var currentDensity:Number = totalSpacing / spacingCount;
-        
-        // ===== 使用EMA更新历史平均密度 =====
+
+        // ===== 使用 EMA 更新历史平均密度 =====
         var params:Object = _adaptiveParams;
-        params.avgDensity = params.alpha * currentDensity + 
-                           (1 - params.alpha) * params.avgDensity;
-        
+        params.avgDensity = params.alpha * currentDensity +
+                            (1 - params.alpha) * params.avgDensity;
+
         // ===== 计算新阈值 =====
         // 阈值 = 平均密度 × 密度因子
-        // 密度因子越大，阈值越大，缓存命中率越高但扫描距离可能增加
         var newThreshold:Number = params.avgDensity * params.densityFactor;
-        
+
         // ===== 应用边界限制 =====
         if (newThreshold < params.minThreshold) {
             newThreshold = params.minThreshold;
         } else if (newThreshold > params.maxThreshold) {
             newThreshold = params.maxThreshold;
         }
-        
+
         // ===== 更新全局阈值 =====
         _THRESHOLD = newThreshold;
-        
-        // ===== 可选：输出调试信息 =====
-        // _root.发布消息("自适应阈值: " + Math.round(_THRESHOLD) + 
+
+        // =====（可选）输出调试信息 =====
+        // _root.发布消息("自适应阈值: " + Math.round(_THRESHOLD) +
         //               " (密度: " + Math.round(params.avgDensity) + ")");
     }
+
 
     /**
      * 手动调整自适应参数
@@ -283,60 +299,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         if (!isNaN(maxThreshold) && maxThreshold > minThreshold) {
             params.maxThreshold = maxThreshold;
         }
-    }
-
-    // ========================================================================
-    // 缓存数据重建（核心优化）
-    // ========================================================================
-    
-    /**
-     * 重建缓存数据结构（增强版）
-     * 将排序后的单位列表写入缓存项，并构建名称索引和坐标值数组
-     * 
-     * 新增功能：
-     * - rightValues 数组：预缓存所有单位的 aabbCollider.right 值
-     * - leftValues 数组：预缓存所有单位的 aabbCollider.left 值
-     * 
-     * 性能优势：
-     * - 减少查询时的多层属性访问（unit.aabbCollider.right -> rightValues[i]）
-     * - 提高数据局部性，优化 CPU 缓存命中率
-     * - 支持更高效的二分查找和线性扫描
-     * 
-     * @param {Array} sourceList - 已排序的单位列表（按 left 升序）
-     * @param {Object} cacheEntry - 目标缓存项，将被更新
-     * @param {Number} currentFrame - 当前帧数，用作时间戳
-     */
-    private static function _rebuildCacheData(
-        sourceList:Array,
-        cacheEntry:Object,
-        currentFrame:Number
-    ):Void {
-        // 初始化数据结构
-        var newNameIndex:Object = {};    // 名称到索引的映射
-        var rightValues:Array = [];      // right 坐标值数组
-        var leftValues:Array = [];       // left 坐标值数组（可选，备用）
-        var len:Number = sourceList.length;
-        
-        // 构建索引和坐标值数组
-        // 一次遍历完成所有数据提取，避免多次迭代
-        for (var i:Number = 0; i < len; i++) {
-            var unit:Object = sourceList[i];
-            var collider:Object = unit.aabbCollider;
-            
-            // 构建名称索引，支持 O(1) 查找
-            newNameIndex[unit._name] = i;
-            
-            // 缓存坐标值，避免查询时的属性访问开销
-            rightValues[i] = collider.right;
-            leftValues[i] = collider.left;
-        }
-        
-        // 更新缓存项的所有字段
-        cacheEntry.data              = sourceList;       // 单位数组引用
-        cacheEntry.nameIndex         = newNameIndex;     // 名称索引映射
-        cacheEntry.rightValues       = rightValues;      // right 值数组（新增）
-        cacheEntry.leftValues        = leftValues;       // left 值数组（新增）
-        cacheEntry.lastUpdatedFrame  = currentFrame;     // 更新时间戳
     }
 
     // ========================================================================
