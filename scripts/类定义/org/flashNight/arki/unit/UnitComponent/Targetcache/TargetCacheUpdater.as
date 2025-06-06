@@ -1,16 +1,18 @@
 ﻿// ============================================================================
-// 目标缓存更新器（增强版 - 支持坐标值数组优化）
+// 目标缓存更新器（增强版 - 支持坐标值数组优化和自适应阈值）
 // ----------------------------------------------------------------------------
 // 功能概述：
 // 1. 收集、排序并写入 cacheEntry
 // 2. 自动生成 nameIndex，支持 O(1) 索引定位
-// 3. 新增 rightValues 数组，优化坐标值访问性能
+// 3. 新增 rightValues/leftValues 数组，优化坐标值访问性能
 // 4. 维持 enemy / ally / all 三大版本号 + 复合键缓存
+// 5. 自适应阈值调整，根据单位分布特征动态优化查询性能
 // 
 // 性能优化：
-// - 预缓存 aabbCollider.right 值到独立数组，减少多层属性访问
+// - 预缓存 aabbCollider.right/left 值到独立数组，减少多层属性访问
 // - 二分查找时直接访问数值数组，提升查询性能
 // - 保持数据局部性，优化 CPU 缓存命中率
+// - 自适应阈值，平衡缓存命中率和扫描效率
 // ============================================================================
 import org.flashNight.naki.Sort.InsertionSort;
 
@@ -43,6 +45,32 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _allyVersion:Number = 0;
 
     /**
+     * 缓存有效性阈值（单位：像素）
+     * 用于描述当前单位分布的空间特征
+     * 当本次查询的 queryLeft 与上次相差在此阈值内时，认为可以使用缓存
+     * 该值根据单位分布特征自适应调整
+     */
+    public static var _THRESHOLD:Number = 100;
+
+    /**
+     * 自适应阈值参数
+     */
+    private static var _adaptiveParams:Object = {
+        // EMA平滑系数 (0.1 = 慢速适应, 0.3 = 快速适应)
+        alpha: 0.2,
+        
+        // 密度倍数因子 (平均间距的倍数)
+        densityFactor: 3.0,
+        
+        // 阈值边界限制
+        minThreshold: 30,
+        maxThreshold: 300,
+        
+        // 历史平均密度（初始值）
+        avgDensity: 100
+    };
+
+    /**
      * 请求类型常量定义
      * 使用常量避免字符串硬编码，提高代码可维护性
      */
@@ -51,19 +79,21 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _ALL_TYPE:String   = "全体"; // 全体类型标识
 
     // ========================================================================
-    // 核心更新方法
+    // 核心更新方法（含自适应阈值调整）
     // ========================================================================
     
     /**
      * 更新缓存的核心方法
      * 根据请求类型和目标阵营收集、排序单位，并更新缓存项
+     * 新增：根据单位分布特征自适应调整查询阈值
      * 
      * 处理流程：
      * 1. 确定需要收集的阵营类型
      * 2. 生成缓存键并获取或创建缓存数据
      * 3. 检查版本号决定是否需要重新收集
      * 4. 对收集的单位进行插入排序
-     * 5. 构建最终缓存数据（包含 nameIndex 和 rightValues）
+     * 5. 分析单位分布特征并调整阈值
+     * 6. 构建最终缓存数据（包含 nameIndex 和 rightValues）
      * 
      * @param {Object} gameWorld - 游戏世界对象，包含所有单位
      * @param {Number} currentFrame - 当前帧数，用于更新时间戳
@@ -149,8 +179,110 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             } while (++i < len);
         }
 
-        // (5) 构建最终 cacheEntry（含 nameIndex 和 rightValues）
+        // (5) 分析单位分布特征并自适应调整阈值
+        _updateAdaptiveThreshold(list);
+
+        // (6) 构建最终 cacheEntry（含 nameIndex 和 rightValues）
         _rebuildCacheData(list, cacheEntry, currentFrame);
+    }
+
+    // ========================================================================
+    // 自适应阈值调整
+    // ========================================================================
+    
+    /**
+     * 根据单位分布特征更新自适应阈值
+     * 使用指数移动平均（EMA）来平滑阈值变化
+     * 
+     * 算法说明：
+     * 1. 计算相邻单位的平均间距（密度指标）
+     * 2. 使用 EMA 更新历史平均密度
+     * 3. 根据密度计算新阈值
+     * 4. 应用边界限制确保阈值在合理范围内
+     * 
+     * @param {Array} sortedList - 已按 left 升序排序的单位列表
+     * @private
+     */
+    private static function _updateAdaptiveThreshold(sortedList:Array):Void {
+        var len:Number = sortedList.length;
+        
+        // 需要至少2个单位才能计算间距
+        if (len < 2) return;
+        
+        // ===== 计算当前分布密度 =====
+        var totalSpacing:Number = 0;
+        var spacingCount:Number = 0;
+        
+        // 计算所有相邻单位的间距
+        for (var i:Number = 1; i < len; i++) {
+            var spacing:Number = sortedList[i].aabbCollider.left - 
+                               sortedList[i-1].aabbCollider.left;
+            // 只统计有效间距（排除重叠的单位）
+            if (spacing > 0) {
+                totalSpacing += spacing;
+                spacingCount++;
+            }
+        }
+        
+        // 如果没有有效间距，保持当前阈值
+        if (spacingCount == 0) return;
+        
+        // 计算平均间距
+        var currentDensity:Number = totalSpacing / spacingCount;
+        
+        // ===== 使用EMA更新历史平均密度 =====
+        var params:Object = _adaptiveParams;
+        params.avgDensity = params.alpha * currentDensity + 
+                           (1 - params.alpha) * params.avgDensity;
+        
+        // ===== 计算新阈值 =====
+        // 阈值 = 平均密度 × 密度因子
+        // 密度因子越大，阈值越大，缓存命中率越高但扫描距离可能增加
+        var newThreshold:Number = params.avgDensity * params.densityFactor;
+        
+        // ===== 应用边界限制 =====
+        if (newThreshold < params.minThreshold) {
+            newThreshold = params.minThreshold;
+        } else if (newThreshold > params.maxThreshold) {
+            newThreshold = params.maxThreshold;
+        }
+        
+        // ===== 更新全局阈值 =====
+        _THRESHOLD = newThreshold;
+        
+        // ===== 可选：输出调试信息 =====
+        // _root.发布消息("自适应阈值: " + Math.round(_THRESHOLD) + 
+        //               " (密度: " + Math.round(params.avgDensity) + ")");
+    }
+
+    /**
+     * 手动调整自适应参数
+     * 允许根据不同游戏场景微调算法行为
+     * 
+     * @param {Number} alpha - EMA平滑系数 (0.1-0.5)
+     * @param {Number} densityFactor - 密度倍数因子 (1.0-5.0)
+     * @param {Number} minThreshold - 最小阈值限制
+     * @param {Number} maxThreshold - 最大阈值限制
+     */
+    public static function setAdaptiveParams(
+        alpha:Number,
+        densityFactor:Number,
+        minThreshold:Number,
+        maxThreshold:Number
+    ):Void {
+        var params:Object = _adaptiveParams;
+        if (!isNaN(alpha) && alpha > 0 && alpha <= 1) {
+            params.alpha = alpha;
+        }
+        if (!isNaN(densityFactor) && densityFactor > 0) {
+            params.densityFactor = densityFactor;
+        }
+        if (!isNaN(minThreshold) && minThreshold > 0) {
+            params.minThreshold = minThreshold;
+        }
+        if (!isNaN(maxThreshold) && maxThreshold > minThreshold) {
+            params.maxThreshold = maxThreshold;
+        }
     }
 
     // ========================================================================

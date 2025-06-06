@@ -232,14 +232,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      */
     private static var _lastIndex:Number = 0;
 
-    /**
-     * 缓存有效性阈值（单位：像素）
-     * 当本次查询的 queryLeft 与上次相差在此阈值内时，认为可以使用缓存
-     * 该值可根据实际场景动态调整，建议范围：30-200
-     * - 较小值：更精确，但缓存命中率低
-     * - 较大值：缓存命中率高，但可能增加扫描距离
-     */
-    private static var _THRESHOLD:Number = 100;
 
     /**
      * 性能统计对象
@@ -372,7 +364,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
             var deltaQuery:Number = Math.abs(queryLeft - _lastQueryLeft);
             
             // 只有变化量在阈值内才使用缓存
-            if (deltaQuery <= _THRESHOLD) {
+            if (deltaQuery <= TargetCacheUpdater._THRESHOLD) {
                 // _stats.cacheHits++;  // 记录缓存命中
                 
                 // 获取缓存位置的右边界值
@@ -541,7 +533,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
             "缓存命中率: " + cacheHitRate + "% | " +
             "二分查找率: " + binarySearchRate + "% | " +
             "平均扫描距离: " + _stats.avgScanDistance + " | " +
-            "最大扫描距离: " + _stats.maxScanDistance
+            "最大扫描距离: " + _stats.maxScanDistance + " | " +
+            "扫描阈值: " + TargetCacheUpdater._THRESHOLD
         );
     }
 
