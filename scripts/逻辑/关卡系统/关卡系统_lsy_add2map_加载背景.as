@@ -85,6 +85,8 @@ _root.绘制地图碰撞箱 = function () {
         }
 
 		地图.初始化完毕 = true;
+			
+		EventBus.getInstance().publish("SceneReady");
 	}
 }
 
@@ -150,7 +152,6 @@ _root.贴背景图 = function(){
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
 	背景层._visible = false;
 	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
-
 };
 
 _root.配置场景环境信息 = function(){
@@ -245,8 +246,10 @@ _root.加载背景元素 = function(url, 实例名, x, y, 层级){
     instance.swapDepths(depth);
 }
 
-_root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor, zoomScale) {
-    HorizontalScroller.update(
-        scrollTarget, bgWidth, bgHeight, easeFactor, zoomScale
-    );
+_root.横版卷屏 = function() {
+    HorizontalScroller.update();
 };
+
+
+
+EventBus.getInstance().subscribe("SceneReady", HorizontalScroller.onSceneChanged, HorizontalScroller); 

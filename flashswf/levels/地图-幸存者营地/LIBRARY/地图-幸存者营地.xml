@@ -7,7 +7,7 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.横版卷屏(_root.控制目标,背景长,背景高,1);
+_root.横版卷屏();
 _root.显示同伴血槽();
 _root.关卡地图帧值 = "地图-幸存者营地";
 

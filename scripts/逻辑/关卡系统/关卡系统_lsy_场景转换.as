@@ -319,7 +319,7 @@ _root.场景转换函数.是否从门加载角色 = function(){
 		_root.场景进入横坐标 = this._x;
 		_root.场景进入纵坐标 = this._y;
 		_root.转场景数据传递();
-		_root.横版卷屏(_root.控制目标,_root.gameworld.背景长,_root.gameworld.背景高,1);
+		_root.横版卷屏();
 	}
 }
 

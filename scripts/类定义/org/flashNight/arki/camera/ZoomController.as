@@ -20,6 +20,7 @@ class org.flashNight.arki.camera.ZoomController {
      * @param gameWorld   全局世界 MovieClip（会直接修改其 _xscale/_yscale 与 lastScale）
      * @param bgLayer     “天空盒”根节点 MovieClip（会直接修改其 _xscale/_yscale）
      * @param easeFactor  缓动系数（越大越平滑）
+     * @param zoomScale     缩放基数
      * @return Object     { newScale:Number, offsetX:Number, offsetY:Number }
      *                    newScale：本次最终缩放（相对于 1.0 的倍数）
      *                    offsetX/offsetY：应用于 world 坐标的补偿量（像素）
@@ -28,7 +29,8 @@ class org.flashNight.arki.camera.ZoomController {
         scrollObj:MovieClip,
         gameWorld:MovieClip,
         bgLayer:MovieClip,
-        easeFactor:Number
+        easeFactor:Number,
+        zoomScale:Number
     ):Object {
         // 1) 找到最远的敌人
         var farthestEnemy:Object = TargetCacheManager.findFarthestEnemy(scrollObj, 5);
@@ -38,7 +40,7 @@ class org.flashNight.arki.camera.ZoomController {
         var logScale:Number = Math.log(normalizedDistance) / Math.log(10);
 
         // 2) 计算 targetZoomScale：当 distance = 800 时，logScale≈1 => 2 - 1*1.11 = 0.89，取最大 1
-        var targetZoomScale:Number = Math.min(1.5, Math.max(1, 2 - logScale * 1.11));
+        var targetZoomScale:Number = zoomScale * Math.min(1.5, Math.max(1, 2 - logScale * 1.11));
 
         // 3) 初始化 lastScale
         if (!gameWorld.lastScale) {

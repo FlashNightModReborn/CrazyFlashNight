@@ -12,34 +12,74 @@ import org.flashNight.arki.camera.ParallaxBackground;
  *  2. 对外提供 update(...) 接口，与原 _root.横版卷屏 保持兼容
  */
 class org.flashNight.arki.camera.HorizontalScroller {
+
+    public static var scrollTarget:String;
+    public static var bgWidth:Number;
+    public static var bgHeight:Number;
+    public static var easeFactor:Number;
+    public static var zoomScale:Number;
+
+    public static var gameWorld:MovieClip;
+    public static var bgLayer:MovieClip;
+
+    public static function reset(paramsObject:Object):Void {
+        // 1) 初始化参数
+        HorizontalScroller.scrollTarget = paramsObject.scrollTarget;
+        HorizontalScroller.bgWidth = paramsObject.bgWidth;
+        HorizontalScroller.bgHeight = paramsObject.bgHeight;
+        HorizontalScroller.easeFactor = paramsObject.easeFactor;
+        HorizontalScroller.zoomScale = (paramsObject.zoomScale != undefined) ? paramsObject.zoomScale : 1;
+
+        // 2) 获取 gameworld 和 背景层（根据你的项目结构调整）
+        HorizontalScroller.gameWorld = paramsObject.gameWorld;
+        HorizontalScroller.bgLayer = paramsObject.bgLayer;
+
+        // 3) 初始化状态（可选，视需要添加）
+        if (!HorizontalScroller.gameWorld.lastScale) {
+            HorizontalScroller.gameWorld.lastScale = HorizontalScroller.zoomScale;
+        }
+
+    }
+
+    public static function onSceneChanged():Void
+    {
+        var paramsObject = {
+            scrollTarget: _root.控制目标,
+            bgWidth: _root.gameworld.背景长,
+            bgHeight: _root.gameworld.背景高,
+            easeFactor: 10,
+            zoomScale: 1,
+            gameWorld: _root.gameworld,
+            bgLayer: _root.天空盒
+        }
+
+        _root.发布消息(org.flashNight.gesh.object.ObjectUtil.toString(paramsObject))
+
+        reset(paramsObject);
+    }
+
+
     /**
      * 等价于原来 _root.横版卷屏 的实现逻辑，但将各块功能拆分到子组件里。
-     *
-     * @param scrollTarget  要跟踪的目标在 gameworld 中的名称
-     * @param bgWidth       背景原始宽度（像素）
-     * @param bgHeight      背景原始高度（像素）
-     * @param easeFactor    缓动系数
-     * @param zoomScale     （暂时保留，仅用于向后兼容，实际内部并未直接用到此参数）
      */
-    public static function update(
-        scrollTarget:String,
-        bgWidth:Number,
-        bgHeight:Number,
-        easeFactor:Number,
-        zoomScale:Number
-    ):Void {
+    public static function update():Void {
         // —— 1) 先拿到 gameWorld 和 bgLayer（天空盒） ——
-        var gameWorld:MovieClip = _root.gameworld;
-        var bgLayer:MovieClip   = _root.天空盒;
+        var gameWorld:MovieClip = HorizontalScroller.gameWorld;
+        var bgLayer:MovieClip   = HorizontalScroller.bgLayer;
+        var bgHeight:Number     = HorizontalScroller.bgHeight;
+        var bgWidth:Number      = HorizontalScroller.bgWidth;
+        var easeFactor:Number   = HorizontalScroller.easeFactor;
+        var zoomScale:Number    = HorizontalScroller.zoomScale;
+        var scrollObj:MovieClip = gameWorld[HorizontalScroller.scrollTarget];
 
         // —— 2) 如果目标不存在或未初始化，则直接 return ——
-        var scrollObj:MovieClip = gameWorld[scrollTarget];
+        
         if (!scrollObj || scrollObj._x == undefined) {
             return;
         }
 
         // —— 3) 先执行缩放逻辑（ZoomController），得到 newScale 与 worldOffset ——
-        var zoomResult:Object = ZoomController.updateScale(scrollObj, gameWorld, bgLayer, easeFactor);
+        var zoomResult:Object = ZoomController.updateScale(scrollObj, gameWorld, bgLayer, easeFactor, zoomScale);
         var newScale:Number   = zoomResult.newScale;
         var offsetX:Number    = zoomResult.offsetX;
         var offsetY:Number    = zoomResult.offsetY;

@@ -7693,7 +7693,7 @@ on(rollOut){
 	_root.加载共享场景(_root.关卡标志);
 }
 onClipEvent (enterFrame) {
-	_root.横版卷屏(_root.控制目标,_root.gameworld.背景长,_root.gameworld.背景高,10);
+	_root.横版卷屏();
 }]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
@@ -7717,7 +7717,7 @@ onClipEvent (enterFrame) {
 	_root.开启生存模式(本轮敌人);
 }
 onClipEvent (enterFrame) {
-	_root.横版卷屏(_root.控制目标,_root.gameworld.背景长,_root.gameworld.背景高,10);
+	_root.横版卷屏();
 }
 onClipEvent (unload) {
 	_root.生存模式关闭();
@@ -7748,7 +7748,7 @@ onClipEvent (unload) {
 	_root.加载共享场景("基地场景-" + _root.关卡标志);
 }
 onClipEvent (enterFrame) {
-	_root.横版卷屏(_root.控制目标,_root.gameworld.背景长,_root.gameworld.背景高,10);
+	_root.横版卷屏();
 }]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
@@ -7768,7 +7768,7 @@ onClipEvent (enterFrame) {
 	_root.加载共享场景(_root.关卡标志);
 }
 onClipEvent (enterFrame) {
-	_root.横版卷屏(_root.控制目标,_root.gameworld.背景长,_root.gameworld.背景高,10);
+	_root.横版卷屏();
 }]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
