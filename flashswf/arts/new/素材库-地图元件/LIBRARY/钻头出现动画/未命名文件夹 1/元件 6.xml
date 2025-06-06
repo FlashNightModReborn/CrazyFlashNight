@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="钻头出现动画/未命名文件夹 1/元件 6" itemID="683d5ba9-000001e3" symbolType="graphic" lastModified="1748976930" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="元件 6">
+      <layers>
+        <DOMLayer name="MergedLayer_1" color="#0000FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="钻头出现动画/未命名文件夹 1/元件 8">
+                  <matrix>
+                    <Matrix a="0.38311767578125" d="0.387435913085938" tx="-0.65" ty="-2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="258.3" y="183.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="6"/>
+                  </filters>
+                  <color>
+                    <Color brightness="-0.22"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="钻头出现动画/未命名文件夹 1/元件 10">
+                  <matrix>
+                    <Matrix a="0.38311767578125" d="0.387435913085938" tx="-0.3" ty="-0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="116.8" y="152.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="6"/>
+                  </filters>
+                  <color>
+                    <Color brightness="-0.22"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="钻头出现动画/未命名文件夹 1/元件 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.38311767578125" d="0.387435913085938" tx="-0.5" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="117.45" y="153.55"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.22"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原版钻头" color="#00FFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="钻头出现动画/未命名文件夹 1/元件 11" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="44.05" y="58.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
