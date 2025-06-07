@@ -365,7 +365,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         var listLength:Number = this.data.length;
         
         if (listLength <= 1) {
-            return this.data[0] || null;
+            // 单元素缓存：
+            // 1) 没传参 (target==undefined) → null
+            // 2) 传自身 (target == soleUnit) → null
+            // 3) 其他 (外部目标) → 唯一单位
+            if (target == undefined || target == this.data[0]) {
+                return null;
+            }
+            return this.data[0];
         }
 
         var targetX:Number = target.aabbCollider.left;
