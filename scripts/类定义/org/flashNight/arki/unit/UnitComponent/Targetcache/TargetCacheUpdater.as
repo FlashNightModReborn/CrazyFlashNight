@@ -1,19 +1,20 @@
 ﻿// ============================================================================
-// 目标缓存更新器（增强版 - 支持坐标值数组优化和自适应阈值）
+// 目标缓存更新器（重构版 - 集成AdaptiveThresholdOptimizer）
 // ----------------------------------------------------------------------------
 // 功能概述：
 // 1. 收集、排序并写入 cacheEntry
 // 2. 自动生成 nameIndex，支持 O(1) 索引定位
 // 3. 新增 rightValues/leftValues 数组，优化坐标值访问性能
 // 4. 维持 enemy / ally / all 三大版本号 + 复合键缓存
-// 5. 自适应阈值调整，根据单位分布特征动态优化查询性能
+// 5. 【重构改进】使用 AdaptiveThresholdOptimizer 处理阈值逻辑
 // 
-// 性能优化：
-// - 预缓存 aabbCollider.right/left 值到独立数组，减少多层属性访问
-// - 二分查找时直接访问数值数组，提升查询性能
-// - 保持数据局部性，优化 CPU 缓存命中率
-// - 自适应阈值，平衡缓存命中率和扫描效率
+// 重构改进：
+// - 将自适应阈值逻辑委托给 AdaptiveThresholdOptimizer
+// - 简化了类的职责，专注于缓存数据的构建
+// - 保持了所有原有的性能优化
+// - 为下一步向SortedUnitCache迁移做准备
 // ============================================================================
+import org.flashNight.arki.unit.UnitComponent.Targetcache.AdaptiveThresholdOptimizer;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
 
@@ -44,30 +45,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _allyVersion:Number = 0;
 
     /**
-     * 缓存有效性阈值（单位：像素）
-     * 用于描述当前单位分布的空间特征
-     * 当本次查询的 queryLeft 与上次相差在此阈值内时，认为可以使用缓存
-     * 该值根据单位分布特征自适应调整
+     * 缓存有效性阈值访问器
+     * 现在委托给 AdaptiveThresholdOptimizer 管理
+     * 保持向后兼容性
      */
-    public static var _THRESHOLD:Number = 100;
-
-    /**
-     * 自适应阈值参数
-     */
-    private static var _adaptiveParams:Object = {
-        // EMA平滑系数 (0.1 = 慢速适应, 0.3 = 快速适应)
-        alpha: 0.2,
-        
-        // 密度倍数因子 (平均间距的倍数)
-        densityFactor: 3.0,
-        
-        // 阈值边界限制
-        minThreshold: 30,
-        maxThreshold: 300,
-        
-        // 历史平均密度（初始值）
-        avgDensity: 100
-    };
+    public static function get _THRESHOLD():Number {
+        return AdaptiveThresholdOptimizer.getThreshold();
+    }
 
     /**
      * 请求类型常量定义
@@ -78,20 +62,20 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _ALL_TYPE:String   = "全体"; // 全体类型标识
 
     // ========================================================================
-    // 核心更新方法（含自适应阈值调整）
+    // 核心更新方法（重构版 - 使用AdaptiveThresholdOptimizer）
     // ========================================================================
     
     /**
-     * 更新缓存的核心方法
+     * 更新缓存的核心方法（重构版）
      * 根据请求类型和目标阵营收集、排序单位，并更新缓存项
-     * 新增：根据单位分布特征自适应调整查询阈值
+     * 【重构改进】：使用 AdaptiveThresholdOptimizer 处理阈值逻辑
      * 
      * 处理流程：
      * 1. 确定需要收集的阵营类型
      * 2. 生成缓存键并获取或创建缓存数据
      * 3. 检查版本号决定是否需要重新收集
      * 4. 对收集的单位进行插入排序
-     * 5. 分析单位分布特征并调整阈值
+     * 5. 【重构】委托给 AdaptiveThresholdOptimizer 分析并更新阈值
      * 6. 构建最终缓存数据（包含 nameIndex 和 rightValues）
      * 
      * @param {Object} gameWorld - 游戏世界对象，包含所有单位
@@ -110,6 +94,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         // 判断请求类型
         var isAllRequest:Boolean   = (requestType == _ALL_TYPE);
         var isEnemyRequest:Boolean = (requestType == _ENEMY_TYPE);
+
+        // _root.发布消息(TargetCacheUpdater.getDetailedStatusReport());
 
         // (1) 判定需收集的阵营
         var effectiveFaction:Boolean;
@@ -190,8 +176,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             newNameIndex[unit._name] = k;           // 用于O(1)名称索引
         }
 
-        // (5) 分析单位分布特征并自适应调整阈值
-        _updateAdaptiveThreshold(leftValues);
+        // ========================================================================
+        // ===== 【重构改进】使用 AdaptiveThresholdOptimizer 更新阈值 =====
+        // ========================================================================
+        AdaptiveThresholdOptimizer.updateThreshold(leftValues);
 
         // (6) 直接更新缓存项
         // 所有数据已在上面的单循环中准备完毕
@@ -202,78 +190,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         cacheEntry.lastUpdatedFrame  = currentFrame;   // 更新时间戳
     }
 
-
     // ========================================================================
-    // 自适应阈值调整
+    // 【重构改进】AdaptiveThresholdOptimizer 委托方法
     // ========================================================================
     
     /**
-     * 根据单位分布特征更新自适应阈值
-     * 接收 leftValues 数组
-     * 使用指数移动平均（EMA）来平滑阈值变化
-     * 
-     * 算法说明：
-     * 1. 计算相邻单位的平均间距（密度指标）
-     * 2. 使用 EMA 更新历史平均密度
-     * 3. 根据密度计算新阈值
-     * 4. 应用边界限制确保阈值在合理范围内
-     * 
-     * @param {Array} leftValues - 已按 left 升序排序的单位列表
-     * @private
-     */
-    private static function _updateAdaptiveThreshold(leftValues:Array):Void {
-        var len:Number = leftValues.length;
-        // 需要至少 2 个单位才能计算相邻间距
-        if (len < 2) return;
-
-        // ===== 计算当前分布密度 =====
-        var totalSpacing:Number = 0;
-        var spacingCount:Number = 0;
-
-        // 计算所有相邻单位的间距
-        for (var i:Number = 1; i < len; i++) {
-            // 直接用数字数组计算差值
-            var spacing:Number = leftValues[i] - leftValues[i - 1];
-            // 只统计有效间距（排除重叠单位）
-            if (spacing > 0) {
-                totalSpacing += spacing;
-                spacingCount++;
-            }
-        }
-        // 如果没有有效间距，就保持当前阈值不变
-        if (spacingCount == 0) return;
-
-        // 计算平均间距
-        var currentDensity:Number = totalSpacing / spacingCount;
-
-        // ===== 使用 EMA 更新历史平均密度 =====
-        var params:Object = _adaptiveParams;
-        params.avgDensity = params.alpha * currentDensity +
-                            (1 - params.alpha) * params.avgDensity;
-
-        // ===== 计算新阈值 =====
-        // 阈值 = 平均密度 × 密度因子
-        var newThreshold:Number = params.avgDensity * params.densityFactor;
-
-        // ===== 应用边界限制 =====
-        if (newThreshold < params.minThreshold) {
-            newThreshold = params.minThreshold;
-        } else if (newThreshold > params.maxThreshold) {
-            newThreshold = params.maxThreshold;
-        }
-
-        // ===== 更新全局阈值 =====
-        _THRESHOLD = newThreshold;
-
-        // =====（可选）输出调试信息 =====
-        // _root.发布消息("自适应阈值: " + Math.round(_THRESHOLD) +
-        //               " (密度: " + Math.round(params.avgDensity) + ")");
-    }
-
-
-    /**
      * 手动调整自适应参数
-     * 允许根据不同游戏场景微调算法行为
+     * 现在委托给 AdaptiveThresholdOptimizer
+     * 保持向后兼容性
      * 
      * @param {Number} alpha - EMA平滑系数 (0.1-0.5)
      * @param {Number} densityFactor - 密度倍数因子 (1.0-5.0)
@@ -286,19 +210,38 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         minThreshold:Number,
         maxThreshold:Number
     ):Void {
-        var params:Object = _adaptiveParams;
-        if (!isNaN(alpha) && alpha > 0 && alpha <= 1) {
-            params.alpha = alpha;
-        }
-        if (!isNaN(densityFactor) && densityFactor > 0) {
-            params.densityFactor = densityFactor;
-        }
-        if (!isNaN(minThreshold) && minThreshold > 0) {
-            params.minThreshold = minThreshold;
-        }
-        if (!isNaN(maxThreshold) && maxThreshold > minThreshold) {
-            params.maxThreshold = maxThreshold;
-        }
+        AdaptiveThresholdOptimizer.setParams(alpha, densityFactor, minThreshold, maxThreshold);
+    }
+
+    /**
+     * 应用阈值优化预设
+     * 新增方法，利用 AdaptiveThresholdOptimizer 的预设功能
+     * 
+     * @param {String} presetName - 预设名称 ("dense", "sparse", "dynamic", "stable", "default")
+     * @return {Boolean} 应用是否成功
+     */
+    public static function applyThresholdPreset(presetName:String):Boolean {
+        return AdaptiveThresholdOptimizer.applyPreset(presetName);
+    }
+
+    /**
+     * 获取当前阈值
+     * 委托给 AdaptiveThresholdOptimizer
+     * 
+     * @return {Number} 当前阈值
+     */
+    public static function getCurrentThreshold():Number {
+        return AdaptiveThresholdOptimizer.getThreshold();
+    }
+
+    /**
+     * 获取阈值优化器状态
+     * 新增方法，用于调试和监控
+     * 
+     * @return {Object} 优化器状态信息
+     */
+    public static function getThresholdStatus():Object {
+        return AdaptiveThresholdOptimizer.getStatus();
     }
 
     // ========================================================================
@@ -331,6 +274,78 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         } else {
             _allyVersion++;   // 友军阵营版本号递增
         }
+    }
+
+    /**
+     * 批量添加单位
+     * 新增方法，优化批量操作的性能
+     * 
+     * @param {Array} units - 要添加的单位数组
+     */
+    public static function addUnits(units:Array):Void {
+        var enemyCount:Number = 0;
+        var allyCount:Number = 0;
+        
+        for (var i:Number = 0; i < units.length; i++) {
+            if (units[i].是否为敌人) {
+                enemyCount++;
+            } else {
+                allyCount++;
+            }
+        }
+        
+        if (enemyCount > 0) _enemyVersion += enemyCount;
+        if (allyCount > 0) _allyVersion += allyCount;
+    }
+
+    /**
+     * 批量移除单位
+     * 新增方法，优化批量操作的性能
+     * 
+     * @param {Array} units - 要移除的单位数组
+     */
+    public static function removeUnits(units:Array):Void {
+        var enemyCount:Number = 0;
+        var allyCount:Number = 0;
+        
+        for (var i:Number = 0; i < units.length; i++) {
+            if (units[i].是否为敌人) {
+                enemyCount++;
+            } else {
+                allyCount++;
+            }
+        }
+        
+        if (enemyCount > 0) _enemyVersion += enemyCount;
+        if (allyCount > 0) _allyVersion += allyCount;
+    }
+
+    /**
+     * 获取版本号信息
+     * 新增方法，用于调试和监控
+     * 
+     * @return {Object} 包含所有版本号的对象
+     */
+    public static function getVersionInfo():Object {
+        return {
+            enemyVersion: _enemyVersion,
+            allyVersion: _allyVersion,
+            totalVersion: _enemyVersion + _allyVersion
+        };
+    }
+
+    /**
+     * 重置所有版本号
+     * 新增方法，用于调试或重新初始化
+     */
+    public static function resetVersions():Void {
+        _enemyVersion = 0;
+        _allyVersion = 0;
+        // 清空缓存池
+        for (var key:String in _cachePool) {
+            delete _cachePool[key];
+        }
+        _cachePool = {};
     }
 
     // ========================================================================
@@ -409,5 +424,146 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             // 更新碰撞器并添加到目标列表
             u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
         }
+    }
+
+    // ========================================================================
+    // 【重构辅助】缓存池管理方法
+    // ========================================================================
+    
+    /**
+     * 获取缓存池统计信息
+     * 新增方法，用于性能分析和调试
+     * 
+     * @return {Object} 缓存池统计信息
+     */
+    public static function getCachePoolStats():Object {
+        var stats:Object = {
+            totalPools: 0,
+            poolDetails: {},
+            memoryUsage: 0
+        };
+        
+        for (var key:String in _cachePool) {
+            var pool:Object = _cachePool[key];
+            stats.totalPools++;
+            stats.poolDetails[key] = {
+                listLength: pool.tempList.length,
+                version: pool.tempVersion
+            };
+            stats.memoryUsage += pool.tempList.length;
+        }
+        
+        return stats;
+    }
+
+    /**
+     * 清理指定类型的缓存池
+     * 新增方法，用于内存管理
+     * 
+     * @param {String} requestType - 要清理的请求类型（可选，不传则清理所有）
+     */
+    public static function clearCachePool(requestType:String):Void {
+        if (requestType) {
+            // 清理特定类型的缓存
+            for (var key:String in _cachePool) {
+                if (key.indexOf(requestType) == 0) {
+                    delete _cachePool[key];
+                }
+            }
+        } else {
+            // 清理所有缓存
+            for (var key2:String in _cachePool) {
+                delete _cachePool[key2];
+            }
+            _cachePool = {};
+        }
+    }
+
+    // ========================================================================
+    // 调试和监控方法
+    // ========================================================================
+    
+    /**
+     * 生成详细的状态报告
+     * 新增方法，整合所有组件的状态信息
+     * 
+     * @return {String} 格式化的状态报告
+     */
+    public static function getDetailedStatusReport():String {
+        var versionInfo:Object = getVersionInfo();
+        var poolStats:Object = getCachePoolStats();
+        var thresholdStatus:Object = getThresholdStatus();
+        
+        var report:String = "=== TargetCacheUpdater Status Report ===\n\n";
+        
+        // 版本信息
+        report += "Version Numbers:\n";
+        report += "  Enemy Version: " + versionInfo.enemyVersion + "\n";
+        report += "  Ally Version: " + versionInfo.allyVersion + "\n";
+        report += "  Total Updates: " + versionInfo.totalVersion + "\n\n";
+        
+        // 缓存池信息
+        report += "Cache Pool Stats:\n";
+        report += "  Active Pools: " + poolStats.totalPools + "\n";
+        report += "  Total Units Cached: " + poolStats.memoryUsage + "\n";
+        for (var key:String in poolStats.poolDetails) {
+            var detail:Object = poolStats.poolDetails[key];
+            report += "  " + key + ": " + detail.listLength + " units (v" + detail.version + ")\n";
+        }
+        report += "\n";
+        
+        // 阈值优化器信息
+        report += "Threshold Optimizer:\n";
+        report += "  Current Threshold: " + Math.round(thresholdStatus.currentThreshold) + "px\n";
+        report += "  Avg Density: " + Math.round(thresholdStatus.avgDensity) + "px\n";
+        report += "  Optimizer Version: " + thresholdStatus.version + "\n";
+        
+        return report;
+    }
+
+    /**
+     * 执行自检和性能测试
+     * 新增方法，用于验证系统健康状态
+     * 
+     * @return {Object} 自检结果
+     */
+    public static function performSelfCheck():Object {
+        var result:Object = {
+            passed: true,
+            errors: [],
+            warnings: [],
+            performance: {}
+        };
+        
+        // 检查AdaptiveThresholdOptimizer是否可用
+        try {
+            var threshold:Number = AdaptiveThresholdOptimizer.getThreshold();
+            if (isNaN(threshold) || threshold <= 0) {
+                result.errors.push("Invalid threshold value: " + threshold);
+                result.passed = false;
+            }
+        } catch (e:Error) {
+            result.errors.push("AdaptiveThresholdOptimizer not accessible: " + e.message);
+            result.passed = false;
+        }
+        
+        // 检查缓存池完整性
+        var poolStats:Object = getCachePoolStats();
+        if (poolStats.totalPools > 10) {
+            result.warnings.push("Large number of cache pools (" + poolStats.totalPools + "), consider cleanup");
+        }
+        
+        // 检查版本号一致性
+        var versionInfo:Object = getVersionInfo();
+        if (versionInfo.enemyVersion < 0 || versionInfo.allyVersion < 0) {
+            result.errors.push("Negative version numbers detected");
+            result.passed = false;
+        }
+        
+        result.performance.cachePoolCount = poolStats.totalPools;
+        result.performance.totalCachedUnits = poolStats.memoryUsage;
+        result.performance.currentThreshold = threshold;
+        
+        return result;
     }
 }
