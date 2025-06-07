@@ -15,6 +15,7 @@
 // - 为下一步向SortedUnitCache迁移做准备
 // ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.AdaptiveThresholdOptimizer;
+import org.flashNight.naki.Sort.TimSort;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
 
@@ -112,7 +113,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
 
         // 获取或创建缓存类型数据
         if (!_cachePool[cacheKey]) {
-            _cachePool[cacheKey] = { tempList: [], tempVersion: 0 };
+            // 把新创建缓存的初始 tempVersion 设置为小于任何可能的版本号（比如 -1），保证第一次总能进入收集。
+            _cachePool[cacheKey] = { tempList: [], tempVersion: -1 };
         }
         var cacheTypeData:Object = _cachePool[cacheKey];
 
@@ -144,7 +146,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         // (4) 插入排序（按 left 升序）
         var list:Array = cacheTypeData.tempList;
         var len:Number = list.length;
-        if (len > 1) {
+        if (len > 64) {
+            TimSort.sort(list, function(a:Object, b:Object):Number {
+                return a.aabbCollider.left - b.aabbCollider.left;
+            });
+        } else if (len > 1) {
             var i:Number = 1;
             do {
                 var key:Object = list[i];
@@ -450,7 +456,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                 listLength: pool.tempList.length,
                 version: pool.tempVersion
             };
-            stats.memoryUsage += pool.tempList.length;
+            stats.memoryUsage++;
         }
         
         return stats;
