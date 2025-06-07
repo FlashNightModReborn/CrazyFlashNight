@@ -226,8 +226,8 @@
     </Skill>
     <Skill id="20">
         <Name>龙斩</Name>
-        <Type>剑术-锋利度&amp;内力</Type>
-        <Description>强力清怪技能！基础强度：高，升级收益：高。</Description>
+        <Type>武术&amp;剑术-内力&amp;锋利度</Type>
+        <Description>强力清怪技能！内力化形，御气于剑。基础强度：高，升级收益：高。</Description>
         <UnlockLevel>30</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>100</UnlockSP>
@@ -242,7 +242,7 @@
         <UnlockLevel>35</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>100</UnlockSP>
-        <UpgradeSP>50</UpgradeSP>
+        <UpgradeSP>60</UpgradeSP>
         <CD>12000</CD>
         <MP>120</MP>
     </Skill>
