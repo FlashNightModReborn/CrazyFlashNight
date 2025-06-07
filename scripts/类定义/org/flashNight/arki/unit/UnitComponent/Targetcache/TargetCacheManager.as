@@ -1,5 +1,5 @@
 ﻿// ============================================================================
-// 目标缓存管理器（增强版 - 支持坐标值数组优化）
+// 目标缓存管理器（深度优化版 - 应用常数优化和数据局部性优化）
 // ----------------------------------------------------------------------------
 // 功能概述：
 // 1. 缓存管理：管理敌人/友军/全体三大类目标缓存，支持按帧自动更新
@@ -8,12 +8,11 @@
 // 4. 邻近查询：O(1)查找最近/最远单位，利用有序性和nameIndex
 // 5. 区域搜索：查找指定范围内的所有单位或最近/最远单位
 // 
-// 性能优化：
-// - 利用nameIndex实现O(1)索引查找
-// - 使用rightValues/leftValues数组避免多层属性访问
-// - 二分查找定位范围起始位置
-// - 有序数组特性实现最远单位O(1)查询
-// - 静态对象复用减少GC压力
+// 【新增优化策略】：
+// - 借鉴TargetCacheUpdater的数据局部性思想，减少重复属性访问
+// - 使用直接索引赋值替代Array.push()，减少函数调用开销
+// - 在距离计算前缓存坐标值，避免重复的属性链查找
+// - 优化循环结构，最大化代码执行效率
 // ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.gesh.object.*;
@@ -232,33 +231,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      */
     private static var _lastIndex:Number = 0;
 
-
-    /**
-     * 性能统计对象
-     * 包含详细的查询统计信息，用于分析和优化算法性能
-     * 
-     * @property totalQueries      总查询次数
-     * @property smallArrays       小数组优化次数（<=8个元素）
-     * @property cacheHits         缓存命中次数（使用增量线性扫描）
-     * @property cacheMisses       缓存未命中次数（退化到其他查找方式）
-     * @property firstElementHits  首元素命中次数
-     * @property lastElementHits   尾元素命中次数
-     * @property binarySearches    二分查找次数
-     * @property avgScanDistance   平均线性扫描距离
-     * @property maxScanDistance   最大线性扫描距离
-     */
-    private static var _stats:Object = {
-        totalQueries: 0,
-        smallArrays: 0,
-        cacheHits: 0,
-        cacheMisses: 0,
-        firstElementHits: 0,
-        lastElementHits: 0,
-        binarySearches: 0,
-        avgScanDistance: 0,
-        maxScanDistance: 0
-    };
-
     /**
      * 从指定位置开始获取满足条件的目标列表（核心优化版）
      * 
@@ -310,9 +282,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         var rightValues:Array = cacheEntry.rightValues;  // 使用预缓存的坐标值
         var n:Number = list.length;
         
-        // 增加总查询计数
-        // _stats.totalQueries++;
-        
         // 空数组快速返回
         if (n == 0) {
             return _emptyResult;
@@ -327,7 +296,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         // 对于小数组，线性扫描比二分查找更快
         // =====================================================================
         if (n <= 8) {
-            // _stats.smallArrays++;
             var i:Number = 0;
             do {
                 if (rightValues[i] >= queryLeft) {  // 直接访问数组，更快
@@ -361,15 +329,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         
         if (cacheValid) {
             // 计算查询位置的变化量
-            var deltaQuery:Number = Math.abs(queryLeft - _lastQueryLeft);
-            
+
+            var deltaQueryDiff:Number = queryLeft - _lastQueryLeft;
             // 只有变化量在阈值内才使用缓存
-            if (deltaQuery <= TargetCacheUpdater._THRESHOLD) {
-                // _stats.cacheHits++;  // 记录缓存命中
+            if ((deltaQueryDiff < 0 ? -deltaQueryDiff : deltaQueryDiff) <= TargetCacheUpdater._THRESHOLD) {
                 
                 // 获取缓存位置的右边界值
                 var cachedRight:Number = rightValues[_lastIndex];  // 使用预缓存值
-                var scanDistance:Number = 0;  // 记录扫描距离，用于性能分析
                 
                 // -------------------------------------------------------------
                 // 情况A：查询位置右移（queryLeft > 上次位置）
@@ -381,7 +347,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
                     // 向后扫描，跳过所有不满足条件的元素
                     while (idxForward < n && rightValues[idxForward] < queryLeft) {
                         idxForward++;
-                        scanDistance++;
                     }
                     
                     // 确保找到的是第一个满足条件的元素
@@ -389,7 +354,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
                     if (idxForward > 0 && idxForward < n) {
                         while (idxForward > 0 && rightValues[idxForward - 1] >= queryLeft) {
                             idxForward--;
-                            scanDistance++;
                         }
                     }
                     
@@ -410,7 +374,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
                     // 向前扫描，找到第一个满足条件的元素
                     while (idxBackward > 0 && rightValues[idxBackward - 1] >= queryLeft) {
                         idxBackward--;
-                        scanDistance++;
                     }
                     
                     // 返回结果并更新缓存
@@ -420,13 +383,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
                     _lastIndex = idxBackward;
                     return resultCache;
                 }
-            } else {
-                // 查询位置变化过大，缓存失效
-                // _stats.cacheMisses++;
             }
-        } else {
-            // 缓存完全无效（首次查询或数组大小变化）
-            // _stats.cacheMisses++;
         }
         
         // =====================================================================
@@ -436,7 +393,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         
         // 检查第一个元素
         if (rightValues[0] >= queryLeft) {  // 使用预缓存值
-            // _stats.firstElementHits++;
             resultCache.data = list;
             resultCache.startIndex = 0;
             _lastQueryLeft = queryLeft;
@@ -446,7 +402,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         
         // 检查最后一个元素
         if (rightValues[n - 1] < queryLeft) {  // 使用预缓存值
-            // _stats.lastElementHits++;
             resultCache.data = list;
             resultCache.startIndex = n;  // 所有元素都不满足
             _lastQueryLeft = queryLeft;
@@ -458,7 +413,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         // 策略4：标准二分查找（使用预缓存坐标值）
         // 当缓存失效且不是边界情况时，使用二分查找
         // =====================================================================
-        // _stats.binarySearches++;
         var l:Number = 1;
         var r:Number = n - 1;
         
@@ -490,74 +444,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         _lastQueryLeft = queryLeft;
         _lastIndex = l;
         return resultCache;
-    }
-
-    /**
-     * 更新线性扫描距离的统计信息
-     * 
-     * 用于分析缓存命中时的扫描效率，帮助调整阈值参数
-     * 
-     * @param distance 本次线性扫描的距离（扫描的元素个数）
-     * @private
-     */
-    private static function _updateScanStats(distance:Number):Void {
-        // 更新最大扫描距离
-        if (distance > _stats.maxScanDistance) {
-            _stats.maxScanDistance = distance;
-        }
-        
-        // 计算平均扫描距离（增量平均）
-        var totalScans:Number = _stats.cacheHits;
-        _stats.avgScanDistance = (_stats.avgScanDistance * (totalScans - 1) + distance) / totalScans;
-    }
-
-    /**
-     * 更新性能统计的调试输出
-     * 
-     * 将关键性能指标输出到游戏界面，便于实时监控和优化
-     * 输出内容包括：缓存命中率、二分查找率、平均/最大扫描距离
-     * 
-     * @private
-     */
-    private static function _updateDebugOutput():Void {
-        // 计算有效查询次数（排除小数组）
-        var effectiveQueries:Number = _stats.totalQueries - _stats.smallArrays;
-        if (effectiveQueries <= 0) return;
-        
-        // 计算各项指标的百分比
-        var cacheHitRate:Number = (_stats.cacheHits / effectiveQueries) * 100;
-        var binarySearchRate:Number = (_stats.binarySearches / effectiveQueries) * 100;
-        
-        // 构建并输出统计信息
-        _root.发布消息(
-            "缓存命中率: " + cacheHitRate + "% | " +
-            "二分查找率: " + binarySearchRate + "% | " +
-            "平均扫描距离: " + _stats.avgScanDistance + " | " +
-            "最大扫描距离: " + _stats.maxScanDistance + " | " +
-            "扫描阈值: " + TargetCacheUpdater._THRESHOLD
-        );
-    }
-
-    /**
-     * 重置所有性能统计数据
-     * 
-     * 在场景切换、关卡重新开始或需要重新评估性能时调用
-     * 清空所有统计计数器，开始新的统计周期
-     * 
-     * @example
-     * // 在新关卡开始时重置统计
-     * TargetQueryCache.resetStats();
-     */
-    public static function resetStats():Void {
-        _stats.totalQueries = 0;
-        _stats.smallArrays = 0;
-        _stats.cacheHits = 0;
-        _stats.cacheMisses = 0;
-        _stats.firstElementHits = 0;
-        _stats.lastElementHits = 0;
-        _stats.binarySearches = 0;
-        _stats.avgScanDistance = 0;
-        _stats.maxScanDistance = 0;
     }
 
     /**
@@ -594,13 +480,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     // ========================================================================
-    // 最近单位查询
+    // 最近单位查询（优化版）
     // ========================================================================
     
     /**
-     * 按X轴快速查找与目标单位最近的单位（优化版）
-     * 利用nameIndex实现O(1)邻居查找，或在目标不在列表时进行全表扫描
-     * 使用预缓存的leftValues数组避免多层属性访问
+     * 按X轴快速查找与目标单位最近的单位（深度优化版）
+     * 
+     * 【优化要点】：
+     * 1. 预缓存目标坐标，减少重复的属性链访问
+     * 2. 利用nameIndex实现O(1)邻居查找，或在目标不在列表时进行全表扫描
+     * 3. 使用预缓存的leftValues数组避免多层属性访问
+     * 4. 在全表扫描中应用常数优化技巧
      * 
      * @param {Object} target - 当前单位
      * @param {Number} updateInterval - 缓存失效帧间隔
@@ -633,22 +523,30 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         var list:Array = cacheEntry.data;
         var leftValues:Array = cacheEntry.leftValues;  // 使用预缓存的坐标值
 
+        // 【优化点1】：预缓存目标坐标，减少重复属性访问
+        var targetX:Number = target.aabbCollider.left;
+
         // --- 快速定位自身索引 ---
         var idx:Number = cacheEntry.nameIndex[target._name];
-        var lx:Number = target.aabbCollider.left; // 目标X坐标
-        
+        var listLength:Number = list.length;
+
         if (idx == undefined) {
             // 如果自身不在列表中，则进行全表扫描查找最近单位
             var minDist:Number = Number.MAX_VALUE;
             var nearest:Object = null;
             
-            // 遍历所有单位，找到最近的
-            for (var i:Number = 0; i < list.length; i++) {
-                if (list[i] == target) continue; // 跳过自身
-                var d:Number = Math.abs(leftValues[i] - lx); // 使用预缓存值计算距离
-                if (d < minDist) { 
-                    minDist = d; // 更新最小距离
-                    nearest = list[i]; // 更新最近单位
+            // 【优化点2】：在循环中直接使用预缓存的坐标值
+            
+            for (var i:Number = 0; i < listLength; i++) {
+                var unit:Object = list[i];
+                if (unit == target) continue; // 跳过自身
+                
+                // 直接使用预缓存值计算距离，避免属性链访问
+                var d:Number = leftValues[i] - targetX;
+                var absD:Number = (d < 0 ? -d : d);
+                if (absD < minDist) { 
+                    minDist = absD; // 更新最小距离
+                    nearest = unit; // 更新最近单位
                 }
             }
             return nearest;
@@ -658,11 +556,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         // 获取左侧单位（如果存在）
         var leftObj:Object = (idx > 0) ? list[idx - 1] : null;
         // 获取右侧单位（如果存在）
-        var rightObj:Object = (idx < list.length - 1) ? list[idx + 1] : null;
+        var rightObj:Object = (idx < listLength - 1) ? list[idx + 1] : null;
 
-        // 计算左右单位与目标的距离（使用预缓存坐标值）
-        var dl:Number = (leftObj) ? Math.abs(leftValues[idx - 1] - lx) : Number.MAX_VALUE;
-        var dr:Number = (rightObj) ? Math.abs(leftValues[idx + 1] - lx) : Number.MAX_VALUE;
+        // 【优化点3】：计算左右单位与目标的距离，使用预缓存坐标值和缓存的targetX
+        var diffL:Number = (leftObj) ? (leftValues[idx - 1] - targetX) : 0;
+        var dl:Number = (leftObj) ? (diffL < 0 ? -diffL : diffL) : Number.MAX_VALUE;
+
+        var diffR:Number = (rightObj) ? (leftValues[idx + 1] - targetX) : 0;
+        var dr:Number = (rightObj) ? (diffR < 0 ? -diffR : diffR) : Number.MAX_VALUE;
 
         // 如果左右都没有单位，返回null
         if (dl == Number.MAX_VALUE && dr == Number.MAX_VALUE) return null;
@@ -702,13 +603,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     // ========================================================================
-    // 最远单位查询
+    // 最远单位查询（优化版）
     // ========================================================================
 
     /**
-     * 按X轴快速查找与目标单位最远的单位（优化版）
-     * 利用排序数组特性：最远单位必定是首元素或尾元素，实现O(1)查询
-     * 使用预缓存的leftValues数组避免多层属性访问
+     * 按X轴快速查找与目标单位最远的单位（深度优化版）
+     * 
+     * 【优化要点】：
+     * 1. 预缓存目标坐标，减少重复的属性链访问
+     * 2. 利用排序数组特性：最远单位必定是首元素或尾元素，实现O(1)查询
+     * 3. 使用预缓存的leftValues数组避免多层属性访问
+     * 4. 优化全表扫描逻辑，减少不必要的计算
      * 
      * @param {Object} target - 当前单位
      * @param {Number} updateInterval - 缓存失效帧间隔
@@ -739,26 +644,35 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
         var list:Array = cacheEntry.data;
         var leftValues:Array = cacheEntry.leftValues;  // 使用预缓存的坐标值
+
+        var listLength:Number = list.length;
         
-        if (list.length <= 1) {
+        if (listLength <= 1) {
             return list[0] || null;  // 列表为空或只有一个单位
         }
 
+        // 【优化点1】：预缓存目标坐标，减少重复属性访问
+        var targetX:Number = target.aabbCollider.left;
+
         // --- 快速定位自身索引 ---
         var idx:Number = cacheEntry.nameIndex[target._name];
-        var lx:Number = target.aabbCollider.left; // 目标X坐标
         
         if (idx == undefined) {
             // 如果自身不在列表中，则进行全表扫描查找最远单位
             var maxDist:Number = -1;
             var farthest:Object = null;
             
-            for (var i:Number = 0; i < list.length; i++) {
-                if (list[i] == target) continue; // 跳过自身
-                var d:Number = Math.abs(leftValues[i] - lx);  // 使用预缓存值
-                if (d > maxDist) { 
-                    maxDist = d;
-                    farthest = list[i];
+            // 【优化点2】：在循环中直接使用预缓存坐标值和缓存的targetX
+            for (var i:Number = 0; i < listLength; i++) {
+                var unit:Object = list[i];
+                if (unit == target) continue; // 跳过自身
+                
+                // 使用预缓存值和缓存的targetX计算距离
+                var d:Number = leftValues[i] - targetX;
+                var absD:Number = (d < 0 ? -d : d);
+                if (absD > maxDist) { 
+                    maxDist = absD;
+                    farthest = unit;
                 }
             }
             return farthest;
@@ -766,19 +680,19 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
         // --- O(1)核心算法：最远单位必定是首元素或尾元素 ---
         var firstObj:Object = list[0];
-        var lastObj:Object = list[list.length - 1];
+        var lastObj:Object = list[listLength - 1];
         
         // 特殊情况：如果自己就是首元素，最远的是尾元素
-        if (idx == 0) return (list.length > 1) ? lastObj : null;
+        if (idx == 0) return (listLength > 1) ? lastObj : null;
         
         // 特殊情况：如果自己就是尾元素，最远的是首元素  
-        if (idx == list.length - 1) return firstObj;
+        if (idx == listLength - 1) return firstObj;
         
-        // 一般情况：自己在中间，比较到首尾的距离（使用预缓存值）
-        var d1:Number = Math.abs(leftValues[0] - lx);
-        var d2:Number = Math.abs(leftValues[list.length - 1] - lx);
+        // 【优化点3】：一般情况下比较到首尾的距离，使用预缓存值和缓存的targetX
+        var d1:Number = leftValues[0] - targetX;
+        var d2:Number = leftValues[listLength - 1] - targetX;
         
-        return (d1 >= d2) ? firstObj : lastObj;
+        return ((d1 < 0 ? -d1 : d1) >= (d2 < 0 ? -d2 : d2)) ? firstObj : lastObj;
     }
 
     /**
@@ -812,13 +726,18 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     // ========================================================================
-    // 区域搜索方法（优化版）
+    // 区域搜索方法（深度优化版）
     // ========================================================================
 
     /**
-     * 查找指定X轴范围内的所有单位（优化版）
-     * 利用有序数组特性，使用二分查找定位起始和结束位置
-     * 使用预缓存的leftValues数组提高查询性能
+     * 查找指定X轴范围内的所有单位（深度优化版）
+     * 
+     * 【优化要点】：
+     * 1. 预缓存目标坐标和边界值，减少重复计算
+     * 2. 利用有序数组特性，使用二分查找定位起始和结束位置
+     * 3. 使用预缓存的leftValues数组提高查询性能
+     * 4. 【关键优化】使用直接索引赋值替代Array.push()，减少函数调用开销
+     * 5. 优化循环结构和边界检查
      * 
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔(帧数)
@@ -856,6 +775,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         var len:Number = list.length;
         if (len == 0) return [];
 
+        // 【优化点1】：预缓存目标坐标和边界值，减少重复计算
         var targetX:Number = target.aabbCollider.left;
         var leftBound:Number = targetX - leftRange;
         var rightBound:Number = targetX + rightRange;
@@ -879,11 +799,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
         // === 右边界二分查找 (> rightBound) ===
         var endIdx:Number;
-        if (leftValues[len - 1] <= rightBound) {  // 使用预缓存值
+        var r2:Number = len - 1;
+        if (leftValues[r2] <= rightBound) {  // 使用预缓存值
             endIdx = len;
         } else {
             var l2:Number = startIdx; // 优化：从 startIdx 开始
-            var r2:Number = len - 1;
+            
             while (l2 < r2) {
                 var m2:Number = (l2 + r2) >> 1;
                 if (leftValues[m2] <= rightBound) l2 = m2 + 1;  // 使用预缓存值
@@ -892,11 +813,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
             endIdx = l2;
         }
 
-        // === 构建结果数组 ===
+        // === 【关键优化】使用直接索引赋值构建结果数组 ===
         var result:Array = [];
+        var resultIdx:Number = 0;  // 结果数组的当前索引
+        
+        // 【优化点2】：使用直接索引赋值代替push()，减少函数调用开销
         for (var i:Number = startIdx; i < endIdx; i++) {
             var unit:Object = list[i];
-            if (unit != target) result.push(unit);
+            if (unit != target) {
+                result[resultIdx++] = unit;  // 直接索引赋值，避免push()的函数调用开销
+            }
         }
 
         return result;
@@ -904,6 +830,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定半径范围内的所有单位
+     * 内部调用优化后的findTargetsInRange方法
+     * 
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔(帧数)
      * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
@@ -995,13 +923,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     // ========================================================================
-    // 范围限制查询方法
+    // 范围限制查询方法（优化版）
     // ========================================================================
 
     /**
-     * 查找指定范围内的最近单位（优化版）
-     * 结合范围查询和最近单位查找，适用于有距离限制的场景
-     * 使用预缓存的leftValues数组提高性能
+     * 查找指定范围内的最近单位（深度优化版）
+     * 
+     * 【优化要点】：
+     * 1. 预缓存目标坐标，减少重复的属性链访问
+     * 2. 结合范围查询和最近单位查找，适用于有距离限制的场景
+     * 3. 使用预缓存的数据结构提高性能
+     * 4. 避免不必要的重复计算
      * 
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔
@@ -1018,8 +950,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         var nearest:Object = findNearestTarget(target, updateInterval, requestType);
         if (!nearest) return null;
         
-        var distance:Number = Math.abs(nearest.aabbCollider.left - target.aabbCollider.left);
-        return (distance <= maxDistance) ? nearest : null;
+        // 【优化点】：预缓存目标坐标，避免重复访问属性链
+        var targetX:Number = target.aabbCollider.left;
+        var distanceDiff:Number = nearest.aabbCollider.left - targetX;
+        return ((distanceDiff < 0 ? -distanceDiff : distanceDiff) <= maxDistance) ? nearest : null;
     }
 
     /**
@@ -1062,7 +996,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     /**
-     * 查找指定范围内的最远单位（优化版）
+     * 查找指定范围内的最远单位（深度优化版）
+     * 
+     * 【优化要点】：
+     * 1. 预缓存目标坐标，减少重复的属性链访问
+     * 2. 利用已优化的最远单位查找算法
+     * 3. 避免重复的距离计算
+     * 
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔
      * @param {String} requestType - 请求类型
@@ -1078,8 +1018,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         var farthest:Object = findFarthestTarget(target, updateInterval, requestType);
         if (!farthest) return null;
         
-        var distance:Number = Math.abs(farthest.aabbCollider.left - target.aabbCollider.left);
-        return (distance <= maxDistance) ? farthest : null;
+        // 【优化点】：预缓存目标坐标，避免重复访问属性链
+        var targetX:Number = target.aabbCollider.left;
+        var diff:Number = farthest.aabbCollider.left - targetX;
+
+        return (((diff < 0) ? -diff : diff) <= maxDistance) ? farthest : null;
     }
 
     /**
