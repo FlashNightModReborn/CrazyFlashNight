@@ -122,15 +122,15 @@
           <Include href="排序图标.xml" loadImmediate="false" itemID="67b3f97f-0000074c" lastModified="1739869240"/>
           <Include href="情报信息界面.xml" loadImmediate="false" itemID="677e2699-00000a04" lastModified="1736923525"/>
           <Include href="物品栏/滚动槽.xml" loadImmediate="false" itemID="677cd93a-0000091a" lastModified="1736246336"/>
-          <Include href="物品栏/旧版物品图标.xml" loadImmediate="false" itemID="676c593f-00001682" lastModified="1736862209"/>
+          <Include href="物品栏/旧版物品图标.xml" loadImmediate="false" itemID="676c593f-00001682" lastModified="1749286271"/>
           <Include href="物品栏/排序图标.xml" itemIcon="1" loadImmediate="false" itemID="67b3f748-00000709" lastModified="1739869844"/>
           <Include href="物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
           <Include href="物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
-          <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1739864805"/>
+          <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1749286500"/>
           <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1739864791"/>
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1736267857"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
-          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1747818700"/>
+          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1749286515"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -221,7 +221,7 @@
                                                   <AdjustColorFilter/>
                                              </filters>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/旧版物品栏界面" centerPoint3DX="469.1" centerPoint3DY="-253.35">
+                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/旧版物品栏界面" selected="true" centerPoint3DX="469.1" centerPoint3DY="-253.35">
                                              <matrix>
                                                   <Matrix a="0.999984741210938" d="0.999984741210938" tx="351.1" ty="-419.3"/>
                                              </matrix>
@@ -251,7 +251,7 @@
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" selected="true" centerPoint3DX="133.05" centerPoint3DY="160.95">
+                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" centerPoint3DX="133.05" centerPoint3DY="160.95">
                                              <matrix>
                                                   <Matrix a="0.999984741210938" d="0.999984741210938" tx="15.05" ty="-5"/>
                                              </matrix>
@@ -546,6 +546,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="52565" publishTime="1749286311"/>
           <PublishItem publishSize="52550" publishTime="1740304803"/>
           <PublishItem publishSize="52543" publishTime="1740304704"/>
           <PublishItem publishSize="52541" publishTime="1740304505"/>
@@ -565,6 +566,5 @@
           <PublishItem publishSize="51968" publishTime="1739852736"/>
           <PublishItem publishSize="51589" publishTime="1739850776"/>
           <PublishItem publishSize="51660" publishTime="1739849847"/>
-          <PublishItem publishSize="51637" publishTime="1739849776"/>
      </publishHistory>
 </DOMDocument>

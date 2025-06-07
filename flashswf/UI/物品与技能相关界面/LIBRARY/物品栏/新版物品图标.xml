@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="物品栏/新版物品图标" itemID="676a60d0-00000262" linkageExportForAS="true" linkageIdentifier="物品图标" lastModified="1739864805" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="物品栏/新版物品图标" itemID="676a60d0-00000262" linkageExportForAS="true" linkageIdentifier="物品图标" lastModified="1749286500" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="新版物品图标">
+    <DOMTimeline name="新版物品图标" currentFrame="7">
       <layers>
         <DOMLayer name="Labels Layer" color="#4DC4D9">
           <frames>
@@ -102,11 +102,11 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="数量" color="#F2A592" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="数量" color="#F2A592" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <elements>
-                <DOMDynamicText name="valuetext" selected="true" fontRenderingMode="device" width="22.15" height="15.9" isSelectable="false">
+                <DOMDynamicText name="valuetext" fontRenderingMode="device" width="22.15" height="15.9" isSelectable="false">
                   <matrix>
                     <Matrix tx="-11" ty="-13"/>
                   </matrix>
@@ -145,14 +145,14 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#C4EA94" locked="true" autoNamed="false">
+        <DOMLayer name="按钮" color="#C4EA94" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/透明按钮" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/透明按钮" selected="true" symbolType="button">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -160,7 +160,6 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
                     <script><![CDATA[on (rollOver) {
 	itemIcon.RollOver();
 }
-
 on (rollOut) {
 	_root.鼠标.gotoAndStop("手型普通");
 	itemIcon.RollOut();
@@ -168,7 +167,7 @@ on (rollOut) {
 on (press) {
 	itemIcon.Press();
 }
-on (release) {
+on (release, releaseOutside) {
 	itemIcon.Release();
 }
 ]]></script>

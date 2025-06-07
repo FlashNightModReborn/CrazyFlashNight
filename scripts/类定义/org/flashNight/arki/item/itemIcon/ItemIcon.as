@@ -72,6 +72,12 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
         }
     }
 
+    public function dispose(){
+        icon = null;
+        valuetext = null;
+        valuetext = null;
+    }
+
 
     //图标按钮事件
     public function RollOver():Void{

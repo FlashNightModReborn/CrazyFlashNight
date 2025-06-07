@@ -4,6 +4,7 @@ import org.flashNight.gesh.object.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
 
+
 //新版物品栏
 _root.物品UI函数 = new Object();
 
@@ -97,43 +98,20 @@ _root.物品UI函数.计算强化收益 = function(当前总价, 强化等级){
 }
 
 
+
 //排列背包图标
 _root.物品UI函数.创建背包图标 = function(){
 	if(_root.物品栏界面.界面 != "物品栏") return;
-
 	var 物品栏界面 = _root.物品栏界面;
-	var 背包 = _root.物品栏.背包;
-	//设置背包事件分发器
-	var bagDispatcher = new LifecycleEventDispatcher(物品栏界面.物品图标);
-	背包.setDispatcher(bagDispatcher);
-	
-	var 起始x = 物品栏界面.物品图标._x;
-	var 起始y = 物品栏界面.物品图标._y;
-	var 图标高度 = 28;
-	var 图标宽度 = 28;
-	var 列数 = 10;
-	var 行数 = 5;
-	var 总格数 = 行数*列数;
-	var 换行计数 = 0;
 
-	物品栏界面.背包图标列表 = new Array(总格数);
-	
-	for (var i = 0; i < 总格数; i++)
-	{
-		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i);
-		物品图标._x = 起始x;
-		物品图标._y = 起始y;
-		起始x += 图标宽度;
-		换行计数++;
-		if (换行计数 == 列数)
-		{
-			换行计数 = 0;
-			起始x = 物品栏界面.物品图标._x;
-			起始y += 图标高度;
-		}
-		物品栏界面.背包图标列表[i] = 物品图标;
-		物品图标.itemIcon = new InventoryIcon(物品图标,背包,i);
-	}
+	var info = {
+		startindex: 0, 
+		startdepth: 0, 
+		row: 5, 
+		col: 10, 
+		padding: 28
+	};
+	IconFactory.createInventoryLayout(_root.物品栏.背包, 物品栏界面.物品图标, info);
 
 	var 装备栏 = _root.物品栏.装备栏;
 	var 装备栏位列表 = ["头部装备","上装装备","下装装备","手部装备","脚部装备","颈部装备","长枪","手枪","手枪2","刀","手雷"];
@@ -146,14 +124,6 @@ _root.物品UI函数.创建背包图标 = function(){
 		var 物品图标 = 物品栏界面[装备类型];
 		物品图标.itemIcon = new EquipmentIcon(物品图标,装备栏,装备类型);
 	}
-}
-
-_root.物品UI函数.删除背包图标 = function(){
-	var 背包图标列表 = _root.物品栏界面.背包图标列表;
-	for(var i=0; i<背包图标列表.length; i++){
-		背包图标列表[i].removeMovieClip();
-	}
-	_root.物品栏界面.背包图标列表 = null;
 }
 
 
@@ -194,44 +164,29 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 	购买物品界面._visible = true;
 	购买物品界面.gotoAndStop("选择物品");
 
-	var 起始x = 购买物品界面.物品图标._x;
-	var 起始y = 购买物品界面.物品图标._y;
-	var 图标高度 = 28;
-	var 图标宽度 = 28;
-	var 列数 = 8;
-	var 行数 = 10;
-	var 总格数 = 行数*列数;
-	var 换行计数 = 0;
-
-	购买物品界面.图标列表 = new Array(总格数);
-
-	for (var i = 0; i < 总格数; i++)
-	{
-		var 物品图标 = 购买物品界面.attachMovie("物品图标","物品图标" + i,i);
-		物品图标._x = 起始x;
-		物品图标._y = 起始y;
-		起始x += 图标宽度;
-		换行计数++;
-		if (换行计数 == 列数)
-		{
-			换行计数 = 0;
-			起始x = 购买物品界面.物品图标._x;
-			起始y += 图标高度;
-		}
-		购买物品界面.图标列表[i] = 物品图标;
-		物品图标.itemIcon = new ItemIcon(物品图标, NPC物品栏[i][0], 1);
-		物品图标.itemIcon.Press = function(){
-			_root.购买物品界面.准备购买的物品 = this.name;
-			_root.购买物品界面.准备购买的物品单价 = this.itemData.price;
-			_root.购买物品界面.准备购买的物品等级限制 = this.itemData.level;
-			// if (this.itemData.type != "武器" && this.itemData.type != "防具"){
-			// 	_root.购买物品界面.gotoAndStop("购买数量");
-			// }else{
-			// 	_root.购买物品界面.gotoAndStop("结算");
-			// }
-			_root.购买物品界面.购买执行界面.购买确认(this.name);
+	var onIconPress = function(){
+		_root.购买物品界面.准备购买的物品 = this.name;
+		_root.购买物品界面.准备购买的物品单价 = this.itemData.price;
+		_root.购买物品界面.准备购买的物品等级限制 = this.itemData.level;
+		_root.购买物品界面.购买执行界面.购买确认(this.name);
+	}
+	var func = function(iconMC, i){
+		var itemIcon = new ItemIcon(iconMC, NPC物品栏[i][0], 1);
+		itemIcon.Press = onIconPress;
+		return itemIcon;
+	}
+	var info = {
+		startindex: 0, 
+		startdepth: 0, 
+		row: 10, 
+		col: 8, 
+		padding: 28,
+		unloadCallback: function(){
+			_root.购买物品界面.图标列表 = null;
 		}
 	}
+	var iconList = IconFactory.createIconLayout(购买物品界面.物品图标, func, info);
+	_root.购买物品界面.图标列表 = iconList;
 }
 
 _root.物品UI函数.刷新商店图标 = function(NPC物品栏){
@@ -246,13 +201,7 @@ _root.物品UI函数.刷新商店图标 = function(NPC物品栏){
 	_root.购买物品界面.NPC物品栏 = NPC物品栏;
 }
 
-_root.物品UI函数.删除商店图标 = function(){
-	var 图标列表 = _root.购买物品界面.图标列表;
-	for(var i=0; i<图标列表.length; i++){
-		图标列表[i].removeMovieClip();
-	}
-	_root.购买物品界面.图标列表 = null;
-}
+
 
 //排列仓库图标
 _root.物品UI函数.刷新仓库图标 = function(inventory,page){
@@ -261,79 +210,36 @@ _root.物品UI函数.刷新仓库图标 = function(inventory,page){
 	if(_root.仓库名称 == "后勤战备箱") maxpage = _root.物品UI函数.计算战备箱总页数();
 	if(page < 0 || page >= maxpage) return;
 
-	//销毁之前的事件分发器
-	if(仓库界面.inventory.hasDispatcher()){
-		仓库界面.inventory.getDispatcher().destroy();
-	}
 	仓库界面.inventory = inventory;
 	仓库界面.page = page;
 	仓库界面.maxpage = maxpage;
 	仓库界面.仓库页数显示 = String(page + 1)+" / "+String(maxpage);
 
-	//设置新的事件分发器
-	var dispatcher = new LifecycleEventDispatcher(仓库界面.物品图标);
-	inventory.setDispatcher(dispatcher);
-
-	if(!仓库界面.图标列表) {
-		_root.物品UI函数.创建仓库图标(inventory,page);
-		return;
-	}
-
-	//重置物品图标
-	for (var i = 0; i < 仓库界面.图标列表.length; i++){
-		var index = i + 40 * page;
-		var 物品图标 = 仓库界面.图标列表[i];
-		物品图标.itemIcon.reset(inventory, index);
-	}
+	_root.物品UI函数.创建仓库图标(inventory,page);
 }
 
-_root.物品UI函数.创建仓库图标 = function(inventory,page){
+_root.物品UI函数.创建仓库图标 = function(inventory, page){
 	var 仓库界面 = _root.仓库界面;
 	仓库界面.gotoAndStop("完毕");
 
-	var 起始x = 仓库界面.物品图标._x;
-	var 起始y = 仓库界面.物品图标._y;
-	var 图标高度 = 28;
-	var 图标宽度 = 28;
-	var 列数 = 8;
-	var 行数 = 5;
-	var 总格数 = 行数*列数;
-	var 换行计数 = 0;
-
-	仓库界面.图标列表 = new Array(总格数);
-	
-	for (var i = 0; i < 总格数; i++){
-		var index = i + 40 * page;
-		var 物品图标 = 仓库界面.attachMovie("物品图标","物品图标" + i,i);
-		物品图标._x = 起始x;
-		物品图标._y = 起始y;
-		起始x += 图标宽度;
-		换行计数++;
-		if (换行计数 == 列数)
-		{
-			换行计数 = 0;
-			起始x = 仓库界面.物品图标._x;
-			起始y += 图标高度;
+	var info = {
+		startindex: page * 40, 
+		startdepth: 0, 
+		row: 5, 
+		col: 8, 
+		padding: 28,
+		unloadCallback: function(){
+			仓库界面.inventory = null;
+			仓库界面.page = -1;
+			仓库界面.maxpage = 0;
+			仓库界面.仓库页数显示 = "";
+			_root.仓库名称 = null;
 		}
-		仓库界面.图标列表[i] = 物品图标;
-		物品图标.itemIcon = new InventoryIcon(物品图标, inventory, index);
 	}
+	IconFactory.createInventoryLayout(inventory, 仓库界面.物品图标, info);
 	仓库界面._visible = true;
 }
 
-_root.物品UI函数.删除仓库图标 = function(){
-	var 仓库界面 = _root.仓库界面;
-	var 图标列表 = 仓库界面.图标列表;
-	for(var i=0; i<图标列表.length; i++){
-		图标列表[i].removeMovieClip();
-	}
-	仓库界面.图标列表 = null;
-	仓库界面.inventory = null;
-	仓库界面.page = -1;
-	仓库界面.maxpage = 0;
-	仓库界面.仓库页数显示 = "";
-	_root.仓库名称 = null;
-}
 
 _root.物品UI函数.计算战备箱总页数 = function():Number{
 	if(_root.主线任务进度 <= 13) return 0;

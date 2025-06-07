@@ -1,4 +1,6 @@
-﻿import org.flashNight.arki.item.itemIcon.CollectionIcon;
+﻿import org.flashNight.arki.item.itemIcon.ItemIcon;
+import org.flashNight.arki.item.itemIcon.CollectionIcon;
+import org.flashNight.arki.item.itemIcon.IconFactory;
 import org.flashNight.arki.item.ItemUtil;
 /*
  * 在背包、仓库或战备箱中的物品图标，继承CollectionIcon
@@ -19,17 +21,9 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         _root.注释结束();
         if (this.locked) return;
 
-        //硬代码控制一下层级
-        var container = icon._parent;
-        if (container !== _root.仓库界面 && container.getDepth() < _root.仓库界面.getDepth()){
-            container.swapDepths(_root.仓库界面);
-        }else if(container !== _root.物品栏界面 && container.getDepth() < _root.物品栏界面.getDepth()){
-            container.swapDepths(_root.物品栏界面);
-        }
-        icon.swapDepths(1023);
-
-        icon.图标壳.图标.gotoAndStop(2);
-        icon.startDrag(true);
+        var dragIcon = _root.鼠标.attachMovie("图标-"+itemData.displayname, "物品图标", 0);
+        dragIcon.gotoAndStop(2);
+        icon._alpha = 30;
         _root.鼠标.gotoAndStop("手型抓取");
 
         //高亮对应装备栏
@@ -48,14 +42,8 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
     }
 
     public function Release():Void{
-        icon.图标壳.图标.gotoAndStop(1);
-        icon.stopDrag();
-        icon._x = x;
-        icon._y = y;
-        //硬代码还原层级
-        _root.物品栏界面.swapDepth(_root.物品栏界面.originalDepth);
-        _root.仓库界面.swapDepth(_root.仓库界面.originalDepth);
-        icon.swapDepths(index);
+        _root.鼠标.物品图标.removeMovieClip();
+        icon._alpha = 100;
 
         var xmouse = _root._xmouse;
         var ymouse = _root._ymouse;
@@ -64,13 +52,8 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         }
         icon.highlights = null;
 
+        // 装备栏
         if(_root.物品栏界面.窗体area.hitTest(xmouse, ymouse)){
-            if(_root.物品栏界面.垃圾箱.area.hitTest(xmouse, ymouse)){
-                _root.发布消息("丢弃物品" + itemData.displayname);
-                collection.remove(index);
-                return;
-            }
-
             if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
                 var 装备栏 = _root.物品栏.装备栏;
                 var iconMovieClip = _root.物品栏界面[itemData.use];
@@ -87,37 +70,9 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
                     return;
                 }
             }
-            
-            //检索背包
-            var 图标列表 = _root.物品栏界面.背包图标列表;
-            for (var i=0; i<图标列表.length; i++){
-                var iconMovieClip = 图标列表[i];
-                if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                    ItemUtil.moveItemToInventory(this,iconMovieClip.itemIcon);
-                    return;
-                }
-            }
-            return;
         }
 
-        if(_root.仓库界面._visible && _root.仓库界面.窗体area.hitTest(xmouse, ymouse)){
-            if(_root.仓库界面.垃圾箱.area.hitTest(xmouse, ymouse)){
-                _root.发布消息("丢弃物品" + itemData.displayname);
-                collection.remove(index);
-                return;
-            }
-
-            var 图标列表 = _root.仓库界面.图标列表;
-            for(var i=0; i<图标列表.length; i++){
-                var iconMovieClip = 图标列表[i];
-                if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                    ItemUtil.moveItemToInventory(this,iconMovieClip.itemIcon);
-                    return;
-                }
-            }
-            return;
-        }
-
+        // 药剂栏
         if (itemData.use == "药剂" && _root.玩家信息界面.快捷药剂界面.hitTest(xmouse, ymouse)){
             var 图标列表 = _root.玩家信息界面.快捷药剂界面.药剂图标列表;
             for (var i = 0; i < 4; i++){
@@ -130,11 +85,34 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             return;
         }
 
+        // 遍历在场所有数据结构为ArrayInventory的物品栏UI
+        for(var uid in IconFactory.inventoryContainerDict){
+            var info = IconFactory.inventoryContainerDict[uid];
+            if(info.container._visible && info.container.hitTest(xmouse, ymouse)){
+                for (var i = 0; i < info.list.length; i++){
+                    var iconMovieClip = info.list[i];
+                    if(iconMovieClip.area.hitTest(xmouse, ymouse)){
+                        ItemUtil.moveItemToInventory(this,iconMovieClip.itemIcon);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // 商店
         if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle && _root.购买物品界面.购买执行界面.hitTest(xmouse, ymouse)){
             _root.购买物品界面.购买执行界面.售卖确认(this.collection,this.index);
             return;
         }
 
+        // 垃圾箱
+        if(_root.物品栏界面.垃圾箱.area.hitTest(xmouse, ymouse) || _root.仓库界面.垃圾箱.area.hitTest(xmouse, ymouse)){
+            _root.发布消息("丢弃物品" + itemData.displayname);
+            collection.remove(index);
+            return;
+        }
+
+        // 强化界面
         if((itemData.type == "武器" || itemData.type == "防具") && _root.装备强化界面._visible && _root.装备强化界面.窗体area.hitTest(xmouse, ymouse)){
             if(_root.装备强化界面.强化图标.area.hitTest(xmouse, ymouse)) {
                 _root.装备强化界面.强化图标.itemIcon.init(name,item);
