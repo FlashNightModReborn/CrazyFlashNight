@@ -324,13 +324,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.AdaptiveThresholdOptimi
     public static function applyPreset(presetName:String):Boolean {
         switch (presetName) {
             case "dense": // 密集场景：单位很多且分布紧密
-                return setParams(0.3, 2.0, 20, 150);
+                return setParams(0.4, 1.5, 10, 100);
                 
             case "sparse": // 稀疏场景：单位较少且分布稀疏
-                return setParams(0.15, 4.0, 50, 400);
+                return setParams(0.2, 3.0, 30, 200);
                 
             case "dynamic": // 动态场景：单位分布经常变化
-                return setParams(0.4, 2.5, 30, 250);
+                return setParams(0.5, 2.0, 20, 150);
                 
             case "stable": // 稳定场景：单位分布相对固定
                 return setParams(0.1, 3.5, 40, 300);
