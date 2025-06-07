@@ -1075,4 +1075,573 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     public static function findHero():MovieClip { 
         return _root.gameworld[_root.控制目标] || null; 
     }
+
+    // ============================================================================
+    // 单位计数API扩展（高性能版）
+    // 添加到 TargetCacheManager.as 中的新方法
+    // ----------------------------------------------------------------------------
+    // 功能概述：
+    // 1. 基础计数：获取敌人/友军/全体的总数量
+    // 2. 范围计数：获取指定X轴范围内的单位数量
+    // 3. 半径计数：获取指定半径内的单位数量  
+    // 4. 条件计数：基于血量、状态等条件的单位计数
+    // 5. 距离分布：统计不同距离区间的单位分布
+    // 
+    // 性能优化：
+    // - 利用现有缓存机制，避免重复数据收集
+    // - 范围计数使用二分查找+索引差值，O(log n)复杂度
+    // - 基础计数直接返回数组长度，O(1)复杂度
+    // - 条件计数优化遍历，最小化属性访问开销
+// ============================================================================
+
+    // ========================================================================
+    // 基础计数方法（O(1)复杂度）
+    // ========================================================================
+    
+    /**
+     * 获取指定类型的单位总数（O(1)复杂度）
+     * 直接返回缓存数组的长度，无需遍历计算
+     * 
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @return {Number} 单位总数
+     */
+    public static function getTargetCount(
+        target:Object,
+        updateInterval:Number,
+        requestType:String
+    ):Number {
+        // 确定目标状态
+        var targetStatus:String = (requestType == "全体")
+            ? "all"
+            : target.是否为敌人.toString();
+
+        // 获取缓存项并确保最新
+        if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
+        var stateCache:Object = _targetCaches[targetStatus];
+        var cacheEntry:Object = stateCache[requestType];
+        if (!cacheEntry) cacheEntry = stateCache[requestType] = _createCacheEntry();
+
+        // 检查是否需要更新缓存
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        if ((currentFrame - cacheEntry.lastUpdatedFrame) >= updateInterval) {
+            updateTargetCache(target, requestType, targetStatus);
+        }
+
+        // O(1)复杂度：直接返回数组长度
+        return cacheEntry.data.length;
+    }
+
+    /**
+     * 获取敌人单位总数
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Number} 敌人总数
+     */
+    public static function getEnemyCount(t:Object, interval:Number):Number {
+        return getTargetCount(t, interval, "敌人");
+    }
+
+    /**
+     * 获取友军单位总数
+     * @param {Object} t - 目标单位  
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Number} 友军总数
+     */
+    public static function getAllyCount(t:Object, interval:Number):Number {
+        return getTargetCount(t, interval, "友军");
+    }
+
+    /**
+     * 获取全体单位总数
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @return {Number} 全体总数
+     */
+    public static function getAllCount(t:Object, interval:Number):Number {
+        return getTargetCount(t, interval, "全体");
+    }
+
+    // ========================================================================
+    // 范围计数方法（O(log n)复杂度）
+    // ========================================================================
+    
+    /**
+     * 获取指定X轴范围内的单位数量（高性能版）
+     * 
+     * 核心优化：
+     * 1. 使用二分查找快速定位起始和结束边界
+     * 2. 通过索引差值直接计算数量，避免遍历构建数组
+     * 3. 复用已有的二分查找逻辑，保持代码一致性
+     * 4. 利用预缓存的leftValues数组提升查询性能
+     * 
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数) 
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @param {Number} leftRange - 左侧搜索范围（相对于目标的距离）
+     * @param {Number} rightRange - 右侧搜索范围（相对于目标的距离）
+     * @param {Boolean} excludeSelf - 是否排除自身（默认true）
+     * @return {Number} 范围内的单位数量
+     */
+    public static function getTargetCountInRange(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        leftRange:Number,
+        rightRange:Number,
+        excludeSelf:Boolean
+    ):Number {
+        // 设置默认值
+        if (excludeSelf == undefined) excludeSelf = true;
+        
+        // 确定目标状态
+        var targetStatus:String = (requestType == "全体")
+            ? "all"
+            : target.是否为敌人.toString();
+
+        // 获取缓存项并确保最新
+        if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
+        var stateCache:Object = _targetCaches[targetStatus];
+        var cacheEntry:Object = stateCache[requestType];
+        if (!cacheEntry) cacheEntry = stateCache[requestType] = _createCacheEntry();
+
+        // 检查是否需要更新缓存
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        if ((currentFrame - cacheEntry.lastUpdatedFrame) >= updateInterval) {
+            updateTargetCache(target, requestType, targetStatus);
+        }
+
+        var leftValues:Array = cacheEntry.leftValues;
+        var len:Number = leftValues.length;
+        if (len == 0) return 0;
+
+        // 预缓存目标坐标和边界值
+        var targetX:Number = target.aabbCollider.left;
+        var leftBound:Number = targetX - leftRange;
+        var rightBound:Number = targetX + rightRange;
+
+        // === 左边界二分查找 (>= leftBound) ===
+        var startIdx:Number;
+        if (leftValues[0] >= leftBound) {
+            startIdx = 0;
+        } else if (leftValues[len - 1] < leftBound) {
+            return 0; // 没有单位在范围内
+        } else {
+            var l:Number = 0;
+            var r:Number = len - 1;
+            while (l < r) {
+                var m:Number = (l + r) >> 1;
+                if (leftValues[m] < leftBound) l = m + 1;
+                else r = m;
+            }
+            startIdx = l;
+        }
+
+        // === 右边界二分查找 (> rightBound) ===
+        var endIdx:Number;
+        var r2:Number = len - 1;
+        if (leftValues[r2] <= rightBound) {
+            endIdx = len;
+        } else {
+            var l2:Number = startIdx;
+            while (l2 < r2) {
+                var m2:Number = (l2 + r2) >> 1;
+                if (leftValues[m2] <= rightBound) l2 = m2 + 1;
+                else r2 = m2;
+            }
+            endIdx = l2;
+        }
+
+        // 计算范围内的单位数量
+        var count:Number = endIdx - startIdx;
+
+        // 如果需要排除自身，检查自身是否在范围内
+        if (excludeSelf && count > 0) {
+            var selfIdx:Number = cacheEntry.nameIndex[target._name];
+            if (selfIdx != undefined && selfIdx >= startIdx && selfIdx < endIdx) {
+                count--;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * 获取指定半径内的单位数量
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型
+     * @param {Number} radius - 搜索半径
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 半径内的单位数量
+     */
+    public static function getTargetCountInRadius(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        radius:Number,
+        excludeSelf:Boolean
+    ):Number {
+        return getTargetCountInRange(target, updateInterval, requestType, radius, radius, excludeSelf);
+    }
+
+    // ========================================================================
+    // 便捷计数方法（各类型专用）
+    // ========================================================================
+    
+    /**
+     * 获取指定范围内的敌人数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} leftRange - 左侧搜索范围
+     * @param {Number} rightRange - 右侧搜索范围
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 范围内的敌人数量
+     */
+    public static function getEnemyCountInRange(
+        t:Object, interval:Number, leftRange:Number, rightRange:Number, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountInRange(t, interval, "敌人", leftRange, rightRange, excludeSelf);
+    }
+
+    /**
+     * 获取指定范围内的友军数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} leftRange - 左侧搜索范围
+     * @param {Number} rightRange - 右侧搜索范围
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 范围内的友军数量
+     */
+    public static function getAllyCountInRange(
+        t:Object, interval:Number, leftRange:Number, rightRange:Number, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountInRange(t, interval, "友军", leftRange, rightRange, excludeSelf);
+    }
+
+    /**
+     * 获取指定范围内的全体数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} leftRange - 左侧搜索范围
+     * @param {Number} rightRange - 右侧搜索范围
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 范围内的全体数量
+     */
+    public static function getAllCountInRange(
+        t:Object, interval:Number, leftRange:Number, rightRange:Number, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountInRange(t, interval, "全体", leftRange, rightRange, excludeSelf);
+    }
+
+    /**
+     * 获取指定半径内的敌人数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} radius - 搜索半径
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 半径内的敌人数量
+     */
+    public static function getEnemyCountInRadius(
+        t:Object, interval:Number, radius:Number, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountInRadius(t, interval, "敌人", radius, excludeSelf);
+    }
+
+    /**
+     * 获取指定半径内的友军数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} radius - 搜索半径
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 半径内的友军数量
+     */
+    public static function getAllyCountInRadius(
+        t:Object, interval:Number, radius:Number, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountInRadius(t, interval, "友军", radius, excludeSelf);
+    }
+
+    /**
+     * 获取指定半径内的全体数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} radius - 搜索半径
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 半径内的全体数量
+     */
+    public static function getAllCountInRadius(
+        t:Object, interval:Number, radius:Number, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountInRadius(t, interval, "全体", radius, excludeSelf);
+    }
+
+    // ========================================================================
+    // 条件计数方法（高级查询）
+    // ========================================================================
+    
+    /**
+     * 获取满足血量条件的单位数量（优化版）
+     * 
+     * 支持多种血量条件：
+     * - "low": 血量 <= 30%
+     * - "medium": 30% < 血量 <= 70%  
+     * - "high": 血量 > 70%
+     * - "critical": 血量 <= 10%
+     * - "injured": 血量 < 100%
+     * - "healthy": 血量 = 100%
+     * 
+     * 性能优化：
+     * - 预缓存血量阈值，避免重复计算
+     * - 使用直接数组索引，减少函数调用开销
+     * 
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @param {String} hpCondition - 血量条件字符串
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 满足条件的单位数量
+     */
+    public static function getTargetCountByHP(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        hpCondition:String,
+        excludeSelf:Boolean
+    ):Number {
+        // 设置默认值
+        if (excludeSelf == undefined) excludeSelf = true;
+        
+        // 获取目标列表
+        var list:Array = getCachedTargets(target, updateInterval, requestType);
+        if (list.length == 0) return 0;
+
+        var count:Number = 0;
+        var i:Number = 0;
+        var len:Number = list.length;
+        var unit:Object, hpRatio:Number;
+
+        // 根据条件类型进行优化的计数
+        switch (hpCondition) {
+            case "low":
+                // 血量 <= 30%
+                for (i = 0; i < len; i++) {
+                    unit = list[i];
+                    if (excludeSelf && unit == target) continue;
+                    if ((unit.hp / unit.maxhp) <= 0.3) count++;
+                }
+                break;
+                
+            case "medium":
+                // 30% < 血量 <= 70%
+                for (i = 0; i < len; i++) {
+                    unit = list[i];
+                    if (excludeSelf && unit == target) continue;
+                    hpRatio = unit.hp / unit.maxhp;
+                    if (hpRatio > 0.3 && hpRatio <= 0.7) count++;
+                }
+                break;
+                
+            case "high":
+                // 血量 > 70%
+                for (i = 0; i < len; i++) {
+                    unit = list[i];
+                    if (excludeSelf && unit == target) continue;
+                    if ((unit.hp / unit.maxhp) > 0.7) count++;
+                }
+                break;
+                
+            case "critical":
+                // 血量 <= 10%
+                for (i = 0; i < len; i++) {
+                    unit = list[i];
+                    if (excludeSelf && unit == target) continue;
+                    if ((unit.hp / unit.maxhp) <= 0.1) count++;
+                }
+                break;
+                
+            case "injured":
+                // 血量 < 100%
+                for (i = 0; i < len; i++) {
+                    unit = list[i];
+                    if (excludeSelf && unit == target) continue;
+                    if (unit.hp < unit.maxhp) count++;
+                }
+                break;
+                
+            case "healthy":
+                // 血量 = 100%
+                for (i = 0; i < len; i++) {
+                    unit = list[i];
+                    if (excludeSelf && unit == target) continue;
+                    if (unit.hp >= unit.maxhp) count++;
+                }
+                break;
+                
+            default:
+                // 无效条件，返回0
+                return 0;
+        }
+
+        return count;
+    }
+
+    /**
+     * 获取满足血量条件的敌人数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {String} hpCondition - 血量条件
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 满足条件的敌人数量
+     */
+    public static function getEnemyCountByHP(
+        t:Object, interval:Number, hpCondition:String, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountByHP(t, interval, "敌人", hpCondition, excludeSelf);
+    }
+
+    /**
+     * 获取满足血量条件的友军数量
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {String} hpCondition - 血量条件
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Number} 满足条件的友军数量
+     */
+    public static function getAllyCountByHP(
+        t:Object, interval:Number, hpCondition:String, excludeSelf:Boolean
+    ):Number {
+        return getTargetCountByHP(t, interval, "友军", hpCondition, excludeSelf);
+    }
+
+    // ========================================================================
+    // 距离分布统计方法
+    // ========================================================================
+    
+    /**
+     * 获取距离分布统计（高级分析功能）
+     * 
+     * 将单位按距离分组统计，返回详细的分布信息
+     * 
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型
+     * @param {Array} distanceRanges - 距离区间数组，如[50, 100, 200]
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Object} 距离分布对象: {总数, 分布数组, 最近距离, 最远距离}
+     */
+    public static function getDistanceDistribution(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        distanceRanges:Array,
+        excludeSelf:Boolean
+    ):Object {
+        // 设置默认值
+        if (excludeSelf == undefined) excludeSelf = true;
+        if (!distanceRanges || distanceRanges.length == 0) {
+            distanceRanges = [50, 100, 200, 300]; // 默认距离区间
+        }
+
+        // 获取目标列表
+        var list:Array = getCachedTargets(target, updateInterval, requestType);
+        if (list.length == 0) {
+            return {
+                totalCount: 0,
+                distribution: [],
+                minDistance: -1,
+                maxDistance: -1
+            };
+        }
+
+        // 初始化统计数据
+        var targetX:Number = target.aabbCollider.left;
+        var distribution:Array = [];
+        var rangeCount:Number = distanceRanges.length;
+        
+        // 初始化每个距离区间的计数
+        for (var r:Number = 0; r < rangeCount; r++) {
+            distribution[r] = 0;
+        }
+        var beyondCount:Number = 0; // 超出最大距离范围的单位数
+        
+        var minDist:Number = Number.MAX_VALUE;
+        var maxDist:Number = 0;
+        var totalCount:Number = 0;
+
+        // 遍历所有单位进行统计
+        for (var i:Number = 0; i < list.length; i++) {
+            var unit:Object = list[i];
+            if (excludeSelf && unit == target) continue;
+            
+            // 计算距离
+            var distDiff:Number = unit.aabbCollider.left - targetX;
+            var distance:Number = (distDiff < 0) ? -distDiff : distDiff;
+            
+            totalCount++;
+            
+            // 更新最小最大距离
+            if (distance < minDist) minDist = distance;
+            if (distance > maxDist) maxDist = distance;
+            
+            // 分配到对应的距离区间
+            var assigned:Boolean = false;
+            for (var j:Number = 0; j < rangeCount; j++) {
+                if (distance <= distanceRanges[j]) {
+                    distribution[j]++;
+                    assigned = true;
+                    break;
+                }
+            }
+            
+            // 如果超出所有区间范围
+            if (!assigned) {
+                beyondCount++;
+            }
+        }
+
+        // 如果没有有效单位，重置最小距离
+        if (totalCount == 0) {
+            minDist = -1;
+        }
+
+        // 返回完整的分布统计
+        return {
+            totalCount: totalCount,
+            distribution: distribution,
+            beyondCount: beyondCount,
+            minDistance: minDist,
+            maxDistance: maxDist,
+            distanceRanges: distanceRanges
+        };
+    }
+
+    /**
+     * 获取敌人距离分布统计
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Array} distanceRanges - 距离区间数组
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Object} 敌人距离分布统计
+     */
+    public static function getEnemyDistanceDistribution(
+        t:Object, interval:Number, distanceRanges:Array, excludeSelf:Boolean
+    ):Object {
+        return getDistanceDistribution(t, interval, "敌人", distanceRanges, excludeSelf);
+    }
+
+    /**
+     * 获取友军距离分布统计
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Array} distanceRanges - 距离区间数组
+     * @param {Boolean} excludeSelf - 是否排除自身
+     * @return {Object} 友军距离分布统计
+     */
+    public static function getAllyDistanceDistribution(
+        t:Object, interval:Number, distanceRanges:Array, excludeSelf:Boolean
+    ):Object {
+        return getDistanceDistribution(t, interval, "友军", distanceRanges, excludeSelf);
+    }
 }
