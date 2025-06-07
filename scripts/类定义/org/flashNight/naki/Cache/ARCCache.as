@@ -712,6 +712,67 @@ class org.flashNight.naki.Cache.ARCCache {
     }
 
     /**
+     * 从缓存中移除一个项目（包括其在幽灵队列中的记录）
+     * 
+     * @param key 要移除的键
+     * @return {Boolean} 如果成功移除了一个项目，返回 true；否则返回 false
+     */
+    public function remove(key:Object):Boolean {
+        // 1. 生成键的唯一标识符 (UID)
+        var uid:String;
+        if (typeof(key) == "object" || typeof(key) == "function") {
+            // 注意：如果key是临时对象，可能无法获取到正确的UID。
+            // 这里假设key是稳定的，与put时传入的key一致。
+            uid = "_" + Dictionary.getStaticUID(key);
+        } else {
+            uid = "_" + key;
+        }
+
+        // 2. 查找节点是否存在于缓存映射中
+        var node:Object = this.nodeMap[uid];
+
+        // 3. 节点不存在，直接返回
+        if (node == null) {
+            return false;
+        }
+
+        // 4. 节点存在，开始移除流程
+        var list:Object = node.list;
+        
+        // a. 从链中断开
+        var prevNode:Object = node.prev;
+        var nextNode:Object = node.next;
+
+        if (prevNode != null) {
+            prevNode.next = nextNode;
+        } else {
+            // 节点是头节点
+            list.head = nextNode;
+        }
+
+        if (nextNode != null) {
+            nextNode.prev = prevNode;
+        } else {
+            // 节点是尾节点
+            list.tail = prevNode;
+        }
+        
+        // b. 更新队列大小
+        list.size--;
+
+        // c. 清理存储
+        // 如果节点在 T1 或 T2，从 cacheStore 删除
+        if (list === this.T1 || list === this.T2) {
+            delete this.cacheStore[uid];
+        }
+        
+        // 从 nodeMap 中删除
+        delete this.nodeMap[uid];
+
+        return true;
+    }
+
+    /**
      * 获取指定队列中的所有节点 UID
      * 
      * 仅用于调试和测试目的，不影响缓存逻辑。
