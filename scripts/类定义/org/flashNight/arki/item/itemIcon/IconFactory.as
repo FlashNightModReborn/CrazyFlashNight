@@ -15,8 +15,10 @@ class org.flashNight.arki.item.itemIcon.IconFactory{
         // 
     }
 
-    // 通过行列数据创建若干个
+    // 通过行列等数据创建物品图标阵列
     public static function createIconLayout(proto:MovieClip, func:Function, info:Object):Array{
+        if(proto == null || func == null) return;
+
         var iconname = info.iconname ? iconname : "物品图标";
         var startindex = info.startindex > 0 ? info.startindex : 0;
         var startdepth = info.startdepth > 0 ? info.startdepth : 0;
@@ -59,6 +61,8 @@ class org.flashNight.arki.item.itemIcon.IconFactory{
         return iconList;
     }
 
+    // 创建数据结构基于ArrayInventory的物品图标
+    // 以该函数创建的图标可以统一应用互相拖拽，售卖等逻辑
     public static function createInventoryLayout(inventory, proto:MovieClip, info:Object):Array{
         if(inventory == null || proto == null) return null;
 
@@ -99,7 +103,7 @@ class org.flashNight.arki.item.itemIcon.IconFactory{
 
     public static function resetInventoryLayout(uid:Number, inventory, startindex:Number):Void{
         if(inventory !== inventoryContainerDict[uid].inventory){
-            // 若inventory更改，则销毁原事件分发器并创建新的分发器
+            // 若引用的inventory改变，则销毁原事件分发器并创建新的分发器
             inventoryContainerDict[uid].inventory.getDispatcher().destroy();
             inventoryContainerDict[uid].inventory = inventory;
             var dispatcher = new LifecycleEventDispatcher(inventoryContainerDict[uid].proto);

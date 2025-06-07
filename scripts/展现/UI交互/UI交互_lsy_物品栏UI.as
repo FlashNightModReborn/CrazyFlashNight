@@ -19,8 +19,14 @@ _root.createItemIcon = function(mc, name, value){
 
 EventBus.getInstance().subscribe("物品栏排序图标点击",function(methodName:String){
 	ItemSortUtil.sortInventory(_root.物品栏.背包, methodName, function(){
-		_root.物品UI函数.删除背包图标();
-		_root.物品UI函数.创建背包图标();
+		var info = {
+			startindex: 0, 
+			startdepth: 0, 
+			row: 5, 
+			col: 10, 
+			padding: 28
+		};
+		IconFactory.createInventoryLayout(_root.物品栏.背包, 物品栏界面.物品图标, info);
 	});
 },null);
 
@@ -315,21 +321,21 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 		}
 		物品栏界面.材料图标列表[i] = 物品图标;
 		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料列表[i]);
+		物品图标.itemIcon.RollOver = function(){
+			_root.物品图标注释(name,value);
+			if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle) _root.鼠标.gotoAndStop("手型准备抓取");
+		}
 		物品图标.itemIcon.Press = function(){
 			if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle){
-				this.icon.originalDepth = this.icon.getDepth();
-				this.icon.swapDepths(1023);
-				this.icon.图标壳.图标.gotoAndStop(2);
-				this.icon.startDrag(true);
+				var dragIcon = _root.鼠标.物品图标容器.attachMovie("图标-" + this.itemData.displayname, "物品图标", 0);
+				dragIcon.gotoAndStop(2);
+				this.icon._alpha = 30;
 				_root.鼠标.gotoAndStop("手型抓取");
 			}
 		}
 		物品图标.itemIcon.Release = function(){
-			this.icon.图标壳.图标.gotoAndStop(1);
-			this.icon.swapDepths(this.icon.originalDepth);
-			this.icon.stopDrag();
-			this.icon._x = this.x;
-			this.icon._y = this.y;
+			_root.鼠标.物品图标容器.物品图标.removeMovieClip();
+			this.icon._alpha = 100;
 			if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle && _root.购买物品界面.购买执行界面.hitTest(_root._xmouse, _root._ymouse)){
 				_root.购买物品界面.购买执行界面.售卖确认(this.collection,this.index);
 				return;
