@@ -57,6 +57,49 @@ _root.地图元件.初始化地图元件 = function(target:MovieClip, presetName
 	StaticInitializer.initializeMapElement(target, presetName);
 }
 
+_root.地图元件.掉落物转换为物品栏 = function(target:MovieClip){
+    if(!target.掉落物) return;
+
+    var cap = target.row * target.col;
+    var inventory = new ArrayInventory(null, cap);
+    var item;
+	if(target.掉落物.length > 0){
+        var arr = new Array(cap);
+        var i;
+        for(i=0; i<cap; i++){
+            arr[i] = i;
+        }
+        arr = org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine.getInstance().reservoirSample(arr,target.掉落物.length);
+		for(i = target.掉落物.length - 1; i > -1; i--){
+			item = _root.地图元件.掉落物创建物品(target.掉落物[i]);
+            if(item != null) inventory.add(arr[i], item);
+		}
+	}else if(target.掉落物.名字){
+        item = _root.地图元件.掉落物创建物品(target.掉落物);
+        if(item != null) inventory.add(random(cap), item);
+	}
+    target.掉落物 = null;
+
+    _root.物品UI函数.创建资源箱图标(inventory, target.presetName, target.row, target.col);
+}
+
+_root.地图元件.掉落物创建物品 = function(item){
+    if(isNaN(item.概率)) item.概率 = 100;
+	if(item.名字 && _root.成功率(item.概率)){
+		if(isNaN(item.最小数量) || isNaN(item.最大数量)){
+			item.最小数量 = item.最大数量 = 1;
+		}
+		if(isNaN(item.总数)) item.总数 = item.最大数量;
+		var 数量 = item.最小数量 + random(item.最大数量 - item.最小数量 + 1);
+		if(item.总数 < 数量) 数量 = item.总数;
+		item.总数 -= 数量;
+		return ItemUtil.createItem(item.名字, 数量);
+	}
+    return null;
+}
+
+
+
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 	target._visible = true;
 
@@ -73,12 +116,12 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 
     // 在此处临时测试资源箱弹出物品栏
     if(target.row > 0 && target.col > 0){
-        var inventory = new ArrayInventory(null, target.row * target.col);
-        inventory.add(0, ItemUtil.createItem(target.内部物, target.数量));
-        _root.物品UI函数.创建资源箱图标(inventory, target.presetName, target.row, target.col);
-        return;
+        _root.地图元件.掉落物转换为物品栏(target);
+    }else{
+        target.掉落物判定 = _root.敌人函数.掉落物判定;
+        target.掉落物品 = _root.敌人函数.掉落物品;
+        target.掉落物判定();
     }
-	_root.pickupItemManager.createCollectible(target.内部物,  target.数量, target._x, target._y, true);
 }
 
 

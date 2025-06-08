@@ -73,25 +73,51 @@
                 <x>867</x>
                 <y>246</y>
                 <Identifier>纸箱</Identifier>
-                <Parameters>内部物:牛肉罐头,数量_min:1,数量_max:3,等级:0,名字:纸箱</Parameters>
+                <Parameters>
+                    <掉落物>
+                        <名字>牛肉罐头</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>3</最大数量>
+                    </掉落物>
+                </Parameters>
             </Instance>
             <Instance id="1">
                 <x>955</x>
                 <y>313</y>
                 <Identifier>纸箱</Identifier>
-                <Parameters>最小主线进度:4,最大主线进度:4,内部物:抗生素,数量:2,等级:0,名字:纸箱2</Parameters>
+                <Parameters>
+                    <最小主线进度>5</最小主线进度>
+                    <最大主线进度>5</最大主线进度>
+                    <掉落物>
+                        <名字>抗生素</名字>
+                        <最小数量>2</最小数量>
+                        <最大数量>4</最大数量>
+                    </掉落物>
+                </Parameters>
             </Instance>
             <Instance id="2">
                 <x>1150</x>
                 <y>451</y>
                 <Identifier>隐藏资源点</Identifier>
-                <Parameters>最小主线进度:3,最大主线进度:3,内部物:牛皮手套,数量:1,等级:0,名字:木箱3</Parameters>
+                <Parameters>
+                    <最小主线进度>3</最小主线进度>
+                    <最大主线进度>3</最大主线进度>
+                    <掉落物>
+                        <名字>牛皮手套</名字>
+                    </掉落物>
+                </Parameters>
             </Instance>
             <Instance id="2">
                 <x>1150</x>
                 <y>452</y>
                 <Identifier>隐藏资源点</Identifier>
-                <Parameters>最小主线进度:4,最大主线进度:5,内部物:黑色军用皮鞋,数量:1,等级:0,名字:木箱4</Parameters>
+                <Parameters>
+                    <最小主线进度>4</最小主线进度>
+                    <最大主线进度>5</最大主线进度>
+                    <掉落物>
+                        <名字>黑色军用皮鞋</名字>
+                    </掉落物>
+                </Parameters>
             </Instance>
         </Instances>
         <Dialogue>

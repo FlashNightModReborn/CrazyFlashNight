@@ -245,6 +245,7 @@ _root.敌人函数.掉落物判定 = function(){
 }
 
 _root.敌人函数.掉落物品 = function(item){
+	if(isNaN(item.概率)) item.概率 = 100;
 	if(item.名字 && _root.成功率(item.概率)){
 		if(isNaN(item.最小数量) || isNaN(item.最大数量)){
 			item.最小数量 = item.最大数量 = 1;

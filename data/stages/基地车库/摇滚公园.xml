@@ -91,12 +91,13 @@ Reward的必要参数：
                 <y>462</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
                     <redOffset>0</redOffset>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="1">
@@ -104,12 +105,13 @@ Reward的必要参数：
                 <y>562</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
                     <redOffset>0</redOffset>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="2">
@@ -117,12 +119,13 @@ Reward的必要参数：
                 <y>662</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
                     <redOffset>0</redOffset>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="3">
@@ -130,12 +133,13 @@ Reward的必要参数：
                 <y>362</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
                     <redOffset>0</redOffset>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="4">
@@ -143,12 +147,13 @@ Reward的必要参数：
                 <y>462</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
-                    <redOffset>0</redOffset>
                     <stainedTarget>element</stainedTarget>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <redOffset>0</redOffset>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="5">
@@ -156,12 +161,13 @@ Reward的必要参数：
                 <y>562</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
-                    <redOffset>0</redOffset>
                     <stainedTarget>element</stainedTarget>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <redOffset>0</redOffset>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="6">
@@ -169,12 +175,13 @@ Reward的必要参数：
                 <y>662</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
                     <stainedTarget>element</stainedTarget>
                     <redOffset>0</redOffset>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="7">
@@ -182,12 +189,13 @@ Reward的必要参数：
                 <y>362</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <内部物>K点</内部物>
-                    <redOffset>0</redOffset>
                     <stainedTarget>element</stainedTarget>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <redOffset>0</redOffset>
+                    <掉落物>
+                        <名字>K点</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
                 </Parameters>
             </Instance>
             <Instance id="8">
@@ -461,10 +469,9 @@ Instances描述额外加载的影片剪辑实例。
                 <Parameters>
                     <最小主线进度>27</最小主线进度>
                     <最大主线进度>27</最大主线进度>
-                    <内部物>黑暗吉他</内部物>
-                    <数量>1</数量>
-                    <等级>1</等级>
-                    <名字>木箱</名字>
+                    <掉落物>
+                        <名字>黑暗吉他</名字>
+                    </掉落物>
                 </Parameters>
             </Instance>
         </Instances>

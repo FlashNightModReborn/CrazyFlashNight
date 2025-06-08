@@ -156,25 +156,50 @@
                 <x>634</x>
                 <y>392</y>
                 <Identifier>装备箱</Identifier>
-                <Parameters>最小主线进度:5,最大主线进度:5,内部物:m9,数量:1,等级:0,名字:木箱</Parameters>
+                <Parameters>
+                    <最小主线进度>5</最小主线进度>
+                    <最大主线进度>5</最大主线进度>
+                    <掉落物>
+                        <名字>m9</名字>
+                    </掉落物>
+                </Parameters>
             </Instance>
             <Instance id="1">
                 <x>560</x>
                 <y>260</y>
                 <Identifier>资源箱</Identifier>
-                <Parameters>内部物:冲锋枪通用弹药,数量:10,等级:0,名字:木箱2</Parameters>
+                <Parameters>
+                    <掉落物>
+                        <名字>冲锋枪通用弹药</名字>
+                        <最小数量>5</最小数量>
+                        <最大数量>10</最大数量>
+                    </掉落物>
+                </Parameters>
             </Instance>
             <Instance id="2">
                 <x>1130</x>
                 <y>450</y>
                 <Identifier>隐藏资源点</Identifier>
-                <Parameters>最小主线进度:5,最大主线进度:5,内部物:53式步骑枪,数量:1,等级:0,名字:木箱3</Parameters>
+                <Parameters>
+                    <最小主线进度>5</最小主线进度>
+                    <最大主线进度>5</最大主线进度>
+                    <掉落物>
+                        <名字>53式步骑枪</名字>
+                    </掉落物>
+                </Parameters>
             </Instance>
             <Instance id="3">
                 <x>1130</x>
                 <y>450</y>
                 <Identifier>隐藏资源点</Identifier>
-                <Parameters>最小主线进度:6,内部物:突击步枪通用弹药,数量:1,等级:0,名字:木箱3</Parameters>
+                <Parameters>
+                    <最小主线进度>6</最小主线进度>
+                    <掉落物>
+                        <名字>突击步枪通用弹药</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>5</最大数量>
+                    </掉落物>
+                </Parameters>
             </Instance>
         </Instances>
         <Dialogue>

@@ -8,19 +8,6 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[/*function calc()
-{
-	trace(org.flashNight.arki.component.StatHandler.DodgeHandler.calcDodgeRateByLevel(attackerLevel,dodgerLevel,dodgeRate,hitRate));
-}
-
-attackerLevel = 30;
-dodgerLevel = 30;
-dodgeRate = 6;
-hitRate = 10;
-
-calc();*/]]></script>
-                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -34,6 +21,11 @@ calc();*/]]></script>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="381687" publishTime="1749397482"/>
+          <PublishItem publishSize="381670" publishTime="1749397460"/>
+          <PublishItem publishSize="381675" publishTime="1749397408"/>
+          <PublishItem publishSize="381671" publishTime="1749397271"/>
+          <PublishItem publishSize="381541" publishTime="1749395740"/>
           <PublishItem publishSize="344427" publishTime="1747473162"/>
           <PublishItem publishSize="344430" publishTime="1747473151"/>
           <PublishItem publishSize="344430" publishTime="1747473132"/>
@@ -49,10 +41,5 @@ calc();*/]]></script>
           <PublishItem publishSize="342508" publishTime="1747195648"/>
           <PublishItem publishSize="342501" publishTime="1747195560"/>
           <PublishItem publishSize="342495" publishTime="1747195525"/>
-          <PublishItem publishSize="342491" publishTime="1747195501"/>
-          <PublishItem publishSize="342444" publishTime="1747195424"/>
-          <PublishItem publishSize="342364" publishTime="1747195254"/>
-          <PublishItem publishSize="342404" publishTime="1747194838"/>
-          <PublishItem publishSize="342268" publishTime="1747114811"/>
      </publishHistory>
 </DOMDocument>
