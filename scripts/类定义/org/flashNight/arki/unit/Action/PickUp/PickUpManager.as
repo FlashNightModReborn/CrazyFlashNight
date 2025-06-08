@@ -16,7 +16,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 构造函数
      */
-    function PickUpManager() {
+    public function PickUpManager() {
         this.count = 0;
         this.createPickupItemPool();
     }
@@ -24,7 +24,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 创建拾取物品池
      */
-    function createPickupItemPool():Void {
+    public function createPickupItemPool():Void {
         this.pickupItemDict = {};
         this.dispatcher = new LifecycleEventDispatcher(_root.gameworld);
         
@@ -41,7 +41,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 拾取物品
      */
-    function pickup(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Void {
+    public function pickup(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Void {
         var str:String = "获得";
         var itemName:String = target.物品名;
         var value:Number = target.数量;
@@ -80,7 +80,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 拾取并装备物品
      */
-    function 拾取并装备(itemName:String, value:Number):Boolean {
+    public function 拾取并装备(itemName:String, value:Number):Boolean {
         var itemData:Object = _root.getItemData(itemName);
         
         if (itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷") {
@@ -140,7 +140,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 创建可拾取物
      */
-    function createCollectible(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean, parameterObject:Object):Void {
+    public function createCollectible(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean, parameterObject:Object):Void {
         if (数量 <= 0) {
             数量 = 1;
         }
@@ -209,21 +209,21 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 获取当前拾取物数量
      */
-    function getCount():Number {
+    public function getCount():Number {
         return this.count;
     }
     
     /**
      * 获取拾取物字典
      */
-    function getPickupItemDict():Object {
+    public function getPickupItemDict():Object {
         return this.pickupItemDict;
     }
     
     /**
      * 清理资源
      */
-    function destroy():Void {
+    public function destroy():Void {
         if (this.dispatcher) {
             this.dispatcher.destroy();
             this.dispatcher = null;

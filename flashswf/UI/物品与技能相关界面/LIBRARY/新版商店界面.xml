@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1736267857" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1749320323" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="新版商店界面" currentFrame="10">
+    <DOMTimeline name="新版商店界面" currentFrame="6">
       <layers>
         <DOMLayer name="Labels Layer" color="#88A9BF">
           <frames>
@@ -50,14 +50,14 @@ this.NPC物品栏 = null;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="购买执行界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="购买执行界面" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面" name="购买执行界面" selected="true" centerPoint3DX="122" centerPoint3DY="363">
+                <DOMSymbolInstance libraryItemName="购买执行界面" name="购买执行界面" centerPoint3DX="122" centerPoint3DY="363">
                   <matrix>
                     <Matrix tx="10" ty="335"/>
                   </matrix>
@@ -69,7 +69,7 @@ this.NPC物品栏 = null;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#EA03A0">
+        <DOMLayer name="Layer 12" color="#EA03A0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -87,9 +87,7 @@ this.NPC物品栏 = null;]]></script>
                     <script><![CDATA[onClipEvent (load) {
 	this._visible = false;
 }
-onClipEvent (unload) {
-	_root.物品UI函数.删除商店图标();
-}]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

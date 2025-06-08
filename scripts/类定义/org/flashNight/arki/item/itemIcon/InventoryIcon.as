@@ -21,19 +21,47 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         _root.注释结束();
         if (this.locked) return;
 
+        var type = itemData.type;
+        var use = itemData.use;
+        // 检查是否为金钱或K点，是则点击直接获得
+        if(name === "金钱"){
+            _root.金钱 += value;
+            _root.发布消息("获得金钱" + value + "。");
+            collection.remove(index);
+            return;
+        }else if(name === "K点"){
+            _root.虚拟币 += value;
+            _root.发布消息("获得K点" + value + "。");
+            collection.remove(index);
+            return;
+        }
+        // 检查是否为材料或情报，是则点击直接加入对应的收集品栏
+        if(type === "收集品"){
+            if(use === "材料"){
+                _root.收集品栏.材料.add(name,value);
+                collection.remove(index);
+                _root.发布消息("获得[材料]" + name + "*" + value + "。");
+            }else if(use === "情报"){
+                _root.收集品栏.情报.add(name,value);
+                collection.remove(index);
+                _root.发布消息("获得[情报]" + name + "*" + value + "。");
+            }
+            return;
+        }
+
         var dragIcon = _root.鼠标.物品图标容器.attachMovie("图标-"+itemData.displayname, "物品图标", 0);
         dragIcon.gotoAndStop(2);
         icon._alpha = 30;
         _root.鼠标.gotoAndStop("手型抓取");
 
         //高亮对应装备栏
-        if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
-            if(itemData.use == "手枪"){
+        if(type == "武器" || type == "防具" || use == "手雷"){
+            if(use == "手枪"){
                 icon.highlights = [_root.物品栏界面.手枪,_root.物品栏界面.手枪2];//对手枪2进行额外判定
             }else{
-                icon.highlights = [_root.物品栏界面[itemData.use]];
+                icon.highlights = [_root.物品栏界面[use]];
             }
-        }else if(itemData.use == "药剂"){
+        }else if(use == "药剂"){
             icon.highlights = _root.玩家信息界面.快捷药剂界面.药剂图标列表;
         }
         for(var i=0; i<icon.highlights.length; i++){
@@ -44,6 +72,8 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
     public function Release():Void{
         _root.鼠标.物品图标容器.物品图标.removeMovieClip();
         icon._alpha = 100;
+
+        if(name == null || itemData.type === "收集品") return;
 
         var xmouse = _root._xmouse;
         var ymouse = _root._ymouse;

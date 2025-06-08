@@ -38,6 +38,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     public static function initializeMapElement(target:MovieClip, presetName:String):Void {
         // 应用预设配置（如果提供了预设名称）
         if (presetName) {
+            target.presetName = presetName;
             StaticInitializer.applyPreset(target, presetName);
         }
 

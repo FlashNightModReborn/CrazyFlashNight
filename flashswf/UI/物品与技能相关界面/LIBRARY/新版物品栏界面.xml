@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1749286515" lastUniqueIdentifier="42">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="7">
+    <DOMTimeline name="新版物品栏界面" currentFrame="11">
       <layers>
-        <DOMLayer name="Labels Layer" color="#23D4A1">
+        <DOMLayer name="Labels Layer" color="#23D4A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -424,7 +424,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="未装备" color="#C3D7F3" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="未装备" color="#C3D7F3" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>

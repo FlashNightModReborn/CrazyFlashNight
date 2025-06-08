@@ -35,31 +35,41 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Preset
             击中效果: "火花",
             是否为敌人: true,
             interactionEnabled: true,
-            pickupEnabled: true
+            pickupEnabled: true,
+            row: 4,
+            col: 8
         });
         
         // 生存箱预设
         PresetManager.registerPreset("生存箱", {
             hitPoint: 50,
-            maxFrame: 12
+            maxFrame: 12,
+            row: 4,
+            col: 4
         });
 
         // 资源箱预设
         PresetManager.registerPreset("装备箱", {
             hitPoint: 30,
-            maxFrame: 12
+            maxFrame: 12,
+            row: 2,
+            col: 4
         });
 
         // 资源箱预设
         PresetManager.registerPreset("资源箱", {
             hitPoint: 10,
-            maxFrame: 12
+            maxFrame: 12,
+            row: 0,
+            col: 0
         });
 
         // 纸箱预设
         PresetManager.registerPreset("纸箱", {
             hitPoint: 1,
-            maxFrame: 1
+            maxFrame: 1,
+            row: 0,
+            col: 0
         });
         
     }

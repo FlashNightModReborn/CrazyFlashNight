@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="image" itemID="6769984d-00000862" isExpanded="true"/>
@@ -127,10 +127,12 @@
           <Include href="物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
           <Include href="物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
           <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1749286500"/>
-          <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1739864791"/>
-          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1736267857"/>
+          <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1749320413"/>
+          <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1749320323"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
           <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1749286515"/>
+          <Include href="资源箱界面.xml" itemID="684482b6-000002a2" lastModified="1749387337"/>
+          <Include href="资源箱界面网格.xml" loadImmediate="false" itemID="6844832f-000002a5" lastModified="1749359714"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -221,7 +223,7 @@
                                                   <AdjustColorFilter/>
                                              </filters>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/旧版物品栏界面" selected="true" centerPoint3DX="469.1" centerPoint3DY="-253.35">
+                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/旧版物品栏界面" centerPoint3DX="469.1" centerPoint3DY="-253.35">
                                              <matrix>
                                                   <Matrix a="0.999984741210938" d="0.999984741210938" tx="351.1" ty="-419.3"/>
                                              </matrix>
@@ -270,6 +272,14 @@
                                         <DOMSymbolInstance libraryItemName="新版仓库界面" name="仓库界面" centerPoint3DX="712" centerPoint3DY="122.95">
                                              <matrix>
                                                   <Matrix tx="594"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="资源箱界面" name="仓库界面" selected="true" centerPoint3DX="994" centerPoint3DY="122.95">
+                                             <matrix>
+                                                  <Matrix tx="876"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point/>
@@ -546,6 +556,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="52862" publishTime="1749387354"/>
+          <PublishItem publishSize="52865" publishTime="1749360529"/>
           <PublishItem publishSize="52565" publishTime="1749286311"/>
           <PublishItem publishSize="52550" publishTime="1740304803"/>
           <PublishItem publishSize="52543" publishTime="1740304704"/>
@@ -564,7 +576,5 @@
           <PublishItem publishSize="52014" publishTime="1739864702"/>
           <PublishItem publishSize="52003" publishTime="1739861105"/>
           <PublishItem publishSize="51968" publishTime="1739852736"/>
-          <PublishItem publishSize="51589" publishTime="1739850776"/>
-          <PublishItem publishSize="51660" publishTime="1739849847"/>
      </publishHistory>
 </DOMDocument>

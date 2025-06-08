@@ -5,6 +5,10 @@ import org.flashNight.arki.spatial.animation.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.Action.PickUp.*;
 
+import org.flashNight.arki.item.*;
+import org.flashNight.arki.item.itemCollection.*;
+
+
 // 拾取相关函数
 _root.pickupItemManager = new PickUpManager();
 
@@ -66,7 +70,15 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
 	}
 
     // _root.发布消息("资源箱破碎: " + target._name);
-	_root.pickupItemManager.createCollectible(target.内部物,   target.数量,target._x,target._y, true);
+
+    // 在此处临时测试资源箱弹出物品栏
+    if(target.row > 0 && target.col > 0){
+        var inventory = new ArrayInventory(null, target.row * target.col);
+        inventory.add(0, ItemUtil.createItem(target.内部物, target.数量));
+        _root.物品UI函数.创建资源箱图标(inventory, target.presetName, target.row, target.col);
+        return;
+    }
+	_root.pickupItemManager.createCollectible(target.内部物,  target.数量, target._x, target._y, true);
 }
 
 

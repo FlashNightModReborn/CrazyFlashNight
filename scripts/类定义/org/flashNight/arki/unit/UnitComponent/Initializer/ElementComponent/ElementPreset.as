@@ -44,6 +44,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Elemen
     // 交互属性
     public var interactionEnabled:Boolean;
     public var pickupEnabled:Boolean;
+
+    // 资源箱物品栏大小
+    public var row:Number;
+    public var col:Number;
     
     // 自定义属性扩展
     public var customProperties:Object;
@@ -65,6 +69,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Elemen
         this.obstacle = false;
         this.interactionEnabled = true;
         this.pickupEnabled = true;
+        this.row = 0;
+        this.col = 0;
         this.customProperties = {};
         
         // 染色默认值
@@ -151,6 +157,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Elemen
         // 应用交互属性
         target.interactionEnabled = this.interactionEnabled;
         target.pickupEnabled = this.pickupEnabled;
+
+        // 应用资源箱属性
+        if(!isNaN(this.row)) target.row = this.row;
+        if(!isNaN(this.col)) target.col = this.col;
         
         // 应用自定义属性
         for (var prop in this.customProperties) {

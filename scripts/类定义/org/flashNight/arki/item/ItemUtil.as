@@ -35,6 +35,26 @@ class org.flashNight.arki.item.ItemUtil{
         if (index.__proto__ == Number.prototype) return ItemUtil.itemDataDict[itemNamesByID[index]];
     }
 
+
+    /*
+     * 创建物品对象
+     */
+    public static function createItem(name, value):Object{
+        var itemData = getItemData(name);
+        if(itemData == null || value <= 0) return null;
+        var newItem = {
+            name:name, 
+            lastUpdate:new Date().getTime()
+        };
+        if(itemData.type == "武器" || itemData.type == "防具") {
+            if(value > 13 || value <= 1) value = 1;
+            newItem.value = {level: value};
+        } else {
+            newItem.value = value;
+        }
+        return newItem;
+    }
+
     /*
      * 玩家的物品移动操作
      */
