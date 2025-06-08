@@ -492,6 +492,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * @param {String} requestType - 要清理的请求类型（可选）
      */
     public static function clearCache(requestType:String):Void {
+        TargetCacheUpdater.resetVersions(); // 清理更新器缓存
         if (requestType) {
             // 清理特定类型的缓存 - 需要遍历注册表
             clearCacheByType(requestType);
@@ -549,6 +550,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * @param {String} requestType - 要刷新的请求类型
      */
     public static function invalidateCache(requestType:String):Void {
+        TargetCacheUpdater.resetVersions(); // 清理更新器缓存
         clearCacheByType(requestType);
     }
 

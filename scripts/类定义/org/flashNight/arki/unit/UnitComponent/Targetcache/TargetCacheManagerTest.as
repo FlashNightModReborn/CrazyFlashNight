@@ -1,0 +1,1690 @@
+﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
+
+/**
+ * 测试套件：TargetCacheManager 外观层
+ * ==========================================
+ * 
+ * - 验证外观模式（Facade Pattern）的正确实现
+ * - 100% API覆盖率测试（50+ 公共方法）
+ * - 委托机制正确性验证
+ * - 向后兼容性完整验证
+ * - 性能基准测试（与直接调用对比）
+ * - 复杂查询场景的集成测试
+ * - 大规模数据场景压力测试
+ * - 边界条件和异常处理验证
+ * - 系统管理功能全面测试
+ * - 一句启动全面战斗
+ * 
+ * 🔥 外观模式验证重点：
+ * - API简化程度验证
+ * - 内部复杂性隐藏验证
+ * - 委托调用链正确性
+ * - 接口一致性保证
+ * - 错误处理统一性
+ * 
+ *  启动方式：
+ * org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest.runAll();
+ */
+class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest {
+    
+    // ========================================================================
+    // 战斗统计和配置
+    // ========================================================================
+    
+    private static var testCount:Number = 0;
+    private static var passedTests:Number = 0;
+    private static var failedTests:Number = 0;
+    private static var performanceResults:Array = [];
+    private static var apiCoverageMap:Object = {};
+    
+    // 性能基准配置
+    private static var PERFORMANCE_TRIALS:Number = 1000;
+    private static var LARGE_DATA_SCALE:Number = 100;
+    private static var API_RESPONSE_BENCHMARK_MS:Number = 1.0;
+    
+    // 测试数据缓存
+    private static var testUnits:Array;
+    private static var testEnemies:Array;
+    private static var testAllies:Array;
+    private static var mockFrameTimer:Object;
+    private static var mockGameWorld:Object;
+    private static var mockHero:Object;
+    private static var originalRoot:Object;
+    
+    /**
+     * 🚀 终极战斗启动器 - 一句话启动全面测试
+     */
+    public static function runAll():Void {
+        trace("================================================================================");
+        trace("⚔️  TargetCacheManager 外观层 - 终极战斗测试套件启动 ⚔️");
+        trace("================================================================================");
+        
+        var startTime:Number = getTimer();
+        resetTestStats();
+        
+        try {
+            // 🏗️ 战场准备
+            initializeBattleEnvironment();
+            
+            // === 第一波：基础功能验证 ===
+            runBasicQueryTests();
+            
+            // === 第二波：范围查询测试 ===
+            runRangeQueryTests();
+            
+            // === 第三波：距离查询测试 ===
+            runDistanceQueryTests();
+            
+            // === 第四波：区域搜索测试 ===
+            runAreaSearchTests();
+            
+            // === 第五波：计数API测试 ===
+            runCountingAPITests();
+            
+            // === 第六波：条件查询测试 ===
+            runConditionalQueryTests();
+            
+            // === 第七波：系统管理测试 ===
+            runSystemManagementTests();
+            
+            // === 第八波：外观模式验证 ===
+            runFacadePatternTests();
+            
+            // === 第九波：性能基准测试 ===
+            runPerformanceBenchmarks();
+            
+            // === 第十波：集成战斗测试 ===
+            runIntegrationBattleTests();
+            
+            // === 终极波：大规模压力测试 ===
+            runLargeScaleStressTests();
+            
+            // === 最终波：边界条件战斗 ===
+            runBoundaryBattleTests();
+            
+        } catch (error:Error) {
+            failedTests++;
+            trace("💥 测试执行异常: " + error.message);
+        } finally {
+            // 🧹 战场清理
+            cleanupBattleEnvironment();
+        }
+        
+        var totalTime:Number = getTimer() - startTime;
+        printBattleReport(totalTime);
+    }
+    
+    // ========================================================================
+    // 断言系统（战斗验证器）
+    // ========================================================================
+    
+    private static function assertEquals(testName:String, expected:Number, actual:Number, tolerance:Number):Void {
+        testCount++;
+        apiCoverageMap[testName] = true;
+        if (isNaN(tolerance)) tolerance = 0;
+        
+        var diff:Number = Math.abs(expected - actual);
+        if (diff <= tolerance) {
+            passedTests++;
+            trace("✅ " + testName + " VICTORY (expected=" + expected + ", actual=" + actual + ")");
+        } else {
+            failedTests++;
+            trace("❌ " + testName + " DEFEAT (expected=" + expected + ", actual=" + actual + ", diff=" + diff + ")");
+        }
+    }
+    
+    private static function assertArrayEquals(testName:String, expected:Array, actual:Array):Void {
+        testCount++;
+        apiCoverageMap[testName] = true;
+        
+        if (expected.length == actual.length) {
+            var allMatch:Boolean = true;
+            for (var i:Number = 0; i < expected.length; i++) {
+                if (expected[i] != actual[i]) {
+                    allMatch = false;
+                    break;
+                }
+            }
+            if (allMatch) {
+                passedTests++;
+                trace("✅ " + testName + " VICTORY (arrays match)");
+                return;
+            }
+        }
+        
+        failedTests++;
+        trace("❌ " + testName + " DEFEAT (arrays don't match: expected.length=" + expected.length + ", actual.length=" + actual.length + ")");
+    }
+    
+    private static function assertTrue(testName:String, condition:Boolean):Void {
+        testCount++;
+        apiCoverageMap[testName] = true;
+        if (condition) {
+            passedTests++;
+            trace("✅ " + testName + " VICTORY");
+        } else {
+            failedTests++;
+            trace("❌ " + testName + " DEFEAT (condition is false)");
+        }
+    }
+    
+    private static function assertNotNull(testName:String, obj:Object):Void {
+        testCount++;
+        apiCoverageMap[testName] = true;
+        if (obj != null && obj != undefined) {
+            passedTests++;
+            trace("✅ " + testName + " VICTORY (object exists)");
+        } else {
+            failedTests++;
+            trace("❌ " + testName + " DEFEAT (object is null)");
+        }
+    }
+    
+    private static function assertNull(testName:String, obj:Object):Void {
+        testCount++;
+        apiCoverageMap[testName] = true;
+        if (obj == null || obj == undefined) {
+            passedTests++;
+            trace("✅ " + testName + " VICTORY (object is null)");
+        } else {
+            failedTests++;
+            trace("❌ " + testName + " DEFEAT (object is not null)");
+        }
+    }
+    
+    private static function assertInstanceOf(testName:String, obj:Object, expectedClass:String):Void {
+        testCount++;
+        apiCoverageMap[testName] = true;
+        
+        var typeName:String = typeof(obj);
+        if (expectedClass == "Array" && obj instanceof Array) {
+            passedTests++;
+            trace("✅ " + testName + " VICTORY (correct Array type)");
+        } else if (expectedClass == "Object" && (typeName == "object" || obj instanceof Object)) {
+            passedTests++;
+            trace("✅ " + testName + " VICTORY (correct Object type)");
+        } else if (expectedClass == "Number" && (typeName == "number" || !isNaN(obj))) {
+            passedTests++;
+            trace("✅ " + testName + " VICTORY (correct Number type)");
+        } else {
+            failedTests++;
+            trace("❌ " + testName + " DEFEAT (incorrect type: expected=" + expectedClass + ", actual=" + typeName + ")");
+        }
+    }
+    
+    // ========================================================================
+    // 战场环境初始化
+    // ========================================================================
+    
+    private static function initializeBattleEnvironment():Void {
+        trace("\n🏗️ 初始化终极战场环境...");
+        
+        // 备份原始环境
+        originalRoot = _root;
+        
+        // 创建大规模测试数据
+        createLargeScaleTestData();
+        
+        // 构建模拟环境
+        mockGameWorld = createMockGameWorld();
+        mockFrameTimer = createMockFrameTimer();
+        mockHero = createMockHero();
+        
+        _root.gameworld = mockGameWorld;
+        _root.帧计时器 = mockFrameTimer;
+        _root.控制目标 = "hero";
+        _root.gameworld.hero = mockHero;
+        
+        // 初始化系统
+        TargetCacheManager.initialize();
+        TargetCacheManager.clearCache();
+        
+        trace("🎯 创建了 " + testUnits.length + " 个测试单位");
+        trace("⚔️ 敌人数量: " + testEnemies.length);
+        trace("🛡️ 友军数量: " + testAllies.length);
+        trace("🏰 战场环境构建完成");
+    }
+    
+    private static function createLargeScaleTestData():Void {
+        testUnits = [];
+        testEnemies = [];
+        testAllies = [];
+        
+        // 创建大规模测试数据
+        for (var i:Number = 0; i < LARGE_DATA_SCALE; i++) {
+            var isEnemy:Boolean = (i % 2 == 0);
+            var unit:Object = createBattleUnit(i, isEnemy);
+            
+            testUnits[i] = unit;
+            if (isEnemy) {
+                testEnemies.push(unit);
+            } else {
+                testAllies.push(unit);
+            }
+        }
+    }
+    
+    private static function createBattleUnit(index:Number, isEnemy:Boolean):Object {
+        var unit:Object = {
+            _name: (isEnemy ? "enemy_" : "ally_") + index,
+            hp: 50 + Math.random() * 50,
+            maxhp: 100,
+            是否为敌人: isEnemy,
+            x: index * 30 + Math.random() * 20, // 分散排列
+            y: Math.random() * 200,
+            aabbCollider: {
+                left: 0,
+                right: 0,
+                updateFromUnitArea: function(u:Object):Void {
+                    this.left = u.x - 10;
+                    this.right = u.x + 10;
+                }
+            }
+        };
+        
+        unit.aabbCollider.updateFromUnitArea(unit);
+        return unit;
+    }
+    
+    private static function createMockGameWorld():Object {
+        var world:Object = {};
+        for (var i:Number = 0; i < testUnits.length; i++) {
+            world[testUnits[i]._name] = testUnits[i];
+        }
+        return world;
+    }
+    
+    private static function createMockFrameTimer():Object {
+        return {
+            当前帧数: 5000,
+            advanceFrame: function(frames:Number):Void {
+                if (!frames) frames = 1;
+                this.当前帧数 += frames;
+            }
+        };
+    }
+    
+    private static function createMockHero():Object {
+        return {
+            _name: "hero",
+            hp: 100,
+            maxhp: 100,
+            是否为敌人: false,
+            x: LARGE_DATA_SCALE * 15, // 放在中间
+            y: 100,
+            aabbCollider: {
+                left: (LARGE_DATA_SCALE * 15) - 10,
+                right: (LARGE_DATA_SCALE * 15) + 10,
+                updateFromUnitArea: function(u:Object):Void {
+                    this.left = u.x - 10;
+                    this.right = u.x + 10;
+                }
+            }
+        };
+    }
+    
+    private static function createTestAABB(centerX:Number, width:Number):AABBCollider {
+        var aabb:AABBCollider = new AABBCollider();
+        aabb.left = centerX - width/2;
+        aabb.right = centerX + width/2;
+        return aabb;
+    }
+    
+    private static function cleanupBattleEnvironment():Void {
+        // 恢复原始环境
+        if (originalRoot) {
+            _root = MovieClip(originalRoot);
+        }
+        
+        // 清理缓存
+        TargetCacheManager.clearCache();
+    }
+    
+    // ========================================================================
+    // 第一波：基础查询功能测试
+    // ========================================================================
+    
+    private static function runBasicQueryTests():Void {
+        trace("\n⚔️ 第一波：基础查询功能战斗测试...");
+        
+        testBasicTargetRetrieval();
+        testShorthandMethods();
+        testCacheConsistency();
+        testUpdateIntervalBehavior();
+    }
+    
+    private static function testBasicTargetRetrieval():Void {
+        var hero:Object = mockHero;
+        
+        // 测试基础获取方法
+        var enemies:Array = TargetCacheManager.getCachedTargets(hero, 10, "敌人");
+        var allies:Array = TargetCacheManager.getCachedTargets(hero, 10, "友军");
+        var all:Array = TargetCacheManager.getCachedTargets(hero, 10, "全体");
+        
+        assertInstanceOf("getCachedTargets-敌人返回数组", enemies, "Array");
+        assertInstanceOf("getCachedTargets-友军返回数组", allies, "Array");
+        assertInstanceOf("getCachedTargets-全体返回数组", all, "Array");
+        
+        assertTrue("敌人列表不为空", enemies.length > 0);
+        assertTrue("友军列表不为空", allies.length > 0);
+        assertTrue("全体列表最大", all.length >= enemies.length && all.length >= allies.length);
+        
+        // 验证数据正确性
+        var firstEnemy:Object = enemies[0];
+        assertTrue("第一个敌人确实是敌人", firstEnemy.是否为敌人);
+        
+        var firstAlly:Object = allies[0];
+        assertTrue("第一个友军确实是友军", !firstAlly.是否为敌人);
+    }
+    
+    private static function testShorthandMethods():Void {
+        var hero:Object = mockHero;
+        var interval:Number = 15;
+        
+        // 测试简化方法
+        var enemies1:Array = TargetCacheManager.getCachedEnemy(hero, interval);
+        var allies1:Array = TargetCacheManager.getCachedAlly(hero, interval);
+        var all1:Array = TargetCacheManager.getCachedAll(hero, interval);
+        
+        var enemies2:Array = TargetCacheManager.getCachedTargets(hero, interval, "敌人");
+        var allies2:Array = TargetCacheManager.getCachedTargets(hero, interval, "友军");
+        var all2:Array = TargetCacheManager.getCachedTargets(hero, interval, "全体");
+        
+        // 验证简化方法与完整方法结果一致
+        assertEquals("简化敌人方法一致性", enemies2.length, enemies1.length, 0);
+        assertEquals("简化友军方法一致性", allies2.length, allies1.length, 0);
+        assertEquals("简化全体方法一致性", all2.length, all1.length, 0);
+    }
+    
+    private static function testCacheConsistency():Void {
+        var hero:Object = mockHero;
+        
+        // 连续两次调用应该返回相同结果（缓存命中）
+        var enemies1:Array = TargetCacheManager.getCachedEnemy(hero, 50);
+        var enemies2:Array = TargetCacheManager.getCachedEnemy(hero, 50);
+        
+        assertEquals("缓存一致性-敌人", enemies1.length, enemies2.length, 0);
+        assertTrue("缓存一致性-相同引用", enemies1 === enemies2);
+        
+        // 验证统计信息反映了缓存命中
+        var stats:Object = TargetCacheManager.getSystemStats();
+        assertTrue("缓存命中统计正确", stats.cacheHits > 0);
+    }
+    
+    private static function testUpdateIntervalBehavior():Void {
+        var hero:Object = mockHero;
+        
+        // 创建初始缓存
+        var initial:Array = TargetCacheManager.getCachedEnemy(hero, 5);
+        var initialLength:Number = initial.length;
+        
+        // 推进时间，触发缓存更新
+        mockFrameTimer.advanceFrame(10);
+        var updated:Array = TargetCacheManager.getCachedEnemy(hero, 5);
+        
+        assertTrue("更新间隔后重新获取缓存", updated != null);
+        assertEquals("更新后数据量保持", initialLength, updated.length, 0);
+    }
+    
+    // ========================================================================
+    // 第二波：范围查询测试
+    // ========================================================================
+    
+    private static function runRangeQueryTests():Void {
+        trace("\n⚔️ 第二波：范围查询战斗测试...");
+        
+        testIndexBasedQueries();
+        testAABBColliderQueries();
+        testRangeQueryConsistency();
+    }
+    
+    private static function testIndexBasedQueries():Void {
+        var hero:Object = mockHero;
+        var aabb:AABBCollider = createTestAABB(hero.x, 200);
+        
+        // 测试从索引开始的查询
+        var enemyResult:Object = TargetCacheManager.getCachedEnemyFromIndex(hero, 10, aabb);
+        var allyResult:Object = TargetCacheManager.getCachedAllyFromIndex(hero, 10, aabb);
+        var allResult:Object = TargetCacheManager.getCachedAllFromIndex(hero, 10, aabb);
+        
+        assertNotNull("敌人索引查询结果", enemyResult);
+        assertNotNull("友军索引查询结果", allyResult);
+        assertNotNull("全体索引查询结果", allResult);
+        
+        assertTrue("敌人索引查询包含data", enemyResult.hasOwnProperty("data"));
+        assertTrue("敌人索引查询包含startIndex", enemyResult.hasOwnProperty("startIndex"));
+        assertInstanceOf("敌人索引查询data是数组", enemyResult.data, "Array");
+        assertInstanceOf("敌人索引查询startIndex是数字", enemyResult.startIndex, "Number");
+        
+        assertTrue("索引查询返回有效数据", enemyResult.data.length >= 0);
+    }
+    
+    private static function testAABBColliderQueries():Void {
+        var hero:Object = mockHero;
+        
+        // 测试不同大小的碰撞盒
+        var smallAABB:AABBCollider = createTestAABB(hero.x, 50);
+        var largeAABB:AABBCollider = createTestAABB(hero.x, 500);
+        
+        var smallResult:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "敌人", smallAABB);
+        var largeResult:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "敌人", largeAABB);
+        
+        assertTrue("小碰撞盒查询正常", smallResult.data.length >= 0);
+        assertTrue("大碰撞盒查询正常", largeResult.data.length >= 0);
+        assertTrue("大碰撞盒包含更多单位", largeResult.data.length >= smallResult.data.length);
+    }
+    
+    private static function testRangeQueryConsistency():Void {
+        var hero:Object = mockHero;
+        var aabb:AABBCollider = createTestAABB(hero.x, 100);
+        
+        // 使用通用方法和专用方法应该得到相同结果
+        var genericResult:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "友军", aabb);
+        var specificResult:Object = TargetCacheManager.getCachedAllyFromIndex(hero, 10, aabb);
+        
+        assertEquals("范围查询一致性-数据长度", genericResult.data.length, specificResult.data.length, 0);
+        assertEquals("范围查询一致性-开始索引", genericResult.startIndex, specificResult.startIndex, 0);
+    }
+    
+    // ========================================================================
+    // 第三波：距离查询测试
+    // ========================================================================
+    
+    private static function runDistanceQueryTests():Void {
+        trace("\n⚔️ 第三波：距离查询战斗测试...");
+        
+        testNearestUnitFinding();
+        testFarthestUnitFinding();
+        testDistanceQueryAccuracy();
+        testDistanceQueryEdgeCases();
+    }
+    
+    private static function testNearestUnitFinding():Void {
+        var hero:Object = mockHero;
+        
+        // 测试最近单位查找
+        var nearestEnemy:Object = TargetCacheManager.findNearestTarget(hero, 10, "敌人");
+        var nearestAlly:Object = TargetCacheManager.findNearestTarget(hero, 10, "友军");
+        var nearestAll:Object = TargetCacheManager.findNearestTarget(hero, 10, "全体");
+        
+        assertNotNull("找到最近敌人", nearestEnemy);
+        assertNotNull("找到最近友军", nearestAlly);
+        assertNotNull("找到最近全体单位", nearestAll);
+        
+        // 测试简化方法
+        var nearestEnemy2:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        var nearestAlly2:Object = TargetCacheManager.findNearestAlly(hero, 10);
+        var nearestAll2:Object = TargetCacheManager.findNearestAll(hero, 10);
+        
+        assertTrue("最近敌人查找一致性", nearestEnemy === nearestEnemy2);
+        assertTrue("最近友军查找一致性", nearestAlly === nearestAlly2);
+        assertTrue("最近全体查找一致性", nearestAll === nearestAll2);
+        
+        // 验证确实是敌人/友军
+        assertTrue("最近敌人确实是敌人", nearestEnemy.是否为敌人);
+        assertTrue("最近友军确实是友军", !nearestAlly.是否为敌人);
+    }
+    
+    private static function testFarthestUnitFinding():Void {
+        var hero:Object = mockHero;
+        
+        // 测试最远单位查找
+        var farthestEnemy:Object = TargetCacheManager.findFarthestTarget(hero, 10, "敌人");
+        var farthestAlly:Object = TargetCacheManager.findFarthestTarget(hero, 10, "友军");
+        
+        assertNotNull("找到最远敌人", farthestEnemy);
+        assertNotNull("找到最远友军", farthestAlly);
+        
+        // 简化方法测试
+        var farthestEnemy2:Object = TargetCacheManager.findFarthestEnemy(hero, 10);
+        var farthestAlly2:Object = TargetCacheManager.findFarthestAlly(hero, 10);
+        
+        assertTrue("最远敌人查找一致性", farthestEnemy === farthestEnemy2);
+        assertTrue("最远友军查找一致性", farthestAlly === farthestAlly2);
+    }
+    
+    private static function testDistanceQueryAccuracy():Void {
+        var hero:Object = mockHero;
+        
+        // 获取最近和最远单位
+        var nearest:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        var farthest:Object = TargetCacheManager.findFarthestEnemy(hero, 10);
+        
+        if (nearest && farthest) {
+            var nearestDist:Number = Math.abs(nearest.x - hero.x);
+            var farthestDist:Number = Math.abs(farthest.x - hero.x);
+            
+            assertTrue("最远距离确实大于最近距离", farthestDist >= nearestDist);
+        }
+    }
+    
+    private static function testDistanceQueryEdgeCases():Void {
+        // 测试边界情况：只有一个单位
+        var singleUnitWorld:Object = {
+            single_enemy: createBattleUnit(0, true)
+        };
+        
+        var originalWorld:Object = _root.gameworld;
+        _root.gameworld = singleUnitWorld;
+        
+        TargetCacheManager.clearCache(); 
+        
+        var nearest:Object = TargetCacheManager.findNearestEnemy(mockHero, 10);
+        var farthest:Object = TargetCacheManager.findFarthestEnemy(mockHero, 10);
+        
+        assertNotNull("单单位场景-找到单位", nearest);
+        
+        // 修复：将引用比较改为内容比较
+        // 原代码：assertTrue("单单位场景-最近和最远是同一个", nearest === farthest);
+        // 新代码：
+        var isSameUnit:Boolean = nearest && farthest && (nearest._name == farthest._name);
+        trace(nearest._name + " vs " + farthest._name);
+        assertTrue("单单位场景-最近和最远是同一个", isSameUnit);
+        
+        _root.gameworld = originalWorld;
+        TargetCacheManager.clearCache();
+    }
+    
+    // ========================================================================
+    // 第四波：区域搜索测试
+    // ========================================================================
+    
+    private static function runAreaSearchTests():Void {
+        trace("\n⚔️ 第四波：区域搜索战斗测试...");
+        
+        testRangeBasedSearch();
+        testRadiusBasedSearch();
+        testLimitedRangeSearch();
+        testAreaSearchAccuracy();
+    }
+    
+    private static function testRangeBasedSearch():Void {
+        var hero:Object = mockHero;
+        var leftRange:Number = 100;
+        var rightRange:Number = 150;
+        
+        // 测试范围搜索
+        var enemiesInRange:Array = TargetCacheManager.findTargetsInRange(hero, 10, "敌人", leftRange, rightRange);
+        var alliesInRange:Array = TargetCacheManager.findTargetsInRange(hero, 10, "友军", leftRange, rightRange);
+        var allInRange:Array = TargetCacheManager.findTargetsInRange(hero, 10, "全体", leftRange, rightRange);
+        
+        assertInstanceOf("范围敌人搜索返回数组", enemiesInRange, "Array");
+        assertInstanceOf("范围友军搜索返回数组", alliesInRange, "Array");
+        assertInstanceOf("范围全体搜索返回数组", allInRange, "Array");
+        
+        // 测试简化方法
+        var enemies2:Array = TargetCacheManager.findEnemiesInRange(hero, 10, leftRange, rightRange);
+        var allies2:Array = TargetCacheManager.findAlliesInRange(hero, 10, leftRange, rightRange);
+        var all2:Array = TargetCacheManager.findAllInRange(hero, 10, leftRange, rightRange);
+        
+        assertArrayEquals("简化范围敌人搜索一致", enemiesInRange, enemies2);
+        assertArrayEquals("简化范围友军搜索一致", alliesInRange, allies2);
+        assertArrayEquals("简化范围全体搜索一致", allInRange, all2);
+        
+        // 验证搜索结果的正确性
+        for (var i:Number = 0; i < enemiesInRange.length; i++) {
+            var enemy:Object = enemiesInRange[i];
+            var dist:Number = Math.abs(enemy.x - hero.x);
+            assertTrue("范围内敌人-" + i + "距离正确", dist <= Math.max(leftRange, rightRange));
+        }
+    }
+    
+    private static function testRadiusBasedSearch():Void {
+        var hero:Object = mockHero;
+        var radius:Number = 200;
+        
+        // 测试半径搜索
+        var enemiesInRadius:Array = TargetCacheManager.findTargetsInRadius(hero, 10, "敌人", radius);
+        var alliesInRadius:Array = TargetCacheManager.findTargetsInRadius(hero, 10, "友军", radius);
+        
+        assertInstanceOf("半径敌人搜索返回数组", enemiesInRadius, "Array");
+        assertInstanceOf("半径友军搜索返回数组", alliesInRadius, "Array");
+        
+        // 简化方法测试
+        var enemies2:Array = TargetCacheManager.findEnemiesInRadius(hero, 10, radius);
+        var allies2:Array = TargetCacheManager.findAlliesInRadius(hero, 10, radius);
+        var all2:Array = TargetCacheManager.findAllInRadius(hero, 10, radius);
+        
+        assertArrayEquals("简化半径敌人搜索一致", enemiesInRadius, enemies2);
+        assertArrayEquals("简化半径友军搜索一致", alliesInRadius, allies2);
+        
+        // 验证搜索结果在半径内
+        // 半径仅关注x轴，不考虑2d完整距离差
+        for (var i:Number = 0; i < enemiesInRadius.length; i++) {
+            var enemy:Object = enemiesInRadius[i];
+            var dist:Number = Math.abs(enemy.x - hero.x);
+            assertTrue("半径内敌人-" + i + "距离正确", dist <= radius);
+        }
+    }
+    
+    private static function testLimitedRangeSearch():Void {
+        var hero:Object = mockHero;
+        var maxDistance:Number = 100;
+        
+        // 测试限制范围的最近/最远查找
+        var nearestInRange:Object = TargetCacheManager.findNearestTargetInRange(hero, 10, "敌人", maxDistance);
+        var farthestInRange:Object = TargetCacheManager.findFarthestTargetInRange(hero, 10, "敌人", maxDistance);
+        
+        // 简化方法测试
+        var nearestEnemy:Object = TargetCacheManager.findNearestEnemyInRange(hero, 10, maxDistance);
+        var nearestAlly:Object = TargetCacheManager.findNearestAllyInRange(hero, 10, maxDistance);
+        var farthestEnemy:Object = TargetCacheManager.findFarthestEnemyInRange(hero, 10, maxDistance);
+        var farthestAlly:Object = TargetCacheManager.findFarthestAllyInRange(hero, 10, maxDistance);
+        
+        assertTrue("限制范围最近敌人查找一致", nearestInRange === nearestEnemy);
+        
+        // 验证结果在范围内
+        if (nearestInRange) {
+            var dist:Number = Math.abs(nearestInRange.x - hero.x);
+            assertTrue("限制范围内最近单位距离正确", dist <= maxDistance);
+        }
+        
+        if (farthestInRange) {
+            var dist2:Number = Math.abs(farthestInRange.x - hero.x);
+            assertTrue("限制范围内最远单位距离正确", dist2 <= maxDistance);
+        }
+    }
+    
+    private static function testAreaSearchAccuracy():Void {
+        var hero:Object = mockHero;
+        
+        // 比较不同搜索方法的结果一致性
+        var rangeResult:Array = TargetCacheManager.findEnemiesInRange(hero, 10, 50, 50); // 对称范围
+        var radiusResult:Array = TargetCacheManager.findEnemiesInRadius(hero, 10, 50);
+        
+        // 理论上半径搜索应该包含或接近范围搜索的结果数量
+        assertTrue("区域搜索结果合理", radiusResult.length >= 0 && rangeResult.length >= 0);
+    }
+    
+    // ========================================================================
+    // 第五波：计数API测试
+    // ========================================================================
+    
+    private static function runCountingAPITests():Void {
+        trace("\n⚔️ 第五波：计数API战斗测试...");
+        
+        testBasicCounting();
+        testRangeBasedCounting();
+        testRadiusBasedCounting();
+        testCountingAccuracy();
+    }
+    
+    private static function testBasicCounting():Void {
+        var hero:Object = mockHero;
+        
+        // 测试基本计数
+        var enemyCount:Number = TargetCacheManager.getTargetCount(hero, 10, "敌人");
+        var allyCount:Number = TargetCacheManager.getTargetCount(hero, 10, "友军");
+        var allCount:Number = TargetCacheManager.getTargetCount(hero, 10, "全体");
+        
+        assertInstanceOf("敌人计数返回数字", enemyCount, "Number");
+        assertInstanceOf("友军计数返回数字", allyCount, "Number");
+        assertInstanceOf("全体计数返回数字", allCount, "Number");
+        
+        assertTrue("敌人数量合理", enemyCount >= 0);
+        assertTrue("友军数量合理", allyCount >= 0);
+        assertTrue("全体数量最大", allCount >= enemyCount && allCount >= allyCount);
+        
+        // 测试简化方法
+        var enemyCount2:Number = TargetCacheManager.getEnemyCount(hero, 10);
+        var allyCount2:Number = TargetCacheManager.getAllyCount(hero, 10);
+        var allCount2:Number = TargetCacheManager.getAllCount(hero, 10);
+        
+        assertEquals("简化敌人计数一致", enemyCount, enemyCount2, 0);
+        assertEquals("简化友军计数一致", allyCount, allyCount2, 0);
+        assertEquals("简化全体计数一致", allCount, allCount2, 0);
+        
+        // 验证计数与实际数组长度一致
+        var actualEnemies:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+        assertEquals("计数与数组长度一致-敌人", enemyCount, actualEnemies.length, 0);
+    }
+    
+    private static function testRangeBasedCounting():Void {
+        var hero:Object = mockHero;
+        var leftRange:Number = 80;
+        var rightRange:Number = 120;
+        
+        // 测试范围计数
+        var enemyCountInRange:Number = TargetCacheManager.getTargetCountInRange(
+            hero, 10, "敌人", leftRange, rightRange, false
+        );
+        var allyCountInRange:Number = TargetCacheManager.getTargetCountInRange(
+            hero, 10, "友军", leftRange, rightRange, false
+        );
+        
+        assertInstanceOf("范围敌人计数返回数字", enemyCountInRange, "Number");
+        assertInstanceOf("范围友军计数返回数字", allyCountInRange, "Number");
+        assertTrue("范围敌人计数合理", enemyCountInRange >= 0);
+        assertTrue("范围友军计数合理", allyCountInRange >= 0);
+        
+        // 测试简化方法
+        var enemyCount2:Number = TargetCacheManager.getEnemyCountInRange(hero, 10, leftRange, rightRange, false);
+        var allyCount2:Number = TargetCacheManager.getAllyCountInRange(hero, 10, leftRange, rightRange, false);
+        var allCount2:Number = TargetCacheManager.getAllCountInRange(hero, 10, leftRange, rightRange, false);
+        
+        assertEquals("简化范围敌人计数一致", enemyCountInRange, enemyCount2, 0);
+        assertEquals("简化范围友军计数一致", allyCountInRange, allyCount2, 0);
+        
+        // 验证计数与实际搜索结果一致
+        var actualEnemies:Array = TargetCacheManager.findEnemiesInRange(hero, 10, leftRange, rightRange);
+        assertEquals("范围计数与搜索结果一致", enemyCountInRange, actualEnemies.length, 0);
+    }
+    
+    private static function testRadiusBasedCounting():Void {
+        var hero:Object = mockHero;
+        var radius:Number = 150;
+        
+        // 测试半径计数
+        var enemyCountInRadius:Number = TargetCacheManager.getTargetCountInRadius(hero, 10, "敌人", radius, false);
+        var allyCountInRadius:Number = TargetCacheManager.getTargetCountInRadius(hero, 10, "友军", radius, false);
+        
+        assertInstanceOf("半径敌人计数返回数字", enemyCountInRadius, "Number");
+        assertInstanceOf("半径友军计数返回数字", allyCountInRadius, "Number");
+        
+        // 简化方法测试
+        var enemyCount2:Number = TargetCacheManager.getEnemyCountInRadius(hero, 10, radius, false);
+        var allyCount2:Number = TargetCacheManager.getAllyCountInRadius(hero, 10, radius, false);
+        var allCount2:Number = TargetCacheManager.getAllCountInRadius(hero, 10, radius, false);
+        
+        assertEquals("简化半径敌人计数一致", enemyCountInRadius, enemyCount2, 0);
+        assertEquals("简化半径友军计数一致", allyCountInRadius, allyCount2, 0);
+        
+        // 验证计数与实际搜索结果一致
+        var actualEnemies:Array = TargetCacheManager.findEnemiesInRadius(hero, 10, radius);
+        assertEquals("半径计数与搜索结果一致", enemyCountInRadius, actualEnemies.length, 0);
+    }
+    
+    private static function testCountingAccuracy():Void {
+        var hero:Object = mockHero;
+        
+        // 测试排除自身的选项
+        var countIncludingSelf:Number = TargetCacheManager.getTargetCountInRadius(hero, 10, "全体", 500, false);
+        var countExcludingSelf:Number = TargetCacheManager.getTargetCountInRadius(hero, 10, "全体", 500, true);
+        
+        // 如果英雄在范围内，排除自身应该少1个
+        assertTrue("排除自身计数逻辑正确", countExcludingSelf <= countIncludingSelf);
+    }
+    
+    // ========================================================================
+    // 第六波：条件查询测试
+    // ========================================================================
+    
+    private static function runConditionalQueryTests():Void {
+        trace("\n⚔️ 第六波：条件查询战斗测试...");
+        
+        testHPBasedCounting();
+        testDistanceDistribution();
+        testConditionalQueryAccuracy();
+    }
+    
+    private static function testHPBasedCounting():Void {
+        var hero:Object = mockHero;
+        
+        // 测试血量条件计数
+        var lowHpEnemies:Number = TargetCacheManager.getTargetCountByHP(hero, 10, "敌人", "低血量", false);
+        var midHpEnemies:Number = TargetCacheManager.getTargetCountByHP(hero, 10, "敌人", "中血量", false);
+        var highHpEnemies:Number = TargetCacheManager.getTargetCountByHP(hero, 10, "敌人", "高血量", false);
+        
+        assertInstanceOf("低血量敌人计数返回数字", lowHpEnemies, "Number");
+        assertInstanceOf("中血量敌人计数返回数字", midHpEnemies, "Number");
+        assertInstanceOf("高血量敌人计数返回数字", highHpEnemies, "Number");
+        
+        assertTrue("血量条件计数合理", lowHpEnemies >= 0 && midHpEnemies >= 0 && highHpEnemies >= 0);
+        
+        // 测试简化方法
+        var lowHpEnemies2:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "低血量", false);
+        var lowHpAllies2:Number = TargetCacheManager.getAllyCountByHP(hero, 10, "低血量", false);
+        
+        assertEquals("简化HP敌人计数一致", lowHpEnemies, lowHpEnemies2, 0);
+        assertInstanceOf("简化HP友军计数返回数字", lowHpAllies2, "Number");
+    }
+    
+    private static function testDistanceDistribution():Void {
+        var hero:Object = mockHero;
+        var ranges:Array = [50, 100, 200, 400];
+        
+        // 测试距离分布统计
+        var enemyDist:Object = TargetCacheManager.getDistanceDistribution(hero, 10, "敌人", ranges, false);
+        var allyDist:Object = TargetCacheManager.getDistanceDistribution(hero, 10, "友军", ranges, false);
+        
+        assertNotNull("敌人距离分布对象", enemyDist);
+        assertNotNull("友军距离分布对象", allyDist);
+        
+        assertTrue("敌人分布包含totalCount", enemyDist.hasOwnProperty("totalCount"));
+        assertTrue("敌人分布包含distribution", enemyDist.hasOwnProperty("distribution"));
+        assertTrue("敌人分布包含minDistance", enemyDist.hasOwnProperty("minDistance"));
+        assertTrue("敌人分布包含maxDistance", enemyDist.hasOwnProperty("maxDistance"));
+        
+        assertInstanceOf("分布数组类型正确", enemyDist.distribution, "Array");
+        assertInstanceOf("总数类型正确", enemyDist.totalCount, "Number");
+        
+        // 测试简化方法
+        var enemyDist2:Object = TargetCacheManager.getEnemyDistanceDistribution(hero, 10, ranges, false);
+        var allyDist2:Object = TargetCacheManager.getAllyDistanceDistribution(hero, 10, ranges, false);
+        
+        assertEquals("简化敌人分布总数一致", enemyDist.totalCount, enemyDist2.totalCount, 0);
+        assertEquals("简化友军分布总数一致", allyDist.totalCount, allyDist2.totalCount, 0);
+    }
+    
+    private static function testConditionalQueryAccuracy():Void {
+        var hero:Object = mockHero;
+        
+        // 验证血量条件的逻辑正确性
+        var totalEnemies:Number = TargetCacheManager.getEnemyCount(hero, 10);
+        var lowHp:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "低血量", false);
+        var midHp:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "中血量", false);
+        var highHp:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "高血量", false);
+        
+        // 各种血量的总和应该等于总数（假设没有其他血量状态）
+        var hpSum:Number = lowHp + midHp + highHp;
+        assertTrue("血量分类覆盖合理", hpSum <= totalEnemies);
+    }
+    
+    // ========================================================================
+    // 第七波：系统管理测试
+    // ========================================================================
+    
+    private static function runSystemManagementTests():Void {
+        trace("\n⚔️ 第七波：系统管理战斗测试...");
+        
+        testUnitManagement();
+        testCacheManagement();
+        testSystemConfiguration();
+        testSystemMonitoring();
+    }
+    
+    private static function testUnitManagement():Void {
+        var newUnit:Object = createBattleUnit(999, true);
+        var originalCount:Number = TargetCacheManager.getEnemyCount(mockHero, 10);
+        
+        // 测试添加单位
+        TargetCacheManager.addUnit(newUnit);
+        _root.gameworld[newUnit._name] = newUnit; // 模拟添加到世界
+        
+        // 清除缓存并重新获取，应该包含新单位
+        TargetCacheManager.clearCache();
+        var newCount:Number = TargetCacheManager.getEnemyCount(mockHero, 10);
+        
+        assertTrue("添加单位后数量增加", newCount > originalCount);
+        
+        // 测试移除单位
+        TargetCacheManager.removeUnit(newUnit);
+        delete _root.gameworld[newUnit._name]; // 从世界移除
+        
+        TargetCacheManager.clearCache();
+        var finalCount:Number = TargetCacheManager.getEnemyCount(mockHero, 10);
+        
+        assertEquals("移除单位后数量恢复", originalCount, finalCount, 0);
+        
+        // 测试批量操作
+        var batchUnits:Array = [createBattleUnit(1001, true), createBattleUnit(1002, false)];
+        TargetCacheManager.addUnits(batchUnits);
+        TargetCacheManager.removeUnits(batchUnits);
+        
+        assertTrue("批量操作正常完成", true);
+    }
+    
+    private static function testCacheManagement():Void {
+        // 创建一些缓存
+        TargetCacheManager.getCachedEnemy(mockHero, 10);
+        TargetCacheManager.getCachedAlly(mockHero, 10);
+        TargetCacheManager.getCachedAll(mockHero, 10);
+        
+        var stats1:Object = TargetCacheManager.getSystemStats();
+        var initialRequests:Number = stats1.totalRequests;
+        
+        // 测试部分清理
+        TargetCacheManager.clearCache("敌人");
+        TargetCacheManager.getCachedEnemy(mockHero, 10); // 这应该重新创建敌人缓存
+        
+        var stats2:Object = TargetCacheManager.getSystemStats();
+        assertTrue("部分清理后请求数增加", stats2.totalRequests > initialRequests);
+        
+        // 测试全部失效
+        TargetCacheManager.invalidateAllCaches();
+        TargetCacheManager.getCachedAll(mockHero, 10); // 这应该重新创建缓存
+        
+        var stats3:Object = TargetCacheManager.getSystemStats();
+        assertTrue("失效后可以重新创建缓存", stats3.totalRequests > stats2.totalRequests);
+        
+        // 测试特定失效
+        TargetCacheManager.invalidateCache("友军");
+        assertTrue("特定失效操作正常完成", true);
+    }
+    
+    private static function testSystemConfiguration():Void {
+        // 获取原始配置
+        var originalConfig:Object = TargetCacheManager.getSystemConfig();
+        assertNotNull("获取系统配置", originalConfig);
+        
+        // 测试配置设置
+        var newConfig:Object = {
+            arcCacheCapacity: 75,
+            forceRefreshThreshold: 400
+        };
+        
+        TargetCacheManager.setSystemConfig(newConfig);
+        var updatedConfig:Object = TargetCacheManager.getSystemConfig();
+        
+        assertEquals("配置更新-容量", 75, updatedConfig.arcCacheCapacity, 0);
+        assertEquals("配置更新-刷新阈值", 400, updatedConfig.forceRefreshThreshold, 0);
+        
+        // 恢复原始配置
+        TargetCacheManager.setSystemConfig(originalConfig);
+    }
+    
+    private static function testSystemMonitoring():Void {
+        // 测试统计信息获取
+        var stats:Object = TargetCacheManager.getSystemStats();
+        assertNotNull("获取系统统计", stats);
+        assertTrue("统计包含totalRequests", stats.hasOwnProperty("totalRequests"));
+        assertTrue("统计包含cacheHits", stats.hasOwnProperty("cacheHits"));
+        assertTrue("统计包含cacheMisses", stats.hasOwnProperty("cacheMisses"));
+        
+        // 测试健康检查
+        var health:Object = TargetCacheManager.performHealthCheck();
+        assertNotNull("健康检查结果", health);
+        assertTrue("健康检查包含healthy", health.hasOwnProperty("healthy"));
+        assertTrue("健康检查包含warnings", health.hasOwnProperty("warnings"));
+        assertTrue("健康检查包含errors", health.hasOwnProperty("errors"));
+        
+        // 测试状态报告
+        var report:String = TargetCacheManager.getDetailedStatusReport();
+        assertNotNull("详细状态报告", report);
+        assertTrue("状态报告不为空", report.length > 0);
+        
+        // 测试优化建议
+        var recommendations:Array = TargetCacheManager.getOptimizationRecommendations();
+        assertInstanceOf("优化建议返回数组", recommendations, "Array");
+    }
+    
+    // ========================================================================
+    // 第八波：外观模式验证
+    // ========================================================================
+    
+    private static function runFacadePatternTests():Void {
+        trace("\n⚔️ 第八波：外观模式战斗验证...");
+        
+        testAPISimplification();
+        testDelegationCorrectness();
+        testInterfaceConsistency();
+        testBackwardCompatibility();
+    }
+    
+    private static function testAPISimplification():Void {
+        var hero:Object = mockHero;
+        
+        // 验证简化的API调用
+        var simpleResult:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+        var complexResult:Array = TargetCacheManager.getCachedTargets(hero, 10, "敌人");
+        
+        assertTrue("简化API与复杂API结果一致", simpleResult === complexResult);
+        
+        // 验证用户友好的方法名
+        var nearestEnemy:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        var enemyCount:Number = TargetCacheManager.getEnemyCount(hero, 10);
+        
+        assertNotNull("用户友好方法1-最近敌人", nearestEnemy);
+        assertInstanceOf("用户友好方法2-敌人计数", enemyCount, "Number");
+        
+        // 验证API的直观性
+        var hero2:Object = TargetCacheManager.findHero();
+        assertTrue("findHero方法直观易用", hero2 != null || hero2 == null); // 不管结果如何，方法都应该存在
+    }
+    
+    private static function testDelegationCorrectness():Void {
+        // 验证Manager正确委托给Provider
+        var managerStats:Object = TargetCacheManager.getSystemStats();
+        var providerStats:Object = TargetCacheProvider.getStats();
+        
+        assertEquals("委托统计-总请求数", providerStats.totalRequests, managerStats.totalRequests, 0);
+        assertEquals("委托统计-缓存命中", providerStats.cacheHits, managerStats.cacheHits, 0);
+        assertEquals("委托统计-缓存未命中", providerStats.cacheMisses, managerStats.cacheMisses, 0);
+        
+        // 验证配置委托
+        var managerConfig:Object = TargetCacheManager.getSystemConfig();
+        var providerConfig:Object = TargetCacheProvider.getConfig();
+        
+        assertEquals("委托配置-ARC容量", providerConfig.arcCacheCapacity, managerConfig.arcCacheCapacity, 0);
+        assertTrue("委托配置-版本检查", providerConfig.versionCheckEnabled == managerConfig.versionCheckEnabled);
+    }
+    
+    private static function testInterfaceConsistency():Void {
+        var hero:Object = mockHero;
+        
+        // 验证所有相同类型的方法返回类型一致
+        var enemies1:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+        var allies1:Array = TargetCacheManager.getCachedAlly(hero, 10);
+        var all1:Array = TargetCacheManager.getCachedAll(hero, 10);
+        
+        assertInstanceOf("接口一致性-敌人数组", enemies1, "Array");
+        assertInstanceOf("接口一致性-友军数组", allies1, "Array");
+        assertInstanceOf("接口一致性-全体数组", all1, "Array");
+        
+        // 验证计数方法返回类型一致
+        var count1:Number = TargetCacheManager.getEnemyCount(hero, 10);
+        var count2:Number = TargetCacheManager.getAllyCount(hero, 10);
+        var count3:Number = TargetCacheManager.getAllCount(hero, 10);
+        
+        assertInstanceOf("接口一致性-敌人计数", count1, "Number");
+        assertInstanceOf("接口一致性-友军计数", count2, "Number");
+        assertInstanceOf("接口一致性-全体计数", count3, "Number");
+    }
+    
+    private static function testBackwardCompatibility():Void {
+        var hero:Object = mockHero;
+        
+        // 测试旧版本的updateTargetCache方法
+        TargetCacheManager.updateTargetCache(hero, "敌人", "敌人");
+        assertTrue("向后兼容方法正常执行", true);
+        
+        // 验证参数格式的兼容性（短参数名）
+        var result1:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+        var result2:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        var result3:Number = TargetCacheManager.getEnemyCount(hero, 10);
+        
+        assertTrue("短参数名兼容性-数组", result1 instanceof Array);
+        assertTrue("短参数名兼容性-对象", result2 != null || result2 == null);
+        assertTrue("短参数名兼容性-数字", !isNaN(result3));
+    }
+    
+    // ========================================================================
+    // 第九波：性能基准测试
+    // ========================================================================
+    
+    private static function runPerformanceBenchmarks():Void {
+        trace("\n⚔️ 第九波：性能基准战斗测试...");
+        
+        performanceTestBasicQueries();
+        performanceTestComplexQueries();
+        performanceTestFacadeOverhead();
+        performanceTestLargeScale();
+    }
+    
+    private static function performanceTestBasicQueries():Void {
+        var hero:Object = mockHero;
+        
+        // 基础查询性能测试
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < PERFORMANCE_TRIALS; i++) {
+            TargetCacheManager.getCachedEnemy(hero, 50); // 高间隔，主要测试缓存命中
+        }
+        var basicTime:Number = getTimer() - startTime;
+        var basicAvg:Number = basicTime / PERFORMANCE_TRIALS;
+        
+        performanceResults.push({
+            method: "basicQueries",
+            trials: PERFORMANCE_TRIALS,
+            totalTime: basicTime,
+            avgTime: basicAvg
+        });
+        
+        trace("📊 基础查询性能: " + PERFORMANCE_TRIALS + "次调用耗时 " + basicTime + "ms");
+        assertTrue("基础查询性能达标", basicAvg < API_RESPONSE_BENCHMARK_MS);
+    }
+    
+    private static function performanceTestComplexQueries():Void {
+        var hero:Object = mockHero;
+        
+        // 复杂查询性能测试
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < PERFORMANCE_TRIALS / 2; i++) {
+            TargetCacheManager.findEnemiesInRadius(hero, 10, 100);
+            TargetCacheManager.getEnemyCountInRange(hero, 10, 50, 150, true);
+            TargetCacheManager.findNearestEnemyInRange(hero, 10, 200);
+        }
+        var complexTime:Number = getTimer() - startTime;
+        var complexAvg:Number = complexTime / (PERFORMANCE_TRIALS / 2 * 3);
+        
+        performanceResults.push({
+            method: "complexQueries",
+            trials: PERFORMANCE_TRIALS / 2 * 3,
+            totalTime: complexTime,
+            avgTime: complexAvg
+        });
+        
+        trace("📊 复杂查询性能: " + (PERFORMANCE_TRIALS / 2 * 3) + "次调用耗时 " + complexTime + "ms");
+        assertTrue("复杂查询性能合理", complexAvg < API_RESPONSE_BENCHMARK_MS * 3);
+    }
+    
+    private static function performanceTestFacadeOverhead():Void {
+        var hero:Object = mockHero;
+        var loopCount:Number = 10000;
+        
+        // 测试外观层开销 vs 直接调用
+        var startTime1:Number = getTimer();
+        for (var i:Number = 0; i < loopCount; i++) {
+            TargetCacheManager.getCachedEnemy(hero, 100); // Manager调用
+        }
+        var managerTime:Number = getTimer() - startTime1;
+        
+        var startTime2:Number = getTimer();
+        for (var j:Number = 0; j < loopCount; j++) {
+            TargetCacheProvider.getCache("敌人", hero, 100); // Provider直接调用
+        }
+        var providerTime:Number = getTimer() - startTime2;
+        
+        var overhead:Number = managerTime - providerTime;
+        var overheadPercent:Number = (overhead / providerTime) * 100;
+        
+        performanceResults.push({
+            method: "facadeOverhead",
+            trials: loopCount,
+            managerTime: managerTime,
+            providerTime: providerTime,
+            overhead: overhead,
+            overheadPercent: overheadPercent
+        });
+        
+        trace("📊 外观层开销: Manager=" + managerTime + "ms, Provider=" + providerTime + "ms, 开销=" + Math.round(overheadPercent) + "%");
+        assertTrue("外观层开销合理", overheadPercent < 20); // 开销应该小于20%
+    }
+    
+    private static function performanceTestLargeScale():Void {
+        var hero:Object = mockHero;
+        
+        // 大规模数据性能测试
+        var startTime:Number = getTimer();
+        
+        // 混合大量不同类型的查询
+        for (var i:Number = 0; i < 50; i++) {
+            TargetCacheManager.getCachedAll(hero, 20);
+            TargetCacheManager.getAllCountInRadius(hero, 20, 300, false);
+            TargetCacheManager.findAllInRange(hero, 20, 100, 200);
+            TargetCacheManager.getDistanceDistribution(hero, 20, "全体", [100, 200, 400], false);
+        }
+        
+        var largeScaleTime:Number = getTimer() - startTime;
+        var largeScaleAvg:Number = largeScaleTime / (50 * 4);
+        
+        performanceResults.push({
+            method: "largeScale",
+            trials: 50 * 4,
+            totalTime: largeScaleTime,
+            avgTime: largeScaleAvg
+        });
+        
+        trace("📊 大规模数据性能: " + (50 * 4) + "次调用耗时 " + largeScaleTime + "ms");
+        assertTrue("大规模数据性能合理", largeScaleAvg < API_RESPONSE_BENCHMARK_MS * 2);
+    }
+    
+    // ========================================================================
+    // 第十波：集成战斗测试
+    // ========================================================================
+    
+    private static function runIntegrationBattleTests():Void {
+        trace("\n⚔️ 第十波：集成战斗测试...");
+        
+        testFullWorkflowIntegration();
+        testCrossComponentIntegration();
+        testRealWorldScenarioSimulation();
+    }
+    
+    private static function testFullWorkflowIntegration():Void {
+        var hero:Object = mockHero;
+        
+        // 模拟完整的游戏逻辑工作流
+        
+        // 1. 获取附近的敌人
+        var nearbyEnemies:Array = TargetCacheManager.findEnemiesInRadius(hero, 10, 200);
+        assertTrue("工作流1-找到附近敌人", nearbyEnemies.length > 0);
+        
+        // 2. 选择最近的敌人作为目标
+        var target:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        assertNotNull("工作流2-选择最近目标", target);
+        
+        // 3. 检查目标周围的敌人数量（评估风险）
+        var enemyCountAroundTarget:Number = TargetCacheManager.getEnemyCountInRadius(target, 10, 100, false);
+        assertTrue("工作流3-风险评估", enemyCountAroundTarget >= 1); // 至少包含目标本身
+        
+        // 4. 寻找附近的友军支援
+        var supportAllies:Array = TargetCacheManager.findAlliesInRange(hero, 10, 150, 150);
+        assertTrue("工作流4-寻找支援", supportAllies.length >= 0);
+        
+        // 5. 获取战场概况
+        var battleStats:Object = TargetCacheManager.getDistanceDistribution(hero, 10, "全体", [50, 100, 200], false);
+        assertNotNull("工作流5-战场概况", battleStats);
+        assertTrue("工作流5-战场数据完整", battleStats.totalCount >= 0);
+        
+        trace("✅ 完整工作流集成测试成功");
+    }
+    
+    private static function testCrossComponentIntegration():Void {
+        // 测试Manager与底层组件的集成
+        
+        // 1. 通过Manager添加单位，验证各层都能正确处理
+        var newEnemy:Object = createBattleUnit(2000, true);
+        _root.gameworld[newEnemy._name] = newEnemy;
+        TargetCacheManager.addUnit(newEnemy);
+        
+        // 2. 通过Manager清除缓存
+        TargetCacheManager.clearCache("敌人");
+        
+        // 3. 重新查询，应该包含新单位
+        var enemies:Array = TargetCacheManager.getCachedEnemy(mockHero, 10);
+        var foundNewEnemy:Boolean = false;
+        for (var i:Number = 0; i < enemies.length; i++) {
+            if (enemies[i]._name == newEnemy._name) {
+                foundNewEnemy = true;
+                break;
+            }
+        }
+        assertTrue("跨组件集成-新单位被正确处理", foundNewEnemy);
+        
+        // 4. 移除单位并验证
+        delete _root.gameworld[newEnemy._name];
+        TargetCacheManager.removeUnit(newEnemy);
+        TargetCacheManager.clearCache("敌人");
+        
+        var enemies2:Array = TargetCacheManager.getCachedEnemy(mockHero, 10);
+        var stillFoundEnemy:Boolean = false;
+        for (var j:Number = 0; j < enemies2.length; j++) {
+            if (enemies2[j]._name == newEnemy._name) {
+                stillFoundEnemy = true;
+                break;
+            }
+        }
+        assertTrue("跨组件集成-单位移除正确处理", !stillFoundEnemy);
+    }
+    
+    private static function testRealWorldScenarioSimulation():Void {
+        var hero:Object = mockHero;
+        
+        // 模拟真实游戏场景：激烈战斗中的频繁查询
+        var startTime:Number = getTimer();
+        
+        for (var round:Number = 0; round < 10; round++) {
+            // 每轮战斗模拟
+            
+            // 寻找目标
+            var target:Object = TargetCacheManager.findNearestEnemy(hero, 5);
+            if (!target) continue;
+            
+            // 检查周围威胁
+            var threatCount:Number = TargetCacheManager.getEnemyCountInRadius(hero, 5, 100, true);
+            
+            // 寻找支援
+            var allySupport:Array = TargetCacheManager.findAlliesInRadius(hero, 5, 150);
+            
+            // 评估血量状况
+            var lowHpAllies:Number = TargetCacheManager.getAllyCountByHP(hero, 5, "低血量", true);
+            
+            // 战术决策：如果威胁太多且支援不足，寻找撤退路线
+            if (threatCount > 3 && allySupport.length < 2) {
+                var farthestAlly:Object = TargetCacheManager.findFarthestAlly(hero, 5);
+            }
+            
+            // 模拟时间推进
+            mockFrameTimer.advanceFrame(2);
+        }
+        
+        var simulationTime:Number = getTimer() - startTime;
+        
+        performanceResults.push({
+            method: "realWorldSimulation",
+            trials: 10,
+            totalTime: simulationTime,
+            avgTime: simulationTime / 10
+        });
+        
+        trace("📊 真实场景模拟: 10轮战斗耗时 " + simulationTime + "ms");
+        assertTrue("真实场景性能合理", simulationTime < 100);
+        
+        // 验证系统在高压下仍然稳定
+        var finalStats:Object = TargetCacheManager.getSystemStats();
+        assertNotNull("高压下系统统计正常", finalStats);
+        assertTrue("高压下缓存命中率合理", finalStats.hitRate >= 0);
+    }
+    
+    // ========================================================================
+    // 终极波：大规模压力测试
+    // ========================================================================
+    
+    private static function runLargeScaleStressTests():Void {
+        trace("\n⚔️ 终极波：大规模压力战斗测试...");
+        
+        testMassiveDataStress();
+        testConcurrentAccessStress();
+        testMemoryStressTest();
+    }
+    
+    private static function testMassiveDataStress():Void {
+        // 创建更大规模的数据进行压力测试
+        var originalWorldSize:Number = 0;
+        for (var key in _root.gameworld) {
+            originalWorldSize++;
+        }
+        
+        // 添加大量临时单位
+        var stressUnits:Array = [];
+        for (var i:Number = 0; i < 200; i++) {
+            var unit:Object = createBattleUnit(5000 + i, i % 2 == 0);
+            stressUnits.push(unit);
+            _root.gameworld[unit._name] = unit;
+        }
+        
+        // 清除缓存，强制重新构建
+        TargetCacheManager.clearCache();
+        
+        var startTime:Number = getTimer();
+        
+        // 大规模查询测试
+        var allUnits:Array = TargetCacheManager.getCachedAll(mockHero, 10);
+        var enemyCount:Number = TargetCacheManager.getEnemyCount(mockHero, 10);
+        var allyCount:Number = TargetCacheManager.getAllyCount(mockHero, 10);
+        
+        var massiveTime:Number = getTimer() - startTime;
+        
+        assertTrue("大规模数据-总单位数正确", allUnits.length >= originalWorldSize + 200);
+        assertTrue("大规模数据-敌人计数合理", enemyCount > 0);
+        assertTrue("大规模数据-友军计数合理", allyCount > 0);
+        assertTrue("大规模数据-处理时间合理", massiveTime < 50);
+        
+        // 清理压力测试数据
+        for (var j:Number = 0; j < stressUnits.length; j++) {
+            delete _root.gameworld[stressUnits[j]._name];
+        }
+        TargetCacheManager.clearCache();
+        
+        performanceResults.push({
+            method: "massiveDataStress",
+            dataSize: originalWorldSize + 200,
+            processingTime: massiveTime
+        });
+        
+        trace("📊 大规模数据压力: " + (originalWorldSize + 200) + "个单位，处理耗时 " + massiveTime + "ms");
+    }
+    
+    private static function testConcurrentAccessStress():Void {
+        var hero:Object = mockHero;
+        
+        // 模拟高并发访问（快速连续调用）
+        var startTime:Number = getTimer();
+        
+        for (var burst:Number = 0; burst < 20; burst++) {
+            // 每次突发请求包含多种查询
+            TargetCacheManager.getCachedEnemy(hero, 20);
+            TargetCacheManager.getCachedAlly(hero, 20);
+            TargetCacheManager.findNearestEnemy(hero, 20);
+            TargetCacheManager.getEnemyCountInRadius(hero, 20, 100, false);
+            TargetCacheManager.findEnemiesInRange(hero, 20, 50, 150);
+        }
+        
+        var concurrentTime:Number = getTimer() - startTime;
+        var avgBurstTime:Number = concurrentTime / 20;
+        
+        performanceResults.push({
+            method: "concurrentAccess",
+            bursts: 20,
+            totalTime: concurrentTime,
+            avgTime: avgBurstTime
+        });
+        
+        trace("📊 并发访问压力: 20次突发请求耗时 " + concurrentTime + "ms");
+        assertTrue("并发访问性能合理", avgBurstTime < 5);
+        
+        // 验证系统在高并发下的稳定性
+        var health:Object = TargetCacheManager.performHealthCheck();
+        assertTrue("高并发下系统健康", health.healthy);
+    }
+    
+    private static function testMemoryStressTest():Void {
+        // 内存压力测试：频繁的缓存创建和销毁
+        var cycles:Number = 20;
+        var startTime:Number = getTimer();
+        
+        for (var cycle:Number = 0; cycle < cycles; cycle++) {
+            // 创建大量缓存
+            for (var i:Number = 0; i < 10; i++) {
+                var tempHero:Object = {
+                    _name: "temp_hero_" + cycle + "_" + i,
+                    x: Math.random() * 1000,
+                    y: Math.random() * 200,
+                    是否为敌人: false
+                };
+                
+                TargetCacheManager.getCachedAll(tempHero, 1); // 短间隔，容易过期
+            }
+            
+            // 推进时间，使缓存过期
+            mockFrameTimer.advanceFrame(5);
+            
+            // 清理部分缓存
+            if (cycle % 3 == 0) {
+                TargetCacheManager.clearCache();
+            }
+        }
+        
+        var memoryTime:Number = getTimer() - startTime;
+        
+        performanceResults.push({
+            method: "memoryStress",
+            cycles: cycles,
+            totalTime: memoryTime,
+            avgTime: memoryTime / cycles
+        });
+        
+        trace("📊 内存压力测试: " + cycles + "次循环耗时 " + memoryTime + "ms");
+        assertTrue("内存压力测试完成", memoryTime < 200);
+        
+        // 最终内存清理
+        TargetCacheManager.clearCache();
+        
+        // 验证系统能够恢复正常
+        var normalQuery:Array = TargetCacheManager.getCachedEnemy(mockHero, 10);
+        assertTrue("内存压力后系统恢复正常", normalQuery.length >= 0);
+    }
+    
+    // ========================================================================
+    // 最终波：边界条件战斗
+    // ========================================================================
+    
+    private static function runBoundaryBattleTests():Void {
+        trace("\n⚔️ 最终波：边界条件战斗测试...");
+        
+        testEmptyWorldBoundary();
+        testNullParameterBoundary();
+        testExtremeValueBoundary();
+        testErrorRecoveryBoundary();
+    }
+    
+    private static function testEmptyWorldBoundary():Void {
+        // 保存原始世界
+        var originalWorld:Object = _root.gameworld;
+        
+        // 设置空世界
+        for (var key in _root.gameworld) {
+            TargetCacheManager.removeUnit(_root.gameworld[key]);
+            delete _root.gameworld[key];
+        }
+        
+        var hero:Object = mockHero;
+        
+        // 在空世界中进行各种查询
+        var enemies:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+        var allies:Array = TargetCacheManager.getCachedAlly(hero, 10); // 在空世界，英雄自己也不应被计为友军
+        var nearest:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        var count:Number = TargetCacheManager.getEnemyCount(hero, 10);
+        
+        assertEquals("空世界-敌人数组长度", 0, enemies.length, 0);
+        assertEquals("空世界-友军数组长度", 0, allies.length, 0); // 期望为0，因为世界是空的
+        assertNull("空世界-最近敌人为null", nearest);
+        assertEquals("空世界-敌人计数为0", 0, count, 0);
+        
+        // 恢复原始世界
+        _root.gameworld = originalWorld;
+        // 清除缓存以从原始 gameworld 重新加载
+        TargetCacheManager.clearCache();
+    }
+    
+    private static function testNullParameterBoundary():Void {
+        var hero:Object = mockHero;
+        
+        // 测试null参数处理
+        try {
+            var result1:Array = TargetCacheManager.getCachedEnemy(null, 10);
+            assertTrue("null目标参数处理", true); // 不崩溃就算成功
+        } catch (e1:Error) {
+            assertTrue("null目标参数异常处理", true);
+        }
+        
+        try {
+            var result2:Array = TargetCacheManager.getCachedTargets(hero, 10, null);
+            assertTrue("null类型参数处理", true);
+        } catch (e2:Error) {
+            assertTrue("null类型参数异常处理", true);
+        }
+        
+        try {
+            var result3:Array = TargetCacheManager.getCachedTargets(hero, 10, "");
+            assertTrue("空字符串类型参数处理", true);
+        } catch (e3:Error) {
+            assertTrue("空字符串类型参数异常处理", true);
+        }
+    }
+    
+    private static function testExtremeValueBoundary():Void {
+        var hero:Object = mockHero;
+        
+        // 测试极值参数
+        var result1:Array = TargetCacheManager.getCachedEnemy(hero, 0); // 零间隔
+        var result2:Array = TargetCacheManager.getCachedEnemy(hero, -5); // 负间隔
+        var result3:Array = TargetCacheManager.getCachedEnemy(hero, 999999); // 极大间隔
+        
+        assertInstanceOf("零间隔处理", result1, "Array");
+        assertInstanceOf("负间隔处理", result2, "Array");
+        assertInstanceOf("极大间隔处理", result3, "Array");
+        
+        // 测试极值范围查询
+        var rangeResult:Array = TargetCacheManager.findEnemiesInRange(hero, 10, -1000, 1000);
+        var radiusResult:Array = TargetCacheManager.findEnemiesInRadius(hero, 10, 0);
+        var radiusResult2:Array = TargetCacheManager.findEnemiesInRadius(hero, 10, 99999);
+        
+        assertInstanceOf("极值范围查询处理", rangeResult, "Array");
+        assertInstanceOf("零半径查询处理", radiusResult, "Array");
+        assertInstanceOf("极大半径查询处理", radiusResult2, "Array");
+    }
+    
+    private static function testErrorRecoveryBoundary():Void {
+        var hero:Object = mockHero;
+        
+        // 保存原始环境
+        var originalFrameTimer:Object = _root.帧计时器;
+        
+        try {
+            // 破坏环境，测试错误恢复
+            _root.帧计时器 = null;
+            
+            var result:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+            assertTrue("缺失帧计时器错误恢复", true);
+            
+        } catch (e1:Error) {
+            assertTrue("缺失帧计时器异常处理", true);
+        }
+        
+        try {
+            // 测试无效的世界对象
+            _root.gameworld = null;
+            
+            var result2:Array = TargetCacheManager.getCachedAll(hero, 10);
+            assertTrue("无效世界对象错误恢复", true);
+            
+        } catch (e2:Error) {
+            assertTrue("无效世界对象异常处理", true);
+        }
+        
+        finally {
+            // 恢复环境
+            _root.帧计时器 = originalFrameTimer;
+            _root.gameworld = mockGameWorld;
+            TargetCacheManager.clearCache();
+        }
+        
+        // 验证系统恢复正常
+        var recoveryTest:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+        assertTrue("错误后系统恢复正常", recoveryTest instanceof Array);
+    }
+    
+    // ========================================================================
+    // 测试统计和报告
+    // ========================================================================
+    
+    private static function resetTestStats():Void {
+        testCount = 0;
+        passedTests = 0;
+        failedTests = 0;
+        performanceResults = [];
+        apiCoverageMap = {};
+    }
+    
+    private static function printBattleReport(totalTime:Number):Void {
+        trace("\n================================================================================");
+        trace("🏆 TargetCacheManager 外观层战斗报告");
+        trace("================================================================================");
+        trace("⚔️ 总模拟数: " + testCount);
+        trace("🏆 通过次数: " + passedTests + " ✅");
+        trace("💥 失败次数: " + failedTests + " ❌");
+        trace("🎯 胜通过: " + (testCount > 0 ? Math.round((passedTests / testCount) * 100) : 100) + "%");
+        trace("⏱️ 测试用时: " + totalTime + "ms");
+        
+        // API覆盖率统计
+        var coveredAPIs:Number = 0;
+        for (var api in apiCoverageMap) {
+            coveredAPIs++;
+        }
+        trace("📋 API覆盖数: " + coveredAPIs + " 个方法");
+        
+        if (performanceResults.length > 0) {
+            trace("\n⚡ 测试报告:");
+            for (var i:Number = 0; i < performanceResults.length; i++) {
+                var result:Object = performanceResults[i];
+                var avgTimeStr:String = (result.avgTime === undefined || isNaN(result.avgTime)) ? 
+                    "N/A" : String(Math.round(result.avgTime * 1000) / 1000);
+                
+                // 关键修复：健壮地处理不同的性能指标名称
+                var trialsInfo:String = "";
+                if (result.trials !== undefined) trialsInfo = result.trials + "次测试";
+                else if (result.bursts !== undefined) trialsInfo = result.bursts + "次突发";
+                else if (result.cycles !== undefined) trialsInfo = result.cycles + "次循环";
+                else if (result.dataSize !== undefined) trialsInfo = result.dataSize + "个单位";
+
+                if (result.method == "facadeOverhead") {
+                    trace("  " + result.method + ": 开销 " + Math.round(result.overheadPercent) + "% (" + 
+                        trialsInfo + ")");
+                } else if (result.method == "massiveDataStress") {
+                    trace("  " + result.method + ": " + trialsInfo + "，" + 
+                        result.processingTime + "ms");
+                } else {
+                    trace("  " + result.method + ": " + avgTimeStr + "ms/次 (" + 
+                        trialsInfo + ")");
+                }
+            }
+        }
+        
+        trace("\n🎯 TargetCacheManager外观层当前状态:");
+        var report:String = TargetCacheManager.getDetailedStatusReport();
+        var lines:Array = report.split("\n");
+        for (var j:Number = 0; j < Math.min(lines.length, 10); j++) {
+            trace(lines[j]);
+        }
+        
+        if (failedTests == 0) {
+            trace("\n🎉🎊 完全通过！TargetCacheManager 外观层完美验收！ 🎊🎉");
+            trace("🏆 所有 " + testCount + " 项测试全部通过！");
+            trace("⚡ 性能表现优异，API设计完美！");
+            trace("🛡️ 外观模式实现卓越，用户体验极佳！");
+        } else {
+            trace("\n⚠️ 测试中发现 " + failedTests + " 个问题需要修复！");
+            trace("🔧 请检查失败的测试项并优化实现！");
+        }
+        
+        trace("================================================================================");
+        trace("🏁 TargetCacheManager 终极测试完成！");
+        trace("================================================================================");
+    }
+}

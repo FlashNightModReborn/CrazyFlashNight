@@ -309,12 +309,18 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * @return {Object} 最近的单位，不存在则返回null
      */
     public function findNearest(target:Object):Object {
-        if (this.data.length == 0) return null;
+        var listLength:Number = this.data.length;
+
+        if (listLength == 0) return null;
+
+        if (listLength == 1) {
+            // 只有一个元素且不是自己 ⇒ 就是最近
+            return (this.data[0] != target) ? this.data[0] : null;
+        }
         
         var targetX:Number = target.aabbCollider.left;
         var idx:Number = this.nameIndex[target._name];
-        var listLength:Number = this.data.length;
-
+        
         if (idx == undefined) {
             // 目标不在列表中，全表扫描
             var minDist:Number = Number.MAX_VALUE;
@@ -364,15 +370,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     public function findFarthest(target:Object):Object {
         var listLength:Number = this.data.length;
         
-        if (listLength <= 1) {
-            // 单元素缓存：
-            // 1) 没传参 (target==undefined) → null
-            // 2) 传自身 (target == soleUnit) → null
-            // 3) 其他 (外部目标) → 唯一单位
-            if (target == undefined || target == this.data[0]) {
-                return null;
-            }
-            return this.data[0];
+        if (listLength == 0) {
+            return null;
+        }
+        if (listLength == 1) {
+            // 如果只有一个单位，且不是查询者自身，那么它既是最近的也是最远的
+            return (this.data[0] != target) ? this.data[0] : null;
         }
 
         var targetX:Number = target.aabbCollider.left;
