@@ -2043,7 +2043,7 @@ _root.主角函数.获取佣兵装备属性 = function(id){
 
 _root.主角函数.初始化掉落物 = function(){
 	if(this.掉落物 != null || this.不掉装备) return;
-	if(!this.是否为敌人) {
+	if(this.是否为敌人 == false) {
 		this.掉落物 = null;
 		return;
 	}
@@ -2330,7 +2330,7 @@ _root.主角函数.死亡检测 = function()
 			}
 			已删除 = true;
 		}if (已加经验值 != true){
-			if (是否为敌人){
+			if (是否为敌人 == true || 是否为敌人 == null){
 				_root.敌人死亡计数++;
 				_root.gameworld[产生源].僵尸型敌人场上实际人数--;
 				_root.gameworld[产生源].僵尸型敌人总个数--;

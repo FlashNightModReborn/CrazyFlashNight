@@ -1,6 +1,7 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
 import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent {
     /**
@@ -39,6 +40,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
                     child.removeMovieClip();
                 }
             }
+        }
+
+        if(FactionManager.getFactionFromUnit(target) == FactionManager.FACTION_HOSTILE_NEUTRAL)
+        {
+            // _root.发布消息(target, target.是否为敌人)
+            _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+            _root.gameworld[target.产生源].僵尸型敌人场上实际人数--;
+            _root.gameworld[target.产生源].僵尸型敌人总个数--;
         }
     }
 }
