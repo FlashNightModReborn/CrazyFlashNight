@@ -1022,7 +1022,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var report:String = TargetCacheUpdater.getDetailedStatusReport();
         
         // 验证具体内容
-        assertTrue("报告提及Enemy Version", report.indexOf("Enemy Version:") >= 0);
+        assertTrue("报告提及Enemy Version", report.indexOf("ENEMY:") >= 0);
         assertTrue("报告提及Active Pools", report.indexOf("Active Pools:") >= 0);
         assertTrue("报告提及Current Threshold", report.indexOf("Current Threshold:") >= 0);
         

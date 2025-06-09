@@ -19,7 +19,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BasicA
      */
     public static function initialize(target:MovieClip):Void {
         // 设置敌人标识
-        target.是否为敌人 = true;
+        target.是否为敌人 = null;
         
         // 初始化生命值
         BasicAttributeInitializer.initializeHitPoints(target);
