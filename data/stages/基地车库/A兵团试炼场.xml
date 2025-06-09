@@ -92,7 +92,7 @@
                 <y>650</y>
                 <Identifier>出生点-钻头</Identifier>
             </Point>
-        </SpawnPoint>
+        </SpawnPoint>               
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -158,6 +158,43 @@
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种40</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种366</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+                    <Dialogue>
+                        <SubDialogue id="0">
+                            <Name>$PC</Name>
+                            <Title>$PC_TITLE</Title>
+                            <Char>$PC_CHAR#严肃</Char>
+                            <Text>名不虚传。</Text>
+                        </SubDialogue>
+                        <SubDialogue id="1">
+                            <Name>$PC</Name>
+                            <Title>$PC_TITLE</Title>
+                            <Char>$PC_CHAR#严肃</Char>
+                            <Text>试炼场果真不缺疯子。</Text>
+                        </SubDialogue>
+                    </Dialogue> 
+            </SubWave>
         </Wave>
     </SubStage>
     <SubStage id="1">
@@ -187,6 +224,24 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种43</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种353</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种354</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -341,12 +396,50 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>
-                            <称号>坛主</称号>
+                            <称号>散人</称号>
                             <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
+                        <Type>兵种410</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <称号>散人</称号>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种261</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <Parameters>
+                            <称号>散人</称号>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="4">
                         <Type>兵种47</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>20</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>                    
+                    <Enemy id="5">
+                        <Type>兵种65</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>20</Level>
@@ -357,35 +450,41 @@
                     <Enemy>
                         <Type>兵种54</Type>
                         <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种55</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种56</Type>
                         <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种57</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>兵种265</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>兵种266</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种267</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -468,6 +567,20 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这不对劲......Lee的伤势应该没这么轻才对。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>恢复力未免太惊人了。</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
