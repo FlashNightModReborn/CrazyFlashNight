@@ -211,21 +211,40 @@ _root.敌人函数.击倒呐喊 = function(){
 
 //以下是新增或新整合的函数
 
-_root.敌人函数.死亡检测 = function(){
+/*
+死亡检测统一函数
+可传的参数：
+noCount: 不计入关卡杀怪数
+noCorpse: 不贴尸体
+remainMovie: 不卸载元件
+
+例：
+_parent.死亡检测();
+_parent.死亡检测({noCount:true});
+_parent.死亡检测({noCorpse:true});
+_parent.死亡检测({remainMovie:true});
+_parent.死亡检测({noCount:true, noCorpse:true});
+*/
+_root.敌人函数.死亡检测 = function(para){
 	if (hp <= 0 && !已加经验值){
 		this.man.stop();
 		if (是否为敌人 == true || 是否为敌人 == null){
-			
-			_root.敌人死亡计数 += 1;
-			_root.gameworld[产生源].僵尸型敌人场上实际人数--;
-			_root.gameworld[产生源].僵尸型敌人总个数--;
+			if(para.noCount !== true){
+				_root.敌人死亡计数++;
+				_root.gameworld[产生源].僵尸型敌人场上实际人数--;
+				_root.gameworld[产生源].僵尸型敌人总个数--;
+			}
 			this.计算经验值();
 		}
 		this.人物文字信息._visible = false;
 		this.新版人物文字信息._visible = false;
-		_root.add2map(this,2);
-		this.removeMovieClip();
-	}
+		if(para.remainMovie === true){
+			StaticDeinitializer.deinitializeUnit(this); // 直接注销单位
+		}else{
+			if(para.noCorpse !== true) _root.add2map(this,2); // 检测是否需要贴尸体
+			this.removeMovieClip(); // 移除单位
+		}
+	}	
 };
 
 _root.敌人函数.掉落物判定 = function(){

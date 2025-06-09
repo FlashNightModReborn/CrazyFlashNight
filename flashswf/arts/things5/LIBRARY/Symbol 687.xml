@@ -38,19 +38,7 @@ _root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.get
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   if(_parent.已加经验值 != true)
-   {
-      if(_parent.是否为敌人 == true)
-      {
-         _parent.计算经验值();
-      }
-      _root.add2map(_parent,2);
-   }
-}
-stop();
-]]></script>
+                <script><![CDATA[_parent.死亡检测({noCount:true});]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

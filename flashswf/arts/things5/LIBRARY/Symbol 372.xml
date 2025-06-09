@@ -35,15 +35,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   stop();
-}
-if(_parent.hp <= 0)
-{
-   stop();
-}
-if(_parent.hp == 0)
+                <script><![CDATA[if(_parent.hp == 0)
 {
    stop();
 }

@@ -9,7 +9,7 @@
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.死亡检测();]]></script>
+                <script><![CDATA[if(_parent.hp <= 0) _parent.gotoAndStop("血腥死");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

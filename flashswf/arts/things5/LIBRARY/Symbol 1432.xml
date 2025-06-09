@@ -6,10 +6,8 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   _parent.状态改变("血腥死");
-}
+                <script><![CDATA[
+if(_parent.hp <= 0) _parent.状态改变("血腥死");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -45,15 +43,7 @@
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   stop();
-}
-if(_parent.hp <= 0)
-{
-   stop();
-}
-if(_parent.hp == 0)
+                <script><![CDATA[if(_parent.hp == 0)
 {
    stop();
 }

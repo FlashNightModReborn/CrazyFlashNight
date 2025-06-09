@@ -38,20 +38,7 @@
             </DOMFrame>
             <DOMFrame index="39" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   if(_parent.已加经验值 != true)
-   {
-      if(_parent.是否为敌人 == true)
-      {
-         _parent.计算经验值();
-      }
-      _parent.人物文字信息._visible = 0;
-      _parent.removeMovieClip();
-   }
-}
-stop();
-]]></script>
+                <script><![CDATA[_parent.死亡检测({noCount:true, noCorpse:true});]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -60,24 +47,7 @@ stop();
             </DOMFrame>
             <DOMFrame index="103" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   if(_parent.已加经验值 != true)
-   {
-      if(_parent.是否为敌人 == true)
-      {
-         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
-         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
-         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
-         _parent.计算经验值();
-      }
-      _parent.人物文字信息._visible = 0;
-      _root.add2map(_parent,2);
-      _parent.removeMovieClip();
-   }
-}
-stop();
-]]></script>
+                <script><![CDATA[_parent.死亡检测();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -96,24 +66,7 @@ stop();
             </DOMFrame>
             <DOMFrame index="182" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   if(_parent.已加经验值 != true)
-   {
-      if(_parent.是否为敌人 == true)
-      {
-         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
-         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
-         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
-         _parent.计算经验值();
-      }
-      _parent.人物文字信息._visible = 0;
-      _root.add2map(_parent,2);
-      _parent.removeMovieClip();
-   }
-}
-stop();
-]]></script>
+                <script><![CDATA[_parent.死亡检测();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
