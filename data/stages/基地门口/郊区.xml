@@ -259,6 +259,30 @@
                                 <x>1500</x>
                                 <y>500</y>
                             </Enemy>
+                            <Enemy>
+                                <Type>兵种6</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1609</x>
+                                <y>586</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种5</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>628</x>
+                                <y>321</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种3</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1046</x>
+                                <y>564</y>
+                            </Enemy>
                         </Case>
                         <Case casevalue="default">
                             <Enemy>
@@ -375,6 +399,30 @@
                                 <Level>10</Level>
                                 <x>1500</x>
                                 <y>500</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种6</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>977</x>
+                                <y>267</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种5</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1386</x>
+                                <y>387</y>
+                            </Enemy>
+                            <Enemy>
+                                <Type>兵种4</Type>
+                                <Interval>100</Interval>
+                                <Quantity>1</Quantity>
+                                <Level>6</Level>
+                                <x>1600</x>
+                                <y>297</y>
                             </Enemy>
                         </Case>
                         <Case casevalue="default">
