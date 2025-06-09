@@ -330,7 +330,6 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         bulletProps.Z轴攻击范围    = wd.Z轴攻击范围;
         bulletProps.击倒率         = wd.击倒率;
         bulletProps.击中后子弹的效果 = wd.击中后子弹效果;
-        bulletProps.子弹敌我属性   = !isEnemy;
 
         // 计算子弹威力（基于枪械攻击被动技能及额外攻击加成）
         var basePower:Number  = wd.子弹威力Base;

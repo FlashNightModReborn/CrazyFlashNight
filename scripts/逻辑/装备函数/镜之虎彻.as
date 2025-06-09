@@ -78,12 +78,10 @@ _root.装备生命周期函数.镜之虎彻周期 = function(reflector:Object, p
                 Z轴攻击范围 = 150;
                 击倒率 = 100;
                 击中后子弹的效果 = "";
-                子弹敌我属性 = true;
                 发射者名 = target._name;
-                子弹敌我属性值 = target.是否为敌人 == true ? false : true;
                 shootX = myPoint.x;
                 Z轴坐标 = shootY = target._y;
-                _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+                _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
             }
             else if(target == TargetCacheManager.findHero())
             {

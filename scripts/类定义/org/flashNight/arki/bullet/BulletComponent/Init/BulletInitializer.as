@@ -35,6 +35,7 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         Obj.最小霰弹值 = (isNaN(Obj.最小霰弹值)) ? 1 : Obj.最小霰弹值;
         Obj.远距离不消失 = Obj.手雷检测 || Obj.爆炸检测;
         Obj.shooter = shooter;
+        Obj.是否为敌人 = shooter.是否为敌人;
         Obj.zAttackRangeSq = Obj.Z轴攻击范围 * Obj.Z轴攻击范围;
     }
     
@@ -45,7 +46,6 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
     public static function initializeBulletProperties(Obj:Object):Void {
         // 原有初始化逻辑
         Obj.发射者名 = Obj.发射者;
-        Obj.子弹敌我属性值 = Obj.子弹敌我属性;
         Obj._x = Obj.shootX;
         Obj._y = Obj.shootY;
         Obj.Z轴坐标 = Obj.shootZ;

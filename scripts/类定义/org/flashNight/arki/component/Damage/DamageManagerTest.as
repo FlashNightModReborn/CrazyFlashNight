@@ -166,7 +166,6 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
                 return 1.5;
             },
             伤害类型: "普通",
-            子弹敌我属性值: true,
             魔法伤害属性: null,
             联弹检测: false, // 霰弹值为1，联弹检测为false
             穿刺检测: false,
@@ -233,7 +232,6 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
             破坏力: 150,
             暴击: null, // 不触发暴击
             伤害类型: "真伤",
-            子弹敌我属性值: false,
             魔法伤害属性: null,
             联弹检测: false,
             穿刺检测: false,
@@ -287,7 +285,6 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
                 return 1.2;
             }, // 可选的魔法暴击
             伤害类型: "魔法",
-            子弹敌我属性值: true,
             魔法伤害属性: "火",
             联弹检测: false,
             穿刺检测: true,
@@ -360,7 +357,6 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
                 破坏力: 100 + (i % 50),
                 暴击: (i % 10 == 0) ? function(b:Object):Number { return 1.5; } : null,
                 伤害类型: (i % 3 == 0) ? "真伤" : ((i % 3 == 1) ? "魔法" : "普通"),
-                子弹敌我属性值: (i % 2 == 0),
                 魔法伤害属性: (i % 5 == 0) ? "火" : null,
                 联弹检测: (i % 4 == 0),
                 穿刺检测: (i % 6 == 0),

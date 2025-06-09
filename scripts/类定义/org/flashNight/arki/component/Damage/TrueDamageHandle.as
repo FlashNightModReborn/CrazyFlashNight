@@ -34,7 +34,7 @@ class org.flashNight.arki.component.Damage.TrueDamageHandle extends BaseDamageHa
     }
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        var trueDamageColor:String = bullet.子弹敌我属性值 ? "#4A0099" : "#660033";
+        var trueDamageColor:String = bullet.是否为敌人 ? "#660033" : "#4A0099";
         result.setDamageColor(trueDamageColor);
         result.addDamageEffect('<font color="' + trueDamageColor + '" size="20"> 真</font>');
         target.损伤值 = bullet.破坏力;

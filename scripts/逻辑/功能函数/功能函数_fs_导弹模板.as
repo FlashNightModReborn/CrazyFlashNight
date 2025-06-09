@@ -52,7 +52,6 @@ onClipEvent(load){
    转向速度下限 = 5;
    锁定延迟 = -4;
    锁定范围 = 2000;
-   是否为敌人 = !_root.gameworld.子弹区域[子弹名].子弹敌我属性值;
    攻击目标 = "无";
    瞄准许可 = false;
    初始_x = _parent._x + _parent._parent._x;

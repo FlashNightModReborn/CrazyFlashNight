@@ -84,7 +84,6 @@ class org.flashNight.arki.bullet.Configurator.BulletConfigurator {
      */
     private static function initializeBulletProperties(config:Object):Void {
         config.发射者名 = config.发射者;
-        config.子弹敌我属性值 = config.子弹敌我属性;
         config._x = config.shootX;
         config._y = config.shootY;
         config.Z轴坐标 = config.shootZ;

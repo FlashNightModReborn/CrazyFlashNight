@@ -40,7 +40,7 @@ class org.flashNight.arki.component.Damage.MagicDamageHandle extends BaseDamageH
         var targetLevel:Number = target.等级;
 
         // ======= 优化颜色与特效处理 =======
-        var magicDamageColor:String = bullet.子弹敌我属性值 ? "#0099FF" : "#AC99FF";
+        var magicDamageColor:String = bullet.是否为敌人 ? "#AC99FF" : "#0099FF";
         result.setDamageColor(magicDamageColor);
 
         var magicDamageAttr:String = bulletMagicAttr ? bulletMagicAttr : "能";

@@ -50,16 +50,16 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
 
-        var defaultDamageColor:String = bullet.子弹敌我属性值 ? "#FFCC00" : "#FF0000";
+        var defaultDamageColor:String = bullet.是否为敌人 ? "#FF0000" : "#FFCC00";
         result.setDamageColor(defaultDamageColor);
         
         if (bullet.伤害类型 === "真伤") {
-            var trueDamageColor:String = bullet.子弹敌我属性值 ? "#4A0099" : "#660033";
+            var trueDamageColor:String = bullet.是否为敌人 ? "#660033" : "#4A0099";
             result.setDamageColor(trueDamageColor);
             result.addDamageEffect('<font color="' + trueDamageColor + '" size="20"> 真</font>');
             target.损伤值 = bullet.破坏力;
         } else if (bullet.伤害类型 === "魔法") {
-            var magicDamageColor:String = bullet.子弹敌我属性值 ? "#0099FF" : "#AC99FF";
+            var magicDamageColor:String = bullet.是否为敌人 ? "#AC99FF" : "#0099FF";
             result.setDamageColor(magicDamageColor);
             var magicDamageAttr:String = bullet.魔法伤害属性 ? bullet.魔法伤害属性 : "能";
             result.addDamageEffect('<font color="' + magicDamageColor + '" size="20"> ' + magicDamageAttr + '</font>');

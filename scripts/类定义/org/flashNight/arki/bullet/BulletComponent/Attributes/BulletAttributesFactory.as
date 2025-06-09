@@ -98,7 +98,6 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributesFact
         instance.shootY = shootY;
         instance.转换中间y = 转换中间y;
         instance.shootZ = 发射者.Z轴坐标;
-        instance.子弹敌我属性 = !发射者.是否为敌人;
 
         return instance;
     }
@@ -121,7 +120,7 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributesFact
      * @param shootX:Number
      * @param shootY:Number
      * @param shootZ:Number
-     * @param 子弹敌我属性:Boolean
+     * @param 子弹敌我属性:Boolean      已弃用
      * @param 击倒率:Number
      * @param 击中后子弹的效果:String
      * @param 水平击退速度:Number
@@ -203,7 +202,7 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributesFact
             shootX: shootX,
             shootY: shootY,
             shootZ: shootZ,
-            子弹敌我属性: 子弹敌我属性,
+            子弹敌我属性: null,
             击倒率: 击倒率,
             击中后子弹的效果: 击中后子弹的效果,
             水平击退速度: 水平击退速度,

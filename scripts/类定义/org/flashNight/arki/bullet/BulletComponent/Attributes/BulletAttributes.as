@@ -71,7 +71,6 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributes {
         this.shootY = (initParams.shootY != undefined) ? initParams.shootY : 0;
         this.转换中间y = (initParams.转换中间y != undefined) ? initParams.转换中间y : 0;
         this.shootZ = (initParams.shootZ != undefined) ? initParams.shootZ : 0;
-        this.子弹敌我属性 = (initParams.子弹敌我属性 != undefined) ? initParams.子弹敌我属性 : false;
         this.击倒率 = (initParams.击倒率 != undefined) ? initParams.击倒率 : 10;
         this.击中后子弹的效果 = (initParams.击中后子弹的效果 != undefined) ? initParams.击中后子弹的效果 : "";
         this.水平击退速度 = (initParams.水平击退速度 != undefined) ? initParams.水平击退速度 : NaN;
@@ -120,7 +119,7 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributes {
             shootY: this.shootY,
             转换中间y: this.转换中间y,
             shootZ: this.shootZ,
-            子弹敌我属性: this.子弹敌我属性,
+            子弹敌我属性: null,
             击倒率: this.击倒率,
             击中后子弹的效果: this.击中后子弹的效果,
             水平击退速度: this.水平击退速度,

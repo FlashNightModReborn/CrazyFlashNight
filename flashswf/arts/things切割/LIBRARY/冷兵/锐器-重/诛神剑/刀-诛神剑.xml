@@ -33,19 +33,10 @@
          Z轴攻击范围 = 60;
          击倒率 = 1;
          击中后子弹的效果 = "";
-         子弹敌我属性 = true;
          发射者名 = _parent._parent._parent._parent._parent._name;
-         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
-         {
-            子弹敌我属性值 = false;
-         }
-         else
-         {
-            子弹敌我属性值 = true;
-         }
          shootX = myPoint.x;
          Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
-         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
       }
    }
 }
