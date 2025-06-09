@@ -49,7 +49,8 @@ if (!_parent.分身类型 && _parent.死亡动画)
             </DOMFrame>
             <DOMFrame index="53" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
+                <script><![CDATA[
+if(_parent.hp <= 0)
 var para = {noCorpse: _parent.分身类型 ? true : false};
 _parent.死亡检测(para);
 ]]></script>
@@ -89,7 +90,8 @@ _parent.死亡检测(para);
             </DOMFrame>
             <DOMFrame index="206" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
+                <script><![CDATA[
+if(_parent.hp <= 0)
 var para = {noCorpse: _parent.分身类型 ? true : false};
 _parent.死亡检测(para);
 ]]></script>
