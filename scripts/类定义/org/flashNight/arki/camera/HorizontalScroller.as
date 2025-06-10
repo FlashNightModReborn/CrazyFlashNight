@@ -5,14 +5,11 @@ import org.flashNight.arki.camera.ScrollLogic;
 import org.flashNight.arki.camera.ParallaxBackground;
 
 /**
- * HorizontalScroller.as - 升级版主控制器
+ * HorizontalScroller.as - 升级版主控制器（修复版）
  *
- * 新增功能：
- *  1. 运行时参数修改API
- *  2. 参数验证机制
- *  3. 配置热更新支持
- *  4. 事件回调系统
- *  5. 调试信息输出
+ * 修复内容：
+ *  1. 修复缩放时边界约束逻辑 - 只要发生缩放就执行边界检查，不依赖offset是否为0
+ *  2. 修复天空盒错位问题 - 在滚动阶段恢复bgLayer._x的同步更新
  */
 class org.flashNight.arki.camera.HorizontalScroller {
 
@@ -88,6 +85,12 @@ class org.flashNight.arki.camera.HorizontalScroller {
     }
 
     public static function onSceneChanged():Void {
+        _logDebug("Scene change detected - performing complete reset");
+        
+        // ===== 1) 彻底清理上一个场景的状态缓存 =====
+        _clearSceneCache();
+        
+        // ===== 2) 重新构建参数对象 =====
         var paramsObject = {
             scrollTarget: _root.控制目标,
             bgWidth: _root.gameworld.背景长,
@@ -98,7 +101,85 @@ class org.flashNight.arki.camera.HorizontalScroller {
             bgLayer: _root.天空盒
         };
 
+        // ===== 3) 重新初始化 =====
         reset(paramsObject);
+        
+        // ===== 4) 强制重置世界和天空盒位置到初始状态 =====
+        _resetWorldPositions();
+        
+        _logDebug("Scene change complete - all caches cleared");
+        _triggerConfigChange("sceneChanged", { newScene: true });
+    }
+
+    /**
+     * 清理场景缓存数据
+     * 在场景切换时调用，确保上一个场景的状态不会影响新场景
+     */
+    private static function _clearSceneCache():Void {
+        // 清理gameWorld的缓存状态
+        if (gameWorld) {
+            gameWorld.lastScale = undefined;
+            // 如果有其他自定义缓存属性，在这里清理
+            gameWorld._scrollerInitialized = undefined;
+        }
+        
+        // 清理bgLayer的缓存状态
+        if (bgLayer) {
+            bgLayer._lastParallaxFrame = undefined;
+            // 清理视差背景缓存
+            if (bgLayer.bgParallaxList) {
+                // 重置所有视差层的缓存位置
+                var bgList:Array = bgLayer.bgParallaxList;
+                for (var i:Number = 0; i < bgList.length; i++) {
+                    var info:Object = bgList[i];
+                    if (info.mc) {
+                        info.mc._lastUpdateFrame = undefined;
+                    }
+                }
+            }
+        }
+        
+        _logDebug("Scene cache cleared");
+    }
+
+    /**
+     * 重置世界和天空盒位置到初始状态
+     * 确保新场景从干净的坐标状态开始
+     */
+    private static function _resetWorldPositions():Void {
+        if (!gameWorld || !bgLayer) {
+            _logError("Cannot reset positions: gameWorld or bgLayer is null");
+            return;
+        }
+        
+        // 重置世界容器位置到原点
+        gameWorld._x = 0;
+        gameWorld._y = 0;
+        
+        // 重置缩放到基准值
+        var baseScalePercent:Number = zoomScale * 100;
+        gameWorld._xscale = gameWorld._yscale = baseScalePercent;
+        gameWorld.lastScale = zoomScale;
+        
+        // 同步重置天空盒
+        bgLayer._x = 0;
+        bgLayer._y = bgLayer.地平线高度 || 0;
+        bgLayer._xscale = bgLayer._yscale = baseScalePercent;
+        
+        // 重置所有视差背景层位置
+        if (bgLayer.bgParallaxList) {
+            var bgList:Array = bgLayer.bgParallaxList;
+            for (var i:Number = 0; i < bgList.length; i++) {
+                var info:Object = bgList[i];
+                if (info.mc) {
+                    info.mc._x = 0;
+                    // Y坐标保持原始设计位置，不重置
+                }
+            }
+        }
+        
+        _logDebug("World positions reset - gameWorld: (" + gameWorld._x + "," + gameWorld._y + 
+                 "), bgLayer: (" + bgLayer._x + "," + bgLayer._y + "), scale: " + zoomScale);
     }
 
     // ==================== 新增：运行时参数修改API ====================
@@ -411,7 +492,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
 
     private static function _logDebug(message:String):Void {
         if (_debugMode) {
-            _root.发布消息("[HorizontalScroller DEBUG] " + message);
+            _root.服务器.发布服务器消息("[HorizontalScroller DEBUG] " + message);
         }
     }
 
@@ -419,10 +500,14 @@ class org.flashNight.arki.camera.HorizontalScroller {
         _root.发布消息("[HorizontalScroller ERROR] " + message);
     }
 
-    // ==================== 原有的更新逻辑 ====================
+    // ==================== 修复后的更新逻辑 ====================
 
     /**
-     * 主更新方法（保持原有逻辑不变）
+     * 主更新方法（修复版）
+     * 
+     * 修复内容：
+     * 1. 缩放后始终执行边界约束，不依赖offset是否为0
+     * 2. 滚动阶段恢复bgLayer._x的同步更新
      */
     public static function update():Void {
         if (!_isInitialized) {
@@ -450,6 +535,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
         var newScale:Number   = zoomResult.newScale;
         var offsetX:Number    = zoomResult.offsetX;
         var offsetY:Number    = zoomResult.offsetY;
+        var scaleChanged:Boolean = zoomResult.scaleChanged;
 
         // —— 4) 根据缩放后的背景尺寸与舞台尺寸，计算滚动边界（ScrollBounds） ——
         var stageWidth:Number  = Stage.width;
@@ -458,21 +544,28 @@ class org.flashNight.arki.camera.HorizontalScroller {
             bgWidth, bgHeight, newScale, stageWidth, stageHeight
         );
 
-        // —— 5) 如果缩放确实发生了（offsetX/offsetY 可能非零），马上将 world 坐标移动并做边界检查 ——
-        if (offsetX !== 0 || offsetY !== 0) {
+        // —— 5) 【修复1】如果缩放发生了，无论offset是否为0都要执行边界约束 ——
+        if (scaleChanged) {
+            // 计算补偿后的坐标
             var tentativeX:Number = gameWorld._x + offsetX;
             var tentativeY:Number = gameWorld._y + offsetY;
 
+            // 执行边界约束
             var clamped:Object = ScrollBounds.clampPosition(
                 tentativeX, tentativeY, bounds, stageWidth, stageHeight
             );
 
+            // 应用约束后的坐标
             gameWorld._x = clamped.clampedX;
             gameWorld._y = clamped.clampedY;
             bgLayer._x = clamped.clampedX;
             bgLayer._y = clamped.clampedY + bgLayer.地平线高度;
 
+            // 立即刷新视差背景
             ParallaxBackground.refreshOnZoom(bgLayer, gameWorld._x);
+            
+            _logDebug("Scale compensation applied - newScale: " + newScale + 
+                     ", offsetX: " + offsetX + ", offsetY: " + offsetY);
         }
 
         // —— 6) 如果当前背景本身大小（缩放后） 小于等于舞台可视区域，则无需做滚动，直接 return ——
@@ -526,18 +619,13 @@ class org.flashNight.arki.camera.HorizontalScroller {
 
         if (onScrollX) {
             gameWorld._x = clampedFinal.clampedX;
+            // 【修复2】恢复bgLayer._x的同步更新，保持天空盒与世界容器一致
+            bgLayer._x = clampedFinal.clampedX;
         }
         if (onScrollY) {
             gameWorld._y = clampedFinal.clampedY;
+            bgLayer._y = clampedFinal.clampedY + bgLayer.地平线高度;
         }
-
-        // === 【修正逻辑】 ===
-        // bgLayer._x 的更新只在缩放补偿（步骤5）时进行，这里不再同步。
-        // 只在 Y 轴发生滚动时，才同步 bgLayer._y，以完美复现原始代码的行为。
-        if (onScrollY) {
-            bgLayer._y = gameWorld._y + bgLayer.地平线高度;
-        }
-        // 移除 bgLayer._x = gameWorld._x; 这一行
 
         // —— 14) 如果启用了后景视差，则在滚动时更新一次后景 —— 
         if (_root.启用后景 && onScrollX) { // 优化：仅在X轴滚动时才更新视差背景
