@@ -53,9 +53,10 @@
                       <edges>
                         <Edge fillStyle0="1" strokeStyle="1" edges="!512 59|516 16!516 16|77 16!77 16|88 59!88 59|97 59"/>
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!97 59|512 59"/>
-                        <Edge fillStyle0="2" strokeStyle="1" edges="!262 1068[659 789 512 60!512 60|512 59!88 59[92 79 61 111!61 111[-2 175 99 229!99 229[611 607 184 998!184 998[180 996 177 995"/>
-                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!177 995|262 1068"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!262 1068[659 789 512 60!512 60|512 59"/>
                         <Edge fillStyle0="2" edges="!97 59[108 60 99 68!99 68|88 59"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!88 59[92 79 61 111!61 111[-2 175 99 229!99 229[611 607 184 998!184 998[180 996 177 995"/>
+                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!177 995|262 1068"/>
                         <Edge fillStyle0="3" strokeStyle="1" edges="!177 995[142 973 52 896!52 896|42 947!42 947[362 1251 550 1445!550 1445|550 1360!550 1360|262 1068"/>
                       </edges>
                     </DOMShape>
@@ -240,12 +241,12 @@
 !297 457[300 456 304 456!304 456[318 455 327 464!327 464[337 472 338 486!338 486[339 499 330 509!330 509[322 519 308 520!308 520[295 521 285 512!285 512[276 503 275 490!275 490[275 489 275 488"/>
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
 !275 488|145 670"/>
+                        <Edge fillStyle0="3" strokeStyle="1" edges="
+!297 457|275 488"/>
                         <Edge fillStyle0="2" edges="
 !275 488[274 476 282 467!282 467[289 460 297 457"/>
                         <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
 !297 457|427 274"/>
-                        <Edge fillStyle0="3" strokeStyle="1" edges="
-!297 457|275 488"/>
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
 !198 709|477 309"/>
                       </edges>

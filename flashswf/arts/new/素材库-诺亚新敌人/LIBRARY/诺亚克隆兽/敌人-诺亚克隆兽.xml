@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚克隆兽/敌人-诺亚克隆兽" itemID="661d26ec-00000697" linkageExportForAS="true" linkageIdentifier="敌人-诺亚克隆兽" lastModified="1747144538" lastUniqueIdentifier="43">
   <timeline>
-    <DOMTimeline name="敌人-诺亚克隆兽" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-45&lt;/guideline&gt;&lt;guideline direction="h"&gt;11&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-诺亚克隆兽" currentFrame="89" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-45&lt;/guideline&gt;&lt;guideline direction="h"&gt;11&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -437,7 +437,7 @@ x轴保持距离 = 100;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -594,7 +594,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/击飞" name="man" centerPoint3DX="61.1" centerPoint3DY="12.2">
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/动画合集/击飞" name="man" selected="true" centerPoint3DX="61.1" centerPoint3DY="12.2">
                   <matrix>
                     <Matrix a="0.79998779296875" d="0.79998779296875" tx="0.05" ty="-48"/>
                   </matrix>

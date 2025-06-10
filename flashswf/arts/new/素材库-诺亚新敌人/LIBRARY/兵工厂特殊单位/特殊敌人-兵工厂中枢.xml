@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-兵工厂中枢" itemID="66b8b287-00000914" linkageExportForAS="true" linkageIdentifier="特殊敌人-兵工厂中枢" lastModified="1747837935" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-兵工厂中枢" itemID="66b8b287-00000914" linkageExportForAS="true" linkageIdentifier="特殊敌人-兵工厂中枢" lastModified="1749524817" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="特殊敌人-兵工厂中枢" currentFrame="12">
+    <DOMTimeline name="特殊敌人-兵工厂中枢" currentFrame="8">
       <layers>
         <DOMLayer name="label" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -50,6 +50,8 @@ function 检测雕像状态()
 	}
 	this.无敌 = 存活雕像数量 > 0;
 }
+
+this.死亡检测 = _root.敌人函数.死亡检测;
 
 Z轴坐标 = this._y;
 

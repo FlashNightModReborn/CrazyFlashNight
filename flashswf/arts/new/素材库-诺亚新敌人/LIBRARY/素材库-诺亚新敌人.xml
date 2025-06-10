@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-诺亚新敌人" itemID="65aa1bb3-000004bb" linkageExportForAS="true" linkageIdentifier="素材库-诺亚新敌人" lastModified="1747144506" lastUniqueIdentifier="14">
   <timeline>
-    <DOMTimeline name="素材库-诺亚新敌人" currentFrame="2">
+    <DOMTimeline name="素材库-诺亚新敌人">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -39,7 +39,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/敌人-方舟爪豪" centerPoint3DX="207.55" centerPoint3DY="393.25">
+                <DOMSymbolInstance libraryItemName="方舟指挥官/敌人-方舟爪豪" selected="true" centerPoint3DX="207.55" centerPoint3DY="393.25">
                   <matrix>
                     <Matrix tx="151.65" ty="307.5"/>
                   </matrix>
@@ -75,7 +75,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="诺亚克隆兽/敌人-诺亚克隆兽" selected="true" centerPoint3DX="171.5" centerPoint3DY="182.95">
+                <DOMSymbolInstance libraryItemName="诺亚克隆兽/敌人-诺亚克隆兽" centerPoint3DX="171.5" centerPoint3DY="182.95">
                   <matrix>
                     <Matrix tx="166.5" ty="276.05"/>
                   </matrix>

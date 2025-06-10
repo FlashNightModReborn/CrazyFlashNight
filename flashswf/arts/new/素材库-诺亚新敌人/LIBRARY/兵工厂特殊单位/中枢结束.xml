@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/中枢结束" itemID="66ba5570-0000135a" lastModified="1747837956" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/中枢结束" itemID="66ba5570-0000135a" lastModified="1749524853" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="中枢结束" currentFrame="44">
       <layers>
@@ -103,21 +103,8 @@ for (var i = 0; i < 敌人列表.length; i++)
             </DOMFrame>
             <DOMFrame index="44" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_parent.hp <= 0)
-{
-	if (_parent.已加经验值 != true)
-	{
-		if (_parent.是否为敌人 == true)
-		{
-			_root.敌人死亡计数 = _root.敌人死亡计数 + 1;
-			_root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
-			_root.gameworld[_parent.产生源].僵尸型敌人总个数--;
-			_parent.计算经验值();
-		}
-	}
-}
-_root.敌人函数.注销单位(_parent);
-stop();]]></script>
+                <script><![CDATA[stop();
+_parent.死亡检测({remainMovie:true});]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/动画合集/死亡自爆" itemID="65a7e40a-00000ff8" lastModified="1705738974" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="死亡自爆" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;172&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="死亡自爆" currentFrame="44" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;172&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="26" keyMode="9728">
               <elements/>
@@ -89,23 +89,7 @@ _root.子弹区域shoot传递(子弹);]]></script>
             </DOMFrame>
             <DOMFrame index="44" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_parent.hp <= 0)
-{
-	if (!_parent.已加经验值)
-	{
-		if (_parent.是否为敌人)
-		{
-			++_root.敌人死亡计数;
-			--_root.gameworld[_parent.产生源].僵尸型敌人场上实际人数;
-			--_root.gameworld[_parent.产生源].僵尸型敌人总个数;
-			_parent[计算经验值]();
-		}
-		_parent.人物文字信息._visible = 0;
-		_root.add2map(_parent,2);
-		_parent.removeMovieClip();
-	}
-}
-stop();]]></script>
+                <script><![CDATA[_parent.死亡检测({noCorpse:true});]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -169,7 +153,7 @@ stop();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 18" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/敌人-方舟爪豪" itemID="65aa1d34-00000748" linkageExportForAS="true" linkageIdentifier="敌人-方舟爪豪" lastModified="1746456948" lastUniqueIdentifier="29">
   <timeline>
-    <DOMTimeline name="敌人-方舟爪豪" currentFrame="4">
+    <DOMTimeline name="敌人-方舟爪豪" currentFrame="63">
       <layers>
         <DOMLayer name="label" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -355,7 +355,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements>
@@ -402,7 +402,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
