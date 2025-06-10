@@ -40,7 +40,7 @@ _parent.新版人物文字信息._visible = false;]]></script>
             </DOMFrame>
             <DOMFrame index="59" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.死亡检测();]]></script>
+                <script><![CDATA[_parent.死亡检测({noCorpse:true});]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
