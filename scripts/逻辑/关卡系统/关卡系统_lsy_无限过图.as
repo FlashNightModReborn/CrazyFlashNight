@@ -87,11 +87,11 @@ _root.开启生存模式 = function(模式) {
 		游戏世界门1._width = 50;
 		游戏世界门1._height = _root.Ymax - _root.Ymin;
 	}
-	if(门1数据.Identifier){
-		var identifier = 游戏世界.attachMovie(门1数据.Identifier,"DoorIdentifier1",游戏世界.getNextHighestDepth());
-		identifier._x = (门1数据.x1 + 门1数据.x0) * 0.5;
-		identifier._y = (门1数据.y1 + 门1数据.y0) * 0.5;
-		identifier.swapDepths(identifier._y);
+	if(门1数据.Identifier || 门1数据.url){
+		var door1inst = SceneManager.getInstance().addInstance(门1数据, "Door1Instance");
+		door1inst._x = (门1数据.x1 + 门1数据.x0) * 0.5;
+		door1inst._y = (门1数据.y1 + 门1数据.y0) * 0.5;
+		door1inst.swapDepths(identifier._y);
 	}
     游戏世界.允许通行 = false;
     游戏世界.关卡结束 = false;

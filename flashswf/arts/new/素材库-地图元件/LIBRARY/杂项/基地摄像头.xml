@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="杂项/基地摄像头" itemID="68483b3f-00000213" linkageExportForAS="true" linkageIdentifier="基地摄像头" lastModified="1749566892" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="基地摄像头">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂项/摄像头动画" centerPoint3DX="-3.6" centerPoint3DY="1.05">
+                  <matrix>
+                    <Matrix a="0.53387451171875" d="0.533462524414063"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.75" y="1.95"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	gotoAndPlay(random(100)+1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

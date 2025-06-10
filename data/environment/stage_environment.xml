@@ -1240,28 +1240,134 @@
             <Index>1</Index>
             <Direction>左</Direction>
             <x0>100</x0>
-            <y0>345</y0>
+            <y0>340</y0>
             <x1>240</x1>
             <y1>520</y1>
+            <url>flashswf/backgrounds/elements/基地大门.swf</url>
         </Door>
+        <Instances>
+            <Instance>
+                <Identifier>基地摄像头</Identifier>
+                <x>294</x>
+                <y>109</y>
+            </Instance>
+        </Instances>
     </Environment>
     <Environment>
         <BackgroundURL>gk20_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1810</Xmax>
+        <Ymin>250</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1820</Width>
+        <Height>550</Height>
         <WeatherCondition>正常</WeatherCondition>
         <SpaceCondition>室内</SpaceCondition>
         <VisualCondition>光照</VisualCondition>
         <MaxIllumination>8</MaxIllumination>
         <MinIllumination>4</MinIllumination>
+        <Collision>
+            <Point>1555,240</Point>
+            <Point>1812,550</Point>
+            <Point>1812,240</Point>
+        </Collision>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1210</x0>
+            <y0>240</y0>
+            <x1>1330</x1>
+            <y1>290</y1>
+        </Door>
+        <Instances>
+            <Instance>
+                <Identifier>基地摄像头</Identifier>
+                <x>425</x>
+                <y>19</y>
+            </Instance>
+            <Instance>
+                <Identifier>基地摄像头</Identifier>
+                <x>1389</x>
+                <y>17</y>
+            </Instance>
+        </Instances>
     </Environment>
     <Environment>
         <BackgroundURL>gk20_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1540</Xmax>
+        <Ymin>260</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1800</Width>
+        <Height>550</Height>
         <SpaceCondition>室内</SpaceCondition>
         <VisualCondition>光照</VisualCondition>
         <MaxIllumination>8</MaxIllumination>
         <MinIllumination>4</MinIllumination>
+        <Collision>
+            <Point>15,250</Point>
+            <Point>255,250</Point>
+            <Point>15,550</Point>
+        </Collision>
+        <Instances>
+            <Instance>
+                <Identifier>基地通风口</Identifier>
+                <x>792</x>
+                <y>36</y>
+            </Instance>
+            <Instance>
+                <Identifier>基地摄像头</Identifier>
+                <x>1097</x>
+                <y>18</y>
+            </Instance>
+        </Instances>
     </Environment>
     <Environment>
-        <BackgroundURL>gk20_4_BG.swf</BackgroundURL>
+        <BackgroundURL>gk20_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1635</Xmax>
+        <Ymin>200</Ymin>
+        <Ymax>540</Ymax>
+        <Width>1635</Width>
+        <Height>570</Height>
+        <Horizon>240</Horizon>
+        <MaxIllumination>9</MaxIllumination>
+        <MinIllumination>0</MinIllumination>
+        <Collision>
+            <Point>100,195</Point>
+            <Point>235,195</Point>
+            <Point>158,309</Point>
+            <Point>158,397</Point>
+            <Point>300,397</Point>
+            <Point>300,430</Point>
+            <Point>337,430</Point>
+            <Point>337,460</Point>
+            <Point>549,460</Point>
+            <Point>549,550</Point>
+            <Point>100,550</Point>
+        </Collision>
+        <Collision>
+            <Point>1144,195</Point>
+            <Point>1390,195</Point>
+            <Point>1390,346</Point>
+            <Point>1144,346</Point>
+        </Collision>
+        <Collision>
+            <Point>1480,420</Point>
+            <Point>1640,420</Point>
+            <Point>1640,550</Point>
+            <Point>1328,550</Point>
+            <Point>1328,476</Point>
+            <Point>1480,476</Point>
+        </Collision>
+        <Collision>
+            <Point>1523,195</Point>
+            <Point>1640,195</Point>
+            <Point>1640,410</Point>
+        </Collision>
     </Environment>
     <!-- 军阀据点-->
     <Environment>
@@ -1509,7 +1615,7 @@
         <Ymax>480</Ymax>
         <Width>1770</Width>
         <Height>512</Height>
-         <Instances>
+        <Instances>
             <Instance>
                 <url>flashswf/backgrounds/elements/昏暗街头灯光.swf</url>
                 <x>1080.35</x>

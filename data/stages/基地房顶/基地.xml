@@ -47,4 +47,579 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
     </Rewards>
+   <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk20_1_BG.swf</Background>
+            <PlayerX>792</PlayerX>
+            <PlayerY>413</PlayerY>
+        </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>不行啊，停机坪已经被敌人占领了，只能从这边攻进去了！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>我要进入基地帮助其他人！其他人守在外边，对付涌进来的敌人！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>694</x>
+                        <y>529</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>461</x>
+                        <y>540</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>435</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>338</x>
+                        <y>480</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk20_2_BG.swf</Background>
+            <PlayerX>1577</PlayerX>
+            <PlayerY>356</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>60</x>
+                <y>270</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>411</x>
+                <y>250</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>Boy#愤怒</Char>
+                <Text>来得正好，帮我把这些家伙清了以后去找Andy！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>King</Name>
+                <Title>BPK战队-左前锋</Title>
+                <Char>King#愤怒</Char>
+                <Text>宰了吧，把他们都宰了！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Pig</Name>
+                <Title>BPK战队-右前锋</Title>
+                <Char>Pig#愤怒</Char>
+                <Text>生气啊！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>3</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <x>1396</x>
+                        <y>302</y>
+                        <spritename>主角-男</spritename>
+                        <Name>King</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>170</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>G36</PrimaryWeapon>
+                        <SecondaryWeapon>UZI</SecondaryWeapon>
+                        <SecondaryWeapon2>UZI</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>女变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>King头-NPC</HeadEquipment>
+                        <BodyArmor>King上装-NPC</BodyArmor>
+                        <LegArmor>King下装-NPC</LegArmor>
+                        <HandGear>King手-NPC</HandGear>
+                        <FootGear>King脚-NPC</FootGear>
+                        <NeckGear>BPK战队左前锋项链</NeckGear>
+                        <Gender>女</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <x>1346</x>
+                        <y>360</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Boy</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>AWP</PrimaryWeapon>
+                        <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
+                        <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>Boy头-NPC</HeadEquipment>
+                        <BodyArmor>Boy上装-NPC</BodyArmor>
+                        <LegArmor>Boy下装-NPC</LegArmor>
+                        <HandGear>Boy手-NPC</HandGear>
+                        <FootGear>Boy脚-NPC</FootGear>
+                        <NeckGear>BPK战队队长项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <x>1438</x>
+                        <y>410</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Pig</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>200</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M134</PrimaryWeapon>
+                        <SecondaryWeapon>Mossberg500</SecondaryWeapon>
+                        <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>Pig头-NPC</HeadEquipment>
+                        <BodyArmor>Pig上装-NPC</BodyArmor>
+                        <LegArmor>Pig下装-NPC</LegArmor>
+                        <HandGear>Pig手-NPC</HandGear>
+                        <FootGear>Pig脚-NPC</FootGear>
+                        <NeckGear>BPK战队右前锋项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>694</x>
+                        <y>529</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk20_3_BG.swf</Background>
+            <PlayerX>1394</PlayerX>
+            <PlayerY>270</PlayerY>
+            <Environment>
+                <Door>
+                    <Index>1</Index>
+                    <Direction>上</Direction>
+                    <x0>1330</x0>
+                    <y0>250</y0>
+                    <x1>1450</x1>
+                    <y1>280</y1>
+                </Door>
+            </Environment>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>186</x>
+                <y>377</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>470</x>
+                <y>250</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>老大，我已经叫他们守住基地门口了！基地一层有BPK战队清理！你这里没问题吧？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Andy Law</Name>
+                <Title>东区最强战士</Title>
+                <Char>Andy Law#愤怒</Char>
+                <Text>现在的当务之急是占领最高点，快去清空停机坪的敌人！那里是我们较弱的地方！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>好！我帮你清理几个敌兵就去！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>3</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <x>1356</x>
+                        <y>426</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Blue</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>200</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon></PrimaryWeapon>
+                        <SecondaryWeapon></SecondaryWeapon>
+                        <SecondaryWeapon2></SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-蓝色头巾</HairStyle>
+                        <HeadEquipment>blue头-NPC</HeadEquipment>
+                        <BodyArmor>blue上装-NPC</BodyArmor>
+                        <LegArmor>blue下装-NPC</LegArmor>
+                        <HandGear>blue装手套</HandGear>
+                        <FootGear>A兵团精致战术皮鞋</FootGear>
+                        <NeckGear>骆驼祥子项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>70</Level>
+                        <x>1402</x>
+                        <y>389</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Andy Law</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M4A1改</PrimaryWeapon>
+                        <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
+                        <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>Andy领子-NPC</HeadEquipment>
+                        <BodyArmor>Andy上装-NPC</BodyArmor>
+                        <LegArmor>Andy下装-NPC</LegArmor>
+                        <HandGear>Andy装手套-NPC</HandGear>
+                        <FootGear>黑色板鞋</FootGear>
+                        <NeckGear>东区最强战士项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <x>1452</x>
+                        <y>423</y>
+                        <spritename>主角-男</spritename>
+                        <Name>The Girl</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>165</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon></PrimaryWeapon>
+                        <SecondaryWeapon>Glock 18</SecondaryWeapon>
+                        <SecondaryWeapon2>Glock 18</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>女变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>TheGirl头-NPC</HeadEquipment>
+                        <BodyArmor>TheGirl上装-NPC</BodyArmor>
+                        <LegArmor>TheGirl下装-NPC</LegArmor>
+                        <HandGear>TheGirl手-NPC</HandGear>
+                        <FootGear>TheGirl脚-NPC</FootGear>
+                        <NeckGear>BPK战队队长项链</NeckGear>
+                        <Gender>女</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>590</x>
+                        <y>305</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>15</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>15</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk20_2_BG.swf</Background>
+            <PlayerX>1280</PlayerX>
+            <PlayerY>250</PlayerY>
+            <Environment>
+                <Door>
+                    <Index>1</Index>
+                    <Direction>上</Direction>
+                    <x0>355</x0>
+                    <y0>240</y0>
+                    <x1>465</x1>
+                    <y1>270</y1>
+                </Door>
+            </Environment>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>60</x>
+                <y>270</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>411</x>
+                <y>250</y>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>3</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <x>1396</x>
+                        <y>302</y>
+                        <spritename>主角-男</spritename>
+                        <Name>King</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>170</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>G36</PrimaryWeapon>
+                        <SecondaryWeapon>UZI</SecondaryWeapon>
+                        <SecondaryWeapon2>UZI</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>女变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>King头-NPC</HeadEquipment>
+                        <BodyArmor>King上装-NPC</BodyArmor>
+                        <LegArmor>King下装-NPC</LegArmor>
+                        <HandGear>King手-NPC</HandGear>
+                        <FootGear>King脚-NPC</FootGear>
+                        <NeckGear>BPK战队左前锋项链</NeckGear>
+                        <Gender>女</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <x>1346</x>
+                        <y>360</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Boy</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>AWP</PrimaryWeapon>
+                        <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
+                        <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>Boy头-NPC</HeadEquipment>
+                        <BodyArmor>Boy上装-NPC</BodyArmor>
+                        <LegArmor>Boy下装-NPC</LegArmor>
+                        <HandGear>Boy手-NPC</HandGear>
+                        <FootGear>Boy脚-NPC</FootGear>
+                        <NeckGear>BPK战队队长项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <x>1438</x>
+                        <y>410</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Pig</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>200</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M134</PrimaryWeapon>
+                        <SecondaryWeapon>Mossberg500</SecondaryWeapon>
+                        <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>Pig头-NPC</HeadEquipment>
+                        <BodyArmor>Pig上装-NPC</BodyArmor>
+                        <LegArmor>Pig下装-NPC</LegArmor>
+                        <HandGear>Pig手-NPC</HandGear>
+                        <FootGear>Pig脚-NPC</FootGear>
+                        <NeckGear>BPK战队右前锋项链</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>694</x>
+                        <y>529</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>15</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>15</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk20_5_BG.swf</Background>
+            <PlayerX>1096</PlayerX>
+            <PlayerY>313</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>435</x>
+                <y>291</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>435</x>
+                <y>440</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>885</x>
+                        <y>328</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>822</x>
+                        <y>218</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>17</Level>
+                        <x>588</x>
+                        <y>247</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种55</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
 </GameStage>

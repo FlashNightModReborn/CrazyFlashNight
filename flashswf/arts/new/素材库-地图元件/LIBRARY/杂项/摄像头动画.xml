@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="杂项/摄像头动画" itemID="684845ac-000003a6" lastModified="1749566892">
+  <timeline>
+    <DOMTimeline name="摄像头动画">
+      <layers>
+        <DOMLayer name="Layer 1" color="#9FE08C" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="82" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂项/摄像头1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-31.05" ty="-38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="82" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂项/摄像头2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="96" duration="77" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂项/摄像头3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-17.5" ty="-38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.35" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="173" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂项/摄像头2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

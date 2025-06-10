@@ -1,15 +1,15 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="208" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="03.摆件" itemID="67321af0-00000c8d" isExpanded="true"/>
-          <DOMFolderItem name="03.摆件/铁丝栏" itemID="6720aa4a-00001286"/>
+          <DOMFolderItem name="03.摆件" itemID="67321af0-00000c8d"/>
+          <DOMFolderItem name="03.摆件/铁丝栏" itemID="6720aa4a-00001286" isExpanded="true"/>
           <DOMFolderItem name="shape" itemID="670d4052-0000141f"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
           <DOMFolderItem name="场景素材" itemID="68368d0c-00002c15"/>
           <DOMFolderItem name="场景素材/废弃车辆" itemID="68368d0c-00002c16"/>
           <DOMFolderItem name="场景素材/废弃车辆/高级轿车a" itemID="68368d0c-00002c17"/>
           <DOMFolderItem name="出生点-大机关门" itemID="664b226f-00000b0d"/>
           <DOMFolderItem name="出生点-地铁门" itemID="683dc300-0000047c"/>
-          <DOMFolderItem name="出生点-防御地带" itemID="6826dc85-0000031b" isExpanded="true"/>
+          <DOMFolderItem name="出生点-防御地带" itemID="6826dc85-0000031b"/>
           <DOMFolderItem name="出生点-改造僵尸管道" itemID="664b1c32-00000329"/>
           <DOMFolderItem name="出生点-管道" itemID="664cd5f3-00000ab5"/>
           <DOMFolderItem name="出生点-光束发射器" itemID="664b2cdd-00000bcb"/>
@@ -30,12 +30,13 @@
           <DOMFolderItem name="箱子素材/纸箱" itemID="68380307-0000252c"/>
           <DOMFolderItem name="箱子素材/装备箱" itemID="683db6ac-0000143f" isExpanded="true"/>
           <DOMFolderItem name="箱子素材/资源箱" itemID="6837c8c3-000018f1"/>
+          <DOMFolderItem name="杂项" itemID="68483b77-00000347" isExpanded="true"/>
           <DOMFolderItem name="钻头出现动画" itemID="6842a62d-0000017a"/>
           <DOMFolderItem name="钻头出现动画/未命名文件夹 1" itemID="6842a60e-00000177"/>
           <DOMFolderItem name="钻头素材" itemID="667bdf9c-00000066"/>
      </folders>
      <media>
-          <DOMBitmapItem name="箱子素材/bitmap7.png" itemID="65c8ed3c-0000063c" sourceExternalFilepath="./LIBRARY/箱子素材/bitmap7.png" sourceLastImported="1707666748" originalCompressionType="lossless" quality="50" href="箱子素材/bitmap7.png" bitmapDataHRef="M 1 1707666854.dat" frameRight="1360" frameBottom="1260"/>
+          <DOMBitmapItem name="箱子素材/bitmap7.png" itemID="65c8ed3c-0000063c" sourceExternalFilepath="../素材库-地图元件/LIBRARY/箱子素材/bitmap7.png" sourceLastImported="1707666748" originalCompressionType="lossless" quality="50" href="箱子素材/bitmap7.png" bitmapDataHRef="M 1 1707666854.dat" frameRight="1360" frameBottom="1260"/>
      </media>
      <symbols>
           <Include href="03.摆件/栏杆.xml" loadImmediate="false" itemID="6720ab8b-0000128c" lastModified="1730195032"/>
@@ -47,7 +48,6 @@
           <Include href="sprite/健身房沙袋.xml" itemID="66a8ed03-0000125e" lastModified="1748690096"/>
           <Include href="sprite/健身房沙袋 强制移动.xml" loadImmediate="false" itemID="66a8ed0d-00001267" lastModified="1722347298"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
-          <Include href="Symbol 12.xml" loadImmediate="false" itemID="667be1aa-000000c4" lastModified="1719394707"/>
           <Include href="场景素材/废弃车辆/高级轿车a/场景素材-高级轿车a.xml" itemID="6836735a-00000bcb" lastModified="1748485842"/>
           <Include href="场景素材/废弃车辆/高级轿车a/高级轿车a车皮.xml" loadImmediate="false" itemID="68367561-00000bcd" lastModified="1748399520"/>
           <Include href="场景素材/废弃车辆/高级轿车a/高级轿车a碰撞箱.xml" loadImmediate="false" itemID="68367e75-00000bf3" lastModified="1748401880"/>
@@ -151,7 +151,6 @@
           <Include href="汽车炸弹/登场.xml" loadImmediate="false" itemID="683b09e3-000002d4" lastModified="1748758415"/>
           <Include href="汽车炸弹/敌人-汽车炸弹.xml" itemID="683affa3-00000226" lastModified="1748704798"/>
           <Include href="汽车炸弹/空中小火焰爆炸.xml" itemIcon="1" loadImmediate="false" itemID="65742c41-000007ce" lastModified="1748698817"/>
-          <Include href="闪烁的灯光.xml" itemID="65c24acf-00000ce6" lastModified="1716200766"/>
           <Include href="生存战-迷之盔甲君.xml" itemID="65c24b22-00000ce9" lastModified="1740850734"/>
           <Include href="生存战素材/Symbol 2.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cbd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 7.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cc1" lastModified="1699960314"/>
@@ -183,8 +182,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1749198398"/>
-          <Include href="跳动的火焰.xml" itemID="65c8e899-00000235" lastModified="1707665566"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1749576945"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
           <Include href="箱子素材/Symbol 11.xml" itemIcon="0" loadImmediate="false" itemID="65c8ed3c-00000649" lastModified="1704525302"/>
@@ -278,6 +276,17 @@
           <Include href="箱子素材/资源箱/资源箱碎片8.xml" itemIcon="1" loadImmediate="false" itemID="6836db61-00001009" lastModified="1748425569"/>
           <Include href="箱子素材/资源箱/资源箱碎片9.xml" itemIcon="1" loadImmediate="false" itemID="6836db71-0000100d" lastModified="1748425585"/>
           <Include href="箱子素材/资源箱/资源箱碎片10.xml" itemIcon="1" loadImmediate="false" itemID="6836db88-00001011" lastModified="1748425608"/>
+          <Include href="杂项/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="684867e3-000003bd" lastModified="1748346493"/>
+          <Include href="杂项/Symbol 11.xml" loadImmediate="false" itemID="684867e3-000003be" lastModified="1748346493"/>
+          <Include href="杂项/基地摄像头.xml" itemID="68483b3f-00000213" lastModified="1749566892"/>
+          <Include href="杂项/基地通风口.xml" itemID="68486ce6-000003e7" lastModified="1749576940"/>
+          <Include href="杂项/闪烁的灯光.xml" itemID="65c24acf-00000ce6" lastModified="1716200766"/>
+          <Include href="杂项/摄像头1.xml" itemIcon="1" loadImmediate="false" itemID="68484564-0000039f" lastModified="1749566820"/>
+          <Include href="杂项/摄像头2.xml" itemIcon="1" loadImmediate="false" itemID="68484566-000003a0" lastModified="1749566822"/>
+          <Include href="杂项/摄像头3.xml" itemIcon="1" loadImmediate="false" itemID="68484571-000003a3" lastModified="1749566834"/>
+          <Include href="杂项/摄像头动画.xml" loadImmediate="false" itemID="684845ac-000003a6" lastModified="1749566892"/>
+          <Include href="杂项/跳动的火焰.xml" itemID="65c8e899-00000235" lastModified="1707665566"/>
+          <Include href="钻头出现动画/Symbol 12.xml" loadImmediate="false" itemID="667be1aa-000000c4" lastModified="1719394707"/>
           <Include href="钻头出现动画/动画.xml" loadImmediate="false" itemID="6842a606-00000175" lastModified="1749198342"/>
           <Include href="钻头出现动画/未命名文件夹 1/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="683d5b0b-000001cf" lastModified="1748851467"/>
           <Include href="钻头出现动画/未命名文件夹 1/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="683d5b11-000001d3" lastModified="1748851473"/>
@@ -296,10 +305,11 @@
           <Include href="钻头出现动画/未命名文件夹 1/主体部分.xml" itemIcon="1" loadImmediate="false" itemID="683d5ac6-000001cb" lastModified="1748888318"/>
           <Include href="钻头出现动画/未命名文件夹 1/钻头的主体.xml" itemIcon="1" loadImmediate="false" itemID="683d5c51-000001f1" lastModified="1748973535"/>
           <Include href="钻头素材/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="667be1aa-000000c6" lastModified="1704897454"/>
-          <Include href="钻头素材/Symbol 12.xml" loadImmediate="false" itemID="6842a63a-00000194" lastModified="1749198394"/>
+          <Include href="钻头素材/Symbol 12.xml" loadImmediate="false" itemID="68483b5d-0000033e" lastModified="1749564253"/>
           <Include href="钻头素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="667be1aa-000000c5" lastModified="1716307369"/>
           <Include href="钻头素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="667be0f6-00000094" lastModified="1719394551"/>
           <Include href="钻头素材/钻头素材.xml" itemIcon="1" loadImmediate="false" itemID="667be018-00000092" lastModified="1748439612"/>
+          <Include href="钻头素材/钻头素材/Symbol 12.xml" loadImmediate="false" itemID="6842a63a-00000194" lastModified="1719394707"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -1159,6 +1169,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="375782" publishTime="1749578340"/>
+          <PublishItem publishSize="373484" publishTime="1749564537"/>
+          <PublishItem publishSize="373483" publishTime="1749564338"/>
           <PublishItem publishSize="349559" publishTime="1748952625"/>
           <PublishItem publishSize="349558" publishTime="1748952577"/>
           <PublishItem publishSize="349558" publishTime="1748952531"/>
@@ -1176,8 +1189,5 @@
           <PublishItem publishSize="343717" publishTime="1748942816"/>
           <PublishItem publishSize="343717" publishTime="1748942729"/>
           <PublishItem publishSize="343884" publishTime="1748942633"/>
-          <PublishItem publishSize="302574" publishTime="1748870746"/>
-          <PublishItem publishSize="273320" publishTime="1748865219"/>
-          <PublishItem publishSize="340953" publishTime="1748855777"/>
      </publishHistory>
 </DOMDocument>
