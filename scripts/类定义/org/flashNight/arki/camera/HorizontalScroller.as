@@ -5,11 +5,12 @@ import org.flashNight.arki.camera.ScrollLogic;
 import org.flashNight.arki.camera.ParallaxBackground;
 
 /**
- * HorizontalScroller.as - 重构后的主控制器
+ * HorizontalScroller.as - 重构后的主控制器（修正版）
  *
  * 负责：
  *  1. 协调 ZoomController / ScrollBounds / ScrollLogic / ParallaxBackground
  *  2. 对外提供 update(...) 接口，与原 _root.横版卷屏 保持兼容
+ *  3. 修正：地平线高度在缩放时的计算错误
  */
 class org.flashNight.arki.camera.HorizontalScroller {
     /**
@@ -75,9 +76,9 @@ class org.flashNight.arki.camera.HorizontalScroller {
             gameWorld._x = clamped.clampedX;
             gameWorld._y = clamped.clampedY;
 
-            bgLayer._x = clamped.clampedX;
-            // bgLayer._y = clamped.clampedY + 地平线高度
-            bgLayer._y = clamped.clampedY + bgLayer.地平线高度;
+            // 【修正】地平线高度需要考虑缩放因子
+            var scaledHorizonHeight:Number = bgLayer.地平线高度 * newScale;
+            bgLayer._y = clamped.clampedY + scaledHorizonHeight;
 
             // 5.4) 缩放时，也立即刷新一次后景视差（ParallaxBackground）
             ParallaxBackground.refreshOnZoom(bgLayer, gameWorld._x);
@@ -144,11 +145,10 @@ class org.flashNight.arki.camera.HorizontalScroller {
         if (onScrollY) {
             gameWorld._y = clampedFinal.clampedY;
         }
-
-        // bgLayer 同步 X
-        // bgLayer._x = gameWorld._x;
-        // bgLayer 同步 Y
-        bgLayer._y = gameWorld._y + bgLayer.地平线高度;
+        
+        // 【修正】bgLayer 同步 Y - 地平线高度需要考虑缩放因子
+        var scaledHorizonHeight:Number = bgLayer.地平线高度 * newScale;
+        bgLayer._y = gameWorld._y + scaledHorizonHeight;
 
         // —— 14) 如果启用了后景视差，则在滚动时更新一次后景 —— 
         if (_root.启用后景) {
