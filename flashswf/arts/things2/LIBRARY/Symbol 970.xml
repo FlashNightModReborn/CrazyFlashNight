@@ -1,0 +1,468 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 970" itemID="65e1d4ea-00000568" lastModified="1698678736">
+  <timeline>
+    <DOMTimeline name="Symbol 970">
+      <layers>
+        <DOMLayer name="Script Layer" color="#7724F0">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数++;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp == 0)
+{
+   stop();
+}
+if(_parent.hp < 0)
+{
+   stop();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#E5938B">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 194" centerPoint3DX="-372.1" centerPoint3DY="-138.55">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-390.1" ty="-156.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.控制目标 == _parent._parent._name)
+   {
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="58" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4582F7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-294.95">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-353.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-295.5">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-353.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-296.05">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-354.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-296.55">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-354.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-297.1">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-355.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.45" centerPoint3DY="-297.65">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.2" ty="-355.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.45" centerPoint3DY="-298.2">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.2" ty="-356.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-298.75">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-356.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-299.3">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-357.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-299.8">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-357.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-300.35">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-358.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-300.9">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-359.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-301.45">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-359.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.35" centerPoint3DY="-300.85">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.1" ty="-359"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-300.3">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-358.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-299.7">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-357.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.35" centerPoint3DY="-299.1">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.1" ty="-357.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-298.5">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-356.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.35" centerPoint3DY="-297.95">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.1" ty="-356.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-297.35">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-355.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-296.7">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-354.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.35" centerPoint3DY="-296.15">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.1" ty="-354.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-295.55">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-353.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 962" centerPoint3DX="-275.4" centerPoint3DY="-294.95">
+                  <matrix>
+                    <Matrix a="-0.44610595703125" b="-0.140106201171875" c="-0.140106201171875" d="0.44610595703125" tx="-370.15" ty="-353.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

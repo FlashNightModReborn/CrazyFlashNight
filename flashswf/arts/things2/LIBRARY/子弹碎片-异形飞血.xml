@@ -1,0 +1,151 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹碎片-异形飞血" itemID="68230eb9-0000097d" linkageExportForAS="true" linkageIdentifier="子弹碎片-异形飞血" lastModified="1747127993">
+  <timeline>
+    <DOMTimeline name="子弹碎片-异形飞血">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" name="循环" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#908283" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//获取出血来源的Z轴坐标与子弹敌我属性
+var 出血来源发射者 = _root.gameworld[出血来源];
+Z轴坐标 = 出血来源发射者.Z轴坐标;
+子弹敌我属性 = !出血来源发射者.是否为敌人;
+
+//计算酸血伤害
+if(出血来源发射者.等级 >= 50){
+	酸血伤害 = Math.floor(出血来源发射者.空手攻击力 * 0.75);
+}else{
+	酸血伤害 = Math.floor(出血来源发射者.空手攻击力 * 0.25);
+}
+
+攻击次数 = 0;
+最大攻击次数 = 2;
+
+//飞血状态
+垂直速度 = -(random(5));
+//旋转速度 = 90 - random(180);
+随机速度 = random(10);
+angle = random(360) * 3.14 / 180;
+//以下被注释掉的是让酸血只往前喷的代码，反正实装之后非常司马，所以注释掉了
+/*angle = 30 - random(61);
+if(出血来源发射者.方向 === "左"){
+	angle += 180;
+}
+angle = angle * 3.14 / 180;*/
+xmov = 随机速度 * Math.cos(angle);
+ymov = 随机速度 * Math.sin(angle) / 2;
+起始Y = this._y;
+飞血.play();
+
+飞血._xscale = 飞血._yscale = 50 + random(75);
+飞血._rotation = random(360);
+
+this.onEnterFrame = function()
+{
+	if (this._y > Z轴坐标)
+	{
+		_root.效果("异形血迹",this._x,this._y,this._xscale);
+		飞血.stop();
+		delete this.onEnterFrame;
+		this.removeMovieClip();
+	}
+	else
+	{
+		//this._rotation += 旋转速度;
+		this._x += xmov;
+		this._y += ymov;
+		Z轴坐标 += ymov;
+		垂直速度 += _root.重力加速度;
+		this._y += 垂直速度;
+	}
+};
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹属性 = _root.子弹属性初始化(this);
+
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.子弹种类 = "近战子弹";
+子弹属性.子弹威力 = 酸血伤害;
+子弹属性.子弹速度 = 0;
+子弹属性.Z轴攻击范围 = 35;
+子弹属性.击倒率 = 15;
+子弹属性.发射效果 = "";
+子弹属性.击中地图效果 = "";
+子弹属性.击中后子弹的效果 = "";
+
+子弹属性.水平击退速度 = 0;
+子弹属性.不硬直 = true;
+
+子弹属性.区域定位area = undefined;
+
+子弹属性.发射者 = 出血来源;
+子弹属性.shootZ = Z轴坐标;
+子弹属性.子弹敌我属性 = 子弹敌我属性;
+
+子弹属性.伤害类型 = "魔法";
+子弹属性.魔法伤害属性 = "蚀";
+
+子弹属性.酸血对象 = this;
+子弹属性.击中时触发函数 = function(){
+	this.酸血对象.攻击次数++;
+}
+
+_root.子弹区域shoot传递(子弹属性);
+
+//判断飙血消失
+if (Z轴坐标 < this._y or 攻击次数 >= 最大攻击次数)
+{
+	飞血.stop();
+	delete this.onEnterFrame;
+	this.removeMovieClip();
+}else{
+	this.gotoAndPlay("循环");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8DDB43">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 77" name="飞血" centerPoint3DX="10.4" centerPoint3DY="10.25">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="160" blueOffset="27" greenOffset="154"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
