@@ -468,6 +468,45 @@
                         <SpawnIndex>3</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
+                    <Dialogue>
+                        <SubDialogue id="0">
+                            <Name>同伴A</Name>
+                            <Title>被困的同伴</Title>
+                            <Char>主角模板#微笑</Char>
+                            <Text>呼……总算活下来了！！</Text>
+                            <FaceType>女变装-基本脸型</FaceType>
+                            <HairStyle>发型-女式-银色清爽直发</HairStyle>
+                            <HeadEquipment>防毒面具1号</HeadEquipment>
+                            <BodyArmor>新手衣服</BodyArmor>
+                            <LegArmor>新手裤子</LegArmor>
+                            <HandGear />
+                            <FootGear>新手皮鞋</FootGear>
+                            <NeckGear>新手军牌</NeckGear>
+                            <Gender>女</Gender>
+                        </SubDialogue>
+                        <SubDialogue id="1">
+                            <Name>$PC</Name>
+                            <Title>$PC_TITLE</Title>
+                            <Char>$PC_CHAR#微笑</Char>
+                            <Text>都是同伴，这是应该的。</Text>
+                        </SubDialogue>
+                        <SubDialogue id="2">
+                            <Name>同伴B</Name>
+                            <Title>被困的同伴</Title>
+                            <Char>主角模板#严肃</Char>
+                            <Text>调查完成，有重要线索。回基地详谈。</Text>
+                            <FaceType>男变装-基本脸型</FaceType>
+                            <HairStyle>发型-男式-黑蓬头</HairStyle>
+                            <HeadEquipment>红外夜视仪</HeadEquipment>
+                            <BodyArmor>军绿防弹衣</BodyArmor>
+                            <LegArmor>墨绿军用下装</LegArmor>
+                            <HandGear />
+                            <FootGear>墨绿军用鞋</FootGear>
+                            <NeckGear>新手军牌</NeckGear>
+                            <Gender>男</Gender>
+                        </SubDialogue>
+
+                    </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

@@ -90,6 +90,24 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
+                        <Type>
+                            <CaseSwitch expression="_root.随机整数" params="0,3">
+                                <Case casevalue="0">兵种91</Case>
+                                <Case casevalue="1">兵种92</Case>
+                                <Case casevalue="2">兵种87</Case>
+                                <Case casevalue="3">兵种88</Case>
+                            </CaseSwitch>
+                        </Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>10</Level>
+                        <x>1500</x>
+                        <y>500</y>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
                         <Type>兵种3</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
@@ -214,6 +232,12 @@
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>啊！这个声音是......僵尸。好像数量还不少，我要小心了！</Text>
             </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>......也不知道是同伴们先到，还是闻到味的盗贼们先到了。</Text>
+            </SubDialogue>
         </Dialogue>
         <Wave>
             <SubWave id="0">
@@ -295,6 +319,102 @@
                         <Quantity>50</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>5</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种87</Type>
+                        <Interval>50000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>5</Level>
+                        <x>1500</x>
+                        <y>500</y>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种88</Type>
+                        <Interval>50000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>5</Level>
+                        <x>1500</x>
+                        <y>500</y>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种91</Type>
+                        <Interval>50000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>5</Level>
+                        <x>1500</x>
+                        <y>500</y>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种92</Type>
+                        <Interval>50000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>5</Level>
+                        <x>1500</x>
+                        <y>500</y>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>10</Level>
+                        <x>615</x>
+                        <y>324</y>
+                        <spritename>主角-男</spritename>
+                        <Name>同伴A</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>170</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>G36</PrimaryWeapon>
+                        <SecondaryWeapon>M1911</SecondaryWeapon>
+                        <SecondaryWeapon2>m9</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>女变装-基本脸型</FaceType>
+                        <HairStyle>发型-女式-银色清爽直发</HairStyle>
+                        <HeadEquipment>防毒面具1号</HeadEquipment>
+                        <BodyArmor>新手衣服</BodyArmor>
+                        <LegArmor>新手裤子</LegArmor>
+                        <HandGear />
+                        <FootGear>新手皮鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>女</Gender>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>10</Level>
+                        <x>679</x>
+                        <y>388</y>
+                        <spritename>主角-男</spritename>
+                        <Name>同伴B</Name>
+                        <IsHostile>false</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon />
+                        <SecondaryWeapon>Mossberg500</SecondaryWeapon>
+                        <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
+                        <MeleeWeapon />
+                        <Grenade />
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-黑蓬头</HairStyle>
+                        <HeadEquipment>红外夜视仪</HeadEquipment>
+                        <BodyArmor>军绿防弹衣</BodyArmor>
+                        <LegArmor>墨绿军用下装</LegArmor>
+                        <HandGear />
+                        <FootGear>墨绿军用鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>男</Gender>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
