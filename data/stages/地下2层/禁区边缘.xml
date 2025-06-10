@@ -88,6 +88,86 @@
             <PlayerX>182</PlayerX>
             <PlayerY>389</PlayerY>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>军阀小分队正在伏击天网机器人...</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>螳螂捕蝉，不过我可不想当那只黄雀。还是少管闲事，免得引火烧身。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>99</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>1489</x>
+                        <y>396</y>
+                        <Parameters>
+                            <长枪>L85A1</长枪>
+                        </Parameters>
+                    </Enemy>                       
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>1489</x>
+                        <y>396</y>
+                        <Parameters>
+                            <长枪>AK47</长枪>
+                        </Parameters>
+                    </Enemy>                 
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>                        
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>                        
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>                    
+                    <Enemy>
+                        <Type>兵种57</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>                        
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>    
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk23_3_BG.swf</Background>
+            <PlayerX>182</PlayerX>
+            <PlayerY>389</PlayerY>
+        </BasicInformation>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -104,7 +184,7 @@
                         <Parameters>
                             <长枪>M4A1改</长枪>
                         </Parameters>
-                    </Enemy>
+                    </Enemy>                    
                 </EnemyGroup>
             </SubWave>
         </Wave>

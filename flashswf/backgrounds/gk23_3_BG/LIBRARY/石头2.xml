@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="石头2" itemID="658bd0c9-000002b1" symbolType="graphic" lastModified="1703661769">
+  <timeline>
+    <DOMTimeline name="石头2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#433C36"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#514942"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" strokeStyle="2" edges="!1054 74|1045 60"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!1045 60[678 -100 240 165"/>
+                    <Edge fillStyle0="2" strokeStyle="2" edges="!240 165|240 166!240 166|234 176"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!234 176[243 256 305 317!305 317[381 391 491 391!491 391[601 391 967 291!967 291[1035 254 1044 196!1044 196[1058 100 1054 74"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!183 923|262 986!262 986|297 986!297 986[322 991 852 981!852 981|1176 646!1176 646|1178 641!1178 641|1197 306!1197 306|1196 304!1196 304|1054 74!234 176[170 277 124 379"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!124 379[307 452 307 586!307 586|183 923"/>
+                    <Edge fillStyle0="2" strokeStyle="2" edges="!124 379[33 576 2 777!2 777|0 785!0 785[42 809 183 923"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

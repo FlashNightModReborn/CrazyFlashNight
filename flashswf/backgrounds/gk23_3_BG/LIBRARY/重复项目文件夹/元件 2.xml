@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹/元件 2" itemID="667d9a65-00000307" symbolType="graphic" lastModified="1719507531">
+  <timeline>
+    <DOMTimeline name="元件 2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#201F1D"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#1B1B1B"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#3F3734"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#A9A298"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#9A9389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!842 752|842 719!842 719|660 719!660 719|660 752"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!660 752|660 809"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!660 809|842 809"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!842 809|842 752"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!660 752|182 752!182 752|182 217!182 217|1380 217!1380 217|1380 752!1380 752|842 752"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!842 809|1450 809!1450 809|1450 144!1450 144|120 144!120 144|120 809!120 809|660 809"/>
+                    <Edge fillStyle1="5" edges="!1557 942|0 942!0 942|0 0!0 0|1557 0!1557 0|1557 942"/>
+                    <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="!1507 889|52 889!52 889|52 79!52 79|1507 79!1507 79|1507 889"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -92,7 +92,7 @@
                     <Enemy>
                         <Type>
                             <CaseSwitch expression="_root.随机整数" params="0,3">
-                                <Case casevalue="0">兵种91</Case>
+                                <Case casevalue="0">兵种353</Case>
                                 <Case casevalue="1">兵种92</Case>
                                 <Case casevalue="2">兵种87</Case>
                                 <Case casevalue="3">兵种88</Case>
@@ -243,7 +243,7 @@
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
-                    <FinishRequirement>254</FinishRequirement>
+                    <FinishRequirement>154</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
