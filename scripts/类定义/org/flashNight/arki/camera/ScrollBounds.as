@@ -34,13 +34,18 @@ class org.flashNight.arki.camera.ScrollBounds {
         var effBgW:Number = bgWidth  * newScale;
         var effBgH:Number = bgHeight * newScale;
 
+        var minX:Number = stageWidth - effBgW;
+        var maxX:Number = 0;
+        var minY:Number = stageHeight - effBgH;
+        var maxY:Number = 0;
+
         return {
             effBgW: effBgW,
             effBgH: effBgH,
-            minX:   stageWidth - effBgW,
-            maxX:   0,
-            minY:   stageHeight - effBgH,
-            maxY:   0
+            minX:   minX,
+            maxX:   maxX,
+            minY:   minY,
+            maxY:   maxY
         };
     }
 
@@ -82,26 +87,29 @@ class org.flashNight.arki.camera.ScrollBounds {
         var clampedX:Number = newX;
         var clampedY:Number = newY;
 
-        // X 方向：只在背景比舞台宽的时候才进行约束
+        // X 方向
         if (stageWidth < bounds.effBgW) {
             if (clampedX < bounds.minX) {
                 clampedX = bounds.minX;
             } else if (clampedX > bounds.maxX) {
                 clampedX = bounds.maxX;
             }
-        } 
-        // 【重要】移除 else 分支。如果背景不比舞台宽，clampedX 就等于传入的 newX。
-        // 调用者会通过对比 newX 和 oldX 来决定是否应用。
+        } else {
+            // 背景本身宽度 <= 舞台宽度，不应沿 X 移动
+            clampedX = 0; // 或者保留旧值（在 main 里可检测）
+        }
 
-        // Y 方向：只在背景比舞台高的时候才进行约束
+        // Y 方向
         if (stageHeight < bounds.effBgH) {
             if (clampedY < bounds.minY) {
                 clampedY = bounds.minY;
             } else if (clampedY > bounds.maxY) {
                 clampedY = bounds.maxY;
             }
+        } else {
+            // 背景本身高度 <= 舞台高度，不应沿 Y 移动
+            clampedY = 0;
         }
-        // 【重要】移除 else 分支。
 
         return { clampedX: clampedX, clampedY: clampedY };
     }

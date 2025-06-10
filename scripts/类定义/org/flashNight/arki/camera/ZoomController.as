@@ -168,104 +168,65 @@ class org.flashNight.arki.camera.ZoomController {
         scrollObj:MovieClip,
         gameWorld:MovieClip,
         bgLayer:MovieClip,
-        easeFactor:Number,
-        zoomScale:Number
+        easeFactor:Number
     ):Object {
-        // 0) 初始化卡尔曼滤波器
-        _initializeFiltersIfNeeded();
-        
-        // 1) 性能优化：检查是否需要更新最远敌人和敌人数量
-        updateCounter++;
-        var shouldUpdate:Boolean = (updateCounter >= UPDATE_FREQUENCY) || 
-                                  (cachedFarthestEnemy == null) ||
-                                  _hasTargetMovedSignificantly(scrollObj);
-        
-        var filteredEnemyCount:Number;
-        var filteredZoomScale:Number;
-        
-        if (shouldUpdate) {
-            // 更新最远敌人
-            cachedFarthestEnemy = TargetCacheManager.findFarthestEnemy(scrollObj, ENEMY_SEARCH_LIMIT);
-            
-            // 更新原始敌人数量
-            cachedRawEnemyCount = TargetCacheManager.getEnemyCount(scrollObj, ENEMY_SEARCH_LIMIT);
-            
-            // 2) 计算距离和目标缩放
-            var distance:Number = _calculateDistance(scrollObj, cachedFarthestEnemy);
-            var targetZoomScale:Number = _calculateTargetZoomScale(distance, zoomScale);
-            
-            // 3) 性能优化：只在数据更新时进行卡尔曼滤波计算
-            // 对敌人数量进行卡尔曼滤波
-            enemyCountFilter.predict();
-            filteredEnemyCount = enemyCountFilter.update(cachedRawEnemyCount);
-            
-            // 对缩放值进行卡尔曼滤波
-            zoomScaleFilter.predict();
-            filteredZoomScale = zoomScaleFilter.update(targetZoomScale);
-            
-            // 根据滤波后的敌人数量更新最大缩放限制
-            currentMaxZoomMultiplier = _calculateMaxZoomByEnemyCount(filteredEnemyCount);
-            
-            updateCounter = 0;
-            lastTargetPos.x = scrollObj._x;
-            lastTargetPos.y = scrollObj._y;
-        } else {
-            // 4) 非更新帧：直接使用缓存的滤波结果，避免重复计算
-            filteredEnemyCount = enemyCountFilter.getEstimate();
-            filteredZoomScale = zoomScaleFilter.getEstimate();
+        // 1) 找到最远的敌人
+        var farthestEnemy:Object = TargetCacheManager.findFarthestEnemy(scrollObj, 5);
+        var distance:Number = (Math.abs(scrollObj._x - farthestEnemy._x)
+                              + Math.abs(scrollObj._y - farthestEnemy._y)) || 99999;
+        var normalizedDistance:Number = Math.max(1, distance / 100);
+        var logScale:Number = Math.log(normalizedDistance) / Math.log(10);
+
+        // 2) 计算 targetZoomScale
+        var targetZoomScale:Number = Math.min(1.5, Math.max(1, 2 - logScale * 1.11));
+
+        // 3) 初始化 lastScale
+        if (!gameWorld.lastScale) {
+            gameWorld.lastScale = targetZoomScale;
         }
-        
-        // 5) 初始化 lastScale
-        if (lastScale == undefined) {
-            lastScale = filteredZoomScale;
-        }
-        
-        var oldScale:Number = lastScale;
-        
-        // 6) 轻度缓动（因为已有卡尔曼滤波，缓动可以更激进）
-        var newScale:Number = oldScale + (filteredZoomScale - oldScale) / Math.max(1, easeFactor * 0.5);
-        
-        // 7) 判断是否需要真正更新
-        var scaleChanged:Boolean = Math.abs(newScale - oldScale) > SCALE_CHANGE_THRESHOLD;
+
+        var oldScale:Number = gameWorld.lastScale;
+        // 4) 缓动计算 newScale
+        var newScale:Number = oldScale + (targetZoomScale - oldScale) / easeFactor;
+
+        // 5) 判断是否需要真正更新
+        var scaleChanged:Boolean = Math.abs(newScale - oldScale) > 0.005;
         if (scaleChanged) {
-            // 7.1) 记录缩放前 scrollObj 在屏幕上的坐标
+            // 5.1) 记录缩放前 scrollObj 在屏幕上的坐标
             var preScalePt:Object = { x:0, y:0 };
             scrollObj.localToGlobal(preScalePt);
-            
-            // 7.2) 应用缩放到 gameWorld 与 bgLayer
+
+            // 5.2) 应用缩放到 gameWorld 与 bgLayer
             var newScalePercent:Number = newScale * 100;
             gameWorld._xscale = gameWorld._yscale = newScalePercent;
             bgLayer._xscale   = bgLayer._yscale   = newScalePercent;
-            
-            // 7.3) 记录缩放后 scrollObj 在屏幕上的坐标
+
+            // 5.3) 记录缩放后 scrollObj 在屏幕上的坐标
             var postScalePt:Object = { x:0, y:0 };
             scrollObj.localToGlobal(postScalePt);
-            
-            // 7.4) 计算 worldOffset
+
+            // 5.4) 计算 worldOffset
             var worldOffsetX:Number = preScalePt.x - postScalePt.x;
             var worldOffsetY:Number = preScalePt.y - postScalePt.y;
-            
-            // 7.5) 更新 lastScale
-            lastScale = newScale;
-            
+
+            // 5.5) 更新 lastScale
+            gameWorld.lastScale = newScale;
+
+            // 【修复】添加 scaleChanged 标志
             return { 
                 newScale: newScale, 
                 offsetX: worldOffsetX, 
                 offsetY: worldOffsetY,
-                enemyCount: cachedRawEnemyCount,
-                filteredEnemyCount: filteredEnemyCount,
-                maxZoom: currentMaxZoomMultiplier
+                scaleChanged: true 
             };
         }
-        
+
         // 如果没变化，则返回旧值并且 offset 为 0
         return { 
             newScale: oldScale, 
             offsetX: 0, 
             offsetY: 0,
-            enemyCount: cachedRawEnemyCount,
-            filteredEnemyCount: filteredEnemyCount,
-            maxZoom: currentMaxZoomMultiplier
+            scaleChanged: false 
         };
     }
     
