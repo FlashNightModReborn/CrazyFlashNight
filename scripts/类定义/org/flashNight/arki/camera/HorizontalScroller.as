@@ -531,11 +531,16 @@ class org.flashNight.arki.camera.HorizontalScroller {
             gameWorld._y = clampedFinal.clampedY;
         }
 
-        bgLayer._x = gameWorld._x;
-        bgLayer._y = gameWorld._y + bgLayer.地平线高度;
+        // === 【修正逻辑】 ===
+        // bgLayer._x 的更新只在缩放补偿（步骤5）时进行，这里不再同步。
+        // 只在 Y 轴发生滚动时，才同步 bgLayer._y，以完美复现原始代码的行为。
+        if (onScrollY) {
+            bgLayer._y = gameWorld._y + bgLayer.地平线高度;
+        }
+        // 移除 bgLayer._x = gameWorld._x; 这一行
 
         // —— 14) 如果启用了后景视差，则在滚动时更新一次后景 —— 
-        if (_root.启用后景) {
+        if (_root.启用后景 && onScrollX) { // 优化：仅在X轴滚动时才更新视差背景
             var currentFrame:Number = frameTimer.当前帧数;
             ParallaxBackground.updateParallax(bgLayer, currentFrame, gameWorld._x);
         }
