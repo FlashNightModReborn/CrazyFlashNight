@@ -211,6 +211,7 @@ _root.敌人函数.击倒呐喊 = function(){
 
 //以下是新增或新整合的函数
 
+
 /*
 死亡检测统一函数
 可传的参数：
@@ -239,13 +240,14 @@ _root.敌人函数.死亡检测 = function(para){
 		this.人物文字信息._visible = false;
 		this.新版人物文字信息._visible = false;
 		if(para.remainMovie === true){
-			StaticDeinitializer.deinitializeUnit(this); // 直接注销单位
+			StaticDeinitializer.deinitializeUnit(this); // 不卸载元件直接注销单位
 		}else{
 			if(para.noCorpse !== true) _root.add2map(this,2); // 检测是否需要贴尸体
 			this.removeMovieClip(); // 移除单位
 		}
 	}	
 };
+
 
 _root.敌人函数.掉落物判定 = function(){
 	if(!掉落物) return;
