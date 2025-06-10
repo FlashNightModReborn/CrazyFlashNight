@@ -1,7 +1,7 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/2/EDAPT objects/Center Marker" itemID="67379857-00000588" symbolType="graphic" lastModified="1731697033">
   <persistentData>
-    <PD n="signature" v="EDAPT"/>
     <PD n="type" v="CenterMarker"/>
+    <PD n="signature" v="EDAPT"/>
   </persistentData>
   <timeline>
     <DOMTimeline name="Center Marker">
@@ -21,7 +21,7 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!0 120S4|-120 0!-120 0|0 -120!0 -120|120 0!120 0|0 120!30 0|0 0!0 0|0 30!-30 0|0 0!0 0|0 -30"/>
+                    <Edge strokeStyle="1" edges="!-30 0S4|0 0!0 0|0 30!30 0|0 0!0 0|0 -30!0 120|-120 0!-120 0|0 -120!0 -120|120 0!120 0|0 120"/>
                   </edges>
                 </DOMShape>
               </elements>

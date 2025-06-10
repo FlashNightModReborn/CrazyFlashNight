@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Surveyor" itemID="6652fae0-000012d7" linkageExportForAS="true" linkageIdentifier="敌人-Surveyor" lastModified="1746435309" lastUniqueIdentifier="60">
   <timeline>
-    <DOMTimeline name="敌人-Surveyor">
+    <DOMTimeline name="敌人-Surveyor" currentFrame="107">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -452,7 +452,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -514,7 +514,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

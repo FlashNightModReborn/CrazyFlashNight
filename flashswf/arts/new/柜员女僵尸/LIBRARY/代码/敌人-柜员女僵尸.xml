@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/敌人-柜员女僵尸" itemID="65e9c27a-000011a8" linkageExportForAS="true" linkageIdentifier="敌人-柜员女僵尸" lastModified="1746436168" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/敌人-柜员女僵尸" itemID="65e9c27a-000011a8" linkageExportForAS="true" linkageIdentifier="敌人-柜员女僵尸" lastModified="1749524035" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="敌人-柜员女僵尸" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;18&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-柜员女僵尸" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;18&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B147BB" locked="true">
           <frames>
@@ -207,7 +207,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="代码/Symbol 19" name="area" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="代码/Symbol 19" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -234,7 +234,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#417EEB" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#417EEB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -309,7 +309,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#33E57D">
+        <DOMLayer name="Layer 9" color="#33E57D" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -439,34 +439,9 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
-}
-onClipEvent(unload){
-   _parent.浮空 = false;
-}
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -484,15 +459,9 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent._y = _parent.Z轴坐标;
-   _parent.倒地 = true;
-   _parent.格斗架势 = true;
-}
-onClipEvent(unload){
-   _parent.倒地 = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -552,7 +521,7 @@ onClipEvent(unload){
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1/Symbol 2" selected="true" centerPoint3DX="86.35" centerPoint3DY="100.4">
+                <DOMSymbolInstance libraryItemName="1/Symbol 2" centerPoint3DX="86.35" centerPoint3DY="100.4">
                   <matrix>
                     <Matrix a="0.498504638671875" d="0.130126953125" tx="-0.3" ty="13.75"/>
                   </matrix>

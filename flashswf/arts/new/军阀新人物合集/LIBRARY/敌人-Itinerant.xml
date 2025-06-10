@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Itinerant" itemID="66a1374f-00000492" linkageExportForAS="true" linkageIdentifier="敌人-Itinerant" lastModified="1746435289" lastUniqueIdentifier="58">
   <timeline>
-    <DOMTimeline name="敌人-Itinerant">
+    <DOMTimeline name="敌人-Itinerant" currentFrame="107">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -479,11 +479,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="-31.5" centerPoint3DY="16.05">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-31.5" centerPoint3DY="16.05">
                   <matrix>
                     <Matrix tx="-34" ty="13.55"/>
                   </matrix>
@@ -548,7 +548,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

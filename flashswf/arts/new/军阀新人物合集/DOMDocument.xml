@@ -38,7 +38,7 @@
           <DOMFolderItem name="阎凝儿gazer/动画合集" itemID="65ad2501-00002acd" isExpanded="true"/>
           <DOMFolderItem name="阎凝儿gazer/特效" itemID="665b66a6-000043ed"/>
           <DOMFolderItem name="阎凝儿gazer/元件素材" itemID="6654b586-000002dd" isExpanded="true"/>
-          <DOMFolderItem name="袁望surveyor" itemID="665228cb-00000212" isExpanded="true"/>
+          <DOMFolderItem name="袁望surveyor" itemID="665228cb-00000212"/>
           <DOMFolderItem name="袁望surveyor/导弹" itemID="66530740-00001332" isExpanded="true"/>
           <DOMFolderItem name="袁望surveyor/动画" itemID="66522701-0000066a" isExpanded="true"/>
           <DOMFolderItem name="袁望surveyor/方舟收割者" itemID="6653122f-000015b3"/>
@@ -54,7 +54,6 @@
      <media>
           <DOMBitmapItem name="吴豫Itinerant/人物素材/image 4584" itemID="560f79f9-000011e9" sourceExternalFilepath="./LIBRARY/吴豫Itinerant/人物素材/image 4584" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="吴豫Itinerant/人物素材/image 4584" bitmapDataHRef="M 40 1721841510.dat" frameRight="11120" frameBottom="3720"/>
           <DOMSoundItem name="袁望surveyor/其他/sound309.mp3" itemID="656abd3c-000001e5" linkageExportForAS="true" linkageIdentifier="ammopickup1.wav" sourceExternalFilepath="./LIBRARY/袁望surveyor/其他/sound309.mp3" sourceLastImported="1701494076" href="袁望surveyor/其他/sound309.mp3" soundDataHRef="M 17 1716718442.dat" format="11kHz 16bit Mono" sampleCount="12672" exportFormat="5" exportBits="7" dataLength="2288" exportNative="true" cachedSampleCount="6336"/>
-          <DOMSoundItem name="袁望surveyor/音效/3.音效相关/sound407.wav" itemID="668fc4e2-00001030" linkageExportForAS="true" linkageIdentifier="爆炸1" sourceExternalFilepath="./LIBRARY/袁望surveyor/音效/3.音效相关/sound407.wav" sourceLastImported="1720697525" href="袁望surveyor/音效/3.音效相关/sound407.wav" soundDataHRef="M 42 1730041057.dat" format="44kHz 16bit Stereo" sampleCount="128097" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="3.音效相关/sound407.wav" itemID="671e55b8-000003ca" linkageExportForAS="true" linkageIdentifier="爆炸1" sourceExternalFilepath="./LIBRARY/3.音效相关/sound407.wav" sourceLastImported="1720697525" href="3.音效相关/sound407.wav" soundDataHRef="M 41 1730041043.dat" format="44kHz 16bit Stereo" sampleCount="128097" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="袁望surveyor/音效/短剑1.wav" itemID="66763bf6-000002ad" sourceExternalFilepath="./LIBRARY/袁望surveyor/音效/短剑1.wav" sourceLastImported="1718972274" externalFileCRC32="3535204720" externalFileSize="17370" href="袁望surveyor/音效/短剑1.wav" soundDataHRef="M 38 1719024640.dat" format="44kHz 16bit Mono" sampleCount="8663"/>
           <DOMSoundItem name="袁望surveyor/音效/短剑2.wav" itemID="66763bf6-000002b1" sourceExternalFilepath="./LIBRARY/袁望surveyor/音效/短剑2.wav" sourceLastImported="1718972307" externalFileCRC32="3021447437" externalFileSize="13888" href="袁望surveyor/音效/短剑2.wav" soundDataHRef="M 39 1719024640.dat" format="44kHz 16bit Mono" sampleCount="6922"/>
@@ -131,8 +130,8 @@
           <Include href="怪物通用模板/Symbol 25.xml" loadImmediate="false" itemID="65699d0d-0000008a" lastModified="1700331558"/>
           <Include href="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="65689e04-0000008f" lastModified="1701582054"/>
           <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
+          <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1716387345"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
@@ -208,7 +207,7 @@
           <Include href="吴豫Itinerant/cs6用动画/技能 复制.xml" loadImmediate="false" itemID="669a3ad3-00002b8e" lastModified="1745448782"/>
           <Include href="吴豫Itinerant/cs6用动画/空手 复制.xml" loadImmediate="false" itemID="669a3ac8-00002acf" lastModified="1722244364"/>
           <Include href="吴豫Itinerant/cs6用动画/跑步 复制.xml" loadImmediate="false" itemID="669a3ad8-00002bc2" lastModified="1722244181"/>
-          <Include href="吴豫Itinerant/cs6用动画/死亡 复制.xml" loadImmediate="false" itemID="669a3ae2-00002c42" lastModified="1722011900"/>
+          <Include href="吴豫Itinerant/cs6用动画/死亡 复制.xml" loadImmediate="false" itemID="669a3ae2-00002c42" lastModified="1749524152"/>
           <Include href="吴豫Itinerant/cs6用动画/走路 复制.xml" loadImmediate="false" itemID="669a3ac1-00002a74" lastModified="1721383685"/>
           <Include href="吴豫Itinerant/人物素材/1.xml" loadImmediate="false" itemID="565a7206-00000663" lastModified="1448768006"/>
           <Include href="吴豫Itinerant/人物素材/42424.xml" loadImmediate="false" itemID="664d931d-000000ff" lastModified="1721843813"/>
@@ -369,7 +368,7 @@
           <Include href="阎凝儿gazer/动画合集/静止动作.xml" loadImmediate="false" itemID="665b6534-000043ad" lastModified="1717306282"/>
           <Include href="阎凝儿gazer/动画合集/跑步动作.xml" loadImmediate="false" itemID="665b6545-000043ae" lastModified="1717265733"/>
           <Include href="阎凝儿gazer/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="665b6564-000043b0" lastModified="1722243372"/>
-          <Include href="阎凝儿gazer/动画合集/死亡.xml" loadImmediate="false" itemID="665b6627-000043b3" lastModified="1722243387"/>
+          <Include href="阎凝儿gazer/动画合集/死亡.xml" loadImmediate="false" itemID="665b6627-000043b3" lastModified="1749524197"/>
           <Include href="阎凝儿gazer/动画合集/走路.xml" loadImmediate="false" itemID="665b6553-000043af" lastModified="1717265747"/>
           <Include href="阎凝儿gazer/特效/Symbol 30.xml" loadImmediate="false" itemID="664cab29-0000063d" lastModified="1699960316"/>
           <Include href="阎凝儿gazer/特效/Symbol 31.xml" itemIcon="1" loadImmediate="false" itemID="664cab29-0000063e" lastModified="1699960316"/>
@@ -427,7 +426,7 @@
           <Include href="袁望surveyor/动画/呼吸动作.xml" loadImmediate="false" itemID="658e9455-000001e7" lastModified="1716701949"/>
           <Include href="袁望surveyor/动画/跑步.xml" loadImmediate="false" itemID="658ed889-00002199" lastModified="1716553998"/>
           <Include href="袁望surveyor/动画/平a动画 cs6用.xml" loadImmediate="false" itemID="6652262b-000005bb" lastModified="1717328483"/>
-          <Include href="袁望surveyor/动画/死亡动画cs6用.xml" loadImmediate="false" itemID="665226a2-00000601" lastModified="1717317116"/>
+          <Include href="袁望surveyor/动画/死亡动画cs6用.xml" loadImmediate="false" itemID="665226a2-00000601" lastModified="1749524106"/>
           <Include href="袁望surveyor/动画/旋转.xml" itemIcon="1" loadImmediate="false" itemID="664f4ad8-00000397" lastModified="1716556357"/>
           <Include href="袁望surveyor/动画/旋转火箭筒.xml" itemIcon="1" loadImmediate="false" itemID="665028b9-00000224" lastModified="1716529346"/>
           <Include href="袁望surveyor/动画/战斗动画 cs6用.xml" loadImmediate="false" itemID="66522475-0000055e" lastModified="1739326313"/>
@@ -530,6 +529,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1133317" publishTime="1749524215"/>
           <PublishItem publishSize="1134317" publishTime="1739326329"/>
           <PublishItem publishSize="1134316" publishTime="1739326097"/>
           <PublishItem publishSize="1135330" publishTime="1730041840"/>
@@ -549,6 +549,5 @@
           <PublishItem publishSize="989755" publishTime="1722022102"/>
           <PublishItem publishSize="989759" publishTime="1722021780"/>
           <PublishItem publishSize="989769" publishTime="1722021080"/>
-          <PublishItem publishSize="1054938" publishTime="1721843778"/>
      </publishHistory>
 </DOMDocument>

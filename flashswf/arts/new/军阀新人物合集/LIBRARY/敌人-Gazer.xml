@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Gazer" itemID="665b6b5e-000044ae" linkageExportForAS="true" linkageIdentifier="敌人-Gazer" lastModified="1746435326" lastUniqueIdentifier="54">
   <timeline>
-    <DOMTimeline name="敌人-Gazer">
+    <DOMTimeline name="敌人-Gazer" currentFrame="108">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -488,7 +488,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -557,7 +557,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -714,7 +714,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="阎凝儿gazer/动画合集/击倒" name="man" selected="true" centerPoint3DX="-3.45" centerPoint3DY="-95.2">
+                <DOMSymbolInstance libraryItemName="阎凝儿gazer/动画合集/击倒" name="man" centerPoint3DX="-3.45" centerPoint3DY="-95.2">
                   <matrix>
                     <Matrix a="-0.42596435546875" d="0.42596435546875" tx="27.85" ty="-134.5"/>
                   </matrix>

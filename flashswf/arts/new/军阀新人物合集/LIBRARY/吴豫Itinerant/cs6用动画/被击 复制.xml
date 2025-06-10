@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/cs6用动画/被击 复制" itemID="669a3add-00002bf9" lastModified="1722139659" lastUniqueIdentifier="335">
   <timeline>
-    <DOMTimeline name="被击 复制" currentFrame="28">
+    <DOMTimeline name="被击 复制" currentFrame="2">
       <layers>
-        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -3221,7 +3221,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="sound_layer" color="#9933CC" parentLayerIndex="2" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="sound_layer" color="#9933CC" parentLayerIndex="2" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
