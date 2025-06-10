@@ -68,6 +68,36 @@ class org.flashNight.gesh.object.ObjectUtil {
         return copy;
     }
 
+
+    /**
+     * 将一系列参数加入一个已存在的对象。
+     * @param obj 要克隆的对象。
+     * @param paraObject 存放参数的对象。
+     */
+    public static function cloneParameters(obj:Object, paraObject):Void{
+        // 如果传入的是字符串，则试图解析字符串内含的键值对
+        if(typeof(paraObject) === "string"){
+            var paraList = paraObject.split(",");
+            for(var i = 0; i < paraList.length; i++){
+                var para = paraList[i].split(":");
+                if(para.length === 2){
+                    var val = para[1];
+                    val = isNaN(val) ? val : Number(val);
+                    val = val === "true" ? true: val;
+                    val = val === "false" ? false: val;
+                    obj[para[0]] = val;
+                }
+            }
+        }else{
+            for(var key in paraObject){ 
+                obj[key] = clone(paraObject[key]);
+            }
+        }
+    }
+
+
+
+
     /**
      * 遍历对象的每个自有属性并执行提供的回调函数。
      * 该方法会使用 for...in 遍历对象的所有可枚举属性，但仅对对象的自有属性执行回调，

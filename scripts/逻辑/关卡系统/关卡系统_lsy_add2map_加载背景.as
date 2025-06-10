@@ -224,27 +224,27 @@ _root.加载场景背景 = function (动画名){
 	游戏世界.场景背景url = "flashswf/backgrounds/" + url;
 	_global.ASSetPropFlags(游戏世界, ["场景背景url"], 1, false);
 	loadMovie(游戏世界.场景背景url, 背景层.外部动画加载壳mc);
-	if(环境配置.背景元素){
-		for(var i = 0; i < 环境配置.背景元素.length; i++){
-			_root.加载背景元素(环境配置.背景元素[i].url, 环境配置.背景元素[i].name, 环境配置.背景元素[i].x, 环境配置.背景元素[i].y, 环境配置.背景元素[i].depth);
-		}
-	}
+	// if(环境配置.背景元素){
+	// 	for(var i = 0; i < 环境配置.背景元素.length; i++){
+	// 		_root.加载背景元素(环境配置.背景元素[i].url, 环境配置.背景元素[i].name, 环境配置.背景元素[i].x, 环境配置.背景元素[i].y, 环境配置.背景元素[i].depth);
+	// 	}
+	// }
 }
 
-_root.加载背景元素 = function(url, 实例名, x, y, 层级){
-    if(!url) return;
-	if(!实例名) 实例名 = "instance" + random(99);
-	var 游戏世界 = _root.gameworld;
-    var instance = 游戏世界.createEmptyMovieClip(实例名, 游戏世界.getNextHighestDepth());
-    instance._x = x;
-    instance._y = y;
-    instance.loadMovie(url);
-    var depth = y;
-    if(!isNaN(层级)) depth = 层级;
-    else if(层级 === "前景") depth += 1000;
-    else if(层级 === "后景") depth -= 1000;
-    instance.swapDepths(depth);
-}
+// _root.加载背景元素 = function(url, 实例名, x, y, 层级){
+//     if(!url) return;
+// 	if(!实例名) 实例名 = "instance" + random(99);
+// 	var 游戏世界 = _root.gameworld;
+//     var instance = 游戏世界.createEmptyMovieClip(实例名, 游戏世界.getNextHighestDepth());
+//     instance._x = x;
+//     instance._y = y;
+//     instance.loadMovie(url);
+//     var depth = y;
+//     if(!isNaN(层级)) depth = 层级;
+//     else if(层级 === "前景") depth += 1000;
+//     else if(层级 === "后景") depth -= 1000;
+//     instance.swapDepths(depth);
+// }
 
 _root.横版卷屏 = function() {
     HorizontalScroller.update();

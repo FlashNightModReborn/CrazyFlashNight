@@ -346,13 +346,13 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
-        <Elements>
-            <Element>
+        <Instances>
+            <Instance>
                 <url>flashswf/backgrounds/elements/置物架A.swf</url>
                 <x>612</x>
                 <y>525</y>
-            </Element>
-        </Elements>
+            </Instance>
+        </Instances>
     </Environment>
     <!-- 废墟武器店-->
     <Environment>
@@ -848,18 +848,18 @@
         <Ymax>800</Ymax>
         <Width>1800</Width>
         <Height>800</Height>
-        <Elements>
-            <Element>
+        <Instances>
+            <Instance>
                 <url>flashswf/backgrounds/elements/灯光.swf</url>
                 <x>964.05</x>
                 <y>412.9</y>
-            </Element>
-            <Element>
+            </Instance>
+            <Instance>
                 <url>flashswf/backgrounds/elements/灯光.swf</url>
                 <x>1440</x>
                 <y>414.85</y>
-            </Element>          
-        </Elements>
+            </Instance>          
+        </Instances>
         <Collision>
             <Point>280,480</Point>
             <Point>410,660</Point>
@@ -998,13 +998,13 @@
         <Ymax>800</Ymax>
         <Width>2120</Width>
         <Height>800</Height>
-        <Elements>
-            <Element>
+        <Instances>
+            <Instance>
                 <url>flashswf/backgrounds/elements/演唱会灯.swf</url>
                 <x>1129.25</x>
                 <y>456.4</y>
-            </Element>
-        </Elements>
+            </Instance>
+        </Instances>
     </Environment>
     <!-- 革命军哨所-->
     <Environment>
@@ -1509,13 +1509,13 @@
         <Ymax>480</Ymax>
         <Width>1770</Width>
         <Height>512</Height>
-         <Elements>
-            <Element>
+         <Instances>
+            <Instance>
                 <url>flashswf/backgrounds/elements/昏暗街头灯光.swf</url>
                 <x>1080.35</x>
                 <y>373.2</y>
-            </Element>
-        </Elements>
+            </Instance>
+        </Instances>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>3</MinIllumination>
     </Environment>
@@ -2235,13 +2235,13 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>0</MaxIllumination>
         <MinIllumination>0</MinIllumination>
-        <Elements>
-            <Element>
+        <Instances>
+            <Instance>
                 <url>flashswf/backgrounds/elements/下水道过道护栏.swf</url>
                 <x>0</x>
                 <y>515</y>
-            </Element>
-        </Elements>
+            </Instance>
+        </Instances>
         <Skybox>
             <url>下水道后景1.swf</url>
             <SpeedRate>4</SpeedRate>

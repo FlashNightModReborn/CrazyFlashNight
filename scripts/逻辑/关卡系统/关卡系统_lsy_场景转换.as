@@ -2,7 +2,7 @@
 
 _root.操控目标表 = [_root.控制目标];
 
-import org.flashNight.arki.stage.*;
+import org.flashNight.arki.scene.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.转场景记录数据 = function(){

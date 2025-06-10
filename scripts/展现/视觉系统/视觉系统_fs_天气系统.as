@@ -166,7 +166,7 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	环境信息.最大光照 = 当前配置.MaxIllumination != undefined ? Number(当前配置.MaxIllumination) : 默认配置.最大光照;
 	环境信息.最小光照 = 当前配置.MinIllumination != undefined ? Number(当前配置.MinIllumination) : 默认配置.最小光照;
 	//背景元素
-	环境信息.背景元素 = 当前配置.Elements ? _root.解析背景元素(_root.配置数据为数组(当前配置.Elements.Element)) : 默认配置.背景元素;
+	环境信息.背景元素 = 当前配置.Instances ? _root.解析背景元素(_root.配置数据为数组(当前配置.Instances.Instance)) : 默认配置.背景元素;
 	//无限过图参数
 	if(当前配置.Door){
 		var 门数据 = _root.配置数据为数组(当前配置.Door);

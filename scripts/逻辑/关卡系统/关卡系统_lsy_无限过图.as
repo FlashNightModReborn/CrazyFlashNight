@@ -2,6 +2,8 @@
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
+import org.flashNight.arki.scene.*;
+
 _root.开启生存模式 = function(模式) {
     _root.当前为战斗地图 = true;
 
@@ -162,38 +164,24 @@ _root.开启生存模式 = function(模式) {
     // 将 '出生地' 设置为不可枚举
     _global.ASSetPropFlags(游戏世界, ["出生地"], 1, false);
 
-    // 放置地图元件
+    // 放置环境地图元件
+	_root.发布消息(SceneManager.getInstance());
+	if(环境信息.背景元素){
+		for(var i = 0; i < 环境信息.背景元素.length; i++){
+			var name = 环境配置.背景元素[i].name ? 环境配置.背景元素[i].name : "bgInstance" + i;
+			SceneManager.getInstance().addInstance(环境信息.背景元素[i], name);
+		}
+	}
+	// 放置关卡地图元件
     var 实例列表 = _root.无限过图实例[_root.无限过图模式关卡计数];
     for (var i = 0; i < 实例列表.length; i++) {
-        var 实例对象;
-        // 优先检测url参数载入外部swf，若无则根据identifier从库中加载元件
-        if (实例列表[i].url) {
-            实例对象 = 游戏世界.createEmptyMovieClip("instance" + i, 游戏世界.getNextHighestDepth());
-            实例对象.loadMovie(实例列表[i].url);
-        } else {
-            实例对象 = 游戏世界.attachMovie(实例列表[i].Identifier, "instance" + i, 游戏世界.getNextHighestDepth());
-        }
-        实例对象._x = 实例列表[i].x;
-        实例对象._y = 实例列表[i].y;
-        实例对象.swapDepths(实例列表[i].y);
-        if (实例列表[i].Parameters) {
-            _root.无限过图解析额外参数(实例对象, 实例列表[i].Parameters);
-        }
+        SceneManager.getInstance().addInstance(实例列表[i], "stageInstance" + i);
     }
 
     // 放置出生点，初始化各个刷怪点的总个数和场上人数
     var 出生点列表 = _root.无限过图出生点[_root.无限过图模式关卡计数];
     for (var i = 0; i < 出生点列表.length; i++) {
-        var 出生点;
-        if (出生点列表[i].Identifier) {
-            出生点 = 游戏世界.attachMovie(出生点列表[i].Identifier, "door" + i, 游戏世界.getNextHighestDepth(), {_x: 出生点列表[i].x, _y: 出生点列表[i].y});
-            出生点.swapDepths(出生点列表[i].y);
-			if (出生点列表[i].Parameters) {
-				_root.无限过图解析额外参数(出生点, 出生点列表[i].Parameters);
-			}
-        } else {
-            出生点 = 游戏世界.createEmptyMovieClip("door" + i, 游戏世界.getNextHighestDepth());
-        }
+		var 出生点 = SceneManager.getInstance().addInstance(出生点列表[i], "door" + i);
         出生点.僵尸型敌人总个数 = 0;
         出生点.僵尸型敌人场上实际人数 = 0;
     }

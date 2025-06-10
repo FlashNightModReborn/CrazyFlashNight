@@ -1,8 +1,10 @@
-﻿/**
+﻿import org.flashNight.gesh.object.ObjectUtil;
+
+/**
 SceneManager.as
 ——————————————————————————————————————————
 */
-class org.flashNight.arki.stage.SceneManager {
+class org.flashNight.arki.scene.SceneManager {
     private static var instance:SceneManager; // 单例引用
 
     public var gameworld:MovieClip;
@@ -35,12 +37,31 @@ class org.flashNight.arki.stage.SceneManager {
         basicInfo = null;
     }
 
-    public function initScene(_gw):Void{
-        // gameworld = _gw;
+    public function initScene(_gw:MovieClip):Void{
+        gameworld = _gw;
     }
 
-    public function initStage(){
 
+    public function addInstance(info:Object, name:String):MovieClip{
+        var inst;
+        // 优先检测url参数载入外部swf，若无则根据identifier从库中加载元件
+        if (info.url != null) {
+            inst = gameworld.createEmptyMovieClip(name, gameworld.getNextHighestDepth());
+            inst.loadMovie(info.url);
+        } else if(info.Identifier != null) {
+            inst = gameworld.attachMovie(info.Identifier, name, gameworld.getNextHighestDepth());
+        }else{
+            inst = gameworld.createEmptyMovieClip(name, gameworld.getNextHighestDepth());
+        }
+        inst._x = info.x;
+        inst._y = info.y;
+        inst.swapDepths(isNaN(info.Depth) ? info.y : info.Depth);
+        if (info.Parameters) ObjectUtil.cloneParameters(inst, info.Parameters);
+        return inst;
+    }
+
+    /*
+    public function initStage(){
         _root.当前为战斗地图 = true;
         _root.d_倒计时显示._visible = false;
         currentWave = 0;
@@ -75,9 +96,9 @@ class org.flashNight.arki.stage.SceneManager {
         // 设置地图尺寸
         var bglist = basicInfo.Background.split("/");
         var url = bglist[bglist.length - 1];
-        var 环境信息 = _root.duplicateOf(_root.天气系统.关卡环境设置[url]);
+        var 环境信息 = ObjectUtil.clone(_root.天气系统.关卡环境设置[url]);
         if (!环境信息) {
-            环境信息 = _root.duplicateOf(_root.天气系统.关卡环境设置.Default);
+            环境信息 = ObjectUtil.clone(_root.天气系统.关卡环境设置.Default);
         }
         //配置关卡环境参数
         if (basicInfo.Environment) {
@@ -294,9 +315,10 @@ class org.flashNight.arki.stage.SceneManager {
         if (!basicInfo.RogueMode) _root.生存模式OBJ.模式部署.总波数 = _root.生存模式OBJ.模式部署.length;
         _root.生存模式进攻();
     }
+    */
     
 
-    public function removeGameWorld:Void(){
+    public function removeGameWorld():Void{
         gameworld.deadbody.layers[0].dispose();
         gameworld.deadbody.layers[2].dispose();
         gameworld.swapDepths(_root.getNextHighestDepth());
