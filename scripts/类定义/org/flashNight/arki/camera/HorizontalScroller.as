@@ -43,7 +43,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
         }
 
         // —— 3) 先执行缩放逻辑（ZoomController），得到 newScale 与 worldOffset ——
-        var zoomResult:Object = ZoomController.updateScale(scrollObj, gameWorld, bgLayer, easeFactor);
+        var zoomResult:Object = ZoomController.updateScale(scrollObj, gameWorld, bgLayer, easeFactor, 1);
         var newScale:Number   = zoomResult.newScale;
         var offsetX:Number    = zoomResult.offsetX;
         var offsetY:Number    = zoomResult.offsetY;
