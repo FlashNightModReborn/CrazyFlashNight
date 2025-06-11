@@ -330,32 +330,20 @@ class org.flashNight.gesh.object.ObjectUtil {
     }
 
     /**
-     * 将对象的自有属性值转换为一个数组。
-     * 该方法会遍历对象的所有可枚举的自有属性（忽略原型链上的属性和内部属性，如 __dictUID），
-     * 并将这些属性的值收集到一个新的数组中。
-     * 属性值的顺序是不保证的，因为它依赖于 for...in 循环的实现。
+     * 检查对象是否为数组。
+     * 若为数组则返回对象本身，若不是数组则将对象包装在一个新数组中返回。如果输入为 null 或非对象，则返回一个空数组。
      *
      * @param obj 要转换的对象。
-     * @return Array 包含对象所有自有属性值的数组。如果输入为 null 或非对象，则返回一个空数组。
+     * @return Array 返回数组。
      */
     public static function toArray(obj:Object):Array {
-        var values:Array = [];
-        // 检查传入的对象是否为 null 或非对象类型，如果是则直接返回空数组
-        if (obj == null || typeof(obj) != "object") {
-            return values;
+        if (obj instanceof Array){
+            return obj; // 是数组
+        }else if (obj != null){
+            return [obj]; // 如果输入不是数组但不为空，则将其作为数组的单个元素返回
+        }else{
+            return []; // 对于未定义或空的输入，返回空数组
         }
-
-        // 使用 for...in 遍历对象的属性
-        for (var key:String in obj) {
-            // 确保只处理对象自身的、非内部的属性
-            if (obj.hasOwnProperty(key) && !isInternalKey(key)) {
-                // 将属性值添加到数组中
-                values.push(obj[key]);
-            }
-        }
-
-        // 返回包含所有值的数组
-        return values;
     }
 
     /**

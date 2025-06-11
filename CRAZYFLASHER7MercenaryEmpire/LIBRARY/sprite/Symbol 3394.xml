@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 3394" itemID="6597607e-00000e5b" lastModified="1715328726">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 3394" itemID="6597607e-00000e5b" lastModified="1749615867">
   <timeline>
     <DOMTimeline name="Symbol 3394">
       <layers>
-        <DOMLayer name="Script Layer" color="#3AC0F4" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#3AC0F4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -229,11 +229,11 @@ _root.全部翻译(this);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#A7C1B2">
+        <DOMLayer name="Layer 8" color="#A7C1B2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3385" centerPoint3DX="40" centerPoint3DY="85.9">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3385" selected="true" centerPoint3DX="40" centerPoint3DY="85.9">
                   <matrix>
                     <Matrix tx="-39.5" ty="41.45"/>
                   </matrix>
@@ -255,7 +255,7 @@ on(release){
       }
       else
       {
-         _root.发布消息(_root.获得翻译("获取对手中..."));
+         //_root.发布消息(_root.获得翻译("获取对手中..."));
          _root.押金 = _parent.押金;
          _root.角斗场奖金 = _parent.奖金;
          _root.竞技场对手请求("#0@" + _parent.敌人等级下限 + "-" + _parent.敌人等级上限 + "%" + _parent.敌人同伴数);

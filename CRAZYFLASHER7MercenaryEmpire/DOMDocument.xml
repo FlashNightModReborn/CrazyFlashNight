@@ -6,7 +6,7 @@
           <DOMFolderItem name="import" itemID="65977cdc-00001d38" isExpanded="true"/>
           <DOMFolderItem name="import/arts" itemID="65981594-00000b2f"/>
           <DOMFolderItem name="import/scripts" itemID="65996a47-00000b1c"/>
-          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13" isExpanded="true"/>
+          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13"/>
           <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac" isExpanded="true"/>
           <DOMFolderItem name="import/弃用关卡地图" itemID="664a1e04-00000cbd"/>
           <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63"/>
@@ -406,8 +406,8 @@
                </SwcItem>
           </DOMCompiledClipItem>
           <DOMBitmapItem name="image/image 153" itemID="65982a73-00000099" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/image/image 153" sourceLastImported="1704471155" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="image/image 153" bitmapDataHRef="M 298 1706436777.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" externalFileCRC32="4262437176" externalFileSize="3830" href="sound/sound18.wav" soundDataHRef="M 2 1704419450.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
-          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" externalFileCRC32="4156556835" externalFileSize="10546" href="sound/sound19.wav" soundDataHRef="M 1 1704196122.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" externalFileSize="3830" href="sound/sound18.wav" soundDataHRef="M 2 1704419450.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" externalFileSize="10546" href="sound/sound19.wav" soundDataHRef="M 1 1704196122.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
           <DOMSoundItem name="sound/sound1928.wav" itemID="6597607b-0000040b" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound1928.wav" sourceLastImported="1704196122" externalFileCRC32="295431564" externalFileSize="23218" href="sound/sound1928.wav" soundDataHRef="M 118 1704196122.dat" format="11kHz 16bit Mono" sampleCount="10463" exportFormat="5" exportBits="7"/>
           <DOMSoundItem name="sound/sound619.wav" itemID="6597607a-0000023f" linkageExportForAS="true" linkageIdentifier="levelup-2.wav" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound619.wav" sourceLastImported="1704196122" externalFileCRC32="234572686" externalFileSize="29034" href="sound/sound619.wav" soundDataHRef="M 14 1704196122.dat" format="11kHz 16bit Mono" sampleCount="13277" exportFormat="5" exportBits="7"/>
           <DOMBitmapItem name="image/旧版基地一览" itemID="6787629a-000018b8" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/image/旧版基地一览.jpg" sourceLastImported="1736931319" externalFileCRC32="3047681187" externalFileSize="70362" originalCompressionType="lossless" quality="50" href="image/旧版基地一览.jpg" bitmapDataHRef="M 120 1704196122.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
@@ -567,15 +567,10 @@
           <Include href="import/UI组件/选关界面.xml" itemID="663b3b17-00000ddd" lastModified="1715157863"/>
           <Include href="import/UI组件/资源箱界面.xml" itemID="684526b9-00000a86" lastModified="1749362422"/>
           <Include href="import/地图库-废城.xml" loadImmediate="false" itemID="659d4d79-00003b1d" lastModified="1749117086"/>
-          <Include href="import/地图库-荒漠.xml" loadImmediate="false" itemID="659d4da6-00003c33" lastModified="1734958817"/>
+          <Include href="import/地图库-荒漠.xml" loadImmediate="false" itemID="659d4da6-00003c33" lastModified="1749615867"/>
           <Include href="import/地图库-禁区.xml" loadImmediate="false" itemID="659d5b51-000067a5" lastModified="1749117086"/>
           <Include href="import/地图库-外部地图.xml" loadImmediate="false" itemID="65c79a79-00000dc4" lastModified="1746164740"/>
           <Include href="import/关卡地图/wuxianguotu_1.xml" itemID="659b414b-00000b2a" lastModified="1704673709"/>
-          <Include href="import/关卡地图/关卡20-1.xml" itemID="65992677-0000185d" lastModified="1704535699"/>
-          <Include href="import/关卡地图/关卡20-2.xml" itemID="65992685-00001865" lastModified="1704535740"/>
-          <Include href="import/关卡地图/关卡20-3.xml" itemID="659926b3-0000186d" lastModified="1704535736"/>
-          <Include href="import/关卡地图/关卡20-4.xml" itemID="659926c6-00001875" lastModified="1704535755"/>
-          <Include href="import/关卡地图/关卡20-5.xml" itemID="659926d2-0000187d" lastModified="1704535768"/>
           <Include href="import/关卡地图/角斗场-1.xml" itemID="6598fff7-000016d7" lastModified="1704525815"/>
           <Include href="import/关卡地图/角斗场-2.xml" itemID="65990000-000016d8" lastModified="1704525824"/>
           <Include href="import/关卡地图/教学关卡.xml" itemID="6598ff36-000016d4" lastModified="1704525622"/>
@@ -789,7 +784,7 @@
           <Include href="sprite/Symbol 3381.xml" loadImmediate="false" itemID="6597607e-00000e56" lastModified="1704196122"/>
           <Include href="sprite/Symbol 3385.xml" loadImmediate="false" itemID="6597607e-00000e58" lastModified="1704196122"/>
           <Include href="sprite/Symbol 3390.xml" loadImmediate="false" itemID="6597607e-00000e59" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 3394.xml" loadImmediate="false" itemID="6597607e-00000e5b" lastModified="1715328726"/>
+          <Include href="sprite/Symbol 3394.xml" loadImmediate="false" itemID="6597607e-00000e5b" lastModified="1749615867"/>
           <Include href="sprite/Symbol 3399.xml" loadImmediate="false" itemID="6597607e-00000e5d" lastModified="1721975063"/>
           <Include href="sprite/Symbol 3439.xml" loadImmediate="false" itemID="6597607e-00000e6d" lastModified="1704196122"/>
           <Include href="sprite/Symbol 3443.xml" loadImmediate="false" itemID="6597607e-00000e70" lastModified="1704196122"/>
@@ -907,6 +902,7 @@
           <Include href="底部UI/底部UI组.xml" loadImmediate="false" itemID="6636575b-0000211d" lastModified="1746452910"/>
           <Include href="底部UI/平板电脑.xml" loadImmediate="false" itemID="6700c0f0-00000a9f" lastModified="1728102640"/>
           <Include href="底部UI/原版4图标备份.xml" loadImmediate="false" itemID="664df9ac-00004b87" lastModified="1716386220"/>
+          <Include href="角斗场选择界面.xml" loadImmediate="false" itemID="68490695-00000498" lastModified="1749616283"/>
           <Include href="全局音量mc.xml" loadImmediate="false" itemID="67ada6a8-00000794" lastModified="1740072967"/>
           <Include href="全屏UI层.xml" loadImmediate="false" itemID="67cea723-000006eb" lastModified="1741596473"/>
           <Include href="鼠标元件/鼠标.xml" loadImmediate="false" itemID="68447b0d-00000b2c" lastModified="1749318532"/>
@@ -918,7 +914,7 @@
           <Include href="无限过图摄像机.xml" loadImmediate="false" itemID="68402519-00001790" lastModified="1749034265"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -2023,7 +2019,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="7" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="14" keyMode="9728">
                                    <elements>
@@ -5080,15 +5076,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11465 5270!11465 5270|11769 5270!11769 5270|11479 5089!11479 5089|11189 4908!11189 4908|10899 4727!10899 4727|10609 4546!10609 4546|10305 4546!10305 4546|10002 4546!10002 4546|9699
- 4546!9699 4546|9395 4546!9395 4546|9685 4727!9685 4727|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|9355 5089!9355 5089|9645 5270!9645 5270|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270
-|9645 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9355 5089|9052 5089!9052 5089|8762 4908!8762 4908|9065 4908!9065 4908|8775 4727!8775 4727|9079 4727!9079 4727|8789 4546!8789 4546|9092 4546!9092 4546|9382 4727!9382
- 4727|9672 4908!9672 4908|9975 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569 5089|10279 4908!10279 4908|9975 4908!9975 4908|9685 4727!9659 5089|9962 5089!9962 5089|9672 4908!9672 4908|9369 4908!9395 4546|9092 4546!8775 4727|8485
- 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472 4727|8762 4908!8472 4727|8775 4727!8789 4546|8485 4546!9052 5089|9342 5270!9369 4908|9659 5089!9935 5451|10239 5451!10239 5451|10542 5451!10542 5451|10845 5451!10845 5451|11149 5451!11149
- 5451|11452 5451!11452 5451|11755 5451!10899 4727|10595 4727!10595 4727|10292 4727!10292 4727|10582 4908!10582 4908|10872 5089!10872 5089|10569 5089!11189 4908|10885 4908!10885 4908|10595 4727!10595 4727|10305 4546!11149 5451|10859 5270
-!10859 5270|11162 5270!11162 5270|11465 5270!11465 5270|11175 5089!11175 5089|10885 4908!10885 4908|10582 4908!10582 4908|10279 4908!10279 4908|9989 4727!9989 4727|9699 4546!10002 4546|10292 4727!10292 4727|9989 4727!9989 4727|9685 4727
-!9949 5270|10252 5270!10252 5270|10555 5270!10555 5270|10859 5270!10239 5451|9949 5270!9962 5089|10265 5089!9962 5089|10252 5270!10252 5270|10542 5451!10569 5089|10859 5270!11162 5270|10872 5089!10872 5089|11175 5089!11175 5089|11479
- 5089!10265 5089|10555 5270!10555 5270|10845 5451!11162 5270|11452 5451"/>
+!11189 4908|10899 4727!10899 4727|10595 4727!10595 4727|10305 4546!10305 4546|10002 4546!10002 4546|10292 4727!10292 4727|10582 4908!10582 4908|10279 4908!10279 4908|9975 4908!9975 4908|10265 5089!10265 5089|10555 5270!10555 5270|10859
+ 5270!10859 5270|11162 5270!11162 5270|11452 5451!11452 5451|11755 5451!11755 5451|11465 5270!11465 5270|11175 5089!11175 5089|11479 5089!11479 5089|11189 4908!11189 4908|10885 4908!10885 4908|10582 4908!10582 4908|10872 5089!10872 5089
+|11175 5089!11175 5089|10885 4908!10885 4908|10595 4727!10595 4727|10292 4727!10292 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9079 4727!9079 4727|8789 4546!8789 4546|8485
+ 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472 4727|8775 4727!8775 4727|8485 4546!9395 4546|9685 4727!9685 4727|9989 4727!10265 5089|9962 5089!9962 5089|9672 4908!9672 4908|9975 4908!9975 4908|9685 4727!9685 4727|9382 4727!9382 4727
+|9672 4908!9672 4908|9369 4908!9369 4908|9065 4908!9065 4908|8775 4727!8775 4727|9079 4727!9079 4727|9369 4908!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|10252 5270!10252 5270|10555 5270!10555 5270|10845 5451!10845 5451|11149 5451
+!11149 5451|10859 5270!10859 5270|10569 5089!10569 5089|10872 5089!8472 4727|8762 4908!8762 4908|9065 4908!9065 4908|9355 5089!9355 5089|9052 5089!9052 5089|9342 5270!9342 5270|9645 5270!9645 5270|9935 5451!9935 5451|10239 5451!10239
+ 5451|9949 5270!9949 5270|10252 5270!10252 5270|10542 5451!10542 5451|10845 5451!9659 5089|9355 5089!9355 5089|9645 5270!9645 5270|9949 5270!9935 5451|9633 5451!9633 5451|9342 5270!8789 4546|9092 4546!9052 5089|8762 4908!11755 5451|12059
+ 5451!12059 5451|11769 5270!11769 5270|11479 5089!10872 5089|11162 5270!11162 5270|11465 5270!11465 5270|11769 5270!10899 4727|10609 4546!10609 4546|10305 4546!10569 5089|10279 4908!10279 4908|9989 4727!10239 5451|10542 5451!10265 5089
+|10569 5089!11149 5451|11452 5451!9949 5270|9659 5089!10002 4546|9699 4546"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5531,15 +5527,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!10229 5438|9925 5438!9925 5438|9635 5257!9635 5257|9939 5257!9939 5257|10242 5257!10242 5257|10532 5438!10532 5438|10229 5438!10229 5438|9939 5257!9939 5257|9649 5076!9649 5076|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9372 4714
-|9675 4714!9675 4714|9385 4533!9385 4533|9689 4533!9689 4533|9979 4714!9979 4714|9675 4714!9385 4533|9082 4533!9082 4533|8779 4533!8779 4533|8475 4533!8475 4533|8172 4533!8172 4533|8462 4714!8462 4714|8765 4714!8765 4714|9069 4714!9069
- 4714|9359 4895!9359 4895|9055 4895!9055 4895|9345 5076!9345 5076|9042 5076!9042 5076|8752 4895!8752 4895|9055 4895!9082 4533|9372 4714!9372 4714|9069 4714!9069 4714|8779 4533!8462 4714|8752 4895!9055 4895|8765 4714!8765 4714|8475 4533
-!9345 5076|9635 5257!9635 5257|9332 5257!9332 5257|9042 5076!9332 5257|9623 5438!9623 5438|9925 5438!9345 5076|9649 5076!9649 5076|9952 5076!9952 5076|10242 5257!10532 5438|10835 5438!10835 5438|11139 5438!11139 5438|11442 5438!11442
- 5438|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11455 5257!11455 5257|11165 5076!11165 5076|11469 5076!11469 5076|11759 5257!11442 5438|11152 5257!11152 5257|11455 5257!11455 5257|11745 5438!10889 4714|11179 4895
-!11179 4895|10875 4895!10875 4895|10585 4714!10585 4714|10889 4714!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|9992 4533!9992 4533|9689 4533!10875 4895|10572 4895!10572 4895|10862 5076!10862 5076|10559 5076!10559 5076|10255
- 5076!10255 5076|9952 5076!9952 5076|9662 4895!9662 4895|9965 4895!9965 4895|10255 5076!10255 5076|10545 5257!10545 5257|10835 5438!9992 4533|10282 4714!10282 4714|10572 4895!10572 4895|10269 4895!10269 4895|9979 4714!9979 4714|10282
- 4714!10282 4714|10585 4714!10585 4714|10295 4533!9965 4895|10269 4895!10269 4895|10559 5076!10242 5257|10545 5257!10545 5257|10849 5257!10849 5257|10559 5076!11139 5438|10849 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076
-|11165 5076!11165 5076|10875 4895!11469 5076|11179 4895!9675 4714|9965 4895"/>
+!9649 5076|9345 5076!9345 5076|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076|9952 5076!9952 5076|9662 4895!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9662 4895|9965 4895!9965 4895|9675
+ 4714!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9385 4533|9675 4714!9675 4714|9372 4714!9385 4533|9082 4533!9082 4533|9372 4714!9649 5076|9359 4895!9359 4895|9055 4895!9055 4895|8765 4714!8765 4714|9069 4714!9069 4714
+|8779 4533!8779 4533|8475 4533!8475 4533|8765 4714!8475 4533|8172 4533!8172 4533|8462 4714!8462 4714|8752 4895!8752 4895|9055 4895!9055 4895|9345 5076!8462 4714|8765 4714!9623 5438|9925 5438!9925 5438|9635 5257!9635 5257|9332 5257!9332
+ 5257|9623 5438!9332 5257|9042 5076!9042 5076|8752 4895!9345 5076|9042 5076!9082 4533|8779 4533!9952 5076|10255 5076!10255 5076|10559 5076!10559 5076|10862 5076!10862 5076|10572 4895!10572 4895|10875 4895!10875 4895|10585 4714!10585 4714
+|10295 4533!10295 4533|9992 4533!9992 4533|10282 4714!10282 4714|10585 4714!10585 4714|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|11455 5257!11455 5257|11745 5438!11745 5438|12049 5438!12049
+ 5438|11759 5257!11455 5257|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!10889 4714|10599 4533!10599 4533|10295 4533!11179 4895|10875 4895!10875 4895|11165 5076!11165 5076|10862 5076!10862 5076|11152 5257!11152 5257|10849 5257
+!10849 5257|11139 5438!11139 5438|11442 5438!9965 4895|10269 4895!10269 4895|9979 4714!9979 4714|10282 4714!10282 4714|10572 4895!9952 5076|10242 5257!10242 5257|10532 5438!10532 5438|10835 5438!10835 5438|10545 5257!10545 5257|10255
+ 5076!10255 5076|9965 4895!9925 5438|10229 5438!10229 5438|9939 5257!9939 5257|10242 5257!10242 5257|10545 5257!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10269 4895!10835 5438|11139 5438!10572 4895|10269 4895!10532 5438|10229
+ 5438!11165 5076|11469 5076!11455 5257|11165 5076!9992 4533|9689 4533"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -6054,10 +6050,10 @@ on (rollOut) {
                                              <edges>
                                                   <Edge fillStyle0="2" edges="
 !17466 11519.5|17440 11520!17440 11520|20104 11520!20104 11520[20480 11520 20480 11241!20480 11241|20480 278!20480 278[20480 0 20104 0!20104 0|17571 0"/>
-                                                  <Edge fillStyle0="1" edges="
-!17571 0|376 0!376 0[0 0 0 278!0 278|0 11241!0 11241[0 11520 376 11520!376 11520|17466 11519.5"/>
-                                                  <Edge fillStyle0="1" fillStyle1="2" edges="
-!17466 11519.5|17571 11519!17571 11519|17571 0"/>
+                                                  <Edge fillStyle0="2" fillStyle1="1" edges="
+!17571 0|17571 11519!17571 11519|17466 11519.5"/>
+                                                  <Edge fillStyle1="1" edges="
+!17466 11519.5|376 11520!376 11520[0 11520 0 11241!0 11241|0 278!0 278[0 0 376 0!376 0|17571 0"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>
@@ -6836,7 +6832,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="限定地图UI" color="#F0F70C" parentLayerIndex="21" autoNamed="false">
+                    <DOMLayer name="限定地图UI" color="#F0F70C" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
@@ -6849,280 +6845,10 @@ on (rollOut) {
                               </DOMFrame>
                               <DOMFrame index="185" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="502.15" centerPoint3DY="422.45">
-                                             <matrix>
-                                                  <Matrix tx="462.85" ty="409.95"/>
-                                             </matrix>
+                                        <DOMSymbolInstance libraryItemName="角斗场选择界面" selected="true" centerPoint3DX="430.85" centerPoint3DY="216.95">
                                              <transformationPoint>
-                                                  <Point/>
+                                                  <Point x="430.6" y="216.7"/>
                                              </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   stop();
-   _root.全部翻译(this);
-}
-on(release){
-   gotoAndStop(338);
-   _root.发布请求 = false;
-   _root.决斗场进入中 = false;
-   _root.淡出动画.淡出跳转帧("关卡地图");
-}
-on(press){
-   this.gotoAndStop(3);
-}
-on(rollOver){
-   this.gotoAndStop(2);
-}
-on(rollOut){
-   this.gotoAndStop(1);
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMDynamicText fontRenderingMode="device" width="718.95" height="33" isSelectable="false">
-                                             <matrix>
-                                                  <Matrix tx="136.85" ty="77.25"/>
-                                             </matrix>
-                                             <textRuns>
-                                                  <DOMTextRun>
-                                                       <characters>DEATH MATCH角斗场</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                             </textRuns>
-                                        </DOMDynamicText>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="304.8" centerPoint3DY="244.05">
-                                             <matrix>
-                                                  <Matrix tx="221.3" ty="183.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 1;
-   敌人等级上限 = 5;
-   敌人同伴数 = 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="490.45" centerPoint3DY="244.05">
-                                             <matrix>
-                                                  <Matrix tx="406.95" ty="183.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 5;
-   敌人等级上限 = 10;
-   敌人同伴数 = random(4) + 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="676.1" centerPoint3DY="244.05">
-                                             <matrix>
-                                                  <Matrix tx="592.6" ty="183.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 10;
-   敌人等级上限 = 15;
-   敌人同伴数 = random(4) + 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="861.75" centerPoint3DY="244.05">
-                                             <matrix>
-                                                  <Matrix tx="778.25" ty="183.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 10;
-   敌人等级上限 = 15;
-   敌人同伴数 = random(4) + 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="304.8" centerPoint3DY="382.05">
-                                             <matrix>
-                                                  <Matrix tx="221.3" ty="321.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 15;
-   敌人等级上限 = 20;
-   敌人同伴数 = random(4) + 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="490.45" centerPoint3DY="382.05">
-                                             <matrix>
-                                                  <Matrix tx="406.95" ty="321.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 15;
-   敌人等级上限 = 20;
-   敌人同伴数 = random(4) + 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="676.1" centerPoint3DY="382.05">
-                                             <matrix>
-                                                  <Matrix tx="592.6" ty="321.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 20;
-   敌人等级上限 = 40;
-   敌人同伴数 = random(4) + 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1250;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="861.75" centerPoint3DY="382.05">
-                                             <matrix>
-                                                  <Matrix tx="778.25" ty="321.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   敌人等级下限 = 40;
-   敌人等级上限 = 60;
-   敌人同伴数 = random(4) + 1;
-   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
-   当前关卡名 = "DEATH MATCH角斗场";
-   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
-   奖金 = 敌人同伴数 * 敌人等级下限 * 1250;
-   淡出跳转帧 = "角斗场-2";
-   关卡开放条件 = 1;
-   敌人同伴数据 = [];
-   i = 0;
-   while(i < 敌人同伴数)
-   {
-      敌人同伴数据[i] = [];
-      i++;
-   }
-}
-]]></script>
-                                             </Actionscript>
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>

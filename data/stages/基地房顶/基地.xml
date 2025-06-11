@@ -39,7 +39,7 @@
         <Reward id="9">
             <Name>小型液晶屏</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>4</QuantityMax>
+            <QuantityMax>1</QuantityMax>
         </Reward>
         <Reward id="10">
             <Name>军阀前线基地通关证明</Name>
@@ -233,7 +233,7 @@
                         <Gender>男</Gender>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>兵种55</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -241,7 +241,7 @@
                         <y>529</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种55</Type>
+                        <Type>兵种57</Type>
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
                         <Level>17</Level>
@@ -388,11 +388,11 @@
                         <LegArmor>TheGirl下装-NPC</LegArmor>
                         <HandGear>TheGirl手-NPC</HandGear>
                         <FootGear>TheGirl脚-NPC</FootGear>
-                        <NeckGear>BPK战队队长项链</NeckGear>
+                        <NeckGear>战斗女仆项链</NeckGear>
                         <Gender>女</Gender>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>兵种55</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -400,7 +400,7 @@
                         <y>305</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种55</Type>
+                        <Type>兵种57</Type>
                         <Interval>1000</Interval>
                         <Quantity>15</Quantity>
                         <Level>17</Level>
@@ -531,7 +531,7 @@
                         <Gender>男</Gender>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>兵种55</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -539,7 +539,7 @@
                         <y>529</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种55</Type>
+                        <Type>兵种57</Type>
                         <Interval>1000</Interval>
                         <Quantity>15</Quantity>
                         <Level>17</Level>
@@ -612,11 +612,11 @@
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种55</Type>
+                        <Type>兵种56</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>17</Level>
-                        <SpawnIndex>0</SpawnIndex>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

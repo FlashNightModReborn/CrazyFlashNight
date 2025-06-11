@@ -1,0 +1,290 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="角斗场选择界面" itemID="68490695-00000498" lastModified="1749616283" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="角斗场选择界面">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" selected="true" centerPoint3DX="502.15" centerPoint3DY="422.45">
+                  <matrix>
+                    <Matrix tx="462.85" ty="409.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   _root.发布请求 = false;
+   _root.决斗场进入中 = false;
+   _root.淡出动画.淡出跳转帧("关卡地图");
+}
+on(press){
+   this.gotoAndStop(3);
+}
+on(rollOver){
+   this.gotoAndStop(2);
+}
+on(rollOut){
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMDynamicText fontRenderingMode="device" width="718.95" height="33" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="136.85" ty="77.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>DEATH MATCH角斗场</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="25" bitmapSize="500" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="304.8" centerPoint3DY="244.05">
+                  <matrix>
+                    <Matrix tx="221.3" ty="183.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 1;
+   敌人等级上限 = 5;
+   敌人同伴数 = 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="490.45" centerPoint3DY="244.05">
+                  <matrix>
+                    <Matrix tx="406.95" ty="183.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 5;
+   敌人等级上限 = 10;
+   敌人同伴数 = random(4) + 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="676.1" centerPoint3DY="244.05">
+                  <matrix>
+                    <Matrix tx="592.6" ty="183.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 10;
+   敌人等级上限 = 15;
+   敌人同伴数 = random(4) + 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="861.75" centerPoint3DY="244.05">
+                  <matrix>
+                    <Matrix tx="778.25" ty="183.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 10;
+   敌人等级上限 = 15;
+   敌人同伴数 = random(4) + 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="304.8" centerPoint3DY="382.05">
+                  <matrix>
+                    <Matrix tx="221.3" ty="321.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 15;
+   敌人等级上限 = 20;
+   敌人同伴数 = random(4) + 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="490.45" centerPoint3DY="382.05">
+                  <matrix>
+                    <Matrix tx="406.95" ty="321.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 15;
+   敌人等级上限 = 20;
+   敌人同伴数 = random(4) + 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1000;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="676.1" centerPoint3DY="382.05">
+                  <matrix>
+                    <Matrix tx="592.6" ty="321.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 20;
+   敌人等级上限 = 40;
+   敌人同伴数 = random(4) + 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1250;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3394" centerPoint3DX="861.75" centerPoint3DY="382.05">
+                  <matrix>
+                    <Matrix tx="778.25" ty="321.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   敌人等级下限 = 40;
+   敌人等级上限 = 60;
+   敌人同伴数 = random(4) + 1;
+   简介 = _root.获得翻译("挑战对手数量：") + 敌人同伴数 + "  " + _root.获得翻译("对手等级：") + 敌人等级下限 + "—" + 敌人等级上限 + "";
+   当前关卡名 = "DEATH MATCH角斗场";
+   多语言当前关卡名 = _root.获得翻译("DEATH MATCH角斗场");
+   奖金 = 敌人同伴数 * 敌人等级下限 * 1250;
+   淡出跳转帧 = "角斗场-2";
+   关卡开放条件 = 1;
+   敌人同伴数据 = [];
+   i = 0;
+   while(i < 敌人同伴数)
+   {
+      敌人同伴数据[i] = [];
+      i++;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

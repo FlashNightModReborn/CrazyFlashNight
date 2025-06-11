@@ -13,6 +13,30 @@
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
+    <Environment>
+        <BackgroundURL>情节1</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1688</Xmax>
+        <Ymin>274</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1688</Width>
+        <Height>640</Height>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+    </Environment>
+    <Environment>
+        <BackgroundURL>情节2</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>575</Xmax>
+        <Ymin>223</Ymin>
+        <Ymax>428</Ymax>
+        <Width>1024</Width>
+        <Height>512</Height>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+    </Environment>
     <!-- AVP-->
     <Environment>
         <BackgroundURL>avp1_1_BG.swf</BackgroundURL>
@@ -442,8 +466,18 @@
         <Xmin>330</Xmin>
         <Xmax>1320</Xmax>
         <Ymin>242</Ymin>
-        <Ymax>740</Ymax>
+        <Ymax>640</Ymax>
         <Width>1830</Width>
+        <Height>640</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>jdc_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1688</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1688</Width>
         <Height>640</Height>
     </Environment>
     <!-- 郊区-->

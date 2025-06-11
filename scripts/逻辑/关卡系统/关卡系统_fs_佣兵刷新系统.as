@@ -644,9 +644,9 @@ _root.更新重用限制 = function()
 // };
 _root.清除佣兵库回调 = function()
 {
-	_root.佣兵请求成功回调 = _root.doNothing();
-	_root.佣兵请求失败回调 = _root.doNothing();
-	_root.佣兵请求中回调 = _root.doNothing();
+	_root.佣兵请求成功回调 = null;
+	_root.佣兵请求失败回调 = null;
+	_root.佣兵请求中回调 = null;
 };
 _root.佣兵请求成功回调 = function()
 {
