@@ -13,6 +13,10 @@ import org.flashNight.arki.camera.ParallaxBackground;
  *  3. 修正：地平线高度在缩放时的计算错误
  */
 class org.flashNight.arki.camera.HorizontalScroller {
+
+    public static var cameraZoomToggle:Boolean = false;
+    public static var basicZoomScale:Number = 1;
+
     /**
      * 等价于原来 _root.横版卷屏 的实现逻辑，但将各块功能拆分到子组件里。
      *
@@ -43,10 +47,20 @@ class org.flashNight.arki.camera.HorizontalScroller {
         }
 
         // —— 3) 先执行缩放逻辑（ZoomController），得到 newScale 与 worldOffset ——
-        var zoomResult:Object = ZoomController.updateScale(scrollObj, gameWorld, bgLayer, easeFactor, 1);
-        var newScale:Number   = zoomResult.newScale;
-        var offsetX:Number    = zoomResult.offsetX;
-        var offsetY:Number    = zoomResult.offsetY;
+        if(_root.cameraZoomToggle) {
+            var zoomResult:Object = ZoomController.updateScale(scrollObj, gameWorld, bgLayer, easeFactor, _root.basicZoomScale);
+            var newScale:Number   = zoomResult.newScale;
+            var offsetX:Number    = zoomResult.offsetX;
+            var offsetY:Number    = zoomResult.offsetY;
+        }else {
+            var newScale:Number = _root.basicZoomScale;
+            var offset:Object = ZoomController.applyFixedScale(
+                                scrollObj, gameWorld, bgLayer, newScale);
+
+            var offsetX:Number = offset.offsetX;
+            var offsetY:Number = offset.offsetY;
+        }
+
 
         // —— 4) 根据缩放后的背景尺寸与舞台尺寸，计算滚动边界（ScrollBounds） ——
         var stageWidth:Number  = Stage.width;

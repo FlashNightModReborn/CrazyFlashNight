@@ -618,4 +618,37 @@ class org.flashNight.arki.camera.ZoomController {
         
         return (ZOOM_BASE - REFERENCE_ZOOM_MULTIPLIER) / ls;
     }
+
+    public static function applyFixedScale(
+            scrollObj:MovieClip,
+            gameWorld:MovieClip,
+            bgLayer:MovieClip,
+            newScale:Number):Object
+    {
+        // ① 若缩放根本没变，直接返回零补偿
+        var oldScale:Number = lastScale;
+        if (oldScale == undefined) oldScale = newScale;  // 首帧
+        if (Math.abs(newScale - oldScale) < SCALE_CHANGE_THRESHOLD) {
+            lastScale = newScale;   // 同步内部状态
+            return { offsetX:0, offsetY:0 };
+        }
+
+        // ② 记录缩放前的全局坐标
+        var pre:Object = {x:0, y:0};
+        scrollObj.localToGlobal(pre);
+
+        // ③ 应用缩放
+        var pct:Number = newScale * 100;
+        gameWorld._xscale = gameWorld._yscale = pct;
+        bgLayer._xscale   = bgLayer._yscale   = pct;
+
+        // ④ 记录缩放后的全局坐标
+        var post:Object = {x:0, y:0};
+        scrollObj.localToGlobal(post);
+
+        // ⑤ 计算补偿并同步内部状态
+        lastScale = newScale;
+        return { offsetX: pre.x - post.x, offsetY: pre.y - post.y };
+    }
+
 }

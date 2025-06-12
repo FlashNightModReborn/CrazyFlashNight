@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1749689728" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1749702854" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="系统UI" currentFrame="13">
       <layers>
@@ -1345,21 +1345,7 @@ on(rollOut){
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
-              <elements>
-                <DOMDynamicText fontRenderingMode="device" width="42.95" height="16.45" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="136" ty="59.55"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>低</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -1387,21 +1373,7 @@ on(rollOut){
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
-              <elements>
-                <DOMDynamicText fontRenderingMode="device" width="42.95" height="16.45" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="42" ty="60.55"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>中 </characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -1461,7 +1433,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   控制参数 = "血腥开关";
+   控制参数 = "cameraZoomToggle";
    打钩值 = true;
    无钩值 = false;
 }
@@ -1494,7 +1466,7 @@ onClipEvent(mouseUp){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>血腥开关</characters>
+                      <characters>画面运镜缩放开关</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -2136,7 +2108,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#F4D38B" current="true" isSelected="true">
+        <DOMLayer name="Layer 45" color="#F4D38B">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2221,7 +2193,60 @@ onClipEvent(mouseUp){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="26" keyMode="9728">
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 938" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="15" ty="69.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" name="zoomMC" centerPoint3DX="142.9" centerPoint3DY="77.3">
+                  <matrix>
+                    <Matrix a="0.73883056640625" tx="40" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/volBtn" name="zoomBtn" symbolType="button">
+                  <matrix>
+                    <Matrix a="-1" tx="75" ty="76.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.zoomMC.onEnterFrame = function(){
+		var xmouse = this._xmouse;
+		var scale = (xmouse - 32.5) / 1.5;
+		scale -= scale % 10;
+		if(scale <= 0) scale = 0;
+		if(scale > 100) scale = 100;
+		zoomBtn._x = scale * 1.5 + 45;
+		_root.basicZoomScale = 0.5 + scale / 100 * 2.5;
+	}
+}
+on(release, releaseOutside){
+	delete this.zoomMC.onEnterFrame;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2350,27 +2375,7 @@ onClipEvent(mouseUp){
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="131.4" centerPoint3DY="80.95">
-                  <matrix>
-                    <Matrix tx="118.95" ty="68.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   控制参数 = "_quality";
-   打钩值 = "LOW";
-   无钩值 = "MEDIUM";
-}
-onClipEvent(mouseUp){
-   刷新();
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -2739,27 +2744,7 @@ on (rollOut) {
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="37.4" centerPoint3DY="81.7">
-                  <matrix>
-                    <Matrix tx="24.95" ty="69.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   控制参数 = "_quality";
-   打钩值 = "MEDIUM";
-   无钩值 = "LOW";
-}
-onClipEvent(mouseUp){
-   刷新();
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -2873,7 +2858,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#97ED8A">
+        <DOMLayer name="Layer 53" color="#97ED8A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2987,7 +2972,39 @@ on(rollOut){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>画面质量：</characters>
+                      <characters>画面缩放：</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="223.7" height="15.55" isSelectable="false" variableName="_root.basicZoomScale">
+                  <matrix>
+                    <Matrix tx="65.55" ty="41.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="223.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="83.7" ty="41.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>倍</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
