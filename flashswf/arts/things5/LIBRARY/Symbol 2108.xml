@@ -25,14 +25,16 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!3867 123[3962 54 4071 13!4071 13[4424 64 4607 260!4607 260[4611 250 4621 254!4621 254[4755 176 4889 191!4889 191[5023 206 5122 535!5122 535[3319 2084 3751 4260"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!3751 4260[3200 2400 4761 563!4761 563[4895 299 4279 359"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!4279 359|4249 347"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!4249 347[4412 222 3867 123"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!3867 123[2969 684 2603 1851"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!2603 1851[2167 3202 2431 5361!2431 5361[2690 4981 3199 5206!3199 5206[3698 5428 4115 5374!4115 5374[4069 5276 4041 5196"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!4041 5196[3852 4705 3751 4260!4279 359|4216 371!4216 371[4234 354 4249 347"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4607 260[4611 250 4621 254!4621 254[4755 176 4889 191!4889 191[5023 206 5122 535!5122 535[3319 2084 3751 4260"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3751 4260[3852 4705 4041 5196"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4041 5196[4069 5276 4115 5374!4115 5374[3698 5428 3199 5206!3199 5206[2690 4981 2431 5361!2431 5361[2167 3202 2603 1851"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2603 1851[2969 684 3867 123"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!3867 123[4412 222 4249 347"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!4249 347|4279 359"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!4279 359[4895 299 4761 563!4761 563[3200 2400 3751 4260"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!4607 260[4485 308 4279 359"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!4279 359|4216 371!4216 371[4234 354 4249 347"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!3867 123[3962 54 4071 13!4071 13[4424 64 4607 260"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!4041 5196[3656 5168 3225 4983!3225 4983[2782 4794 2561 5014!2561 5014[2267 3681 2603 1851"/>
                   </edges>
                 </DOMShape>

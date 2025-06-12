@@ -364,7 +364,7 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 		物品栏界面.材料图标列表[i] = 物品图标;
 		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料列表[i]);
 		物品图标.itemIcon.RollOver = function(){
-			_root.物品图标注释(name,value);
+			_root.物品图标注释(this.name, this.value);
 			if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle) _root.鼠标.gotoAndStop("手型准备抓取");
 		}
 		物品图标.itemIcon.Press = function(){

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-重型改造僵尸" itemID="67e614f3-000008c5" linkageExportForAS="true" linkageIdentifier="敌人-重型改造僵尸" lastModified="1747391449">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-重型改造僵尸" itemID="67e614f3-000008c5" linkageExportForAS="true" linkageIdentifier="敌人-重型改造僵尸" lastModified="1749702009">
   <timeline>
-    <DOMTimeline name="敌人-重型改造僵尸">
+    <DOMTimeline name="敌人-重型改造僵尸" currentFrame="12">
       <layers>
         <DOMLayer name="Labels Layer" color="#256DFA">
           <frames>
@@ -40,10 +40,7 @@
             <DOMFrame index="72" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="81" name="被击" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="82" duration="7" keyMode="9728">
+            <DOMFrame index="81" duration="8" name="被击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="89" duration="9" name="击倒" labelType="name" keyMode="9728">
@@ -69,7 +66,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#B0BFC6" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#B0BFC6">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -287,7 +284,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F7931C">
+        <DOMLayer name="Layer 10" color="#F7931C" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

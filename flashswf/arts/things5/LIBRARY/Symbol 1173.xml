@@ -61,26 +61,24 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!3958 3370|3965 3322!3965 3322[4046 2761 3952 2369!3952 2369[3854 1959 3731 1738!3731 1738[3532 1377 3443 736"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!3965 3322[4046 2761 3952 2369!3952 2369[3854 1959 3731 1738!3731 1738[3532 1377 3443 736"/>
                     <Edge fillStyle0="1" edges="!3443 736[3425 542 3131 316!3131 316[2638 -56 1901 60!1901 60[906 356 849 966"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!849 966[857 1870 268 2468!268 2468[106 2569 57 2772!57 2772[28 2887 37 3037!37 3037|42 3107!42 3107[76 3432 117 3580"/>
-                    <Edge fillStyle0="5" strokeStyle="1" edges="!117 3580[88 3591 82 3672"/>
+                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="!117 3580[134 3644 153 3675"/>
+                    <Edge fillStyle0="2" fillStyle1="5" edges="!153 3675|82 3672"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="!82 3672|82 3675"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="!82 3675[73 3800 118 4091!118 4091[444 4450 1234 4552!1234 4552[2349 4694 3217 4412!3217 4412[4098 4106 4059 3736!4059 3736[4065 3446 3994 3351"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!3994 3351|3992 3348"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!82 3675|153 3675"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!153 3675[459 4008 1545 4101!1545 4101[3490 4190 3958 3370"/>
+                    <Edge fillStyle1="2" edges="!3958 3370|3992 3348"/>
                     <Edge strokeStyle="1" edges="!3992 3348|3965 3322"/>
                     <Edge fillStyle0="3" fillStyle1="2" edges="!3994 3351|3958 3370"/>
-                    <Edge fillStyle1="2" edges="!3958 3370|3992 3348"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!3958 3370|3965 3322"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3994 3351|3992 3348"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!82 3675[73 3800 118 4091!118 4091[444 4450 1234 4552!1234 4552[2349 4694 3217 4412!3217 4412[4098 4106 4059 3736!4059 3736[4065 3446 3994 3351"/>
                     <Edge fillStyle0="4" fillStyle1="1" edges="!274 2595[161 2685 135 2794!135 2794[109 2903 169 3029!169 3029[290 3282 879 3355!879 3355[2153 3568 3032 3254!3032 3254[3373 3120 3237 2682!3237 2682|3124 2316!3124 2316[3022 1890 2727 2053!2727 2053[2332 2190 1800 2148!1800 2148[1318
  2179 964 1952!964 1952[810 1879 611 2219!611 2219[498 2413 274 2595"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="
-!82 3675|153 3675"/>
-                    <Edge fillStyle0="2" fillStyle1="5" edges="
-!153 3675|82 3672"/>
-                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="
-!117 3580[134 3644 153 3675"/>
-                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
-!153 3675[459 4008 1545 4101!1545 4101[3490 4190 3958 3370"/>
+                    <Edge fillStyle0="5" strokeStyle="1" edges="
+!117 3580[88 3591 82 3672"/>
                   </edges>
                 </DOMShape>
               </elements>

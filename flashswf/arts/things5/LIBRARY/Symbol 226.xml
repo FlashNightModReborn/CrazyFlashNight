@@ -1,21 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 226" itemID="6577efbc-000002ec" lastModified="1702098593">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 226" itemID="6577efbc-000002ec" lastModified="1749702039">
   <timeline>
-    <DOMTimeline name="Symbol 226">
+    <DOMTimeline name="Symbol 226" currentFrame="19">
       <layers>
         <DOMLayer name="Labels Layer" color="#E0806E">
           <frames>
-            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="10" name="a0" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="13" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="14" name="a1" labelType="name" keyMode="9728">
+            <DOMFrame index="10" name="a1" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9E9FF6">
+        <DOMLayer name="Script Layer" color="#9E9FF6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -27,10 +24,10 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="14" keyMode="9728">
+            <DOMFrame index="10" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" keyMode="9728">
+            <DOMFrame index="19" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
@@ -41,9 +38,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#67F285">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 219" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 219" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.314422607421875" b="0.50146484375" c="-0.50146484375" d="0.314422607421875" tx="12" ty="-7"/>
                   </matrix>
@@ -53,7 +50,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 219" symbolType="graphic" loop="loop">
                   <matrix>
@@ -69,9 +66,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 4" color="#F550B6">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 218" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 218" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.308197021484375" b="0.505294799804688" c="-0.505294799804688" d="0.308197021484375" tx="78.9" ty="36"/>
                   </matrix>
@@ -81,7 +78,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 218" symbolType="graphic" loop="loop">
                   <matrix>
@@ -97,9 +94,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 5" color="#F457C5">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 217" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 217" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.019866943359375" b="0.592437744140625" c="-0.592437744140625" d="-0.019866943359375" tx="155.65" ty="32.05"/>
                   </matrix>
@@ -109,7 +106,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 217" symbolType="graphic" loop="loop">
                   <matrix>
@@ -125,9 +122,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 6" color="#7DB7E9">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 216" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 216" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.487686157226563" b="0.338287353515625" c="-0.338287353515625" d="0.487686157226563" tx="139.65" ty="-15.1"/>
                   </matrix>
@@ -137,7 +134,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 216" symbolType="graphic" loop="loop">
                   <matrix>
@@ -153,9 +150,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 7" color="#C34C72">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 215" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 215" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.522705078125" b="0.281234741210938" c="-0.281234741210938" d="0.522705078125" tx="110.75" ty="-26.15"/>
                   </matrix>
@@ -165,7 +162,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 215" symbolType="graphic" loop="loop">
                   <matrix>
@@ -181,9 +178,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 8" color="#FE0599">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 214" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 214" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.522705078125" b="0.281234741210938" c="-0.281234741210938" d="0.522705078125" tx="107.6" ty="-0.2"/>
                   </matrix>
@@ -193,7 +190,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 214" symbolType="graphic" loop="loop">
                   <matrix>
@@ -209,9 +206,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 9" color="#3AD770">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 213" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 213" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.522705078125" b="0.281234741210938" c="-0.281234741210938" d="0.522705078125" tx="92.2" ty="28.3"/>
                   </matrix>
@@ -221,7 +218,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 213" symbolType="graphic" loop="loop">
                   <matrix>
@@ -237,9 +234,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 10" color="#E9EBF4">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 212" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 212" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.59442138671875" d="0.59442138671875" tx="123.15" ty="171"/>
                   </matrix>
@@ -249,7 +246,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 212" symbolType="graphic" loop="loop">
                   <matrix>
@@ -265,9 +262,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 11" color="#F49EC7">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 211" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 211" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.587417602539063" b="-0.0896759033203125" c="0.0896759033203125" d="0.587417602539063" tx="105.75" ty="144.75"/>
                   </matrix>
@@ -277,7 +274,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 211" symbolType="graphic" loop="loop">
                   <matrix>
@@ -293,9 +290,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 12" color="#D4C212">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 210" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 210" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.583740234375" b="0.111190795898438" c="-0.111190795898438" d="0.583740234375" tx="89.8" ty="87.2"/>
                   </matrix>
@@ -305,7 +302,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 210" symbolType="graphic" loop="loop">
                   <matrix>
@@ -321,9 +318,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 13" color="#99FCB6">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 209" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 209" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.524887084960938" b="0.27716064453125" c="-0.27716064453125" d="0.524887084960938" tx="80.75" ty="53.25"/>
                   </matrix>
@@ -333,7 +330,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 209" symbolType="graphic" loop="loop">
                   <matrix>
@@ -349,9 +346,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 14" color="#38F5C4">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 208" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 208" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.59442138671875" d="0.59442138671875" tx="49" ty="146.35"/>
                   </matrix>
@@ -361,7 +358,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 208" symbolType="graphic" loop="loop">
                   <matrix>
@@ -377,9 +374,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 15" color="#AF6BB2">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 207" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 207" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.584747314453125" b="0.102554321289063" c="-0.102554321289063" d="0.584747314453125" tx="51.2" ty="114.1"/>
                   </matrix>
@@ -389,7 +386,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 207" symbolType="graphic" loop="loop">
                   <matrix>
@@ -405,9 +402,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 16" color="#7CF61B">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 206" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 206" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.593536376953125" b="-0.0105438232421875" c="0.0105438232421875" d="0.593536376953125" tx="50.15" ty="82.45"/>
                   </matrix>
@@ -417,7 +414,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 206" symbolType="graphic" loop="loop">
                   <matrix>
@@ -433,9 +430,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 17" color="#7481B4">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 205" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 205" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.5487060546875" b="0.221542358398438" c="-0.221542358398438" d="0.5487060546875" tx="-62.4" ty="-61.3"/>
                   </matrix>
@@ -445,7 +442,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 205" symbolType="graphic" loop="loop">
                   <matrix>
@@ -459,11 +456,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#4DFCD3" current="true" isSelected="true">
+        <DOMLayer name="Layer 18" color="#4DFCD3">
           <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 204" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 204" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.3345947265625" b="0.489166259765625" c="-0.489166259765625" d="0.3345947265625" tx="98.6" ty="4.05"/>
                   </matrix>
@@ -473,7 +470,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="10" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 204" symbolType="graphic" loop="loop">
                   <matrix>

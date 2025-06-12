@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 556" itemID="6577efbc-0000040a" lastModified="1708874265">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 556" itemID="6577efbc-0000040a" lastModified="1749702220">
   <timeline>
     <DOMTimeline name="Symbol 556" currentFrame="13">
       <layers>
@@ -10,9 +10,7 @@
             <DOMFrame index="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
-if(_parent.hp <= 0)
-	_parent.变身控制块.temp_MovieFire.removeMovieClip();
-}
+if(_parent.hp <= 0) _parent.变身控制块.temp_MovieFire.removeMovieClip();
 _parent.死亡检测();
 ]]></script>
               </Actionscript>

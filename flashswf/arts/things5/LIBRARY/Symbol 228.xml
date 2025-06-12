@@ -1,10 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 228" itemID="6577efbc-000002ee" lastModified="1702098593">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 228" itemID="6577efbc-000002ee" lastModified="1749702138">
   <timeline>
-    <DOMTimeline name="Symbol 228">
+    <DOMTimeline name="Symbol 228" currentFrame="12">
       <layers>
         <DOMLayer name="Script Layer" color="#E9BEEE">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 if(_parent.hp <= 0) _parent.状态改变("血腥死");
@@ -12,30 +12,10 @@ if(_parent.hp <= 0) _parent.状态改变("血腥死");
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
+            <DOMFrame index="2" duration="12" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.死亡检测();]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="3" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[f(_parent.hp == 0)
-{
-   stop();
-}
-if(_parent.hp < 0)
-{
-   stop();
-}
-]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="4" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
@@ -43,37 +23,6 @@ if(_parent.hp < 0)
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2" color="#C5EFA8">
-          <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 45" centerPoint3DX="119.5" centerPoint3DY="-49.9">
-                  <matrix>
-                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="101.5" ty="-67.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.控制目标 == _parent._parent._name)
-   {
-      stop();
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="3" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -158,11 +107,11 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#68E9A4">
+        <DOMLayer name="Layer 8" color="#68E9A4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 214" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 214" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.522705078125" b="0.281234741210938" c="-0.281234741210938" d="0.522705078125" tx="107.6" ty="-0.2"/>
                   </matrix>
@@ -318,7 +267,7 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#92E16E" current="true" isSelected="true">
+        <DOMLayer name="Layer 18" color="#92E16E">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
