@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图碰撞箱" itemID="67d7e377-000019cf" lastModified="1742201724">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图碰撞箱" itemID="67d7e377-000019cf" lastModified="1749722015">
   <timeline>
     <DOMTimeline name="地图碰撞箱">
       <layers>
@@ -6,16 +6,10 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape isDrawingObject="true">
-                  <matrix>
-                    <Matrix a="1.19999694824219" d="1.19999694824219" tx="7" ty="469.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="947.15" y="259.7"/>
-                  </transformationPoint>
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#333333" alpha="0.298039215686275"/>
+                      <SolidColor/>
                     </FillStyle>
                   </fills>
                   <strokes>
@@ -28,10 +22,10 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" edges="!13813 949|13335 410!13335 410|5953 410!5953 410|5707 740!5707 740|4526 740!4526 740|4526 246!4526 246|3055 246!3055 246|3055 410!3055 410|2814 487!2814 487|1643 487!1643 487|1205 323!1205 323|1 323!1 323|1 -4317!1 -4317|37887 -4317!37887
- -4317|37887 1118!37887 1118|36425 1118!36425 1118|35956 765!35956 765|35956 510!35956 510|35738 510!35738 510|35175 144!35175 144|35175 0!35175 0|25031 0!25031 0|25031 538!25031 538|16770 538!16770 538|15944 1185!15944 1185|15354.5 1185"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!15354.5 1185|15129 949!15129 949|13813 949"/>
+                    <Edge fillStyle1="1" edges="!42167.5 9200|45531 9200!45531 9200|45531 9400!45531 9400|45604 9400!45604 9400|45604 10723!45604 10723|43850 10723!43850 10723|42167.5 9200!18295 10520|16716 10520!16716 10520|16275 10023!16275 10023|440 10023!440 10023|440 9769!440
+ 9769|141 9769!141 9769|141 9400!141 9400|30177 9400!30177 9400|30177 10027!30177 10027|20264 10027!20264 10027|19634.5 10520!19634.5 10520|18295 10520"/>
+                    <Edge strokeStyle="1" edges="
+!18295 10520|18566 10803"/>
                   </edges>
                 </DOMShape>
               </elements>

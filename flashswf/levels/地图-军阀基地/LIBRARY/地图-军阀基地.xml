@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1746452175" lastUniqueIdentifier="20">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1749721585" lastUniqueIdentifier="20">
   <timeline>
     <DOMTimeline name="地图-军阀基地">
       <layers>
@@ -14,39 +14,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#D47599" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this.swapDepths(100000);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2" color="#B0C0C6" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B26AFD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#B26AFD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -254,22 +222,6 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#78FE25" outline="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="地图碰撞箱" name="地图" centerPoint3DX="484.1" centerPoint3DY="296">
-                  <transformationPoint>
-                    <Point x="483.85" y="295.75"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="Layer 6" color="#FC8A0B">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -283,11 +235,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/越野车" selected="true" centerPoint3DX="338.7" centerPoint3DY="600.7">
+                <DOMSymbolInstance libraryItemName="sprite/越野车" centerPoint3DX="338.7" centerPoint3DY="600.7">
                   <matrix>
                     <Matrix a="0.808090209960938" d="0.783767700195313" tx="280.7" ty="563.8"/>
                   </matrix>

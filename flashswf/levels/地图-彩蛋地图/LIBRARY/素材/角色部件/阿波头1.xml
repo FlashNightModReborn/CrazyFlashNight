@@ -57,6 +57,16 @@
                         <FillStyle index="4">
                           <LinearGradient>
                             <matrix>
+                              <Matrix a="0.004852294921875" d="0.00115966796875" tx="34.1" ty="7.2"/>
+                            </matrix>
+                            <GradientEntry color="#2D0C0C" ratio="0"/>
+                            <GradientEntry color="#511716" ratio="0.552941176470588"/>
+                            <GradientEntry color="#3A1211" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="5">
+                          <LinearGradient>
+                            <matrix>
                               <Matrix a="0.00738525390625" d="0.002044677734375" tx="29.1" ty="6.5"/>
                             </matrix>
                             <GradientEntry color="#270707" ratio="0"/>
@@ -64,23 +74,13 @@
                             <GradientEntry color="#58181B" ratio="1"/>
                           </LinearGradient>
                         </FillStyle>
-                        <FillStyle index="5">
+                        <FillStyle index="6">
                           <LinearGradient>
                             <matrix>
                               <Matrix a="0.0086669921875" d="0.00152587890625" tx="33" ty="8.35"/>
                             </matrix>
                             <GradientEntry color="#2D0C0C" ratio="0"/>
                             <GradientEntry color="#2C0C0B" ratio="0.505882352941176"/>
-                            <GradientEntry color="#3A1211" ratio="1"/>
-                          </LinearGradient>
-                        </FillStyle>
-                        <FillStyle index="6">
-                          <LinearGradient>
-                            <matrix>
-                              <Matrix a="0.004852294921875" d="0.00115966796875" tx="34.1" ty="7.2"/>
-                            </matrix>
-                            <GradientEntry color="#2D0C0C" ratio="0"/>
-                            <GradientEntry color="#511716" ratio="0.552941176470588"/>
                             <GradientEntry color="#3A1211" ratio="1"/>
                           </LinearGradient>
                         </FillStyle>
@@ -153,28 +153,28 @@
                         <Edge fillStyle1="10" strokeStyle="1" edges="!461 189S6[468 177 470 171!470 171|468 163"/>
                         <Edge fillStyle1="9" strokeStyle="1" edges="!468 163S6[457 157 458 156!458 156|471 138"/>
                         <Edge fillStyle1="8" strokeStyle="1" edges="!471 138S6|473 134!473 134|464 122"/>
-                        <Edge fillStyle1="4" strokeStyle="1" edges="!464 122S6[460 112 461 108!461 108[460 103 498 97!498 97|523 119"/>
+                        <Edge fillStyle1="5" strokeStyle="1" edges="!464 122S6[460 112 461 108!461 108[460 103 498 97!498 97|523 119"/>
                         <Edge fillStyle1="3" strokeStyle="1" edges="!523 119S6|553 117!553 117|754 121!754 121[769 120 782 119"/>
-                        <Edge fillStyle0="4" fillStyle1="5" edges="!518 142S3[559 153 677 163!677 163|702.5 164!702.5 164[#2BC.DD #A3.DD 700 163"/>
-                        <Edge fillStyle0="4" fillStyle1="6" edges="!700 163S3[695 162 690 161"/>
-                        <Edge fillStyle0="4" fillStyle1="3" edges="!690 161S3|586 139"/>
-                        <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!586 139S7|523 119"/>
-                        <Edge fillStyle0="3" fillStyle1="6" edges="!690 161S3|677 158!677 158[604 143 604 133!604 133[601 125 613 125!613 125|762 131"/>
+                        <Edge fillStyle0="3" fillStyle1="4" edges="!690 161S3|677 158!677 158[604 143 604 133!604 133[601 125 613 125!613 125|762 131"/>
                         <Edge fillStyle0="3" fillStyle1="2" edges="!762 131S3|782 119"/>
-                        <Edge fillStyle0="2" fillStyle1="6" edges="!762 131S3|735 152"/>
-                        <Edge fillStyle0="2" fillStyle1="5" edges="!735 152S3|802 144"/>
+                        <Edge fillStyle0="5" fillStyle1="4" edges="!700 163S3[695 162 690 161"/>
+                        <Edge fillStyle0="5" fillStyle1="3" edges="!690 161S3|586 139"/>
+                        <Edge fillStyle0="5" fillStyle1="3" strokeStyle="1" edges="!586 139S7|523 119"/>
+                        <Edge fillStyle0="5" fillStyle1="6" edges="!518 142S3[559 153 677 163!677 163|702.5 164!702.5 164[#2BC.DD #A3.DD 700 163"/>
                         <Edge fillStyle0="2" fillStyle1="1" edges="!802 144S3|813 137!813 137|784 130!784 130|797 129!797 129|830 117"/>
+                        <Edge fillStyle0="2" fillStyle1="6" edges="!735 152S3|802 144"/>
+                        <Edge fillStyle0="2" fillStyle1="4" edges="!762 131S3|735 152"/>
                         <Edge fillStyle0="7" fillStyle1="8" edges="!623 192S3|736 217"/>
                         <Edge fillStyle0="7" fillStyle1="1" edges="!770 199S3|623 192"/>
-                        <Edge fillStyle0="5" fillStyle1="1" edges="!623 192S3[736 183 802 144"/>
-                        <Edge fillStyle0="5" fillStyle1="6" edges="!735 152S3[727 165 700 163"/>
+                        <Edge fillStyle0="6" fillStyle1="1" edges="!623 192S3[736 183 802 144"/>
+                        <Edge fillStyle0="6" fillStyle1="4" edges="!735 152S3[727 165 700 163"/>
                         <Edge fillStyle0="9" fillStyle1="8" edges="!568 210S3|481 148!481 148|471 138"/>
                         <Edge fillStyle0="11" fillStyle1="10" edges="!517 239S3|498 231!498 231[482 219 470 204!470 204|471 204!471 204|461 189"/>
                         <Edge fillStyle0="9" fillStyle1="10" edges="!531 196S3|568 210"/>
                         <Edge fillStyle0="9" fillStyle1="10" strokeStyle="1" edges="!468 163S7|528 196!528 196|531 196"/>
-                        <Edge fillStyle0="4" fillStyle1="8" edges="!464 122S3|514 141!514 141[516 142 518 142"/>
+                        <Edge fillStyle0="5" fillStyle1="8" edges="!464 122S3|514 141!514 141[516 142 518 142"/>
                         <Edge fillStyle0="10" fillStyle1="8" edges="!617 236S3[583 225 568 210"/>
-                        <Edge fillStyle0="5" fillStyle1="8" edges="!518 142S3[553 177 623 192"/>
+                        <Edge fillStyle0="6" fillStyle1="8" edges="!518 142S3[553 177 623 192"/>
                       </edges>
                     </DOMShape>
                   </members>
