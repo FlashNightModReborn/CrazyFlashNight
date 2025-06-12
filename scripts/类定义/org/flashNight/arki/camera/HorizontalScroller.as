@@ -5,12 +5,13 @@ import org.flashNight.arki.camera.ScrollLogic;
 import org.flashNight.arki.camera.ParallaxBackground;
 
 /**
- * HorizontalScroller.as - 重构后的主控制器（修正版）
+ * HorizontalScroller.as - 重构后的主控制器（修正高缩放倍率居中问题）
  *
  * 负责：
  *  1. 协调 ZoomController / ScrollBounds / ScrollLogic / ParallaxBackground
  *  2. 对外提供 update(...) 接口，与原 _root.横版卷屏 保持兼容
  *  3. 修正：地平线高度在缩放时的计算错误
+ *  4. 修正：高缩放倍率下角色无法正确居中的问题
  */
 class org.flashNight.arki.camera.HorizontalScroller {
 
@@ -107,22 +108,33 @@ class org.flashNight.arki.camera.HorizontalScroller {
         var frameTimer:Object = _root.帧计时器;
         var offsetTolerance:Number = frameTimer.offsetTolerance;
 
-        var LEFT_SCROLL_CENTER:Number     = stageWidth  * 0.5 + 100;
-        var RIGHT_SCROLL_CENTER:Number    = stageWidth  * 0.5 - 100;
+        // 【修正】根据缩放倍率动态调整滚动中心点偏移
+        // 在高缩放倍率下，减小偏移量以保持角色更接近屏幕中心
+        var baseOffset:Number = 100;
+        var scaledOffset:Number = baseOffset / Math.max(1, newScale * 0.5);
+        
+        var LEFT_SCROLL_CENTER:Number     = stageWidth  * 0.5 + scaledOffset;
+        var RIGHT_SCROLL_CENTER:Number    = stageWidth  * 0.5 - scaledOffset;
         var VERTICAL_SCROLL_CENTER:Number = stageHeight - 100;
 
         // —— 8) 获取 scrollObj 在屏幕上的坐标 —— 
-        var pt2:Object = { x:0, y:0 };
-        scrollObj.localToGlobal(pt2);
+        // 【修正】使用更精确的坐标转换方法
+        var worldX:Number = scrollObj._x;
+        var worldY:Number = scrollObj._y;
+        
+        // 计算角色在屏幕上的实际位置
+        var screenX:Number = (worldX * newScale) + gameWorld._x;
+        var screenY:Number = (worldY * newScale) + gameWorld._y;
 
         // —— 9) 根据朝向决定水平目标中心点 —— 
         var isRightDirection:Boolean = (scrollObj._xscale > 0);
         var targetX:Number = isRightDirection ? RIGHT_SCROLL_CENTER : LEFT_SCROLL_CENTER;
 
         // —— 10) 用 ScrollLogic 来计算 dx/dy —— 
+        // 【修正】传入计算后的屏幕坐标而不是 localToGlobal 的结果
         var scrollParams:Object = ScrollLogic.computeScrollOffsets(
-            pt2.x,
-            pt2.y,
+            screenX,
+            screenY,
             targetX,
             VERTICAL_SCROLL_CENTER,
             offsetTolerance,
