@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/volBtn" itemID="67ada626-0000078d" symbolType="button" lastModified="1740332216" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="volBtn" currentFrame="1">
+    <DOMTimeline name="volBtn">
       <layers>
-        <DOMLayer name="Script Layer" color="#18C4EB" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#18C4EB">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#6AD8A7">
+        <DOMLayer name="Layer 2" color="#6AD8A7" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -38,7 +38,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!334 327|-236 327!-236 327|-236 -333!-236 -333|334 -333!334 -333|334 327"/>
+                    <Edge fillStyle1="1" edges="!334 327S2|-236 327!-236 327|-236 -333!-236 -333|334 -333!334 -333|334 327"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -260,3 +260,4 @@ _root.cameraZoomToggle = true;
 _root.basicZoomScale = 1;
 
 EventBus.getInstance().subscribe("SceneReady", HorizontalScroller.onSceneChanged, HorizontalScroller); 
+EventBus.getInstance().subscribe("SceneReady", ZoomController.resetState, ZoomController); 

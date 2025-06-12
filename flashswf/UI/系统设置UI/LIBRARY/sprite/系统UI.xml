@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1749702854" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1749718869" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="系统UI" currentFrame="13">
+    <DOMTimeline name="系统UI" currentFrame="11" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;10&lt;/guideline&gt;&lt;guideline direction="v"&gt;119&lt;/guideline&gt;&lt;guideline direction="v"&gt;217&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#C688B8">
           <frames>
@@ -1274,13 +1274,13 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="90.95" height="15.55" isSelectable="false">
+                <DOMDynamicText fontRenderingMode="device" width="26.75" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="138.05" ty="112.95"/>
+                    <Matrix tx="89.35" ty="220.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>其他效果</characters>
+                      <characters>效果</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1316,9 +1316,9 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="67" height="17" isSelectable="false">
+                <DOMDynamicText fontRenderingMode="device" width="24.9" height="17" isSelectable="false">
                   <matrix>
-                    <Matrix tx="36" ty="112.95"/>
+                    <Matrix tx="35.1" ty="220.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1424,9 +1424,9 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="171.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="144.45" centerPoint3DY="184.4">
                   <matrix>
-                    <Matrix tx="20.95" ty="159.25"/>
+                    <Matrix tx="132" ty="171.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1460,13 +1460,13 @@ onClipEvent(mouseUp){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="173.35" height="15.55" isSelectable="false">
+                <DOMDynamicText fontRenderingMode="device" width="74.85" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="34.65" ty="152.05"/>
+                    <Matrix tx="145.7" ty="164.75"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>画面运镜缩放开关</characters>
+                      <characters>运镜缩放开关</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1537,9 +1537,9 @@ onClipEvent(mouseUp){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="207.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="144.25" centerPoint3DY="241.65">
                   <matrix>
-                    <Matrix tx="20.95" ty="195.25"/>
+                    <Matrix tx="131.8" ty="229.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1556,9 +1556,9 @@ onClipEvent(mouseUp){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="252.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="144.1" centerPoint3DY="290.7">
                   <matrix>
-                    <Matrix tx="20.95" ty="240.25"/>
+                    <Matrix tx="131.65" ty="278.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1604,13 +1604,13 @@ onClipEvent(mouseUp){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="176.35" height="15.55" isSelectable="false">
+                <DOMDynamicText fontRenderingMode="device" width="75.65" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="34.65" ty="188.05"/>
+                    <Matrix tx="145.35" ty="222"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>伤害值数字特效</characters>
+                      <characters>伤害数字特效</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1619,11 +1619,11 @@ onClipEvent(mouseUp){
                 </DOMDynamicText>
                 <DOMStaticText fontRenderingMode="device" width="176.35" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="34.65" ty="233.05"/>
+                    <Matrix tx="145.05" ty="270.45"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>开启昼夜系统</characters>
+                      <characters>开启</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1636,9 +1636,9 @@ onClipEvent(mouseUp){
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.15" centerPoint3DY="283.55">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.15" centerPoint3DY="321.55">
                   <matrix>
-                    <Matrix tx="20.7" ty="271.1"/>
+                    <Matrix tx="20.7" ty="309.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1657,11 +1657,11 @@ onClipEvent(mouseUp){
                 </DOMSymbolInstance>
                 <DOMStaticText fontRenderingMode="device" width="176.35" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="34.95" ty="296.15"/>
+                    <Matrix tx="193.75" ty="270.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>暂停昼夜运转</characters>
+                      <characters>暂停</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1674,9 +1674,9 @@ onClipEvent(mouseUp){
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.15" centerPoint3DY="316.8">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="193.9" centerPoint3DY="289.85">
                   <matrix>
-                    <Matrix tx="20.7" ty="304.35"/>
+                    <Matrix tx="181.45" ty="277.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1695,7 +1695,7 @@ onClipEvent(mouseUp){
                 </DOMSymbolInstance>
                 <DOMStaticText fontRenderingMode="device" width="176.35" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="34.4" ty="262.55"/>
+                    <Matrix tx="34.4" ty="300.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1902,9 +1902,9 @@ on(release, releaseOutside){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="134.4" centerPoint3DY="133.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="87.5" centerPoint3DY="241.65">
                   <matrix>
-                    <Matrix tx="121.95" ty="121.25"/>
+                    <Matrix tx="75.05" ty="229.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2021,9 +2021,9 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="133.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="241.65">
                   <matrix>
-                    <Matrix tx="20.95" ty="121.25"/>
+                    <Matrix tx="20.95" ty="229.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2200,15 +2200,15 @@ onClipEvent(mouseUp){
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 938" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="15" ty="69.7"/>
+                    <Matrix tx="15" ty="193.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" name="zoomMC" centerPoint3DX="142.9" centerPoint3DY="77.3">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" name="zoomMC" centerPoint3DX="142.9" centerPoint3DY="201.1">
                   <matrix>
-                    <Matrix a="0.73883056640625" tx="40" ty="76.3"/>
+                    <Matrix a="0.73883056640625" tx="40" ty="200.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2220,9 +2220,23 @@ onClipEvent(mouseUp){
                     <Color alphaMultiplier="0.6015625"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/volBtn" name="zoomBtn" symbolType="button">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" name="zoomMC" centerPoint3DX="75.05" centerPoint3DY="102.45">
                   <matrix>
-                    <Matrix a="-1" tx="75" ty="76.35"/>
+                    <Matrix a="0" b="-0.055877685546875" c="1" d="0" tx="74.4" ty="205.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="数字显示按钮" name="zoomBtn" symbolType="button">
+                  <matrix>
+                    <Matrix tx="45" ty="183.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2232,17 +2246,153 @@ onClipEvent(mouseUp){
 	this.zoomMC.onEnterFrame = function(){
 		var xmouse = this._xmouse;
 		var scale = (xmouse - 32.5) / 1.5;
-		scale -= scale % 10;
+		scale -= scale % 1;
 		if(scale <= 0) scale = 0;
 		if(scale > 100) scale = 100;
-		zoomBtn._x = scale * 1.5 + 45;
-		_root.basicZoomScale = 0.5 + scale / 100 * 2.5;
+		this.zoomBtn.scaleNum = scale;
+		zoomBtn._x = scale * 1.45 + 15;
+		_root.basicZoomScale = Math.floor((0.5 + scale / 100 * 2.5) * 10) / 10;
 	}
 }
 on(release, releaseOutside){
 	delete this.zoomMC.onEnterFrame;
 }]]></script>
                   </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.55" centerPoint3DY="254.7">
+                  <matrix>
+                    <Matrix a="1.1195068359375" tx="4.05" ty="253.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.55" centerPoint3DY="150.75">
+                  <matrix>
+                    <Matrix a="1.1195068359375" tx="4.05" ty="149.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 938" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="15" ty="120.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" name="performanceMc" centerPoint3DX="142.9" centerPoint3DY="128.4">
+                  <matrix>
+                    <Matrix a="0.73883056640625" tx="40" ty="127.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="40.65" centerPoint3DY="30.1">
+                  <matrix>
+                    <Matrix a="0" b="-0.055877685546875" c="1" d="0" tx="40" ty="133.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="90.65" centerPoint3DY="30.1">
+                  <matrix>
+                    <Matrix a="0" b="-0.055877685546875" c="1" d="0" tx="90" ty="133.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="190.65" centerPoint3DY="30.1">
+                  <matrix>
+                    <Matrix a="0" b="-0.055877685546875" c="1" d="0" tx="190" ty="133.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="140.65" centerPoint3DY="30.1">
+                  <matrix>
+                    <Matrix a="0" b="-0.055877685546875" c="1" d="0" tx="140" ty="133.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="性能显示按钮" name="performanceBtn" centerPoint3DX="40" centerPoint3DY="126.95">
+                  <matrix>
+                    <Matrix tx="40" ty="127"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="6.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.onEnterFrame = function(){
+		var xmouse = _parent._xmouse;
+		var scale = (xmouse - 32.5) / 1.5;
+		scale -= scale % 34;
+		if(scale <= 0) scale = 0;
+		if(scale > 100) scale = 100;
+		this._x = scale * 1.5 + 40;
+		var num = Math.floor(scale / 33);
+		this.num.text = num;
+		_root.帧计时器.性能等级上限 = num;
+	}
+}
+on(release, releaseOutside){
+	delete this.onEnterFrame;
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2837,21 +2987,7 @@ on (rollOut) {
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
-              <elements>
-                <DOMDynamicText fontRenderingMode="device" width="178.35" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="5.65" ty="94.05"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>画面元素：</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -2968,24 +3104,17 @@ on(rollOut){
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="223.7" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="5.25" ty="41.05"/>
+                    <Matrix tx="10.45" ty="164.85"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>画面缩放：</characters>
+                      <characters>画面缩放视觉效果</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="223.7" height="15.55" isSelectable="false" variableName="_root.basicZoomScale">
-                  <matrix>
-                    <Matrix tx="65.55" ty="41.05"/>
-                  </matrix>
-                  <textRuns>
                     <DOMTextRun>
-                      <characters>1</characters>
+                      <characters>:</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -2998,13 +3127,50 @@ on(rollOut){
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="223.7" height="15.55" isSelectable="false">
+                <DOMDynamicText fontRenderingMode="device" width="223.7" height="173.5" isSelectable="false">
                   <matrix>
-                    <Matrix tx="83.7" ty="41.05"/>
+                    <Matrix tx="9.95" ty="34"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>倍</characters>
+                      <characters>性能评估优化算法</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters> </characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>实时监测FPS表现&#xD;依据帧率波动，自动换挡，优化负载&#xD;高端设备：设定 0–1，完整特效渲染&#xD;中端设备：设定 2–3，帧率稳定运行&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="223.7" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="11.65" ty="270.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>昼夜天气系统</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>:</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -3072,11 +3238,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#A793AE">
+        <DOMLayer name="Layer 56" color="#A793AE" locked="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" centerPoint3DX="118" centerPoint3DY="165.95">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" selected="true" centerPoint3DX="118" centerPoint3DY="165.95">
                   <matrix>
                     <Matrix d="0.999847412109375"/>
                   </matrix>

@@ -56,6 +56,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // 性能与画质相关（如预设画质、天气更新等）
     // --------------------------
     this.性能等级 = 0;
+    this.性能等级上限 = 0;
     this.预设画质 = _root._quality;
     this.更新天气间隔 = 5 * this.帧率;
     this.天气待更新时间 = this.更新天气间隔;
@@ -244,6 +245,7 @@ _root.帧计时器.绘制帧率曲线 = function():Void {
 };
 
 
+
 _root.帧计时器.性能评估优化 = function() {
 
     // --- 1. 判断是否到达测量间隔 ---
@@ -289,7 +291,7 @@ _root.帧计时器.性能评估优化 = function() {
         );
 
         var currentPerformanceLevel = Math.round(pidOutput);
-        currentPerformanceLevel = Math.max(0, Math.min(currentPerformanceLevel, 3));
+        currentPerformanceLevel = Math.max(this.性能等级上限, Math.min(currentPerformanceLevel, 3));
 
         // === 7. 引入确认步骤，避免过于频繁调整 ===
         if (this.性能等级 !== currentPerformanceLevel) 
