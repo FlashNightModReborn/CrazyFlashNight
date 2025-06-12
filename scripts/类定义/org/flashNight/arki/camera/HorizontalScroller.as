@@ -16,33 +16,20 @@ import org.flashNight.arki.camera.ParallaxBackground;
 class org.flashNight.arki.camera.HorizontalScroller {
 
     public static var cameraZoomToggle:Boolean = false;
-    public static var basicZoomScale:Number = 1;
+
+    public static var scrollObj:MovieClip;
+    public static var bgWidth:Number;
+    public static var bgHeight:Number;
+    public static var easeFactor:Number;
+    public static var gameWorld:MovieClip;
+    public static var bgLayer:MovieClip;
 
     /**
      * 等价于原来 _root.横版卷屏 的实现逻辑，但将各块功能拆分到子组件里。
-     *
-     * @param scrollTarget  要跟踪的目标在 gameworld 中的名称
-     * @param bgWidth       背景原始宽度（像素）
-     * @param bgHeight      背景原始高度（像素）
-     * @param easeFactor    缓动系数
      */
-    public static function update(
-        scrollTarget:String,
-        bgWidth:Number,
-        bgHeight:Number,
-        easeFactor:Number
-    ):Void {
-        scrollTarget = _root.控制目标;
-        bgWidth = _root.gameworld.背景长;
-        bgHeight = _root.gameworld.背景高;
-        easeFactor = 10;
-
-        // —— 1) 先拿到 gameWorld 和 bgLayer（天空盒） ——
-        var gameWorld:MovieClip = _root.gameworld;
-        var bgLayer:MovieClip   = _root.天空盒;
+    public static function update():Void {
 
         // —— 2) 如果目标不存在或未初始化，则直接 return ——
-        var scrollObj:MovieClip = gameWorld[scrollTarget];
         if (!scrollObj || scrollObj._x == undefined) {
             return;
         }
@@ -184,7 +171,13 @@ class org.flashNight.arki.camera.HorizontalScroller {
     }
 
     public static function onSceneChanged():Void {
-        var bgLayer:MovieClip   = _root.天空盒;
+        scrollObj = _root.gameworld[_root.控制目标];
+        gameWorld = _root.gameworld;
+        bgLayer   = _root.天空盒;
         bgLayer._x = 0;
+
+        bgWidth = _root.gameworld.背景长;
+        bgHeight = _root.gameworld.背景高;
+        easeFactor = 10;
     }
 }

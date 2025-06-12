@@ -86,8 +86,7 @@ _root.绘制地图碰撞箱 = function () {
         }
 
 		地图.初始化完毕 = true;
-			
-		EventBus.getInstance().publish("SceneReady");
+
 	}
 }
 
