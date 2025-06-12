@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1742019578" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1749689728" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="Symbol 1727" currentFrame="1">
+    <DOMTimeline name="系统UI" currentFrame="13">
       <layers>
         <DOMLayer name="Labels Layer" color="#C688B8">
           <frames>
@@ -1956,7 +1956,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#C98D48" current="true" isSelected="true">
+        <DOMLayer name="Layer 42" color="#C98D48">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2136,7 +2136,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#F4D38B">
+        <DOMLayer name="Layer 45" color="#F4D38B" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
