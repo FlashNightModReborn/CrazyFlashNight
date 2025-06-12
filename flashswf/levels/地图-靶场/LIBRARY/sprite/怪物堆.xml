@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/怪物堆" itemID="66339dee-00000c0b" lastModified="1724945356" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/怪物堆" itemID="66339dee-00000c0b" lastModified="1749727202" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="怪物堆">
       <layers>
@@ -44,12 +44,12 @@ stop();]]></script>
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" centerPoint3DX="-136.5" centerPoint3DY="-225.15">
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" centerPoint3DX="-93.5" centerPoint3DY="-225.15">
                   <matrix>
-                    <Matrix a="11.5197906494141" d="7.03628540039063" tx="-149" ty="-171.1"/>
+                    <Matrix a="5.9998779296875" d="7.03628540039063" tx="-100" ty="-171.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point y="25.05"/>
+                    <Point x="12.6" y="12.45"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1749724245" lastUniqueIdentifier="45">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1749727650" lastUniqueIdentifier="48">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -35,7 +35,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文天" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文天" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -69,7 +69,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="歌留多" color="#9933CC" autoNamed="false">
+        <DOMLayer name="歌留多" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -93,6 +93,21 @@ _root.配置场景环境信息();]]></script>
 	名字 = "歌留多";
 	身高 = 175;
 	性别 = "女";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="文天 npc" selected="true" centerPoint3DX="1047" centerPoint3DY="524.45">
+                  <matrix>
+                    <Matrix tx="1029.8" ty="453.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "文天";
+	性别 = "男";
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
@@ -148,9 +163,7 @@ _root.配置场景环境信息();]]></script>
 	}
 	名字 = "heeho君";
 	商店 = "特殊武器出售";
-	身高 = 120;
 	性别 = "男";
-	方向 = "右";
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>

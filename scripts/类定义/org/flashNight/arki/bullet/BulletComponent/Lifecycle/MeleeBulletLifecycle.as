@@ -55,11 +55,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.MeleeBulletLifecycle 
         }
         // 精确碰撞检测（像素级判断）
         else {
-            var localPoint:Object = NormalBulletLifecycle.point;
-            localPoint.x = targetX;
-            localPoint.y = Z轴坐标;
-            gameWorld.localToGlobal(localPoint);
-            return gameWorld.地图.hitTest(localPoint.x, localPoint.y, true);
+            return _root.collisionLayer.hitTest(targetX, Z轴坐标, true);
         }
     }
     

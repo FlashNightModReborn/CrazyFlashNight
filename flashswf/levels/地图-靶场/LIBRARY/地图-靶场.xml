@@ -1,16 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1749723183" lastUniqueIdentifier="108">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1749727262" lastUniqueIdentifier="108">
   <timeline>
     <DOMTimeline name="地图-靶场">
       <layers>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.横版卷屏();
-_root.显示同伴血槽();
 _root.关卡地图帧值 = "地图-靶场";
-
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
@@ -94,7 +91,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="提示" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="提示" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -114,7 +111,7 @@ onClipEvent(load){
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!-152 5954|4238 5954!4238 5954|4238 11120!4238 11120|-152 11120!-152 11120|-152 5954"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3552 5954|3552 10280!3552 10280|88 10280!88 10280|88 5954!88 5954|3552 5954"/>
                   </edges>
                 </DOMShape>
                 <DOMSymbolInstance libraryItemName="提示箭头" centerPoint3DX="1259.65" centerPoint3DY="476.05">
@@ -130,15 +127,15 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMDynamicText fontRenderingMode="standard" width="215.5" height="254.3" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="standard" width="170" height="205.25" lineType="multiline">
                   <matrix>
-                    <Matrix tx="-5.6" ty="299.7"/>
+                    <Matrix tx="6" ty="299.7"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>你不该看到这句话的，看到了说明你用喷气背包或者一瞬千击之类的方式穿过地图了，快回去！</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="30" bitmapSize="600" face="MicrosoftYaHei"/>
+                        <DOMTextAttrs aliasText="false" size="24" bitmapSize="480" face="MicrosoftYaHei"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -172,7 +169,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="高一点的障碍" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="高一点的障碍" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -201,11 +198,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/背景" selected="true" centerPoint3DX="1692.55" centerPoint3DY="518">
+                <DOMSymbolInstance libraryItemName="素材/背景" centerPoint3DX="1692.55" centerPoint3DY="518">
                   <matrix>
                     <Matrix tx="582.55" ty="88"/>
                   </matrix>

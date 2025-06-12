@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺艾尔/Symbol 51652" itemID="6597607e-00000b91" symbolType="graphic" lastModified="1749727707" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="文天 npc" itemID="684ab955-000005e9" lastModified="1749727747" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="Symbol 51652" currentFrame="7">
+    <DOMTimeline name="文天 npc" currentFrame="7">
       <layers>
-        <DOMLayer name="Labels Layer" color="#B78DB7" autoNamed="false">
+        <DOMLayer name="Labels Layer" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E494FC" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -37,29 +37,13 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
-          <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" centerPoint3DX="-25.4" centerPoint3DY="-670.55">
-                  <matrix>
-                    <Matrix a="-3.93768310546875" d="3.93768310546875" tx="-8.4" ty="-669.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="4.25" y="-0.25"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="Layer 3" color="#16E0F5">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2363" name="文字信息" centerPoint3DX="65.4" centerPoint3DY="-516.15">
+                <DOMSymbolInstance libraryItemName="Symbol 2363" name="文字信息" centerPoint3DX="17.2" centerPoint3DY="-132.8">
                   <matrix>
-                    <Matrix a="-3.60452270507813" d="3.62542724609375" tx="13.4" ty="-539.75"/>
+                    <Matrix a="0.807342529296875" d="0.812820434570313" tx="5.3" ty="-138.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -69,13 +53,13 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C327ED" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 4" color="#C327ED" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 51651" symbolType="button">
                   <matrix>
-                    <Matrix a="6.866455078125" d="24.4140625" tx="2.05" ty="-241.9"/>
+                    <Matrix a="1.53945922851563" d="5.4736328125" tx="2.8" ty="-60.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -108,31 +92,31 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#EF6BEB" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="诺艾尔/Symbol 51650" centerPoint3DY="-237.85">
+                <DOMSymbolInstance libraryItemName="文天" centerPoint3DX="0.4" centerPoint3DY="-54.7">
                   <matrix>
-                    <Matrix tx="-107.95" ty="-541.9"/>
+                    <Matrix a="-0.234954833984375" d="0.234954833984375" tx="48.5" ty="-121.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="205.35" y="284.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="诺艾尔/Symbol 51650" centerPoint3DY="-237.85">
+                <DOMSymbolInstance libraryItemName="文天" centerPoint3DX="0.4" centerPoint3DY="-54.7">
                   <matrix>
-                    <Matrix tx="-107.95" ty="-541.9"/>
+                    <Matrix a="-0.234954833984375" d="0.234954833984375" tx="48.5" ty="-121.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="205.35" y="284.1"/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter color="#CCCCFF" strength="10"/>
+                    <GlowFilter color="#00FFFF" strength="10"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

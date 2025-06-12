@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="歌留多npc" itemID="670cf3d4-000003ba" lastModified="1728926348" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="歌留多npc">
+    <DOMTimeline name="歌留多npc" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#9933CC" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#FF800A" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -92,7 +92,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>

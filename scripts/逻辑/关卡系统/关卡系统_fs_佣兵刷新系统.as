@@ -179,9 +179,7 @@ _root.场景随机有效位置 = function(){
 	for(var i=0; i<99; i++){
 		tempx = _root.随机整数(_root.Xmin, _root.Xmax);
 		tempy = _root.随机整数(_root.Ymin, _root.Ymax);
-		pt = {x:tempx, y:tempy};
-		游戏世界.localToGlobal(pt);
-		if (!游戏世界.地图.hitTest(pt.x, pt.y, true)){
+		if (!_root.collisionLayer.hitTest(tempx, tempy, true)){
 			break;
 		}else{
 			// _root.gameworld.attachMovie("point","p1" + _root.随机整数(0, 999),_root.gameworld.getNextHighestDepth(),{_x:tempx, _y:tempy});
