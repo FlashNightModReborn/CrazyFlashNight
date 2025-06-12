@@ -414,7 +414,7 @@
         <Alignment>true</Alignment>
         <Xmin>100</Xmin>
         <Xmax>2790</Xmax>
-        <Ymin>210</Ymin>
+        <Ymin>220</Ymin>
         <Ymax>957</Ymax>
         <Width>2800</Width>
         <Height>957</Height>
@@ -753,8 +753,8 @@
         <Alignment>true</Alignment>
         <Xmin>30</Xmin>
         <Xmax>1250</Xmax>
-        <Ymin>230</Ymin>
-        <Ymax>540</Ymax>
+        <Ymin>240</Ymin>
+        <Ymax>530</Ymax>
         <Width>1300</Width>
         <Height>600</Height>
         <SpaceCondition>室内</SpaceCondition>
@@ -762,8 +762,9 @@
         <MinIllumination>5</MinIllumination>
         <Collision>
             <Point>235,225</Point>
-            <Point>905,290</Point>
-            <Point>905,560</Point>
+            <Point>490,225</Point>
+            <Point>490,270</Point>
+            <Point>335,270</Point>
         </Collision>
         <Collision>
             <Point>970,225</Point>
