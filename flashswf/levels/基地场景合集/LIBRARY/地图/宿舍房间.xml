@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/宿舍房间" itemID="668a9fda-0000503f" linkageExportForAS="true" linkageIdentifier="基地场景-房间" lastModified="1749101303" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/宿舍房间" itemID="668a9fda-0000503f" linkageExportForAS="true" linkageIdentifier="基地场景-房间" lastModified="1749713410" lastUniqueIdentifier="17">
   <timeline>
     <DOMTimeline name="宿舍房间" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;183&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -24,38 +24,6 @@ if (_root.主线任务进度 <= 19){
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="效果" color="#C586E8" locked="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this.swapDepths(100000);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="子弹区域" color="#5AA8E3" locked="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -132,7 +100,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门1" color="#5CFDBF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门1" color="#5CFDBF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -154,13 +122,6 @@ onClipEvent(load){
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="按钮" color="#33FBC2" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -194,7 +155,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="仓库" color="#AADD09" autoNamed="false">
+        <DOMLayer name="仓库" color="#AADD09" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -219,25 +180,6 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#F6DE74" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 房间" name="地图" selected="true" centerPoint3DX="492.45" centerPoint3DY="313.35">
-                  <matrix>
-                    <Matrix d="1.0001220703125"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="门" color="#C096F2" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -257,7 +199,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="生活设施升级版" color="#9933CC" autoNamed="false">
+        <DOMLayer name="生活设施升级版" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -303,7 +245,7 @@ on (release) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="摆件" color="#9933CC" autoNamed="false">
+        <DOMLayer name="摆件" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -595,10 +537,10 @@ on (release) {
 !7357 4725|7345 4733!7345 4733[7334 4744 7334 4760!7334 4760[7334 4775 7345 4786!7345 4786[7356 4797 7372 4798!7372 4798[7387 4797 7399 4786!7399 4786[7410 4775 7410 4760!7410 4760[7410 4744 7399 4733!7399 4733|7384 4723"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="
 !7384 4723|7384 4749!7384 4749|7357 4749!7357 4749|7357 4725"/>
-                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
-!7384 4711|7357 4711"/>
                     <Edge fillStyle0="2" strokeStyle="2" edges="
 !7357 4711|7357 4725!7384 4723|7384 4711"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!7384 4711|7357 4711"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="
 !7384 4711|7397 4711!7397 4711|7397 4676!7397 4676|7072 4636"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
@@ -626,6 +568,14 @@ on (release) {
 !6798 4615|6798 4628"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
 !6798 4615|6781 4607"/>
+                    <Edge strokeStyle="2" edges="
+!6850 4838|6846 4842!6846 4842|6846 4838"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!6846 4838|6846 4807!6846 4807|6918 4693"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!6918 4693|6918 4673"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!6918 4673|6798 4615"/>
                     <Edge fillStyle0="2" edges="
 !6846 4838|6850 4838"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
@@ -634,14 +584,10 @@ on (release) {
 !6859 4827|6942 4730"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
 !6942 4730|6956 4713!6956 4713|6956 4634!6956 4634|6918 4693"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="
-!6918 4693|6846 4807!6846 4807|6846 4838"/>
                     <Edge fillStyle0="2" strokeStyle="2" edges="
 !6859 4840|6859 4827!6850 4838|6850 4850!6850 4850|6850 4864"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="
 !6850 4864|6850 4875!6850 4875|6859 4865!6859 4865|6859 4840"/>
-                    <Edge strokeStyle="2" edges="
-!6850 4838|6846 4842!6846 4842|6846 4838"/>
                     <Edge fillStyle1="1" edges="
 !6846 4864|6850 4864"/>
                     <Edge fillStyle0="1" strokeStyle="2" edges="
@@ -649,9 +595,7 @@ on (release) {
                     <Edge strokeStyle="2" edges="
 !6850 4850|6846 4864"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!7046 4565|7072 4565!7072 4565|7072 4636!6918 4693|6918 4673"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!6918 4673|6798 4615"/>
+!7046 4565|7072 4565!7072 4565|7072 4636"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
 !6918 4607|6918 4673!7046 4565|6945 4565"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="
@@ -1212,14 +1156,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="deadbody" color="#59D39E" locked="true" autoNamed="false">
+        <DOMLayer name="deadbody" color="#59D39E" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
-                  <matrix>
-                    <Matrix tx="235.1" ty="75"/>
-                  </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -1228,11 +1169,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#CFFB28" autoNamed="false">
+        <DOMLayer name="背景" color="#CFFB28" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2577" name="背景" centerPoint3DX="1748.85" centerPoint3DY="587.65">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2577" name="背景" selected="true" centerPoint3DX="1748.85" centerPoint3DY="587.65">
                   <matrix>
                     <Matrix tx="1241.05" ty="304.75"/>
                   </matrix>

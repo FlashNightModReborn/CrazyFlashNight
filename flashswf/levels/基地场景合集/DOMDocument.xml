@@ -19,7 +19,7 @@
           <DOMFolderItem name="NPC/杂项" itemID="66631720-00001160"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6597612c-00000e9d"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
           <DOMFolderItem name="sprite/理发师" itemID="668aace0-0000626a"/>
           <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4"/>
           <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa"/>
@@ -33,6 +33,7 @@
           <DOMFolderItem name="房间摆件/乐器/吉他" itemID="66328e9c-0000157c"/>
           <DOMFolderItem name="房间摆件/乐器/键盘" itemID="66329061-000015a4"/>
           <DOMFolderItem name="房间摆件/十文字大剑" itemID="66329706-00002134"/>
+          <DOMFolderItem name="原地图碰撞箱（弃用）" itemID="684a7b9d-000006be"/>
      </folders>
      <media>
           <DOMBitmapItem name="image/bitmap2252.jpg" itemID="6597607b-00000456" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2252.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2252.jpg" bitmapDataHRef="M 6 1736924415.dat" frameRight="15120" frameBottom="4280" isJPEG="true"/>
@@ -605,7 +606,7 @@
           <Include href="shape/东亚病夫牌.xml" itemIcon="1" loadImmediate="false" itemID="65f80210-00000b6b" lastModified="1710752364"/>
           <Include href="shape/通用背景.xml" itemIcon="1" loadImmediate="false" itemID="659d3fae-00003178" lastModified="1710752365"/>
           <Include href="sprite/bpk的车.xml" loadImmediate="false" itemID="68187599-00000d31" lastModified="1746433446"/>
-          <Include href="sprite/deadbody.xml" loadImmediate="false" itemID="67d7d95e-0000142c" lastModified="1742199883"/>
+          <Include href="sprite/deadbody.xml" loadImmediate="false" itemID="67d7d95e-0000142c" lastModified="1749713456"/>
           <Include href="sprite/Symbol 292.xml" loadImmediate="false" itemID="6597607e-00000792" lastModified="1704196122"/>
           <Include href="sprite/Symbol 477.xml" loadImmediate="false" itemID="6597607e-000007a6" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1523.xml" loadImmediate="false" itemID="6597607e-00000950" lastModified="1704196122"/>
@@ -742,18 +743,7 @@
           <Include href="sprite/场景门 废弃.xml" loadImmediate="false" itemID="67d7c804-0000057c" lastModified="1742194692"/>
           <Include href="sprite/车库背景.xml" loadImmediate="false" itemID="682c0cbc-000006b5" lastModified="1747717308"/>
           <Include href="sprite/车轮.xml" loadImmediate="false" itemID="68187f90-00000e04" lastModified="1746435984"/>
-          <Include href="sprite/地图碰撞箱 地下1层.xml" loadImmediate="false" itemID="67d7de51-000014c8" lastModified="1749102004"/>
-          <Include href="sprite/地图碰撞箱 房间.xml" loadImmediate="false" itemID="67d7c6a6-00000571" lastModified="1749101729"/>
-          <Include href="sprite/地图碰撞箱 基地1层.xml" loadImmediate="false" itemID="67d7c55b-00000548" lastModified="1749099677"/>
-          <Include href="sprite/地图碰撞箱 基地车库.xml" loadImmediate="false" itemID="67d7dd59-000014c5" lastModified="1749104027"/>
-          <Include href="sprite/地图碰撞箱 基地房顶.xml" loadImmediate="false" itemID="67d7dec3-000014cb" lastModified="1749103796"/>
-          <Include href="sprite/地图碰撞箱 基地门口.xml" loadImmediate="false" itemID="67d7c9ac-00000584" lastModified="1742195116"/>
-          <Include href="sprite/地图碰撞箱 健身房.xml" loadImmediate="false" itemID="67d7c916-0000057f" lastModified="1742194966"/>
-          <Include href="sprite/地图碰撞箱 武器库.xml" loadImmediate="false" itemID="67d7df02-000014ce" lastModified="1749101219"/>
-          <Include href="sprite/地图碰撞箱 医务室.xml" loadImmediate="false" itemID="67d7c6c8-00000579" lastModified="1749102743"/>
-          <Include href="sprite/地图碰撞箱 佣兵酒吧.xml" loadImmediate="false" itemID="67d7c5ec-00000551" lastModified="1749102526"/>
           <Include href="sprite/地下1层背景.xml" loadImmediate="false" itemID="682c0cf8-000006c0" lastModified="1747717368"/>
-          <Include href="sprite/地下2层地图碰撞箱.xml" loadImmediate="false" itemID="65d0b4f2-000014ce" lastModified="1742200453"/>
           <Include href="sprite/基地1层背景.xml" loadImmediate="false" itemID="682c0cd1-000006b9" lastModified="1747717329"/>
           <Include href="sprite/健身房背景.xml" loadImmediate="false" itemID="682c108e-000006cb" lastModified="1747718286"/>
           <Include href="sprite/健身房沙袋.xml" itemID="66a8ed03-0000125e" lastModified="1748690144"/>
@@ -824,17 +814,17 @@
           <Include href="UI重构/书架系统/书架.xml" loadImmediate="false" itemID="66519f17-00003cc7" lastModified="1716631965"/>
           <Include href="UI重构/文天彩蛋UI所用素材/文天.xml" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1707198663"/>
           <Include href="UI重构/文天彩蛋UI所用素材/元件 1.xml" loadImmediate="false" itemID="65c1c94d-00000c97" lastModified="1720345000"/>
-          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1748629747"/>
-          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1748603530"/>
-          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1749101795"/>
-          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1743585946"/>
-          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1748690144"/>
-          <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1749102262"/>
-          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1747717252"/>
-          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1749099055"/>
-          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1749101303"/>
-          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1747717315"/>
-          <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1749102505"/>
+          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1749711795"/>
+          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1749711693"/>
+          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1749711593"/>
+          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1749711814"/>
+          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1749711627"/>
+          <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1749711656"/>
+          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1749711784"/>
+          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1749711670"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1749713410"/>
+          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1749711735"/>
+          <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1749711706"/>
           <Include href="房间摆件/摆件茶壶.xml" loadImmediate="false" itemID="663347f0-000017f6" lastModified="1714636784"/>
           <Include href="房间摆件/摆件初始床.xml" loadImmediate="false" itemID="66363eaa-00000d76" lastModified="1714831225"/>
           <Include href="房间摆件/摆件初始梯子.xml" loadImmediate="false" itemID="66363ec7-00000dc5" lastModified="1714831047"/>
@@ -874,6 +864,17 @@
           <Include href="素材库-基地场景.xml" itemID="67877067-00002014" lastModified="1746453357"/>
           <Include href="梯子1.xml" loadImmediate="false" itemID="67ed053a-00000733" lastModified="1743587297"/>
           <Include href="梯子2.xml" loadImmediate="false" itemID="67ed0cd9-00000ec1" lastModified="1743588724"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 地下1层.xml" loadImmediate="false" itemID="67d7de51-000014c8" lastModified="1749102004"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 房间.xml" loadImmediate="false" itemID="67d7c6a6-00000571" lastModified="1749101729"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 基地1层.xml" loadImmediate="false" itemID="67d7c55b-00000548" lastModified="1749099677"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 基地车库.xml" loadImmediate="false" itemID="67d7dd59-000014c5" lastModified="1749104027"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 基地房顶.xml" loadImmediate="false" itemID="67d7dec3-000014cb" lastModified="1749103796"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 基地门口.xml" loadImmediate="false" itemID="67d7c9ac-00000584" lastModified="1742195116"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 健身房.xml" loadImmediate="false" itemID="67d7c916-0000057f" lastModified="1742194966"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 武器库.xml" loadImmediate="false" itemID="67d7df02-000014ce" lastModified="1749101219"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 医务室.xml" loadImmediate="false" itemID="67d7c6c8-00000579" lastModified="1749102743"/>
+          <Include href="原地图碰撞箱（弃用）/地图碰撞箱 佣兵酒吧.xml" loadImmediate="false" itemID="67d7c5ec-00000551" lastModified="1749102526"/>
+          <Include href="原地图碰撞箱（弃用）/地下2层地图碰撞箱.xml" loadImmediate="false" itemID="65d0b4f2-000014ce" lastModified="1742200453"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -1157,6 +1158,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2382973" publishTime="1749711448"/>
           <PublishItem publishSize="2073301" publishTime="1747718511"/>
           <PublishItem publishSize="2452922" publishTime="1747718308"/>
           <PublishItem publishSize="1043162" publishTime="1746453387"/>
@@ -1176,6 +1178,5 @@
           <PublishItem publishSize="975751" publishTime="1746433994"/>
           <PublishItem publishSize="975712" publishTime="1746433900"/>
           <PublishItem publishSize="970591" publishTime="1744224581"/>
-          <PublishItem publishSize="970590" publishTime="1744224512"/>
      </publishHistory>
 </DOMDocument>

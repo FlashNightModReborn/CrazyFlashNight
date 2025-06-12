@@ -8,6 +8,7 @@ import flash.display.BitmapData;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.camera.*;
+import org.flashNight.arki.scene.*;
 
 // 原 add2map 的重构
 _root.add2map = function(tg, ln) {
@@ -136,7 +137,7 @@ _root.贴背景图 = function(){
 	}
 
 	游戏世界.已更新天气 = false;
-	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域", "已更新天气"], 1, false);
+	_global.ASSetPropFlags(游戏世界, ["已更新天气"], 1, false);
 
 	//
 	_root.绘制地图碰撞箱();
@@ -177,6 +178,10 @@ _root.配置场景环境信息 = function(){
 		_root.Ymin = 环境信息.Ymin;
 		游戏世界.背景长 = 环境信息.背景长;
 		游戏世界.背景高 = 环境信息.背景高;
+
+		// 添加动态尺寸的位图层
+		SceneManager.getInstance().addBodyLayers(游戏世界.背景长, 游戏世界.背景高);
+
 		//配置天气和后景
 		_root.天气系统.配置环境(环境信息);
 		_root.加载后景(环境信息);
@@ -201,6 +206,7 @@ _root.配置场景环境信息 = function(){
 		天气系统.视觉情况 = "光照";
 		天气系统.最大光照 = 9;
 		天气系统.最小光照 = 0;
+		SceneManager.getInstance().addBodyLayers(2880, 1000);
 	}
 	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, false);
 

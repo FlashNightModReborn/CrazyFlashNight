@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1748690144" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1749711627" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="健身房">
       <layers>
@@ -13,93 +13,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#75B5A0" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this.swapDepths(100000);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2" color="#7EDED1" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="地图" color="#03BCE7" locked="true" outline="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 健身房" name="地图" centerPoint3DX="843.4" centerPoint3DY="286.95">
-                  <matrix>
-                    <Matrix d="1.0001220703125"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 4" color="#DBA0A1">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="NPC/圣诞树" centerPoint3DX="1641.3" centerPoint3DY="636.25">
-                  <matrix>
-                    <Matrix a="0.249908447265625" d="0.48309326171875" tx="1520.7" ty="465.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   是否为敌人 = false;
-   等级 = 1;
-   hp = 1000000;
-   基本防御力 = 100;
-   基本防御力_min = 100;
-   基本防御力_max = 100;
-   躲闪率 = 100;
-   击中效果 = "火花";
-   Z轴坐标 = this._y;
-   this._visible = 0;
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="Layer 5" color="#B947D1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="健身房沙袋" name="沙袋" selected="true" centerPoint3DX="1249.55" centerPoint3DY="612.45">
+                <DOMSymbolInstance libraryItemName="健身房沙袋" name="沙袋" centerPoint3DX="1249.55" centerPoint3DY="612.45">
                   <matrix>
                     <Matrix tx="1189.35" ty="486.75"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1747717252" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1749711784" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -11,38 +11,6 @@ _root.关卡地图帧值 = "基地房顶";
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 1" color="#2CC7E3" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this.swapDepths(100000);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2" color="#D8C47D" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -308,14 +276,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#E44476">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 12" color="#4CFECC">
+        <DOMLayer name="Layer 12" color="#4CFECC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -328,32 +289,6 @@ onClipEvent (load) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="地图" color="#9FA94F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 基地房顶" name="地图" selected="true" centerPoint3DX="905.95" centerPoint3DY="288.3">
-                  <matrix>
-                    <Matrix d="1.0001220703125"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 14" color="#DD9A70">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

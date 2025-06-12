@@ -361,7 +361,7 @@ _root.跳转地图 = function(跳转帧){
 _root.加载共享场景 = function(加载场景名){
 	var gw:MovieClip = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth());
 	gw.swapDepths(_root.gameworld层级定位器);
-	SceneManager.getInstance().initScene(gw);
+	SceneManager.getInstance().initGameWorld(gw);
 
 	_root.帧计时器.eventBus.publish("SceneChanged");
 }

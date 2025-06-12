@@ -5,6 +5,8 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.scene.*;
 
 _root.开启生存模式 = function(模式) {
+	var sceneManager = SceneManager.getInstance();
+
     _root.当前为战斗地图 = true;
 
     //_root.d_波次._visible = _root.调试模式;
@@ -88,7 +90,7 @@ _root.开启生存模式 = function(模式) {
 		游戏世界门1._height = _root.Ymax - _root.Ymin;
 	}
 	if(门1数据.Identifier || 门1数据.url){
-		var door1inst = SceneManager.getInstance().addInstance(门1数据, "Door1Instance");
+		var door1inst = sceneManager.addInstance(门1数据, "Door1Instance");
 		door1inst._x = (门1数据.x1 + 门1数据.x0) * 0.5;
 		door1inst._y = (门1数据.y1 + 门1数据.y0) * 0.5;
 		door1inst.swapDepths(identifier._y);
@@ -100,23 +102,10 @@ _root.开启生存模式 = function(模式) {
     _global.ASSetPropFlags(游戏世界, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, false);
 
     // 添加动态尺寸的位图层
-    var 尸体层 = 游戏世界.deadbody;
-    尸体层.layers = new Array(3);
-    var 位图宽度 = 游戏世界.背景长 < 2880 ? 游戏世界.背景长 : 2880;
-    var 位图高度 = 游戏世界.背景高 < 1000 ? 游戏世界.背景高 : 1000;
-    尸体层.layers[0] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
-    尸体层.layers[1] = null; // 从未被使用的尸体层1不添加
-    尸体层.layers[2] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
-    尸体层.attachBitmap(尸体层.layers[0], 尸体层.getNextHighestDepth());
-    尸体层.attachBitmap(尸体层.layers[2], 尸体层.getNextHighestDepth());
-
-    // 将 'deadbody' 设置为不可枚举
-    _global.ASSetPropFlags(游戏世界, ["deadbody"], 1, false);
+    sceneManager.addBodyLayers(游戏世界.背景长, 游戏世界.背景高);
 
 	_root.通过数组绘制地图碰撞箱(环境信息.地图碰撞箱);
 
-    // 将 '地图' 设置为不可枚举
-    _global.ASSetPropFlags(游戏世界, ["地图"], 1, false);
 
     // 确定左右刷怪线
     if (环境信息.左侧出生线) {
@@ -165,23 +154,22 @@ _root.开启生存模式 = function(模式) {
     _global.ASSetPropFlags(游戏世界, ["出生地"], 1, false);
 
     // 放置环境地图元件
-	_root.发布消息(SceneManager.getInstance());
 	if(环境信息.背景元素){
 		for(var i = 0; i < 环境信息.背景元素.length; i++){
 			var name = 环境配置.背景元素[i].name ? 环境配置.背景元素[i].name : "bgInstance" + i;
-			SceneManager.getInstance().addInstance(环境信息.背景元素[i], name);
+			sceneManager.addInstance(环境信息.背景元素[i], name);
 		}
 	}
 	// 放置关卡地图元件
     var 实例列表 = _root.无限过图实例[_root.无限过图模式关卡计数];
     for (var i = 0; i < 实例列表.length; i++) {
-        SceneManager.getInstance().addInstance(实例列表[i], "stageInstance" + i);
+        sceneManager.addInstance(实例列表[i], "stageInstance" + i);
     }
 
     // 放置出生点，初始化各个刷怪点的总个数和场上人数
     var 出生点列表 = _root.无限过图出生点[_root.无限过图模式关卡计数];
     for (var i = 0; i < 出生点列表.length; i++) {
-		var 出生点 = SceneManager.getInstance().addInstance(出生点列表[i], "door" + i);
+		var 出生点 = sceneManager.addInstance(出生点列表[i], "door" + i);
         出生点.僵尸型敌人总个数 = 0;
         出生点.僵尸型敌人场上实际人数 = 0;
     }

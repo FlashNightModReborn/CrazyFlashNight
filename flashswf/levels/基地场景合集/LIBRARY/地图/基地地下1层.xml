@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1749101795" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1749711593" lastUniqueIdentifier="24">
   <timeline>
     <DOMTimeline name="基地地下1层">
       <layers>
@@ -10,45 +10,6 @@
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="功能" color="#FF800A" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2" color="#4A8ED2" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this.swapDepths(100000);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 3" color="#5AF6B6" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -215,7 +176,7 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="A兵团士兵？" color="#96DADD" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="A兵团士兵？" color="#96DADD" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -254,7 +215,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蓝发女" color="#AFB740" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="蓝发女" color="#AFB740" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -293,7 +254,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蓝头巾" color="#EF7277" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="蓝头巾" color="#EF7277" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -331,7 +292,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Andy Law" color="#9BCD8B" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="Andy Law" color="#9BCD8B" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -372,26 +333,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#E8922C" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 地下1层" name="地图" centerPoint3DX="1041.85" centerPoint3DY="407.25">
-                  <matrix>
-                    <Matrix d="1.0001220703125"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 16" color="#47BEF8" locked="true">
+        <DOMLayer name="Layer 16" color="#47BEF8" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -503,7 +445,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#BA12CB">
+        <DOMLayer name="Layer 23" color="#BA12CB" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

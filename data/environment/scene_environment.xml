@@ -347,7 +347,7 @@
         <Xmax>960</Xmax>
         <Ymin>308</Ymin>
         <Ymax>613</Ymax>
-        <Width>960</Width>
+        <Width>1024</Width>
         <Height>613</Height>
         <Horizon>140</Horizon>
         <MaxIllumination>9</MaxIllumination>
@@ -454,6 +454,25 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>895,225</Point>
+            <Point>1495,225</Point>
+            <Point>1495,575</Point>
+            <Point>1440,515</Point>
+            <Point>1090,515</Point>
+        </Collision>
+        <Collision>
+            <Point>470,265</Point>
+            <Point>615,265</Point>
+            <Point>615,320</Point>
+            <Point>470,320</Point>
+        </Collision>
+        <Collision>
+            <Point>320,400</Point>
+            <Point>470,400</Point>
+            <Point>470,470</Point>
+            <Point>320,470</Point>
+        </Collision>
         <BGM>酒馆2</BGM>
     </Environment>
     <Environment>
@@ -522,7 +541,7 @@
         <BackgroundURL>地图-走廊</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>30</Xmin>
-        <Xmax>1300</Xmax>
+        <Xmax>1250</Xmax>
         <Ymin>230</Ymin>
         <Ymax>540</Ymax>
         <Width>1300</Width>
@@ -530,34 +549,63 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>985,230</Point>
+            <Point>1255,540</Point>
+            <Point>1255,230</Point>
+        </Collision>
         <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-食堂</BackgroundURL>
         <Alignment>true</Alignment>
-        <Xmin>230</Xmin>
+        <Xmin>290</Xmin>
         <Xmax>1490</Xmax>
-        <Ymin>230</Ymin>
+        <Ymin>330</Ymin>
         <Ymax>600</Ymax>
         <Width>1500</Width>
         <Height>630</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>280,325</Point>
+            <Point>380,325</Point>
+            <Point>280,410</Point>
+        </Collision>
+        <Collision>
+            <Point>280,415</Point>
+            <Point>700,415</Point>
+            <Point>700,540</Point>
+            <Point>890,540</Point>
+            <Point>890,610</Point>
+            <Point>280,610</Point>
+        </Collision>
+        <Collision>
+            <Point>1020,540</Point>
+            <Point>1200,540</Point>
+            <Point>1200,610</Point>
+            <Point>1020,610</Point>
+        </Collision>
         <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-实验室</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>30</Xmin>
-        <Xmax>800</Xmax>
+        <Xmax>900</Xmax>
         <Ymin>310</Ymin>
         <Ymax>540</Ymax>
-        <Width>800</Width>
+        <Width>1024</Width>
         <Height>540</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>630,290</Point>
+            <Point>905,290</Point>
+            <Point>905,560</Point>
+        </Collision>
         <BGM>Decisions</BGM>
     </Environment>
     <Environment>

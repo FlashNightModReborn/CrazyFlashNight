@@ -7,7 +7,8 @@ SceneManager.as
 class org.flashNight.arki.scene.SceneManager {
     private static var instance:SceneManager; // 单例引用
 
-    public var gameworld:MovieClip;
+    public var gameworld:MovieClip; // 当前gameworld
+    private var environment:Object; // 环境信息
 
     public var totalWave = 0; // 总波次
     public var currentWave:Number = -1; // 当前波次
@@ -37,8 +38,40 @@ class org.flashNight.arki.scene.SceneManager {
         basicInfo = null;
     }
 
-    public function initScene(_gw:MovieClip):Void{
+    /*
+     * 对新附加的gameworld进行初始化，并附加必要组件。
+     */
+    public function initGameWorld(_gw:MovieClip):Void{
         gameworld = _gw;
+        // gameworld地图碰撞箱层已经弃用，为防止错误附加一个空影片剪辑作为地图层
+        if(gameworld.地图 == null) gameworld.createEmptyMovieClip("地图", -2);
+        // 附加子弹层，层级在所有人物之下
+        if(gameworld.子弹区域 == null) gameworld.createEmptyMovieClip("子弹区域", -1);
+        // 附加效果层，层级在所有人物之上
+        if(gameworld.效果 == null) gameworld.createEmptyMovieClip("效果", 32767);
+
+        // 将上述属性设置为不可枚举
+        _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图"], 1, false);
+    }
+
+
+    public function addBodyLayers(w:Number ,h:Number):Void{
+        var deadbody = gameworld.deadbody;
+        if(deadbody.layers != null) return;
+        //位图层的大小范围在(1024,512)到(2880,1024)之间
+        if(w < 1024) w = 1024;
+        else if(w >= 2880) w = 2880;
+        if(h < 512) h = 512;
+        else if(h >= 1024) h = 1024;
+        deadbody.layers = new Array(3);
+        deadbody.layers[0] = new flash.display.BitmapData(w, h, true, 13421772);
+        deadbody.layers[1] = null; // 从未被使用的deadbody1不添加
+        deadbody.layers[2] = new flash.display.BitmapData(w, h, true, 13421772);
+        deadbody.attachBitmap(deadbody.layers[0], 0);
+        deadbody.attachBitmap(deadbody.layers[2], 2);
+
+        // 将 'deadbody' 设置为不可枚举
+        _global.ASSetPropFlags(gameworld, ["deadbody"], 1, false);
     }
 
 
@@ -150,20 +183,6 @@ class org.flashNight.arki.scene.SceneManager {
 
         // 将上述属性设置为不可枚举
         _global.ASSetPropFlags(gameworld, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, false);
-
-        // 添加动态尺寸的位图层
-        var 尸体层 = gameworld.deadbody;
-        尸体层.layers = new Array(3);
-        var 位图宽度 = gameworld.背景长 < 2880 ? gameworld.背景长 : 2880;
-        var 位图高度 = gameworld.背景高 < 1000 ? gameworld.背景高 : 1000;
-        尸体层.layers[0] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
-        尸体层.layers[1] = null; // 从未被使用的尸体层1不添加
-        尸体层.layers[2] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
-        尸体层.attachBitmap(尸体层.layers[0], 尸体层.getNextHighestDepth());
-        尸体层.attachBitmap(尸体层.layers[2], 尸体层.getNextHighestDepth());
-
-        // 将 'deadbody' 设置为不可枚举
-        _global.ASSetPropFlags(gameworld, ["deadbody"], 1, false);
 
         _root.发布消息("环境信息.地图碰撞箱")
         // 绘制地图碰撞箱
