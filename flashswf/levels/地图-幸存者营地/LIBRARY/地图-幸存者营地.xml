@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1747036190" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1749724161" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -14,38 +14,6 @@ _root.关卡地图帧值 = "地图-幸存者营地";
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 1" color="#2ADF8F" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2393" name="效果">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this.swapDepths(100000);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2" color="#9648DD" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2392" name="子弹区域">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -153,7 +121,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="出生地" color="#0FD8B1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="出生地" color="#0FD8B1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -178,7 +146,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门 2" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门 2" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -206,7 +174,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门1" color="#BA50B8" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门1" color="#BA50B8" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -230,8 +198,8 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="NPC" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="女仆黑" color="#BA6078" parentLayerIndex="10" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="NPC" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="女仆黑" color="#BA6078" parentLayerIndex="8" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -254,7 +222,7 @@ onClipEvent (load) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/杰克霜精/杰克霜精npc" selected="true" centerPoint3DX="2492.55" centerPoint3DY="312.6">
+                <DOMSymbolInstance libraryItemName="NPC/杰克霜精/杰克霜精npc" centerPoint3DX="2492.55" centerPoint3DY="312.6">
                   <matrix>
                     <Matrix tx="2451.95" ty="259.6"/>
                   </matrix>
@@ -276,7 +244,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="女仆白" color="#BA6078" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="女仆白" color="#BA6078" parentLayerIndex="8" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -303,7 +271,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="JK" color="#D2FD7B" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="JK" color="#D2FD7B" parentLayerIndex="8" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -330,7 +298,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="波斯士兵" color="#9933CC" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="波斯士兵" color="#9933CC" parentLayerIndex="8" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -369,25 +337,6 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#A78BCA" outline="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地地图行动范围" name="地图" centerPoint3DX="784.95" centerPoint3DY="456.25">
-                  <matrix>
-                    <Matrix d="1.0001220703125"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="楼走廊" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -404,7 +353,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="围墙" color="#FF800A" autoNamed="false">
+        <DOMLayer name="围墙" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -420,7 +369,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="车" color="#9933CC" autoNamed="false">
+        <DOMLayer name="车" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -439,7 +388,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="deadbody" color="#3488F9" autoNamed="false">
+        <DOMLayer name="deadbody" color="#3488F9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -452,7 +401,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#A65995" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#A65995" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

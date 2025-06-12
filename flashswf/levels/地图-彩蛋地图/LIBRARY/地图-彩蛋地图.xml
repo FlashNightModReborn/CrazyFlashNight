@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1749721456" lastUniqueIdentifier="45">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1749724245" lastUniqueIdentifier="45">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -35,59 +35,10 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文天" color="#FF800A" autoNamed="false">
+        <DOMLayer name="文天" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="面包机" centerPoint3DX="1042.2" centerPoint3DY="536.05">
-                  <matrix>
-                    <Matrix tx="1004.45" ty="455"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="37.75" y="77.95"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	名字 = "机哥";
-	身高 = 175;
-	性别 = "男";
-	_root.初始化NPC(this);
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="假兰博" centerPoint3DX="1108.7" centerPoint3DY="461">
-                  <matrix>
-                    <Matrix tx="1106" ty="514"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="2.8" y="-53"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	名字 = "阿波";
-	身高 = 175;
-	性别 = "男";
-	_root.初始化NPC(this);
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="假州长" centerPoint3DX="958.7" centerPoint3DY="445.5">
-                  <matrix>
-                    <Matrix tx="956" ty="498.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="2.8" y="-53"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	名字 = "排骨";
-	身高 = 175;
-	性别 = "男";
-	_root.初始化NPC(this);
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -274,7 +225,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="尸体层" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="尸体层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

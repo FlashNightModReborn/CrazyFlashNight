@@ -6,13 +6,9 @@
           <DOMFolderItem name="sprite/新地图" itemID="66011bb7-00000e65" isExpanded="true"/>
           <DOMFolderItem name="UI重构" itemID="668a7e49-000018c6"/>
           <DOMFolderItem name="UI重构/商店相关" itemID="668a7e49-000018c7"/>
-          <DOMFolderItem name="歌留多" itemID="670cf381-0000038c" isExpanded="true"/>
-          <DOMFolderItem name="零件" itemID="66012485-00000403" isExpanded="true"/>
-          <DOMFolderItem name="诺艾尔" itemID="660cdfcd-00000e07" isExpanded="true"/>
-          <DOMFolderItem name="素材" itemID="67fc5e94-00001812"/>
-          <DOMFolderItem name="素材/角色部件" itemID="6804f039-00001811"/>
-          <DOMFolderItem name="素材/武器" itemID="6800ed41-0000173f"/>
-          <DOMFolderItem name="素材/杂项" itemID="6800ed35-0000173a"/>
+          <DOMFolderItem name="歌留多" itemID="670cf381-0000038c"/>
+          <DOMFolderItem name="零件" itemID="66012485-00000403"/>
+          <DOMFolderItem name="诺艾尔" itemID="660cdfcd-00000e07"/>
           <DOMFolderItem name="所有素材" itemID="66011278-00000ccb"/>
           <DOMFolderItem name="所有素材/1.冷兵器" itemID="65fbe274-00000c38"/>
           <DOMFolderItem name="所有素材/1.冷兵器/锐器" itemID="65fbe274-00000c39"/>
@@ -61,7 +57,7 @@
           <DOMFolderItem name="所有素材/重复项目文件夹" itemID="65fbdeee-00000881"/>
           <DOMFolderItem name="所有素材/装备" itemID="65fbe6c1-00000eb2"/>
           <DOMFolderItem name="所有素材/装备/西风大剑" itemID="65fbe6c1-00000eb3"/>
-          <DOMFolderItem name="文天npc" itemID="660ce059-00000e31" isExpanded="true"/>
+          <DOMFolderItem name="文天npc" itemID="660ce059-00000e31"/>
           <DOMFolderItem name="小绿人" itemID="6561b396-000001cd"/>
           <DOMFolderItem name="小绿人/光子破坏炮" itemID="660f9cb9-000005e5"/>
           <DOMFolderItem name="小绿人/人物发型" itemID="64e8c230-0000041c"/>
@@ -101,7 +97,7 @@
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000af0" lastModified="1712300758"/>
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000af2" lastModified="1712300758"/>
           <Include href="场景门.xml" loadImmediate="false" itemID="66f5a03f-00000e56" lastModified="1727373384"/>
-          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1749721456"/>
+          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1749724245"/>
           <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e1b3-000017cf" lastModified="1749721449"/>
           <Include href="歌留多/歌留多胯.xml" itemIcon="1" loadImmediate="false" itemID="67096725-00000045" lastModified="1728926280"/>
           <Include href="歌留多/歌留多身体.xml" itemIcon="1" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728926280"/>
@@ -124,8 +120,6 @@
           <Include href="歌留多/髅髅宫歌留多.xml" itemIcon="1" loadImmediate="false" itemID="6709f658-00000196" lastModified="1728926280"/>
           <Include href="歌留多/髅髅宫歌留多-站立动画.xml" loadImmediate="false" itemID="670cf4d1-000003f7" lastModified="1728926298"/>
           <Include href="歌留多npc.xml" loadImmediate="false" itemID="670cf3d4-000003ba" lastModified="1728926348"/>
-          <Include href="假兰博.xml" loadImmediate="false" itemID="680517af-00000bff" lastModified="1745164207"/>
-          <Include href="假州长.xml" loadImmediate="false" itemID="680517c0-00000c6c" lastModified="1745164224"/>
           <Include href="可互动的任务接取PC.xml" loadImmediate="false" itemID="660ceb90-00001057" lastModified="1712123235"/>
           <Include href="零件/带帽霜精头.xml" itemIcon="1" loadImmediate="false" itemID="65e99d6c-00000204" lastModified="1728926532"/>
           <Include href="零件/霜精臂膀.xml" itemIcon="1" loadImmediate="false" itemID="65e9853a-000001ee" lastModified="1728926532"/>
@@ -136,7 +130,6 @@
           <Include href="零件/霜精右靴子.xml" itemIcon="1" loadImmediate="false" itemID="65e9adc0-000001e9" lastModified="1728926532"/>
           <Include href="零件/霜精左靴子.xml" itemIcon="1" loadImmediate="false" itemID="65e9adb3-000001e4" lastModified="1728926532"/>
           <Include href="门提示.xml" loadImmediate="false" itemID="6603bcd7-00000dbc" lastModified="1711520998"/>
-          <Include href="面包机.xml" loadImmediate="false" itemID="6805177d-00000bc8" lastModified="1745164157"/>
           <Include href="诺艾尔/Symbol 51623.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b66" lastModified="1728926454"/>
           <Include href="诺艾尔/Symbol 51625.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b69" lastModified="1728926454"/>
           <Include href="诺艾尔/Symbol 51627.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b6c" lastModified="1728926454"/>
@@ -153,41 +146,6 @@
           <Include href="诺艾尔/Symbol 51649.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8b" lastModified="1728926454"/>
           <Include href="诺艾尔/Symbol 51650.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b8d" lastModified="1728926454"/>
           <Include href="诺艾尔/Symbol 51652.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b91" lastModified="1728926500"/>
-          <Include href="素材/角色部件/阿波脚.xml" loadImmediate="false" itemID="6800efb3-000017c0" lastModified="1744891827"/>
-          <Include href="素材/角色部件/阿波胯部.xml" loadImmediate="false" itemID="6800f020-000017cc" lastModified="1744891936"/>
-          <Include href="素材/角色部件/阿波头1.xml" loadImmediate="false" itemID="6800e6fd-0000169b" lastModified="1744889597"/>
-          <Include href="素材/角色部件/阿波完整左大腿.xml" loadImmediate="false" itemID="6800f59e-00001911" lastModified="1744893342"/>
-          <Include href="素材/角色部件/阿波小腿.xml" loadImmediate="false" itemID="6800ef6c-000017b6" lastModified="1744891756"/>
-          <Include href="素材/角色部件/阿波右大腿.xml" loadImmediate="false" itemID="6800f02c-000017d0" lastModified="1744891948"/>
-          <Include href="素材/角色部件/阿波左大腿.xml" loadImmediate="false" itemID="6800effd-000017c8" lastModified="1744891901"/>
-          <Include href="素材/角色部件/阿波左下臂.xml" loadImmediate="false" itemID="6800f0c0-000017ed" lastModified="1744892096"/>
-          <Include href="素材/角色部件/机哥.xml" loadImmediate="false" itemID="68015715-00000414" lastModified="1744918481"/>
-          <Include href="素材/角色部件/排骨脊椎.xml" loadImmediate="false" itemID="6800f242-00001842" lastModified="1744892482"/>
-          <Include href="素材/角色部件/排骨脚.xml" loadImmediate="false" itemID="6800f1df-00001832" lastModified="1744892383"/>
-          <Include href="素材/角色部件/排骨胯部.xml" loadImmediate="false" itemID="6800f20e-0000183a" lastModified="1744892430"/>
-          <Include href="素材/角色部件/排骨上臂.xml" loadImmediate="false" itemID="6800f335-0000186f" lastModified="1744892725"/>
-          <Include href="素材/角色部件/排骨上身.xml" loadImmediate="false" itemID="6800f265-00001846" lastModified="1744892517"/>
-          <Include href="素材/角色部件/排骨头1.xml" loadImmediate="false" itemID="6800ebb9-000016c6" lastModified="1744890809"/>
-          <Include href="素材/角色部件/排骨小腿.xml" loadImmediate="false" itemID="6800f1ce-0000182e" lastModified="1744892366"/>
-          <Include href="素材/角色部件/排骨右小臂.xml" loadImmediate="false" itemID="6800f363-0000187d" lastModified="1744892771"/>
-          <Include href="素材/角色部件/排骨左大腿.xml" loadImmediate="false" itemID="6800f1fc-00001836" lastModified="1744892412"/>
-          <Include href="素材/角色部件/排骨左小臂.xml" loadImmediate="false" itemID="6800f34f-00001876" lastModified="1744892751"/>
-          <Include href="素材/角色部件/新型终结者脊椎.xml" loadImmediate="false" itemID="6800d69d-00001660" lastModified="1744885405"/>
-          <Include href="素材/角色部件/新型终结者上臂.xml" loadImmediate="false" itemID="6800d79a-00001684" lastModified="1744885658"/>
-          <Include href="素材/角色部件/新型终结者头部1.xml" loadImmediate="false" itemID="6800d65f-00001653" lastModified="1744885343"/>
-          <Include href="素材/角色部件/新型终结者右手.xml" loadImmediate="false" itemID="6800d78f-00001680" lastModified="1744885647"/>
-          <Include href="素材/角色部件/新型终结者右小臂.xml" loadImmediate="false" itemID="6800d782-0000167c" lastModified="1744885634"/>
-          <Include href="素材/角色部件/新型终结者左手.xml" loadImmediate="false" itemID="6800d7e1-0000168f" lastModified="1744885729"/>
-          <Include href="素材/武器/Podbyrin 9.2 mm.xml" loadImmediate="false" itemID="67fde7f7-00000321" lastModified="1744693239"/>
-          <Include href="素材/武器/阿波的兰博刀.xml" loadImmediate="false" itemID="6800f58d-0000190d" lastModified="1744893325"/>
-          <Include href="素材/武器/排骨的podbyrin.xml" loadImmediate="false" itemID="6800f790-00001969" lastModified="1744893840"/>
-          <Include href="素材/武器/排骨小刀.xml" loadImmediate="false" itemID="6800f2e7-00001860" lastModified="1744896287"/>
-          <Include href="素材/杂项/camopaint.xml" loadImmediate="false" itemID="67fd243e-000002bb" lastModified="1744694198"/>
-          <Include href="素材/杂项/CAMOPAINT2.xml" loadImmediate="false" itemID="67fd251c-000002c7" lastModified="1744643392"/>
-          <Include href="素材/杂项/CAMOPAINT3.xml" loadImmediate="false" itemID="67fd2583-000002d3" lastModified="1744643547"/>
-          <Include href="素材/杂项/排骨上身刀鞘.xml" loadImmediate="false" itemID="6800f2d2-00001859" lastModified="1744892627"/>
-          <Include href="素材/杂项/排骨右大腿枪套.xml" loadImmediate="false" itemID="6800f37a-00001884" lastModified="1744892794"/>
-          <Include href="素材/杂项/飘头带改.xml" loadImmediate="false" itemID="67fc6b11-00001ca4" lastModified="1744793211"/>
           <Include href="所有素材/1.冷兵器/锐器/石中剑/石中剑.xml" loadImmediate="false" itemID="6565f5fa-00000027" lastModified="1702565773"/>
           <Include href="所有素材/1.冷兵器/重锐器/轮盘重工/未命名文件夹 1/Symbol 4834.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001eb6" lastModified="1702237154"/>
           <Include href="所有素材/1.冷兵器/重锐器/勇气灵剑/勇气灵剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6e6b6-00001d6b" lastModified="1710679780"/>
@@ -397,7 +355,6 @@
           <Include href="文天npc/Symbol 35498.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cef" lastModified="1728926482"/>
           <Include href="文天npc/Symbol 35499.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf1" lastModified="1728926482"/>
           <Include href="文天npc/Symbol 35500.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf4" lastModified="1728926482"/>
-          <Include href="我们仨.xml" loadImmediate="false" itemID="68051663-00000991" lastModified="1745163877"/>
           <Include href="小绿人/光子破坏炮/A兵团标志.xml" loadImmediate="false" itemID="64ce483d-0000039a" lastModified="1703251887"/>
           <Include href="小绿人/光子破坏炮/大炮组件1.xml" loadImmediate="false" itemID="64e89cfe-00000038" lastModified="1692974878"/>
           <Include href="小绿人/光子破坏炮/待机模式.xml" loadImmediate="false" itemID="64e8c135-00000406" lastModified="1703250415"/>
@@ -441,8 +398,6 @@
           <Include href="小绿人/文天头.xml" loadImmediate="false" itemID="56aef52c-0000150a" lastModified="1692975824"/>
           <Include href="小绿人/文天小腿.xml" loadImmediate="false" itemID="56aef558-0000150c" lastModified="1703258907"/>
           <Include href="小绿人/左手.xml" loadImmediate="false" itemID="6585934d-00001f69" lastModified="1703252813"/>
-          <Include href="效果.xml" loadImmediate="false" itemID="66d09260-000012ac" lastModified="1724944992"/>
-          <Include href="子弹区域.xml" loadImmediate="false" itemID="66d09236-000012a7" lastModified="1724944950"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">

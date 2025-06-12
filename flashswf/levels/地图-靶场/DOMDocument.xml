@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="55.0000000000003" vanishingPoint3DX="960" vanishingPoint3DY="540" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="55.0000000000003" vanishingPoint3DX="960" vanishingPoint3DY="540" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="665328c7-00000376"/>
           <DOMFolderItem name="image" itemID="65aa3a6c-00000b81" isExpanded="true"/>
@@ -16,11 +16,11 @@
           <DOMFolderItem name="重复项目文件夹" itemID="65a3e06a-0000024b"/>
      </folders>
      <media>
-          <DOMBitmapItem name="image/bitmap51850.png" itemID="6597607c-000004b6" sourceExternalFilepath="./LIBRARY/image/bitmap51850.png" sourceLastImported="1704419453" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap51850.png" bitmapDataHRef="M 1 1705654892.dat" frameRight="44400" frameBottom="20900"/>
+          <DOMBitmapItem name="image/bitmap51850.png" itemID="6597607c-000004b6" sourceExternalFilepath="../地图-靶场/LIBRARY/image/bitmap51850.png" sourceLastImported="1704419453" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap51850.png" bitmapDataHRef="M 1 1705654892.dat" frameRight="44400" frameBottom="20900"/>
      </media>
      <symbols>
           <Include href="button/Symbol 51923.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d4d" lastModified="1704196122"/>
-          <Include href="deadbody.xml" loadImmediate="false" itemID="66d0920e-000012a2" lastModified="1724945646"/>
+          <Include href="deadbody.xml" loadImmediate="false" itemID="66d0920e-000012a2" lastModified="1749722472"/>
           <Include href="Itinerant/cs6用动画/呼吸待机 复制.xml" loadImmediate="false" itemID="669a3acd-00002b03" lastModified="1721383706"/>
           <Include href="Itinerant/人物素材/shape 351.xml" itemIcon="1" loadImmediate="false" itemID="5306ddef-00000160" lastModified="1472207487"/>
           <Include href="Itinerant/人物素材/shape 472.xml" itemIcon="1" loadImmediate="false" itemID="5306ddef-000001d9" lastModified="1717687807"/>
@@ -81,8 +81,8 @@
           <Include href="靶子1号.xml" loadImmediate="false" itemID="6633a760-00000d20" lastModified="1714661216"/>
           <Include href="靶子2号.xml" loadImmediate="false" itemID="6633a77b-00000d38" lastModified="1714661243"/>
           <Include href="靶子3号.xml" loadImmediate="false" itemID="6633a787-00000d4b" lastModified="1714661255"/>
-          <Include href="地图-靶场.xml" itemID="66337922-00000dda" lastModified="1746453845"/>
-          <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e0f1-0000163a" lastModified="1742201094"/>
+          <Include href="地图-靶场.xml" itemID="66337922-00000dda" lastModified="1749723183"/>
+          <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e0f1-0000163a" lastModified="1749722631"/>
           <Include href="素材/Symbol 2.xml" loadImmediate="false" itemID="6577f78a-00000f72" lastModified="1701306521"/>
           <Include href="素材/Symbol 3.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-00000f73" lastModified="1701306521"/>
           <Include href="素材/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-00000f74" lastModified="1701306521"/>

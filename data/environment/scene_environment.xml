@@ -413,13 +413,53 @@
         <BackgroundURL>地图-幸存者营地</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>100</Xmin>
-        <Xmax>2800</Xmax>
-        <Ymin>200</Ymin>
+        <Xmax>2790</Xmax>
+        <Ymin>210</Ymin>
         <Ymax>957</Ymax>
         <Width>2800</Width>
         <Height>957</Height>
         <Horizon>100</Horizon>
         <DisableSky>true</DisableSky>
+        <Collision>
+            <Point>540,205</Point>
+            <Point>640,205</Point>
+            <Point>640,330</Point>
+            <Point>610,330</Point>
+        </Collision>
+        <Collision>
+            <Point>910,205</Point>
+            <Point>1530,205</Point>
+            <Point>1530,340</Point>
+            <Point>1470,340</Point>
+            <Point>1400,265</Point>
+            <Point>1100,265</Point>
+            <Point>1100,340</Point>
+            <Point>1040,340</Point>
+        </Collision>
+        <Collision>
+            <Point>1930,205</Point>
+            <Point>2080,205</Point>
+            <Point>2080,270</Point>
+            <Point>1960,270</Point>
+        </Collision>
+        <Collision>
+            <Point>2360,205</Point>
+            <Point>2480,205</Point>
+            <Point>2480,270</Point>
+            <Point>2360,270</Point>
+        </Collision>
+        <Collision>
+            <Point>510,435</Point>
+            <Point>980,435</Point>
+            <Point>980,505</Point>
+            <Point>510,505</Point>
+        </Collision>
+        <Collision>
+            <Point>645,690</Point>
+            <Point>2800,690</Point>
+            <Point>2800,800</Point>
+            <Point>735,800</Point>
+        </Collision>
         <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
@@ -452,13 +492,36 @@
     <Environment>
         <BackgroundURL>地图-靶场</BackgroundURL>
         <Alignment>true</Alignment>
-        <Xmin>500</Xmin>
-        <Xmax>2987</Xmax>
+        <Xmin>260</Xmin>
+        <Xmax>2340</Xmax>
         <Ymin>380</Ymin>
-        <Ymax>800</Ymax>
-        <Width>2987</Width>
-        <Height>1095</Height>
+        <Ymax>795</Ymax>
+        <Width>2850</Width>
+        <Height>850</Height>
         <Horizon>270</Horizon>
+        <Collision>
+            <Point>255,440</Point>
+            <Point>580,440</Point>
+            <Point>255,800</Point>
+        </Collision>
+        <Collision>
+            <Point>1000,440</Point>
+            <Point>1065,440</Point>
+            <Point>780,800</Point>
+            <Point>715,800</Point>
+        </Collision>
+        <Collision>
+            <Point>1380,440</Point>
+            <Point>1540,440</Point>
+            <Point>1660,600</Point>
+            <Point>1500,600</Point>
+        </Collision>
+        <Collision>
+            <Point>1535,655</Point>
+            <Point>1700,655</Point>
+            <Point>1835,800</Point>
+            <Point>1655,800</Point>
+        </Collision>
         <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
@@ -660,29 +723,59 @@
 	    <Environment>
         <BackgroundURL>地图-同盟卸货站</BackgroundURL>
         <Alignment>true</Alignment>
-        <Xmin>350</Xmin>
-        <Xmax>1400</Xmax>
-        <Ymin>300</Ymin>
+        <Xmin>120</Xmin>
+        <Xmax>1050</Xmax>
+        <Ymin>365</Ymin>
         <Ymax>547</Ymax>
         <Width>1400</Width>
         <Height>547</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>120,360</Point>
+            <Point>630,360</Point>
+            <Point>620,460</Point>
+            <Point>260,460</Point>
+            <Point>220,500</Point>
+            <Point>160,500</Point>
+            <Point>120,545</Point>
+        </Collision>
+        <Collision>
+            <Point>960,360</Point>
+            <Point>1060,545</Point>
+            <Point>1060,360</Point>
+        </Collision>
         <BGM>THE ATEAM</BGM>
     </Environment>
 	    <Environment>
         <BackgroundURL>地图-同盟通路</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>30</Xmin>
-        <Xmax>1300</Xmax>
+        <Xmax>1250</Xmax>
         <Ymin>230</Ymin>
         <Ymax>540</Ymax>
         <Width>1300</Width>
-        <Height>540</Height>
+        <Height>600</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>235,225</Point>
+            <Point>905,290</Point>
+            <Point>905,560</Point>
+        </Collision>
+        <Collision>
+            <Point>970,225</Point>
+            <Point>1260,225</Point>
+            <Point>1260,550</Point>
+        </Collision>
+        <Collision>
+            <Point>0,400</Point>
+            <Point>880,400</Point>
+            <Point>980,550</Point>
+            <Point>0,550</Point>
+        </Collision>
         <BGM>Drone</BGM>
     </Environment>
 	    <Environment>
