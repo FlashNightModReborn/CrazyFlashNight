@@ -58,8 +58,8 @@ class org.flashNight.gesh.pratt.PrattLexer {
         var startLine:Number = _line;
         var startColumn:Number = _column;
 
-        // 数字
-        if (_isDigit(ch)) {
+        // 数字 (整数或小数点开头的浮点数)
+        if (_isDigit(ch) || (ch == "." && _idx + 1 < _len && _isDigit(_src.charAt(_idx + 1)))) {
             _curr = _scanNumber(startLine, startColumn);
             return;
         }
@@ -276,14 +276,20 @@ class org.flashNight.gesh.pratt.PrattLexer {
             if (ch == "/" && _idx + 1 < _len && _src.charAt(_idx + 1) == "*") {
                 _advanceChar();
                 _advanceChar();
-                while (_idx + 1 < _len) {
-                    if (_src.charAt(_idx) == "*" && _src.charAt(_idx + 1) == "/") {
+
+                // ==================== FIX START (PrattLexer.as) ====================
+                // 修正循环条件，允许 _idx 到达最后一个字符
+                while (_idx < _len) { 
+                    // 检查 `*/` 时，需要确保 `_idx+1` 不会越界
+                    if (_idx + 1 < _len && _src.charAt(_idx) == "*" && _src.charAt(_idx + 1) == "/") {
                         _advanceChar();
                         _advanceChar();
-                        break;
+                        break; // 找到结尾，跳出循环
                     }
-                    _advanceChar();
+                    _advanceChar(); // 在注释内部前进
                 }
+                // ===================== FIX END (PrattLexer.as) =====================
+
                 continue;
             }
             
