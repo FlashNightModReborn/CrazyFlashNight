@@ -1,8 +1,8 @@
 ﻿import org.flashNight.gesh.pratt.*;
 
-/* -------------------------------------------------------------------------
- *  增强版 PrattParser.as —— 完整的表达式解析器
- * -------------------------------------------------------------------------*/
+/**
+ * 修改后的Pratt解析器 - 适配新的统一类结构
+ */
 class org.flashNight.gesh.pratt.PrattParser {
     private var _lexer:PrattLexer;
     private var _prefixParselets:Object;
@@ -19,76 +19,71 @@ class org.flashNight.gesh.pratt.PrattParser {
      * 初始化默认解析器
      * --------------------------------------------------------------------------*/
     private function _initializeDefaultParselets():Void {
-        var literalParselet:LiteralParselet = new LiteralParselet();
-        var identifierParselet:IdentifierParselet = new IdentifierParselet();
-        var groupParselet:GroupParselet = new GroupParselet();
-        
         // 前缀解析器
-        registerPrefix(PrattToken.T_NUMBER, literalParselet);
-        registerPrefix(PrattToken.T_STRING, literalParselet);
-        registerPrefix(PrattToken.T_BOOLEAN, literalParselet);
-        registerPrefix(PrattToken.T_NULL, literalParselet);
-        registerPrefix(PrattToken.T_UNDEFINED, literalParselet);
-        registerPrefix(PrattToken.T_IDENTIFIER, identifierParselet);
-        registerPrefix(PrattToken.T_MATH, identifierParselet); // Math作为标识符
-        registerPrefix(PrattToken.T_LPAREN, groupParselet);
+        registerPrefix(PrattToken.T_NUMBER, PrattParselet.literal());
+        registerPrefix(PrattToken.T_STRING, PrattParselet.literal());
+        registerPrefix(PrattToken.T_BOOLEAN, PrattParselet.literal());
+        registerPrefix(PrattToken.T_NULL, PrattParselet.literal());
+        registerPrefix(PrattToken.T_UNDEFINED, PrattParselet.literal());
+        registerPrefix(PrattToken.T_IDENTIFIER, PrattParselet.identifier());
+        registerPrefix(PrattToken.T_LPAREN, PrattParselet.group());
         
         // 前缀运算符
-        registerPrefix("-", new PrefixOperatorParselet(8));
-        registerPrefix("+", new PrefixOperatorParselet(8));
-        registerPrefix("!", new PrefixOperatorParselet(8));
-        registerPrefix("typeof", new PrefixOperatorParselet(8));
+        registerPrefix("-", PrattParselet.prefixOperator(8));
+        registerPrefix("+", PrattParselet.prefixOperator(8));
+        registerPrefix("!", PrattParselet.prefixOperator(8));
+        registerPrefix("typeof", PrattParselet.prefixOperator(8));
         
         // 中缀解析器 - 按优先级从低到高
         
         // 三元运算符 (优先级1)
-        registerInfix("?", new TernaryOperatorParselet());
+        registerInfix("?", PrattParselet.ternaryOperator());
         
         // 逻辑或 (优先级2)
-        registerInfix("||", new BinaryOperatorParselet(2, false));
-        registerInfix("??", new BinaryOperatorParselet(2, false)); // 空值合并
+        registerInfix("||", PrattParselet.binaryOperator(2, false));
+        registerInfix("??", PrattParselet.binaryOperator(2, false)); // 空值合并
         
         // 逻辑与 (优先级3)
-        registerInfix("&&", new BinaryOperatorParselet(3, false));
+        registerInfix("&&", PrattParselet.binaryOperator(3, false));
         
         // 相等比较 (优先级4)
-        registerInfix("==", new BinaryOperatorParselet(4, false));
-        registerInfix("!=", new BinaryOperatorParselet(4, false));
-        registerInfix("===", new BinaryOperatorParselet(4, false));
-        registerInfix("!==", new BinaryOperatorParselet(4, false));
+        registerInfix("==", PrattParselet.binaryOperator(4, false));
+        registerInfix("!=", PrattParselet.binaryOperator(4, false));
+        registerInfix("===", PrattParselet.binaryOperator(4, false));
+        registerInfix("!==", PrattParselet.binaryOperator(4, false));
         
         // 关系比较 (优先级5)
-        registerInfix("<", new BinaryOperatorParselet(5, false));
-        registerInfix(">", new BinaryOperatorParselet(5, false));
-        registerInfix("<=", new BinaryOperatorParselet(5, false));
-        registerInfix(">=", new BinaryOperatorParselet(5, false));
+        registerInfix("<", PrattParselet.binaryOperator(5, false));
+        registerInfix(">", PrattParselet.binaryOperator(5, false));
+        registerInfix("<=", PrattParselet.binaryOperator(5, false));
+        registerInfix(">=", PrattParselet.binaryOperator(5, false));
         
         // 加减 (优先级6)
-        registerInfix("+", new BinaryOperatorParselet(6, false));
-        registerInfix("-", new BinaryOperatorParselet(6, false));
+        registerInfix("+", PrattParselet.binaryOperator(6, false));
+        registerInfix("-", PrattParselet.binaryOperator(6, false));
         
         // 乘除模 (优先级7)
-        registerInfix("*", new BinaryOperatorParselet(7, false));
-        registerInfix("/", new BinaryOperatorParselet(7, false));
-        registerInfix("%", new BinaryOperatorParselet(7, false));
+        registerInfix("*", PrattParselet.binaryOperator(7, false));
+        registerInfix("/", PrattParselet.binaryOperator(7, false));
+        registerInfix("%", PrattParselet.binaryOperator(7, false));
         
         // 指数 (优先级8, 右结合)
-        registerInfix("**", new BinaryOperatorParselet(8, true));
+        registerInfix("**", PrattParselet.binaryOperator(8, true));
         
         // 最高优先级访问操作 (优先级10)
-        registerInfix("(", new FunctionCallParselet()); // 函数调用
-        registerInfix(".", new PropertyAccessParselet()); // 属性访问
-        registerInfix("[", new ArrayAccessParselet()); // 数组访问
+        registerInfix("(", PrattParselet.functionCall()); // 函数调用
+        registerInfix(".", PrattParselet.propertyAccess()); // 属性访问
+        registerInfix("[", PrattParselet.arrayAccess()); // 数组访问
     }
 
     /* ----------------------------------------------------------------------------
      * 注册解析器
      * --------------------------------------------------------------------------*/
-    public function registerPrefix(tokenType:String, parselet):Void {
+    public function registerPrefix(tokenType:String, parselet:PrattParselet):Void {
         _prefixParselets[tokenType] = parselet;
     }
 
-    public function registerInfix(tokenText:String, parselet):Void {
+    public function registerInfix(tokenText:String, parselet:PrattParselet):Void {
         _infixParselets[tokenText] = parselet;
     }
 
@@ -131,7 +126,7 @@ class org.flashNight.gesh.pratt.PrattParser {
      * --------------------------------------------------------------------------*/
     public function getPrecedence():Number {
         var token:PrattToken = getCurrentToken();
-        var infixParselet = _infixParselets[token.text];
+        var infixParselet:PrattParselet = _infixParselets[token.text];
         
         if (infixParselet && infixParselet.getPrecedence) {
             return infixParselet.getPrecedence();
@@ -143,22 +138,22 @@ class org.flashNight.gesh.pratt.PrattParser {
     /* ----------------------------------------------------------------------------
      * 核心解析方法
      * --------------------------------------------------------------------------*/
-    public function parseExpression(minPrecedence:Number):Expression {
+    public function parseExpression(minPrecedence:Number):PrattExpression {
         if (minPrecedence == undefined) minPrecedence = 0;
         
         var token:PrattToken = consume();
-        var prefixParselet = _getPrefixParselet(token);
+        var prefixParselet:PrattParselet = _getPrefixParselet(token);
         
         if (prefixParselet == null) {
             throw new Error("Could not parse token: " + token.createError("Unexpected token"));
         }
         
-        var left:Expression = prefixParselet.parse(this, token);
+        var left:PrattExpression = prefixParselet.parsePrefix(this, token);
         
         while (minPrecedence < getPrecedence()) {
             token = consume();
-            var infixParselet = _infixParselets[token.text];
-            left = infixParselet.parse(this, left, token);
+            var infixParselet:PrattParselet = _infixParselets[token.text];
+            left = infixParselet.parseInfix(this, left, token);
         }
         
         return left;
@@ -167,8 +162,8 @@ class org.flashNight.gesh.pratt.PrattParser {
     /* ----------------------------------------------------------------------------
      * 解析完整表达式
      * --------------------------------------------------------------------------*/
-    public function parse():Expression {
-        var expression:Expression = parseExpression(0);
+    public function parse():PrattExpression {
+        var expression:PrattExpression = parseExpression(0);
         
         if (!match(PrattToken.T_EOF)) {
             var token:PrattToken = getCurrentToken();
@@ -181,9 +176,9 @@ class org.flashNight.gesh.pratt.PrattParser {
     /* ----------------------------------------------------------------------------
      * 获取前缀解析器
      * --------------------------------------------------------------------------*/
-    private function _getPrefixParselet(token:PrattToken) {
+    private function _getPrefixParselet(token:PrattToken):PrattParselet {
         // 首先检查token类型
-        var parselet = _prefixParselets[token.type];
+        var parselet:PrattParselet = _prefixParselets[token.type];
         if (parselet != null) {
             return parselet;
         }
@@ -196,65 +191,14 @@ class org.flashNight.gesh.pratt.PrattParser {
         
         return null;
     }
+    
+    /* ----------------------------------------------------------------------------
+     * 自定义Buff运算符支持
+     * --------------------------------------------------------------------------*/
+    public function addBuffOperators():Void {
+        // Buff系统专用运算符
+        registerInfix("@", PrattParselet.binaryOperator(9, false)); // Buff应用运算符
+        registerInfix("~>", PrattParselet.binaryOperator(3, true)); // Buff链式运算符
+        registerPrefix("$", PrattParselet.prefixOperator(8)); // Buff变量引用
+    }
 }
-
-/* -------------------------------------------------------------------------
- *  使用示例和测试
- * -------------------------------------------------------------------------*/
-/*
-// 基础使用示例
-var evaluator = PrattFactory.createStandardEvaluator();
-
-// 1. 基础数学表达式
-trace(evaluator.evaluate("2 + 3 * 4")); // 输出: 14
-trace(evaluator.evaluate("(2 + 3) * 4")); // 输出: 20
-
-// 2. 比较和逻辑运算
-trace(evaluator.evaluate("5 > 3 && 2 < 4")); // 输出: true
-trace(evaluator.evaluate("10 == 5 * 2 ? 'yes' : 'no'")); // 输出: "yes"
-
-// 3. 函数调用
-trace(evaluator.evaluate("Math.max(10, 20, 15)")); // 输出: 20
-trace(evaluator.evaluate("Math.min(5, 3, 8)")); // 输出: 3
-
-// 4. 变量使用
-evaluator.setVariable("x", 10);
-evaluator.setVariable("y", 5);
-trace(evaluator.evaluate("x * y + Math.sqrt(16)")); // 输出: 54
-
-// 5. 对象属性访问
-var player = {level: 15, baseAttack: 100};
-evaluator.setVariable("player", player);
-trace(evaluator.evaluate("player.baseAttack + player.level * 5")); // 输出: 175
-
-// 6. 数组访问
-var stats = [100, 200, 300];
-evaluator.setVariable("stats", stats);
-trace(evaluator.evaluate("stats[1] + stats[2]")); // 输出: 500
-
-// 7. 复杂的Buff表达式
-var buffEvaluator = PrattFactory.createBuffEvaluator();
-buffEvaluator.setVariable("baseValue", 100);
-buffEvaluator.setVariable("level", 10);
-
-// 模拟buff计算逻辑
-var buffResult = buffEvaluator.evaluate(
-    "baseValue * (level > 5 ? 1.2 : 1.0) + (level >= 10 ? 50 : 0)"
-);
-trace("Buff计算结果: " + buffResult); // 输出: 170
-
-// 8. 错误处理
-try {
-    trace(evaluator.evaluate("5 / 0")); // 抛出除零错误
-} catch (e) {
-    trace("错误: " + e.message);
-}
-
-// 9. 空值处理
-evaluator.setVariable("maybeNull", null);
-trace(evaluator.evaluate("maybeNull ?? 'default'")); // 输出: "default"
-
-// 10. 类型检查
-trace(evaluator.evaluate("typeof 'hello'")); // 输出: "string"
-trace(evaluator.evaluate("isNaN('abc')")); // 输出: true
-*/

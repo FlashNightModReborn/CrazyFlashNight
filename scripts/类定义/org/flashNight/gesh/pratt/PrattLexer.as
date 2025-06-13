@@ -1,16 +1,17 @@
 ﻿import org.flashNight.gesh.pratt.*;
 
-/* -------------------------------------------------------------------------
- *  增强版 PrattLexer.as —— 支持更多词法特性
- * -------------------------------------------------------------------------*/
+
+// ============================================================================
+// Lexer类 - 词法分析器
+// ============================================================================
 class org.flashNight.gesh.pratt.PrattLexer {
     private var _src:String;
     private var _idx:Number = 0;
     private var _len:Number;
     private var _curr:PrattToken;
-    private var _line:Number = 1;    // 行号
-    private var _column:Number = 1;  // 列号
-    private var _keywords:Object;    // 关键字映射
+    private var _line:Number = 1;
+    private var _column:Number = 1;
+    private var _keywords:Object;
 
     function PrattLexer(src:String) {
         _src = src;
@@ -20,20 +21,21 @@ class org.flashNight.gesh.pratt.PrattLexer {
     }
 
     private function _initKeywords():Void {
-        _keywords = {
-            "true": PrattToken.T_BOOLEAN,
-            "false": PrattToken.T_BOOLEAN,
-            "null": PrattToken.T_NULL,
-            "undefined": PrattToken.T_UNDEFINED,
-            "if": PrattToken.T_IF,
-            "else": PrattToken.T_ELSE,
-            "and": PrattToken.T_AND,
-            "or": PrattToken.T_OR,
-            "not": PrattToken.T_NOT
-        };
+        _keywords = {};
+
+        // 使用字符串拼接避免关键词字面量问题
+        _keywords["" + true] = PrattToken.T_BOOLEAN;
+        _keywords["" + false] = PrattToken.T_BOOLEAN;
+        _keywords["null"] = PrattToken.T_NULL;
+        _keywords["undefined"] = PrattToken.T_UNDEFINED;
+        _keywords["if"] = PrattToken.T_IF;
+        _keywords["else"] = PrattToken.T_ELSE;
+        _keywords["and"] = PrattToken.T_AND;
+        _keywords["or"] = PrattToken.T_OR;
+        _keywords["not"] = PrattToken.T_NOT;
     }
 
-    /* 对外接口 */
+
     public function peek():PrattToken {
         return _curr;
     }
@@ -44,11 +46,6 @@ class org.flashNight.gesh.pratt.PrattLexer {
         return t;
     }
 
-    public function getCurrentPosition():Object {
-        return {line: _line, column: _column};
-    }
-
-    /* 内部：扫描下一个 token */
     private function _advance():Void {
         _skipWhitespaceAndComments();
         
@@ -61,7 +58,7 @@ class org.flashNight.gesh.pratt.PrattLexer {
         var startLine:Number = _line;
         var startColumn:Number = _column;
 
-        // 数字（支持小数）
+        // 数字
         if (_isDigit(ch)) {
             _curr = _scanNumber(startLine, startColumn);
             return;
@@ -139,11 +136,9 @@ class org.flashNight.gesh.pratt.PrattLexer {
         _curr = new PrattToken(PrattToken.T_OPERATOR, ch, startLine, startColumn);
     }
 
-    /* 扫描数字（支持小数、科学计数法） */
     private function _scanNumber(startLine:Number, startColumn:Number):PrattToken {
         var start:Number = _idx;
         var hasDot:Boolean = false;
-        var hasExp:Boolean = false;
 
         // 整数部分
         while (_idx < _len && _isDigit(_src.charAt(_idx))) {
@@ -153,31 +148,18 @@ class org.flashNight.gesh.pratt.PrattLexer {
         // 小数部分
         if (_idx < _len && _src.charAt(_idx) == "." && !hasDot) {
             hasDot = true;
-            _advanceChar(); // 跳过小数点
-            while (_idx < _len && _isDigit(_src.charAt(_idx))) {
-                _advanceChar();
-            }
-        }
-
-        // 科学计数法
-        if (_idx < _len && (_src.charAt(_idx) == "e" || _src.charAt(_idx) == "E")) {
-            hasExp = true;
-            _advanceChar(); // 跳过 e/E
-            if (_idx < _len && (_src.charAt(_idx) == "+" || _src.charAt(_idx) == "-")) {
-                _advanceChar(); // 跳过符号
-            }
+            _advanceChar();
             while (_idx < _len && _isDigit(_src.charAt(_idx))) {
                 _advanceChar();
             }
         }
 
         var numText:String = _src.substr(start, _idx - start);
-        var value:Number = hasDot || hasExp ? parseFloat(numText) : parseInt(numText);
+        var value:Number = hasDot ? parseFloat(numText) : parseInt(numText);
         
         return new PrattToken(PrattToken.T_NUMBER, numText, startLine, startColumn, value);
     }
 
-    /* 扫描标识符/关键字 */
     private function _scanIdentifier(startLine:Number, startColumn:Number):PrattToken {
         var start:Number = _idx;
         
@@ -191,7 +173,6 @@ class org.flashNight.gesh.pratt.PrattLexer {
         return new PrattToken(tokenType, text, startLine, startColumn);
     }
 
-    /* 扫描字符串 */
     private function _scanString(quote:String, startLine:Number, startColumn:Number):PrattToken {
         var start:Number = _idx;
         _advanceChar(); // 跳过开始引号
@@ -212,7 +193,6 @@ class org.flashNight.gesh.pratt.PrattLexer {
                         case "\\": value += "\\"; break;
                         case "\"": value += "\""; break;
                         case "'": value += "'"; break;
-                        case "0": value += "\0"; break;
                         default: value += escaped; break;
                     }
                     _advanceChar();
@@ -233,7 +213,6 @@ class org.flashNight.gesh.pratt.PrattLexer {
         return new PrattToken(PrattToken.T_STRING, fullText, startLine, startColumn, value);
     }
 
-    /* 扫描多字符运算符 */
     private function _scanMultiCharOperator():String {
         var ch1:String = _src.charAt(_idx);
         var ch2:String = _idx + 1 < _len ? _src.charAt(_idx + 1) : "";
@@ -265,8 +244,6 @@ class org.flashNight.gesh.pratt.PrattLexer {
             case "/=":
             case "%=":
             case "**":
-            case "<<":
-            case ">>":
             case "??":
                 _advanceChar();
                 _advanceChar();
@@ -276,18 +253,16 @@ class org.flashNight.gesh.pratt.PrattLexer {
         return null;
     }
 
-    /* 跳过空白和注释 */
     private function _skipWhitespaceAndComments():Void {
         while (_idx < _len) {
             var ch:String = _src.charAt(_idx);
             
-            // 空白字符
             if (_isWhitespace(ch)) {
                 _advanceChar();
                 continue;
             }
             
-            // 单行注释 //
+            // 单行注释
             if (ch == "/" && _idx + 1 < _len && _src.charAt(_idx + 1) == "/") {
                 _advanceChar();
                 _advanceChar();
@@ -297,7 +272,7 @@ class org.flashNight.gesh.pratt.PrattLexer {
                 continue;
             }
             
-            // 多行注释 /* */
+            // 多行注释
             if (ch == "/" && _idx + 1 < _len && _src.charAt(_idx + 1) == "*") {
                 _advanceChar();
                 _advanceChar();
@@ -316,7 +291,6 @@ class org.flashNight.gesh.pratt.PrattLexer {
         }
     }
 
-    /* 前进一个字符并更新位置 */
     private function _advanceChar():Void {
         if (_idx < _len) {
             if (_src.charAt(_idx) == "\n") {
@@ -329,82 +303,21 @@ class org.flashNight.gesh.pratt.PrattLexer {
         }
     }
 
-    /* 字符类别判定 */
     private function _isWhitespace(c:String):Boolean {
         return c == " " || c == "\t" || c == "\n" || c == "\r";
     }
 
     private function _isDigit(c:String):Boolean {
         var code:Number = c.charCodeAt(0);
-        return code >= 48 && code <= 57; // 0-9
+        return code >= 48 && code <= 57;
     }
 
     private function _isAlpha(c:String):Boolean {
         var code:Number = c.charCodeAt(0);
-        return (code >= 65 && code <= 90) || (code >= 97 && code <= 122); // A-Z, a-z
+        return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
     }
 
     private function _isAlnum(c:String):Boolean {
         return _isAlpha(c) || _isDigit(c) || c == "_" || c == "$";
-    }
-
-    /* 十六进制数字支持（扩展） */
-    private function _isHexDigit(c:String):Boolean {
-        var code:Number = c.charCodeAt(0);
-        return _isDigit(c) || (code >= 65 && code <= 70) || (code >= 97 && code <= 102); // A-F, a-f
-    }
-
-    /* 扫描十六进制数字 */
-    private function _scanHexNumber(startLine:Number, startColumn:Number):PrattToken {
-        var start:Number = _idx;
-        _advanceChar(); // 跳过 '0'
-        _advanceChar(); // 跳过 'x'
-
-        while (_idx < _len && _isHexDigit(_src.charAt(_idx))) {
-            _advanceChar();
-        }
-
-        var hexText:String = _src.substr(start, _idx - start);
-        var value:Number = parseInt(hexText, 16);
-        
-        return new PrattToken(PrattToken.T_NUMBER, hexText, startLine, startColumn, value);
-    }
-
-    /* 添加自定义操作符支持 */
-    public function addCustomOperator(operator:String):Void {
-        // 可以在这里添加自定义操作符的识别逻辑
-        // 这为buff系统提供了灵活性
-    }
-
-    /* 词法分析错误 */
-    private function _lexError(message:String):Void {
-        throw new Error("词法分析错误 at line " + _line + ", column " + _column + ": " + message);
-    }
-
-    /* 调试方法：获取所有tokens */
-    public function getAllTokens():Array {
-        var tokens:Array = [];
-        var originalIdx:Number = _idx;
-        var originalLine:Number = _line;
-        var originalColumn:Number = _column;
-        
-        // 重置到开始
-        _idx = 0;
-        _line = 1;
-        _column = 1;
-        _advance();
-        
-        while (_curr.type != PrattToken.T_EOF) {
-            tokens.push(_curr);
-            _advance();
-        }
-        tokens.push(_curr); // 添加EOF
-        
-        // 恢复原始状态
-        _idx = originalIdx;
-        _line = originalLine;
-        _column = originalColumn;
-        
-        return tokens;
     }
 }
