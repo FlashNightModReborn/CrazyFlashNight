@@ -15,6 +15,7 @@ class org.flashNight.gesh.pratt.PrattExpression {
     public static var PROPERTY_ACCESS:String = "PROPERTY_ACCESS";
     public static var ARRAY_ACCESS:String = "ARRAY_ACCESS";
     public static var ARRAY_LITERAL:String = "ARRAY_LITERAL";
+    public static var OBJECT_LITERAL:String = "OBJECT_LITERAL";
     
     // 通用属性
     public var type:String;
@@ -36,6 +37,7 @@ class org.flashNight.gesh.pratt.PrattExpression {
     public var functionExpr:PrattExpression;  // 用于FUNCTION_CALL
     public var arguments:Array;    // 用于FUNCTION_CALL
     public var elements:Array;  // 用于ARRAY_LITERAL（支持数组字面量）
+    public var properties:Array; // 用于OBJECT_LITERAL, 格式: [{key:String, value:PrattExpression}]
     
     public function PrattExpression(exprType:String) {
         type = exprType;
@@ -104,6 +106,12 @@ class org.flashNight.gesh.pratt.PrattExpression {
         return expr;
     }
 
+    public static function objectLiteral(props:Array):PrattExpression {
+        var expr:PrattExpression = new PrattExpression(OBJECT_LITERAL);
+        expr.properties = props || [];
+        return expr;
+    }
+
     // 求值方法
     public function evaluate(context:Object) {
         switch (type) {
@@ -156,6 +164,15 @@ class org.flashNight.gesh.pratt.PrattExpression {
                     evaluatedElements.push(this.elements[i].evaluate(context));
                 }
                 return evaluatedElements;
+
+            case OBJECT_LITERAL:
+                var obj:Object = {};
+                for (var i:Number = 0; i < this.properties.length; i++) {
+                    var prop = this.properties[i];
+                    var key:String = prop.key;
+                    obj[key] = prop.value.evaluate(context);
+                }
+                return obj;
                 
             default:
                 throw new Error("Unknown expression type: " + type);
@@ -368,6 +385,15 @@ class org.flashNight.gesh.pratt.PrattExpression {
                     elemStr += this.elements[i].toString();
                 }
                 return "[ArrayLiteral:[" + elemStr + "]]";
+                
+            case OBJECT_LITERAL:
+                    var propStr:String = "";
+                    for (var i:Number = 0; i < this.properties.length; i++) {
+                        if (i > 0) propStr += ", ";
+                        var prop = this.properties[i];
+                        propStr += prop.key + ":" + prop.value.toString();
+                    }
+                    return "[ObjectLiteral:{" + propStr + "}]";
             default:
                 return "[Expression:" + type + "]";
         }

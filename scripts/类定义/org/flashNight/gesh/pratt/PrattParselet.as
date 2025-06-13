@@ -20,6 +20,7 @@ class org.flashNight.gesh.pratt.PrattParselet {
     public static var PROPERTY_ACCESS:String = "PROPERTY_ACCESS";
     public static var ARRAY_ACCESS:String = "ARRAY_ACCESS";
     public static var ARRAY_LITERAL:String = "ARRAY_LITERAL";
+    public static var OBJECT_LITERAL:String = "OBJECT_LITERAL";
     
     private var _type:String;
     private var _subType:String;
@@ -75,6 +76,10 @@ class org.flashNight.gesh.pratt.PrattParselet {
     public static function arrayLiteral():PrattParselet {
         return new PrattParselet(PREFIX, ARRAY_LITERAL, 0, false);
     }
+
+    public static function objectLiteral():PrattParselet {
+        return new PrattParselet(PREFIX, OBJECT_LITERAL, 0, false);
+    }
     
     // 主要的解析方法
     public function parsePrefix(parser:PrattParser, token:PrattToken):PrattExpression {
@@ -125,6 +130,37 @@ class org.flashNight.gesh.pratt.PrattParselet {
                 parser.consumeExpected(PrattToken.T_RBRACKET);
                 
                 return PrattExpression.arrayLiteral(elements);
+
+            case OBJECT_LITERAL:
+                var properties:Array = [];
+
+                if (!parser.match(PrattToken.T_RBRACE)) {
+                    while (true) {
+                        if (parser.match(PrattToken.T_RBRACE)) {
+                            break; // 支持尾随逗号
+                        }
+
+                        // 解析键 (可以是标识符或字符串)
+                        var keyToken:PrattToken = parser.consume();
+                        var key:String;
+                        if (keyToken.type == PrattToken.T_IDENTIFIER) {
+                            key = keyToken.text;
+                        } else if (keyToken.type == PrattToken.T_STRING) {
+                            key = keyToken.getStringValue();
+                        } else {
+                            throw new Error("Invalid object key: " + keyToken.createError("Expected identifier or string"));
+                        }
+
+                        parser.consumeExpected(PrattToken.T_COLON);
+                        var value:PrattExpression = parser.parseExpression(0);
+                        properties.push({key: key, value: value});
+
+                        if (!parser.match(PrattToken.T_COMMA)) break;
+                        parser.consume();
+                    }
+                }
+                parser.consumeExpected(PrattToken.T_RBRACE);
+                return PrattExpression.objectLiteral(properties);
                 
             default:
                 throw new Error("Invalid prefix parselet subtype: " + _subType);

@@ -28,6 +28,7 @@ class org.flashNight.gesh.pratt.PrattParser {
         registerPrefix(PrattToken.T_IDENTIFIER, PrattParselet.identifier());
         registerPrefix(PrattToken.T_LPAREN, PrattParselet.group());
         registerPrefix(PrattToken.T_LBRACKET, PrattParselet.arrayLiteral())
+        registerPrefix(PrattToken.T_LBRACE, PrattParselet.objectLiteral()); // 新增对象字面量解析器
 
         // 前缀运算符
         registerPrefix("-", PrattParselet.prefixOperator(7)); // 按文本注册

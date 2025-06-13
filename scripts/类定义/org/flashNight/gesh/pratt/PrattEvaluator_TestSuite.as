@@ -300,6 +300,11 @@ class org.flashNight.gesh.pratt.PrattEvaluator_TestSuite {
         // 测试不使用缓存
         var noCacheResult:Number = evaluator.evaluate("Math.sqrt(25)", false);
         _assert(noCacheResult == 5, "非缓存求值：结果应该正确");
+
+
+        // 对象字面量求值
+        var objLiteralResult:Object = evaluator.evaluate('{ "message": "hello " + "world", "value": 1 + 2 }');
+        _assert(objLiteralResult.message == "hello world" && objLiteralResult.value == 3, "求值类型：对象字面量结果应该正确");
     }
     
     // ============================================================================

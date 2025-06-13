@@ -36,6 +36,7 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         testPrefixExpressions();            // 前缀表达式解析
         testInfixExpressions();             // 中缀表达式解析
         testArrayLiteralParsing();          // 数组字面量解析 (新增)
+        testObjectLiteralParsing();         // 对象字面量解析 (新增)
         testComplexNestedParsing();         // 复杂嵌套解析
         testSyntaxErrorHandling();          // 语法错误处理
         testParserStateManagement();        // 解析器状态管理
@@ -854,6 +855,57 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
                 precisionTest[1] == 16 && 
                 precisionTest[2] == 6,
                 "数组字面量解析精度：应该正确处理运算符优先级");
+    }
+
+    // ============================================================================
+    // 测试分组6.5：对象字面量解析 (新增)
+    // ============================================================================
+    private static function testObjectLiteralParsing():Void {
+        trace("\n--- 测试分组6.5：对象字面量解析 ---");
+
+        var context:Object = {
+            x: 10, y: 5, name: "Alice"
+        };
+        
+        // 空对象
+        var emptyObj:Object = _parseAndEvaluate("{}", context);
+        var keyCount:Number = 0;
+        for (var key:String in emptyObj) {
+            keyCount++;
+        }
+        _assert(typeof emptyObj == "object" && keyCount == 0, "对象字面量：空对象应该正确解析");
+
+        
+        // 简单对象
+        var simpleObj:Object = _parseAndEvaluate("{ a: 1, b: 'hello', c: true }", context);
+        _assert(simpleObj.a == 1 && simpleObj.b == 'hello' && simpleObj.c === true, "对象字面量：简单键值对应该正确");
+
+        // 字符串作为键
+        var stringKeyObj:Object = _parseAndEvaluate("{ 'key-1': 100, \"key-2\": 200 }", context);
+        _assert(stringKeyObj['key-1'] == 100 && stringKeyObj['key-2'] == 200, "对象字面量：字符串键应该正确处理");
+
+        // 值为表达式
+        var exprValueObj:Object = _parseAndEvaluate("{ sum: x + y, product: x * y }", context);
+        _assert(exprValueObj.sum == 15 && exprValueObj.product == 50, "对象字面量：值可以是表达式");
+
+        // 嵌套对象
+        var nestedObj:Object = _parseAndEvaluate("{ user: { name: name, id: 123 }, data: [x, y] }", context);
+        _assert(nestedObj.user.name == "Alice" && nestedObj.user.id == 123, "对象字面量：应该支持嵌套对象");
+        _assert(nestedObj.data.length == 2 && nestedObj.data[1] == 5, "对象字面量：应该支持嵌套数组");
+
+        // 尾随逗号
+        var trailingCommaObj:Object = _parseAndEvaluate("{ a: 1, b: 2, }", context);
+        _assert(trailingCommaObj.a == 1 && trailingCommaObj.b == 2, "对象字面量：应该支持尾随逗号");
+        
+        // 与其他表达式结合
+        var propAccessTest = _parseAndEvaluate("{ a: 1, b: 2 }.b", context);
+        _assert(propAccessTest == 2, "对象字面量：应该支持直接属性访问");
+
+        // 语法错误测试
+        _assertThrows(function() { _parseAndEvaluate("{ a 1 }", context); }, "Expected T_COLON", "对象字面量错误：缺少冒号应该抛错");
+        _assertThrows(function() { _parseAndEvaluate("{ a: }", context); }, "Could not parse token", "对象字面量错误：缺少值应该抛错");
+        _assertThrows(function() { _parseAndEvaluate("{ 123: 1 }", context); }, "Invalid object key", "对象字面量错误：数字键应该抛错");
+        _assertThrows(function() { _parseAndEvaluate("{ a: 1", context); }, "Expected T_RBRACE", "对象字面量错误：缺少右大括号应该抛错");
     }
     
     // ============================================================================
