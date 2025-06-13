@@ -35,6 +35,7 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         testFunctionCallExpressions(); // 函数调用表达式
         testPropertyAccessExpressions(); // 属性访问表达式
         testArrayAccessExpressions();  // 数组访问表达式
+        testArrayLiteralExpressions(); // 数组字面量表达式 (新增)
         testComplexNestedExpressions(); // 复杂嵌套表达式
         testErrorHandling();           // 错误处理
         testToStringMethod();          // toString方法
@@ -64,13 +65,13 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         // 验证所有表达式类型常量都已定义且唯一
         var expectedTypes:Array = [
             "BINARY", "UNARY", "TERNARY", "LITERAL", "IDENTIFIER",
-            "FUNCTION_CALL", "PROPERTY_ACCESS", "ARRAY_ACCESS"
+            "FUNCTION_CALL", "PROPERTY_ACCESS", "ARRAY_ACCESS", "ARRAY_LITERAL"
         ];
         
         var actualTypes:Array = [
             PrattExpression.BINARY, PrattExpression.UNARY, PrattExpression.TERNARY, 
             PrattExpression.LITERAL, PrattExpression.IDENTIFIER, PrattExpression.FUNCTION_CALL,
-            PrattExpression.PROPERTY_ACCESS, PrattExpression.ARRAY_ACCESS
+            PrattExpression.PROPERTY_ACCESS, PrattExpression.ARRAY_ACCESS, PrattExpression.ARRAY_LITERAL
         ];
         
         for (var i:Number = 0; i < expectedTypes.length; i++) {
@@ -118,6 +119,9 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         var arrayAccessFactoryExpr:PrattExpression = PrattExpression.arrayAccess(
             PrattExpression.identifier("arr"), PrattExpression.literal(0));
         _assert(arrayAccessFactoryExpr.type == PrattExpression.ARRAY_ACCESS, "工厂方法：arrayAccess()应该创建ARRAY_ACCESS类型");
+        
+        var arrayLiteralFactoryExpr:PrattExpression = PrattExpression.arrayLiteral([]);
+        _assert(arrayLiteralFactoryExpr.type == PrattExpression.ARRAY_LITERAL, "工厂方法：arrayLiteral()应该创建ARRAY_LITERAL类型");
     }
     
     // ============================================================================
@@ -171,7 +175,7 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         var objResult = objLiteral.evaluate(context);
         _assert(objResult.name == "test" && objResult.value == 42, "对象字面量：求值应该返回完整对象");
         
-        // 数组字面量
+        // 数组字面量（注意：这里是普通的AS2数组字面量，不是PrattExpression的数组字面量）
         var arrayLiteral:PrattExpression = PrattExpression.literal([1, 2, 3]);
         var arrayResult = arrayLiteral.evaluate(context);
         _assert(arrayResult.length == 3 && arrayResult[0] == 1 && arrayResult[1] == 2 && arrayResult[2] == 3, 
@@ -944,16 +948,6 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         );
         _assert(deepNestedPropExpr.evaluate(context) == "dark", "深度嵌套属性访问：user.profile.settings.theme应该返回'dark'");
         
-        var deepNestedBoolExpr:PrattExpression = PrattExpression.propertyAccess(
-            PrattExpression.propertyAccess(
-                PrattExpression.propertyAccess(
-                    PrattExpression.identifier("config"),
-                    "features"
-                ),
-                "newUI"
-            )
-        );
-        // 注意：这里应该是四个参数，但实际调用只有三个，说明PrattExpression.propertyAccess需要property参数
         var deepBoolExpr:PrattExpression = PrattExpression.propertyAccess(
             PrattExpression.propertyAccess(
                 PrattExpression.identifier("config"),
@@ -991,7 +985,7 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         );
         _assert(propInTernaryExpr.evaluate(context) == "production mode", "属性访问三元表达式：config.debug ? 'debug mode' : 'production mode'应该返回'production mode'");
         
-        // 属性访问作为函数调用的一部分（这将在函数调用测试中体现）
+        // 属性访问作为函数调用的一部分
         var propAsArgExpr:PrattExpression = PrattExpression.functionCall(
             PrattExpression.identifier("greet"),
             [PrattExpression.propertyAccess(PrattExpression.identifier("user"), "name")]
@@ -1180,10 +1174,198 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
     }
     
     // ============================================================================
-    // 测试分组9：复杂嵌套表达式
+    // 测试分组9：数组字面量表达式 (新增)
+    // ============================================================================
+    private static function testArrayLiteralExpressions():Void {
+        trace("\n--- 测试分组9：数组字面量表达式 ---");
+        
+        var context:Object = {
+            x: 10,
+            y: 5,
+            name: "Alice",
+            value: 42
+        };
+        
+        // 空数组字面量
+        var emptyArrayLiteral:PrattExpression = PrattExpression.arrayLiteral([]);
+        _assert(emptyArrayLiteral.type == PrattExpression.ARRAY_LITERAL, "空数组字面量：类型应该是ARRAY_LITERAL");
+        var emptyResult:Array = emptyArrayLiteral.evaluate(context);
+        _assert(emptyResult.length == 0, "空数组字面量：求值应该返回空数组");
+        
+        // 单元素数组字面量
+        var singleElementArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.literal(42)
+        ]);
+        var singleResult:Array = singleElementArray.evaluate(context);
+        _assert(singleResult.length == 1 && singleResult[0] == 42, "单元素数组字面量：应该包含一个元素42");
+        
+        // 多元素数组字面量（字面量元素）
+        var multiLiteralArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.literal(1),
+            PrattExpression.literal(2),
+            PrattExpression.literal(3)
+        ]);
+        var multiResult:Array = multiLiteralArray.evaluate(context);
+        _assert(multiResult.length == 3 && multiResult[0] == 1 && multiResult[1] == 2 && multiResult[2] == 3, 
+                "多元素数组字面量：应该包含[1, 2, 3]");
+        
+        // 混合类型数组字面量
+        var mixedTypeArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.literal(42),
+            PrattExpression.literal("hello"),
+            PrattExpression.literal(true),
+            PrattExpression.literal(null),
+            PrattExpression.literal(undefined)
+        ]);
+        var mixedResult:Array = mixedTypeArray.evaluate(context);
+        _assert(mixedResult.length == 5 && 
+                mixedResult[0] == 42 && 
+                mixedResult[1] == "hello" && 
+                mixedResult[2] === true &&
+                mixedResult[3] === null &&
+                mixedResult[4] === undefined,
+                "混合类型数组字面量：应该包含不同类型的元素");
+        
+        // 包含标识符的数组字面量
+        var identifierArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.identifier("x"),
+            PrattExpression.identifier("y"),
+            PrattExpression.identifier("name")
+        ]);
+        var identifierResult:Array = identifierArray.evaluate(context);
+        _assert(identifierResult.length == 3 && 
+                identifierResult[0] == 10 && 
+                identifierResult[1] == 5 && 
+                identifierResult[2] == "Alice",
+                "标识符数组字面量：应该求值为[10, 5, 'Alice']");
+        
+        // 包含表达式的数组字面量
+        var expressionArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.binary(PrattExpression.identifier("x"), "+", PrattExpression.identifier("y")),
+            PrattExpression.binary(PrattExpression.identifier("x"), "*", PrattExpression.identifier("y")),
+            PrattExpression.unary("-", PrattExpression.identifier("value"))
+        ]);
+        var expressionResult:Array = expressionArray.evaluate(context);
+        _assert(expressionResult.length == 3 && 
+                expressionResult[0] == 15 && 
+                expressionResult[1] == 50 && 
+                expressionResult[2] == -42,
+                "表达式数组字面量：应该求值为[15, 50, -42]");
+        
+        // 嵌套数组字面量
+        var nestedArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal(1),
+                PrattExpression.literal(2)
+            ]),
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal(3),
+                PrattExpression.literal(4)
+            ]),
+            PrattExpression.arrayLiteral([])
+        ]);
+        var nestedResult:Array = nestedArray.evaluate(context);
+        _assert(nestedResult.length == 3 && 
+                nestedResult[0].length == 2 && nestedResult[0][0] == 1 && nestedResult[0][1] == 2 &&
+                nestedResult[1].length == 2 && nestedResult[1][0] == 3 && nestedResult[1][1] == 4 &&
+                nestedResult[2].length == 0,
+                "嵌套数组字面量：应该正确创建二维数组");
+        
+        // 数组字面量与其他表达式结合
+        var arrayInBinary:PrattExpression = PrattExpression.propertyAccess(
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal("a"),
+                PrattExpression.literal("b"),
+                PrattExpression.literal("c")
+            ]),
+            "length"
+        );
+        _assert(arrayInBinary.evaluate(context) == 3, "数组字面量属性访问：['a', 'b', 'c'].length应该返回3");
+        
+        // 数组字面量索引访问
+        var arrayLiteralAccess:PrattExpression = PrattExpression.arrayAccess(
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal("first"),
+                PrattExpression.literal("second"),
+                PrattExpression.literal("third")
+            ]),
+            PrattExpression.literal(1)
+        );
+        _assert(arrayLiteralAccess.evaluate(context) == "second", "数组字面量索引访问：['first', 'second', 'third'][1]应该返回'second'");
+        
+        // 数组字面量作为函数参数
+        context.join = function(arr, separator) { 
+            var result = "";
+            for (var i = 0; i < arr.length; i++) {
+                if (i > 0) result += separator;
+                result += arr[i];
+            }
+            return result;
+        };
+        
+        var arrayAsArg:PrattExpression = PrattExpression.functionCall(
+            PrattExpression.identifier("join"),
+            [
+                PrattExpression.arrayLiteral([
+                    PrattExpression.literal("a"),
+                    PrattExpression.literal("b"),
+                    PrattExpression.literal("c")
+                ]),
+                PrattExpression.literal("-")
+            ]
+        );
+        _assert(arrayAsArg.evaluate(context) == "a-b-c", "数组字面量作为参数：join(['a', 'b', 'c'], '-')应该返回'a-b-c'");
+        
+        // 数组字面量在三元表达式中
+        var arrayInTernary:PrattExpression = PrattExpression.ternary(
+            PrattExpression.binary(PrattExpression.identifier("x"), ">", PrattExpression.identifier("y")),
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal("x"),
+                PrattExpression.literal("is"),
+                PrattExpression.literal("greater")
+            ]),
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal("y"),
+                PrattExpression.literal("is"),
+                PrattExpression.literal("greater")
+            ])
+        );
+        var ternaryResult:Array = arrayInTernary.evaluate(context);
+        _assert(ternaryResult.length == 3 && 
+                ternaryResult[0] == "x" && 
+                ternaryResult[1] == "is" && 
+                ternaryResult[2] == "greater",
+                "数组字面量三元表达式：x > y ? ['x', 'is', 'greater'] : ['y', 'is', 'greater']应该返回第一个数组");
+        
+        // 复杂嵌套：数组字面量包含对象访问和函数调用
+        context.multiply = function(a, b) { return a * b; };
+        context.obj = { prop: 100 };
+        
+        var complexArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.propertyAccess(PrattExpression.identifier("obj"), "prop"),
+            PrattExpression.functionCall(
+                PrattExpression.identifier("multiply"),
+                [PrattExpression.literal(3), PrattExpression.literal(7)]
+            ),
+            PrattExpression.binary(
+                PrattExpression.identifier("x"),
+                "+",
+                PrattExpression.identifier("y")
+            )
+        ]);
+        var complexResult:Array = complexArray.evaluate(context);
+        _assert(complexResult.length == 3 && 
+                complexResult[0] == 100 && 
+                complexResult[1] == 21 && 
+                complexResult[2] == 15,
+                "复杂数组字面量：应该正确求值包含属性访问、函数调用和二元表达式的数组");
+    }
+    
+    // ============================================================================
+    // 测试分组10：复杂嵌套表达式（更新以包含数组字面量）
     // ============================================================================
     private static function testComplexNestedExpressions():Void {
-        trace("\n--- 测试分组9：复杂嵌套表达式 ---");
+        trace("\n--- 测试分组10：复杂嵌套表达式 ---");
         
         var context:Object = {
             // 数据
@@ -1401,13 +1583,72 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         );
         // avg([92, 88, 95]) = 91.666..., 91.666... > 90 = true, !!true = true
         _assert(deepUnaryExpr.evaluate(context) === true, "深度嵌套一元表达式：!!(avg(users[1].scores) > 90)应该为true");
+        
+        // 包含数组字面量的复杂表达式
+        var arrayLiteralComplexExpr:PrattExpression = PrattExpression.functionCall(
+            PrattExpression.identifier("avg"),
+            [PrattExpression.arrayLiteral([
+                PrattExpression.arrayAccess(
+                    PrattExpression.propertyAccess(
+                        PrattExpression.arrayAccess(
+                            PrattExpression.identifier("users"),
+                            PrattExpression.literal(0)
+                        ),
+                        "scores"
+                    ),
+                    PrattExpression.literal(0)
+                ),
+                PrattExpression.arrayAccess(
+                    PrattExpression.propertyAccess(
+                        PrattExpression.arrayAccess(
+                            PrattExpression.identifier("users"),
+                            PrattExpression.literal(1)
+                        ),
+                        "scores"
+                    ),
+                    PrattExpression.literal(0)
+                ),
+                PrattExpression.arrayAccess(
+                    PrattExpression.propertyAccess(
+                        PrattExpression.arrayAccess(
+                            PrattExpression.identifier("users"),
+                            PrattExpression.literal(2)
+                        ),
+                        "scores"
+                    ),
+                    PrattExpression.literal(0)
+                )
+            ])]
+        );
+        // avg([85, 92, 78]) = 85
+        _assert(arrayLiteralComplexExpr.evaluate(context) == 85, "数组字面量复杂表达式：avg([users[0].scores[0], users[1].scores[0], users[2].scores[0]])应该返回85");
+        
+        // 数组字面量作为三元表达式的分支
+        var arrayLiteralTernaryExpr:PrattExpression = PrattExpression.arrayAccess(
+            PrattExpression.ternary(
+                PrattExpression.binary(PrattExpression.identifier("currentUserIndex"), "==", PrattExpression.literal(0)),
+                PrattExpression.arrayLiteral([
+                    PrattExpression.literal("first"),
+                    PrattExpression.literal("user"),
+                    PrattExpression.literal("data")
+                ]),
+                PrattExpression.arrayLiteral([
+                    PrattExpression.literal("other"),
+                    PrattExpression.literal("user"),
+                    PrattExpression.literal("data")
+                ])
+            ),
+            PrattExpression.literal(1)
+        );
+        // currentUserIndex == 0 ? ["first", "user", "data"] : ["other", "user", "data"] 然后取索引1
+        _assert(arrayLiteralTernaryExpr.evaluate(context) == "user", "数组字面量三元表达式：(currentUserIndex == 0 ? ['first', 'user', 'data'] : ['other', 'user', 'data'])[1]应该返回'user'");
     }
 
     // ============================================================================
-    // 测试分组10：错误处理 (REVISED)
+    // 测试分组11：错误处理 (REVISED)
     // ============================================================================
     private static function testErrorHandling():Void {
-        trace("\n--- 测试分组10：错误处理 ---");
+        trace("\n--- 测试分组11：错误处理 ---");
         
         var context:Object = {
             x: 10,
@@ -1474,13 +1715,30 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
             [PrattExpression.literal(1), PrattExpression.literal(2), PrattExpression.literal(3)]
         );
         _assert(argsTestExpr.evaluate(context) == 6, "Arguments关键字测试：函数应该正确处理多个参数");
+        
+        // 数组字面量相关错误（间接测试：数组字面量元素求值时的错误）
+        _assertThrows(function() { 
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal(1),
+                PrattExpression.identifier("nonexistentVar"),
+                PrattExpression.literal(3)
+            ]).evaluate(context); 
+        }, "Undefined variable", "数组字面量元素错误：包含未定义变量的数组字面量应该抛出错误");
+        
+        _assertThrows(function() { 
+            PrattExpression.arrayLiteral([
+                PrattExpression.literal(1),
+                PrattExpression.binary(PrattExpression.literal(10), "/", PrattExpression.literal(0)),
+                PrattExpression.literal(3)
+            ]).evaluate(context); 
+        }, "Division by zero", "数组字面量计算错误：包含除零操作的数组字面量应该抛出错误");
     }
     
     // ============================================================================
-    // 测试分组11：toString方法（调试支持）
+    // 测试分组12：toString方法（调试支持）
     // ============================================================================
     private static function testToStringMethod():Void {
-        trace("\n--- 测试分组11：toString方法 ---");
+        trace("\n--- 测试分组12：toString方法 ---");
         
         // 字面量toString
         var literalExpr:PrattExpression = PrattExpression.literal(42);
@@ -1546,6 +1804,17 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         _assert(arrayStr.indexOf("ArrayAccess") >= 0 && arrayStr.indexOf("arr") >= 0,
                 "数组访问toString：应该包含ArrayAccess和数组名");
         
+        // 数组字面量toString (新增)
+        var arrayLiteralExpr:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.literal(1),
+            PrattExpression.literal(2),
+            PrattExpression.literal(3)
+        ]);
+        var arrayLiteralStr:String = arrayLiteralExpr.toString();
+        _assert(arrayLiteralStr.indexOf("ArrayLiteral") >= 0 && arrayLiteralStr.indexOf("[") >= 0 && 
+                arrayLiteralStr.indexOf("1") >= 0 && arrayLiteralStr.indexOf("2") >= 0 && arrayLiteralStr.indexOf("3") >= 0,
+                "数组字面量toString：应该包含ArrayLiteral和数组元素");
+        
         // 复杂嵌套表达式toString
         var complexExpr:PrattExpression = PrattExpression.binary(
             PrattExpression.functionCall(
@@ -1576,13 +1845,26 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         var nestedStr:String = nestedBinaryExpr.toString();
         // 验证嵌套结构在字符串中是可见的
         _assert(nestedStr.indexOf("[Binary:") >= 0, "嵌套二元toString：应该显示嵌套的二元表达式结构");
+        
+        // 包含数组字面量的复杂表达式toString
+        var complexArrayExpr:PrattExpression = PrattExpression.functionCall(
+            PrattExpression.identifier("test"),
+            [PrattExpression.arrayLiteral([
+                PrattExpression.literal("a"),
+                PrattExpression.binary(PrattExpression.literal(1), "+", PrattExpression.literal(2))
+            ])]
+        );
+        var complexArrayStr:String = complexArrayExpr.toString();
+        _assert(complexArrayStr.indexOf("FunctionCall") >= 0 && complexArrayStr.indexOf("ArrayLiteral") >= 0 && 
+                complexArrayStr.indexOf("Binary") >= 0,
+                "复杂数组字面量toString：应该包含FunctionCall、ArrayLiteral和Binary");
     }
     
     // ============================================================================
-    // 测试分组12：边界条件
+    // 测试分组13：边界条件
     // ============================================================================
     private static function testBoundaryConditions():Void {
-        trace("\n--- 测试分组12：边界条件 ---");
+        trace("\n--- 测试分组13：边界条件 ---");
         
         var context:Object = {
             // 极值数据
@@ -1788,6 +2070,53 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
             PrattExpression.literal(999999)
         );
         _assert(largeIndexExpr.evaluate(context) === undefined, "大索引访问：访问超大索引应该返回undefined");
+        
+        // 数组字面量边界条件测试
+        
+        // 空数组字面量边界
+        var emptyArrayLiteralLength:PrattExpression = PrattExpression.propertyAccess(
+            PrattExpression.arrayLiteral([]),
+            "length"
+        );
+        _assert(emptyArrayLiteralLength.evaluate(context) == 0, "空数组字面量长度：应该为0");
+        
+        // 大型数组字面量
+        var largeArrayLiteralElements:Array = [];
+        for (var k:Number = 0; k < 100; k++) {
+            largeArrayLiteralElements.push(PrattExpression.literal(k));
+        }
+        var largeArrayLiteral:PrattExpression = PrattExpression.arrayLiteral(largeArrayLiteralElements);
+        var largeArrayResult:Array = largeArrayLiteral.evaluate(context);
+        _assert(largeArrayResult.length == 100 && largeArrayResult[0] == 0 && largeArrayResult[99] == 99, 
+                "大型数组字面量：应该正确处理100个元素的数组");
+        
+        // 深度嵌套数组字面量
+        var deepNestedArrayLiteral:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.arrayLiteral([
+                PrattExpression.arrayLiteral([
+                    PrattExpression.literal("deep")
+                ])
+            ])
+        ]);
+        var deepNestedResult:Array = deepNestedArrayLiteral.evaluate(context);
+        _assert(deepNestedResult[0][0][0] == "deep", "深度嵌套数组字面量：应该正确访问深层元素");
+        
+        // 数组字面量包含特殊值
+        var specialValuesArray:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.identifier("infinity"),
+            PrattExpression.identifier("notANumber"),
+            PrattExpression.identifier("emptyString"),
+            PrattExpression.literal(null),
+            PrattExpression.literal(undefined)
+        ]);
+        var specialResult:Array = specialValuesArray.evaluate(context);
+        _assert(specialResult.length == 5 && 
+                specialResult[0] == Number.POSITIVE_INFINITY &&
+                isNaN(specialResult[1]) &&
+                specialResult[2] === "" &&
+                specialResult[3] === null &&
+                specialResult[4] === undefined,
+                "特殊值数组字面量：应该正确处理各种特殊值");
     }
     
     // ============================================================================

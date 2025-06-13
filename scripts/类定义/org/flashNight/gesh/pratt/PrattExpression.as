@@ -14,6 +14,7 @@ class org.flashNight.gesh.pratt.PrattExpression {
     public static var FUNCTION_CALL:String = "FUNCTION_CALL";
     public static var PROPERTY_ACCESS:String = "PROPERTY_ACCESS";
     public static var ARRAY_ACCESS:String = "ARRAY_ACCESS";
+    public static var ARRAY_LITERAL:String = "ARRAY_LITERAL";
     
     // 通用属性
     public var type:String;
@@ -34,6 +35,7 @@ class org.flashNight.gesh.pratt.PrattExpression {
     public var index:PrattExpression;      // 用于ARRAY_ACCESS
     public var functionExpr:PrattExpression;  // 用于FUNCTION_CALL
     public var arguments:Array;    // 用于FUNCTION_CALL
+    public var elements:Array;  // 用于ARRAY_LITERAL（支持数组字面量）
     
     public function PrattExpression(exprType:String) {
         type = exprType;
@@ -96,6 +98,12 @@ class org.flashNight.gesh.pratt.PrattExpression {
         return expr;
     }
     
+    public static function arrayLiteral(elements:Array):PrattExpression {
+        var expr:PrattExpression = new PrattExpression(ARRAY_LITERAL);
+        expr.elements = elements || [];
+        return expr;
+    }
+
     // 求值方法
     public function evaluate(context:Object) {
         switch (type) {
@@ -141,10 +149,30 @@ class org.flashNight.gesh.pratt.PrattExpression {
                 
             case ARRAY_ACCESS:
                 return _evaluateArrayAccess(context);
+
+            case ARRAY_LITERAL:
+                var evaluatedElements:Array = [];
+                for (var i:Number = 0; i < this.elements.length; i++) {
+                    evaluatedElements.push(this.elements[i].evaluate(context));
+                }
+                return evaluatedElements;
                 
             default:
                 throw new Error("Unknown expression type: " + type);
         }
+    }
+
+    // 工具：把极接近整数的小误差抹掉
+    private static function _normalize(n:Number):Number {
+        return Math.abs(n - Math.round(n)) < 1e-9 ? Math.round(n) : n;
+    }
+
+    /**
+     * 仅当值本身是「数字原型」时才视作 NaN。
+     * 这样 'abc' 不会误命中。
+     */
+    private static function _isRealNaN(v):Boolean {
+        return (typeof v == "number") && isNaN(v);
     }
     
     private function _evaluateBinary(context:Object) {
@@ -181,29 +209,28 @@ class org.flashNight.gesh.pratt.PrattExpression {
                     return String(leftVal) + String(rightVal);
                 }
                 // 最后兜底，按数字加法（可能会生成 NaN，但那也符合预期）
-                return leftNum + rightNum;
+                return _normalize(leftNum + rightNum);
 
-            case "-": return Number(leftVal) - Number(rightVal);
-            case "*": return Number(leftVal) * Number(rightVal);
-            case "/": 
+            case "-": return _normalize(Number(leftVal) - Number(rightVal));
+            case "*":
+                return _normalize(Number(leftVal) * Number(rightVal));
+
+            case "/":
                 if (Number(rightVal) == 0) throw new Error("Division by zero");
-                return Number(leftVal) / Number(rightVal);
+                return _normalize(Number(leftVal) / Number(rightVal));
             case "%": return Number(leftVal) % Number(rightVal);
             case "**": return Math.pow(Number(leftVal), Number(rightVal));
             case "==": 
-                if (isNaN(leftVal) || isNaN(rightVal)) {
-                    return false; // 如果任一操作数是 NaN，== 比较总是 false
-                }
+                if (_isRealNaN(leftVal) || _isRealNaN(rightVal)) return false;  // NaN 绝不相等
+                // 否则退回到 AS2 的 ==，处理类型转换等细节
                 return leftVal == rightVal;
             case "!==":
                 // 严格不等：类型和值都必须同时相等才返回 false，否则 true
                 return !(leftVal === rightVal);
 
             case "!=":
-                // 非严格不等：NaN 永不相等，其它按 == 处理
-                if (isNaN(leftVal) || isNaN(rightVal)) {
-                    return true;
-                }
+                if (_isRealNaN(leftVal) || _isRealNaN(rightVal)) return true;   // NaN 必不等
+
                 return leftVal != rightVal;
 
             case "===":
@@ -325,15 +352,22 @@ class org.flashNight.gesh.pratt.PrattExpression {
                 return "[Ternary:" + condition.toString() + " ? " + trueExpr.toString() + " : " + falseExpr.toString() + "]";
             case FUNCTION_CALL:
                 var argStr:String = "";
-                for (var i:Number = 0; i < arguments.length; i++) {
+                for (var i:Number = 0; i < this.arguments.length; i++) {
                     if (i > 0) argStr += ", ";
-                    argStr += arguments[i].toString();
+                    argStr += this.arguments[i].toString();
                 }
                 return "[FunctionCall:" + functionExpr.toString() + "(" + argStr + ")]";
             case PROPERTY_ACCESS:
                 return "[PropertyAccess:" + object.toString() + "." + property + "]";
             case ARRAY_ACCESS:
                 return "[ArrayAccess:" + array.toString() + "[" + index.toString() + "]]";
+            case ARRAY_LITERAL:
+                var elemStr:String = "";
+                for (var i:Number = 0; i < this.elements.length; i++) {
+                    if (i > 0) elemStr += ", ";
+                    elemStr += this.elements[i].toString();
+                }
+                return "[ArrayLiteral:[" + elemStr + "]]";
             default:
                 return "[Expression:" + type + "]";
         }

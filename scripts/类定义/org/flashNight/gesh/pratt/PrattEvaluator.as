@@ -7,10 +7,12 @@ class org.flashNight.gesh.pratt.PrattEvaluator {
     private var _context:Object;
     private var _parser:PrattParser;
     private var _expressionCache:Object; // 缓存已解析的表达式
+    private var _resultCache:Object; // 结果缓存
 
     function PrattEvaluator() {
         _context = {};
         _expressionCache = {};
+        _resultCache = {}; 
         _initializeBuiltins();
     }
 
@@ -56,10 +58,12 @@ class org.flashNight.gesh.pratt.PrattEvaluator {
     
     public function setVariable(name:String, value):Void {
         _context[name] = value;
+        _resultCache = {}; 
     }
 
     public function setFunction(name:String, func:Function):Void {
         _context[name] = func;
+        _resultCache = {}; 
     }
 
     public function getVariable(name:String) {
@@ -73,27 +77,37 @@ class org.flashNight.gesh.pratt.PrattEvaluator {
     public function clearContext():Void {
         _context = {};
         _expressionCache = {};
+        _resultCache = {};
         _initializeBuiltins();
     }
 
     public function evaluate(expression:String, useCache:Boolean) {
         if (useCache == undefined) useCache = true;
         
+        if (useCache && _resultCache[expression] !== undefined) {
+            return _resultCache[expression];
+        }
+
         var ast:PrattExpression;
-        
         if (useCache && _expressionCache[expression]) {
             ast = _expressionCache[expression];
         } else {
             var lexer:PrattLexer = new PrattLexer(expression);
             var parser:PrattParser = new PrattParser(lexer);
             ast = parser.parse();
-            
             if (useCache) {
                 _expressionCache[expression] = ast;
             }
         }
         
-        return ast.evaluate(_context);
+        var result = ast.evaluate(_context);
+
+        // 关键：无条件缓存结果，依赖 setVariable/setFunction 清理
+        if (useCache) {
+            _resultCache[expression] = result;
+        }
+        
+        return result;
     }
 
     public function parse(expression:String):PrattExpression {
@@ -225,7 +239,12 @@ class org.flashNight.gesh.pratt.PrattEvaluator {
      * 安全求值（带错误处理）
      */
     public function evaluateSafe(expression:String, defaultValue) {
+        // 先做一次快速的语法检查
+        if (!this.validate(expression).valid) {
+            return defaultValue;
+        }
         try {
+            // 只有语法正确才尝试求值
             return evaluate(expression);
         } catch (e) {
             return defaultValue;

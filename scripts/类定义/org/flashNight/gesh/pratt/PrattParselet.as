@@ -19,6 +19,7 @@ class org.flashNight.gesh.pratt.PrattParselet {
     public static var FUNCTION_CALL:String = "FUNCTION_CALL";
     public static var PROPERTY_ACCESS:String = "PROPERTY_ACCESS";
     public static var ARRAY_ACCESS:String = "ARRAY_ACCESS";
+    public static var ARRAY_LITERAL:String = "ARRAY_LITERAL";
     
     private var _type:String;
     private var _subType:String;
@@ -70,6 +71,10 @@ class org.flashNight.gesh.pratt.PrattParselet {
     public static function arrayAccess():PrattParselet {
         return new PrattParselet(INFIX, ARRAY_ACCESS, 10, false);
     }
+
+    public static function arrayLiteral():PrattParselet {
+        return new PrattParselet(PREFIX, ARRAY_LITERAL, 0, false);
+    }
     
     // 主要的解析方法
     public function parsePrefix(parser:PrattParser, token:PrattToken):PrattExpression {
@@ -88,6 +93,38 @@ class org.flashNight.gesh.pratt.PrattParselet {
             case PREFIX_OPERATOR:
                 var operand:PrattExpression = parser.parseExpression(_precedence);
                 return PrattExpression.unary(token.text, operand);
+
+            case ARRAY_LITERAL:
+                var elements:Array = [];
+                
+                // 在循环处理非空数组之前，先检查是否是空数组。
+                // 这样可以避免在空数组上进入循环。
+                if (!parser.match(PrattToken.T_RBRACKET)) {
+                    while (true) {
+                        // 在尝试解析表达式之前，先检查是否是结尾。
+                        // 这能正确处理尾随逗号，如 [1, 2,]
+                        if (parser.match(PrattToken.T_RBRACKET)) {
+                            break;
+                        }
+
+                        // 解析一个元素
+                        elements.push(parser.parseExpression(0));
+
+                        // 如果下一个 token 不是逗号，说明元素列表结束了
+                        if (!parser.match(PrattToken.T_COMMA)) {
+                            break;
+                        }
+
+                        // 消耗逗号，准备下一次循环
+                        parser.consume();
+                    }
+                }
+                
+                // 无论循环如何结束（或从未开始），下一个 token 都必须是右方括号。
+                // 这能为 `[1, 2, 3` 这样的情况提供最准确的错误信息。
+                parser.consumeExpected(PrattToken.T_RBRACKET);
+                
+                return PrattExpression.arrayLiteral(elements);
                 
             default:
                 throw new Error("Invalid prefix parselet subtype: " + _subType);

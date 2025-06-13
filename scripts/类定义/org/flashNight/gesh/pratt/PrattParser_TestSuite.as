@@ -35,6 +35,7 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         testOperatorAssociativity();        // 运算符结合性
         testPrefixExpressions();            // 前缀表达式解析
         testInfixExpressions();             // 中缀表达式解析
+        testArrayLiteralParsing();          // 数组字面量解析 (新增)
         testComplexNestedParsing();         // 复杂嵌套解析
         testSyntaxErrorHandling();          // 语法错误处理
         testParserStateManagement();        // 解析器状态管理
@@ -723,10 +724,143 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
     }
     
     // ============================================================================
-    // 测试分组6：复杂嵌套解析
+    // 测试分组6：数组字面量解析 (新增)
+    // ============================================================================
+    private static function testArrayLiteralParsing():Void {
+        trace("\n--- 测试分组6：数组字面量解析 ---");
+        
+        var context:Object = {
+            x: 10,
+            y: 5,
+            name: "Alice",
+            value: 42,
+            add: function(a, b) { return a + b; }
+        };
+        
+        // 空数组字面量
+        var emptyArrayTest:Array = _parseAndEvaluate("[]", context);
+        _assert(emptyArrayTest.length == 0, "空数组字面量：[]应该创建空数组");
+        
+        // 验证空数组的AST结构
+        var emptyArrayAST:PrattExpression = _parseToAST("[]");
+        _assert(emptyArrayAST.type == PrattExpression.ARRAY_LITERAL, "空数组AST：应该创建ARRAY_LITERAL类型");
+        var emptyArrayStr:String = emptyArrayAST.toString();
+        _assert(emptyArrayStr.indexOf("ArrayLiteral") >= 0, "空数组toString：应该包含ArrayLiteral");
+        
+        // 单元素数组字面量
+        var singleElementTest:Array = _parseAndEvaluate("[42]", context);
+        _assert(singleElementTest.length == 1 && singleElementTest[0] == 42, "单元素数组：[42]应该正确创建");
+        
+        var singleStringTest:Array = _parseAndEvaluate("[\"hello\"]", context);
+        _assert(singleStringTest.length == 1 && singleStringTest[0] == "hello", "单字符串数组：[\"hello\"]应该正确创建");
+        
+        // 多元素数组字面量
+        var multiElementTest:Array = _parseAndEvaluate("[1, 2, 3]", context);
+        _assert(multiElementTest.length == 3 && multiElementTest[0] == 1 && 
+                multiElementTest[1] == 2 && multiElementTest[2] == 3, 
+                "多元素数组：[1, 2, 3]应该正确创建");
+        
+        var mixedTypeTest:Array = _parseAndEvaluate("[42, \"hello\", true, null]", context);
+        _assert(mixedTypeTest.length == 4 && 
+                mixedTypeTest[0] == 42 && 
+                mixedTypeTest[1] == "hello" && 
+                mixedTypeTest[2] === true && 
+                mixedTypeTest[3] === null,
+                "混合类型数组：应该正确处理不同类型元素");
+        
+        // 包含标识符的数组字面量
+        var identifierArrayTest:Array = _parseAndEvaluate("[x, y, name]", context);
+        _assert(identifierArrayTest.length == 3 && 
+                identifierArrayTest[0] == 10 && 
+                identifierArrayTest[1] == 5 && 
+                identifierArrayTest[2] == "Alice",
+                "标识符数组：[x, y, name]应该正确求值");
+        
+        // 包含表达式的数组字面量
+        var expressionArrayTest:Array = _parseAndEvaluate("[x + y, x * y, -value]", context);
+        _assert(expressionArrayTest.length == 3 && 
+                expressionArrayTest[0] == 15 && 
+                expressionArrayTest[1] == 50 && 
+                expressionArrayTest[2] == -42,
+                "表达式数组：[x + y, x * y, -value]应该正确计算");
+        
+        // 嵌套数组字面量
+        var nestedArrayTest:Array = _parseAndEvaluate("[[1, 2], [3, 4], []]", context);
+        _assert(nestedArrayTest.length == 3 && 
+                nestedArrayTest[0].length == 2 && nestedArrayTest[0][0] == 1 && nestedArrayTest[0][1] == 2 &&
+                nestedArrayTest[1].length == 2 && nestedArrayTest[1][0] == 3 && nestedArrayTest[1][1] == 4 &&
+                nestedArrayTest[2].length == 0,
+                "嵌套数组：[[1, 2], [3, 4], []]应该正确创建");
+        
+        // 包含函数调用的数组字面量
+        var funcArrayTest:Array = _parseAndEvaluate("[add(1, 2), add(x, y)]", context);
+        _assert(funcArrayTest.length == 2 && 
+                funcArrayTest[0] == 3 && 
+                funcArrayTest[1] == 15,
+                "函数调用数组：[add(1, 2), add(x, y)]应该正确执行");
+        
+        // 复杂嵌套表达式数组
+        var complexArrayTest:Array = _parseAndEvaluate("[x > y ? \"greater\" : \"smaller\", add(x, y) * 2]", context);
+        _assert(complexArrayTest.length == 2 && 
+                complexArrayTest[0] == "greater" && 
+                complexArrayTest[1] == 30,
+                "复杂表达式数组：应该正确处理三元和函数调用");
+        
+        // 数组字面量的属性访问
+        var arrayLengthTest:Number = _parseAndEvaluate("[1, 2, 3].length", context);
+        _assert(arrayLengthTest == 3, "数组字面量属性：[1, 2, 3].length应该返回3");
+        
+        // 数组字面量的索引访问
+        var arrayIndexTest:String = _parseAndEvaluate("[\"first\", \"second\", \"third\"][1]", context);
+        _assert(arrayIndexTest == "second", "数组字面量索引：[\"first\", \"second\", \"third\"][1]应该返回'second'");
+        
+        // 复杂嵌套访问
+        var complexAccessTest:Number = _parseAndEvaluate("[[1, 2], [3, 4]][0][1]", context);
+        _assert(complexAccessTest == 2, "复杂嵌套访问：[[1, 2], [3, 4]][0][1]应该返回2");
+        
+        // 数组字面量作为函数参数
+        context.sum = function(arr) {
+            var total = 0;
+            for (var i = 0; i < arr.length; i++) {
+                total += arr[i];
+            }
+            return total;
+        };
+        
+        var arrayArgTest:Number = _parseAndEvaluate("sum([1, 2, 3, 4])", context);
+        _assert(arrayArgTest == 10, "数组字面量参数：sum([1, 2, 3, 4])应该返回10");
+        
+        // 数组字面量在三元表达式中
+        var arrayTernaryTest:Array = _parseAndEvaluate("x > y ? [\"x\", \"greater\"] : [\"y\", \"greater\"]", context);
+        _assert(arrayTernaryTest.length == 2 && 
+                arrayTernaryTest[0] == "x" && 
+                arrayTernaryTest[1] == "greater",
+                "数组字面量三元：应该返回正确的数组分支");
+        
+        // 数组字面量与二元运算符
+        var arrayBinaryTest:Number = _parseAndEvaluate("[1, 2, 3].length + [4, 5].length", context);
+        _assert(arrayBinaryTest == 5, "数组字面量二元：[1, 2, 3].length + [4, 5].length应该等于5");
+        
+        // 验证AST结构的正确性
+        var complexArrayAST:PrattExpression = _parseToAST("[x + 1, y * 2]");
+        var complexArrayStr:String = complexArrayAST.toString();
+        _assert(complexArrayStr.indexOf("ArrayLiteral") >= 0, "复杂数组AST：应该包含ArrayLiteral节点");
+        _assert(complexArrayStr.indexOf("Binary") >= 0, "复杂数组AST：应该包含Binary子节点");
+        
+        // 测试数组字面量的解析精度
+        var precisionTest:Array = _parseAndEvaluate("[1 + 2 * 3, 4 ** 2, 5 > 3 ? 6 : 7]", context);
+        _assert(precisionTest.length == 3 && 
+                precisionTest[0] == 7 && 
+                precisionTest[1] == 16 && 
+                precisionTest[2] == 6,
+                "数组字面量解析精度：应该正确处理运算符优先级");
+    }
+    
+    // ============================================================================
+    // 测试分组7：复杂嵌套解析（更新包含数组字面量）
     // ============================================================================
     private static function testComplexNestedParsing():Void {
-        trace("\n--- 测试分组6：复杂嵌套解析 ---");
+        trace("\n--- 测试分组7：复杂嵌套解析 ---");
         
         var context:Object = {
             users: [
@@ -819,13 +953,53 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         // Math.max(90, 0, 85) = 90
         // 90 * 1.1 = 99
         _assert(Math.abs(megaComplexTest - 99) < 0.001, "超级复杂表达式：应该返回99");
+        
+        // 包含数组字面量的复杂表达式 (新增)
+        var arrayLiteralComplexTest:Number = _parseAndEvaluate(
+            "Math.avg([users[0].scores[0], users[1].scores[0], users[2].scores[0]])",
+            context
+        );
+        // Math.avg([85, 90, 75]) = 83.33...
+        _assert(Math.abs(arrayLiteralComplexTest - 83.33333333333333) < 0.001, "数组字面量复杂表达式：应该约等于83.33");
+        
+        // 数组字面量作为三元表达式分支的复杂情况
+        var arrayTernaryComplexTest:Array = _parseAndEvaluate(
+            "users[0].active ? " +
+            "  [users[0].name, Math.avg(users[0].scores), \"active\"] : " +
+            "  [users[0].name, 0, \"inactive\"]",
+            context
+        );
+        _assert(arrayTernaryComplexTest.length == 3 && 
+                arrayTernaryComplexTest[0] == "Alice" && 
+                Math.abs(arrayTernaryComplexTest[1] - 85) < 0.001 && 
+                arrayTernaryComplexTest[2] == "active",
+                "数组字面量三元复杂：应该返回Alice的激活状态数组");
+        
+        // 嵌套数组字面量的复杂访问
+        var nestedArrayComplexTest:Number = _parseAndEvaluate(
+            "[[users[0].scores[0], users[0].scores[1]], [users[1].scores[0], users[1].scores[1]]][0][1]",
+            context
+        );
+        _assert(nestedArrayComplexTest == 92, "嵌套数组字面量复杂：应该返回92");
+        
+        // 数组字面量与函数调用的深度嵌套
+        var deepArrayFuncTest:Number = _parseAndEvaluate(
+            "Math.max(" +
+            "  Math.avg([users[0].scores[0], users[0].scores[1]]), " +
+            "  Math.avg([users[1].scores[0], users[1].scores[1]]), " +
+            "  Math.avg([users[2].scores[0], users[2].scores[1]])" +
+            ")",
+            context
+        );
+        // Math.max((85+92)/2, (90+88)/2, (75+80)/2) = Math.max(88.5, 89, 77.5) = 89
+        _assert(Math.abs(deepArrayFuncTest - 89) < 0.001, "深度数组函数嵌套：应该约等于89");
     }
 
     // ============================================================================
-    // 测试分组7：语法错误处理
+    // 测试分组8：语法错误处理（更新包含数组字面量错误）
     // ============================================================================
     private static function testSyntaxErrorHandling():Void {
-        trace("\n--- 测试分组7：语法错误处理 ---");
+        trace("\n--- 测试分组8：语法错误处理 ---");
 
         // 连续运算符错误
         _assertThrows(
@@ -917,13 +1091,56 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
             "Unexpected token after expression", // 修正预期的错误消息
             "数字属性名错误：obj.123应该抛出语法错误"
         );
+        
+        // 数组字面量相关错误 (新增)
+        
+        // 不匹配的方括号（数组字面量缺少右括号）
+        _assertThrows(
+            function() { _parseAndEvaluate("[1, 2, 3", {}); },
+            "Expected T_RBRACKET",
+            "数组字面量不匹配方括号：[1, 2, 3应该抛出语法错误"
+        );
+        
+        // 数组字面量中的连续逗号
+        _assertThrows(
+            function() { _parseAndEvaluate("[1,, 3]", {}); },
+            "Could not parse token",
+            "数组字面量连续逗号：[1,, 3]应该抛出语法错误"
+        );
+        
+        // 数组字面量以逗号结尾
+        // 测试尾随逗号是合法的
+        var trailingCommaResult:Array = _parseAndEvaluate("[1, 2,]", {});
+        _assert(trailingCommaResult.length == 2 && trailingCommaResult[0] == 1 && trailingCommaResult[1] == 2,
+                "数组字面量尾逗号：[1, 2,]应该被正确解析");
+
+        // 数组字面量中的无效表达式
+        _assertThrows(
+            function() { _parseAndEvaluate("[1, +, 3]", {}); },
+            "Could not parse token",
+            "数组字面量无效表达式：[1, +, 3]应该抛出语法错误"
+        );
+        
+        // 嵌套数组字面量的不匹配括号
+        _assertThrows(
+            function() { _parseAndEvaluate("[[1, 2], [3, 4]", {}); },
+            "Expected T_RBRACKET",
+            "嵌套数组字面量不匹配：[[1, 2], [3, 4]应该抛出语法错误"
+        );
+        
+        // 数组字面量与其他语法错误结合
+        _assertThrows(
+            function() { _parseAndEvaluate("[1, 2] + [", {}); },
+            "Could not parse token", // 这是实际会抛出的错误
+            "数组字面量混合错误：[1, 2] + [应该抛出语法错误"
+        );
     }
     
     // ============================================================================
-    // 测试分组8：解析器状态管理
+    // 测试分组9：解析器状态管理
     // ============================================================================
     private static function testParserStateManagement():Void {
-        trace("\n--- 测试分组8：解析器状态管理 ---");
+        trace("\n--- 测试分组9：解析器状态管理 ---");
         
         // 测试consumeExpected的错误处理
         var lexer1:PrattLexer = new PrattLexer("5 + 3");
@@ -1000,13 +1217,28 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         parser7 = new PrattParser(new PrattLexer("24"));
         var result7b:Number = parser7.parse().evaluate({});
         _assert(result7b == 24, "解析器重用：重新初始化后应该正确");
+        
+        // 测试数组字面量相关的状态管理 (新增)
+        var arrayLexer:PrattLexer = new PrattLexer("[1, 2, 3]");
+        var arrayParser:PrattParser = new PrattParser(arrayLexer);
+        
+        _assert(arrayParser.match(PrattToken.T_LBRACKET), "数组状态：应该正确识别左方括号");
+        arrayParser.consume(); // 消费 [
+        
+        _assert(arrayParser.match(PrattToken.T_NUMBER), "数组状态：应该识别第一个数字");
+        arrayParser.consume(); // 消费 1
+        
+        _assert(arrayParser.match(PrattToken.T_COMMA), "数组状态：应该识别逗号");
+        arrayParser.consume(); // 消费 ,
+        
+        _assert(arrayParser.match(PrattToken.T_NUMBER), "数组状态：应该识别第二个数字");
     }
     
     // ============================================================================
-    // 测试分组9：自定义扩展
+    // 测试分组10：自定义扩展
     // ============================================================================
     private static function testCustomExtensions():Void {
-        trace("\n--- 测试分组9：自定义扩展 ---");
+        trace("\n--- 测试分组10：自定义扩展 ---");
         
         // 测试addBuffOperators方法存在性
         var lexer1:PrattLexer = new PrattLexer("a + b");
@@ -1054,6 +1286,10 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
             var prefixParselet:PrattParselet = PrattParselet.prefixOperator(8);
             _assert(prefixParselet != null, "Parselet工厂：prefixOperator()应该创建有效的parselet");
             
+            // 测试数组字面量parselet (新增)
+            var arrayLiteralParselet:PrattParselet = PrattParselet.arrayLiteral();
+            _assert(arrayLiteralParselet != null, "Parselet工厂：arrayLiteral()应该创建有效的parselet");
+            
         } catch (e) {
             _assert(false, "Parselet工厂方法测试失败：" + e.message);
         }
@@ -1068,6 +1304,11 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
             _assert(!infixTestParselet.isPrefix(), "Parselet类型：binaryOperator不应该是前缀类型");
             _assert(infixTestParselet.isInfix(), "Parselet类型：binaryOperator应该是中缀类型");
             
+            // 测试数组字面量parselet类型 (新增)
+            var arrayLiteralTestParselet:PrattParselet = PrattParselet.arrayLiteral();
+            _assert(arrayLiteralTestParselet.isPrefix(), "Parselet类型：arrayLiteral应该是前缀类型");
+            _assert(!arrayLiteralTestParselet.isInfix(), "Parselet类型：arrayLiteral不应该是中缀类型");
+            
         } catch (e) {
             _assert(false, "Parselet类型检查失败：" + e.message);
         }
@@ -1076,6 +1317,9 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         try {
             var precTestParselet:PrattParselet = PrattParselet.binaryOperator(7, false);
             _assert(precTestParselet.getPrecedence() == 7, "Parselet优先级：应该返回正确的优先级值");
+            
+            var arrayLiteralPrecParselet:PrattParselet = PrattParselet.arrayLiteral();
+            _assert(arrayLiteralPrecParselet.getPrecedence() == 0, "Parselet优先级：arrayLiteral应该有优先级0");
             
         } catch (e) {
             _assert(false, "Parselet优先级测试失败：" + e.message);
@@ -1088,13 +1332,21 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         
         var postExtensionResult:Number = postExtensionParser.parse().evaluate({});
         _assert(postExtensionResult == 14, "扩展兼容性：添加自定义运算符后基础功能应该仍然正常");
+        
+        // 验证数组字面量功能在扩展后仍然工作 (新增)
+        var arrayExtensionLexer:PrattLexer = new PrattLexer("[1, 2, 3]");
+        var arrayExtensionParser:PrattParser = new PrattParser(arrayExtensionLexer);
+        arrayExtensionParser.addBuffOperators();
+        
+        var arrayExtensionResult:Array = arrayExtensionParser.parse().evaluate({});
+        _assert(arrayExtensionResult.length == 3 && arrayExtensionResult[0] == 1, "扩展兼容性：数组字面量在扩展后应该仍然工作");
     }
     
     // ============================================================================
-    // 测试分组10：边界条件
+    // 测试分组11：边界条件（更新包含数组字面量）
     // ============================================================================
     private static function testBoundaryConditions():Void {
-        trace("\n--- 测试分组10：边界条件 ---");
+        trace("\n--- 测试分组11：边界条件 ---");
         
         // 空输入处理
         _assertThrows(
@@ -1216,13 +1468,83 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         var mixedComplexResult:Number = _parseAndEvaluate(mixedComplexExpr, mixedComplexContext);
         // obj.method(2) + (10 > 5 ? 3 * 2 : 3) = 4 + 6 = 10
         _assert(mixedComplexResult == 10, "混合复杂表达式：应该正确处理所有语法元素");
+        
+        // 数组字面量边界条件 (新增)
+        
+        // 极大的数组字面量
+        var largeArrayExpr:String = "[";
+        for (var p:Number = 0; p < 100; p++) {
+            if (p > 0) largeArrayExpr += ", ";
+            largeArrayExpr += p.toString();
+        }
+        largeArrayExpr += "]";
+        
+        var largeArrayResult:Array = _parseAndEvaluate(largeArrayExpr, {});
+        _assert(largeArrayResult.length == 100 && largeArrayResult[0] == 0 && largeArrayResult[99] == 99, 
+                "极大数组字面量：应该正确处理100个元素");
+        
+        // 深度嵌套的数组字面量
+        var deepArrayLiteral:String = "[";
+        for (var q:Number = 0; q < 20; q++) {
+            deepArrayLiteral += "[";
+        }
+        deepArrayLiteral += "42";
+        for (var r:Number = 0; r < 20; r++) {
+            deepArrayLiteral += "]";
+        }
+        deepArrayLiteral += "]";
+        
+        var deepArrayLiteralResult = _parseAndEvaluate(deepArrayLiteral, {});
+        // 通过20层嵌套访问最内层的42
+        var deepValue = deepArrayLiteralResult;
+        for (var s:Number = 0; s < 20; s++) {
+            deepValue = deepValue[0];
+        }
+        _assert(deepValue[0] == 42, "深度嵌套数组字面量：应该正确创建20层嵌套");
+        
+        // 数组字面量中包含复杂表达式
+        var complexArrayElements:Object = {
+            a: 5, b: 3, c: 2,
+            func: function(x) { return x * 2; }
+        };
+        
+        var complexArrayExpr:String = "[a + b, func(c), a > b ? \"yes\" : \"no\", [a, b, c]]";
+        var complexArrayResult:Array = _parseAndEvaluate(complexArrayExpr, complexArrayElements);
+        _assert(complexArrayResult.length == 4 && 
+                complexArrayResult[0] == 8 && 
+                complexArrayResult[1] == 4 && 
+                complexArrayResult[2] == "yes" && 
+                complexArrayResult[3].length == 3,
+                "复杂数组元素：应该正确处理各种表达式类型");
+        
+        // 空数组字面量的边界情况
+        var emptyArrayResult:Array = _parseAndEvaluate("[]", {});
+        _assert(emptyArrayResult.length == 0, "空数组边界：应该创建长度为0的数组");
+        
+        // 单元素数组字面量的边界情况
+        var singleElementArrayResult:Array = _parseAndEvaluate("[null]", {});
+        _assert(singleElementArrayResult.length == 1 && singleElementArrayResult[0] === null, 
+                "单元素数组边界：应该正确处理null元素");
+        
+        // 数组字面量与极值的组合
+        var extremeArrayResult:Array = _parseAndEvaluate("[0, -0, Infinity, -Infinity, NaN]", {
+            Infinity: Number.POSITIVE_INFINITY,
+            NaN: Number.NaN
+        });
+        _assert(extremeArrayResult.length == 5 && 
+                extremeArrayResult[0] === 0 && 
+                extremeArrayResult[1] === -0 && 
+                extremeArrayResult[2] === Number.POSITIVE_INFINITY && 
+                extremeArrayResult[3] === Number.NEGATIVE_INFINITY && 
+                isNaN(extremeArrayResult[4]),
+                "极值数组：应该正确处理各种极值");
     }
     
     // ============================================================================
-    // 测试分组11：解析精度验证
+    // 测试分组12：解析精度验证（更新包含数组字面量）
     // ============================================================================
     private static function testParsingAccuracy():Void {
-        trace("\n--- 测试分组11：解析精度验证 ---");
+        trace("\n--- 测试分组12：解析精度验证 ---");
         
         // AST结构验证（通过toString检查）
         var ast1:PrattExpression = _parseToAST("2 + 3");
@@ -1271,6 +1593,26 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         var unaryStr:String = unaryAST.toString();
         _assert(unaryStr.indexOf("Unary") >= 0 && unaryStr.indexOf("-") >= 0, "一元运算符AST：应该产生Unary节点");
         
+        // 数组字面量的AST验证 (新增)
+        var arrayLiteralAST:PrattExpression = _parseToAST("[1, 2, 3]");
+        var arrayLiteralStr:String = arrayLiteralAST.toString();
+        _assert(arrayLiteralStr.indexOf("ArrayLiteral") >= 0, "数组字面量AST：应该产生ArrayLiteral节点");
+        _assert(arrayLiteralStr.indexOf("1") >= 0 && arrayLiteralStr.indexOf("2") >= 0 && arrayLiteralStr.indexOf("3") >= 0, 
+                "数组字面量AST：应该包含所有元素");
+        
+        // 嵌套数组字面量的AST验证
+        var nestedArrayAST:PrattExpression = _parseToAST("[[1, 2], [3, 4]]");
+        var nestedArrayStr:String = nestedArrayAST.toString();
+        _assert(nestedArrayStr.indexOf("ArrayLiteral") >= 0, "嵌套数组字面量AST：应该产生ArrayLiteral节点");
+        // 应该包含多个ArrayLiteral节点
+        var arrayLiteralCount:Number = 0;
+        var searchStart:Number = 0;
+        while ((searchStart = nestedArrayStr.indexOf("ArrayLiteral", searchStart)) >= 0) {
+            arrayLiteralCount++;
+            searchStart++;
+        }
+        _assert(arrayLiteralCount >= 3, "嵌套数组字面量AST：应该包含多个ArrayLiteral节点");
+        
         // 复杂嵌套的AST一致性验证
         var complexExpr:String = "func(obj.prop[0] + 1, !flag ? 2 : 3)";
         var complexAST:PrattExpression = _parseToAST(complexExpr);
@@ -1297,27 +1639,60 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         var manualResult:Number = manualAST.evaluate({});
         _assert(parsedResult == manualResult, "解析精度：解析的AST应该与手动构建的AST产生相同结果");
         
+        // 数组字面量解析与手动构建比较 (新增)
+        var parsedArrayAST:PrattExpression = _parseToAST("[1, 2, 3]");
+        var manualArrayAST:PrattExpression = PrattExpression.arrayLiteral([
+            PrattExpression.literal(1),
+            PrattExpression.literal(2),
+            PrattExpression.literal(3)
+        ]);
+        
+        var parsedArrayResult:Array = parsedArrayAST.evaluate({});
+        var manualArrayResult:Array = manualArrayAST.evaluate({});
+        _assert(parsedArrayResult.length == manualArrayResult.length && 
+                parsedArrayResult[0] == manualArrayResult[0] && 
+                parsedArrayResult[1] == manualArrayResult[1] && 
+                parsedArrayResult[2] == manualArrayResult[2],
+                "数组字面量解析精度：解析的AST应该与手动构建的AST产生相同结果");
+        
         // 边界情况的精度验证
         var edgeCases:Array = [
             {expr: "0", expected: 0},
             {expr: "false", expected: false},
             {expr: "null", expected: null},
             {expr: "\"\"", expected: ""},
-            {expr: "true", expected: true}
+            {expr: "true", expected: true},
+            {expr: "[]", expected: []}, // 新增数组字面量边界情况
+            {expr: "[null]", expected: [null]}
         ];
         
         for (var i:Number = 0; i < edgeCases.length; i++) {
             var edgeCase = edgeCases[i];
             var edgeResult = _parseAndEvaluate(edgeCase.expr, {});
-            _assert(edgeResult === edgeCase.expected, "边界精度：" + edgeCase.expr + "应该精确解析");
+            
+            if (edgeCase.expr == "[]") {
+                _assert(edgeResult.length == 0, "边界精度：[]应该精确解析为空数组");
+            } else if (edgeCase.expr == "[null]") {
+                _assert(edgeResult.length == 1 && edgeResult[0] === null, "边界精度：[null]应该精确解析");
+            } else {
+                _assert(edgeResult === edgeCase.expected, "边界精度：" + edgeCase.expr + "应该精确解析");
+            }
         }
+        
+        // 数组字面量中表达式的精度验证
+        var arrayExprPrecisionTest:Array = _parseAndEvaluate("[1 + 2, 3 * 4, true ? 5 : 6]", {});
+        _assert(arrayExprPrecisionTest.length == 3 && 
+                arrayExprPrecisionTest[0] == 3 && 
+                arrayExprPrecisionTest[1] == 12 && 
+                arrayExprPrecisionTest[2] == 5,
+                "数组表达式精度：应该正确计算数组中的表达式");
     }
     
     // ============================================================================
-    // 测试分组12：性能边界情况
+    // 测试分组13：性能边界情况（更新包含数组字面量）
     // ============================================================================
     private static function testPerformanceEdgeCases():Void {
-        trace("\n--- 测试分组12：性能边界情况 ---");
+        trace("\n--- 测试分组13：性能边界情况 ---");
         
         // 大量重复运算符的表达式
         var manyOpsExpr:String = "1";
@@ -1405,6 +1780,73 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         
         _assert(createTime < 1000, "创建开销：解析器创建应该高效");
         
+        // 大型数组字面量性能测试 (新增)
+        var largeArrayExpr:String = "[";
+        for (var n:Number = 0; n < 200; n++) {
+            if (n > 0) largeArrayExpr += ", ";
+            largeArrayExpr += n.toString();
+        }
+        largeArrayExpr += "]";
+        
+        var largeArrayStartTime:Number = getTimer();
+        var largeArrayResult:Array = _parseAndEvaluate(largeArrayExpr, {});
+        var largeArrayTime:Number = getTimer() - largeArrayStartTime;
+        
+        _assert(largeArrayResult.length == 200, "大型数组字面量：应该正确创建200个元素");
+        _assert(largeArrayTime < 1000, "大型数组字面量性能：解析时间应该在合理范围内");
+        
+        // 深度嵌套数组字面量性能测试
+        var deepArrayLiteralExpr:String = "";
+        for (var p:Number = 0; p < 30; p++) {
+            deepArrayLiteralExpr += "[";
+        }
+        deepArrayLiteralExpr += "42";
+        for (var q:Number = 0; q < 30; q++) {
+            deepArrayLiteralExpr += "]";
+        }
+        
+        var deepArrayStartTime:Number = getTimer();
+        var deepArrayResult = _parseAndEvaluate(deepArrayLiteralExpr, {});
+        var deepArrayTime:Number = getTimer() - deepArrayStartTime;
+        
+        _assert(typeof deepArrayResult == "object", "深度嵌套数组字面量：应该产生对象结果");
+        _assert(deepArrayTime < 1500, "深度嵌套数组字面量性能：解析时间应该在合理范围内");
+        
+        // 复杂数组字面量表达式性能测试
+        var complexArrayContext:Object = {
+            x: 5, y: 3, z: 2,
+            add: function(a, b) { return a + b; },
+            multiply: function(a, b) { return a * b; }
+        };
+        
+        var complexArrayExpr:String = "[";
+        for (var r:Number = 0; r < 50; r++) {
+            if (r > 0) complexArrayExpr += ", ";
+            complexArrayExpr += "add(x, " + r + ") * multiply(y, " + (r + 1) + ")";
+        }
+        complexArrayExpr += "]";
+        
+        var complexArrayStartTime:Number = getTimer();
+        var complexArrayResult:Array = _parseAndEvaluate(complexArrayExpr, complexArrayContext);
+        var complexArrayTime:Number = getTimer() - complexArrayStartTime;
+        
+        _assert(complexArrayResult.length == 50, "复杂数组字面量：应该正确创建50个元素");
+        _assert(complexArrayTime < 2000, "复杂数组字面量性能：解析时间应该在合理范围内");
+        
+        // 混合数组字面量和其他表达式的性能
+        var mixedArrayExpr:String = "Math.max([1, 2, 3, 4, 5].length, [a, b, c].length) + [x + y, x * y, x - y][0]";
+        var mixedArrayContext:Object = {
+            Math: { max: function(a, b) { return a > b ? a : b; } },
+            a: 1, b: 2, c: 3, x: 10, y: 5
+        };
+        
+        var mixedArrayStartTime:Number = getTimer();
+        var mixedArrayResult:Number = _parseAndEvaluate(mixedArrayExpr, mixedArrayContext);
+        var mixedArrayTime:Number = getTimer() - mixedArrayStartTime;
+        
+        _assert(mixedArrayResult == 20, "混合数组表达式：应该正确计算结果"); // max(5,3) + 15 = 20
+        _assert(mixedArrayTime < 500, "混合数组表达式性能：解析时间应该高效");
+        
         trace("性能测试总结：");
         trace("  大量运算符: " + manyOpsTime + "ms");
         trace("  深度递归: " + deepTime + "ms");
@@ -1412,6 +1854,10 @@ class org.flashNight.gesh.pratt.PrattParser_TestSuite {
         trace("  复杂表达式: " + complexPerfTime + "ms");
         trace("  重复解析: " + memTestTime + "ms");
         trace("  创建开销: " + createTime + "ms");
+        trace("  大型数组字面量: " + largeArrayTime + "ms");
+        trace("  深度嵌套数组: " + deepArrayTime + "ms");
+        trace("  复杂数组表达式: " + complexArrayTime + "ms");
+        trace("  混合数组表达式: " + mixedArrayTime + "ms");
     }
     
     // ============================================================================
