@@ -310,6 +310,15 @@ class org.flashNight.gesh.pratt.PrattEvaluator {
                 _extractVariablesFromAST(expr.array, variables);
                 _extractVariablesFromAST(expr.index, variables);
                 break;
+
+            case PrattExpression.OBJECT_LITERAL:
+                // 遍历对象字面量的所有属性
+                for (var i:Number = 0; i < expr.properties.length; i++) {
+                    var prop = expr.properties[i];
+                    // 键是字符串，不需要检查，但值是表达式，需要递归检查
+                    _extractVariablesFromAST(prop.value, variables);
+                }
+                break;
         }
     }
     

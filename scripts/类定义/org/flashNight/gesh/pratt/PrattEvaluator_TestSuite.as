@@ -301,10 +301,48 @@ class org.flashNight.gesh.pratt.PrattEvaluator_TestSuite {
         var noCacheResult:Number = evaluator.evaluate("Math.sqrt(25)", false);
         _assert(noCacheResult == 5, "非缓存求值：结果应该正确");
 
+        // 对象字面量求值 (Object Literal Evaluation)
+        trace("    --- 对象字面量测试 ---");
 
-        // 对象字面量求值
+        // 基础测试，包含表达式作为值
         var objLiteralResult:Object = evaluator.evaluate('{ "message": "hello " + "world", "value": 1 + 2 }');
-        _assert(objLiteralResult.message == "hello world" && objLiteralResult.value == 3, "求值类型：对象字面量结果应该正确");
+        _assert(objLiteralResult.message == "hello world" && objLiteralResult.value == 3, "求值类型：对象字面量（带表达式）结果应该正确");
+
+        // 测试空对象
+        var emptyObjResult:Object = evaluator.evaluate('{}');
+        _assert(typeof emptyObjResult == "object", "对象字面量：空对象 {} 应该被正确解析");
+        var keyCount:Number = 0;
+        for (var key in emptyObjResult) {
+            keyCount++;
+        }
+        _assert(keyCount == 0, "对象字面量：解析后的空对象应该没有属性");
+
+        // 测试多种值类型
+        var mixedTypeObj:Object = evaluator.evaluate('{ "num": 123.45, "str": "test", "bool": true, "nil": null }');
+        _assert(
+            mixedTypeObj.num == 123.45 && 
+            mixedTypeObj.str == "test" && 
+            mixedTypeObj.bool === true && 
+            mixedTypeObj.nil === null, 
+            "对象字面量：应该支持多种基础值类型 (number, string, bool, null)"
+        );
+
+        // 测试变量和函数调用作为值
+        evaluator.setVariable("myVar", "dynamic");
+        evaluator.setFunction("getValue", function() { return 42; });
+        var dynamicObj:Object = evaluator.evaluate('{ "fromVar": myVar, "fromFunc": getValue() }');
+        _assert(dynamicObj.fromVar == "dynamic" && dynamicObj.fromFunc == 42, "对象字面量：应该支持变量和函数调用作为值");
+
+        // 测试嵌套对象字面量
+        var nestedObj:Object = evaluator.evaluate('{ "level1": { "level2": "deep" }, "other": 1 }');
+        _assert(nestedObj.level1.level2 == "deep" && nestedObj.other == 1, "对象字面量：应该支持嵌套对象");
+
+        // 测试对象字面量与数组的结合
+        var objInArray:Array = evaluator.evaluate('[1, { "a": 2, "b": true }, 3]');
+        _assert(objInArray[1].a == 2 && objInArray[1].b === true, "集成：对象字面量应该可以在数组字面量中使用");
+
+        var arrayInObj:Object = evaluator.evaluate('{ "data": [10, 20, 30] }');
+        _assert(arrayInObj.data.length == 3 && arrayInObj.data[1] == 20, "集成：数组字面量应该可以作为对象的值");
     }
     
     // ============================================================================
@@ -411,6 +449,12 @@ class org.flashNight.gesh.pratt.PrattEvaluator_TestSuite {
         // 空数组批量求值
         var emptyMultiResults:Array = evaluator.evaluateMultiple([]);
         _assert(emptyMultiResults.length == 0, "批量求值：空数组应该返回空结果");
+        // 测试对象字面量中的变量提取
+
+        var objVars:Array = evaluator.extractVariables('{ "a": var1, "b": { "c": var2 + 3 }, "key": var1 }');
+        _assert(_arrayContains(objVars, "var1"), "变量提取（对象）：应该能提取对象字面量值中的变量 var1");
+        _assert(_arrayContains(objVars, "var2"), "变量提取（对象）：应该能提取嵌套对象值中的变量 var2");
+        _assert(objVars.length == 2, "变量提取（对象）：应该正确处理对象中重复的变量");
     }
     
     // ============================================================================
@@ -727,6 +771,34 @@ class org.flashNight.gesh.pratt.PrattEvaluator_TestSuite {
         // evaluateSafe 是一个很好的后备方案，所以这个测试是合理的。
         var largeArrayTest:String = evaluator.evaluateSafe("new Array(999999999)", "MEMORY_SAFE");
         _assert(largeArrayTest == "MEMORY_SAFE" || typeof largeArrayTest == "object", "内存保护：应该防止过大的内存分配或优雅失败");
+
+        trace("    --- 对象字面量错误处理 ---");
+
+        _assertThrows(
+            function() { evaluator.evaluate('{ "a": 1 "b": 2 }'); },
+            "Expected T_RBRACE but got STRING", // 更新为匹配实际的错误信息
+            "对象字面量错误：缺少逗号应该抛出异常"
+        );
+
+        _assertThrows(
+            function() { evaluator.evaluate('{ "key" 123 }'); },
+            "Expected T_COLON but got NUMBER", // 更新为匹配实际的错误信息
+            "对象字面量错误：缺少冒号应该抛出异常"
+        );
+
+        // 修改：验证尾随逗号是合法且被支持的特性，而不是错误。
+        var trailingCommaResult:Object = evaluator.evaluateSafe('{ "a": 1, "b": 2, }', null);
+        _assert(
+            trailingCommaResult != null && trailingCommaResult.a == 1 && trailingCommaResult.b == 2,
+            "对象字面量特性：尾随逗号应该被正确解析和支持"
+        );
+
+
+        _assertThrows(
+            function() { evaluator.evaluate('{ "a": 1'); },
+            "Expected T_RBRACE but got EOF", // 更新为匹配实际的错误信息
+            "对象字面量错误：未闭合的花括号应该抛出异常"
+        );
     }
     
     // ============================================================================

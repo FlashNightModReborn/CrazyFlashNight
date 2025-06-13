@@ -15,6 +15,7 @@ PrattExpression_TestSuite.runAllTests();
   ✅ 表达式类型常量：PROPERTY_ACCESS应该正确定义
   ✅ 表达式类型常量：ARRAY_ACCESS应该正确定义
   ✅ 表达式类型常量：ARRAY_LITERAL应该正确定义
+  ✅ 表达式类型常量：OBJECT_LITERAL应该正确定义
   ✅ 表达式类型常量：所有类型常量应该是唯一的
   ✅ 工厂方法：literal()应该创建LITERAL类型
   ✅ 工厂方法：identifier()应该创建IDENTIFIER类型
@@ -25,6 +26,8 @@ PrattExpression_TestSuite.runAllTests();
   ✅ 工厂方法：propertyAccess()应该创建PROPERTY_ACCESS类型
   ✅ 工厂方法：arrayAccess()应该创建ARRAY_ACCESS类型
   ✅ 工厂方法：arrayLiteral()应该创建ARRAY_LITERAL类型
+  ✅ 工厂方法：objectLiteral()应该创建OBJECT_LITERAL类型
+  ✅ 工厂方法：objectLiteral()的 properties 应正确设置
 
 --- 测试分组1：字面量表达式 ---
   ✅ 数字字面量：类型应该是LITERAL
@@ -41,6 +44,10 @@ PrattExpression_TestSuite.runAllTests();
   ✅ undefined字面量：求值应该返回undefined
   ✅ 对象字面量：求值应该返回完整对象
   ✅ 数组字面量：求值应该返回完整数组
+  ✅ 对象字面量：求值应该返回 { x:1, y:2 }
+  ✅ 对象字面量 toString 应以 “[ObjectLiteral:{” 开头并以 “}]” 结尾，实际：[ObjectLiteral:{x:[Literal:1], y:[Identifier:myVar]}]
+  ✅ 对象字面量 toString 应包含 “x:[Literal:1]” 与 “y:[Identifier:myVar]”，实际：[ObjectLiteral:{x:[Literal:1], y:[Identifier:myVar]}]
+  ✅ 对象字面量 toString 应在属性之间用逗号分隔，实际：[ObjectLiteral:{x:[Literal:1], y:[Identifier:myVar]}]
 
 --- 测试分组2：标识符表达式 ---
   ✅ 数字标识符：类型应该是IDENTIFIER
@@ -306,8 +313,8 @@ PrattExpression_TestSuite.runAllTests();
   ✅ 特殊值数组字面量：应该正确处理各种特殊值
 
 ========== PrattExpression 测试结果 ==========
-总计: 272 个测试
-通过: 272 个
+总计: 279 个测试
+通过: 279 个
 失败: 0 个
 覆盖率: 100%
 ✅ PrattExpression 所有测试通过！

@@ -65,13 +65,13 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         // 验证所有表达式类型常量都已定义且唯一
         var expectedTypes:Array = [
             "BINARY", "UNARY", "TERNARY", "LITERAL", "IDENTIFIER",
-            "FUNCTION_CALL", "PROPERTY_ACCESS", "ARRAY_ACCESS", "ARRAY_LITERAL"
+            "FUNCTION_CALL", "PROPERTY_ACCESS", "ARRAY_ACCESS", "ARRAY_LITERAL", "OBJECT_LITERAL"
         ];
-        
         var actualTypes:Array = [
-            PrattExpression.BINARY, PrattExpression.UNARY, PrattExpression.TERNARY, 
+            PrattExpression.BINARY, PrattExpression.UNARY, PrattExpression.TERNARY,
             PrattExpression.LITERAL, PrattExpression.IDENTIFIER, PrattExpression.FUNCTION_CALL,
-            PrattExpression.PROPERTY_ACCESS, PrattExpression.ARRAY_ACCESS, PrattExpression.ARRAY_LITERAL
+            PrattExpression.PROPERTY_ACCESS, PrattExpression.ARRAY_ACCESS, PrattExpression.ARRAY_LITERAL,
+            PrattExpression.OBJECT_LITERAL
         ];
         
         for (var i:Number = 0; i < expectedTypes.length; i++) {
@@ -121,7 +121,17 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         _assert(arrayAccessFactoryExpr.type == PrattExpression.ARRAY_ACCESS, "工厂方法：arrayAccess()应该创建ARRAY_ACCESS类型");
         
         var arrayLiteralFactoryExpr:PrattExpression = PrattExpression.arrayLiteral([]);
-        _assert(arrayLiteralFactoryExpr.type == PrattExpression.ARRAY_LITERAL, "工厂方法：arrayLiteral()应该创建ARRAY_LITERAL类型");
+        _assert(arrayLiteralFactoryExpr.type == PrattExpression.ARRAY_LITERAL,
+            "工厂方法：arrayLiteral()应该创建ARRAY_LITERAL类型");
+
+        var objectLiteralFactoryExpr:PrattExpression =
+            PrattExpression.objectLiteral([{ key: "foo", value: PrattExpression.literal(123) }]);
+        _assert(objectLiteralFactoryExpr.type == PrattExpression.OBJECT_LITERAL,
+            "工厂方法：objectLiteral()应该创建OBJECT_LITERAL类型");
+        _assert(objectLiteralFactoryExpr.properties.length == 1
+                && objectLiteralFactoryExpr.properties[0].key == "foo"
+                && objectLiteralFactoryExpr.properties[0].value.evaluate({}) == 123,
+            "工厂方法：objectLiteral()的 properties 应正确设置");
     }
     
     // ============================================================================
@@ -180,6 +190,45 @@ class org.flashNight.gesh.pratt.PrattExpression_TestSuite {
         var arrayResult = arrayLiteral.evaluate(context);
         _assert(arrayResult.length == 3 && arrayResult[0] == 1 && arrayResult[1] == 2 && arrayResult[2] == 3, 
                 "数组字面量：求值应该返回完整数组");
+
+        // ================
+        // 对象字面量表达式
+        // ================
+        var ctx:Object = { myVar: 2 };
+
+        // 准备用于构造 OBJECT_LITERAL 的 props 列表
+        var objProps:Array = [
+            { key: "x", value: PrattExpression.literal(1) },
+            { key: "y", value: PrattExpression.identifier("myVar") }
+        ];
+        var objLiteralExpr:PrattExpression = PrattExpression.objectLiteral(objProps);
+
+        // 求值结果
+        var objEval:Object = objLiteralExpr.evaluate(ctx);
+        _assert(objEval.x == 1 && objEval.y == 2,
+            "对象字面量：求值应该返回 { x:1, y:2 }");
+
+        // toString 格式（考虑属性顺序不确定性）
+        var s:String = objLiteralExpr.toString();
+        // 1. 必须以 "[ObjectLiteral:{" 开头，以 "}]" 结尾
+        _assert(
+            s.indexOf("[ObjectLiteral:{") == 0 && s.substr(s.length-2) == "}]",
+            "对象字面量 toString 应以 “[ObjectLiteral:{” 开头并以 “}]” 结尾，实际：" + s
+        );
+
+        // 2. 必须同时包含 "x:[Literal:1]" 和 "y:[Identifier:myVar]"
+        _assert(
+            s.indexOf("x:[Literal:1]") > -1 && s.indexOf("y:[Identifier:myVar]") > -1,
+            "对象字面量 toString 应包含 “x:[Literal:1]” 与 “y:[Identifier:myVar]”，实际：" + s
+        );
+
+
+        // 3. 两个属性之间要由逗号分隔（至少出现一次 “,”）
+        _assert(
+            s.indexOf(",") > -1,
+            "对象字面量 toString 应在属性之间用逗号分隔，实际：" + s
+        );
+
     }
     
     // ============================================================================
