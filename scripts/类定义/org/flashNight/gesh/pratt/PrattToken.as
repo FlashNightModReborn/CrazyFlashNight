@@ -61,9 +61,12 @@ class org.flashNight.gesh.pratt.PrattToken {
         line = tokenLine || 0;
         column = tokenColumn || 0;
         
-        if (tokenValue !== undefined) {
+        // 使用 arguments.length 来判断第五个参数是否被显式传递
+        if (arguments.length > 4) { 
+            // 只要调用时提供了第5个参数，就使用它的值，即使是 undefined
             value = tokenValue;
         } else {
+            // 只有在未提供第5个参数时，才进行自动转换
             switch (type) {
                 case T_NUMBER:
                     value = text.indexOf(".") >= 0 ? parseFloat(text) : parseInt(text);
@@ -118,11 +121,17 @@ class org.flashNight.gesh.pratt.PrattToken {
     public function createError(message:String):String {
         return message + " at line " + line + ", column " + column + " (token: '" + text + "')";
     }
-    
+
     public function toString():String {
         var result:String = "[" + type;
         if (text != null) result += " '" + text + "'";
-        if (value != text && value != null) result += " = " + value;
+        
+        // 修正条件：使用严格不等于(===)检查类型，或者使用 typeof 检查
+        // 一个更健壮的检查是：当 value 不是 text 的简单复制时，就显示它。
+        if (value !== text && value !== null) {
+            result += " = " + value;
+        }
+        
         if (line > 0) result += " @" + line + ":" + column;
         result += "]";
         return result;
