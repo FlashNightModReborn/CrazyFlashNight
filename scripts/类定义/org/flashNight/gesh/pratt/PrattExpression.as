@@ -103,9 +103,24 @@ class org.flashNight.gesh.pratt.PrattExpression {
                 return value;
                 
             case IDENTIFIER:
-                if (context && context[name] !== undefined) {
+                if (context != null && context[name] !== undefined) {
                     return context[name];
                 }
+                // At this point, val is undefined. We need to distinguish.
+                // The only way is to check if the property key exists.
+                // The iteration is slow, but it's the only 100% correct way in AS2
+                // without changing conventions.
+                var keyExists:Boolean = false;
+                for (var k in context) {
+                    if (k == name) {
+                        keyExists = true;
+                        break;
+                    }
+                }
+                if (keyExists) {
+                    return undefined; // It exists, and its value is undefined.
+                }
+
                 throw new Error("Undefined variable: " + name);
                 
             case BINARY:
@@ -133,11 +148,41 @@ class org.flashNight.gesh.pratt.PrattExpression {
     }
     
     private function _evaluateBinary(context:Object) {
+        // 为 && 和 || 实现短路求值
+        if (operator == "&&") {
+            var leftValAnd = left.evaluate(context);
+            if (!leftValAnd) {
+                return leftValAnd; // 短路，返回第一个falsy值
+            }
+            return right.evaluate(context); // 否则返回右侧的值
+        }
+
+        if (operator == "||") {
+            var leftValOr = left.evaluate(context);
+            if (leftValOr) {
+                return leftValOr; // 短路，返回第一个truthy值
+            }
+            return right.evaluate(context); // 否则返回右侧的值
+        }
+
         var leftVal = left.evaluate(context);
         var rightVal = right.evaluate(context);
         
         switch (operator) {
-            case "+": return Number(leftVal) + Number(rightVal);
+            case "+":
+                // 先尝试把两边都当数字处理：如果都能成功转换，就做数字加法
+                var leftNum:Number  = Number(leftVal);
+                var rightNum:Number = Number(rightVal);
+                if (!isNaN(leftNum) && !isNaN(rightNum)) {
+                    return leftNum + rightNum;
+                }
+                // 否则，如果有任一侧真的是字符串，就退回到拼接
+                if (typeof leftVal == "string" || typeof rightVal == "string") {
+                    return String(leftVal) + String(rightVal);
+                }
+                // 最后兜底，按数字加法（可能会生成 NaN，但那也符合预期）
+                return leftNum + rightNum;
+
             case "-": return Number(leftVal) - Number(rightVal);
             case "*": return Number(leftVal) * Number(rightVal);
             case "/": 
@@ -145,10 +190,26 @@ class org.flashNight.gesh.pratt.PrattExpression {
                 return Number(leftVal) / Number(rightVal);
             case "%": return Number(leftVal) % Number(rightVal);
             case "**": return Math.pow(Number(leftVal), Number(rightVal));
-            case "==": return leftVal == rightVal;
-            case "!=": return leftVal != rightVal;
-            case "===": return leftVal === rightVal;
-            case "!==": return leftVal !== rightVal;
+            case "==": 
+                if (isNaN(leftVal) || isNaN(rightVal)) {
+                    return false; // 如果任一操作数是 NaN，== 比较总是 false
+                }
+                return leftVal == rightVal;
+            case "!==":
+                // 严格不等：类型和值都必须同时相等才返回 false，否则 true
+                return !(leftVal === rightVal);
+
+            case "!=":
+                // 非严格不等：NaN 永不相等，其它按 == 处理
+                if (isNaN(leftVal) || isNaN(rightVal)) {
+                    return true;
+                }
+                return leftVal != rightVal;
+
+            case "===":
+                // 严格相等：类型和值都要匹配
+                return leftVal === rightVal;
+
             case "<": return Number(leftVal) < Number(rightVal);
             case ">": return Number(leftVal) > Number(rightVal);
             case "<=": return Number(leftVal) <= Number(rightVal);
@@ -169,7 +230,12 @@ class org.flashNight.gesh.pratt.PrattExpression {
             case "+": return Number(operandVal);
             case "-": return -Number(operandVal);
             case "!": return !Boolean(operandVal);
-            case "typeof": return typeof operandVal;
+            case "typeof": 
+                if (operandVal === null) {
+                    return "object"; // 模拟 JS 的历史问题
+                }
+                return typeof operandVal;
+            // ===================== FIX 2 END =====================
             default:
                 throw new Error("Unknown unary operator: " + operator);
         }
@@ -190,15 +256,15 @@ class org.flashNight.gesh.pratt.PrattExpression {
         if (functionExpr.type == IDENTIFIER) {
             var funcName:String = functionExpr.name;
 
-            // 改进：统一通过上下文或对象方法调用
-            var target;
-            if (context && context[funcName] !== undefined && typeof context[funcName] == "function") {
-                target = context;
-            } else {
-                // 对于 Math.xxx() 这种形式，由 _callObjectMethod 处理
-                throw new Error("Unknown function: " + funcName);
+            if (context && context[funcName] !== undefined) {
+                if (typeof context[funcName] == "function") {
+                    var target = context;
+                    return target[funcName].apply(target, evaluatedArgs);
+                } else {
+                    throw new Error(funcName + " is not a function");
+                }
             }
-            return target[funcName].apply(target, evaluatedArgs);
+            throw new Error("Unknown function: " + funcName);
 
         } else if (functionExpr.type == PROPERTY_ACCESS) {
             return _callObjectMethod(functionExpr, evaluatedArgs, context);
@@ -212,10 +278,13 @@ class org.flashNight.gesh.pratt.PrattExpression {
         var methodName:String = propAccess.property;
         
         // 通用对象方法调用（这也包括了Math对象）
-        if (obj && typeof obj[methodName] == "function") {
-            return obj[methodName].apply(obj, args);
+        if (obj && obj[methodName] !== undefined) {
+            if (typeof obj[methodName] == "function") {
+                return obj[methodName].apply(obj, args);
+            } else {
+                throw new Error(methodName + " is not a function");
+            }
         }
-        
         throw new Error("Method '" + methodName + "' not found on object");
     }
 
