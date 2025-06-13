@@ -27,12 +27,12 @@ class org.flashNight.gesh.pratt.PrattParser {
         registerPrefix(PrattToken.T_UNDEFINED, PrattParselet.literal());
         registerPrefix(PrattToken.T_IDENTIFIER, PrattParselet.identifier());
         registerPrefix(PrattToken.T_LPAREN, PrattParselet.group());
-        
+
         // 前缀运算符
-        registerPrefix("-", PrattParselet.prefixOperator(8));
-        registerPrefix("+", PrattParselet.prefixOperator(8));
-        registerPrefix("!", PrattParselet.prefixOperator(8));
-        registerPrefix("typeof", PrattParselet.prefixOperator(8));
+        registerPrefix("-", PrattParselet.prefixOperator(7)); // 按文本注册
+        registerPrefix("+", PrattParselet.prefixOperator(7)); // 按文本注册
+        registerPrefix("!", PrattParselet.prefixOperator(7)); // 按文本注册
+        registerPrefix(PrattToken.T_TYPEOF, PrattParselet.prefixOperator(7)); // 按类型注册
         
         // 中缀解析器 - 按优先级从低到高
         
@@ -104,7 +104,7 @@ class org.flashNight.gesh.pratt.PrattParser {
     public function consumeExpected(expectedType:String):PrattToken {
         var token:PrattToken = getCurrentToken();
         if (token.type != expectedType) {
-            throw new Error("Expected " + expectedType + " but got " + token.type + 
+            throw new Error("Expected T_" + expectedType + " but got " + token.type +
                           " at " + token.createError(""));
         }
         return consume();
@@ -177,14 +177,14 @@ class org.flashNight.gesh.pratt.PrattParser {
      * 获取前缀解析器
      * --------------------------------------------------------------------------*/
     private function _getPrefixParselet(token:PrattToken):PrattParselet {
-        // 首先检查token类型
-        var parselet:PrattParselet = _prefixParselets[token.type];
+        // 首先检查token文本（用于特殊关键字和运算符）
+        var parselet:PrattParselet = _prefixParselets[token.text];
         if (parselet != null) {
             return parselet;
         }
         
-        // 然后检查token文本（用于运算符）
-        parselet = _prefixParselets[token.text];
+        // 然后检查token类型
+        parselet = _prefixParselets[token.type];
         if (parselet != null) {
             return parselet;
         }

@@ -44,11 +44,13 @@ class org.flashNight.gesh.pratt.PrattParselet {
     public static function group():PrattParselet {
         return new PrattParselet(PREFIX, GROUP, 0, false);
     }
-    
+        
     public static function prefixOperator(precedence:Number):PrattParselet {
-        return new PrattParselet(PREFIX, PREFIX_OPERATOR, precedence || 8, false);
+        // 默认使用 7，让 **（8）优先于一元 -, +, !, typeof
+        var prec:Number = (precedence != undefined) ? precedence : 7;
+        return new PrattParselet(PREFIX, PREFIX_OPERATOR, prec, false);
     }
-    
+        
     public static function binaryOperator(precedence:Number, rightAssoc:Boolean):PrattParselet {
         return new PrattParselet(INFIX, BINARY_OPERATOR, precedence, rightAssoc);
     }
@@ -100,9 +102,14 @@ class org.flashNight.gesh.pratt.PrattParselet {
                 return PrattExpression.binary(left, token.text, right);
                 
             case TERNARY_OPERATOR:
-                var trueExpr:PrattExpression = parser.parseExpression(0);
+                // 原来：then 在 precedence=0 下完全吃尽，else 在 precedence=1 下吃尽
+
+                // 统一用 next-min-precedence，这里 _precedence=1 且 _rightAssociative=true
+                // 所以 nextPrec = 1 - 1 = 0
+                var nextPrec:Number        = _rightAssociative ? _precedence - 1 : _precedence;
+                var trueExpr:PrattExpression  = parser.parseExpression(nextPrec);
                 parser.consumeExpected(PrattToken.T_COLON);
-                var falseExpr:PrattExpression = parser.parseExpression(1);
+                var falseExpr:PrattExpression = parser.parseExpression(nextPrec);
                 return PrattExpression.ternary(left, trueExpr, falseExpr);
                 
             case FUNCTION_CALL:

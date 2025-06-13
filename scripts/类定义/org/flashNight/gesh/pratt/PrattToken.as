@@ -45,6 +45,7 @@ class org.flashNight.gesh.pratt.PrattToken {
     public static var T_AND:String = "AND";
     public static var T_OR:String = "OR";
     public static var T_NOT:String = "NOT";
+    public static var T_TYPEOF:String = "TYPEOF";
     public static var T_MATH:String = "MATH";
     
     // ============= 实例属性 =============

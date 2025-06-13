@@ -33,6 +33,7 @@ class org.flashNight.gesh.pratt.PrattLexer {
         _keywords["and"] = PrattToken.T_AND;
         _keywords["or"] = PrattToken.T_OR;
         _keywords["not"] = PrattToken.T_NOT;
+        _keywords["typeof"] = PrattToken.T_TYPEOF;
     }
 
 
