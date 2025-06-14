@@ -1,0 +1,90 @@
+# SimpleKalmanFilter1D 使用文档
+
+## 目录
+1. [简介](#简介)
+2. [卡尔曼滤波原理](#卡尔曼滤波原理)
+   - [预测步骤](#预测步骤)
+   - [更新步骤](#更新步骤)
+3. [SimpleKalmanFilter1D 类详解](#simplekalmanfilter1d-类详解)
+   - [构造函数](#构造函数)
+   - [主要方法](#主要方法)
+4. [使用示例](#使用示例)
+5. [测试代码](#测试代码)
+6. [注意事项](#注意事项)
+
+---
+
+## 简介
+
+`SimpleKalmanFilter1D` 实现了一维卡尔曼滤波器，适用于对帧率等连续数值进行实时估计和噪声抑制。在游戏或动画中，通过滤波后的数值可以更加稳定地反映系统状态。
+
+---
+
+## 卡尔曼滤波原理
+
+卡尔曼滤波器利用系统状态的先验估计和新的观测值，生成对真实状态的更准确估计。其核心包含两个阶段：预测和更新。
+
+### 预测步骤
+```
+预测值 = 上一次估计值
+预测协方差 = 上一次协方差 + 过程噪声 Q
+```
+预测阶段基于当前估计推测下一时刻的状态和误差协方差。
+
+### 更新步骤
+```
+卡尔曼增益 K = 预测协方差 / (预测协方差 + 测量噪声 R)
+更新估计 = 预测值 + K × (测量值 - 预测值)
+更新协方差 = (1 - K) × 预测协方差
+```
+更新阶段结合测量值修正预测结果，使得估计更加接近真实值。
+
+---
+
+## SimpleKalmanFilter1D 类详解
+
+### 构造函数
+```actionscript
+public function SimpleKalmanFilter1D(initialEstimate:Number,
+                                     processNoise:Number,
+                                     measurementNoise:Number)
+```
+- **initialEstimate**：初始状态估计。
+- **processNoise (Q)**：过程噪声协方差。
+- **measurementNoise (R)**：测量噪声协方差。
+
+### 主要方法
+- **predict()**：执行预测步骤，返回新的状态估计。
+- **update(measuredValue:Number)**：根据测量值更新估计。
+- **getEstimate() / getErrorCov()**：获取当前估计及协方差。
+- **reset(initialEstimate:Number, initialErrorCov:Number)**：重置滤波器状态。
+- **setProcessNoise(Q:Number) / setMeasurementNoise(R:Number)**：调整噪声参数。
+
+---
+
+## 使用示例
+```actionscript
+import org.flashNight.neur.Controller.SimpleKalmanFilter1D;
+
+// 初始估计为30 FPS，过程噪声Q=0.1，测量噪声R=2
+var kf:SimpleKalmanFilter1D = new SimpleKalmanFilter1D(30, 0.1, 2);
+
+var measuredFPS:Number = 28;      // 当前测量值
+kf.predict();                     // 预测下一状态
+var filteredFPS:Number = kf.update(measuredFPS);  // 更新估计
+trace("过滤后的帧率: " + filteredFPS);
+```
+
+---
+
+## 测试代码
+
+仓库中提供了 `TestSimpleKalmanFilter1D.as`，涵盖初始状态、预测与更新过程、异常情况以及性能等多项测试，可直接运行以验证滤波器的正确性和效率。
+
+---
+
+## 注意事项
+1. `update` 方法的测量值不能为 `NaN`，否则将抛出异常。
+2. `reset` 时的初始误差协方差必须非负。
+3. 根据应用场景适当调整 `processNoise` 与 `measurementNoise`，以取得平衡的滤波效果。
+
