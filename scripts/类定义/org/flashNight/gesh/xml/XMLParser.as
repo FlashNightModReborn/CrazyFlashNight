@@ -316,7 +316,7 @@ class org.flashNight.gesh.xml.XMLParser
      * @param value String 要转换的字符串。
      * @return Object 转换后的数据。
      */
-    private static function convertDataType(value:String):Object
+    public static function convertDataType(value:String):Object
     {
         if (!isNaN(Number(value)))
         {
@@ -338,7 +338,7 @@ class org.flashNight.gesh.xml.XMLParser
      * @param node XMLNode 要检查的 XML 节点。
      * @return Boolean 如果 XML 合法则返回 true，否则返回 false。
      */
-    private static function isValidXML(node:XMLNode):Boolean {
+    public static function isValidXML(node:XMLNode):Boolean {
         // 检查节点名是否存在，并且不是空字符串
         if (node.nodeName == undefined || node.nodeName == null || node.nodeName == "") {
             return false;
