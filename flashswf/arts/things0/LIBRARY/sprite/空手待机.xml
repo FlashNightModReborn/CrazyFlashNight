@@ -925,7 +925,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#A0C35E" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="头" color="#A0C35E" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -1277,11 +1277,11 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#EC4A92" autoNamed="false">
+        <DOMLayer name="左手" color="#EC4A92" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="159.55" centerPoint3DY="-120.4">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" selected="true" centerPoint3DX="159.55" centerPoint3DY="-120.4">
                   <matrix>
                     <Matrix a="0.170867919921875" b="-0.8236083984375" c="0.8236083984375" d="0.170867919921875" tx="127.2" ty="-137.15"/>
                   </matrix>

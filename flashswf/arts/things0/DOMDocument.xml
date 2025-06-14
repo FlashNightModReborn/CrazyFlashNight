@@ -17,7 +17,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
@@ -62,11 +62,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
@@ -700,7 +700,7 @@
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1732399262"/>
           <Include href="sprite/Symbol 121.xml" loadImmediate="false" itemID="6577b699-000009a6" lastModified="1722447121"/>
           <Include href="sprite/Symbol 124.xml" loadImmediate="false" itemID="6577b699-000009a8" lastModified="1747750846"/>
-          <Include href="sprite/Symbol 129.xml" loadImmediate="false" itemID="6577b699-000009ad" lastModified="1749128790"/>
+          <Include href="sprite/Symbol 129.xml" loadImmediate="false" itemID="6577b699-000009ad" lastModified="1749917596"/>
           <Include href="sprite/Symbol 130.xml" loadImmediate="false" itemID="6577b699-000009ae" lastModified="1720908276"/>
           <Include href="sprite/Symbol 131.xml" loadImmediate="false" itemID="6577b699-000009af" lastModified="1725366840"/>
           <Include href="sprite/Symbol 134.xml" loadImmediate="false" itemID="6577b699-000009b1" lastModified="1702343951"/>
@@ -843,7 +843,7 @@
           <Include href="sprite/Symbol 559.xml" loadImmediate="false" itemID="6577b699-00000ac3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 561.xml" loadImmediate="false" itemID="6577b699-00000ac4" lastModified="1702343951"/>
           <Include href="sprite/Symbol 563.xml" loadImmediate="false" itemID="6577b699-00000ac5" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1749127154"/>
+          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1749918204"/>
           <Include href="sprite/Symbol 618.xml" loadImmediate="false" itemID="6577b699-00000add" lastModified="1720908276"/>
           <Include href="sprite/Symbol 619.xml" loadImmediate="false" itemID="6577b699-00000ade" lastModified="1720908276"/>
           <Include href="sprite/Symbol 620.xml" loadImmediate="false" itemID="6577b699-00000adf" lastModified="1702343951"/>
@@ -1216,6 +1216,8 @@
           <Include href="气爆4.xml" loadImmediate="false" itemID="674005a7-000001fe" lastModified="1732248999"/>
           <Include href="气爆5.xml" loadImmediate="false" itemID="674005b6-00000206" lastModified="1732249014"/>
           <Include href="气爆6.xml" loadImmediate="false" itemID="674005c8-0000020e" lastModified="1732249032"/>
+          <Include href="拳风2.xml" itemIcon="1" loadImmediate="false" itemID="68499d3f-00005805" lastModified="1749654847"/>
+          <Include href="拳风特效.xml" itemIcon="1" loadImmediate="false" itemID="68499705-000050c2" lastModified="1749653253"/>
           <Include href="日字冲拳残影.xml" loadImmediate="false" itemID="67cc950f-00000672" lastModified="1741460802"/>
           <Include href="神秘文件夹/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1716719800"/>
           <Include href="狮子斩刀光.xml" loadImmediate="false" itemID="66fac585-0000073c" lastModified="1731920115"/>
@@ -1873,6 +1875,14 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2925272" publishTime="1749917648"/>
+          <PublishItem publishSize="2925281" publishTime="1749916619"/>
+          <PublishItem publishSize="2925063" publishTime="1749916329"/>
+          <PublishItem publishSize="2925055" publishTime="1749915977"/>
+          <PublishItem publishSize="2923838" publishTime="1749912699"/>
+          <PublishItem publishSize="2923848" publishTime="1749912084"/>
+          <PublishItem publishSize="2923823" publishTime="1749911921"/>
+          <PublishItem publishSize="2922430" publishTime="1749908927"/>
           <PublishItem publishSize="2893038" publishTime="1749128067"/>
           <PublishItem publishSize="2893038" publishTime="1749127737"/>
           <PublishItem publishSize="2893039" publishTime="1749127523"/>
@@ -1885,13 +1895,5 @@
           <PublishItem publishSize="2751719" publishTime="1748534396"/>
           <PublishItem publishSize="2751730" publishTime="1748534100"/>
           <PublishItem publishSize="2751621" publishTime="1748533965"/>
-          <PublishItem publishSize="2751622" publishTime="1748532400"/>
-          <PublishItem publishSize="2751642" publishTime="1748532211"/>
-          <PublishItem publishSize="2751583" publishTime="1748531924"/>
-          <PublishItem publishSize="2751554" publishTime="1748530801"/>
-          <PublishItem publishSize="2751116" publishTime="1748530315"/>
-          <PublishItem publishSize="2751118" publishTime="1748530240"/>
-          <PublishItem publishSize="2751035" publishTime="1748529961"/>
-          <PublishItem publishSize="2750118" publishTime="1748529522"/>
      </publishHistory>
 </DOMDocument>
