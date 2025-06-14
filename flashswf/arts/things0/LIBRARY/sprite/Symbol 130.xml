@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 130" itemID="6577b699-000009ae" lastModified="1749921073" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 130" itemID="6577b699-000009ae" lastModified="1749924062" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="Symbol 130" currentFrame="44">
+    <DOMTimeline name="Symbol 130" currentFrame="40">
       <layers>
         <DOMLayer name="Script Layer" color="#AAB49D" locked="true">
           <frames>
@@ -380,20 +380,98 @@ if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳")){
 	_parent.火箭重拳 = true;
 }else{
 	_parent.火箭重拳 = false;
+}
+
+
+抓取 = false;
+抓取目标 = "";
+抓取方向 = "";
+Z轴抓取范围 = 60;
+
+function 抓取持续判定() {
+	//!_root.gameworld[抓取目标].刚体
+	//现在可以抓取霸体敌人
+	return (抓取 && !_root.gameworld[抓取目标].倒地 && _root.gameworld[抓取目标].hp > 0);
+}
+function 持续抓取(){
+	if (!抓取持续判定() or _parent.方向 != 抓取方向) {
+		抓取 = false;
+		return;
+	}
+	var target = _root.gameworld[抓取目标];
+	var myPoint = {x:this.抓取点._x, y:this.抓取点._y};
+	this.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	var shootX = myPoint.x;
+
+	var vx = shootX - target._x;
+	var vz = _parent.Z轴坐标 - target.Z轴坐标 - 1;
+	var dx = "右";
+	var dz = "下";
+	if(vx < 0){
+		dx = "左";
+		vx = -vx;
+	}
+	if(vz < 0){
+		dz = "上";
+		vz = -vz;
+	}
+	target.强制移动(dx,vx);
+	target.强制移动(dz,vz);
+	
+	if(target.浮空){
+		target._y = target.Z轴坐标 - 10;
+	}else{
+		target._y = target.Z轴坐标;
+	}
 }]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" keyMode="9728">
+            <DOMFrame index="32" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+if (蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gameworld[_parent.攻击目标].Z轴坐标) < Z轴抓取范围 && _root.gameworld[_parent.攻击目标].area.hitTest(this.抓取碰撞箱))
+{
+	//!_root.gameworld[_parent.攻击目标].刚体
+	if (!_root.gameworld[_parent.攻击目标].倒地 && _root.gameworld[_parent.攻击目标].hp > 0)
+	{
+		抓取 = true;
+		抓取目标 = _parent.攻击目标;
+		抓取方向 = _parent.方向;
+		break;
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gameworld[_parent.攻击目标].Z轴坐标) < Z轴抓取范围 && _root.gameworld[_parent.攻击目标].area.hitTest(this.抓取碰撞箱))
+{
+	//!_root.gameworld[_parent.攻击目标].刚体
+	if (!_root.gameworld[_parent.攻击目标].倒地 && _root.gameworld[_parent.攻击目标].hp > 0)
+	{
+		抓取 = true;
+		抓取目标 = _parent.攻击目标;
+		抓取方向 = _parent.方向;
+		break;
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹&amp;变招" color="#C69F88" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹&amp;变招" color="#C69F88" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -475,7 +553,7 @@ if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳")){
 	};
 }
 onClipEvent (enterFrame) {
-	if (_parent._parent.火箭重拳 && Key.isDown(_parent._parent.A键) && _parent._currentframe == _parent.当前初始帧 && _parent.蓄力 < 30)
+	if (_parent._parent.火箭重拳 && Key.isDown(_parent._parent.A键) && _parent._currentframe == _parent.当前初始帧 && _parent.蓄力 < 45)
 	{
 		_parent.stop();
 		_parent._parent.火箭重拳蓄力中 = true;
@@ -501,9 +579,9 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="81.65" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="抓取碰撞箱" centerPoint3DX="81.65" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="6.96174621582031" d="1.91461181640625" tx="83.8" ty="43.85"/>
+                    <Matrix a="8.02647399902344" d="1.91461181640625" tx="84.15" ty="43.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="0.4"/>
@@ -526,13 +604,15 @@ _parent.play();
 	子弹属性.击倒率 = 1;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
-		if(_parent.蓄力 > 20){
+		if(_parent.蓄力 >= 20){
 				子弹属性.暴击 = function(当前子弹)
 				{
+					_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
 					return 2;
 				};
 		}
 	}
+	子弹属性.水平击退速度 = 20;
 	
 	//非常用
 	/*
@@ -568,9 +648,9 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="37" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="13.6" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="抓取碰撞箱" centerPoint3DX="13.6" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="5.15518188476563" d="1.91461181640625" tx="15.25" ty="43.85"/>
+                    <Matrix a="7.06028747558594" d="1.91461181640625" tx="15.75" ty="43.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="0.4"/>
@@ -590,16 +670,18 @@ _parent.play();
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 0.5;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
-		if(_parent.蓄力 > 20){
+		if(_parent.蓄力 >= 20){
 				子弹属性.暴击 = function(当前子弹)
 				{
+					_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
 					return 2;
 				};
 		}
 	}
+	子弹属性.水平击退速度 = 25;
 	
 	//非常用
 	/*
@@ -635,7 +717,7 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="40" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="0.3" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="0.3" centerPoint3DY="44.7">
                   <matrix>
                     <Matrix a="4.97184753417969" d="1.91461181640625" tx="1.95" ty="43.85"/>
                   </matrix>
@@ -657,16 +739,17 @@ _parent.play();
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 0.2;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
-		if(_parent.蓄力 > 20){
+		if(_parent.蓄力 >= 25){
 				子弹属性.暴击 = function(当前子弹)
 				{
 					return 2;
 				};
 		}
 	}
+	子弹属性.水平击退速度 = 20;
 	
 	//非常用
 	/*
@@ -702,9 +785,9 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="19.5" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-26.4" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="4.37704467773438" d="1.91461181640625" tx="20.95" ty="43.85"/>
+                    <Matrix a="5.50389099121094" d="1.91461181640625" tx="-24.5" ty="43.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="0.4"/>
@@ -724,16 +807,17 @@ _parent.play();
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 0.1;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
-		if(_parent.蓄力 > 20){
+		if(_parent.蓄力 >= 25){
 				子弹属性.暴击 = function(当前子弹)
 				{
 					return 3;
 				};
 		}
 	}
+	子弹属性.水平击退速度 = 32;
 	
 	//非常用
 	/*
@@ -825,9 +909,9 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="33" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" name="抓取点" centerPoint3DX="516.4" centerPoint3DY="269.05">
                   <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
+                    <Matrix tx="503.9" ty="256.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -836,7 +920,7 @@ _parent.play();
                     <script><![CDATA[onClipEvent(enterFrame){
 	var 速度倍率 = 2;
 	if(_parent.蓄力){
-		速度倍率 += _parent.蓄力 / 20 ;
+		速度倍率 += _parent.蓄力 / 25 ;
 	}
    _parent.攻击时移动(_parent._parent.跑X速度 * 速度倍率,_parent._parent.跑X速度 * 速度倍率);
 }
@@ -5173,7 +5257,7 @@ _parent.play();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#799786" locked="true">
+        <DOMLayer name="Layer 6" color="#799786">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
@@ -5268,7 +5352,30 @@ _parent.play();
             <DOMFrame index="21" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
+            <DOMFrame index="29" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="163" centerPoint3DY="355.1">
+                  <matrix>
+                    <Matrix tx="150.5" ty="342.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if(_parent.蓄力 && _parent.蓄力>=20 && _parent.抓取){
+		_parent.持续抓取();
+	}
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
