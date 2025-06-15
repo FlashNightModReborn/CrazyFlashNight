@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="健身房沙袋" itemID="65a79007-00000b58" lastModified="1722347259" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="健身房沙袋" itemID="65a79007-00000b58" lastModified="1749992608" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="健身房沙袋" currentFrame="43">
+    <DOMTimeline name="健身房沙袋">
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -29,7 +29,7 @@ hp = 10000000;
 躲闪率 = 2;
 击中效果 = "火花";
 Z轴坐标 = this._y;
-
+_root.敌人函数.初始化单位(this);
 function 状态改变(新状态名)
 {
 	this.gotoAndPlay("被击");
@@ -72,11 +72,11 @@ stop();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="area" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="area" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="75" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" selected="true" centerPoint3DX="12.5" centerPoint3DY="-229">
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" centerPoint3DX="12.5" centerPoint3DY="-229">
                   <matrix>
                     <Matrix a="2.23759460449219" d="6.39256286621094" ty="-158.8"/>
                   </matrix>

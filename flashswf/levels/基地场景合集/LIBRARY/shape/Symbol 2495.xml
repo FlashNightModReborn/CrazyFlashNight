@@ -32,14 +32,14 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!375 89|273 0!273 0|1 0"/>
-                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1 0|95 89"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!95 89|375 89"/>
+                    <Edge strokeStyle="1" edges="!0 0|1 0"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1 0|273 0!273 0|375 89"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!375 89|380 94!380 94|380 1269!380 1269|95 1269"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!95 1269|3 1163"/>
                     <Edge fillStyle1="2" strokeStyle="2" edges="!3 1163|0 1159!0 1159|0 1130"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!0 1130|0 0"/>
-                    <Edge strokeStyle="1" edges="!0 0|1 0"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!95 89|375 89"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1 0|95 89"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!95 89|95 1269"/>
                   </edges>
                 </DOMShape>
