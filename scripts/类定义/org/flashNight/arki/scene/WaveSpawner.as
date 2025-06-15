@@ -166,8 +166,7 @@ class org.flashNight.arki.scene.WaveSpawner {
                 gameworld.地图.僵尸型敌人总个数 += quantity;
             }
             //将刷怪托管到专用时间轮
-            var interval = Math.floor(兵种信息.Interval / 100);
-            waveSpawnWheel.addTask(quantity, interval, 兵种信息.Attribute, i, currentWave);
+            waveSpawnWheel.addTask(quantity, 兵种信息.Interval, 兵种信息.Attribute, i, currentWave);
         }
 
         gameworld.dispatcher.publish("WaveStarted", currentWave);
@@ -176,8 +175,14 @@ class org.flashNight.arki.scene.WaveSpawner {
     public function tick():Void{
         if(!isActive) return;
         tickCount++;
-        if(tickCount % 3 == 0) waveSpawnWheel.tick();
-        if(tickCount % 30 == 0) clockTick();
+        waveSpawnWheel.minHeapTick();
+        if(tickCount % 3 == 0) {
+            waveSpawnWheel.slotTick();
+            if(tickCount % 30 == 0) {
+                waveSpawnWheel.longDelaySlotTick();
+                clockTick();
+            }
+        }
     }
 
 
@@ -217,7 +222,7 @@ class org.flashNight.arki.scene.WaveSpawner {
     }
 
 
-    public function spawn(attribute:Object, index:Number, waveIndex:Number, quantity:Number):Number{
+    public function spawn(attribute:Object, index:Number, waveIndex:Number, quantity:Number):Boolean{
         var 兵种信息 = waveInfo[waveIndex][index];
         var SpawnIndex = 兵种信息.SpawnIndex;
         var enemyPara = ObjectUtil.clone(attribute);
@@ -233,15 +238,8 @@ class org.flashNight.arki.scene.WaveSpawner {
             ObjectUtil.cloneParameters(enemyPara, 兵种信息.Parameters);
         }
 
-        do{
-            var instanceName:String = 兵种信息.InstanceName ? 兵种信息.InstanceName : attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
-            var result = attachEnemy(attribute.兵种名, instanceName, enemyPara, SpawnIndex, 兵种信息.x, 兵种信息.y);
-            if(!result) return quantity;
-            quantity--;
-            if(quantity <= 0) return 0;
-        }while(SpawnIndex === "front" || SpawnIndex === "back");
-        //若SpawnIndex设置front或back则一次性刷完
-        return quantity;
+        var instanceName:String = 兵种信息.InstanceName ? 兵种信息.InstanceName : attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
+        return attachEnemy(attribute.兵种名, instanceName, enemyPara, SpawnIndex, 兵种信息.x, 兵种信息.y);
     }
 
     public function attachEnemy(id:String, instanceName:String, enemyPara:Object, spawnIndex, x:Number, y:Number):Boolean{

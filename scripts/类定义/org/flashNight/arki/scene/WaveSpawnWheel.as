@@ -12,7 +12,10 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
     private var currentPointer:Number = 0; // 当前指针，指向当前处理的槽位
     private var wheelSize:Number = 60; // 时间轮的大小，固定为60
 
-    private var longDelayTasks:Array;
+    private var longDelaySlot:Array; // 延迟大等于6000毫秒的任务
+
+    private var minHeap:Array; // 延迟小等于100毫秒的任务
+    private var minHeapSpeed:Number = 5; // 最小堆每帧的刷怪尝试次数
 
     public static function getInstance():WaveSpawnWheel {
         return instance || (instance = new WaveSpawnWheel());
@@ -31,13 +34,16 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
     public function init():Void{
         this.waveSpawner = WaveSpawner.instance;
         this.slots = new Array(this.wheelSize);
-        this.longDelayTasks = [];
         this.currentPointer = 0;
+
+        this.longDelaySlot = [];
+        this.minHeap = [];
     }
     
     public function clear():Void{
         this.slots = null;
-        this.longDelayTasks = null;
+        this.longDelaySlot = null;
+        this.minHeap = null;
         this.currentPointer = 0;
     }
 
@@ -96,14 +102,23 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
     }
 
     /**
-     * 内部辅助方法，用于将包装后的参数（包含原始参数和延迟信息）添加到长时间任务列表。
+     * 内部辅助方法，用于将包装后的参数（包含原始参数和延迟信息）添加到长时间任务槽。
      *
      * @param wrapper 包装对象。
      */
-    private function _addToLongDelayTasks(wrapper:Object):Void {
+    private function _addToLongDelaySlot(wrapper:Object):Void {
         // 将包装后的参数添加长时间任务列表中
         wrapper.delayCount = wrapper.delay;
-        this.longDelayTasks.push(wrapper);
+        this.longDelaySlot.push(wrapper);
+    }
+
+    /**
+     * 内部辅助方法，用于将包装后的参数（包含原始参数和延迟信息）添加到最小堆。
+     *
+     * @param wrapper 包装对象。
+     */
+    private function _addToMinHeap(wrapper:Object):Void {
+        this.minHeap.push(wrapper);
     }
 
     /**
@@ -111,21 +126,28 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
      *
      * @param delay 延迟的时间步数。
      */
-    public function addTask(quantity:Number, delay:Number, attribute, index:Number, waveIndex:Number):Void{
-        if (delay < 1) {
-            delay = 1;
-        }
+    public function addTask(quantity:Number, interval:Number, attribute, index:Number, waveIndex:Number):Void {
         // 创建一个包装对象，包含原始参数和用于重新调度的延迟信息
         var wrapper:Object = {
             quantity:quantity,
-            delay: delay, // 存储原始延迟，用于后续的自动重新调度（循环任务）
             attribute: attribute,
             index: index,
             waveIndex: waveIndex
         };
 
-        if(delay >= this.wheelSize) this._addToLongDelayTasks(wrapper);
-        else this._addToSlot(wrapper);
+        interval = interval / 100;
+        if(interval <= 1){
+            // 如果 interval 小等于100（0.1秒），则加入最小堆
+            this._addToMinHeap(wrapper);
+        }else if(interval < this.wheelSize){
+            // 如果 interval 小于6000（6秒），则加入任务槽
+            wrapper.delay = interval | 0;
+            this._addToSlot(wrapper);
+        }else{
+            // 如果 interval 大于6000（6秒），则加入长时间任务槽
+            wrapper.delay = (interval / 10) | 0;
+            this._addToLongDelaySlot(wrapper);
+        }
     }
 
     /**
@@ -157,10 +179,10 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
 
 
     /**
-     * 执行 tick 操作，推进时间轮的当前指针，并执行当前槽位中的所有任务。
+     * slotTick 操作，每3帧一次：推进时间轮的当前指针，并执行当前槽位中的所有任务。
      * 同时，自动将任务重新调度，实现循环任务。
      */
-    public function tick():Void {
+    public function slotTick():Void {
         var i:Number;
         var wrapper:Object;
         var currentSlotTasks:Array = this.slots[this.currentPointer]; // 获取当前槽位中的任务参数数组
@@ -173,22 +195,51 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
             for (i = 0; i < currentSlotTasks.length; i++) {
                 wrapper = currentSlotTasks[i];
                 
-                // 执行 spawn 函数
-                wrapper.quantity = this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity);
-                // 重新调度任务（实现循环任务）
+                // 执行 spawn 函数，若成功则减少计数
+                if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
+                // 若计数未归零则重新调度任务（实现循环任务）
                 if(wrapper.quantity > 0) this._addToSlot(wrapper);
             }
         }
+    }
 
-        for(i = this.longDelayTasks.length - 1; i > -1; i--){
-            wrapper = longDelayTasks[i];
+    /**
+     * minHeapTick 操作，每帧一次。每次tick尝试生成5次，然后等待下一次tick。
+     */
+    public function minHeapTick():Void{
+        var len:Number = this.minHeap.length;
+        if(len <= 0) return;
+
+        var wrapper:Object = this.minHeap[len - 1];
+        for(var i:Number = 0; i < this.minHeapSpeed; i++){
+            this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity);
+            wrapper.quantity--;
+            if(wrapper.quantity <= 0) {
+                len--;
+                if(len <= 0){
+                    this.minHeap = [];
+                    return;
+                }
+                wrapper = this.minHeap[len - 1];
+            }
+        }
+
+        if(len < this.minHeap.length) this.minHeap.splice(len);
+    }
+
+    /**
+     * longDelaySlotTick 操作，每30帧一次
+     */
+    public function longDelaySlotTick():Void{
+        for(var i:Number = this.longDelaySlot.length - 1; i > -1; i--){
+            var wrapper:Object = longDelaySlot[i];
             wrapper.delayCount--;
             if(wrapper.delayCount <= 0){
-                wrapper.quantity = this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity);
+                if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
                 if(wrapper.quantity > 0){
                     wrapper.delayCount = wrapper.delay;
                 }else{
-                    longDelayTasks.splice(i,1);
+                    longDelaySlot.splice(i,1);
                 }
             }
         }

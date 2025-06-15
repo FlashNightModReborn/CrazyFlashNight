@@ -1989,7 +1989,7 @@ _root.主角函数.击倒呐喊 = function(){
 	var time = getTimer();
 	if(time - this.上次击倒呐喊时间 < 300) return; // 击倒呐喊的最低间隔为300毫秒
 	this.上次击倒呐喊时间 = time;
-	var arr:Array = 性别 === "女" ? 女_击倒音效_库 : 男_击倒音效_库;
+	var arr:Array = 性别 === "女" ? 女_击倒呐喊_库 : 男_击倒呐喊_库;
 	_root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
 

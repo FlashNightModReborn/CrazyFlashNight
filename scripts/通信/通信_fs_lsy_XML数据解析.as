@@ -96,6 +96,7 @@ _root.解析rogue敌人集合 = function(Unions){
 	return rogue敌人集合表;
 }
 
+/*
 _root.解析并设置基本配置 = function(关卡数据:Array)
 {
 	var 基本配置列表 = [];
@@ -217,6 +218,7 @@ _root.解析敌人波次 = function(敌人配置:Array)
 	}
 	return 敌人波次;
 };
+*/
 
 _root.解析敌人属性 = function(敌人)
 {
@@ -254,6 +256,7 @@ _root.解析敌人属性 = function(敌人)
 	return 敌人对象;// 返回组装好的敌人对象
 };
 
+/*
 _root.解析并设置实例配置 = function(关卡数据:Array){
 	var 实例配置 = [];
 	for (var i:Number = 0; i < 关卡数据.length; i++){
@@ -291,6 +294,7 @@ _root.解析并设置出生点配置 = function(关卡数据:Array){
 	}
 	return 出生点配置;
 }
+*/
 
 // 解析并设置对话配置
 _root.解析并设置对话配置 = function(关卡数据:Array)
@@ -394,112 +398,7 @@ _root.配置基础关卡信息 = function(对象, StageInfo){
 };
 
 
-/*
-_root.自动输出关卡数据 = function(关卡数据地址){
-	var 关卡数据 = _root.关卡数据缓存[关卡数据地址];
-	if (关卡数据 != undefined){
-		for (var 属性 in 关卡数据){
-			_root.输出对象属性(关卡数据[属性],属性);
-		}
-	}else{
-		_root.发布调试消息("没有找到指定的关卡数据：" + 关卡数据地址);
-	}
-};// 检查对象中的所有属性是否为 undefined
 
-
-_root.关卡数据缓存上限 = 32;
-_root.关卡数据缓清理许可 = true;
-_root.关卡数据地址 = "/stages/";
-_root.关卡缓存数据数组 = [];
-_root.关卡缓存数据数组.push({key:"关卡类型", value:关卡类型});
-_root.关卡缓存数据数组.push({key:"关卡可获得奖励品", value:关卡引用.关卡可获得奖励品});
-_root.关卡缓存数据数组.push({key:"无限过图基本配置", value:关卡引用.无限过图基本配置});
-_root.关卡缓存数据数组.push({key:"无限过图总关卡", value:关卡引用.无限过图总关卡});
-_root.关卡缓存数据数组.push({key:"无限过图实例", value:关卡引用.无限过图实例});
-_root.关卡缓存数据数组.push({key:"无限过图出生点", value:关卡引用.无限过图出生点});
-_root.关卡缓存数据数组.push({key:"副本对话", value:关卡引用.副本对话});
-_root.关卡缓存数据数组.push({key:"rogue敌人集合表", value:关卡引用.rogue敌人集合表});
-_root.关卡缓存数据数组.push({key:"当前关卡名", value:关卡引用.当前关卡名});
-_root.关卡缓存数据数组.push({key:"淡出跳转帧", value:关卡引用.淡出跳转帧});
-_root.关卡缓存数据数组.push({key:"关卡开放条件", value:关卡引用.关卡开放条件});
-_root.关卡缓存数据数组.push({key:"详细", value:关卡引用.详细});
-_root.关卡缓存数据数组.push({key:"材料详细", value:关卡引用.材料详细});
-_root.关卡缓存数据数组.push({key:"起点帧", value:关卡引用.起点帧});
-_root.关卡缓存数据数组.push({key:"终点帧", value:关卡引用.终点帧});
-_root.关卡缓存数据数组.push({key:"限制词条", value:关卡引用.限制词条});
-_root.关卡缓存数据数组.push({key:"淡出动画淡出跳转帧", value:关卡引用.淡出动画淡出跳转帧});
-_root.关卡缓存数据数组.push({key:"root场景进入位置名", value:关卡引用.root场景进入位置名});
-_root.解析子文件夹名称 = function(xml文件地址:String, 固定地址起点:String):String {
-	var 起始位置:Number = xml文件地址.indexOf(固定地址起点) + 固定地址起点.length;
-	var 停止位置:Number = xml文件地址.indexOf("/", 起始位置);
-	if (停止位置 == -1){
-		return "";// 如果没有找到下一个 '/'，返回空字符串
-	}
-	return xml文件地址.substring(起始位置, 停止位置);
-};
-
-_root.清理缓存 = function(当前子文件夹名称:String):Void 
-{
-	var 缓存计数:Number = 0;
-	for (var 缓存键 in _root.关卡数据缓存){
-		缓存计数++;
-	}
-	if (缓存计数 > _root.关卡数据缓存上限 and _root.关卡数据缓清理许可)
-	{
-		_root.关卡数据缓清理许可 = false;
-		for (var 缓存键 in _root.关卡数据缓存)
-		{
-			var 缓存中的子文件夹名称:String = _root.解析子文件夹名称(缓存键, _root.关卡数据地址);
-			if (缓存中的子文件夹名称 != 当前子文件夹名称)
-			{
-				delete _root.关卡数据缓存[缓存键];// 清除缓存
-			}
-		}
-		_root.发布消息("缓存数量过多，释放[" + 当前子文件夹名称 + "]以外的关卡缓存");
-		_root.关卡数据缓清理许可 = true;
-	}
-};
-
-_root.从关卡缓存中读取数据 = function(目标对象:Object, 缓存键:String):Void 
-{// 检查缓存是否存在
-	if (_root.关卡数据缓存[缓存键])
-	{
-		var 缓存数据:Object = _root.关卡数据缓存[缓存键];// 遍历缓存中的每个键值对
-		for (var 属性 in 缓存数据)
-		{// 将缓存值赋给目标对象的对应属性
-			目标对象[属性] = 缓存数据[属性];
-		}
-		if (目标对象.root场景进入位置名 != undefined and 目标对象.淡出动画淡出跳转帧 != undefined)
-		{
-			目标对象.onPress = function()
-			{
-				_root.场景进入位置名 = 目标对象.root场景进入位置名;
-				_root.淡出动画.淡出跳转帧(目标对象.淡出动画淡出跳转帧);
-			};
-		}
-		_root.发布调试消息("load 缓存  " + 缓存数据.关卡类型 + "  " + 缓存键);
-	}
-	// 清理缓存                              
-	_root.清理缓存(_root.解析子文件夹名称(缓存键, _root.关卡数据地址));
-};
-
-_root.配置关卡缓存数据 = function(关卡引用:Object, xml文件地址:String):Void 
-{// 检查并初始化缓存对象
-	if (!_root.关卡数据缓存[xml文件地址])
-	{
-		_root.关卡数据缓存[xml文件地址] = {};
-	}
-	// 遍历数据数组，将有效数据添加到缓存中                                                       
-	for (var i:Number = 0; i < _root.关卡缓存数据数组.length; i++)
-	{
-		var 数据项:Object = _root.关卡缓存数据数组[i];
-		if (关卡引用[数据项.key] !== undefined)
-		{
-			_root.关卡数据缓存[xml文件地址][数据项.key] = 关卡引用[数据项.key];
-		}
-	}
-};// XML 加载成功时的处理逻辑
-*/
 
 _root.配置关卡属性 = function(StageName:String):Void {
 	var 关卡引用:Object = this;
