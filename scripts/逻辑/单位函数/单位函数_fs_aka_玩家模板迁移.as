@@ -586,7 +586,8 @@ _root.刷新人物装扮 = function(目标){
 	}
 	//加载装备数据
 	//var 命中加成:Number = 0;//equipped.accuracy
-	var 韧性加成:Number = 0;//equipped.toughness
+	// var 韧性加成:Number = 0;//equipped.toughness
+	var 韧性加成:Number = 目标人物.身高 - 105 - 50;//equipped.toughness
 	var 闪避加成:Number = 0;//equipped.evasion
 	
 	目标人物.命中加成 = 0;
