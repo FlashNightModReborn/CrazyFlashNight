@@ -229,8 +229,8 @@ _parent.死亡检测({noCount:true, noCorpse:true});
 _root.敌人函数.死亡检测 = function(para){
 	if (hp <= 0 && !已加经验值){
 		this.man.stop();
-		if (是否为敌人 == true || 是否为敌人 == null){
-			if(para.noCount !== true){
+		if (是否为敌人 === true || 是否为敌人 === "null"){
+			if(是否为敌人 === true && para.noCount !== true){
 				_root.敌人死亡计数++;
 				_root.gameworld[产生源].僵尸型敌人场上实际人数--;
 				_root.gameworld[产生源].僵尸型敌人总个数--;

@@ -42,11 +42,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
             }
         }
 
-        if(!target.已加经验值 && FactionManager.getFactionFromUnit(target) == FactionManager.FACTION_HOSTILE_NEUTRAL)
-        {
-            _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
-            _root.gameworld[target.产生源].僵尸型敌人场上实际人数--;
-            _root.gameworld[target.产生源].僵尸型敌人总个数--;
-        }
+        // if(!target.已加经验值 && FactionManager.getFactionFromUnit(target) == FactionManager.FACTION_HOSTILE_NEUTRAL)
+        // {
+        //     _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+        //     _root.gameworld[target.产生源].僵尸型敌人场上实际人数--;
+        //     _root.gameworld[target.产生源].僵尸型敌人总个数--;
+        // }
     }
 }

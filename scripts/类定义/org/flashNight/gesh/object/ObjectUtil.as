@@ -336,9 +336,9 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @param obj 要转换的对象。
      * @return Array 返回数组。
      */
-    public static function toArray(obj:Object):Array {
+    public static function toArray(obj):Array {
         if (obj instanceof Array){
-            return Array(obj); // 是数组
+            return obj; // 是数组
         }else if (obj != null){
             return [obj]; // 如果输入不是数组但不为空，则将其作为数组的单个元素返回
         }else{
