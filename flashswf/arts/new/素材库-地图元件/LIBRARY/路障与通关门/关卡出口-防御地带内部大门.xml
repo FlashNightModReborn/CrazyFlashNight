@@ -1,13 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="路障与通关门/关卡出口-防御地带内部大门" itemID="6826e09a-000002b5" linkageExportForAS="true" linkageIdentifier="关卡出口-防御地带内部大门" lastModified="1747378330" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="路障与通关门/关卡出口-防御地带内部大门" itemID="6826e09a-000002b5" linkageExportForAS="true" linkageIdentifier="关卡出口-防御地带内部大门" lastModified="1749967663" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="关卡出口-防御地带内部大门">
+    <DOMTimeline name="关卡出口-防御地带内部大门" currentFrame="5">
       <layers>
-        <DOMLayer name="as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="39" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-_root.stageDispatcher.subscribeOnce("StageFinished", function() {
+_root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
     this.play();
 }, this);]]></script>
               </Actionscript>
@@ -39,11 +39,11 @@ _root.stageDispatcher.subscribeOnce("StageFinished", function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="1">
           <frames>
             <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="路障与通关门/防御地带内部大门右" selected="true" centerPoint3DX="49.25" centerPoint3DY="-74.2">
+                <DOMSymbolInstance libraryItemName="路障与通关门/防御地带内部大门右" centerPoint3DX="49.25" centerPoint3DY="-74.2">
                   <matrix>
                     <Matrix tx="-15.25" ty="-144.7"/>
                   </matrix>
