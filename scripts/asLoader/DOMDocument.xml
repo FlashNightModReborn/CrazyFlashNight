@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <symbols>
-          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1743587731"/>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1749916013"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -8,6 +8,17 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[/*import org.flashNight.gesh.object.ObjectUtil;
+
+var loader = new org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader("data/stages/基地门口/超市废墟.xml");
+loader.load(function (data:Object):Void{
+	var info = new org.flashNight.arki.scene.StageInfo(data.SubStage[0]);
+	trace(ObjectUtil.toString(info.basicInfo));
+	trace(ObjectUtil.toString(info.waveInfo));
+},function():Void{onError();}
+);*/]]></script>
+                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -21,25 +32,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="381687" publishTime="1749397482"/>
-          <PublishItem publishSize="381670" publishTime="1749397460"/>
-          <PublishItem publishSize="381675" publishTime="1749397408"/>
-          <PublishItem publishSize="381671" publishTime="1749397271"/>
-          <PublishItem publishSize="381541" publishTime="1749395740"/>
-          <PublishItem publishSize="344427" publishTime="1747473162"/>
-          <PublishItem publishSize="344430" publishTime="1747473151"/>
-          <PublishItem publishSize="344430" publishTime="1747473132"/>
-          <PublishItem publishSize="344429" publishTime="1747473114"/>
-          <PublishItem publishSize="344297" publishTime="1747471464"/>
-          <PublishItem publishSize="344351" publishTime="1747471266"/>
-          <PublishItem publishSize="344305" publishTime="1747471030"/>
-          <PublishItem publishSize="342509" publishTime="1747196793"/>
-          <PublishItem publishSize="342497" publishTime="1747196763"/>
-          <PublishItem publishSize="342440" publishTime="1747196700"/>
-          <PublishItem publishSize="342499" publishTime="1747195770"/>
-          <PublishItem publishSize="342467" publishTime="1747195744"/>
-          <PublishItem publishSize="342508" publishTime="1747195648"/>
-          <PublishItem publishSize="342501" publishTime="1747195560"/>
-          <PublishItem publishSize="342495" publishTime="1747195525"/>
+          <PublishItem publishSize="394693" publishTime="1749914397"/>
+          <PublishItem publishSize="394694" publishTime="1749914267"/>
+          <PublishItem publishSize="394695" publishTime="1749914185"/>
+          <PublishItem publishSize="394706" publishTime="1749913825"/>
+          <PublishItem publishSize="394709" publishTime="1749913598"/>
+          <PublishItem publishSize="394702" publishTime="1749913550"/>
+          <PublishItem publishSize="394689" publishTime="1749913412"/>
+          <PublishItem publishSize="394092" publishTime="1749913381"/>
+          <PublishItem publishSize="394270" publishTime="1749908248"/>
+          <PublishItem publishSize="394285" publishTime="1749908182"/>
+          <PublishItem publishSize="394270" publishTime="1749908036"/>
+          <PublishItem publishSize="394270" publishTime="1749907881"/>
+          <PublishItem publishSize="394257" publishTime="1749907790"/>
+          <PublishItem publishSize="394260" publishTime="1749907668"/>
+          <PublishItem publishSize="394255" publishTime="1749907166"/>
+          <PublishItem publishSize="394255" publishTime="1749907021"/>
+          <PublishItem publishSize="394248" publishTime="1749906819"/>
+          <PublishItem publishSize="394399" publishTime="1749906684"/>
+          <PublishItem publishSize="394404" publishTime="1749906651"/>
+          <PublishItem publishSize="394384" publishTime="1749906605"/>
      </publishHistory>
 </DOMDocument>

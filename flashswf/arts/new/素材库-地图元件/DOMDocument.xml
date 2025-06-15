@@ -17,7 +17,7 @@
           <DOMFolderItem name="出生点-僵尸逆袭卷帘门" itemID="67e95a71-000002fc"/>
           <DOMFolderItem name="出生点-井盖" itemID="67e956b2-000002c9"/>
           <DOMFolderItem name="出生点-聚光灯" itemID="66653d01-000002f6"/>
-          <DOMFolderItem name="出生点-钻头" itemID="664b3e95-00000226"/>
+          <DOMFolderItem name="出生点-钻头" itemID="664b3e95-00000226" isExpanded="true"/>
           <DOMFolderItem name="歌留多" itemID="670cf9e4-000003c2"/>
           <DOMFolderItem name="互动提示" itemID="6839711f-00006add"/>
           <DOMFolderItem name="路障与通关门" itemID="6826dd3d-00000322"/>
@@ -33,7 +33,7 @@
           <DOMFolderItem name="杂项" itemID="68483b77-00000347" isExpanded="true"/>
           <DOMFolderItem name="钻头出现动画" itemID="6842a62d-0000017a"/>
           <DOMFolderItem name="钻头出现动画/未命名文件夹 1" itemID="6842a60e-00000177"/>
-          <DOMFolderItem name="钻头素材" itemID="667bdf9c-00000066"/>
+          <DOMFolderItem name="钻头素材" itemID="667bdf9c-00000066" isExpanded="true"/>
      </folders>
      <media>
           <DOMBitmapItem name="箱子素材/bitmap7.png" itemID="65c8ed3c-0000063c" sourceExternalFilepath="../素材库-地图元件/LIBRARY/箱子素材/bitmap7.png" sourceLastImported="1707666748" originalCompressionType="lossless" quality="50" href="箱子素材/bitmap7.png" bitmapDataHRef="M 1 1707666854.dat" frameRight="1360" frameBottom="1260"/>
@@ -135,9 +135,9 @@
           <Include href="路障与通关门/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="674d9efc-000001f6" lastModified="1727496595"/>
           <Include href="路障与通关门/防御地带内部大门右.xml" loadImmediate="false" itemID="678f644a-00000a14" lastModified="1737450570"/>
           <Include href="路障与通关门/防御地带内部大门左.xml" loadImmediate="false" itemID="678f6443-00000a10" lastModified="1737450563"/>
-          <Include href="路障与通关门/关卡出口-防御地带内部大门.xml" itemID="6826e09a-000002b5" lastModified="1747378330"/>
-          <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1747377517"/>
-          <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1746607079"/>
+          <Include href="路障与通关门/关卡出口-防御地带内部大门.xml" itemID="6826e09a-000002b5" lastModified="1749967663"/>
+          <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1749967682"/>
+          <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1749967673"/>
           <Include href="汽车炸弹/zsgdrxtjyuh.xml" itemIcon="1" loadImmediate="false" itemID="4b4a8548-00000123" lastModified="1264754687"/>
           <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1748758274"/>
           <Include href="汽车炸弹/变形动画/部件1.xml" itemIcon="1" loadImmediate="false" itemID="683be9a4-00000a62" lastModified="1748756900"/>
@@ -182,7 +182,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1749576945"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1749967642"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
           <Include href="箱子素材/Symbol 11.xml" itemIcon="0" loadImmediate="false" itemID="65c8ed3c-00000649" lastModified="1704525302"/>
@@ -308,8 +308,6 @@
           <Include href="钻头素材/Symbol 12.xml" loadImmediate="false" itemID="68483b5d-0000033e" lastModified="1749564253"/>
           <Include href="钻头素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="667be1aa-000000c5" lastModified="1716307369"/>
           <Include href="钻头素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="667be0f6-00000094" lastModified="1719394551"/>
-          <Include href="钻头素材/钻头素材.xml" itemIcon="1" loadImmediate="false" itemID="667be018-00000092" lastModified="1748439612"/>
-          <Include href="钻头素材/钻头素材/Symbol 12.xml" loadImmediate="false" itemID="6842a63a-00000194" lastModified="1719394707"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -318,7 +316,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="素材库-地图元件" selected="true" centerPoint3DX="132.95" centerPoint3DY="16.65">
+                                        <DOMSymbolInstance libraryItemName="素材库-地图元件" centerPoint3DX="132.95" centerPoint3DY="16.65">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>

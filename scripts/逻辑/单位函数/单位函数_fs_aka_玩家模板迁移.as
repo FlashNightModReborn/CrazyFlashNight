@@ -2330,10 +2330,12 @@ _root.主角函数.死亡检测 = function()
 			}
 			已删除 = true;
 		}if (已加经验值 != true){
-			if (是否为敌人 == true || 是否为敌人 == null){
-				_root.敌人死亡计数++;
-				_root.gameworld[产生源].僵尸型敌人场上实际人数--;
-				_root.gameworld[产生源].僵尸型敌人总个数--;
+			if (是否为敌人 === true || 是否为敌人 === "null"){
+				if (是否为敌人 === true){
+					_root.敌人死亡计数++;
+					_root.gameworld[产生源].僵尸型敌人场上实际人数--;
+					_root.gameworld[产生源].僵尸型敌人总个数--;
+				}
 				计算经验值();
 				this.新版人物文字信息._visible = false;
 				_root.add2map(this,2);

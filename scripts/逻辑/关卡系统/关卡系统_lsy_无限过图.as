@@ -4,6 +4,13 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 import org.flashNight.arki.scene.*;
 
+_root.开启生存模式 = function() {
+	StageManager.instance.initStage();
+}
+_root.生存模式关闭 = function(){
+	StageManager.instance.closeStage();
+}
+/*
 _root.开启生存模式 = function(模式) {
 	var sceneManager = SceneManager.getInstance();
 
@@ -33,8 +40,7 @@ _root.开启生存模式 = function(模式) {
     var 游戏世界 = _root.gameworld;
 
 	// 创建事件分发器
-	_root.stageDispatcher = new LifecycleEventDispatcher(游戏世界);
-	_root.stageDispatcher.subscribeOnce("StageFinished", function() {
+	_root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
 		this.显示箭头();
 	},游戏世界.通关箭头);
 
@@ -231,17 +237,8 @@ _root.生存模式关闭 = function(){
 			}
 		}
 	}
-	_root.stageDispatcher.destroy();
-	_root.stageDispatcher = null;
-};
-
-/*
-_root.生存模式直接下一波 = function()
-{
-	if (_root.生存模式OBJ.当前时间 < _root.生存模式OBJ.总时间 - 10)
-	{
-		_root.生存模式OBJ.当前时间 = _root.生存模式OBJ.总时间 - 10;
-	}
+	_root.gameworld.dispatcher.destroy();
+	_root.gameworld.dispatcher = null;
 };
 */
 
@@ -307,7 +304,7 @@ _root.无限过图进攻 = function(){
 		_root.生存模式OBJ.时钟[当前波次].push(_loc3_);
 	}
 
-	_root.stageDispatcher.publish("WaveStarted", 当前波次);
+	_root.gameworld.dispatcher.publish("WaveStarted", 当前波次);
 	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加生命周期任务(游戏世界, "生存模式计时", _root.生存模式计时, 1000);
 };
 
@@ -417,7 +414,7 @@ _root.rogue模式进攻 = function(){
 	var _loc3_ = _root.帧计时器.添加循环任务(_root.rogue模式出兵, interval, 本波敌人, 当前波次);
 	_root.生存模式OBJ.时钟[当前波次].push(_loc3_);
 
-	_root.stageDispatcher.publish("WaveStarted", 当前波次);
+	_root.gameworld.dispatcher.publish("WaveStarted", 当前波次);
 	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加生命周期任务(游戏世界, "生存模式计时", _root.生存模式计时, 1000);
 };
 
@@ -479,7 +476,7 @@ _root.无限过图模式过关 = function(){
 		_root.gameworld.允许通行 = true;
 		var hero:MovieClip = TargetCacheManager.findHero();
 		_root.效果("小过关提示动画", hero._x, hero._y,100);
-		_root.stageDispatcher.publish("StageFinished");
+		_root.gameworld.dispatcher.publish("StageFinished");
 	}
 };
 

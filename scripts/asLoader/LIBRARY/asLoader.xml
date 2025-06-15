@@ -1,13 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1743587731">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1749916013">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="77">
+    <DOMTimeline name="asLoader" currentFrame="1">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" name="锁定root" labelType="comment" keyMode="9728">
+            <DOMFrame index="0" duration="2" name="锁定root" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="5" name="引擎" labelType="comment" keyMode="9728">
+            <DOMFrame index="2" duration="4" name="引擎" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="5" name="通信" labelType="comment" keyMode="9728">
@@ -76,7 +76,14 @@ function 打印加载内容(str){
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="5" keyMode="9728">
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 执行全局初始器
+org.flashNight.gesh.init.GlobalInitializer.initialize();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[打印加载内容("加载游戏代码……");
 

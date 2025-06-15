@@ -120,7 +120,7 @@ _root.加载我方人物 = function(地点X, 地点Y){
 	_root.加载宠物(地点X,地点Y);
 
 				
-	EventBus.getInstance().publish("SceneReady");
+	EventBus.instance.publish("SceneReady");
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){
@@ -238,7 +238,7 @@ _root.关卡结束 = function(){
 	_root.帧计时器.移除任务(_root.生存模式OBJ.波次时钟);
 	_root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
 	_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
-	_root.stageDispatcher.publish("StageCleared");
+	_root.gameworld.dispatcher.publish("StageCleared");
 }
 
 _root.返回基地 = function(){
@@ -365,7 +365,7 @@ _root.跳转地图 = function(跳转帧){
 _root.加载共享场景 = function(加载场景名){
 	var gw:MovieClip = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth());
 	gw.swapDepths(_root.gameworld层级定位器);
-	SceneManager.getInstance().initGameWorld(gw);
+	SceneManager.instance.initGameWorld(gw);
 
 	_root.帧计时器.eventBus.publish("SceneChanged");
 }
@@ -375,7 +375,7 @@ _root.加载共享场景 = function(加载场景名){
 // 转换场景画面完全淡出时移除组件
 _root.清除游戏世界组件 = function(){
 	// 彻底移除gameworld
-	SceneManager.getInstance().removeGameWorld();
+	SceneManager.instance.removeGameWorld();
 	
 	// 清除游戏世界相关组件
 	_root.collisionLayer.clear();
