@@ -255,7 +255,7 @@ _root.横版卷屏 = function() {
     HorizontalScroller.update();
 };
 
-_root.cameraZoomToggle = true;
+_root.cameraZoomToggle = false;
 _root.basicZoomScale = 1;
 
 EventBus.getInstance().subscribe("SceneReady", HorizontalScroller.onSceneChanged, HorizontalScroller); 
