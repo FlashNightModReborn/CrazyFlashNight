@@ -62,11 +62,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
@@ -699,8 +699,8 @@
           <Include href="sprite/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1715956977"/>
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1732399262"/>
           <Include href="sprite/Symbol 121.xml" loadImmediate="false" itemID="6577b699-000009a6" lastModified="1722447121"/>
-          <Include href="sprite/Symbol 124.xml" loadImmediate="false" itemID="6577b699-000009a8" lastModified="1749932161"/>
-          <Include href="sprite/Symbol 129.xml" loadImmediate="false" itemID="6577b699-000009ad" lastModified="1749920027"/>
+          <Include href="sprite/Symbol 124.xml" loadImmediate="false" itemID="6577b699-000009a8" lastModified="1749968786"/>
+          <Include href="sprite/Symbol 129.xml" loadImmediate="false" itemID="6577b699-000009ad" lastModified="1749969186"/>
           <Include href="sprite/Symbol 130.xml" loadImmediate="false" itemID="6577b699-000009ae" lastModified="1749933090"/>
           <Include href="sprite/Symbol 131.xml" loadImmediate="false" itemID="6577b699-000009af" lastModified="1725366840"/>
           <Include href="sprite/Symbol 134.xml" loadImmediate="false" itemID="6577b699-000009b1" lastModified="1702343951"/>
@@ -1094,7 +1094,7 @@
           <Include href="sprite/Symbol 2016.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080a" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2017.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080b" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1747750462"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1749969838"/>
           <Include href="sprite/持械待机.xml" loadImmediate="false" itemID="6693d49e-00000af1" lastModified="1720966607"/>
           <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1742889188"/>
           <Include href="sprite/大地震.xml" itemID="668be732-00000660" lastModified="1749127630"/>
@@ -1875,6 +1875,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2940818" publishTime="1749969221"/>
           <PublishItem publishSize="2940307" publishTime="1749932867"/>
           <PublishItem publishSize="2940214" publishTime="1749932446"/>
           <PublishItem publishSize="2940180" publishTime="1749932192"/>
@@ -1894,6 +1895,5 @@
           <PublishItem publishSize="2931717" publishTime="1749920300"/>
           <PublishItem publishSize="2931745" publishTime="1749920269"/>
           <PublishItem publishSize="2925271" publishTime="1749918220"/>
-          <PublishItem publishSize="2925272" publishTime="1749917648"/>
      </publishHistory>
 </DOMDocument>

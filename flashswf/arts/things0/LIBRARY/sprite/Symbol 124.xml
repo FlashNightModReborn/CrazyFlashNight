@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 124" itemID="6577b699-000009a8" lastModified="1749932161" lastUniqueIdentifier="356">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 124" itemID="6577b699-000009a8" lastModified="1749968786" lastUniqueIdentifier="356">
   <timeline>
-    <DOMTimeline name="Symbol 124" currentFrame="131" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 124" currentFrame="97" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B562FD" locked="true">
           <frames>
@@ -194,7 +194,7 @@ gotoAndPlay("跳跃状态");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#E89962" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#E89962" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -889,7 +889,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#65BC72" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#65BC72" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -1698,7 +1698,7 @@ else
             </DOMFrame>
             <DOMFrame index="97" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="307.4" centerPoint3DY="184.2">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="307.4" centerPoint3DY="184.2">
                   <matrix>
                     <Matrix a="1.93182373046875" d="1.66587829589844" tx="265.45" ty="227.6"/>
                   </matrix>
@@ -1722,6 +1722,7 @@ else
 	if(_parent._parent.被动技能.裂地拳 && _parent._parent.被动技能.裂地拳.等级){
 		子弹属性.子弹威力 +=  _parent._parent.空手攻击力 *  _parent._parent.被动技能.裂地拳.等级 / 10;
 	}
+	子弹属性.子弹威力 += _parent._parent.空手攻击力 * Math.min((_parent._parent.重量 + _parent._parent.身高 - 105)/100 , 2);
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 0.01;
@@ -1749,6 +1750,12 @@ else
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
+	if(_parent._parent.空手动作类型 && _parent._parent.空手动作类型 == "巨拳"){
+		子弹属性.暴击 = function(当前子弹)
+				{
+					return 1.5;
+				};
+	}
 	_root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
@@ -1799,6 +1806,12 @@ else
 	子弹属性.区域定位area = this.area;
 	子弹属性.垂直击退速度 = 3;
 	子弹属性.不硬直 = true;
+	if(_parent._parent.空手动作类型 && _parent._parent.空手动作类型 == "巨拳"){
+		子弹属性.暴击 = function(当前子弹)
+				{
+					return 1.5;
+				};
+	}
 	_root.子弹区域shoot传递(子弹属性);
 }
 	/*
@@ -1873,6 +1886,12 @@ else
 	子弹属性.区域定位area = this.area;
 	子弹属性.垂直击退速度 = 3;
 	子弹属性.不硬直 = true;
+	if(_parent._parent.空手动作类型 && _parent._parent.空手动作类型 == "巨拳"){
+		子弹属性.暴击 = function(当前子弹)
+				{
+					return 1.5;
+				};
+	}
 	_root.子弹区域shoot传递(子弹属性);
 }
 	/*
