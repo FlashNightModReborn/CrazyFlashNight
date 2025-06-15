@@ -211,9 +211,9 @@
     <weight>2</weight>
     <price>65400</price>
     <skill>
-      <skillname>弧光斩</skillname>
-      <description>手持该武器时可以使用弧光斩。</description>
-      <cd>6000</cd>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击。</description>
+      <cd>12000</cd>
       <mp>50</mp>
     </skill>
     <description>在一众末日后流行的武器中，匀称修长的大剑无疑是最能给幸存者带来安全感的那一个。长武器中相对较轻的重量让它的攻击速度很快，&lt;font color="#ff0000"&gt;且基本不会拖累使用者的行动速度&lt;/font&gt;，而其攻击距离则为幸存者们提供了更多安全保障。
@@ -1295,9 +1295,9 @@
     <description>&lt;font color="#000000"&gt;黑铁会老大&lt;/font&gt;的剑，寒气逼人，出剑带剑气！</description>
     <skill>
       <skillname>黑铁剑意</skillname>
-      <description>手持该武器攻击或冲击时可以使用黑铁剑意。</description>
-      <cd>2000</cd>
-      <mp>5%</mp>
+      <description>手持该武器攻击或冲击时可以使用黑铁剑意，额外释放剑气。不处于攻击时则可以使用追踪五连刺，对中距离内的敌人进行追踪攻击。</description>
+      <cd>7000</cd>
+      <mp>60</mp>
     </skill>
     <level>30</level>
     <data>

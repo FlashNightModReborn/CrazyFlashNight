@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 130" itemID="6577b699-000009ae" lastModified="1749933090" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 130" itemID="6577b699-000009ae" lastModified="1749988468" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="Symbol 130" currentFrame="31">
       <layers>
@@ -465,7 +465,7 @@ if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gamew
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹&amp;变招" color="#C69F88" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹&amp;变招" color="#C69F88" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -524,7 +524,7 @@ if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gamew
             </DOMFrame>
             <DOMFrame index="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -957,7 +957,7 @@ _parent.play();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F90ECB" locked="true">
+        <DOMLayer name="Layer 4" color="#F90ECB" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
@@ -1114,7 +1114,7 @@ _parent.play();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#868A8E" locked="true">
+        <DOMLayer name="Layer 5" color="#868A8E">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
@@ -1401,7 +1401,7 @@ _parent.play();
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="74.5" centerPoint3DY="84.6">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="73.15" centerPoint3DY="83.2">
                   <matrix>
                     <Matrix a="0.30316162109375" b="-0.780380249023438" c="-0.780380249023438" d="-0.30316162109375" tx="42.8" ty="35.55"/>
                   </matrix>
@@ -1412,12 +1412,12 @@ _parent.play();
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-27.45" centerPoint3DY="47.8">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-2.4" centerPoint3DY="-20.25">
                   <matrix>
-                    <Matrix a="-0.761322021484375" b="-0.3533935546875" c="-0.3533935546875" d="0.761322021484375" tx="-24.4" ty="11.6"/>
+                    <Matrix a="-0.7882080078125" b="-0.288436889648438" c="0.288436889648438" d="-0.7882080078125" tx="-25.35" ty="7.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.1" y="-0.05"/>
+                    <Point x="0.1" y="0.05"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -1625,12 +1625,12 @@ _parent.play();
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-32.5" centerPoint3DY="53.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-21.75" centerPoint3DY="-21.65">
                   <matrix>
-                    <Matrix a="-0.796493530273438" b="-0.2635498046875" c="-0.2635498046875" d="0.796493530273438" tx="-33.6" ty="16.9"/>
+                    <Matrix a="-0.838211059570313" b="-0.035247802734375" c="0.035247802734375" d="-0.838211059570313" tx="-35.5" ty="11.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.15" y="-0.1"/>
+                    <Point x="0.15" y="-0.15"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -1838,12 +1838,12 @@ _parent.play();
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-34.05" centerPoint3DY="55.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-22.1" centerPoint3DY="-16.9">
                   <matrix>
-                    <Matrix a="-0.8070068359375" b="-0.228363037109375" c="-0.228363037109375" d="0.8070068359375" tx="-36.75" ty="19.1"/>
+                    <Matrix a="-0.836944580078125" b="-0.0540924072265625" c="0.0540924072265625" d="-0.836944580078125" tx="-36.7" ty="16.3"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.2"/>
+                    <Point x="0.25"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
@@ -2051,12 +2051,12 @@ _parent.play();
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-34.1" centerPoint3DY="55.55">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-21.05" centerPoint3DY="-16.85">
                   <matrix>
-                    <Matrix a="-0.808837890625" b="-0.221771240234375" c="-0.221771240234375" d="0.808837890625" tx="-37.1" ty="19.4"/>
+                    <Matrix a="-0.835525512695313" b="-0.0728607177734375" c="0.0728607177734375" d="-0.835525512695313" tx="-37.1" ty="16.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="0.15" y="-0.05"/>
+                    <Point x="0.1"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
