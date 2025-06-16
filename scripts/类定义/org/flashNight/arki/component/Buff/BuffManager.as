@@ -7,6 +7,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
     // 核心数据结构
     private var _target:Object;                    // 宿主对象（Unit）
     private var _buffs:Array;                      // 所有Buff列表
+    private var _idMap:Object;                     // { id:String -> IBuff }
     private var _propertyContainers:Object;        // 属性容器映射 {propName: PropertyContainer}
     private var _pendingRemovals:Array;            // 待移除的Buff ID列表
     
@@ -29,6 +30,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         this._buffs = [];
         this._propertyContainers = {};
         this._pendingRemovals = [];
+        this._idMap  = {};
         
         // 设置回调
         if (callbacks) {
@@ -60,6 +62,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         }
         
         this._buffs.push(buff);
+        this._idMap[finalId] = buff;
         this._markDirty();
         
         // 触发回调
@@ -71,22 +74,19 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
     
     /**
-     * 移除Buff
+     * 移除Buff,真正删除时同步清理
      * @param buffId Buff ID
      * @return Boolean 是否成功移除
      */
     public function removeBuff(buffId:String):Boolean {
-        for (var i:Number = 0; i < this._buffs.length; i++) {
-            var buff:IBuff = this._buffs[i];
-            if (buff && buff.getId() == buffId) {
-                // 添加到待移除列表，延迟删除避免遍历时修改数组
-                this._pendingRemovals.push(buffId);
-                this._markDirty();
-                return true;
-            }
+        if (_idMap[buffId]) {
+            _pendingRemovals.push(buffId);
+            _markDirty();
+            return true;
         }
         return false;
     }
+
     
     /**
      * 清空所有Buff
@@ -143,20 +143,22 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 实际移除Buff
      */
     private function _removeBuffById(buffId:String):Void {
-        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            var buff:IBuff = this._buffs[i];
-            if (buff && buff.getId() == buffId) {
+        var buff:IBuff = _idMap[buffId];
+        if (!buff) return;
+
+        // 从数组里删
+        for (var i:Number=_buffs.length-1; i>=0; i--) {
+            if (_buffs[i] === buff) {
                 buff.destroy();
-                this._buffs.splice(i, 1);
-                
-                // 触发回调
-                if (this._onBuffRemoved) {
-                    this._onBuffRemoved(buff, buffId);
-                }
+                _buffs.splice(i,1);
                 break;
             }
         }
+        delete _idMap[buffId];           // <-- 清理映射
+        if (_onBuffRemoved) _onBuffRemoved(buff, buffId);
+        _markDirty();
     }
+
     
     /**
      * 更新所有MetaBuff
@@ -176,26 +178,21 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 移除失效的Buff
      */
     private function _removeInactiveBuffs():Void {
-        var hasInactive:Boolean = false;
-        
-        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            var buff:IBuff = this._buffs[i];
+        for (var i:Number=_buffs.length-1; i>=0; i--) {
+            var buff:IBuff = _buffs[i];
             if (buff && !buff.isActive()) {
-                buff.destroy();
-                this._buffs.splice(i, 1);
-                hasInactive = true;
-                
-                // 触发回调
-                if (this._onBuffRemoved) {
-                    this._onBuffRemoved(buff, buff.getId());
+                // 找到对应 key
+                for (var id:String in _idMap) {
+                    if (_idMap[id] === buff) { delete _idMap[id]; break; }
                 }
+                buff.destroy();
+                _buffs.splice(i,1);
+                _markDirty();
+                if (_onBuffRemoved) _onBuffRemoved(buff, id);
             }
         }
-        
-        if (hasInactive) {
-            this._markDirty();
-        }
     }
+
     
     /**
      * 重建PropertyContainer
@@ -336,14 +333,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 查找Buff
      */
     public function findBuff(buffId:String):IBuff {
-        for (var i:Number = 0; i < this._buffs.length; i++) {
-            var buff:IBuff = this._buffs[i];
-            if (buff && buff.getId() == buffId) {
-                return buff;
-            }
-        }
-        return null;
+        return _idMap[buffId] || null;
     }
+
     
     /**
      * 获取所有Buff

@@ -7,6 +7,8 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     private var _childBuffs:Array;      // 内嵌 PodBuff 等
     private var _isActive:Boolean;      // 激活状态
     private var _priority:Number;       // 优先级（影响update顺序）
+    private var _componentBased:Boolean;   // 初始即有组件？
+    // 只要 MetaBuff 最初带过组件，就一律按组件存活决定自己的生死；不允许子 Buff 把它重新续命。
     
     /**
      * @param childBuffs Array.<IBuff>  数值 Buff 列表
@@ -19,6 +21,7 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         this._components = comps || [];
         this._isActive = true;
         this._priority = priority || 0;
+        this._componentBased  = this._components.length > 0;
         
         // 让组件知道宿主是谁
         this._attachAllComponents();
@@ -57,35 +60,30 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
      * @return Boolean 是否仍存活
      */
     public function update(deltaFrames:Number):Boolean {
-        if (!this._isActive) return false;
-        
-        var hasActiveComponents:Boolean = false;
-        
-        // 逆序遍历，安全删除失效组件
-        for (var i:Number = this._components.length - 1; i >= 0; i--) {
-            var comp:IBuffComponent = this._components[i];
-            if (comp) {
-                if (comp.update(this, deltaFrames)) {
-                    hasActiveComponents = true;
-                } else {
-                    // 组件失效：安全卸载
-                    this._detachComponent(i);
-                }
+        if (!_isActive) return false;
+
+        var compsAlive:Boolean = false;
+        for (var i:Number = _components.length - 1; i >= 0; i--) {
+            var c:IBuffComponent = _components[i];
+            if (c && c.update(this, deltaFrames)) {
+                compsAlive = true;
+            } else {
+                _detachComponent(i);
             }
         }
-        
-        // 检查子Buff是否还有激活的
-        var hasActiveChildBuffs:Boolean = this._hasActiveChildBuffs();
-        
-        // MetaBuff存活条件：有激活组件 OR 有激活子Buff
-        var shouldStayAlive:Boolean = hasActiveComponents || hasActiveChildBuffs;
-        
-        if (!shouldStayAlive) {
-            this._isActive = false;
+        var childAlive:Boolean = _hasActiveChildBuffs();
+
+        // 生命周期判定
+        var stay:Boolean = _componentBased ? compsAlive : childAlive;
+        if (!stay) {             // 彻底死亡时，顺带清理子 Buff
+            for (var j:Number = 0; j < _childBuffs.length; j++) {
+                _childBuffs[j].destroy();
+            }
         }
-        
-        return shouldStayAlive;
+        _isActive = stay;
+        return stay;
     }
+
     
     /**
      * 安全卸载组件
