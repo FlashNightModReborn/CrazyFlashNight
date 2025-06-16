@@ -95,7 +95,7 @@
                                 <Case casevalue="0">兵种353</Case>
                                 <Case casevalue="1">兵种92</Case>
                                 <Case casevalue="2">兵种87</Case>
-                                <Case casevalue="3">兵种88</Case>
+                                <Case casevalue="3">兵种369</Case>
                             </CaseSwitch>
                         </Type>
                         <Interval>100</Interval>
@@ -332,7 +332,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种88</Type>
+                        <Type>兵种369</Type>
                         <Interval>50000</Interval>
                         <Quantity>3</Quantity>
                         <Level>5</Level>
@@ -343,7 +343,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种91</Type>
+                        <Type>兵种370</Type>
                         <Interval>50000</Interval>
                         <Quantity>1</Quantity>
                         <Level>5</Level>
