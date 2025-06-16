@@ -1,5 +1,7 @@
-﻿// IBuffComponent.as
-interface org.flashNight.arki.component.Buff.component.IBuffComponent {
+﻿import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.*;
+// IBuffComponent.as
+interface org.flashNight.arki.component.Buff.Component.IBuffComponent {
     /**
      * 组件随帧推进
      * @return Boolean 是否仍存活；false 表示应从宿主 Buff 卸载

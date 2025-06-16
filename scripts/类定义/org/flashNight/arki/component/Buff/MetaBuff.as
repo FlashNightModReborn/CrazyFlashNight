@@ -1,6 +1,6 @@
 ﻿// 改进后的 MetaBuff.as
 import org.flashNight.arki.component.Buff.*;
-import org.flashNight.arki.component.Buff.component.*;
+import org.flashNight.arki.component.Buff.Component.*;
 
 class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     private var _components:Array;      // [IBuffComponent]

@@ -1,8 +1,8 @@
 ﻿// TimeLimitComponent.as
 import org.flashNight.arki.component.Buff.*;
-import org.flashNight.arki.component.Buff.component.*;
+import org.flashNight.arki.component.Buff.Component.*;
 
-class org.flashNight.arki.component.Buff.component.TimeLimitComponent
+class org.flashNight.arki.component.Buff.Component.TimeLimitComponent
     implements IBuffComponent
 {
     private var _remain:Number;          // 剩余帧数
