@@ -61,7 +61,10 @@ class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
         this.invalidate = funcs.invalidate;
         
         // 将自包含的函数传递给addProperty，避免引用环
-        obj.addProperty(propName, funcs.get, computeFunc == null ? funcs.set : null);
+        // 修正：无论是否为计算属性，都应该传递 funcs.set。
+        // 如果 setter 是无操作函数，这没有影响。
+        // 如果是有效 setter（例如带 onSetCallback 的计算属性），则必须注册。
+        obj.addProperty(propName, funcs.get, funcs.set);
     }
 
     /**
@@ -117,9 +120,17 @@ class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
             };
             
             // 计算属性是只读的
-            setter = function(newVal):Void {
-                // 只读属性，无操作
-            };
+            // 修正：计算属性不一定是只读的。如果提供了 onSetCallback，
+            // 它应该作为 setter，允许外部修改触发逻辑（例如更新基础值）。
+            if (onSetCallback != null) {
+                // 这个回调函数现在就是我们的setter
+                setter = onSetCallback;
+            } else {
+                // 如果没有回调，它才是真正的只读属性
+                setter = function(newVal):Void {
+                    // 只读属性，无操作
+                };
+            }
             
         } else {
             // --- 简单属性：预编译setter优化 ---

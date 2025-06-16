@@ -53,7 +53,7 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
             propertyName,
             baseValue,
             this._createComputeFunction(), // 计算函数
-            this._createOnSetCallback(),   // 设置回调
+            this._createSetterFunction(),   // 设置回调
             null                          // 暂不使用验证函数
         );
     }
@@ -70,20 +70,22 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     }
     
     /**
-     * 创建设置回调 - 给PropertyAccessor使用
-     * 当外部直接设置属性时的处理
+     * 创建一个合格的 setter 函数，它接受新值作为参数。
+     * 当外部直接设置属性时（如 target.hp = 150），此函数将被调用。
      */
-    private function _createOnSetCallback():Function {
+    private function _createSetterFunction():Function {
         var self:PropertyContainer = this;
-        return function():Void {
-            // 当外部直接设置属性值时，更新基础值
-            var newValue:Number = Number(self._target[self._propertyName]);
+        // 这个函数将被 PropertyAccessor 作为 setter 使用，它会接收到外部赋的新值。
+        return function(newValue:Number):Void {
             if (!isNaN(newValue)) {
+                // 直接使用传入的新值更新基础值
                 self._baseValue = newValue;
-                self._markDirty();
+                // 使 PropertyContainer 和 PropertyAccessor 的缓存都失效
+                self._markDirtyAndInvalidate();
             }
         };
     }
+
     
     /**
      * 核心计算方法 - 计算包含所有buff的最终值
