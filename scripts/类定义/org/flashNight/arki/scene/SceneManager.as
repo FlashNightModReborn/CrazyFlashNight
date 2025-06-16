@@ -36,10 +36,11 @@ class org.flashNight.arki.scene.SceneManager {
         // 附加效果层，层级在所有人物之上
         if(gameworld.效果 == null) gameworld.createEmptyMovieClip("效果", 32767);
 
-        // 将上述属性设置为不可枚举
-        _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图"], 1, false);
-
+        // 创建事件分发器
         gameworld.dispatcher = new LifecycleEventDispatcher(gameworld);
+
+        // 将上述属性设置为不可枚举
+        _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图", "dispatcher"], 1, false);
     }
 
     /*
@@ -79,13 +80,15 @@ class org.flashNight.arki.scene.SceneManager {
 
     public function addInstance(info:Object, name:String):MovieClip{
         var inst;
-        // 优先检测url参数载入外部swf，若无则根据identifier从库中加载元件
         if (info.url != null) {
+            // 检测url参数载入外部swf
             inst = gameworld.createEmptyMovieClip(name, gameworld.getNextHighestDepth());
             inst.loadMovie(info.url);
         } else if(info.Identifier != null) {
+            // 根据identifier从库中加载元件
             inst = gameworld.attachMovie(info.Identifier, name, gameworld.getNextHighestDepth());
         }else{
+            // 否则，创建空元件
             inst = gameworld.createEmptyMovieClip(name, gameworld.getNextHighestDepth());
         }
         inst._x = info.x;

@@ -224,42 +224,43 @@ class org.flashNight.arki.scene.WaveSpawner {
 
     public function spawn(attribute:Object, index:Number, waveIndex:Number, quantity:Number):Boolean{
         var 兵种信息 = waveInfo[waveIndex][index];
-        var SpawnIndex = 兵种信息.SpawnIndex;
+        var spawnIndex = 兵种信息.SpawnIndex;
         var enemyPara = ObjectUtil.clone(attribute);
         enemyPara.等级 = isNaN(兵种信息.Level) ? 1: Number(兵种信息.Level);
         enemyPara.兵种名 = null;
 
-        //设置front的敌人默认左向
-        if(SpawnIndex === "front"){
+        // 设置front的敌人默认左向
+        if(spawnIndex === "front"){
             enemyPara.方向 = "左";
         }
-        //加载额外参数
+        // 加载额外参数
         if(兵种信息.Parameters){
             ObjectUtil.cloneParameters(enemyPara, 兵种信息.Parameters);
         }
 
+        // 若敌方单位大等于场上最大容纳量则不刷怪
+        if(spawnIndex > -1){
+            if(enemyPara.是否为敌人 && spawnPoints[spawnIndex].QuantityMax > 0 && spawnPoints[spawnIndex].僵尸型敌人场上实际人数 >= spawnPoints[spawnIndex].QuantityMax){
+                return false;
+            }
+        }
+
         var instanceName:String = 兵种信息.InstanceName ? 兵种信息.InstanceName : attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
-        return attachEnemy(attribute.兵种名, instanceName, enemyPara, SpawnIndex, 兵种信息.x, 兵种信息.y);
+        return attachEnemy(attribute.兵种名, instanceName, enemyPara, spawnIndex, 兵种信息.x, 兵种信息.y);
     }
 
     public function attachEnemy(id:String, instanceName:String, enemyPara:Object, spawnIndex, x:Number, y:Number):Boolean{
-        //优先使用兵种自带的坐标
-        var 产生源 = "地图";
-        if (Number(spawnIndex) > -1)
-        {
-            var 出生点 = stageInfo.spawnPointInfo[Number(spawnIndex)];
-            产生源 = "door" + spawnIndex;
-            //若敌方单位大等于场上最大容纳量则不刷怪
-            if(出生点.QuantityMax > 0 && enemyPara.是否为敌人 && gameworld[产生源].僵尸型敌人场上实际人数 >= 出生点.QuantityMax){
-                return false;
-            }
+        // 优先使用兵种自带的坐标
+        var spawnPiontInstance = spawnIndex > -1 ? spawnPoints[spawnIndex] : gameworld.地图;
+        if (spawnIndex > -1){
+            var 出生点 = stageInfo.spawnPointInfo[spawnIndex];
             //优先使用兵种自带的坐标，若无自带坐标则使用出生点坐标并调用开门动画
             if(isNaN(x) || isNaN(y)){
                 x = 出生点.x;
                 y = 出生点.y;
                 if(出生点.Identifier){
                     y += isNaN(出生点.Offset) ? 2 : 出生点.Offset; //生成位置从出生点向下平移2像素避免被出生点碰撞箱卡住，也可手动设置
-                    gameworld["door"+spawnIndex].开门();
+                    spawnPiontInstance.开门();
                 }
                 if(出生点.BiasX && 出生点.BiasY){
                     x += random(2*出生点.BiasX+1) - 出生点.BiasX;
@@ -293,7 +294,7 @@ class org.flashNight.arki.scene.WaveSpawner {
                 case "back":
                 //在x∈(1024,Xmax-200)，y∈(Ymin+30,Ymax-30)范围内随机刷新
                 x = _root.Xmax > 1224 ? 1024 + random(_root.Xmax - 1224) : _root.Xmax - random(50);
-                y = _root.Ymin + 30 + random(_root.Ymax - _root.Ymin - 60);
+                y = linearEngine.randomIntegerStrict(_root.Ymin + 30, _root.Ymax - 30);
                 break;
                 case "door":
                 //在关卡出口处刷新
@@ -307,14 +308,14 @@ class org.flashNight.arki.scene.WaveSpawner {
                 y = pt.y;
             }
         }
-        enemyPara.产生源 = 产生源;
+        enemyPara.产生源 = spawnPiontInstance._name;
         enemyPara._x = x;
         enemyPara._y = y;
         _root.加载游戏世界人物(id, instanceName, gameworld.getNextHighestDepth(), enemyPara);
         if (enemyPara.是否为敌人 === true){
-            gameworld[产生源].僵尸型敌人场上实际人数++;
+            spawnPiontInstance.僵尸型敌人场上实际人数++;
         }else{
-            gameworld[产生源].僵尸型敌人总个数--;
+            spawnPiontInstance.僵尸型敌人总个数--;
         }
         return true;
     }

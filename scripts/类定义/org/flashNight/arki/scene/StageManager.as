@@ -125,9 +125,6 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.允许通行 = false;
         gameworld.关卡结束 = false;
 
-        // 将上述属性设置为不可枚举
-        _global.ASSetPropFlags(gameworld, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, false);
-
         // 添加动态尺寸的位图层
         sceneManager.addBodyLayers(gameworld.背景长, gameworld.背景高);
 
@@ -146,25 +143,30 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.出生地.是否从门加载角色 = _root.场景转换函数.是否从门加载角色;
         gameworld.出生地.是否从门加载角色();
         
-        // 将 '出生地' 设置为不可枚举
-        _global.ASSetPropFlags(gameworld, ["出生地"], 1, false);
+        // 将上述属性设置为不可枚举
+        _global.ASSetPropFlags(gameworld, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin", "出生地"], 1, false);
 
+        
+        var unIterables = []; // 记录无需枚举的影片剪辑实例名
+        var instName;
         // 放置环境地图元件
         if(environment.背景元素){
             for(var i = 0; i < environment.背景元素.length; i++){
-                var name = environment.背景元素[i].name ? environment.背景元素[i].name : "bgInstance" + i;
-                sceneManager.addInstance(environment.背景元素[i], name);
+                unIterables.push(instName = environment.背景元素[i].name ? environment.背景元素[i].name : "bgInstance" + i);
+                sceneManager.addInstance(environment.背景元素[i], instName);
             }
         }
         // 放置关卡地图元件
         for (var i = 0; i < instanceInfo.length; i++) {
-            sceneManager.addInstance(instanceInfo[i], "stageInstance" + i);
+            unIterables.push(instName = "stageInstance" + i);
+            sceneManager.addInstance(instanceInfo[i], instName);
         }
 
         // 放置出生点，初始化各个刷怪点的总个数和场上人数
         spawnPoints = new Array(spawnPointInfo.length);
         for (var i = 0; i < spawnPointInfo.length; i++) {
-            spawnPoints[i] = sceneManager.addInstance(spawnPointInfo[i], "door" + i);
+            unIterables.push(instName = "door" + i)
+            spawnPoints[i] = sceneManager.addInstance(spawnPointInfo[i], instName);
             spawnPoints[i].僵尸型敌人总个数 = 0;
             spawnPoints[i].僵尸型敌人场上实际人数 = 0;
             spawnPoints[i].QuantityMax = spawnPointInfo[i].QuantityMax;
@@ -172,6 +174,10 @@ class org.flashNight.arki.scene.StageManager {
         }
         gameworld.地图.僵尸型敌人总个数 = 0;
         gameworld.地图.僵尸型敌人场上实际人数 = 0;
+
+        // 将上述影片剪辑实例设置为不可枚举
+        _global.ASSetPropFlags(gameworld, unIterables, 1, false);
+        
 
         // 加载进图动画
         if (basicInfo.Animation.Load == 1) {
