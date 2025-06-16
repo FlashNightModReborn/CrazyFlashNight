@@ -10,6 +10,8 @@ import org.flashNight.arki.unit.UnitComponent.Updater.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.*;
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.*;
 
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer {
@@ -28,6 +30,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         EventInitializer.initialize(target);
         DisplayNameInitializer.initialize(target);
         TargetCacheUpdater.addUnit(target);
+        BuffManagerInitializer.initialize(target);
     }
 
     /**
@@ -67,6 +70,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
 
         // 8. 设置显示控制
         DisplayController.initialize(target);
+
     }
 
     /**

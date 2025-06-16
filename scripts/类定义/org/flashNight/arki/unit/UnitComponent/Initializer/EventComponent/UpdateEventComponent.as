@@ -2,7 +2,8 @@
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.unit.UnitComponent.Updater.*;
 import org.flashNight.arki.component.StatHandler.*;
-
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEventComponent {
     /**
@@ -50,6 +51,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         ImpactUpdater.update(target);
         InformationComponentUpdater.update(target);
         target.unitAI.update();
+        target.buffManager.update(4);
         WatchDogUpdater.update(target);
     }
 
