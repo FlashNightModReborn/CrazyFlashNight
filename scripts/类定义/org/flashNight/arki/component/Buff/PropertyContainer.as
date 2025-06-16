@@ -9,6 +9,8 @@ import org.flashNight.gesh.property.*;
  * - PropertyContainer 负责buff逻辑和数值计算
  * - PropertyAccessor 负责属性访问接口和性能优化
  * - 两者协作提供完整的动态属性管理方案
+ * 
+ * @version 2.0 (Optimized)
  */
 class org.flashNight.arki.component.Buff.PropertyContainer {
     
@@ -26,6 +28,7 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     private var _cachedFinalValue:Number;
     private var _isDirty:Boolean = true;
     private var _changeCallback:Function;
+    private var _buffContext:BuffContext; // [优化] 缓存BuffContext实例，避免重复创建
     
     /**
      * 构造函数
@@ -47,6 +50,14 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
         this._buffs = [];
         this._calculator = new BuffCalculator();
         
+        // [优化] 在构造时创建一次BuffContext，之后重复使用
+        this._buffContext = new BuffContext(
+            this._propertyName, 
+            this._target, 
+            null, 
+            {}
+        );
+        
         // 创建PropertyAccessor，使用计算函数来获取最终值
         this._accessor = new PropertyAccessor(
             target,
@@ -58,34 +69,9 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
         );
     }
     
-    /**
-     * 创建计算函数 - 给PropertyAccessor使用
-     * 这个函数会被PropertyAccessor的缓存机制优化
-     */
-    private function _createComputeFunction():Function {
-        var self:PropertyContainer = this;
-        return function():Number {
-            return self._computeFinalValue();
-        };
-    }
-    
-    /**
-     * 创建一个合格的 setter 函数，它接受新值作为参数。
-     * 当外部直接设置属性时（如 target.hp = 150），此函数将被调用。
-     */
-    private function _createSetterFunction():Function {
-        var self:PropertyContainer = this;
-        // 这个函数将被 PropertyAccessor 作为 setter 使用，它会接收到外部赋的新值。
-        return function(newValue:Number):Void {
-            if (!isNaN(newValue)) {
-                // 直接使用传入的新值更新基础值
-                self._baseValue = newValue;
-                // 使 PropertyContainer 和 PropertyAccessor 的缓存都失效
-                self._markDirtyAndInvalidate();
-            }
-        };
-    }
-
+    // =========================================================================
+    // 核心计算与集成
+    // =========================================================================
     
     /**
      * 核心计算方法 - 计算包含所有buff的最终值
@@ -95,35 +81,55 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
             return this._cachedFinalValue;
         }
         
-        // 重置计算器
         this._calculator.reset();
         
-        // 应用所有激活的buff
-        var context:BuffContext = new BuffContext(
-            this._propertyName, 
-            this._target, 
-            null, 
-            {}
-        );
-        
-        for (var i:Number = 0; i < this._buffs.length; i++) {
-            var buff:IBuff = this._buffs[i];
+        // [优化] 使用反向while循环，效率更高
+        var i:Number = this._buffs.length;
+        var buff:IBuff;
+        while (i--) {
+            buff = this._buffs[i];
             if (buff && buff.isActive()) {
-                buff.applyEffect(this._calculator, context);
+                // [优化] 复用_buffContext实例
+                buff.applyEffect(this._calculator, this._buffContext);
             }
         }
         
-        // 计算最终值
         this._cachedFinalValue = this._calculator.calculate(this._baseValue);
         this._isDirty = false;
         
-        // 触发变化回调
         if (this._changeCallback) {
             this._changeCallback(this._propertyName, this._cachedFinalValue);
         }
         
         return this._cachedFinalValue;
     }
+    
+    /**
+     * 创建计算函数 - 给PropertyAccessor使用
+     */
+    private function _createComputeFunction():Function {
+        var self:PropertyContainer = this;
+        return function():Number {
+            return self._computeFinalValue();
+        };
+    }
+    
+    /**
+     * 创建一个合格的 setter 函数，用于外部直接设置属性值
+     */
+    private function _createSetterFunction():Function {
+        var self:PropertyContainer = this;
+        return function(newValue:Number):Void {
+            if (!isNaN(newValue)) {
+                self._baseValue = newValue;
+                self._markDirtyAndInvalidate();
+            }
+        };
+    }
+    
+    // =========================================================================
+    // 公共接口 - Buff管理
+    // =========================================================================
     
     /**
      * 添加buff
@@ -139,7 +145,8 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
      * 移除buff
      */
     public function removeBuff(buffId:String):Boolean {
-        for (var i:Number = 0; i < this._buffs.length; i++) {
+        // [优化] 使用反向循环遍历，便于安全地使用splice
+        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             if (this._buffs[i].getId() == buffId) {
                 var removedBuff:IBuff = this._buffs.splice(i, 1)[0];
                 removedBuff.destroy();
@@ -154,12 +161,16 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
      * 移除所有buff
      */
     public function clearBuffs():Void {
-        for (var i:Number = 0; i < this._buffs.length; i++) {
-            this._buffs[i].destroy();
+        // [优化] 使用while+pop的高效方式清空数组并销毁buff
+        while (this._buffs.length > 0) {
+            this._buffs.pop().destroy();
         }
-        this._buffs.length = 0;
         this._markDirtyAndInvalidate();
     }
+    
+    // =========================================================================
+    // 公共接口 - 值管理
+    // =========================================================================
     
     /**
      * 设置基础值
@@ -182,23 +193,7 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
      * 获取最终计算值（通过PropertyAccessor的优化机制）
      */
     public function getFinalValue():Number {
-        // 直接通过PropertyAccessor获取，利用其缓存优化
         return Number(this._target[this._propertyName]);
-    }
-    
-    /**
-     * 标记为脏数据并使PropertyAccessor缓存失效
-     */
-    private function _markDirtyAndInvalidate():Void {
-        this._markDirty();
-        this._accessor.invalidate(); // 通知PropertyAccessor重新计算
-    }
-    
-    /**
-     * 标记为脏数据
-     */
-    private function _markDirty():Void {
-        this._isDirty = true;
     }
     
     /**
@@ -208,6 +203,10 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
         this._markDirtyAndInvalidate();
         return this.getFinalValue();
     }
+    
+    // =========================================================================
+    // 公共接口 - 查询与调试
+    // =========================================================================
     
     /**
      * 获取buff数量
@@ -221,12 +220,28 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
      */
     public function getActiveBuffCount():Number {
         var count:Number = 0;
-        for (var i:Number = 0; i < this._buffs.length; i++) {
+        // [优化] 使用反向while循环
+        var i:Number = this._buffs.length;
+        while (i--) {
             if (this._buffs[i] && this._buffs[i].isActive()) {
                 count++;
             }
         }
         return count;
+    }
+    
+    /**
+     * 检查是否有特定ID的buff
+     */
+    public function hasBuff(buffId:String):Boolean {
+        // [优化] 使用反向while循环
+        var i:Number = this._buffs.length;
+        while (i--) {
+            if (this._buffs[i].getId() == buffId) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -237,42 +252,40 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     }
     
     /**
-     * 检查是否有特定ID的buff
-     */
-    public function hasBuff(buffId:String):Boolean {
-        for (var i:Number = 0; i < this._buffs.length; i++) {
-            if (this._buffs[i].getId() == buffId) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
      * 获取属性名
      */
     public function getPropertyName():String {
         return this._propertyName;
     }
     
+    // =========================================================================
+    // 内部方法和生命周期
+    // =========================================================================
+    
+    /**
+     * 标记为脏数据并使PropertyAccessor缓存失效
+     */
+    private function _markDirtyAndInvalidate():Void {
+        this._isDirty = true;
+        this._accessor.invalidate(); // 通知PropertyAccessor重新计算
+    }
+    
     /**
      * 销毁容器
      */
     public function destroy():Void {
-        // 清理所有buff
         this.clearBuffs();
         
-        // 销毁PropertyAccessor
         if (this._accessor) {
             this._accessor.destroy();
             this._accessor = null;
         }
         
-        // 清理引用
         this._target = null;
         this._calculator = null;
         this._changeCallback = null;
         this._buffs = null;
+        this._buffContext = null; // 清理缓存的Context
     }
     
     /**
@@ -282,6 +295,6 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
         return "[PropertyContainer property: " + this._propertyName + 
                ", base: " + this._baseValue + 
                ", final: " + this.getFinalValue() + 
-               ", buffs: " + this._buffs.length + "]";
+               ", buffs: " + this.getBuffCount() + "]";
     }
 }
