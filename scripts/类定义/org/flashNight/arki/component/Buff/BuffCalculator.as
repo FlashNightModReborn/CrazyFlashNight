@@ -1,77 +1,65 @@
-﻿// org/flashNight/arki/component/Buff/BuffCalculator.as
-import org.flashNight.arki.component.Buff.*;
+﻿import org.flashNight.arki.component.Buff.*;
 
-class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculator {
-    private var _modifications:Array;
-    
-    public function BuffCalculator() {
-        this._modifications = [];
+class org.flashNight.arki.component.Buff.DefaultBuffCalculator
+       implements IBuffCalculator {
+
+    private var _mods:Array;   // [{t,v,p}]
+    public function DefaultBuffCalculator() {
+        this._mods = [];
     }
-    
-    public function addModification(type:String, value:Number, priority:Number):Void {
-        this._modifications.push({
-            type: type,
-            value: value,
-            priority: priority || 0
-        });
+
+    // ----------------------------------------------------------------
+    // IBuffCalculator 实现
+    // ----------------------------------------------------------------
+    public function addModification(type:String,
+                                    value:Number,
+                                    priority:Number):Void {
+        // 容错：未传优先级则默认为 0
+        if (isNaN(priority)) priority = 0;
+        this._mods.push({t:type, v:value, p:priority});
     }
-    
+
     public function calculate(baseValue:Number):Number {
-        if (this._modifications.length == 0) {
-            return baseValue;
-        }
-        
-        // 按优先级排序
-        this._modifications.sortOn("priority", Array.NUMERIC);
-        
-        var result:Number = baseValue;
-        var additive:Number = 0;        // 累加修改
-        var multiplicative:Number = 1;  // 累乘修改
-        var percentageBonus:Number = 0; // 百分比加成
-        var finalOverride:Number = NaN; // 最终覆盖值
-        
-        // 分类处理不同类型的修改
-        for (var i:Number = 0; i < this._modifications.length; i++) {
-            var mod:Object = this._modifications[i];
-            
-            switch (mod.type) {
-                case BuffCalculationType.ADD:
-                    additive += mod.value;
-                    break;
-                    
+        if (this._mods.length == 0) return baseValue;   // 无 Buff
+
+        // 1. 按优先级排序（升序）
+        this._mods.sortOn("p", Array.NUMERIC);
+
+        // 2. 统计
+        var totalMul:Number  = 1;
+        var totalAdd:Number  = 0;
+        var maxVal:Number    = null;
+        var minVal:Number    = null;
+        var overrideVal:Number = null;
+
+        for (var i:Number = 0; i < this._mods.length; ++i) {
+            var m:Object = this._mods[i];
+            switch (m.t) {
                 case BuffCalculationType.MULTIPLY:
-                    multiplicative *= mod.value;
-                    break;
-                    
+                    totalMul *= m.v; break;
                 case BuffCalculationType.PERCENT:
-                    percentageBonus += mod.value;
-                    break;
-                    
-                case BuffCalculationType.OVERRIDE:
-                    finalOverride = mod.value; // 最后一个覆盖值生效
-                    break;
-                    
+                    totalMul *= (1 + m.v); break;
+                case BuffCalculationType.ADD:
+                    totalAdd += m.v; break;
                 case BuffCalculationType.MAX:
-                    result = Math.max(result, mod.value);
-                    break;
-                    
+                    maxVal = (maxVal == null) ? m.v : Math.max(maxVal, m.v); break;
                 case BuffCalculationType.MIN:
-                    result = Math.min(result, mod.value);
-                    break;
+                    minVal = (minVal == null) ? m.v : Math.min(minVal, m.v); break;
+                case BuffCalculationType.OVERRIDE:
+                    overrideVal = m.v; break;
             }
         }
-        
-        // 标准计算顺序：基础值 -> 加法 -> 乘法 -> 百分比 -> 覆盖
-        if (!isNaN(finalOverride)) {
-            result = finalOverride;
-        } else {
-            result = ((baseValue + additive) * multiplicative) * (1 + percentageBonus);
-        }
-        
+
+        // 3. 应用
+        var result:Number = baseValue * totalMul + totalAdd;
+        if (maxVal != null) result = Math.max(result, maxVal);
+        if (minVal != null) result = Math.min(result, minVal);
+        if (overrideVal != null) result = overrideVal;
+
         return result;
     }
-    
+
     public function reset():Void {
-        this._modifications = [];
+        this._mods.length = 0;
     }
 }

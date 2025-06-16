@@ -1,4 +1,5 @@
-﻿// org/flashNight/arki/component/Buff/IBuff.as
+﻿import org.flashNight.arki.component.Buff.*;
+// org/flashNight/arki/component/Buff/IBuff.as
 interface org.flashNight.arki.component.Buff.IBuff {
     /**
      * 应用Buff效果 - 策略模式核心方法
