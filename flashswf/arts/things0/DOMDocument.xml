@@ -62,11 +62,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
           <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
      </fonts>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
@@ -843,7 +843,7 @@
           <Include href="sprite/Symbol 559.xml" loadImmediate="false" itemID="6577b699-00000ac3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 561.xml" loadImmediate="false" itemID="6577b699-00000ac4" lastModified="1702343951"/>
           <Include href="sprite/Symbol 563.xml" loadImmediate="false" itemID="6577b699-00000ac5" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1750012854"/>
+          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1750075892"/>
           <Include href="sprite/Symbol 618.xml" loadImmediate="false" itemID="6577b699-00000add" lastModified="1720908276"/>
           <Include href="sprite/Symbol 619.xml" loadImmediate="false" itemID="6577b699-00000ade" lastModified="1720908276"/>
           <Include href="sprite/Symbol 620.xml" loadImmediate="false" itemID="6577b699-00000adf" lastModified="1702343951"/>
@@ -1172,6 +1172,8 @@
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="67138899-00000e6c" lastModified="1729333401"/>
           <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="674c99aa-00002fa6" lastModified="1733073322"/>
           <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="674c99ab-00002fab" lastModified="1733073323"/>
+          <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6850039e-0000074d" lastModified="1750074270"/>
+          <Include href="补间 8.xml" itemIcon="1" loadImmediate="false" itemID="6850039e-0000074f" lastModified="1750074270"/>
           <Include href="残影1.xml" loadImmediate="false" itemID="674008f5-0000089b" lastModified="1732286029"/>
           <Include href="残影2.xml" loadImmediate="false" itemID="674008ff-0000089d" lastModified="1732286250"/>
           <Include href="残影3.xml" loadImmediate="false" itemID="67400921-0000089f" lastModified="1732286409"/>
@@ -1875,6 +1877,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2945598" publishTime="1750075907"/>
+          <PublishItem publishSize="2945576" publishTime="1750075451"/>
+          <PublishItem publishSize="2945573" publishTime="1750074919"/>
+          <PublishItem publishSize="2945233" publishTime="1750073759"/>
+          <PublishItem publishSize="2945197" publishTime="1750072800"/>
+          <PublishItem publishSize="2945197" publishTime="1750072700"/>
           <PublishItem publishSize="2945176" publishTime="1750012844"/>
           <PublishItem publishSize="2945169" publishTime="1750012704"/>
           <PublishItem publishSize="2945260" publishTime="1750010860"/>
@@ -1889,11 +1897,5 @@
           <PublishItem publishSize="2945375" publishTime="1750007451"/>
           <PublishItem publishSize="2943646" publishTime="1750005629"/>
           <PublishItem publishSize="2942751" publishTime="1749990268"/>
-          <PublishItem publishSize="2942706" publishTime="1749990030"/>
-          <PublishItem publishSize="2942736" publishTime="1749989936"/>
-          <PublishItem publishSize="2942743" publishTime="1749989809"/>
-          <PublishItem publishSize="2942729" publishTime="1749989088"/>
-          <PublishItem publishSize="2942731" publishTime="1749988755"/>
-          <PublishItem publishSize="2942734" publishTime="1749988077"/>
      </publishHistory>
 </DOMDocument>
