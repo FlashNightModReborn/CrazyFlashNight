@@ -1,9 +1,6 @@
 ﻿import org.flashNight.arki.component.Buff.*;
 
-class org.flashNight.arki.component.Buff.BuffCalculator
-       implements IBuffCalculator {
-
-
+class org.flashNight.arki.component.Buff.BuffCalculator implements IBuffCalculator {
     private var _modifications:Array;
     private static var MAX_MODIFICATIONS:Number = 100;
     
