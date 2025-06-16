@@ -10,7 +10,7 @@
     <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
-    <price>200</price>
+    <price>100</price>
     <description>这种药剂在末世前就进行过试产。非常幸运的是，这种药剂的生产线并没有彻底被毁灭，也因此这种让人迅速&lt;font color="#00ff00"&gt;恢复体力、加速伤口愈合&lt;/font&gt;的道具在末世广泛存在。</description>
     <level>1</level>
     <data>
@@ -27,7 +27,7 @@
     <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
-    <price>200</price>
+    <price>100</price>
     <description>这种药剂在末世前就进行过试产。非常幸运的是，这种药剂的生产线并没有彻底被毁灭，也因此这种让人迅速&lt;font color="#00ffff"&gt;恢复精力，使出绝技&lt;/font&gt;的道具在末世广泛存在。</description>
     <level>1</level>
     <data>
@@ -78,7 +78,7 @@
     <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
-    <price>400</price>
+    <price>500</price>
     <description>抗生素能很好地&lt;font color="#00ff00"&gt;对抗细菌等微生物的感染&lt;/font&gt;。曾在多次人类战争中挽救无数人的医师在末世中依然发挥着作用。</description>
     <level>1</level>
     <data>
@@ -129,7 +129,7 @@
     <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
-    <price>1000</price>
+    <price>1500</price>
     <description>dna与rna结构功能分析的产物之一，拥有对大量新品种细菌的强大杀伤力，而且有着&lt;font color="#00ff00"&gt;刺激人体，恢复伤口&lt;/font&gt;的作用。</description>
     <level>1</level>
     <data>
@@ -146,7 +146,7 @@
     <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
-    <price>1000</price>
+    <price>1500</price>
     <description>被认为是脑科学的重要产物，&lt;font color="#00ffff"&gt;对于精力的提升&lt;/font&gt;作用非常强大。</description>
     <level>1</level>
     <data>
@@ -450,8 +450,8 @@
     <level>0</level>
     <data>
       <friend>0</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
+      <affecthp>50</affecthp>
+      <affectmp>50</affectmp>
     </data>
   </item>
   <item>
@@ -467,8 +467,8 @@
     <level>0</level>
     <data>
       <friend>0</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
+      <affecthp>50</affecthp>
+      <affectmp>50</affectmp>
     </data>
   </item>
   <item>
@@ -484,8 +484,8 @@
     <level>0</level>
     <data>
       <friend>0</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
+      <affecthp>50</affecthp>
+      <affectmp>50</affectmp>
     </data>
   </item>
   <item>
@@ -501,8 +501,8 @@
     <level>0</level>
     <data>
       <friend>0</friend>
-      <affecthp>300</affecthp>
-      <affectmp>300</affectmp>
+      <affecthp>50</affecthp>
+      <affectmp>50</affectmp>
     </data>
   </item>
     <item>
