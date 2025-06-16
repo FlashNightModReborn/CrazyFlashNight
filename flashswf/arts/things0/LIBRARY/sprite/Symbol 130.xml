@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 130" itemID="6577b699-000009ae" lastModified="1749988468" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 130" itemID="6577b699-000009ae" lastModified="1750098930" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="Symbol 130" currentFrame="31">
+    <DOMTimeline name="Symbol 130" currentFrame="43">
       <layers>
         <DOMLayer name="Script Layer" color="#AAB49D" locked="true">
           <frames>
@@ -96,6 +96,10 @@ if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _par
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -154,6 +158,10 @@ if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _par
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -212,6 +220,10 @@ if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _par
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -270,6 +282,10 @@ if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _par
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3.5;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -328,6 +344,10 @@ if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _par
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3.5;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -465,7 +485,7 @@ if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gamew
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹&amp;变招" color="#C69F88" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹&amp;变招" color="#C69F88" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -600,22 +620,31 @@ _parent.play();
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.暴击倍率 = 1;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
 		if(_parent.蓄力 >= 20){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
-					return 2;
-				};
+			子弹属性.暴击倍率 = 3 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.1;
+		}else{
+			子弹属性.暴击倍率 = 1.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 20;
 	
 	//非常用
@@ -668,23 +697,32 @@ _parent.play();
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0.5;
+	子弹属性.暴击倍率 = 2;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
 		if(_parent.蓄力 >= 20){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
-					return 2;
-				};
+			子弹属性.暴击倍率 = 5 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.1;
+		}else{
+			子弹属性.暴击倍率 = 2.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 25;
 	
 	//非常用
@@ -737,22 +775,31 @@ _parent.play();
 	子弹属性.霰弹值 = 5;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0.2;
+	子弹属性.暴击倍率 = 2;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
 		if(_parent.蓄力 >= 25){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					return 2;
-				};
+			子弹属性.暴击倍率 = 6 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.05;
+		}else{
+			子弹属性.暴击倍率 = 2.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 20;
 	
 	//非常用
@@ -789,7 +836,7 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-26.4" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="-26.4" centerPoint3DY="44.7">
                   <matrix>
                     <Matrix a="5.50389099121094" d="1.91461181640625" tx="-24.5" ty="43.85"/>
                   </matrix>
@@ -805,22 +852,34 @@ _parent.play();
 	子弹属性.霰弹值 = 6;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0.1;
+	子弹属性.蓄力值 = _parent.蓄力;
+	子弹属性.暴击倍率 = 2.5;
 	if(_parent.蓄力){
-		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
-		if(_parent.蓄力 >= 25){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					return 3;
-				};
+		if(_parent.蓄力 >= 35){
+			子弹属性.暴击倍率 = 12 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.01;
+		}else if(_parent.蓄力 >= 25){
+			子弹属性.暴击倍率 = 8 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.05;
+		}else{
+			子弹属性.暴击倍率 = 3.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 32;
 	
 	//非常用
@@ -857,7 +916,7 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="45" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -957,7 +1016,7 @@ _parent.play();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F90ECB" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#F90ECB" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>

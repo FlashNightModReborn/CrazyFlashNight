@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1748532172" lastUniqueIdentifier="266">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="677">
+    <DOMTimeline name="主角-男" currentFrame="43">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -1226,7 +1226,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="49" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 130" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 130" name="man" selected="true" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -1488,7 +1488,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="129" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/战技" name="man" selected="true" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
+                <DOMSymbolInstance libraryItemName="sprite/战技" name="man" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -2715,7 +2715,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="618" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器攻击" name="man" selected="true" centerPoint3DX="529.65" centerPoint3DY="370.45">
+                <DOMSymbolInstance libraryItemName="sprite/兵器攻击" name="man" centerPoint3DX="529.65" centerPoint3DY="370.45">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>

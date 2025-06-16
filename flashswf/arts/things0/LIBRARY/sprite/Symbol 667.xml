@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 667" itemID="6577b699-00000b04" lastModified="1730471501" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 667" itemID="6577b699-00000b04" lastModified="1750095649" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="Symbol 667" currentFrame="5">
+    <DOMTimeline name="Symbol 667">
       <layers>
         <DOMLayer name="Script Layer" color="#73C76A">
           <frames>
@@ -62,6 +62,10 @@
 {
 	var 子弹参数 = new Object();
 	子弹参数.子弹威力 = 子弹威力;
+	if (_parent.被动技能.刀剑攻击 && _parent.被动技能.刀剑攻击.启用)
+	{
+		子弹参数.子弹威力 *= 1 + _parent.被动技能.刀剑攻击.等级 * 0.1;
+	}
 	if (_parent.mp攻击加成)
 	{
 		子弹参数.子弹威力 += _parent.mp攻击加成;
