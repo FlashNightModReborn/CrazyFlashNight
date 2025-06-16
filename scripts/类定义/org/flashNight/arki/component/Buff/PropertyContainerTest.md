@@ -1,0 +1,1 @@
+org.flashNight.arki.component.Buff.test.PropertyContainerTest.runAllTests();
