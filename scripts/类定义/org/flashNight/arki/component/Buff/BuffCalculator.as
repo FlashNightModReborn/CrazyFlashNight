@@ -1,65 +1,115 @@
 ﻿import org.flashNight.arki.component.Buff.*;
 
-class org.flashNight.arki.component.Buff.DefaultBuffCalculator
+class org.flashNight.arki.component.Buff.BuffCalculator
        implements IBuffCalculator {
 
-    private var _mods:Array;   // [{t,v,p}]
-    public function DefaultBuffCalculator() {
-        this._mods = [];
+
+    private var _modifications:Array;
+    private static var MAX_MODIFICATIONS:Number = 100;
+    
+    public function BuffCalculator() {
+        this._modifications = [];
     }
 
-    // ----------------------------------------------------------------
-    // IBuffCalculator 实现
-    // ----------------------------------------------------------------
-    public function addModification(type:String,
-                                    value:Number,
-                                    priority:Number):Void {
-        // 容错：未传优先级则默认为 0
-        if (isNaN(priority)) priority = 0;
-        this._mods.push({t:type, v:value, p:priority});
+    /**
+     * 简化的addModification - 不再需要priority
+     * 按添加顺序和类型内置优先级处理
+     */
+    public function addModification(type:String, value:Number):Void {
+        if (_modifications.length >= MAX_MODIFICATIONS) {
+            trace("Warning: BuffCalculator reached maximum modifications limit");
+            return;
+        }
+        
+        if (!type || isNaN(value)) {
+            trace("Warning: Invalid modification parameters");
+            return;
+        }
+        
+        _modifications.push({type: type, value: value});
     }
 
+    /**
+     * 使用固定的类型优先级进行计算
+     * 这覆盖了99%的使用场景
+     */
     public function calculate(baseValue:Number):Number {
-        if (this._mods.length == 0) return baseValue;   // 无 Buff
-
-        // 1. 按优先级排序（升序）
-        this._mods.sortOn("p", Array.NUMERIC);
-
-        // 2. 统计
-        var totalMul:Number  = 1;
-        var totalAdd:Number  = 0;
-        var maxVal:Number    = null;
-        var minVal:Number    = null;
-        var overrideVal:Number = null;
-
-        for (var i:Number = 0; i < this._mods.length; ++i) {
-            var m:Object = this._mods[i];
-            switch (m.t) {
-                case BuffCalculationType.MULTIPLY:
-                    totalMul *= m.v; break;
-                case BuffCalculationType.PERCENT:
-                    totalMul *= (1 + m.v); break;
-                case BuffCalculationType.ADD:
-                    totalAdd += m.v; break;
-                case BuffCalculationType.MAX:
-                    maxVal = (maxVal == null) ? m.v : Math.max(maxVal, m.v); break;
-                case BuffCalculationType.MIN:
-                    minVal = (minVal == null) ? m.v : Math.min(minVal, m.v); break;
+        if (_modifications.length == 0) return baseValue;
+        
+        // 按类型分组，而不是按priority排序
+        var overrides:Array = [];
+        var multipliers:Array = [];
+        var percentages:Array = [];
+        var additions:Array = [];
+        var maxValues:Array = [];
+        var minValues:Array = [];
+        
+        // 分组收集
+        for (var i:Number = 0; i < _modifications.length; i++) {
+            var mod:Object = _modifications[i];
+            switch (mod.type) {
                 case BuffCalculationType.OVERRIDE:
-                    overrideVal = m.v; break;
+                    overrides.push(mod.value);
+                    break;
+                case BuffCalculationType.MULTIPLY:
+                    multipliers.push(mod.value);
+                    break;
+                case BuffCalculationType.PERCENT:
+                    percentages.push(mod.value);
+                    break;
+                case BuffCalculationType.ADD:
+                    additions.push(mod.value);
+                    break;
+                case BuffCalculationType.MAX:
+                    maxValues.push(mod.value);
+                    break;
+                case BuffCalculationType.MIN:
+                    minValues.push(mod.value);
+                    break;
             }
         }
-
-        // 3. 应用
-        var result:Number = baseValue * totalMul + totalAdd;
-        if (maxVal != null) result = Math.max(result, maxVal);
-        if (minVal != null) result = Math.min(result, minVal);
-        if (overrideVal != null) result = overrideVal;
-
+        
+        // 固定顺序计算：基础值 -> 加法 -> 乘法 -> 百分比 -> 最大值 -> 最小值 -> 覆盖
+        var result:Number = baseValue;
+        
+        // 1. 应用所有加法
+        for (var j:Number = 0; j < additions.length; j++) {
+            result += additions[j];
+        }
+        
+        // 2. 应用所有乘法
+        for (var k:Number = 0; k < multipliers.length; k++) {
+            result *= multipliers[k];
+        }
+        
+        // 3. 应用所有百分比
+        for (var l:Number = 0; l < percentages.length; l++) {
+            result *= (1 + percentages[l]);
+        }
+        
+        // 4. 应用最大值限制
+        for (var m:Number = 0; m < maxValues.length; m++) {
+            result = Math.max(result, maxValues[m]);
+        }
+        
+        // 5. 应用最小值限制
+        for (var n:Number = 0; n < minValues.length; n++) {
+            result = Math.min(result, minValues[n]);
+        }
+        
+        // 6. 应用覆盖（最后添加的覆盖生效）
+        if (overrides.length > 0) {
+            result = overrides[overrides.length - 1]; // 最后的override生效
+        }
+        
         return result;
     }
 
     public function reset():Void {
-        this._mods.length = 0;
+        _modifications.length = 0;
+    }
+    
+    public function getModificationCount():Number {
+        return _modifications.length;
     }
 }

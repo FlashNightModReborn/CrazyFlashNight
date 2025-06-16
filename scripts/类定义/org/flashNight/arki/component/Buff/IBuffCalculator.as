@@ -6,7 +6,7 @@ interface org.flashNight.arki.component.Buff.IBuffCalculator {
      * @param value 数值
      * @param priority 优先级（影响计算顺序）
      */
-    function addModification(type:String, value:Number, priority:Number):Void;
+    function addModification(type:String, value:Number):Void;
     
     /**
      * 计算最终结果

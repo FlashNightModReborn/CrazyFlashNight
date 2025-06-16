@@ -13,6 +13,7 @@ class org.flashNight.arki.component.Buff.PodBuff extends BaseBuff {
         calculationType:String,
         value:Number
     ) {
+        super();
         this._targetProperty = targetProperty;
         this._calculationType = calculationType;
         this._value = value;
@@ -22,7 +23,7 @@ class org.flashNight.arki.component.Buff.PodBuff extends BaseBuff {
      * 重写 applyEffect。
      * 现在它的逻辑非常纯粹和简单。
      */
-    public override function applyEffect(calculator:IBuffCalculator, context:BuffContext):Void {
+    public function applyEffect(calculator:IBuffCalculator, context:BuffContext):Void {
         if (this._targetProperty == context.propertyName) {
             calculator.addModification(this._calculationType, this._value);
         }
@@ -33,9 +34,20 @@ class org.flashNight.arki.component.Buff.PodBuff extends BaseBuff {
      * 因为没有了 _dataContainer，这里甚至可以不需要重写了。
      * 但保留对super.destroy()的调用是好习惯。
      */
-    public override function destroy():Void {
+    public function destroy():Void {
         super.destroy(); 
     }
+
+    /**
+     * 返回 PodBuff 的字符串表示形式，包含类型、ID、目标属性、计算类型与数值信息。
+     */
+    public function toString():String {
+        return "[ " + this._type +  " id: " + this.getId() +
+               ", property: " + this._targetProperty +
+               ", calcType: " + this._calculationType +
+               ", value: " + this._value + "]";
+    }
+
 
     // --- 公共访问接口 ---
     public function getTargetProperty():String { return this._targetProperty; }

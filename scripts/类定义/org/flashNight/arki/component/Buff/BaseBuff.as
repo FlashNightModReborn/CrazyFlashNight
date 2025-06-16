@@ -60,4 +60,12 @@ class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
     public function destroy():Void {
         // 子类可重写此方法以释放资源
     }
+
+    /**
+     * 返回Buff的字符串表示形式，包含类型与ID信息。
+     */
+    public function toString():String {
+        return "[Buff type: " + this._type + ", id: " + this._id + "]";
+    }
+
 }
