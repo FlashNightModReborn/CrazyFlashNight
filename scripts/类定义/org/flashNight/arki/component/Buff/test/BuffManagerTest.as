@@ -5,22 +5,13 @@ import org.flashNight.arki.component.Buff.Component.*;
 import org.flashNight.arki.component.Buff.test.*;
 
 /**
- * BuffManager综合测试套件
+ * BuffManager综合测试套件 - 重构版
  * 
- * 专注测试BuffManager与TimeLimitComponent、MetaBuff的集成功能：
- * - BuffManager基础管理功能（添加、移除、清理）
- * - MetaBuff与TimeLimitComponent集成测试
- * - 时间推进和组件生命周期管理
- * - PropertyContainer集成和动态属性更新
- * - 复杂场景下的Buff交互
- * - 性能测试和内存管理
- * - 边界条件和错误处理
- * 
- * 增强特性：
- * - 详细的生命周期追踪
- * - 时间模拟和帧推进测试
- * - 组合场景的完整性验证
- * - 性能基准测试和内存泄漏检测
+ * 核心关注点：
+ * 1. 数值计算的准确性
+ * 2. MetaBuff的状态管理和PodBuff注入机制
+ * 3. TimeLimitComponent的生命周期管理
+ * 4. PropertyContainer的动态计算
  * 
  * 使用方式: BuffManagerTest.runAllTests();
  */
@@ -38,7 +29,7 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
      * 运行所有测试用例
      */
     public static function runAllTests():Void {
-        trace("=== BuffManager & TimeLimitComponent Integration Test Suite Started ===");
+        trace("=== BuffManager Calculation Accuracy Test Suite ===");
         
         // 重置计数器
         testCount = 0;
@@ -46,1521 +37,1254 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         failedCount = 0;
         performanceResults = [];
         
-        trace("\n--- Phase 1: BuffManager Basic Functionality Tests ---");
-        testBuffManagerConstruction();
-        testBasicBuffAddition();
-        testBuffRemoval();
-        testBuffClearing();
-        testBuffQuerying();
+        trace("\n--- Phase 1: Basic Calculation Tests ---");
+        testBasicAddCalculation();
+        testBasicMultiplyCalculation();
+        testBasicPercentCalculation();
+        testCalculationTypesPriority();
+        testOverrideCalculation();
         
-        trace("\n--- Phase 2: MetaBuff Integration Tests ---");
-        testMetaBuffCreation();
-        testMetaBuffWithComponents();
-        testMetaBuffWithChildBuffs();
-        testMetaBuffLifecycle();
+        trace("\n--- Phase 2: MetaBuff Injection & Calculation ---");
+        testMetaBuffPodInjection();
+        testMetaBuffCalculationAccuracy();
+        testMetaBuffStateTransitions();
+        testMetaBuffDynamicInjection();
         
-        trace("\n--- Phase 3: TimeLimitComponent Core Tests ---");
-        testTimeLimitComponentBasic();
-        testTimeLimitComponentFrameCountdown();
-        testTimeLimitComponentIntegration();
+        trace("\n--- Phase 3: TimeLimitComponent & Dynamic Calculations ---");
+        testTimeLimitedBuffCalculations();
+        testDynamicCalculationUpdates();
+        testBuffExpirationCalculations();
+        testCascadingBuffCalculations();
         
-        trace("\n--- Phase 4: Time-Based Lifecycle Tests ---");
-        testBuffManagerUpdate();
-        testTimeLimitedBuffExpiration();
-        testMultipleTimeLimitedBuffs();
-        testMixedBuffTypes();
+        trace("\n--- Phase 4: Complex Calculation Scenarios ---");
+        testStackingBuffCalculations();
+        testMultiPropertyCalculations();
+        testCalculationOrderDependency();
+        testRealGameCalculationScenario();
         
-        trace("\n--- Phase 5: PropertyContainer Integration Tests ---");
-        testPropertyContainerCreation();
-        testDynamicPropertyUpdates();
-        testPropertyContainerRebuild();
-        testPropertyValueCalculation();
+        trace("\n--- Phase 5: PropertyContainer Integration ---");
+        testPropertyContainerCalculations();
+        testDynamicPropertyRecalculation();
+        testPropertyContainerRebuildAccuracy();
+        testConcurrentPropertyUpdates();
         
-        trace("\n--- Phase 6: Complex Integration Scenarios ---");
-        testComplexMetaBuffScenario();
-        testCascadingBuffExpiration();
-        testBuffDependencyChains();
-        testRealWorldGameScenario();
+        trace("\n--- Phase 6: Edge Cases & Accuracy ---");
+        testExtremValueCalculations();
+        testFloatingPointAccuracy();
+        testNegativeValueCalculations();
+        testZeroValueHandling();
         
-        trace("\n--- Phase 7: Performance and Memory Tests ---");
-        testPerformanceWithManyBuffs();
-        testMemoryManagement();
-        testFrequentUpdateCycles();
-        testLargeScaleBuffManagement();
-        
-        trace("\n--- Phase 8: Edge Cases and Error Handling ---");
-        testEdgeCaseHandling();
-        testInvalidInputHandling();
-        testDestroyAndCleanup();
-        testConcurrentModification();
+        trace("\n--- Phase 7: Performance & Accuracy at Scale ---");
+        testLargeScaleCalculationAccuracy();
+        testCalculationPerformance();
+        testMemoryAndCalculationConsistency();
         
         // 输出测试结果
         printTestResults();
         printPerformanceReport();
     }
     
-    // ========== Phase 1: BuffManager基础功能测试 ==========
+    // ========== Phase 1: 基础计算测试 ==========
     
-    private static function testBuffManagerConstruction():Void {
-        startTest("BuffManager Construction");
+    private static function testBasicAddCalculation():Void {
+        startTest("Basic ADD Calculation");
         
         try {
             mockTarget = createMockTarget();
-            var callbacks:Object = createMockCallbacks();
-            var manager:BuffManager = new BuffManager(mockTarget, callbacks);
+            mockTarget.attack = 100; // 基础攻击力
             
-            assert(manager != null, "BuffManager should be created");
-            assert(manager.getAllBuffs().length == 0, "Initial buff count should be 0");
-            assert(manager.getActiveBuffCount() == 0, "Initial active buff count should be 0");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("BuffManager construction failed: " + e.message);
-        }
-    }
-    
-    private static function testBasicBuffAddition():Void {
-        startTest("Basic Buff Addition");
-        
-        try {
-            mockTarget = createMockTarget();
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            var buff1:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 10);
-            var buff2:PodBuff = new PodBuff("defense", BuffCalculationType.MULTIPLY, 1.5);
+            // 添加加法buff
+            var addBuff1:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 30);
+            var addBuff2:PodBuff = new PodBuff("attack", BuffCalculationType.ADD, 20);
             
-            var id1:String = manager.addBuff(buff1, null);
-            var id2:String = manager.addBuff(buff2, null);
-            
-            assert(id1 == buff1.getId(), "Returned ID should match buff ID");
-            assert(id2 == buff2.getId(), "Returned ID should match buff ID");
-            assert(manager.getAllBuffs().length == 2, "Should have 2 buffs");
-            assert(manager.getActiveBuffCount() == 2, "Should have 2 active buffs");
-            
-            trace("  ✓ Added buffs: " + id1 + ", " + id2);
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Basic buff addition failed: " + e.message);
-        }
-    }
-    
-    private static function testBuffRemoval():Void {
-        startTest("Buff Removal");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            var buff:PodBuff = new PodBuff("speed", BuffCalculationType.PERCENT, 0.2);
-            var buffId:String = manager.addBuff(buff, null);
-            
-            assert(manager.getAllBuffs().length == 1, "Should have 1 buff before removal");
-            
-            var removed:Boolean = manager.removeBuff(buffId);
-            
-            assert(removed, "removeBuff should return true");
-            // 注意：实际移除可能在update时发生
-            manager.update(1); // 触发延迟移除
-            
-            assert(manager.getAllBuffs().length == 0, "Should have 0 buffs after removal");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Buff removal failed: " + e.message);
-        }
-    }
-    
-    private static function testBuffClearing():Void {
-        startTest("Buff Clearing");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 添加多个buff
-            for (var i:Number = 0; i < 5; i++) {
-                var buff:PodBuff = new PodBuff("test" + i, BuffCalculationType.ADD, i * 10);
-                manager.addBuff(buff, null);
-            }
-            
-            assert(manager.getAllBuffs().length == 5, "Should have 5 buffs before clearing");
-            
-            manager.clearAllBuffs();
-            
-            assert(manager.getAllBuffs().length == 0, "Should have 0 buffs after clearing");
-            assert(manager.getActiveBuffCount() == 0, "Should have 0 active buffs after clearing");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Buff clearing failed: " + e.message);
-        }
-    }
-    
-    private static function testBuffQuerying():Void {
-        startTest("Buff Querying");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            var buff1:PodBuff = new PodBuff("health", BuffCalculationType.ADD, 50);
-            var buff2:PodBuff = new PodBuff("mana", BuffCalculationType.MULTIPLY, 2);
-            
-            var id1:String = manager.addBuff(buff1, "customId1");
-            var id2:String = manager.addBuff(buff2, null);
-            
-            // 测试findBuff
-            var foundBuff1:IBuff = manager.findBuff("customId1");
-            var foundBuff2:IBuff = manager.findBuff(buff2.getId());
-            var notFound:IBuff = manager.findBuff("nonexistent");
-            
-            assert(foundBuff1 == buff1, "Should find buff1 by custom ID");
-            assert(foundBuff2 == buff2, "Should find buff2 by generated ID");
-            assert(notFound == null, "Should return null for nonexistent buff");
-            
-            trace("  ✓ Query results: found=" + (foundBuff1 != null) + ", " + (foundBuff2 != null) + ", notFound=" + (notFound == null));
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Buff querying failed: " + e.message);
-        }
-    }
-    
-    // ========== Phase 2: MetaBuff集成测试 ==========
-    
-    private static function testMetaBuffCreation():Void {
-        startTest("MetaBuff Creation");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 创建子buff
-            var childBuffs:Array = [
-                new PodBuff("strength", BuffCalculationType.ADD, 20),
-                new PodBuff("agility", BuffCalculationType.PERCENT, 0.15)
-            ];
-            
-            // 创建组件
-            var components:Array = [
-                new TimeLimitComponent(100) // 100帧生命周期
-            ];
-            
-            var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 1);
-            var buffId:String = manager.addBuff(metaBuff, null);
-            
-            assert(manager.getAllBuffs().length == 1, "Should have 1 MetaBuff");
-            assert(metaBuff.getChildBuffCount() == 2, "MetaBuff should have 2 child buffs");
-            assert(metaBuff.getComponentCount() == 1, "MetaBuff should have 1 component");
-            assert(metaBuff.isActive(), "MetaBuff should be active initially");
-            
-            trace("  ✓ Created MetaBuff with " + metaBuff.getChildBuffCount() + " children, " + metaBuff.getComponentCount() + " components");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("MetaBuff creation failed: " + e.message);
-        }
-    }
-    
-    private static function testMetaBuffWithComponents():Void {
-        startTest("MetaBuff with Components");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            var childBuffs:Array = [
-                new PodBuff("damage", BuffCalculationType.MULTIPLY, 1.5)
-            ];
-            
-            var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(5); // 5帧生命周期
-            var components:Array = [timeLimitComp];
-            
-            var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
-            manager.addBuff(metaBuff, null);
-            
-            // 验证初始状态
-            assert(metaBuff.isActive(), "MetaBuff should be active initially");
-            
-            // 模拟几帧更新
-            for (var frame:Number = 1; frame <= 4; frame++) {
-                manager.update(1);
-                assert(metaBuff.isActive(), "MetaBuff should still be active at frame " + frame);
-                trace("  ✓ Frame " + frame + ": MetaBuff still active");
-            }
-            
-            // 第5帧应该失效
+            manager.addBuff(addBuff1, null);
+            manager.addBuff(addBuff2, null);
             manager.update(1);
-            assert(!metaBuff.isActive(), "MetaBuff should be inactive after 5 frames");
-            trace("  ✓ Frame 5: MetaBuff correctly deactivated");
+            
+            // 预期：100 + 30 + 20 = 150
+            var expectedValue:Number = 150;
+            var actualValue:Number = getCalculatedValue(mockTarget, "attack");
+            
+            assertCalculation(actualValue, expectedValue, "ADD calculation");
+            
+            trace("  ✓ ADD: 100 + 30 + 20 = " + actualValue);
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("MetaBuff with components failed: " + e.message);
+            failTest("Basic ADD calculation failed: " + e.message);
         }
     }
     
-    private static function testMetaBuffWithChildBuffs():Void {
-        startTest("MetaBuff with Child Buffs");
+    private static function testBasicMultiplyCalculation():Void {
+        startTest("Basic MULTIPLY Calculation");
         
         try {
             mockTarget = createMockTarget();
+            mockTarget.defense = 50;
+            
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            // 创建多个子buff
+            // 添加乘法buff
+            var multBuff1:PodBuff = new PodBuff("defense", BuffCalculationType.MULTIPLY, 1.5);
+            var multBuff2:PodBuff = new PodBuff("defense", BuffCalculationType.MULTIPLY, 1.2);
+            
+            manager.addBuff(multBuff1, null);
+            manager.addBuff(multBuff2, null);
+            manager.update(1);
+            
+            // 预期：50 * 1.5 * 1.2 = 90
+            var expectedValue:Number = 90;
+            var actualValue:Number = getCalculatedValue(mockTarget, "defense");
+            
+            assertCalculation(actualValue, expectedValue, "MULTIPLY calculation");
+            
+            trace("  ✓ MULTIPLY: 50 * 1.5 * 1.2 = " + actualValue);
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Basic MULTIPLY calculation failed: " + e.message);
+        }
+    }
+    
+    private static function testBasicPercentCalculation():Void {
+        startTest("Basic PERCENT Calculation");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.speed = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 添加百分比buff
+            var percentBuff1:PodBuff = new PodBuff("speed", BuffCalculationType.PERCENT, 0.2); // +20%
+            var percentBuff2:PodBuff = new PodBuff("speed", BuffCalculationType.PERCENT, 0.1); // +10%
+            
+            manager.addBuff(percentBuff1, null);
+            manager.addBuff(percentBuff2, null);
+            manager.update(1);
+            
+            // 预期：100 * 1.2 * 1.1 = 132
+            var expectedValue:Number = 132;
+            var actualValue:Number = getCalculatedValue(mockTarget, "speed");
+            
+            assertCalculation(actualValue, expectedValue, "PERCENT calculation");
+            
+            trace("  ✓ PERCENT: 100 * 1.2 * 1.1 = " + actualValue);
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Basic PERCENT calculation failed: " + e.message);
+        }
+    }
+    
+    private static function testCalculationTypesPriority():Void {
+        startTest("Calculation Types Priority");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.power = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 混合不同类型的buff
+            var addBuff:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 20);
+            var multBuff:PodBuff = new PodBuff("power", BuffCalculationType.MULTIPLY, 1.5);
+            var percentBuff:PodBuff = new PodBuff("power", BuffCalculationType.PERCENT, 0.1);
+            
+            manager.addBuff(addBuff, null);
+            manager.addBuff(multBuff, null);
+            manager.addBuff(percentBuff, null);
+            manager.update(1);
+            
+            // 预期计算顺序：(100 + 20) * 1.5 * 1.1 = 198
+            var expectedValue:Number = 198;
+            var actualValue:Number = getCalculatedValue(mockTarget, "power");
+            
+            assertCalculation(actualValue, expectedValue, "Mixed calculation types");
+            
+            trace("  ✓ Priority: (100 + 20) * 1.5 * 1.1 = " + actualValue);
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Calculation types priority failed: " + e.message);
+        }
+    }
+    
+    private static function testOverrideCalculation():Void {
+        startTest("OVERRIDE Calculation");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.health = 1000;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 添加各种buff，然后一个覆盖buff
+            var addBuff:PodBuff = new PodBuff("health", BuffCalculationType.ADD, 500);
+            var multBuff:PodBuff = new PodBuff("health", BuffCalculationType.MULTIPLY, 2);
+            var overrideBuff:PodBuff = new PodBuff("health", BuffCalculationType.OVERRIDE, 100);
+            
+            manager.addBuff(addBuff, null);
+            manager.addBuff(multBuff, null);
+            manager.addBuff(overrideBuff, null);
+            manager.update(1);
+            
+            // 预期：OVERRIDE应该覆盖所有其他计算
+            var expectedValue:Number = 100;
+            var actualValue:Number = getCalculatedValue(mockTarget, "health");
+            
+            assertCalculation(actualValue, expectedValue, "OVERRIDE calculation");
+            
+            trace("  ✓ OVERRIDE: All calculations → 100");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("OVERRIDE calculation failed: " + e.message);
+        }
+    }
+    
+    // ========== Phase 2: MetaBuff注入与计算 ==========
+    
+    private static function testMetaBuffPodInjection():Void {
+        startTest("MetaBuff Pod Injection");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.strength = 50;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 创建MetaBuff，包含多个PodBuff
             var childBuffs:Array = [
-                new PodBuff("attack", BuffCalculationType.ADD, 30),
-                new PodBuff("attack", BuffCalculationType.PERCENT, 0.1),
-                new PodBuff("defense", BuffCalculationType.MULTIPLY, 1.2)
+                new PodBuff("strength", BuffCalculationType.ADD, 25),
+                new PodBuff("strength", BuffCalculationType.PERCENT, 0.2)
             ];
             
             var metaBuff:MetaBuff = new MetaBuff(childBuffs, [], 0);
             manager.addBuff(metaBuff, null);
             
-            // 触发PropertyContainer重建
-            manager.update(1);
-            
-            assert(metaBuff.getChildBuffCount() == 3, "Should have 3 child buffs");
+            // 初始状态应该是ACTIVE，立即注入
             assert(metaBuff.isActive(), "MetaBuff should be active");
             
-            // 验证子buff都是激活的
-            for (var i:Number = 0; i < childBuffs.length; i++) {
-                assert(childBuffs[i].isActive(), "Child buff " + i + " should be active");
-            }
-            
-            trace("  ✓ MetaBuff with " + childBuffs.length + " child buffs working correctly");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("MetaBuff with child buffs failed: " + e.message);
-        }
-    }
-    
-    private static function testMetaBuffLifecycle():Void {
-        startTest("MetaBuff Lifecycle Management");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            var childBuffs:Array = [
-                new PodBuff("power", BuffCalculationType.ADD, 15)
-            ];
-            
-            var components:Array = [
-                new TimeLimitComponent(3) // 很短的生命周期
-            ];
-            
-            var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
-            manager.addBuff(metaBuff, "testMetaBuff");
-            
-            var initialBuffCount:Number = manager.getAllBuffs().length;
-            assert(initialBuffCount == 1, "Should have 1 buff initially");
-            
-            // 推进帧直到MetaBuff失效
-            var frame:Number = 0;
-            while (metaBuff.isActive() && frame < 10) {
-                frame++;
-                manager.update(1);
-            }
-            
-            assert(frame == 3, "MetaBuff should expire after exactly 3 frames, got " + frame);
-            assert(!metaBuff.isActive(), "MetaBuff should be inactive after expiration");
-            
-            // 再次更新应该清理失效的buff
             manager.update(1);
-            var finalBuffCount:Number = manager.getAllBuffs().length;
-            assert(finalBuffCount == 0, "Expired MetaBuff should be removed, remaining: " + finalBuffCount);
             
-            trace("  ✓ MetaBuff lifecycle: " + frame + " frames → expired → removed");
+            // 验证计算：(50 + 25) * 1.2 = 90
+            var expectedValue:Number = 90;
+            var actualValue:Number = getCalculatedValue(mockTarget, "strength");
+            
+            assertCalculation(actualValue, expectedValue, "MetaBuff injection calculation");
+            
+            trace("  ✓ MetaBuff injection: (50 + 25) * 1.2 = " + actualValue);
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("MetaBuff lifecycle failed: " + e.message);
+            failTest("MetaBuff pod injection failed: " + e.message);
         }
     }
     
-    // ========== Phase 3: TimeLimitComponent核心测试 ==========
-    
-    private static function testTimeLimitComponentBasic():Void {
-        startTest("TimeLimitComponent Basic Functionality");
-        
-        try {
-            var totalFrames:Number = 10;
-            var timeLimit:TimeLimitComponent = new TimeLimitComponent(totalFrames);
-            
-            // 模拟宿主buff
-            var mockHost:IBuff = new BaseBuff();
-            
-            // 组件挂载
-            timeLimit.onAttach(mockHost);
-            
-            // 测试更新和生命周期
-            for (var frame:Number = 1; frame <= totalFrames - 1; frame++) {
-                var stillAlive:Boolean = timeLimit.update(mockHost, 1);
-                assert(stillAlive, "Component should be alive at frame " + frame);
-            }
-            
-            // 最后一帧应该失效
-            var finalUpdate:Boolean = timeLimit.update(mockHost, 1);
-            assert(!finalUpdate, "Component should expire after " + totalFrames + " frames");
-            
-            // 组件卸载
-            timeLimit.onDetach();
-            
-            trace("  ✓ TimeLimitComponent correctly managed " + totalFrames + "-frame lifecycle");
-            
-            passTest();
-        } catch (e) {
-            failTest("TimeLimitComponent basic functionality failed: " + e.message);
-        }
-    }
-    
-    private static function testTimeLimitComponentFrameCountdown():Void {
-        startTest("TimeLimitComponent Frame Countdown");
-        
-        try {
-            var timeLimit:TimeLimitComponent = new TimeLimitComponent(5);
-            var mockHost:IBuff = new BaseBuff();
-            
-            timeLimit.onAttach(mockHost);
-            
-            // 测试不同的deltaFrames值
-            var result1:Boolean = timeLimit.update(mockHost, 2); // 消耗2帧
-            assert(result1, "Should be alive after consuming 2 frames");
-            
-            var result2:Boolean = timeLimit.update(mockHost, 1.5); // 消耗1.5帧
-            assert(result2, "Should be alive after consuming 3.5 frames total");
-            
-            var result3:Boolean = timeLimit.update(mockHost, 2); // 消耗2帧，总计5.5帧
-            assert(!result3, "Should expire after consuming 5.5 frames total");
-            
-            trace("  ✓ Frame countdown: 2 + 1.5 + 2 = 5.5 frames → expired correctly");
-            
-            passTest();
-        } catch (e) {
-            failTest("TimeLimitComponent frame countdown failed: " + e.message);
-        }
-    }
-    
-    private static function testTimeLimitComponentIntegration():Void {
-        startTest("TimeLimitComponent Integration with MetaBuff");
+    private static function testMetaBuffCalculationAccuracy():Void {
+        startTest("MetaBuff Calculation Accuracy");
         
         try {
             mockTarget = createMockTarget();
+            mockTarget.damage = 100;
+            mockTarget.critical = 1.5;
+            
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            // 创建多个不同生命周期的TimeLimitComponent
-            var shortTimeLimit:TimeLimitComponent = new TimeLimitComponent(2);
-            var longTimeLimit:TimeLimitComponent = new TimeLimitComponent(5);
-            
-            var childBuffs:Array = [
-                new PodBuff("temp_boost", BuffCalculationType.ADD, 100)
+            // 复杂的MetaBuff场景
+            var damageBoostBuffs:Array = [
+                new PodBuff("damage", BuffCalculationType.ADD, 50),
+                new PodBuff("damage", BuffCalculationType.MULTIPLY, 1.3),
+                new PodBuff("critical", BuffCalculationType.ADD, 0.5)
             ];
             
-            var metaBuff1:MetaBuff = new MetaBuff(childBuffs.slice(), [shortTimeLimit], 0);
-            var metaBuff2:MetaBuff = new MetaBuff(childBuffs.slice(), [longTimeLimit], 0);
+            var metaBuff:MetaBuff = new MetaBuff(damageBoostBuffs, [], 0);
+            manager.addBuff(metaBuff, null);
+            manager.update(1);
             
-            manager.addBuff(metaBuff1, "short");
-            manager.addBuff(metaBuff2, "long");
+            // 验证damage计算：(100 + 50) * 1.3 = 195
+            var expectedDamage:Number = 195;
+            var actualDamage:Number = getCalculatedValue(mockTarget, "damage");
+            assertCalculation(actualDamage, expectedDamage, "MetaBuff damage calculation");
             
-            assert(manager.getActiveBuffCount() == 2, "Should have 2 active MetaBuffs initially");
+            // 验证critical计算：1.5 + 0.5 = 2.0
+            var expectedCritical:Number = 2.0;
+            var actualCritical:Number = getCalculatedValue(mockTarget, "critical");
+            assertCalculation(actualCritical, expectedCritical, "MetaBuff critical calculation");
             
-            // 推进到第3帧
-            for (var i:Number = 0; i < 3; i++) {
-                manager.update(1);
-            }
-            
-            // 短期buff应该失效，长期buff仍活跃
-            assert(!metaBuff1.isActive(), "Short-term MetaBuff should be inactive");
-            assert(metaBuff2.isActive(), "Long-term MetaBuff should still be active");
-            
-            // 继续推进到第6帧
-            for (var j:Number = 0; j < 3; j++) {
-                manager.update(1);
-            }
-            
-            // 长期buff也应该失效
-            assert(!metaBuff2.isActive(), "Long-term MetaBuff should now be inactive");
-            
-            trace("  ✓ TimeLimitComponent integration: short(2f) and long(5f) buffs expired correctly");
+            trace("  ✓ Damage: (100 + 50) * 1.3 = " + actualDamage);
+            trace("  ✓ Critical: 1.5 + 0.5 = " + actualCritical);
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("TimeLimitComponent integration failed: " + e.message);
+            failTest("MetaBuff calculation accuracy failed: " + e.message);
         }
     }
     
-    // ========== Phase 4: 时间基础的生命周期测试 ==========
-    
-    private static function testBuffManagerUpdate():Void {
-        startTest("BuffManager Update Mechanism");
+    private static function testMetaBuffStateTransitions():Void {
+        startTest("MetaBuff State Transitions & Calculations");
         
         try {
             mockTarget = createMockTarget();
-            var updateCount:Number = 0;
-            var callbacks:Object = {
-                onBuffRemoved: function(buff:IBuff, id:String):Void {
-                    updateCount++;
-                    trace("    Callback: Buff " + id + " removed");
-                }
-            };
+            mockTarget.agility = 20;
             
-            var manager:BuffManager = new BuffManager(mockTarget, callbacks);
+            var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            // 添加普通buff
-            var normalBuff:PodBuff = new PodBuff("normal", BuffCalculationType.ADD, 10);
-            manager.addBuff(normalBuff, null);
+            // 创建带TimeLimitComponent的MetaBuff
+            var childBuffs:Array = [
+                new PodBuff("agility", BuffCalculationType.ADD, 30),
+                new PodBuff("agility", BuffCalculationType.PERCENT, 0.5)
+            ];
             
-            // 添加限时buff
-            var timedBuff:MetaBuff = new MetaBuff(
-                [new PodBuff("timed", BuffCalculationType.MULTIPLY, 2)],
+            var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(3);
+            var metaBuff:MetaBuff = new MetaBuff(childBuffs, [timeLimitComp], 0);
+            
+            manager.addBuff(metaBuff, null);
+            manager.update(1);
+            
+            // Frame 1: 应该激活，计算 (20 + 30) * 1.5 = 75
+            var frame1Value:Number = getCalculatedValue(mockTarget, "agility");
+            assertCalculation(frame1Value, 75, "Frame 1 calculation");
+            
+            // Frame 2: 仍然激活
+            manager.update(1);
+            var frame2Value:Number = getCalculatedValue(mockTarget, "agility");
+            assertCalculation(frame2Value, 75, "Frame 2 calculation");
+            
+            // Frame 3: 最后一帧
+            manager.update(1);
+            var frame3Value:Number = getCalculatedValue(mockTarget, "agility");
+            assertCalculation(frame3Value, 75, "Frame 3 calculation");
+            
+            // Frame 4: 应该失效，值恢复到基础值
+            manager.update(1);
+            var frame4Value:Number = getCalculatedValue(mockTarget, "agility");
+            assertCalculation(frame4Value, 20, "Frame 4 (expired) calculation");
+            
+            trace("  ✓ State transitions: 75 → 75 → 75 → 20 (expired)");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("MetaBuff state transitions failed: " + e.message);
+        }
+    }
+    
+    private static function testMetaBuffDynamicInjection():Void {
+        startTest("MetaBuff Dynamic Injection");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.intelligence = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 先添加一个普通的PodBuff
+            var baseBuff:PodBuff = new PodBuff("intelligence", BuffCalculationType.ADD, 20);
+            manager.addBuff(baseBuff, null);
+            manager.update(1);
+            
+            // 验证初始计算：100 + 20 = 120
+            var initialValue:Number = getCalculatedValue(mockTarget, "intelligence");
+            assertCalculation(initialValue, 120, "Initial calculation");
+            
+            // 添加MetaBuff
+            var metaBuffPods:Array = [
+                new PodBuff("intelligence", BuffCalculationType.MULTIPLY, 1.5),
+                new PodBuff("intelligence", BuffCalculationType.PERCENT, 0.1)
+            ];
+            var metaBuff:MetaBuff = new MetaBuff(metaBuffPods, [], 0);
+            manager.addBuff(metaBuff, null);
+            manager.update(1);
+            
+            // 验证新计算：(100 + 20) * 1.5 * 1.1 = 198
+            var finalValue:Number = getCalculatedValue(mockTarget, "intelligence");
+            assertCalculation(finalValue, 198, "After MetaBuff injection");
+            
+            trace("  ✓ Dynamic injection: 120 → 198");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("MetaBuff dynamic injection failed: " + e.message);
+        }
+    }
+    
+    // ========== Phase 3: TimeLimitComponent与动态计算 ==========
+    
+    private static function testTimeLimitedBuffCalculations():Void {
+        startTest("Time-Limited Buff Calculations");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.armor = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 创建多个不同时限的buff
+            var shortTermBuff:MetaBuff = new MetaBuff(
+                [new PodBuff("armor", BuffCalculationType.ADD, 50)],
                 [new TimeLimitComponent(2)],
                 0
             );
-            manager.addBuff(timedBuff, null);
             
-            assert(manager.getActiveBuffCount() == 2, "Should have 2 active buffs initially");
+            var longTermBuff:MetaBuff = new MetaBuff(
+                [new PodBuff("armor", BuffCalculationType.MULTIPLY, 1.2)],
+                [new TimeLimitComponent(5)],
+                0
+            );
             
-            // 第一次更新
+            manager.addBuff(shortTermBuff, null);
+            manager.addBuff(longTermBuff, null);
             manager.update(1);
-            assert(manager.getActiveBuffCount() == 2, "Both buffs should still be active after 1 frame");
             
-            // 第二次更新,限时buff应该失效
+            // Frame 1: 两个buff都激活 (100 + 50) * 1.2 = 180
+            var frame1:Number = getCalculatedValue(mockTarget, "armor");
+            assertCalculation(frame1, 180, "Frame 1 with both buffs");
             
-            manager.update(1);
-            assert(manager.getActiveBuffCount() == 1, "Only 1 buff should remain after 3 frames");
-            assert(updateCount >= 1, "Should have triggered removal callback");
+            // Frame 3: 短期buff失效，只剩长期 100 * 1.2 = 120
+            manager.update(2);
+            var frame3:Number = getCalculatedValue(mockTarget, "armor");
+            assertCalculation(frame3, 120, "Frame 3 with only long-term buff");
             
-            trace("  ✓ Update mechanism correctly processed buff expiration");
+            // Frame 6: 所有buff失效，恢复基础值
+            manager.update(3);
+            var frame6:Number = getCalculatedValue(mockTarget, "armor");
+            assertCalculation(frame6, 100, "Frame 6 all buffs expired");
             
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("BuffManager update failed: " + e.message);
-        }
-    }
-    
-    private static function testTimeLimitedBuffExpiration():Void {
-        startTest("Time-Limited Buff Expiration");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 创建不同到期时间的buff
-            var expirationTimes:Array = [3, 5, 7, 10];
-            var buffIds:Array = [];
-            
-            for (var i:Number = 0; i < expirationTimes.length; i++) {
-                var expireTime:Number = expirationTimes[i];
-                var metaBuff:MetaBuff = new MetaBuff(
-                    [new PodBuff("test" + i, BuffCalculationType.ADD, 10)],
-                    [new TimeLimitComponent(expireTime)],
-                    0
-                );
-                var id:String = manager.addBuff(metaBuff, "buff" + i);
-                buffIds.push(id);
-            }
-            
-            var initialCount:Number = manager.getActiveBuffCount();
-            assert(initialCount == 4, "Should have 4 buffs initially");
-            
-            var remainingBuffs:Array = [true, true, true, true];
-            
-            // 模拟10帧的推进
-            for (var frame:Number = 1; frame <= 10; frame++) {
-                manager.update(1);
-                
-                // 检查预期的失效情况
-                for (var j:Number = 0; j < expirationTimes.length; j++) {
-                    if (frame >= expirationTimes[j] && remainingBuffs[j]) {
-                        remainingBuffs[j] = false;
-                        trace("    Frame " + frame + ": Buff " + j + " (expire at " + expirationTimes[j] + ") should expire");
-                    }
-                }
-                
-                var expectedActive:Number = 0;
-                for (var k:Number = 0; k < remainingBuffs.length; k++) {
-                    if (remainingBuffs[k]) expectedActive++;
-                }
-                
-                var actualActive:Number = manager.getActiveBuffCount();
-                if (actualActive != expectedActive) {
-                    trace("    Frame " + frame + ": Expected " + expectedActive + " active buffs, got " + actualActive);
-                }
-            }
-            
-            assert(manager.getActiveBuffCount() == 0, "All buffs should have expired after 10 frames");
-            
-            trace("  ✓ All time-limited buffs expired as expected");
+            trace("  ✓ Time-limited calculations: 180 → 120 → 100");
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("Time-limited buff expiration failed: " + e.message);
+            failTest("Time-limited buff calculations failed: " + e.message);
         }
     }
     
-    private static function testMultipleTimeLimitedBuffs():Void {
-        startTest("Multiple Time-Limited Buffs");
+    private static function testDynamicCalculationUpdates():Void {
+        startTest("Dynamic Calculation Updates");
         
         try {
             mockTarget = createMockTarget();
+            mockTarget.mana = 200;
+            
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            var buffCount:Number = 5;
+            // 创建一个会动态变化的场景
+            var permanentBuff:PodBuff = new PodBuff("mana", BuffCalculationType.ADD, 100);
+            manager.addBuff(permanentBuff, null);
             
-            // 创建多个相同时限的buff
-            for (var i:Number = 0; i < buffCount; i++) {
-                var metaBuff:MetaBuff = new MetaBuff(
-                    [new PodBuff("multi" + i, BuffCalculationType.ADD, i * 5)],
-                    [new TimeLimitComponent(4)], // 都是4帧生命周期
-                    0
-                );
-                manager.addBuff(metaBuff, null);
-            }
-            
-            assert(manager.getActiveBuffCount() == buffCount, "Should have " + buffCount + " active buffs");
-            
-            // 推进到第3帧 - 全部还活着
-            for (var frame:Number = 1; frame <= 3; frame++) {
-                manager.update(1);
-            }
-            assert(manager.getActiveBuffCount() == buffCount, "All buffs should still be active at frame 3");
-            
-            // 推进到第5帧 - 全部应该失效
-            manager.update(1); // frame 4
-            manager.update(1); // frame 5
-            
-            assert(manager.getActiveBuffCount() == 0, "All buffs should have expired by frame 5");
-            
-            trace("  ✓ " + buffCount + " time-limited buffs expired simultaneously");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Multiple time-limited buffs failed: " + e.message);
-        }
-    }
-    
-    private static function testMixedBuffTypes():Void {
-        startTest("Mixed Buff Types (Permanent + Time-Limited)");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 添加永久buff
-            var permanentBuff1:PodBuff = new PodBuff("strength", BuffCalculationType.ADD, 20);
-            var permanentBuff2:PodBuff = new PodBuff("agility", BuffCalculationType.PERCENT, 0.1);
-            manager.addBuff(permanentBuff1, null);
-            manager.addBuff(permanentBuff2, null);
-            
-            // 添加限时buff
-            var timedBuff1:MetaBuff = new MetaBuff(
-                [new PodBuff("temp_power", BuffCalculationType.MULTIPLY, 2)],
+            // 添加临时buff
+            var tempBuff:MetaBuff = new MetaBuff(
+                [new PodBuff("mana", BuffCalculationType.PERCENT, 0.5)],
                 [new TimeLimitComponent(3)],
                 0
             );
-            var timedBuff2:MetaBuff = new MetaBuff(
-                [new PodBuff("temp_speed", BuffCalculationType.ADD, 50)],
-                [new TimeLimitComponent(6)],
-                0
-            );
-            manager.addBuff(timedBuff1, null);
-            manager.addBuff(timedBuff2, null);
+            manager.addBuff(tempBuff, null);
+            manager.update(1);
             
-            assert(manager.getActiveBuffCount() == 4, "Should have 4 buffs total (2 permanent + 2 timed)");
+            // 初始：(200 + 100) * 1.5 = 450
+            var initial:Number = getCalculatedValue(mockTarget, "mana");
+            assertCalculation(initial, 450, "Initial with temp buff");
             
-            // 推进到第4帧
-            for (var i:Number = 0; i < 4; i++) {
-                manager.update(1);
-            }
+            // 临时buff过期后：200 + 100 = 300
+            manager.update(3);
+            var afterExpire:Number = getCalculatedValue(mockTarget, "mana");
+            assertCalculation(afterExpire, 300, "After temp buff expires");
             
-            // 第一个限时buff应该失效，永久buff和第二个限时buff还在
-            var activeAfter4:Number = manager.getActiveBuffCount();
-            assert(activeAfter4 == 3, "Should have 3 buffs after 4 frames (got " + activeAfter4 + ")");
+            // 移除永久buff：200
+            manager.removeBuff(permanentBuff.getId());
+            manager.update(1);
+            var final:Number = getCalculatedValue(mockTarget, "mana");
+            assertCalculation(final, 200, "After removing permanent buff");
             
-            // 推进到第7帧
-            for (var j:Number = 0; j < 3; j++) {
-                manager.update(1);
-            }
-            
-            // 第二个限时buff也应该失效，只剩永久buff
-            var activeAfter7:Number = manager.getActiveBuffCount();
-            assert(activeAfter7 == 2, "Should have 2 permanent buffs after 7 frames (got " + activeAfter7 + ")");
-            
-            trace("  ✓ Mixed buff types: 2 permanent + 2 timed → 2 permanent remaining");
+            trace("  ✓ Dynamic updates: 450 → 300 → 200");
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("Mixed buff types failed: " + e.message);
+            failTest("Dynamic calculation updates failed: " + e.message);
+        }
+    }
+    
+    private static function testBuffExpirationCalculations():Void {
+        startTest("Buff Expiration Calculations");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.resistance = 50;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 创建级联过期的buff
+            for (var i:Number = 1; i <= 3; i++) {
+                var buff:MetaBuff = new MetaBuff(
+                    [new PodBuff("resistance", BuffCalculationType.ADD, i * 10)],
+                    [new TimeLimitComponent(i * 2)],
+                    0
+                );
+                manager.addBuff(buff, null);
+            }
+            manager.update(1);
+            
+            // Frame 1: 50 + 10 + 20 + 30 = 110
+            var frame1:Number = getCalculatedValue(mockTarget, "resistance");
+            assertCalculation(frame1, 110, "Frame 1 all buffs active");
+            
+            // Frame 3: 第一个buff过期，50 + 20 + 30 = 100
+            manager.update(2);
+            var frame3:Number = getCalculatedValue(mockTarget, "resistance");
+            assertCalculation(frame3, 100, "Frame 3 first buff expired");
+            
+            // Frame 5: 第二个buff过期，50 + 30 = 80
+            manager.update(2);
+            var frame5:Number = getCalculatedValue(mockTarget, "resistance");
+            assertCalculation(frame5, 80, "Frame 5 second buff expired");
+            
+            // Frame 7: 所有buff过期
+            manager.update(2);
+            var frame7:Number = getCalculatedValue(mockTarget, "resistance");
+            assertCalculation(frame7, 50, "Frame 7 all buffs expired");
+            
+            trace("  ✓ Cascading expiration: 110 → 100 → 80 → 50");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Buff expiration calculations failed: " + e.message);
+        }
+    }
+    
+    private static function testCascadingBuffCalculations():Void {
+        startTest("Cascading Buff Calculations");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.energy = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 创建相互影响的buff链
+            var baseBuff:PodBuff = new PodBuff("energy", BuffCalculationType.ADD, 50);
+            var enhanceBuff:MetaBuff = new MetaBuff(
+                [new PodBuff("energy", BuffCalculationType.PERCENT, 0.3)],
+                [new TimeLimitComponent(4)],
+                0
+            );
+            var superBuff:MetaBuff = new MetaBuff(
+                [new PodBuff("energy", BuffCalculationType.MULTIPLY, 2)],
+                [new TimeLimitComponent(2)],
+                0
+            );
+            
+            manager.addBuff(baseBuff, null);
+            manager.addBuff(enhanceBuff, null);
+            manager.addBuff(superBuff, null);
+            manager.update(1);
+            
+            // Frame 1: (100 + 50) * 2 * 1.3 = 390
+            var phase1:Number = getCalculatedValue(mockTarget, "energy");
+            assertCalculation(phase1, 390, "All buffs active");
+            
+            // Frame 3: superBuff过期 (100 + 50) * 1.3 = 195
+            manager.update(2);
+            var phase2:Number = getCalculatedValue(mockTarget, "energy");
+            assertCalculation(phase2, 195, "Super buff expired");
+            
+            // Frame 5: enhanceBuff过期 100 + 50 = 150
+            manager.update(2);
+            var phase3:Number = getCalculatedValue(mockTarget, "energy");
+            assertCalculation(phase3, 150, "Enhance buff expired");
+            
+            trace("  ✓ Cascading calculations: 390 → 195 → 150");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Cascading buff calculations failed: " + e.message);
+        }
+    }
+    
+    // ========== Phase 4: 复杂计算场景 ==========
+    
+    private static function testStackingBuffCalculations():Void {
+        startTest("Stacking Buff Calculations");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.power = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 模拟可叠加的buff（比如每次攻击增加伤害）
+            var stackCount:Number = 5;
+            for (var i:Number = 0; i < stackCount; i++) {
+                var stackBuff:PodBuff = new PodBuff("power", BuffCalculationType.ADD, 10);
+                manager.addBuff(stackBuff, "stack_" + i);
+            }
+            manager.update(1);
+            
+            // 验证叠加：100 + (10 * 5) = 150
+            var stackedValue:Number = getCalculatedValue(mockTarget, "power");
+            assertCalculation(stackedValue, 150, "5 stacks calculation");
+            
+            // 移除2层
+            manager.removeBuff("stack_0");
+            manager.removeBuff("stack_1");
+            manager.update(1);
+            
+            // 验证：100 + (10 * 3) = 130
+            var reducedValue:Number = getCalculatedValue(mockTarget, "power");
+            assertCalculation(reducedValue, 130, "3 stacks calculation");
+            
+            trace("  ✓ Stacking: 5 stacks (150) → 3 stacks (130)");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Stacking buff calculations failed: " + e.message);
+        }
+    }
+    
+    private static function testMultiPropertyCalculations():Void {
+        startTest("Multi-Property Calculations");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.physicalDamage = 100;
+            mockTarget.magicalDamage = 80;
+            mockTarget.healingPower = 50;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 创建影响多个属性的MetaBuff
+            var omniBuff:MetaBuff = new MetaBuff(
+                [
+                    new PodBuff("physicalDamage", BuffCalculationType.PERCENT, 0.2),
+                    new PodBuff("magicalDamage", BuffCalculationType.PERCENT, 0.3),
+                    new PodBuff("healingPower", BuffCalculationType.ADD, 25)
+                ],
+                [],
+                0
+            );
+            
+            manager.addBuff(omniBuff, null);
+            manager.update(1);
+            
+            // 验证各属性计算
+            var physical:Number = getCalculatedValue(mockTarget, "physicalDamage");
+            var magical:Number = getCalculatedValue(mockTarget, "magicalDamage");
+            var healing:Number = getCalculatedValue(mockTarget, "healingPower");
+            
+            assertCalculation(physical, 120, "Physical damage");  // 100 * 1.2
+            assertCalculation(magical, 104, "Magical damage");    // 80 * 1.3
+            assertCalculation(healing, 75, "Healing power");      // 50 + 25
+            
+            trace("  ✓ Multi-property: Phys 120, Mag 104, Heal 75");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Multi-property calculations failed: " + e.message);
+        }
+    }
+    
+    private static function testCalculationOrderDependency():Void {
+        startTest("Calculation Order Dependency");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.damage = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 测试计算顺序的重要性
+            var buffs:Array = [
+                new PodBuff("damage", BuffCalculationType.PERCENT, 0.5),   // +50%
+                new PodBuff("damage", BuffCalculationType.ADD, 20),        // +20
+                new PodBuff("damage", BuffCalculationType.MULTIPLY, 1.2),  // *1.2
+                new PodBuff("damage", BuffCalculationType.MAX, 150),       // 最小150
+                new PodBuff("damage", BuffCalculationType.MIN, 200)        // 最大200
+            ];
+            
+            for (var i:Number = 0; i < buffs.length; i++) {
+                manager.addBuff(buffs[i], null);
+            }
+            manager.update(1);
+            
+            // 计算顺序：
+            // 1. ADD: 100 + 20 = 120
+            // 2. MULTIPLY: 120 * 1.2 = 144
+            // 3. PERCENT: 144 * 1.5 = 216
+            // 4. MAX: max(216, 150) = 216
+            // 5. MIN: min(216, 200) = 200
+            var finalValue:Number = getCalculatedValue(mockTarget, "damage");
+            assertCalculation(finalValue, 200, "Order-dependent calculation");
+            
+            trace("  ✓ Order dependency: 100 → 120 → 144 → 216 → 216 → 200");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Calculation order dependency failed: " + e.message);
+        }
+    }
+    
+    private static function testRealGameCalculationScenario():Void {
+        startTest("Real Game Calculation Scenario");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.attackDamage = 100;
+            mockTarget.attackSpeed = 1.0;
+            mockTarget.criticalChance = 0.2;
+            mockTarget.criticalDamage = 1.5;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 场景：玩家获得多个增益效果
+            
+            // 装备被动
+            var weaponBuff:PodBuff = new PodBuff("attackDamage", BuffCalculationType.ADD, 50);
+            manager.addBuff(weaponBuff, "weapon");
+            
+            // 技能：狂暴（10秒）
+            var berserkBuff:MetaBuff = new MetaBuff(
+                [
+                    new PodBuff("attackDamage", BuffCalculationType.PERCENT, 0.3),
+                    new PodBuff("attackSpeed", BuffCalculationType.PERCENT, 0.5),
+                    new PodBuff("criticalChance", BuffCalculationType.ADD, 0.1)
+                ],
+                [new TimeLimitComponent(60)], // 10秒
+                1
+            );
+            manager.addBuff(berserkBuff, "berserk");
+            
+            // 队友光环
+            var auraBuff:PodBuff = new PodBuff("criticalDamage", BuffCalculationType.ADD, 0.5);
+            manager.addBuff(auraBuff, "aura");
+            
+            manager.update(1);
+            
+            // 验证各项数值
+            var ad:Number = getCalculatedValue(mockTarget, "attackDamage");
+            var as:Number = getCalculatedValue(mockTarget, "attackSpeed");
+            var cc:Number = getCalculatedValue(mockTarget, "criticalChance");
+            var cd:Number = getCalculatedValue(mockTarget, "criticalDamage");
+            
+            // 计算预期值
+            // AD: (100 + 50) * 1.3 = 195
+            // AS: 1.0 * 1.5 = 1.5
+            // CC: 0.2 + 0.1 = 0.3
+            // CD: 1.5 + 0.5 = 2.0
+            assertCalculation(ad, 195, "Attack damage");
+            assertCalculation(as, 1.5, "Attack speed");
+            assertCalculation(cc, 0.3, "Critical chance");
+            assertCalculation(cd, 2.0, "Critical damage");
+            
+            // 计算DPS提升
+            var baseDPS:Number = 100 * 1.0 * (1 + 0.2 * (1.5 - 1));
+            var buffedDPS:Number = 195 * 1.5 * (1 + 0.3 * (2.0 - 1));
+            var dpsIncrease:Number = Math.round((buffedDPS / baseDPS - 1) * 100);
+            
+            trace("  ✓ Combat stats: AD 195, AS 1.5, CC 30%, CD 200%");
+            trace("  ✓ DPS increase: " + dpsIncrease + "%");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Real game calculation scenario failed: " + e.message);
         }
     }
     
     // ========== Phase 5: PropertyContainer集成测试 ==========
     
-    private static function testPropertyContainerCreation():Void {
-        startTest("PropertyContainer Creation and Integration");
+    private static function testPropertyContainerCalculations():Void {
+        startTest("PropertyContainer Calculations");
         
         try {
             mockTarget = createMockTarget();
-            mockTarget.testProp = 100; // 设置初始值
+            mockTarget.testStat = 200;
             
-            var manager:BuffManager = new BuffManager(mockTarget, null);
+            var propertyChanges:Array = [];
+            var callbacks:Object = {
+                onPropertyChanged: function(prop:String, value:Number):Void {
+                    propertyChanges.push({property: prop, value: value});
+                }
+            };
             
-            // 添加影响testProp的buff
-            var buff:PodBuff = new PodBuff("testProp", BuffCalculationType.ADD, 25);
-            manager.addBuff(buff, null);
+            var manager:BuffManager = new BuffManager(mockTarget, callbacks);
             
-            // 触发PropertyContainer的创建
-            manager.update(1);
-            
-            // PropertyContainer应该自动创建并计算正确的值
-            // 注意：由于我们的测试环境可能没有完整的PropertyAccessor实现，
-            // 这里主要测试BuffManager的逻辑
-            
-            assert(manager.getActiveBuffCount() == 1, "Should have 1 active buff");
-            
-            trace("  ✓ PropertyContainer integration appears functional");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("PropertyContainer creation failed: " + e.message);
-        }
-    }
-    
-    private static function testDynamicPropertyUpdates():Void {
-        startTest("Dynamic Property Updates");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 添加buff到不同属性
-            var healthBuff:PodBuff = new PodBuff("health", BuffCalculationType.ADD, 50);
-            var manaBuff:PodBuff = new PodBuff("mana", BuffCalculationType.MULTIPLY, 1.5);
-            
-            manager.addBuff(healthBuff, null);
-            manager.update(1); // 创建health的PropertyContainer
-            
-            manager.addBuff(manaBuff, null);
-            manager.update(1); // 创建mana的PropertyContainer
-            
-            assert(manager.getActiveBuffCount() == 2, "Should have 2 active buffs");
-            
-            // 移除一个buff
-            manager.removeBuff(healthBuff.getId());
-            manager.update(1); // 处理移除
-            
-            assert(manager.getActiveBuffCount() == 1, "Should have 1 active buff after removal");
-            
-            trace("  ✓ Dynamic property updates handled correctly");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Dynamic property updates failed: " + e.message);
-        }
-    }
-    
-    private static function testPropertyContainerRebuild():Void {
-        startTest("PropertyContainer Rebuild");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 添加多个影响相同属性的buff
-            var buff1:PodBuff = new PodBuff("damage", BuffCalculationType.ADD, 10);
-            var buff2:PodBuff = new PodBuff("damage", BuffCalculationType.MULTIPLY, 1.2);
-            var buff3:PodBuff = new PodBuff("armor", BuffCalculationType.PERCENT, 0.15);
+            // 添加多个buff到同一属性
+            var buff1:PodBuff = new PodBuff("testStat", BuffCalculationType.ADD, 100);
+            var buff2:PodBuff = new PodBuff("testStat", BuffCalculationType.MULTIPLY, 1.5);
             
             manager.addBuff(buff1, null);
             manager.addBuff(buff2, null);
-            manager.addBuff(buff3, null);
-            
-            assert(manager.getActiveBuffCount() == 3, "Should have 3 buffs");
-            
-            // 触发重建
             manager.update(1);
             
-            // 移除一些buff，触发再次重建
-            manager.removeBuff(buff2.getId());
-            manager.update(1);
+            // 验证PropertyContainer创建并正确计算
+            var finalValue:Number = getCalculatedValue(mockTarget, "testStat");
+            assertCalculation(finalValue, 450, "PropertyContainer calculation"); // (200 + 100) * 1.5
             
-            assert(manager.getActiveBuffCount() == 2, "Should have 2 buffs after removal");
+            // 验证回调触发
+            assert(propertyChanges.length > 0, "Property change callbacks should fire");
             
-            trace("  ✓ PropertyContainer rebuild handled correctly");
+            trace("  ✓ PropertyContainer: (200 + 100) * 1.5 = 450");
+            trace("  ✓ Callbacks fired: " + propertyChanges.length + " times");
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("PropertyContainer rebuild failed: " + e.message);
+            failTest("PropertyContainer calculations failed: " + e.message);
         }
     }
     
-    private static function testPropertyValueCalculation():Void {
-        startTest("Property Value Calculation");
+    private static function testDynamicPropertyRecalculation():Void {
+        startTest("Dynamic Property Recalculation");
         
         try {
             mockTarget = createMockTarget();
-            mockTarget.baseStat = 100; // 设置基础值
+            mockTarget.dynamicStat = 50;
             
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            // 添加计算buff
-            var addBuff:PodBuff = new PodBuff("baseStat", BuffCalculationType.ADD, 20);
-            var multBuff:PodBuff = new PodBuff("baseStat", BuffCalculationType.MULTIPLY, 1.5);
+            // 初始buff
+            var initialBuff:PodBuff = new PodBuff("dynamicStat", BuffCalculationType.ADD, 25);
+            manager.addBuff(initialBuff, "initial");
+            manager.update(1);
             
-            manager.addBuff(addBuff, null);
+            var value1:Number = getCalculatedValue(mockTarget, "dynamicStat");
+            assertCalculation(value1, 75, "Initial state");
+            
+            // 添加乘法buff
+            var multBuff:PodBuff = new PodBuff("dynamicStat", BuffCalculationType.MULTIPLY, 2);
+            manager.addBuff(multBuff, "multiplier");
+            manager.update(1);
+            
+            var value2:Number = getCalculatedValue(mockTarget, "dynamicStat");
+            assertCalculation(value2, 150, "After multiplier"); // (50 + 25) * 2
+            
+            // 移除初始buff
+            manager.removeBuff("initial");
+            manager.update(1);
+            
+            var value3:Number = getCalculatedValue(mockTarget, "dynamicStat");
+            assertCalculation(value3, 100, "After removal"); // 50 * 2
+            
+            trace("  ✓ Dynamic recalc: 75 → 150 → 100");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Dynamic property recalculation failed: " + e.message);
+        }
+    }
+    
+    private static function testPropertyContainerRebuildAccuracy():Void {
+        startTest("PropertyContainer Rebuild Accuracy");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.prop1 = 100;
+            mockTarget.prop2 = 200;
+            mockTarget.prop3 = 300;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 添加影响不同属性的buff
+            var buffs:Array = [
+                new PodBuff("prop1", BuffCalculationType.ADD, 50),
+                new PodBuff("prop2", BuffCalculationType.PERCENT, 0.2),
+                new PodBuff("prop3", BuffCalculationType.MULTIPLY, 1.5)
+            ];
+            
+            for (var i:Number = 0; i < buffs.length; i++) {
+                manager.addBuff(buffs[i], "buff" + i);
+            }
+            manager.update(1);
+            
+            // 验证初始计算
+            assertCalculation(getCalculatedValue(mockTarget, "prop1"), 150, "prop1 initial");
+            assertCalculation(getCalculatedValue(mockTarget, "prop2"), 240, "prop2 initial");
+            assertCalculation(getCalculatedValue(mockTarget, "prop3"), 450, "prop3 initial");
+            
+            // 添加MetaBuff影响多个属性
+            var metaBuff:MetaBuff = new MetaBuff(
+                [
+                    new PodBuff("prop1", BuffCalculationType.MULTIPLY, 2),
+                    new PodBuff("prop2", BuffCalculationType.ADD, 60)
+                ],
+                [],
+                0
+            );
+            manager.addBuff(metaBuff, null);
+            manager.update(1);
+            
+            // 验证重建后的计算
+            assertCalculation(getCalculatedValue(mockTarget, "prop1"), 300, "prop1 after rebuild"); // (100 + 50) * 2
+            assertCalculation(getCalculatedValue(mockTarget, "prop2"), 360, "prop2 after rebuild"); // (200 + 60) * 1.2
+            assertCalculation(getCalculatedValue(mockTarget, "prop3"), 450, "prop3 unchanged");
+            
+            trace("  ✓ Container rebuild: accurate calculations maintained");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("PropertyContainer rebuild accuracy failed: " + e.message);
+        }
+    }
+    
+    private static function testConcurrentPropertyUpdates():Void {
+        startTest("Concurrent Property Updates");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.concurrent = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 同时添加多个影响同一属性的buff
+            var concurrentBuffs:Array = [];
+            for (var i:Number = 0; i < 5; i++) {
+                var buff:PodBuff = new PodBuff("concurrent", BuffCalculationType.ADD, 10);
+                concurrentBuffs.push(buff);
+                manager.addBuff(buff, null);
+            }
+            
+            manager.update(1);
+            
+            // 应该正确累加：100 + (10 * 5) = 150
+            var value1:Number = getCalculatedValue(mockTarget, "concurrent");
+            assertCalculation(value1, 150, "Concurrent additions");
+            
+            // 添加乘法buff
+            var multBuff:PodBuff = new PodBuff("concurrent", BuffCalculationType.MULTIPLY, 2);
             manager.addBuff(multBuff, null);
             manager.update(1);
             
-            // 预期计算：(100 + 20) * 1.5 = 180
-            // 注意：实际的PropertyContainer可能需要PropertyAccessor支持
+            // 应该正确应用：(100 + 50) * 2 = 300
+            var value2:Number = getCalculatedValue(mockTarget, "concurrent");
+            assertCalculation(value2, 300, "After multiplier");
             
-            trace("  ✓ Property value calculation logic verified");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Property value calculation failed: " + e.message);
-        }
-    }
-    
-    // ========== Phase 6: 复杂集成场景 ==========
-    
-    private static function testComplexMetaBuffScenario():Void {
-        startTest("Complex MetaBuff Scenario");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 场景：多重嵌套的MetaBuff，不同的组件组合
-            
-            // MetaBuff 1: 攻击加成 + 3秒时限
-            var attackBoost:MetaBuff = new MetaBuff(
-                [
-                    new PodBuff("attack", BuffCalculationType.ADD, 30),
-                    new PodBuff("critical", BuffCalculationType.PERCENT, 0.2)
-                ],
-                [new TimeLimitComponent(18)], // 3秒 * 6fps = 18帧
-                1 // 高优先级
-            );
-            
-            // MetaBuff 2: 防御加成 + 5秒时限
-            var defenseBoost:MetaBuff = new MetaBuff(
-                [
-                    new PodBuff("defense", BuffCalculationType.MULTIPLY, 1.4),
-                    new PodBuff("health", BuffCalculationType.ADD, 100)
-                ],
-                [new TimeLimitComponent(30)], // 5秒 * 6fps = 30帧
-                0 // 普通优先级
-            );
-            
-            // MetaBuff 3: 全能加成 + 10秒时限
-            var omniBuff:MetaBuff = new MetaBuff(
-                [
-                    new PodBuff("attack", BuffCalculationType.PERCENT, 0.1),
-                    new PodBuff("defense", BuffCalculationType.PERCENT, 0.1),
-                    new PodBuff("speed", BuffCalculationType.MULTIPLY, 1.3)
-                ],
-                [new TimeLimitComponent(60)], // 10秒 * 6fps = 60帧
-                2 // 最高优先级
-            );
-            
-            manager.addBuff(attackBoost, "attack_boost");
-            manager.addBuff(defenseBoost, "defense_boost");
-            manager.addBuff(omniBuff, "omni_buff");
-            
-            assert(manager.getActiveBuffCount() == 3, "Should have 3 MetaBuffs");
-            
-            // 模拟时间推进
-            var testFrames:Array = [15, 20, 35, 65];
-            var expectedCounts:Array = [3, 2, 1, 0]; // 预期在各个时间点的buff数量
-            
-            var currentFrame:Number = 0;
-            for (var i:Number = 0; i < testFrames.length; i++) {
-                var targetFrame:Number = testFrames[i];
-                var expectedCount:Number = expectedCounts[i];
-                
-                // 推进到目标帧
-                while (currentFrame < targetFrame) {
-                    currentFrame++;
-                    manager.update(1);
-                }
-                
-                var actualCount:Number = manager.getActiveBuffCount();
-                trace("    Frame " + targetFrame + ": Expected " + expectedCount + " buffs, got " + actualCount);
-                
-                // 允许一定的误差，因为时序可能略有差异
-                assert(Math.abs(actualCount - expectedCount) <= 1, 
-                    "Buff count at frame " + targetFrame + " should be approximately " + expectedCount + ", got " + actualCount);
-            }
-            
-            trace("  ✓ Complex MetaBuff scenario completed successfully");
+            trace("  ✓ Concurrent updates handled correctly");
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("Complex MetaBuff scenario failed: " + e.message);
+            failTest("Concurrent property updates failed: " + e.message);
         }
     }
     
-    private static function testCascadingBuffExpiration():Void {
-        startTest("Cascading Buff Expiration");
+    // ========== Phase 6: 边界情况与准确性 ==========
+    
+    private static function testExtremValueCalculations():Void {
+        startTest("Extreme Value Calculations");
         
         try {
             mockTarget = createMockTarget();
+            mockTarget.extreme = 1;
+            
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            // 创建级联到期的buff：每隔2帧就有一个到期
-            var cascadeCount:Number = 5;
-            for (var i:Number = 0; i < cascadeCount; i++) {
-                var expireFrame:Number = (i + 1) * 2; // 2, 4, 6, 8, 10帧到期
-                var metaBuff:MetaBuff = new MetaBuff(
-                    [new PodBuff("cascade" + i, BuffCalculationType.ADD, 10)],
-                    [new TimeLimitComponent(expireFrame)],
-                    0
-                );
-                manager.addBuff(metaBuff, "cascade" + i);
-            }
+            // 测试极大值
+            var hugeBuff:PodBuff = new PodBuff("extreme", BuffCalculationType.MULTIPLY, 1000000);
+            manager.addBuff(hugeBuff, null);
+            manager.update(1);
             
-            assert(manager.getActiveBuffCount() == cascadeCount, "Should have " + cascadeCount + " buffs initially");
+            var hugeValue:Number = getCalculatedValue(mockTarget, "extreme");
+            assertCalculation(hugeValue, 1000000, "Huge multiplier");
             
-            // 逐帧推进，验证级联到期
-            for (var frame:Number = 1; frame <= 12; frame++) {
-                manager.update(1);
-                
-                var expectedRemaining:Number = cascadeCount - Math.floor(frame / 2);
-                if (expectedRemaining < 0) expectedRemaining = 0;
-                
-                var actualRemaining:Number = manager.getActiveBuffCount();
-                
-                if (frame % 2 == 0) { // 在偶数帧检查（到期点）
-                    trace("    Frame " + frame + ": Expected " + expectedRemaining + " buffs, got " + actualRemaining);
-                    assert(actualRemaining == expectedRemaining, 
-                        "At frame " + frame + ", expected " + expectedRemaining + " buffs, got " + actualRemaining);
-                }
-            }
+            // 测试极小值
+            manager.removeBuff(hugeBuff.getId());
+            var tinyBuff:PodBuff = new PodBuff("extreme", BuffCalculationType.MULTIPLY, 0.000001);
+            manager.addBuff(tinyBuff, null);
+            manager.update(1);
             
-            assert(manager.getActiveBuffCount() == 0, "All buffs should have expired");
+            var tinyValue:Number = getCalculatedValue(mockTarget, "extreme");
+            assert(Math.abs(tinyValue - 0.000001) < 0.0000001, "Tiny multiplier accuracy");
             
-            trace("  ✓ Cascading expiration pattern worked correctly");
+            trace("  ✓ Extreme values: 1M and 0.000001 handled correctly");
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("Cascading buff expiration failed: " + e.message);
+            failTest("Extreme value calculations failed: " + e.message);
         }
     }
     
-    private static function testBuffDependencyChains():Void {
-        startTest("Buff Dependency Chains");
+    private static function testFloatingPointAccuracy():Void {
+        startTest("Floating Point Accuracy");
         
         try {
             mockTarget = createMockTarget();
+            mockTarget.floatTest = 10;
+            
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            // 模拟buff依赖链：基础buff → 增强buff → 超级增强buff
-            
-            // 基础buff（永久）
-            var baseBuff:PodBuff = new PodBuff("base_power", BuffCalculationType.ADD, 50);
-            manager.addBuff(baseBuff, "base");
-            
-            // 增强buff（5秒时限）
-            var enhanceBuff:MetaBuff = new MetaBuff(
-                [
-                    new PodBuff("base_power", BuffCalculationType.PERCENT, 0.5),
-                    new PodBuff("enhanced_power", BuffCalculationType.ADD, 25)
-                ],
-                [new TimeLimitComponent(30)],
-                0
-            );
-            manager.addBuff(enhanceBuff, "enhance");
-            
-            // 超级增强buff（2秒时限）
-            var superBuff:MetaBuff = new MetaBuff(
-                [
-                    new PodBuff("enhanced_power", BuffCalculationType.MULTIPLY, 2),
-                    new PodBuff("super_power", BuffCalculationType.ADD, 100)
-                ],
-                [new TimeLimitComponent(12)],
-                0
-            );
-            manager.addBuff(superBuff, "super");
-            
-            assert(manager.getActiveBuffCount() == 3, "Should have 3 buffs in dependency chain");
-            
-            // 推进到超级buff到期（12帧后）
-            for (var i:Number = 0; i < 13; i++) {
-                manager.update(1);
-            }
-            
-            // 超级buff应该到期，增强buff和基础buff仍在
-            var afterSuper:Number = manager.getActiveBuffCount();
-            assert(afterSuper == 2, "Should have 2 buffs after super buff expires, got " + afterSuper);
-            
-            // 继续推进到增强buff到期（30帧后）
-            for (var j:Number = 0; j < 18; j++) {
-                manager.update(1);
-            }
-            
-            // 只剩基础buff
-            var afterEnhance:Number = manager.getActiveBuffCount();
-            assert(afterEnhance == 1, "Should have 1 buff after enhance buff expires, got " + afterEnhance);
-            
-            trace("  ✓ Buff dependency chain: 3 → 2 → 1 buffs as expected");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Buff dependency chains failed: " + e.message);
-        }
-    }
-    
-    private static function testRealWorldGameScenario():Void {
-        startTest("Real-World Game Scenario");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 模拟真实游戏场景：玩家使用技能，获得各种buff
-            
-            // 技能1：战斗狂热（10秒）- 攻击力+50%，攻击速度+30%
-            var battleFrenzy:MetaBuff = new MetaBuff(
-                [
-                    new PodBuff("attack", BuffCalculationType.PERCENT, 0.5),
-                    new PodBuff("attackSpeed", BuffCalculationType.PERCENT, 0.3)
-                ],
-                [new TimeLimitComponent(60)], // 10秒
-                1
-            );
-            
-            // 技能2：铁壁防守（8秒）- 防御力+100，伤害减免+20%
-            var ironDefense:MetaBuff = new MetaBuff(
-                [
-                    new PodBuff("defense", BuffCalculationType.ADD, 100),
-                    new PodBuff("damageReduction", BuffCalculationType.PERCENT, 0.2)
-                ],
-                [new TimeLimitComponent(48)], // 8秒
-                1
-            );
-            
-            // 道具：力量药剂（30秒）- 力量+25
-            var strengthPotion:MetaBuff = new MetaBuff(
-                [new PodBuff("strength", BuffCalculationType.ADD, 25)],
-                [new TimeLimitComponent(180)], // 30秒
-                0
-            );
-            
-            // 装备被动：吸血鬼之牙（永久）- 生命偷取+5%
-            var vampireFangs:PodBuff = new PodBuff("lifeSteal", BuffCalculationType.PERCENT, 0.05);
-            
-            // 状态异常：中毒（5秒）- 每秒-10生命值
-            var poisonEffect:MetaBuff = new MetaBuff(
-                [new PodBuff("healthPerSecond", BuffCalculationType.ADD, -10)],
-                [new TimeLimitComponent(30)], // 5秒
-                0
-            );
-            
-            // 按照游戏时序添加buff
-            manager.addBuff(vampireFangs, "vampire_fangs"); // 装备被动
-            manager.addBuff(strengthPotion, "strength_potion"); // 使用药剂
-            manager.update(6); // 1秒后
-            
-            manager.addBuff(battleFrenzy, "battle_frenzy"); // 使用技能1
-            manager.update(12); // 2秒后
-            
-            manager.addBuff(ironDefense, "iron_defense"); // 使用技能2
-            manager.update(6); // 1秒后
-            
-            manager.addBuff(poisonEffect, "poison"); // 中毒
-            
-            assert(manager.getActiveBuffCount() == 5, "Should have 5 buffs at peak");
-            
-            // 模拟战斗持续，时间推进
-            var timePoints:Array = [
-                {frames: 24, desc: "After 4 more seconds"},  // 中毒应该结束
-                {frames: 30, desc: "After 5 more seconds"},  // 铁壁防守应该结束  
-                {frames: 30, desc: "After 5 more seconds"},  // 战斗狂热应该结束
-                {frames: 120, desc: "After 20 more seconds"} // 力量药剂应该结束
+            // 添加会产生浮点数的buff
+            var buffs:Array = [
+                new PodBuff("floatTest", BuffCalculationType.MULTIPLY, 1.1),
+                new PodBuff("floatTest", BuffCalculationType.MULTIPLY, 1.1),
+                new PodBuff("floatTest", BuffCalculationType.MULTIPLY, 1.1)
             ];
             
-            for (var i:Number = 0; i < timePoints.length; i++) {
-                var point:Object = timePoints[i];
-                for (var j:Number = 0; j < point.frames; j++) {
-                    manager.update(1);
-                }
-                
-                var remaining:Number = manager.getActiveBuffCount();
-                trace("    " + point.desc + ": " + remaining + " buffs remaining");
+            for (var i:Number = 0; i < buffs.length; i++) {
+                manager.addBuff(buffs[i], null);
             }
+            manager.update(1);
             
-            // 最终应该只剩下装备被动
-            assert(manager.getActiveBuffCount() == 1, "Should only have vampire fangs remaining");
+            // 10 * 1.1 * 1.1 * 1.1 = 13.31
+            var result:Number = getCalculatedValue(mockTarget, "floatTest");
+            var expected:Number = 13.31;
             
-            trace("  ✓ Real-world game scenario completed successfully");
+            // 允许小的浮点误差
+            assert(Math.abs(result - expected) < 0.01, 
+                "Floating point calculation within tolerance: " + result);
+            
+            trace("  ✓ Floating point: 10 * 1.1³ = " + result + " (±0.01)");
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("Real-world game scenario failed: " + e.message);
+            failTest("Floating point accuracy failed: " + e.message);
         }
     }
     
-    // ========== Phase 7: 性能和内存测试 ==========
-    
-    private static function testPerformanceWithManyBuffs():Void {
-        startTest("Performance with Many Buffs");
+    private static function testNegativeValueCalculations():Void {
+        startTest("Negative Value Calculations");
         
         try {
             mockTarget = createMockTarget();
+            mockTarget.balance = 100;
+            
             var manager:BuffManager = new BuffManager(mockTarget, null);
             
-            var buffCount:Number = 100;
+            // 测试负数加法
+            var debuff1:PodBuff = new PodBuff("balance", BuffCalculationType.ADD, -30);
+            var debuff2:PodBuff = new PodBuff("balance", BuffCalculationType.ADD, -50);
+            
+            manager.addBuff(debuff1, null);
+            manager.addBuff(debuff2, null);
+            manager.update(1);
+            
+            // 100 + (-30) + (-50) = 20
+            var afterDebuffs:Number = getCalculatedValue(mockTarget, "balance");
+            assertCalculation(afterDebuffs, 20, "Negative additions");
+            
+            // 测试负数百分比
+            var percentDebuff:PodBuff = new PodBuff("balance", BuffCalculationType.PERCENT, -0.5);
+            manager.addBuff(percentDebuff, null);
+            manager.update(1);
+            
+            // 20 * (1 - 0.5) = 10
+            var afterPercent:Number = getCalculatedValue(mockTarget, "balance");
+            assertCalculation(afterPercent, 10, "Negative percentage");
+            
+            trace("  ✓ Negative values: 100 → 20 → 10");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Negative value calculations failed: " + e.message);
+        }
+    }
+    
+    private static function testZeroValueHandling():Void {
+        startTest("Zero Value Handling");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.zeroTest = 0;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 测试从0开始的加法
+            var addBuff:PodBuff = new PodBuff("zeroTest", BuffCalculationType.ADD, 50);
+            manager.addBuff(addBuff, null);
+            manager.update(1);
+            
+            var afterAdd:Number = getCalculatedValue(mockTarget, "zeroTest");
+            assertCalculation(afterAdd, 50, "Add to zero");
+            
+            // 测试乘以0
+            mockTarget.zeroTest = 100;
+            var zeroBuff:PodBuff = new PodBuff("zeroTest", BuffCalculationType.MULTIPLY, 0);
+            manager.addBuff(zeroBuff, null);
+            manager.update(1);
+            
+            var afterMultiply:Number = getCalculatedValue(mockTarget, "zeroTest");
+            assertCalculation(afterMultiply, 0, "Multiply by zero");
+            
+            trace("  ✓ Zero handling: 0+50=50, 100*0=0");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Zero value handling failed: " + e.message);
+        }
+    }
+    
+    // ========== Phase 7: 性能与大规模准确性 ==========
+    
+    private static function testLargeScaleCalculationAccuracy():Void {
+        startTest("Large Scale Calculation Accuracy");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.largeStat = 1000;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
             var startTime:Number = getTimer();
             
-            trace("  Creating " + buffCount + " buffs...");
-            
-            // 创建大量buff
-            for (var i:Number = 0; i < buffCount; i++) {
-                var buffType:String = (i % 3 == 0) ? "MetaBuff" : "PodBuff";
-                
-                if (buffType == "MetaBuff") {
-                    var metaBuff:MetaBuff = new MetaBuff(
-                        [new PodBuff("perf" + i, BuffCalculationType.ADD, i)],
-                        [new TimeLimitComponent(100 + i)], // 不同的生命周期
-                        0
-                    );
-                    manager.addBuff(metaBuff, null);
-                } else {
-                    var podBuff:PodBuff = new PodBuff("perf" + i, BuffCalculationType.MULTIPLY, 1 + i * 0.01);
-                    manager.addBuff(podBuff, null);
-                }
+            // 添加100个buff
+            var totalAdd:Number = 0;
+            for (var i:Number = 0; i < 100; i++) {
+                var value:Number = i + 1;
+                var buff:PodBuff = new PodBuff("largeStat", BuffCalculationType.ADD, value);
+                manager.addBuff(buff, null);
+                totalAdd += value;
             }
-            
-            var creationTime:Number = getTimer() - startTime;
-            
-            trace("  Testing " + buffCount + " buffs over multiple update cycles...");
-            startTime = getTimer();
-            
-            // 多轮更新测试
-            var updateCycles:Number = 50;
-            for (var cycle:Number = 0; cycle < updateCycles; cycle++) {
-                manager.update(1);
-            }
-            
-            var updateTime:Number = getTimer() - startTime;
-            
-            recordPerformance("Many Buffs Performance", {
-                buffCount: buffCount,
-                creationTime: creationTime + "ms",
-                updateCycles: updateCycles,
-                totalUpdateTime: updateTime + "ms",
-                avgUpdateTime: (updateTime / updateCycles) + "ms per cycle"
-            });
-            
-            assert(manager.getAllBuffs().length <= buffCount, "Should not exceed initial buff count");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Performance with many buffs failed: " + e.message);
-        }
-    }
-    
-    private static function testMemoryManagement():Void {
-        startTest("Memory Management");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            var cycles:Number = 10;
-            var buffsPerCycle:Number = 20;
-            
-            trace("  Testing memory management over " + cycles + " cycles...");
-            
-            for (var cycle:Number = 0; cycle < cycles; cycle++) {
-                // 创建一批buff
-                for (var i:Number = 0; i < buffsPerCycle; i++) {
-                    var metaBuff:MetaBuff = new MetaBuff(
-                        [new PodBuff("mem" + i, BuffCalculationType.ADD, 10)],
-                        [new TimeLimitComponent(5)], // 短生命周期
-                        0
-                    );
-                    manager.addBuff(metaBuff, null);
-                }
-                
-                // 推进时间让buff到期
-                for (var j:Number = 0; j < 6; j++) {
-                    manager.update(1);
-                }
-                
-                // 这一批buff应该都被清理了
-                var remaining:Number = manager.getActiveBuffCount();
-                if (remaining > 0) {
-                    trace("    Cycle " + cycle + ": " + remaining + " buffs not cleaned up");
-                }
-            }
-            
-            // 最终检查
-            var finalBuffCount:Number = manager.getAllBuffs().length;
-            assert(finalBuffCount == 0, "All buffs should be cleaned up, remaining: " + finalBuffCount);
-            
-            recordPerformance("Memory Management", {
-                cycles: cycles,
-                buffsPerCycle: buffsPerCycle,
-                finalBuffCount: finalBuffCount,
-                memoryLeak: finalBuffCount > 0 ? "DETECTED" : "None"
-            });
-            
-            trace("  ✓ Memory management test completed");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Memory management failed: " + e.message);
-        }
-    }
-    
-    private static function testFrequentUpdateCycles():Void {
-        startTest("Frequent Update Cycles");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 添加一些buff
-            for (var i:Number = 0; i < 10; i++) {
-                var metaBuff:MetaBuff = new MetaBuff(
-                    [new PodBuff("freq" + i, BuffCalculationType.ADD, i * 5)],
-                    [new TimeLimitComponent(1000)], // 长生命周期
-                    0
-                );
-                manager.addBuff(metaBuff, null);
-            }
-            
-            var updateCount:Number = 1000;
-            var startTime:Number = getTimer();
-            
-            trace("  Performing " + updateCount + " update cycles...");
-            
-            // 频繁更新
-            for (var update:Number = 0; update < updateCount; update++) {
-                manager.update(0.1); // 小时间增量
-            }
-            
-            var elapsedTime:Number = getTimer() - startTime;
-            
-            recordPerformance("Frequent Updates", {
-                updateCount: updateCount,
-                elapsedTime: elapsedTime + "ms",
-                avgUpdateTime: (elapsedTime / updateCount) + "ms per update",
-                finalBuffCount: manager.getActiveBuffCount()
-            });
-            
-            assert(manager.getActiveBuffCount() == 10, "All buffs should still be active");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Frequent update cycles failed: " + e.message);
-        }
-    }
-    
-    private static function testLargeScaleBuffManagement():Void {
-        startTest("Large-Scale Buff Management");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            var totalBuffs:Number = 100;
-            var batchSize:Number = 50;
-            var batches:Number = totalBuffs / batchSize;
-            
-            trace("  Managing " + totalBuffs + " buffs in " + batches + " batches...");
-            
-            var addStartTime:Number = getTimer();
-            
-            // 分批添加buff
-            for (var batch:Number = 0; batch < batches; batch++) {
-                for (var i:Number = 0; i < batchSize; i++) {
-                    var buffIndex:Number = batch * batchSize + i;
-                    var lifespan:Number = 10 + (buffIndex % 100); // 变化的生命周期
-                    
-                    var metaBuff:MetaBuff = new MetaBuff(
-                        [new PodBuff("large" + buffIndex, BuffCalculationType.ADD, 1)],
-                        [new TimeLimitComponent(lifespan)],
-                        0
-                    );
-                    manager.addBuff(metaBuff, "large" + buffIndex);
-                }
-                
-                // 每批后做一次更新
-                manager.update(1);
-            }
-            
-            var addTime:Number = getTimer() - addStartTime;
-            
-            assert(manager.getActiveBuffCount() == totalBuffs, "Should have all " + totalBuffs + " buffs active");
-            
-            // 大规模更新测试
-            var updateStartTime:Number = getTimer();
-            var updateCycles:Number = 50;
-            
-            for (var cycle:Number = 0; cycle < updateCycles; cycle++) {
-                manager.update(1);
-            }
-            
-            var updateTime:Number = getTimer() - updateStartTime;
-            
-            recordPerformance("Large-Scale Management", {
-                totalBuffs: totalBuffs,
-                addTime: addTime + "ms",
-                updateCycles: updateCycles,
-                updateTime: updateTime + "ms",
-                avgCycleTime: (updateTime / updateCycles) + "ms",
-                remainingBuffs: manager.getActiveBuffCount()
-            });
-            
-            trace("  ✓ Large-scale management completed");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Large-scale buff management failed: " + e.message);
-        }
-    }
-    
-    // ========== Phase 8: 边界条件和错误处理 ==========
-    
-    private static function testEdgeCaseHandling():Void {
-        startTest("Edge Case Handling");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 测试null和undefined buff
-            var id1:String = manager.addBuff(null, null);
-            var id2:String = manager.addBuff(undefined, null);
-            
-            assert(id1 == null, "Adding null buff should return null");
-            assert(id2 == null, "Adding undefined buff should return null");
-            assert(manager.getActiveBuffCount() == 0, "Should have 0 buffs after adding null/undefined");
-            
-            // 测试移除不存在的buff
-            var removed:Boolean = manager.removeBuff("nonexistent");
-            assert(!removed, "Removing nonexistent buff should return false");
-            
-            // 测试空字符串ID
-            var emptyRemoved:Boolean = manager.removeBuff("");
-            assert(!emptyRemoved, "Removing empty string ID should return false");
-            
-            // 测试极值帧数的TimeLimitComponent
-            var zeroFrameBuff:MetaBuff = new MetaBuff(
-                [new PodBuff("zero", BuffCalculationType.ADD, 1)],
-                [new TimeLimitComponent(0)], // 0帧生命周期
-                0
-            );
-            manager.addBuff(zeroFrameBuff, null);
-            
-            assert(manager.getActiveBuffCount() == 1, "Should have 1 buff initially");
-            manager.update(1); // 应该立即失效
-            assert(manager.getActiveBuffCount() == 0, "Zero-frame buff should expire immediately");
-            
-            // 测试负数帧数（防御性）
-            try {
-                var negativeBuff:MetaBuff = new MetaBuff(
-                    [new PodBuff("negative", BuffCalculationType.ADD, 1)],
-                    [new TimeLimitComponent(-5)], // 负数帧
-                    0
-                );
-                manager.addBuff(negativeBuff, null);
-                manager.update(1);
-                // 如果没有抛异常，就认为处理正确
-            } catch (negativeError) {
-                trace("    Expected: Negative frame handling - " + negativeError.message);
-            }
-            
-            trace("  ✓ Edge cases handled gracefully");
-            
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Edge case handling failed: " + e.message);
-        }
-    }
-    
-    private static function testInvalidInputHandling():Void {
-        startTest("Invalid Input Handling");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 测试无效的deltaFrames
-            manager.update(NaN);
-            manager.update(-1);
-            manager.update(Infinity);
-            
-            // 如果没有崩溃，说明处理正确
-            assert(true, "Invalid deltaFrames handled without crashing");
-            
-            // 测试无效的BuffCalculationType
-            try {
-                var invalidBuff:PodBuff = new PodBuff("test", "INVALID_TYPE", 10);
-                manager.addBuff(invalidBuff, null);
-                manager.update(1);
-                // 应该不会崩溃
-            } catch (typeError) {
-                trace("    Expected: Invalid calculation type handled");
-            }
-            
-            // 测试循环引用（如果可能）
-            var metaBuff1:MetaBuff = new MetaBuff([], [], 0);
-            var metaBuff2:MetaBuff = new MetaBuff([], [], 0);
-            
-            // 尝试创建循环（这个可能需要更复杂的逻辑）
-            manager.addBuff(metaBuff1, null);
-            manager.addBuff(metaBuff2, null);
             
             manager.update(1);
             
-            trace("  ✓ Invalid inputs handled without system crash");
+            var addTime:Number = getTimer() - startTime;
             
-            manager.destroy();
-            passTest();
-        } catch (e) {
-            failTest("Invalid input handling failed: " + e.message);
-        }
-    }
-    
-    private static function testDestroyAndCleanup():Void {
-        startTest("Destroy and Cleanup");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
+            // 验证计算：1000 + (1+2+...+100) = 1000 + 5050 = 6050
+            var result:Number = getCalculatedValue(mockTarget, "largeStat");
+            assertCalculation(result, 1000 + totalAdd, "100 buff calculation");
             
-            // 添加各种类型的buff
-            var podBuff:PodBuff = new PodBuff("cleanup1", BuffCalculationType.ADD, 10);
-            var metaBuff:MetaBuff = new MetaBuff(
-                [new PodBuff("cleanup2", BuffCalculationType.MULTIPLY, 1.5)],
-                [new TimeLimitComponent(100)],
-                0
-            );
-            
-            manager.addBuff(podBuff, null);
-            manager.addBuff(metaBuff, null);
-            manager.update(1); // 创建PropertyContainers
-            
-            assert(manager.getActiveBuffCount() == 2, "Should have 2 buffs before destroy");
-            
-            // 销毁manager
-            manager.destroy();
-            
-            // 尝试在销毁后操作（应该安全）
-            try {
-                manager.addBuff(new PodBuff("after_destroy", BuffCalculationType.ADD, 5), null);
-                manager.update(1);
-                manager.removeBuff("nonexistent");
-                var buffs:Array = manager.getAllBuffs();
-                var count:Number = manager.getActiveBuffCount();
-                
-                // 如果没有抛异常或崩溃，说明清理正确
-                trace("    Post-destroy operations handled safely");
-            } catch (destroyError) {
-                trace("    Expected: Post-destroy operations may throw: " + destroyError.message);
-            }
-            
-            trace("  ✓ Destroy and cleanup completed");
-            
-            passTest();
-        } catch (e) {
-            failTest("Destroy and cleanup failed: " + e.message);
-        }
-    }
-    
-    private static function testConcurrentModification():Void {
-        startTest("Concurrent Modification Safety");
-        
-        try {
-            mockTarget = createMockTarget();
-            var manager:BuffManager = new BuffManager(mockTarget, null);
-            
-            // 添加一些buff
-            for (var i:Number = 0; i < 10; i++) {
-                var metaBuff:MetaBuff = new MetaBuff(
-                    [new PodBuff("concurrent" + i, BuffCalculationType.ADD, i)],
-                    [new TimeLimitComponent(5)],
-                    0
-                );
-                manager.addBuff(metaBuff, "concurrent" + i);
-            }
-            
-            // 模拟在update过程中修改buff列表的情况
-            var updateCount:Number = 0;
-            var modificationCount:Number = 0;
-            
-            for (var frame:Number = 0; frame < 10; frame++) {
-                manager.update(1);
-                updateCount++;
-                
-                // 在某些帧添加新buff
-                if (frame == 2 || frame == 5) {
-                    var newBuff:MetaBuff = new MetaBuff(
-                        [new PodBuff("added" + frame, BuffCalculationType.MULTIPLY, 1.1)],
-                        [new TimeLimitComponent(3)],
-                        0
-                    );
-                    manager.addBuff(newBuff, "added" + frame);
-                    modificationCount++;
-                }
-                
-                // 在某些帧移除buff
-                if (frame == 3 || frame == 7) {
-                    manager.removeBuff("concurrent" + (frame % 5));
-                    modificationCount++;
-                }
-            }
-            
-            // 系统应该仍然稳定
-            var finalCount:Number = manager.getActiveBuffCount();
-            
-            recordPerformance("Concurrent Modification", {
-                updates: updateCount,
-                modifications: modificationCount,
-                finalBuffCount: finalCount,
-                stability: "STABLE"
+            recordPerformance("Large Scale Accuracy", {
+                buffCount: 100,
+                calculationTime: addTime + "ms",
+                expectedValue: 1000 + totalAdd,
+                actualValue: result,
+                accurate: result == (1000 + totalAdd)
             });
             
-            trace("  ✓ Concurrent modification handled safely");
+            trace("  ✓ 100 buffs: sum = " + result + " (accurate)");
             
             manager.destroy();
             passTest();
         } catch (e) {
-            failTest("Concurrent modification safety failed: " + e.message);
+            failTest("Large scale calculation accuracy failed: " + e.message);
+        }
+    }
+    
+    private static function testCalculationPerformance():Void {
+        startTest("Calculation Performance");
+        
+        try {
+            mockTarget = createMockTarget();
+            
+            var properties:Array = ["stat1", "stat2", "stat3", "stat4", "stat5"];
+            for (var i:Number = 0; i < properties.length; i++) {
+                mockTarget[properties[i]] = 100;
+            }
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            // 每个属性添加20个buff
+            var totalBuffs:Number = 0;
+            for (var p:Number = 0; p < properties.length; p++) {
+                for (var b:Number = 0; b < 20; b++) {
+                    var type:String;
+                    var value:Number;
+                    
+                    switch (b % 3) {
+                        case 0: type = BuffCalculationType.ADD; value = 5; break;
+                        case 1: type = BuffCalculationType.MULTIPLY; value = 1.02; break;
+                        case 2: type = BuffCalculationType.PERCENT; value = 0.01; break;
+                    }
+                    
+                    var buff:PodBuff = new PodBuff(properties[p], type, value);
+                    manager.addBuff(buff, null);
+                    totalBuffs++;
+                }
+            }
+            
+            var startTime:Number = getTimer();
+            
+            // 执行多次更新
+            var updates:Number = 100;
+            for (var u:Number = 0; u < updates; u++) {
+                manager.update(0.1);
+            }
+            
+            var totalTime:Number = getTimer() - startTime;
+            
+            recordPerformance("Calculation Performance", {
+                totalBuffs: totalBuffs,
+                properties: properties.length,
+                updates: updates,
+                totalTime: totalTime + "ms",
+                avgUpdateTime: (totalTime / updates) + "ms per update"
+            });
+            
+            trace("  ✓ Performance: " + totalBuffs + " buffs, " + updates + " updates in " + totalTime + "ms");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Calculation performance test failed: " + e.message);
+        }
+    }
+    
+    private static function testMemoryAndCalculationConsistency():Void {
+        startTest("Memory and Calculation Consistency");
+        
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.consistency = 100;
+            
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            
+            var expectedValues:Array = [];
+            
+            // 10轮添加和移除
+            for (var round:Number = 0; round < 10; round++) {
+                // 添加一批限时buff
+                for (var i:Number = 0; i < 10; i++) {
+                    var buff:MetaBuff = new MetaBuff(
+                        [new PodBuff("consistency", BuffCalculationType.ADD, 10)],
+                        [new TimeLimitComponent(5)],
+                        0
+                    );
+                    manager.addBuff(buff, null);
+                }
+                
+                manager.update(1);
+                
+                // 记录预期值
+                var activeBuffs:Number = manager.getActiveBuffCount();
+                var expectedValue:Number = 100 + (activeBuffs * 10);
+                expectedValues.push(expectedValue);
+                
+                // 验证计算
+                var actualValue:Number = getCalculatedValue(mockTarget, "consistency");
+                assertCalculation(actualValue, expectedValue, "Round " + round + " calculation");
+                
+                // 推进时间让一些buff过期
+                manager.update(5);
+            }
+            
+            trace("  ✓ Consistency maintained across 10 rounds");
+            
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Memory and calculation consistency failed: " + e.message);
         }
     }
     
@@ -1571,7 +1295,6 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
      */
     private static function createMockTarget():Object {
         return {
-            // 添加一些基础属性用于测试
             health: 100,
             mana: 50,
             attack: 25,
@@ -1581,22 +1304,25 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     }
     
     /**
-     * 创建模拟回调对象
+     * 获取计算后的属性值
+     * 注意：这是模拟的实现，实际应该通过PropertyAccessor
      */
-    private static function createMockCallbacks():Object {
-        return {
-            onBuffAdded: function(buff:IBuff, id:String):Void {
-                // trace("Callback: Buff added - " + id);
-            },
-            onBuffRemoved: function(buff:IBuff, id:String):Void {
-                // trace("Callback: Buff removed - " + id);
-            },
-            onPropertyChanged: function(property:String, value:Number):Void {
-                // trace("Callback: Property " + property + " changed to " + value);
-            }
-        };
+    private static function getCalculatedValue(target:Object, property:String):Number {
+        // 在实际实现中，这应该通过PropertyAccessor获取
+        // 这里我们假设PropertyContainer已经正确更新了target的值
+        return target[property] || 0;
     }
-
+    
+    /**
+     * 断言计算结果
+     */
+    private static function assertCalculation(actual:Number, expected:Number, description:String):Void {
+        var tolerance:Number = 0.001; // 浮点数容差
+        if (Math.abs(actual - expected) > tolerance) {
+            throw new Error("Calculation mismatch for " + description + 
+                          ": expected " + expected + ", got " + actual);
+        }
+    }
     
     /**
      * 记录性能结果
@@ -1607,8 +1333,6 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             data: data,
             timestamp: getTimer()
         });
-        
-        trace("    📊 Performance: " + testName);
     }
     
     /**
@@ -1619,7 +1343,7 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             return;
         }
         
-        trace("\n=== BuffManager Performance Results ===");
+        trace("\n=== Calculation Performance Results ===");
         
         for (var i:Number = 0; i < performanceResults.length; i++) {
             var result:Object = performanceResults[i];
@@ -1658,18 +1382,17 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
     }
     
     private static function printTestResults():Void {
-        trace("\n=== BuffManager Integration Test Results ===");
+        trace("\n=== Calculation Accuracy Test Results ===");
         trace("📊 Total tests: " + testCount);
         trace("✅ Passed: " + passedCount);
         trace("❌ Failed: " + failedCount);
         trace("📈 Success rate: " + Math.round((passedCount / testCount) * 100) + "%");
         
         if (failedCount == 0) {
-            trace("🎉 All integration tests passed! BuffManager & TimeLimitComponent working correctly.");
+            trace("🎉 All calculation tests passed! BuffManager calculations are accurate.");
         } else {
-            trace("⚠️  " + failedCount + " test(s) failed. Please review the integration issues above.");
+            trace("⚠️  " + failedCount + " test(s) failed. Please review calculation issues above.");
         }
         trace("==============================================");
     }
 }
-

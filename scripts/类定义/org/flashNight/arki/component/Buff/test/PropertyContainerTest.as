@@ -1135,7 +1135,7 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             // 活跃 buff
             var b1:PodBuff = new PodBuff("luck", BuffCalculationType.ADD, 3);
             // 非活跃 buff 简易实现
-            var inactiveBuff:InactiveBuff = new InactiveBuff();
+            var inactiveBuff:InactiveBuff = new InactiveBuff("luck", BuffCalculationType.ADD, 3);
             container.addBuff(b1);
             container.addBuff(inactiveBuff);
 

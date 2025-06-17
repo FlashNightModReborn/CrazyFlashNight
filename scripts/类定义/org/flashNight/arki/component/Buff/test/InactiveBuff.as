@@ -3,11 +3,15 @@
  * 非激活Buff测试辅助类
  * 用于测试PropertyContainer对非激活buff的处理
  */
-class org.flashNight.arki.component.Buff.test.InactiveBuff extends BaseBuff {
+class org.flashNight.arki.component.Buff.test.InactiveBuff extends PodBuff {
     private var _type:String = "InactiveBuff";
     
-    public function InactiveBuff() {
-        super();
+    public function InactiveBuff(
+        targetProperty:String, 
+        calculationType:String,
+        value:Number
+    ) {
+        super(targetProperty, calculationType, value);
     }
     
     public function isActive():Boolean {

@@ -74,7 +74,7 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     // =========================================================================
     
     /**
-     * 核心计算方法 - 计算包含所有buff的最终值
+     * 核心计算方法 - 只处理 PodBuff
      */
     private function _computeFinalValue():Number {
         if (!this._isDirty) {
@@ -83,14 +83,18 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
         
         this._calculator.reset();
         
-        // [优化] 使用反向while循环，效率更高
         var i:Number = this._buffs.length;
         var buff:IBuff;
         while (i--) {
             buff = this._buffs[i];
             if (buff && buff.isActive()) {
-                // [优化] 复用_buffContext实例
-                buff.applyEffect(this._calculator, this._buffContext);
+                // 双重保险：即使通过了 addBuff 的检查，这里再次确认
+                if (buff.isPod()) {
+                    buff.applyEffect(this._calculator, this._buffContext);
+                } else {
+                    // 这种情况理论上不应该发生
+                    trace("[PropertyContainer] 错误：发现非 PodBuff 在计算中: " + buff.getType());
+                }
             }
         }
         
@@ -132,13 +136,30 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     // =========================================================================
     
     /**
-     * 添加buff
+     * 添加buff - 只接受 PodBuff
+     * @param buff 要添加的Buff
      */
     public function addBuff(buff:IBuff):Void {
-        if (buff) {
-            this._buffs.push(buff);
-            this._markDirtyAndInvalidate();
+        if (!buff) return;
+        
+        // 关键验证：只接受 PodBuff
+        if (!buff.isPod()) {
+            trace("[PropertyContainer] 警告：尝试添加非 PodBuff 类型: " + buff.getType() + 
+                " 到属性 " + this._propertyName + "，已拒绝");
+            return;
         }
+        
+        // 额外验证：确保 PodBuff 影响的是正确的属性
+        var podBuff:PodBuff = PodBuff(buff);
+        if (podBuff.getTargetProperty() != this._propertyName) {
+            trace("[PropertyContainer] 警告：PodBuff 目标属性不匹配。" +
+                " 期望: " + this._propertyName + 
+                ", 实际: " + podBuff.getTargetProperty());
+            return;
+        }
+        
+        this._buffs.push(buff);
+        this._markDirtyAndInvalidate();
     }
     
     /**
@@ -160,13 +181,17 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
     /**
      * 移除所有buff
      */
-    public function clearBuffs():Void {
-        // [优化] 使用while+pop的高效方式清空数组并销毁buff
-        while (this._buffs.length > 0) {
-            this._buffs.pop().destroy();
+    public function clearBuffs(shouldDestroy:Boolean):Void {
+        if (shouldDestroy == undefined) shouldDestroy = true;
+
+        if (shouldDestroy) {
+            while (_buffs.length > 0) _buffs.pop().destroy();
+        } else {
+            _buffs.length = 0;              // 只清列表，保留对象生命周期
         }
-        this._markDirtyAndInvalidate();
+        _markDirtyAndInvalidate();
     }
+
     
     // =========================================================================
     // 公共接口 - 值管理
