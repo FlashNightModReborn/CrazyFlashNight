@@ -167,7 +167,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
     private function _updateMetaBuffs(deltaFrames:Number):Void {
         for (var i:Number = 0; i < this._buffs.length; i++) {
             var buff:IBuff = this._buffs[i];
-            if (buff instanceof MetaBuff) {
+            if (!buff.isPod()) {
                 var metaBuff:MetaBuff = MetaBuff(buff);
                 // MetaBuff的update方法会处理自身组件的生命周期
                 metaBuff.update(deltaFrames);
@@ -232,20 +232,45 @@ class org.flashNight.arki.component.Buff.BuffManager {
     
     /**
      * 获取Buff影响的属性列表
+     * 递归处理MetaBuff的子Buff
      */
     private function _getAffectedProperties(buff:IBuff):Array {
         var properties:Array = [];
+        var propertyMap:Object = {}; // 用于去重
         
-        if (buff instanceof PodBuff) {
-            var podBuff:PodBuff = PodBuff(buff);
-            properties.push(podBuff.getTargetProperty());
-        } else if (buff instanceof MetaBuff) {
-            // MetaBuff通过子Buff影响属性
-            // 这里需要遍历其子Buff
-            // 暂时简化处理
+        // 递归收集属性
+        this._collectAffectedProperties(buff, propertyMap);
+        
+        // 转换为数组
+        for (var prop:String in propertyMap) {
+            properties.push(prop);
         }
         
         return properties;
+    }
+
+    /**
+     * 递归收集受影响的属性
+     * @param buff 要检查的Buff
+     * @param propertyMap 属性映射表（用于去重）
+     */
+    private function _collectAffectedProperties(buff:IBuff, propertyMap:Object):Void {
+        if (!buff || !buff.isActive()) return;
+        
+        if (buff.isPod()) {
+            var podBuff:PodBuff = PodBuff(buff);
+            propertyMap[podBuff.getTargetProperty()] = true;
+        } else {
+            var metaBuff:MetaBuff = MetaBuff(buff);
+            // 递归处理所有子Buff
+            var childCount:Number = metaBuff.getChildBuffCount();
+            for (var i:Number = 0; i < childCount; i++) {
+                var childBuff:IBuff = metaBuff.getChildBuff(i); // 需要在MetaBuff中添加此方法
+                if (childBuff) {
+                    this._collectAffectedProperties(childBuff, propertyMap);
+                }
+            }
+        }
     }
     
     /**
@@ -278,6 +303,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
     
     /**
      * 重新分配Buff到PropertyContainer
+     * 确保MetaBuff被正确处理
      */
     private function _redistributeBuffs():Void {
         // 清空所有PropertyContainer的Buff
@@ -288,28 +314,41 @@ class org.flashNight.arki.component.Buff.BuffManager {
             }
         }
         
-        // 重新添加所有激活的Buff
+        // 重新添加所有激活的Buff（包括MetaBuff）
         for (var i:Number = 0; i < this._buffs.length; i++) {
             var buff:IBuff = this._buffs[i];
             if (buff && buff.isActive()) {
                 this._addBuffToContainers(buff);
             }
         }
+        
+        // 触发所有属性的重新计算
+        for (var prop:String in this._propertyContainers) {
+            var pc:PropertyContainer = this._propertyContainers[prop];
+            if (pc) {
+                pc.forceRecalculate();
+            }
+        }
     }
     
     /**
      * 将Buff添加到对应的PropertyContainer
+     * 现在正确处理MetaBuff
      */
     private function _addBuffToContainers(buff:IBuff):Void {
-        if (buff instanceof PodBuff) {
-            var podBuff:PodBuff = PodBuff(buff);
-            var propName:String = podBuff.getTargetProperty();
+        if (!buff || !buff.isActive()) return;
+        
+        // 获取此Buff影响的所有属性
+        var affectedProperties:Array = this._getAffectedProperties(buff);
+        
+        // 将Buff添加到所有相关的PropertyContainer
+        for (var i:Number = 0; i < affectedProperties.length; i++) {
+            var propName:String = affectedProperties[i];
             var container:PropertyContainer = this._propertyContainers[propName];
             if (container) {
                 container.addBuff(buff);
             }
         }
-        // MetaBuff的处理...
     }
     
     /**

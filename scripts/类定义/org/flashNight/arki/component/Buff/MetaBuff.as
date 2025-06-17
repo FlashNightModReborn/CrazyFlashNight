@@ -121,6 +121,13 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     public function isActive():Boolean {
         return this._isActive;
     }
+
+    /**
+     * 重写isPod方法
+     */
+    public function isPod():Boolean {
+        return false;
+    }
     
     /**
      * 手动停用Buff
@@ -140,13 +147,21 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     }
     
     /**
-     * 动态添加子Buff
+     * 动态添加子 Buff（只接受 PodBuff）
      */
     public function addChildBuff(buff:IBuff):Void {
-        if (buff && this._isActive) {
-            this._childBuffs.push(buff);
+        if (!buff || !this._isActive) return;
+
+        if (!buff.isPod()) {
+            // 统一在这里拦截，避免非 PodBuff 直接进入计算器
+            trace("[MetaBuff] 只允许添加 PodBuff，忽略非法类型 → " + buff);
+            return;
         }
+        this._childBuffs.push(buff);
     }
+
+    
+
     
     /**
      * 获取优先级（供BuffManager排序用）

@@ -54,6 +54,16 @@ class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
     }
 
     /**
+     * IBuff接口实现：是否是简单数值类型。
+     * 默认实现为true。数值计算交给podbuff实现。
+     * 对于非PodBuff，数值计算通过传递PodBuff实现
+     * 对于生命周期由容器管理的模型，这个默认实现是合适的。
+     */
+    public function isPod():Boolean {
+        return true;
+    }
+
+    /**
      * IBuff接口实现：销毁。
      * 基类提供一个空实现，如果子类需要清理资源（如数据容器），则应重写。
      */

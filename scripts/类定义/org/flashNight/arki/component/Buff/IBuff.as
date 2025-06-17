@@ -22,6 +22,11 @@ interface org.flashNight.arki.component.Buff.IBuff {
      * 检查Buff是否仍然有效
      */
     function isActive():Boolean;
+
+    /**
+     * 是否是简单数值类型
+     */
+    function isPod():Boolean;
     
     /**
      * 销毁Buff，清理资源
