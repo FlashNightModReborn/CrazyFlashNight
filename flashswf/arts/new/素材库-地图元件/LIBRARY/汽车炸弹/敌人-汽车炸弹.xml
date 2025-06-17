@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="汽车炸弹/敌人-汽车炸弹" itemID="683affa3-00000226" linkageExportForAS="true" linkageIdentifier="敌人-汽车炸弹" lastModified="1748704798" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="汽车炸弹/敌人-汽车炸弹" itemID="683affa3-00000226" linkageExportForAS="true" linkageIdentifier="敌人-汽车炸弹" lastModified="1750183556" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="敌人-汽车炸弹" currentFrame="3">
+    <DOMTimeline name="敌人-汽车炸弹" currentFrame="12">
       <layers>
         <DOMLayer name="label" color="#FF800A" autoNamed="false">
           <frames>
@@ -68,7 +68,7 @@ this.锁定方向 = true;
             </DOMFrame>
             <DOMFrame index="5" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="汽车炸弹/爆了" name="man" centerPoint3DX="-12.4" centerPoint3DY="-34.65">
+                <DOMSymbolInstance libraryItemName="汽车炸弹/爆了" name="man" selected="true" centerPoint3DX="-12.4" centerPoint3DY="-34.65">
                   <matrix>
                     <Matrix a="-0.340606689453125" d="0.340606689453125" tx="34.25" ty="-30.6"/>
                   </matrix>

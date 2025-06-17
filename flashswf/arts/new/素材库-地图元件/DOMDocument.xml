@@ -21,7 +21,7 @@
           <DOMFolderItem name="歌留多" itemID="670cf9e4-000003c2"/>
           <DOMFolderItem name="互动提示" itemID="6839711f-00006add"/>
           <DOMFolderItem name="路障与通关门" itemID="6826dd3d-00000322"/>
-          <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc"/>
+          <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc" isExpanded="true"/>
           <DOMFolderItem name="汽车炸弹/变形动画" itemID="683b12eb-00000b92"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
           <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a"/>
@@ -139,7 +139,7 @@
           <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1749967682"/>
           <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1749967673"/>
           <Include href="汽车炸弹/zsgdrxtjyuh.xml" itemIcon="1" loadImmediate="false" itemID="4b4a8548-00000123" lastModified="1264754687"/>
-          <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1748758274"/>
+          <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1750186169"/>
           <Include href="汽车炸弹/变形动画/部件1.xml" itemIcon="1" loadImmediate="false" itemID="683be9a4-00000a62" lastModified="1748756900"/>
           <Include href="汽车炸弹/变形动画/部件2.xml" itemIcon="1" loadImmediate="false" itemID="683be9a6-00000a63" lastModified="1748756902"/>
           <Include href="汽车炸弹/变形动画/部件3.xml" itemIcon="1" loadImmediate="false" itemID="683be9a8-00000a64" lastModified="1748756904"/>
@@ -148,9 +148,10 @@
           <Include href="汽车炸弹/车轮1.xml" itemIcon="1" loadImmediate="false" itemID="6809392c-000008ad" lastModified="1745436711"/>
           <Include href="汽车炸弹/车身.xml" itemIcon="1" loadImmediate="false" itemID="683b0f97-00000a78" lastModified="1748701079"/>
           <Include href="汽车炸弹/车身 变形.xml" itemIcon="1" loadImmediate="false" itemID="683b0f9f-00000a7e" lastModified="1748701899"/>
-          <Include href="汽车炸弹/登场.xml" loadImmediate="false" itemID="683b09e3-000002d4" lastModified="1748758415"/>
-          <Include href="汽车炸弹/敌人-汽车炸弹.xml" itemID="683affa3-00000226" lastModified="1748704798"/>
+          <Include href="汽车炸弹/登场.xml" loadImmediate="false" itemID="683b09e3-000002d4" lastModified="1750182937"/>
+          <Include href="汽车炸弹/敌人-汽车炸弹.xml" itemID="683affa3-00000226" lastModified="1750183556"/>
           <Include href="汽车炸弹/空中小火焰爆炸.xml" itemIcon="1" loadImmediate="false" itemID="65742c41-000007ce" lastModified="1748698817"/>
+          <Include href="汽车炸弹/汽车炸弹闪光提示.xml" loadImmediate="false" itemID="6851b42a-0000151f" lastModified="1750185002"/>
           <Include href="生存战-迷之盔甲君.xml" itemID="65c24b22-00000ce9" lastModified="1740850734"/>
           <Include href="生存战素材/Symbol 2.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cbd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 7.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cc1" lastModified="1699960314"/>
@@ -1167,25 +1168,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="375782" publishTime="1749578340"/>
-          <PublishItem publishSize="373484" publishTime="1749564537"/>
-          <PublishItem publishSize="373483" publishTime="1749564338"/>
-          <PublishItem publishSize="349559" publishTime="1748952625"/>
-          <PublishItem publishSize="349558" publishTime="1748952577"/>
-          <PublishItem publishSize="349558" publishTime="1748952531"/>
-          <PublishItem publishSize="349557" publishTime="1748952499"/>
-          <PublishItem publishSize="349556" publishTime="1748952453"/>
-          <PublishItem publishSize="349512" publishTime="1748952332"/>
-          <PublishItem publishSize="349494" publishTime="1748952270"/>
-          <PublishItem publishSize="349484" publishTime="1748952191"/>
-          <PublishItem publishSize="349469" publishTime="1748952101"/>
-          <PublishItem publishSize="349467" publishTime="1748952034"/>
-          <PublishItem publishSize="349447" publishTime="1748951980"/>
-          <PublishItem publishSize="349407" publishTime="1748951919"/>
-          <PublishItem publishSize="349398" publishTime="1748951810"/>
-          <PublishItem publishSize="349156" publishTime="1748943920"/>
-          <PublishItem publishSize="343717" publishTime="1748942816"/>
-          <PublishItem publishSize="343717" publishTime="1748942729"/>
-          <PublishItem publishSize="343884" publishTime="1748942633"/>
+          <PublishItem publishSize="352310" publishTime="1750186013"/>
+          <PublishItem publishSize="352299" publishTime="1750185933"/>
+          <PublishItem publishSize="352290" publishTime="1750185918"/>
+          <PublishItem publishSize="352279" publishTime="1750185830"/>
+          <PublishItem publishSize="352221" publishTime="1750185736"/>
+          <PublishItem publishSize="352231" publishTime="1750185720"/>
+          <PublishItem publishSize="352202" publishTime="1750185655"/>
+          <PublishItem publishSize="352165" publishTime="1750185509"/>
+          <PublishItem publishSize="356261" publishTime="1750185499"/>
+          <PublishItem publishSize="352234" publishTime="1750185368"/>
+          <PublishItem publishSize="352316" publishTime="1750185244"/>
+          <PublishItem publishSize="352277" publishTime="1750185118"/>
+          <PublishItem publishSize="359263" publishTime="1750184731"/>
+          <PublishItem publishSize="359264" publishTime="1750184572"/>
+          <PublishItem publishSize="359261" publishTime="1750184303"/>
+          <PublishItem publishSize="359253" publishTime="1750184110"/>
+          <PublishItem publishSize="359136" publishTime="1750183758"/>
+          <PublishItem publishSize="376364" publishTime="1750183429"/>
+          <PublishItem publishSize="376358" publishTime="1750183284"/>
+          <PublishItem publishSize="376356" publishTime="1750183218"/>
      </publishHistory>
 </DOMDocument>

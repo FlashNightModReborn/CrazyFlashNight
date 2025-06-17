@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="汽车炸弹/登场" itemID="683b09e3-000002d4" lastModified="1748758415" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="汽车炸弹/登场" itemID="683b09e3-000002d4" lastModified="1750182937" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="登场" currentFrame="1">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -23,7 +23,7 @@
             <DOMFrame index="1" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.攻击时移动 = _root.敌人二级函数.攻击时移动;
-this.speed = 12;]]></script>
+this.speed = 13;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -35,7 +35,7 @@ this.speed = 12;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
