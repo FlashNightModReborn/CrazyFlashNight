@@ -62,11 +62,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
           <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
      </fonts>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
@@ -843,7 +843,7 @@
           <Include href="sprite/Symbol 559.xml" loadImmediate="false" itemID="6577b699-00000ac3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 561.xml" loadImmediate="false" itemID="6577b699-00000ac4" lastModified="1702343951"/>
           <Include href="sprite/Symbol 563.xml" loadImmediate="false" itemID="6577b699-00000ac5" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1750094872"/>
+          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1750163137"/>
           <Include href="sprite/Symbol 618.xml" loadImmediate="false" itemID="6577b699-00000add" lastModified="1720908276"/>
           <Include href="sprite/Symbol 619.xml" loadImmediate="false" itemID="6577b699-00000ade" lastModified="1720908276"/>
           <Include href="sprite/Symbol 620.xml" loadImmediate="false" itemID="6577b699-00000adf" lastModified="1702343951"/>
@@ -1877,6 +1877,16 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2946422" publishTime="1750162859"/>
+          <PublishItem publishSize="2946390" publishTime="1750162595"/>
+          <PublishItem publishSize="2946397" publishTime="1750162464"/>
+          <PublishItem publishSize="2946391" publishTime="1750162403"/>
+          <PublishItem publishSize="2946387" publishTime="1750162212"/>
+          <PublishItem publishSize="2946387" publishTime="1750162152"/>
+          <PublishItem publishSize="2946396" publishTime="1750162081"/>
+          <PublishItem publishSize="2946198" publishTime="1750161175"/>
+          <PublishItem publishSize="2946033" publishTime="1750160354"/>
+          <PublishItem publishSize="2946031" publishTime="1750160164"/>
           <PublishItem publishSize="2946039" publishTime="1750098808"/>
           <PublishItem publishSize="2946039" publishTime="1750098717"/>
           <PublishItem publishSize="2946046" publishTime="1750098489"/>
@@ -1887,15 +1897,5 @@
           <PublishItem publishSize="2946044" publishTime="1750097545"/>
           <PublishItem publishSize="2945897" publishTime="1750096534"/>
           <PublishItem publishSize="2945903" publishTime="1750095775"/>
-          <PublishItem publishSize="2945669" publishTime="1750094916"/>
-          <PublishItem publishSize="2945677" publishTime="1750094366"/>
-          <PublishItem publishSize="2945595" publishTime="1750094088"/>
-          <PublishItem publishSize="2945598" publishTime="1750075907"/>
-          <PublishItem publishSize="2945576" publishTime="1750075451"/>
-          <PublishItem publishSize="2945573" publishTime="1750074919"/>
-          <PublishItem publishSize="2945233" publishTime="1750073759"/>
-          <PublishItem publishSize="2945197" publishTime="1750072800"/>
-          <PublishItem publishSize="2945197" publishTime="1750072700"/>
-          <PublishItem publishSize="2945176" publishTime="1750012844"/>
      </publishHistory>
 </DOMDocument>
