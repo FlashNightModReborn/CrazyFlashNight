@@ -16,6 +16,7 @@ class org.flashNight.arki.component.Buff.Component.TimeLimitComponent
     
     public function update(host:IBuff, deltaFrames:Number):Boolean {
         _remain -= deltaFrames;
+        // _root.发布消息(_remain)
         // 到时：通知 BuffManager 移除自身
         return _remain > 0;
     }

@@ -45,6 +45,8 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
      */
     public function applyEffect(calc:IBuffCalculator, ctx:BuffContext):Void {
         if (!this._isActive) return;
+
+        _root.发布消息("meta applyEffect");
         
         for (var i:Number = 0; i < this._childBuffs.length; i++) {
             var childBuff:IBuff = this._childBuffs[i];
@@ -61,6 +63,8 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
      */
     public function update(deltaFrames:Number):Boolean {
         if (!_isActive) return false;
+
+        // _root.发布消息("meta update");
 
         var compsAlive:Boolean = false;
         for (var i:Number = _components.length - 1; i >= 0; i--) {

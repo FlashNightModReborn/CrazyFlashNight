@@ -58,6 +58,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     public static function onHeroUpdate(target:MovieClip):Void {
         ImpactUpdater.updateHero(target);
         InformationComponentUpdater.update(target);
+        target.buffManager.update(4);
         WatchDogUpdater.update(target);
     }
 

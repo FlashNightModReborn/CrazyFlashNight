@@ -60,7 +60,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         if (buffId) {
             this.removeBuff(buffId);
         }
-        
+
         this._buffs.push(buff);
         this._idMap[finalId] = buff;
         this._markDirty();
@@ -111,6 +111,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
      */
     public function update(deltaFrames:Number):Void {
         this._updateCounter++;
+        // _root.发布消息("buffManager:" + deltaFrames)
         
         // 1. 处理待移除的Buff
         this._processPendingRemovals();

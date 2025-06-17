@@ -22,10 +22,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
                     }
                 }
             );
-            //_root.发布消息(target.hp);
-            //target.buffManager.addBuff(new PodBuff("hp", BuffCalculationType.ADD, 123454));
-            target.buffManager.update(1); // 强制更新一次以防万一
-            //_root.发布消息(target.hp);
+            /*
+            var podBuff:PodBuff = new PodBuff("hp", BuffCalculationType.ADD, 1500);
+            var childBuffs:Array = [podBuff];
+            
+            var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(150); // 5S生命周期
+            var components:Array = [timeLimitComp];
+            
+            var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
+            target.buffManager.addBuff(metaBuff);
+            */
+            
         }
+        target.buffManager.update(0); // 强制更新一次以防万一
     }
 }
