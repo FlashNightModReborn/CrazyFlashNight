@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1750224554" lastUniqueIdentifier="91">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1750229053" lastUniqueIdentifier="91">
   <timeline>
-    <DOMTimeline name="加载进度条" currentFrame="10">
+    <DOMTimeline name="加载进度条" currentFrame="14">
       <layers>
         <DOMLayer name="图层 6" color="#808080">
           <frames>
@@ -984,11 +984,11 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="380" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="53.75" ty="363.75"/>
+                    <Matrix tx="54" ty="363.75"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>其他资源（</characters>
+                      <characters>其他图像资源（</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
@@ -1016,13 +1016,13 @@
                     <GlowFilter color="#000000" strength="10"/>
                   </filters>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="377" height="15.55" includeOutlines="true" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="device" width="377" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="50" ty="393.25"/>
+                    <Matrix tx="54" ty="393.25"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters> scripts</characters>
+                      <characters>scripts</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
@@ -1062,13 +1062,13 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>人物数据（</characters>
+                      <characters>音频（</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>10K</characters>
+                      <characters>316M</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
