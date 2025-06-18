@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1750229053" lastUniqueIdentifier="91">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1750233630" lastUniqueIdentifier="91">
   <timeline>
-    <DOMTimeline name="加载进度条" currentFrame="14">
+    <DOMTimeline name="加载进度条" currentFrame="32">
       <layers>
         <DOMLayer name="图层 6" color="#808080">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF">
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -241,19 +241,7 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>读取副本任务场景（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>2M</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>左右）</characters>
+                      <characters>读取副本任务场景</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -293,7 +281,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="2" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="device" width="189.8" height="15.55" includeOutlines="true" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="device" width="189.8" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="590.15" ty="318.6"/>
                   </matrix>
@@ -322,19 +310,7 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>读取外部资源（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>8M</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>左右）</characters>
+                      <characters>读取外部资源</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -374,9 +350,9 @@
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="device" width="187.75" height="15.55" includeOutlines="true" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="device" width="187.75" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="306.15" ty="169.65"/>
+                    <Matrix tx="590.15" ty="318.6"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -397,9 +373,9 @@
             </DOMFrame>
             <DOMFrame index="31" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="device" width="187.75" height="15.55" includeOutlines="true" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="device" width="187.75" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="306.15" ty="169.65"/>
+                    <Matrix tx="590.15" ty="318.6"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -422,7 +398,7 @@
               <elements>
                 <DOMStaticText fontRenderingMode="device" width="187.75" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="306.15" ty="169.65"/>
+                    <Matrix tx="590.15" ty="318.6"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -780,7 +756,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -806,7 +782,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="20" keyMode="9728">
+            <DOMFrame index="10" duration="23" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="684" centerPoint3DY="338.85">
                   <matrix>
@@ -1016,7 +992,7 @@
                     <GlowFilter color="#000000" strength="10"/>
                   </filters>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="device" width="377" height="15.55" includeOutlines="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="377" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="54" ty="393.25"/>
                   </matrix>
@@ -1093,300 +1069,6 @@
                 <DOMSymbolInstance libraryItemName="shape/Symbol 321" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="19.1974792480469" d="0.300003051757813" tx="411.45" ty="469.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="30" duration="3" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="device" width="388.95" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="18" ty="245.75"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>预加载总体进度</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="383" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="54" ty="275.25"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>主文件（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>5M</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>）</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="380" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="54" ty="304.75"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>物品数据</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>300K</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>）</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="380" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="54" ty="334.25"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>场景资源</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>8M</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>）</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="380" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="54" ty="363.75"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>外部资源（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>8M</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>）</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="377" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="54" ty="393.25"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>游戏代码（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>1K</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>）</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="371" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="54" ty="422.75"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>人物数据（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>10K</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>）</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 321" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="19.1974792480469" d="0.300003051757813" tx="411.45" ty="469.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="400" centerPoint3DY="189.9">
-                  <matrix>
-                    <Matrix tx="295.7" ty="144.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#666666"/>
-                    <DropShadowFilter angle="44.9992520943067" distance="3" quality="3" strength="0.5"/>
-                  </filters>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 294" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="308.35" ty="155.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
