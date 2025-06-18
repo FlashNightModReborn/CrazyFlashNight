@@ -40,6 +40,20 @@ _root.mydata数据组包 = function(){
     // var 仓库储存数据 = _root.仓库栏;
     var 健身储存数据 = [_root.全局健身HP加成,_root.全局健身MP加成,_root.全局健身空攻加成,_root.全局健身防御加成,_root.全局健身内力加成];
 
+     // 获取当前时间并格式化为字符串
+    var now:Date = new Date();
+    var 年 = now.getFullYear();
+    var 月 = now.getMonth() + 1;
+    var 日 = now.getDate();
+    var 时 = now.getHours();
+    var 分 = now.getMinutes();
+    var 秒 = now.getSeconds();
+
+    //  补零函数
+    function pad(n) { return (n < 10) ? "0" + n : n; }
+
+    var lastSaved:String = 年 + "-" + pad(月) + "-" + pad(日) + " " + pad(时) + ":" + pad(分) + ":" + pad(秒);
+
     var mydata = {};
     mydata.version = "2.6";
     mydata[0] = 主角储存数据;
@@ -53,8 +67,10 @@ _root.mydata数据组包 = function(){
     mydata.inventory = 物品储存数据;
     mydata.collection = 收集品储存数据;
     mydata.infrastructure = _root.基建系统.infrastructure;
+    mydata.lastSaved = lastSaved;
 
     _root.mydata = mydata;
+    
     // _root.playerData[_root.playerCurrent] = mydata;
 }
 
@@ -180,7 +196,7 @@ _root.将中文数据数字化 = function(中文数据, 对比数据){
 */
 
 _root.本地存盘 = function() {
-    var mysave = SharedObject.getLocal("crazyflasher7_saves");
+    var mysave = SharedObject.getLocal(_root.savePath);
    
     // Store the actual game data in the SharedObject
     mysave.data[存盘名] = _root.mydata;
@@ -225,7 +241,7 @@ _root.本地存盘 = function() {
 
 
 _root.读取本地存盘 = function(){
-    var 本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+    var 本地loadgame = SharedObject.getLocal(_root.savePath);
     _root.mydata = 本地loadgame.data[存盘名];
     //先检查存盘是否异常
     ServerManager.getInstance().sendServerMessage("检查存盘异常");
@@ -371,7 +387,7 @@ _root.读取存盘 = function()
 }
 
 _root.是否存过盘 = function(){
-    var 本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+    var 本地loadgame = SharedObject.getLocal(_root.savePath);
     var tmp主角储存数据 = 本地loadgame.data[存盘名][0];
     var tmp角色名 = tmp主角储存数据[0];
     if(tmp角色名 == undefined) return false;
@@ -393,7 +409,7 @@ _root.新建角色 = function(){
 }
 
 _root.删除存盘 = function(){
-    var mysave = SharedObject.getLocal("crazyflasher7_saves");
+    var mysave = SharedObject.getLocal(_root.savePath);
     mysave.clear();
 }
 

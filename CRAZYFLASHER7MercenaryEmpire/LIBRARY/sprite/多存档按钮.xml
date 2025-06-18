@@ -1,18 +1,32 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/确认按钮" itemID="659d4707-000039c7" lastModified="1740332618">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/多存档按钮" itemID="68521ee7-00022a5f" lastModified="1750220498">
   <timeline>
-    <DOMTimeline name="确认按钮">
+    <DOMTimeline name="多存档按钮">
       <layers>
         <DOMLayer name="Layer 1" color="#C616CE" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 284" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="10" ty="12"/>
+                    <Matrix a="-0.360626220703125" b="-0.739334106445313" c="0.367111206054688" d="-0.612533569335938" tx="7" ty="13.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#4FB1FF"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.360626220703125" b="0.739334106445313" c="-0.367111206054688" d="0.612533569335938" tx="10.35" ty="10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FFE066"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -22,13 +36,13 @@
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMDynamicText name="文本" fontRenderingMode="device" width="57.5" height="15.55" isSelectable="false">
+                <DOMDynamicText name="文本" fontRenderingMode="device" width="57.5" height="18.05" isSelectable="false">
                   <matrix>
                     <Matrix tx="17.75" ty="3.5"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>确认</characters>
+                      <characters>切换存档</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>

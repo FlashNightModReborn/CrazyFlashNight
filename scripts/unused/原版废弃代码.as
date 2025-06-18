@@ -107,7 +107,7 @@ _root.读取数据库存盘 = function()
             {
             _root.游戏服务器无存盘 = false;
             s = Encrypt.解密(_root.生成key(),userDatarecieve.content.split(unescape("%20")).join("+"));
-            本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+            本地loadgame = SharedObject.getLocal(_root.savePath);
             _root.mydata = 本地loadgame.data[存盘名];
             falgs = true;
             _root.codesigninfo = userDatarecieve.newsign.split(unescape("%20")).join("+");
@@ -712,7 +712,7 @@ function 连接测试成功()
 }
 function 连接检测()
 {
-	本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+	本地loadgame = SharedObject.getLocal(_root.savePath);
 	temp_task = 本地loadgame.data[存盘名][3];
 	if (_root.是否允许5分钟连接 == false)
 	{

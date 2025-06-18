@@ -1,6 +1,6 @@
 ﻿_root.读盘商城已购买物品 = function()
 {
-	本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+	本地loadgame = SharedObject.getLocal(_root.savePath);
 	if (本地loadgame.data.商城已购买物品.length > 0)
 	{
 		_root.商城已购买物品 = 本地loadgame.data.商城已购买物品;
@@ -10,14 +10,14 @@ _root.存盘商城已购买物品 = function()
 {
 	if (_root.商城已购买物品.length >= 0)
 	{
-		mysave = SharedObject.getLocal("crazyflasher7_saves");
+		mysave = SharedObject.getLocal(_root.savePath);
 		mysave.data.商城已购买物品 = _root.商城已购买物品;
 		mysave.flush();
 	}
 }
 _root.获取购物车信息 = function()
 {
-	本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+	本地loadgame = SharedObject.getLocal(_root.savePath);
 	if (本地loadgame.data.商城购物车.length > 0)
 	{
 		_root.商城购物车 = 本地loadgame.data.商城购物车;
@@ -27,7 +27,7 @@ _root.保存购物车 = function()
 {
 	if (_root.商城购物车.length >= 0)
 	{
-		mysave = SharedObject.getLocal("crazyflasher7_saves");
+		mysave = SharedObject.getLocal(_root.savePath);
 		mysave.data.商城购物车 = _root.商城购物车;
 		mysave.flush();
 	}

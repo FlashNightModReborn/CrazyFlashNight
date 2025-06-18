@@ -154,7 +154,7 @@ _root.删除场景宠物 = function(){
 }
 
 _root.读取本地存盘战宠 = function(){
-	var 本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+	var 本地loadgame = SharedObject.getLocal(_root.savePath);
 	if (本地loadgame.data.战宠 == undefined){
 		_root.宠物信息 = new Array();
 		_root.宠物信息.push([]);
@@ -169,7 +169,7 @@ _root.读取本地存盘战宠 = function(){
 	}
 }
 _root.本地存盘战宠 = function(){
-	var mysave = SharedObject.getLocal("crazyflasher7_saves");
+	var mysave = SharedObject.getLocal(_root.savePath);
 	mysave.data.战宠 = _root.宠物信息;
 	mysave.data.宠物领养限制 = _root.宠物领养限制;
 	mysave.flush();

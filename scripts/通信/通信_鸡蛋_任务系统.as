@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.task.*;
 
 _root.LoadPCTasks = function(){
-	var saveData = SharedObject.getLocal("crazyflasher7_saves");
+	var saveData = SharedObject.getLocal(_root.savePath);
 	_root.tasks_to_do = saveData.data.tasks_to_do;
 	_root.tasks_finished = saveData.data.tasks_finished;
 	_root.task_chains_progress = saveData.data.task_chains_progress;
@@ -11,7 +11,7 @@ _root.LoadPCTasks = function(){
 }
 
 _root.SavePCTasks = function(){
-	var saveData = SharedObject.getLocal("crazyflasher7_saves");
+	var saveData = SharedObject.getLocal(_root.savePath);
 	saveData.data.tasks_to_do = _root.tasks_to_do;
 	saveData.data.tasks_finished = _root.tasks_finished;
 	saveData.data.task_chains_progress = _root.task_chains_progress;

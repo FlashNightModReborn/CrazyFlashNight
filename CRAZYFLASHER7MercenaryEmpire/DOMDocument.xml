@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="253" viewAngle3D="67.3530907632092" sharedLibraryURL="Font" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="253" viewAngle3D="67.3530907632092" sharedLibraryURL="Font" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="font" itemID="65977cd0-00001d33"/>
@@ -813,6 +813,7 @@
           <Include href="sprite/标题画面遮罩.xml" loadImmediate="false" itemID="678bbd6f-00000448" lastModified="1737211247"/>
           <Include href="sprite/单个敌人加载器2.xml" itemID="659bb998-000014a7" lastModified="1731344763"/>
           <Include href="sprite/淡出动画.xml" loadImmediate="false" itemID="663d9237-0000167b" lastModified="1743606824"/>
+          <Include href="sprite/多存档按钮.xml" loadImmediate="false" itemID="68521ee7-00022a5f" lastModified="1750220498"/>
           <Include href="sprite/复选框.xml" loadImmediate="false" itemID="67b05569-00000ab7" lastModified="1739609449"/>
           <Include href="sprite/后勤战备箱按钮.xml" loadImmediate="false" itemID="66521d9d-00000bd7" lastModified="1718802578"/>
           <Include href="sprite/积分兑换界面 弃用.xml" loadImmediate="false" itemID="67ed555e-0000081d" lastModified="1743607136"/>
@@ -894,6 +895,9 @@
           <Include href="UI重构/物品改装界面.xml" itemID="67876ee2-00001c93" lastModified="1747748224"/>
           <Include href="UI重构/长条按钮.xml" itemIcon="0" loadImmediate="false" itemID="664f55ad-00000fcf" lastModified="1716475621"/>
           <Include href="按键显示.xml" loadImmediate="false" itemID="662dea68-00000ba1" lastModified="1714285699"/>
+          <Include href="存档块描边.xml" itemIcon="0" loadImmediate="false" itemID="68523566-000235ca" lastModified="1750218086"/>
+          <Include href="存档块装饰.xml" itemIcon="0" loadImmediate="false" itemID="68523820-00023730" lastModified="1750218784"/>
+          <Include href="存档显示块.xml" loadImmediate="false" itemID="68521747-000225fa" lastModified="1750221528"/>
           <Include href="弹出公告UI/弹出公告界面.xml" loadImmediate="false" itemID="65bb977f-00000c80" lastModified="1706874282"/>
           <Include href="弹出公告UI/公告消息栏.xml" loadImmediate="false" itemID="65bb922d-000001f2" lastModified="1706795494"/>
           <Include href="弹出公告UI/任务开启栏.xml" loadImmediate="false" itemID="65bb9236-000001f5" lastModified="1706795449"/>
@@ -1396,6 +1400,20 @@ cfgXML.load("config.xml");
 stop();
 
 _root.多语言是否中文 = true;
+// 默认基础路径
+_root.baseSavePath = "crazyflasher7_saves";
+
+// 获取 SharedObject 用于保存配置
+var globalSave = SharedObject.getLocal("cf7_config");
+
+// 如果有之前保存的路径就使用，没有则设为默认并保存
+if (globalSave.data.savePath != undefined) {
+    _root.savePath = globalSave.data.savePath;
+} else {
+    _root.savePath = _root.baseSavePath;
+    globalSave.data.savePath = _root.savePath;
+    globalSave.flush();  // 保存到本地
+}
 ]]></script>
                                    </Actionscript>
                                    <elements/>
@@ -2535,7 +2553,7 @@ onClipEvent (mouseMove) {
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="shape/Symbol 240" symbolType="graphic" loop="loop">
                                              <matrix>
-                                                  <Matrix tx="71.5" ty="28.75"/>
+                                                  <Matrix tx="83.95" ty="532"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point/>
@@ -2605,7 +2623,7 @@ onClipEvent (mouseMove) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="7" autoNamed="false">
+                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <elements/>
@@ -3027,9 +3045,9 @@ onClipEvent (mouseMove) {
                                                   </DOMTextRun>
                                              </textRuns>
                                         </DOMStaticText>
-                                        <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="按钮" centerPoint3DX="508.35" centerPoint3DY="484.05">
+                                        <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="按钮" centerPoint3DX="487.05" centerPoint3DY="489.2">
                                              <matrix>
-                                                  <Matrix tx="469.35" ty="471.55"/>
+                                                  <Matrix tx="448.05" ty="476.7"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point/>
@@ -3046,6 +3064,11 @@ onClipEvent (mouseMove) {
 on (release) {
 	gotoAndStop(1);
 	_root.注释结束();
+	// 获取 SharedObject 用于保存配置
+	var globalSave = SharedObject.getLocal("cf7_config");
+    globalSave.data.savePath = _root.savePath;
+    globalSave.flush();  // 保存到本地
+
 	_root.gotoAndPlay("单机版开始");
 }
 on (press) {
@@ -3107,6 +3130,660 @@ on (rollOut) {
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位5" centerPoint3DX="875.1" centerPoint3DY="64.85" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="777.45" ty="21.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/多存档按钮" centerPoint3DX="688.3" centerPoint3DY="479.5">
+                                             <matrix>
+                                                  <Matrix tx="649.3" ty="467.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="39" y="12"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+    stop();
+}
+
+on (rollOver) {
+    this.gotoAndStop(2);
+    _root.注释(150, _root.获得翻译("其他存档"));
+}
+
+on (rollOut) {
+    this.gotoAndStop(1);
+    _root.注释结束();
+}
+
+on (press) {
+    this.gotoAndStop(3);
+
+    // 将 存档位0 到 存档位9 设置为不可见
+    for (var i = 0; i <= 9; i++) {
+        var slot = _root["存档位" + i];
+        if (slot) slot._visible = !slot._visible;
+    }
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位6" centerPoint3DX="875.1" centerPoint3DY="162.9" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="777.45" ty="119.35"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位7" centerPoint3DX="875.1" centerPoint3DY="262.35" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="777.45" ty="218.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位8" centerPoint3DX="875.1" centerPoint3DY="360.4" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="777.45" ty="316.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位9" selected="true" centerPoint3DX="875.1" centerPoint3DY="462.05" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="777.45" ty="418.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位0" centerPoint3DX="113.7" centerPoint3DY="64.85" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="16.05" ty="21.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位1" centerPoint3DX="113.7" centerPoint3DY="162.9" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="16.05" ty="119.35"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位2" centerPoint3DX="113.7" centerPoint3DY="262.35" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="16.05" ty="218.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位3" centerPoint3DX="113.7" centerPoint3DY="360.4" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="16.05" ty="316.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" name="存档位4" centerPoint3DX="113.7" centerPoint3DY="462.05" isVisible="false">
+                                             <matrix>
+                                                  <Matrix tx="16.05" ty="418.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="97.65" y="43.55"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load) {
+    var slotName:String = this._name; // 获取实例名
+    var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+    
+    if (slotIndex == 0) {
+        currentSavePath = _root.baseSavePath;
+    } else {
+        currentSavePath = _root.baseSavePath + slotIndex;
+    }
+    
+    // 初始化状态标志
+    this.isHover = false;      // 鼠标悬停状态
+    this.isSelected = false;   // 选中状态
+    
+    // 设置按钮模式
+    this.useHandCursor = true;
+    
+    // 鼠标悬停进入
+    this.onRollOver = function() {
+        this.isHover = true;
+        // 可以在这里添加音效
+        // _root.playSound("hover_sound");
+    };
+    
+    // 鼠标悬停离开
+    this.onRollOut = function() {
+        this.isHover = false;
+    };
+    
+    // 鼠标点击
+    this.onPress = function() {
+        // 更新全局存档路径
+        _root.savePath = this.currentSavePath;
+        
+        // 取消其他存档位的选中状态
+        for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+            var otherSlot = _root["存档位" + i];
+            if (otherSlot && otherSlot != this) {
+                otherSlot.isSelected = false;
+            }
+        }
+        
+        // 设置当前存档位为选中状态
+        this.isSelected = true;
+
+        // 可以触发存档数据更新
+        _root.savePath = this.currentSavePath;
+        
+        trace("已选择存档路径: " + this.currentSavePath);
+    };
+}
+]]></script>
+                                             </Actionscript>
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
@@ -5076,15 +5753,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11465 5270!11465 5270|11769 5270!11769 5270|11479 5089!11479 5089|11189 4908!11189 4908|10899 4727!10899 4727|10609 4546!10609 4546|10305 4546!10305 4546|10002 4546!10002 4546|9699
- 4546!9699 4546|9395 4546!9395 4546|9685 4727!9685 4727|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|9355 5089!9355 5089|9645 5270!9645 5270|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270
-|9645 5270!9645 5270|9949 5270!9949 5270|10252 5270!10252 5270|10555 5270!10555 5270|10859 5270!10859 5270|10569 5089!10569 5089|10265 5089!10265 5089|9962 5089!9962 5089|10252 5270!10252 5270|10542 5451!10542 5451|10239 5451!10239 5451
-|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9355 5089|9052 5089!9052 5089|8762 4908!8762 4908|9065 4908!9065 4908|8775 4727!8775 4727|8485 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472 4727|8762 4908!8472 4727|8775 4727!8775
- 4727|9079 4727!9079 4727|8789 4546!8789 4546|9092 4546!9092 4546|9382 4727!9382 4727|9672 4908!9672 4908|9975 4908!9975 4908|10265 5089!9659 5089|9962 5089!9962 5089|9672 4908!9672 4908|9369 4908!9369 4908|9659 5089!9395 4546|9092 4546
-!8789 4546|8485 4546!9052 5089|9342 5270!10542 5451|10845 5451!10845 5451|11149 5451!11149 5451|11452 5451!11452 5451|11755 5451!11189 4908|10885 4908!10885 4908|10595 4727!10595 4727|10305 4546!11149 5451|10859 5270!10859 5270|11162
- 5270!11162 5270|11465 5270!11465 5270|11175 5089!11175 5089|10885 4908!10885 4908|10582 4908!10582 4908|10279 4908!10279 4908|9989 4727!9989 4727|9685 4727!10899 4727|10595 4727!10595 4727|10292 4727!10292 4727|10582 4908!10582 4908
-|10872 5089!10872 5089|11162 5270!11162 5270|11452 5451!10002 4546|10292 4727!10292 4727|9989 4727!10569 5089|10279 4908!10279 4908|9975 4908!9975 4908|9685 4727!9935 5451|10239 5451!10569 5089|10872 5089!10872 5089|11175 5089!11175 5089
-|11479 5089!10265 5089|10555 5270!10555 5270|10845 5451!9989 4727|9699 4546"/>
+!9395 4546|9685 4727!9685 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9382 4727|9672 4908!9672 4908|9975 4908!9975 4908|9685 4727!9685 4727|9382 4727!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|9672 4908!9672 4908|9369
+ 4908!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|9355 5089!9355 5089|9659 5089!8485 4546|8775 4727!8775 4727|9079 4727!9079 4727|8789 4546!8789 4546|8485 4546!8485 4546
+|8182 4546!8182 4546|8472 4727!8472 4727|8775 4727!8472 4727|8762 4908!8762 4908|9065 4908!9065 4908|8775 4727!9342 5270|9645 5270!9645 5270|9355 5089!9355 5089|9052 5089!9052 5089|9342 5270!9699 4546|10002 4546!10002 4546|10305 4546
+!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149 5451!11149 5451|10845 5451!10845 5451|10542
+ 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!8789 4546|9092 4546!9052 5089|8762 4908!11479 5089|11175 5089!11175 5089|11465 5270!11465 5270|11769 5270!11755 5451|11465 5270!11465 5270|11162
+ 5270!11162 5270|11452 5451!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908!10582 4908|10872 5089!10872 5089|11175 5089!11175 5089|10885 4908!10885 4908|10582 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569 5089
+|10279 4908!10279 4908|9975 4908!9989 4727|10279 4908!10279 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989 4727!10002 4546|10292 4727!10292 4727|10595 4727!10595 4727|10305 4546!10239 5451|9949 5270!9949 5270|9645 5270!9645 5270
+|9935 5451!10252 5270|10555 5270!10555 5270|10265 5089!10265 5089|9962 5089!9962 5089|10252 5270!9659 5089|9949 5270!9949 5270|10252 5270!10555 5270|10859 5270!10859 5270|10569 5089!10569 5089|10872 5089!10555 5270|10845 5451!11149 5451
+|10859 5270!10859 5270|11162 5270!11162 5270|10872 5089!10252 5270|10542 5451"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5527,15 +6204,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9662 4895|9952 5076!9952 5076|9649 5076!9649 5076|9939 5257!9939 5257|9635 5257!9635 5257|9345 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9372 4714|9082 4533!9082 4533|9385 4533!9385 4533|9675
- 4714!9675 4714|9979 4714!9979 4714|10282 4714!10282 4714|10585 4714!10585 4714|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|10875 4895!10875 4895|10585 4714!10585 4714|10889 4714!10295 4533
-|9992 4533!9992 4533|9689 4533!9689 4533|9385 4533!9979 4714|10269 4895!10269 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9372 4714|9069 4714!9069 4714|8779 4533!8779 4533|9082 4533!9635 5257|9332 5257!9332 5257|9042 5076!9042
- 5076|9345 5076!9345 5076|9055 4895!9055 4895|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8765 4714!8765 4714|9069 4714!9069 4714|9359 4895!9359 4895|9055 4895!8462 4714|8765 4714!8779 4533|8475 4533
-!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|10229 5438!10229 5438|10532 5438!10532 5438|10835 5438!10835 5438|11139 5438!11139 5438|11442 5438!11442 5438|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11455 5257
-!11455 5257|11165 5076!11165 5076|11469 5076!11469 5076|11759 5257!9042 5076|8752 4895!9055 4895|8765 4714!11442 5438|11152 5257!11152 5257|11455 5257!11455 5257|11745 5438!9992 4533|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895
-!10875 4895|11165 5076!9939 5257|10242 5257!10242 5257|10532 5438!10229 5438|9939 5257!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|10559 5076!10559 5076|10269 4895!9952 5076|10255 5076!10255 5076|9965 4895
-!11152 5257|10849 5257!10849 5257|10559 5076!10559 5076|10862 5076!10862 5076|11152 5257!10835 5438|10545 5257!10545 5257|10849 5257!10849 5257|11139 5438!11165 5076|10862 5076!10862 5076|10572 4895!10572 4895|10269 4895!11179 4895|11469
- 5076!9925 5438|9635 5257!9979 4714|9689 4533!9662 4895|9965 4895"/>
+!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9385 4533|9675 4714!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9055 4895|9345
+ 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!9372 4714|9082 4533!9082 4533|8779 4533!8779 4533|9069 4714!9082 4533|9385 4533!8779 4533|8475 4533!8475 4533|8765 4714!8765 4714|9069 4714!8475 4533|8172 4533!8172 4533
+|8462 4714!8462 4714|8765 4714!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745 5438!11745 5438
+|11442 5438!11442 5438|11139 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462 4714!9042 5076|9345
+ 5076!9925 5438|9635 5257!9635 5257|9332 5257!9635 5257|9345 5076!8752 4895|9055 4895!9055 4895|8765 4714!11759 5257|11455 5257!11455 5257|11745 5438!10875 4895|10585 4714!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895
+!10295 4533|10585 4714!10585 4714|10889 4714!11179 4895|10875 4895!10875 4895|11165 5076!11165 5076|11469 5076!9992 4533|10282 4714!9965 4895|10255 5076!10255 5076|10559 5076!10559 5076|10269 4895!10269 4895|9965 4895!10282 4714|9979
+ 4714!9979 4714|10269 4895!10269 4895|10572 4895!9662 4895|9952 5076!9952 5076|10255 5076!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10229 5438|9939 5257!9939 5257|9635 5257!9952 5076|9649 5076!9649 5076|9939 5257
+!9939 5257|10242 5257!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10862 5076!10862 5076|10572 4895!10835 5438|10545 5257!10862 5076|11152 5257!11152 5257|11455 5257!11455 5257|11165 5076!11165 5076|10862 5076!11442 5438|11152
+ 5257!11152 5257|10849 5257!10849 5257|11139 5438!10242 5257|10532 5438"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -6705,7 +7382,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="系统设置界面" color="#B4A04D" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="系统设置界面" color="#B4A04D" parentLayerIndex="21" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
@@ -7847,6 +8524,7 @@ onClipEvent (enterFrame) {
                     <SolidSwatchItem color="#959595" brightness="140"/>
                     <SolidSwatchItem color="#1F201D" hue="53" saturation="13" brightness="29"/>
                     <SolidSwatchItem color="#20201D" hue="40" saturation="13" brightness="29"/>
+                    <SolidSwatchItem color="#00FFFF" alpha="0.298039215686275" hue="120" saturation="239" brightness="120"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -8015,25 +8693,25 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="871970" publishTime="1749318485"/>
-          <PublishItem publishSize="872529" publishTime="1747905472"/>
-          <PublishItem publishSize="872514" publishTime="1747905333"/>
-          <PublishItem publishSize="872118" publishTime="1747905107"/>
-          <PublishItem publishSize="872097" publishTime="1747905033"/>
-          <PublishItem publishSize="872083" publishTime="1747837010"/>
-          <PublishItem publishSize="872083" publishTime="1747837003"/>
-          <PublishItem publishSize="890559" publishTime="1747583393"/>
-          <PublishItem publishSize="871912" publishTime="1747052919"/>
-          <PublishItem publishSize="871912" publishTime="1747052598"/>
-          <PublishItem publishSize="871912" publishTime="1747052267"/>
-          <PublishItem publishSize="871912" publishTime="1747051228"/>
-          <PublishItem publishSize="880470" publishTime="1746442840"/>
-          <PublishItem publishSize="880466" publishTime="1746439845"/>
-          <PublishItem publishSize="896146" publishTime="1746209754"/>
-          <PublishItem publishSize="1077705" publishTime="1745485899"/>
-          <PublishItem publishSize="1076443" publishTime="1744812336"/>
-          <PublishItem publishSize="1071084" publishTime="1744812244"/>
-          <PublishItem publishSize="1076201" publishTime="1744811901"/>
-          <PublishItem publishSize="1076317" publishTime="1744810695"/>
+          <PublishItem publishSize="866215" publishTime="1750221513"/>
+          <PublishItem publishSize="866233" publishTime="1750221482"/>
+          <PublishItem publishSize="866310" publishTime="1750221212"/>
+          <PublishItem publishSize="866310" publishTime="1750221139"/>
+          <PublishItem publishSize="866310" publishTime="1750221110"/>
+          <PublishItem publishSize="866308" publishTime="1750221066"/>
+          <PublishItem publishSize="866282" publishTime="1750221018"/>
+          <PublishItem publishSize="866271" publishTime="1750221001"/>
+          <PublishItem publishSize="866076" publishTime="1750220694"/>
+          <PublishItem publishSize="866087" publishTime="1750220649"/>
+          <PublishItem publishSize="866087" publishTime="1750220636"/>
+          <PublishItem publishSize="866087" publishTime="1750220607"/>
+          <PublishItem publishSize="866055" publishTime="1750220556"/>
+          <PublishItem publishSize="866234" publishTime="1750220521"/>
+          <PublishItem publishSize="866234" publishTime="1750220427"/>
+          <PublishItem publishSize="866234" publishTime="1750220338"/>
+          <PublishItem publishSize="866234" publishTime="1750220309"/>
+          <PublishItem publishSize="866228" publishTime="1750220291"/>
+          <PublishItem publishSize="866228" publishTime="1750220261"/>
+          <PublishItem publishSize="866228" publishTime="1750219151"/>
      </publishHistory>
 </DOMDocument>
