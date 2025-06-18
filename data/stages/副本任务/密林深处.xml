@@ -25,6 +25,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/事故森林1.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Dive Dock</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -34,31 +39,31 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种21</Type>
-                        <Interval>200</Interval>
+                        <Interval>400</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种22</Type>
-                        <Interval>200</Interval>
+                        <Interval>800</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种23</Type>
-                        <Interval>200</Interval>
+                        <Interval>1600</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种237</Type>
-                        <Interval>100</Interval>
+                        <Interval>2400</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种305</Type>
-                        <Interval>100</Interval>
+                        <Interval>3000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>不掉装备:true</Parameters>
@@ -67,7 +72,9 @@
                         <Type>兵种308</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>30</Level>
+                        <Level>60</Level>
+                        <x>300</x>
+                        <y>600</y>
                     </Enemy>
                 </EnemyGroup>
 				</SubWave>
@@ -80,29 +87,29 @@
                         <Type>兵种21</Type>
                         <Interval>200</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种22</Type>
-                        <Interval>200</Interval>
+                        <Interval>800</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种23</Type>
-                        <Interval>200</Interval>
+                        <Interval>1200</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种237</Type>
-                        <Interval>100</Interval>
+                        <Interval>1800</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种306</Type>
-                        <Interval>100</Interval>
+                        <Interval>2800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>不掉装备:true</Parameters>
@@ -118,29 +125,29 @@
                         <Type>兵种21</Type>
                         <Interval>200</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种22</Type>
-                        <Interval>200</Interval>
+                        <Interval>600</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种23</Type>
-                        <Interval>200</Interval>
+                        <Interval>1200</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种237</Type>
-                        <Interval>100</Interval>
+                        <Interval>1800</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>30</Level>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种307</Type>
-                        <Interval>100</Interval>
+                        <Interval>2400</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>不掉装备:true</Parameters>
@@ -167,29 +174,39 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/事故森林2.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1600</x>
+                <y>490</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
-                </WaveInformation>
+                </WaveInformation>     
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种296</Type>
-                        <Interval>200</Interval>
+                        <Interval>2100</Interval>
                         <Quantity>3</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种297</Type>
-                        <Interval>200</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>2</Quantity>
+                        <SpawnIndex>0</SpawnIndex>
                         <Level>25</Level>
                     </Enemy>
 					<Enemy id="2">
                         <Type>兵种308</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>30</Level>
+                        <Level>60</Level>
+                        <x>300</x>
+                        <y>600</y>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
@@ -208,15 +225,17 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种301</Type>
-                        <Interval>200</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>1800</Interval>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
+                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种302</Type>
-                        <Interval>200</Interval>
+                        <Interval>1200</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             <Dialogue>
@@ -248,19 +267,19 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种302</Type>
-                        <Interval>200</Interval>
+                        <Interval>800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种297</Type>
-                        <Interval>200</Interval>
+                        <Interval>1200</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种303</Type>
-                        <Interval>100</Interval>
+                        <Interval>1800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>不掉装备:true</Parameters>
