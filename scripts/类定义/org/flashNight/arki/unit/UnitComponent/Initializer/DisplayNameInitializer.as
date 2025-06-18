@@ -20,30 +20,35 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
     }
 
     // 新增：格式化显示名称的函数
-    public static function formatDisplayName(color:String, level:Number, name:String):String {
-        return color + "Lv." + level + "   " + name + "</FONT>";
+    public static function formatDisplayName(color:String, level:Number, makeBold:String, name:String):String {
+        return color + "Lv." + level + "   " + makeBold + name + "</B>" + "</FONT>";
     }
 
     public static function initialize(target:Object):Void {
         var nameColor:String;
+        var shouldBeBold:String;
 
         // 初始化颜色判断逻辑保持不变
 
         if(target._name == _root.控制目标)
         {
             nameColor = "#FFFF00";
+            shouldBeBold = "";
         }
         else if(target.是否为敌人 == false)
         {
             nameColor = "#00FF00";
+            shouldBeBold = "";
         }
         else if(target.是否为敌人 == true)
         {
-            nameColor = "#CC0000";
+            nameColor = "#FF2222";
+            shouldBeBold = "";
         }
         else
         {
             nameColor = "#FFFFFF";
+            shouldBeBold = "<B>";
         }
 
         // 表驱动处理逻辑
@@ -63,8 +68,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
         
 
         var color:String = "<FONT COLOR='" + nameColor + "'>";
+        var makeBold:String = shouldBeBold; 
 
         // 设置显示名称（保持不变）
-        target.displayName = formatDisplayName(color, target.等级, target.名字);
+        target.displayName = formatDisplayName(color, target.等级, makeBold, target.名字);
     }
 }
