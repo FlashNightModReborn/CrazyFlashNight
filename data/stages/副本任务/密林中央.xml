@@ -25,6 +25,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/avp1_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Dive Dock</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">
