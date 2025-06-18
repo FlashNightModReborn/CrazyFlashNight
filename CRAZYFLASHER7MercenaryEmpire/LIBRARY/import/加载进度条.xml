@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1739978882" lastUniqueIdentifier="91">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1750224554" lastUniqueIdentifier="91">
   <timeline>
-    <DOMTimeline name="加载进度条" currentFrame="30">
+    <DOMTimeline name="加载进度条" currentFrame="10">
       <layers>
         <DOMLayer name="图层 6" color="#808080">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -780,7 +780,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -862,7 +862,7 @@
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>5M</characters>
+                      <characters>300Kb</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
@@ -890,7 +890,13 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>物品数据</characters>
+                      <characters>data</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>数据</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
@@ -908,7 +914,7 @@
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>300K</characters>
+                      <characters>8M</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
@@ -936,39 +942,39 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>场景资源</characters>
+                      <characters>影片资源</characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters> </characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>（</characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>8M</characters>
+                      <characters>37.6M</characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>）</characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters> </characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -978,23 +984,17 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="380" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="54" ty="363.75"/>
+                    <Matrix tx="53.75" ty="363.75"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters> </characters>
+                      <characters>其他资源（</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>外部资源（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>8M</characters>
+                      <characters>235.4M</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
@@ -1018,23 +1018,23 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="377" height="15.55" includeOutlines="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="54" ty="393.25"/>
+                    <Matrix tx="50" ty="393.25"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters> </characters>
+                      <characters> scripts</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>游戏代码（</characters>
+                      <characters>数据（</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>1K</characters>
+                      <characters>340K</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
