@@ -1,0 +1,307 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/存档显示块" itemID="68521747-000225fa" lastModified="1750298410" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="存档显示块" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;62&lt;/guideline&gt;&lt;guideline direction="h"&gt;33&lt;/guideline&gt;&lt;guideline direction="h"&gt;4&lt;/guideline&gt;&lt;guideline direction="h"&gt;58&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;65&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 影片剪辑内第一帧代码 - 合并版本
+
+// ==================== 初始化部分 ====================
+var slotName:String = this._name; // 获取实例名
+var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
+
+if (slotIndex == 0) {
+    currentSavePath = _root.baseSavePath;
+} else {
+    currentSavePath = _root.baseSavePath + slotIndex;
+}
+
+// 初始化状态标志
+this.isHover = false;      // 鼠标悬停状态
+this.isSelected = false;   // 选中状态
+
+// 设置按钮模式
+this.useHandCursor = true;
+
+// ==================== 事件处理函数 ====================
+// 鼠标悬停进入
+this.onRollOver = function() {
+    this.isHover = true;
+    // 可以在这里添加音效
+    // _root.playSound("hover_sound");
+};
+
+// 鼠标悬停离开
+this.onRollOut = function() {
+    this.isHover = false;
+};
+
+// 鼠标点击
+this.onPress = function() {
+    // 更新全局存档路径
+    _root.savePath = this.currentSavePath;
+    
+    // 取消其他存档位的选中状态
+    for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+        var otherSlot = _root["存档位" + i];
+        if (otherSlot && otherSlot != this) {
+            otherSlot.isSelected = false;
+        }
+    }
+    
+    // 设置当前存档位为选中状态
+    this.isSelected = true;
+    // 可以触发存档数据更新
+    _root.savePath = this.currentSavePath;
+    
+    trace("已选择存档路径: " + this.currentSavePath);
+};
+
+// ==================== 每帧更新函数 ====================
+this.onEnterFrame = function() {
+    // 更新焦点显示状态
+    this.focus._visible = this.isHover || (this.currentSavePath === _root.savePath); 
+    this.name = this._name + " :";
+    
+    // 检查存档路径是否发生变化，如果变化则重新加载存档数据
+    if (this.currentSavePath != this.savePath) {
+        this.savePath = this.currentSavePath;
+        trace("savePath: " + this.savePath);
+        
+        存盘名 = "test";
+        
+        // 获取存档数据
+        var mysave = SharedObject.getLocal(this.savePath);
+        
+        // 检查是否有存档数据
+        if (mysave.data && mysave.data[存盘名]) {
+            var saveData = mysave.data[存盘名];
+            
+            // 从数据结构中提取信息
+            // 根据 mydata数据组包 函数：mydata[0] = 主角储存数据
+            // 主角储存数据 = [角色名,性别,金钱,等级,经验值,身高,技能点数,玩家称号,身价,虚拟币,键值设定,difficultyMode,佣兵是否出战信息,easterEgg, 天气系统]
+            if (saveData[0]) {
+                var 角色名 = saveData[0][0]; // 角色名
+                var 等级 = saveData[0][3];   // 等级
+                var 金钱 = saveData[0][2];   // 金钱（可选显示）
+            }
+            
+            // mydata[3] = 任务储存数据 (主线任务进度) 
+            var 主线进度 = saveData[3];
+            
+            // 更新显示文本
+            if (角色名 != undefined) {
+                // 显示角色信息：角色名 + 等级
+                this.角色信息文本 = "<font color='#00ff00'>lv." + 等级 + "</font> " + 
+                                "<font color='#ffd700'>" + 角色名 + "</font>";
+            }
+            
+            if (主线进度 != undefined) {
+                // 显示主线进度
+                var 难度 = saveData[0][11];
+                var 难度文本 = ["平衡模式（困难）", "逆天模式（简单）", "挑战模式（自限）"];
+                                
+                this.主线进度文本 = 主线进度 + "   " + 难度文本[难度];
+            }
+            
+            var lastSaved:String = saveData.lastSaved || null;
+            this.lastSaved = lastSaved;
+            
+            // 调试输出 
+            trace("角色名: " + 角色名);
+            trace("等级: " + 等级);
+            trace("主线进度: " + 主线进度);
+        } else {
+            // 没有存档数据时的处理
+            this.角色信息文本 = "暂无存档";
+            this.主线进度文本 = null;
+            this.lastSaved = null;
+            trace("没有找到存档数据");
+        }
+    }
+};]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText width="51.1" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="3.55" ty="35.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>主线进度</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>:</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="56.3" height="15.55" isSelectable="false" variableName="name" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="2.55" ty="10.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>test</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFE066"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="157.35" height="15.55" isSelectable="false" variableName="角色信息文本" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="67.95" ty="10.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>player    lv.60</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="170.3" height="15.55" isSelectable="false" variableName="主线进度文本" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="68.05" ty="34.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>123</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMStaticText width="144" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="2.8" ty="60.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>保存时间</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>:</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="144.7" height="33.1" isSelectable="false" variableName="lastSaved">
+                  <matrix>
+                    <Matrix tx="68" ty="60.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>2012-12-21 23:59:59</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" indent="0.5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 246" centerPoint3DX="298.7" centerPoint3DY="137.5">
+                  <matrix>
+                    <Matrix a="0" b="0.216659545898438" c="-1.0394287109375" d="0" tx="97.7" ty="43.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter quality="3"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.48046875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 246" centerPoint3DX="230.15" centerPoint3DY="137.5">
+                  <matrix>
+                    <Matrix a="0" b="0.216659545898438" c="-0.314773559570313" d="0" tx="29.15" ty="43.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter quality="3"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.66015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 246" centerPoint3DX="329.1" centerPoint3DY="137.5">
+                  <matrix>
+                    <Matrix a="0" b="0.216659545898438" c="-0.666854858398438" d="0" tx="128.1" ty="43.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter quality="3"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.328125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="focus" color="#FF4FFF" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 246" name="focus" centerPoint3DX="298.7" centerPoint3DY="137.5">
+                  <matrix>
+                    <Matrix a="0" b="0.216659545898438" c="-1.0394287109375" d="0" tx="97.7" ty="43.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="14" blurY="14" color="#FFFFFF" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,38 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <folders>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+     </folders>
+     <symbols>
+          <Include href="sprite/底色.xml" loadImmediate="false" itemID="68536eee-00000aa0" lastModified="1750298350"/>
+          <Include href="存档显示块.xml" itemID="68521747-000225fa" lastModified="1750298350"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="存档显示块" selected="true" centerPoint3DX="274.95" centerPoint3DY="200.45">
+                                             <matrix>
+                                                  <Matrix tx="155" ty="152.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="119.95" y="48"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="5877" publishTime="1750298187"/>
+     </publishHistory>
+</DOMDocument>

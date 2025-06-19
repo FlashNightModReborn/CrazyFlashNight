@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/多存档按钮" itemID="68521ee7-00022a5f" lastModified="1750220498">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/多存档按钮" itemID="68521ee7-00022a5f" lastModified="1750295137">
   <timeline>
-    <DOMTimeline name="多存档按钮">
+    <DOMTimeline name="多存档按钮" currentFrame="2">
       <layers>
         <DOMLayer name="Layer 1" color="#C616CE" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="3" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 284" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.360626220703125" b="-0.739334106445313" c="0.367111206054688" d="-0.612533569335938" tx="7" ty="13.35"/>
                   </matrix>
@@ -17,9 +17,61 @@
                     <Color tintMultiplier="1" tintColor="#4FB1FF"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 284" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.360626220703125" b="0.739334106445313" c="-0.367111206054688" d="0.612533569335938" tx="10.35" ty="10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FFE066"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.739334106445313" b="0.360626220703125" c="-0.612533569335938" d="-0.367111206054688" tx="10.3" ty="13.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#4FB1FF"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.739334106445313" b="-0.360626220703125" c="0.612533569335938" d="0.367111206054688" tx="7.05" ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FFE066"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.360626220703125" b="0.739334106445313" c="-0.367111206054688" d="0.612533569335938" tx="10.35" ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#4FB1FF"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 284" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.360626220703125" b="-0.739334106445313" c="0.367111206054688" d="-0.612533569335938" tx="7" ty="13.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
