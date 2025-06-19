@@ -747,14 +747,44 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种363</Type>
-                        <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种364</Type>
-                        <Interval>1500</Interval>
+                        <Interval>1400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种372</Type>
+                        <Interval>9000</Interval>
                         <Quantity>3</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种373</Type>
+                        <Interval>6000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种70</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种74</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>45</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -781,21 +811,54 @@
                     <Enemy id="0">
                         <Type>兵种363</Type>
                         <Interval>1800</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种364</Type>
                         <Interval>1800</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种361</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
-                        <Parameters>称号:兵级作战节点</Parameters>
+                        <Parameters>
+                            称号:兵级作战节点
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                    <Enemy id="3">
+                        <Type>兵种372</Type>
+                        <Interval>9000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种373</Type>
+                        <Interval>6000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种70</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种74</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
