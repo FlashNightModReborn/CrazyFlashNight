@@ -191,12 +191,18 @@
                 </EnemyGroup>
                     <Dialogue>
                         <SubDialogue id="0">
+                            <Name>gazer</Name>
+                            <Title>火力侦察专家</Title>
+                            <Char>gazer</Char>
+                            <Text>该死，撤！</Text>
+                        </SubDialogue>
+                        <SubDialogue id="1">
                             <Name>$PC</Name>
                             <Title>$PC_TITLE</Title>
                             <Char>$PC_CHAR#严肃</Char>
                             <Text>名不虚传。</Text>
                         </SubDialogue>
-                        <SubDialogue id="1">
+                        <SubDialogue id="2">
                             <Name>$PC</Name>
                             <Title>$PC_TITLE</Title>
                             <Char>$PC_CHAR#严肃</Char>
