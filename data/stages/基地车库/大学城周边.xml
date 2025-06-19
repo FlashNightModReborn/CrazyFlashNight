@@ -217,19 +217,7 @@
                         <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
-                        <x>1000</x>
-                        <y>500</y>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1400</x>
+                        <x>1600</x>
                         <y>500</y>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -301,29 +289,22 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
-                        <Interval>600</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
-                        <Interval>200</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种27</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>4</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>200</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>3</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
