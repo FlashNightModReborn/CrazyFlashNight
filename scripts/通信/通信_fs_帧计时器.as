@@ -524,15 +524,6 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     _root.显示列表.播放列表();
 }, _root.帧计时器);
 
-// 监听面板是否初始化，初始化完成后自动取消订阅
-_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
-    var 系统 = _root.UI系统;
-    if(系统.虚拟币刷新() or 系统.金钱刷新()){
-        _root.帧计时器.eventBus.unsubscribe("frameUpdate");
-    }
-
-}, _root.帧计时器);
-
 
 
 // ---------------------------------------------------
@@ -540,32 +531,32 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
 // ---------------------------------------------------
 
 // 【添加任务】（通用版：可指定执行次数或无限循环）
-_root.帧计时器.添加任务 = function(action:Function, interval:Number, repeatCount):Number {
+_root.帧计时器.添加任务 = function(action:Function, interval:Number, repeatCount):String {
     // 提取额外动态参数
     var parameters:Array = (arguments.length > 3) ? ArgumentsUtil.sliceArgs(arguments, 3) : [];
     return this.taskManager.addTask(action, interval, repeatCount, parameters);
 };
 
 // 【添加单次任务】（间隔 <= 0 时直接执行，返回 null）
-_root.帧计时器.添加单次任务 = function(action:Function, interval:Number):Number {
+_root.帧计时器.添加单次任务 = function(action:Function, interval:Number):String {
     var parameters:Array = (arguments.length > 2) ? ArgumentsUtil.sliceArgs(arguments, 2) : [];
     return this.taskManager.addSingleTask(action, interval, parameters);
 };
 
 // 【添加循环任务】（无限重复执行）
-_root.帧计时器.添加循环任务 = function(action:Function, interval:Number):Number {
+_root.帧计时器.添加循环任务 = function(action:Function, interval:Number):String {
     var parameters:Array = (arguments.length > 2) ? ArgumentsUtil.sliceArgs(arguments, 2) : [];
     return this.taskManager.addLoopTask(action, interval, parameters);
 };
 
 // 【添加或更新任务】（相同对象+标签，只会存在一个任务）
-_root.帧计时器.添加或更新任务 = function(obj:Object, labelName:String, action:Function, interval:Number):Number {
+_root.帧计时器.添加或更新任务 = function(obj:Object, labelName:String, action:Function, interval:Number):String {
     var parameters:Array = (arguments.length > 4) ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
     return this.taskManager.addOrUpdateTask(obj, labelName, action, interval, parameters);
 };
 
 // 【添加生命周期任务】（无限循环，并绑定对象卸载时的清理回调）
-_root.帧计时器.添加生命周期任务 = function(obj:Object, labelName:String, action:Function, interval:Number):Number {
+_root.帧计时器.添加生命周期任务 = function(obj:Object, labelName:String, action:Function, interval:Number):String {
     var parameters:Array = (arguments.length > 4) ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
     return this.taskManager.addLifecycleTask(obj, labelName, action, interval, parameters);
 };
