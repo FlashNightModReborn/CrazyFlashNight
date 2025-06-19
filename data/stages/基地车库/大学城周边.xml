@@ -508,15 +508,29 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>4</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>6</Quantity>
+                        <Interval>1800</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种44</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种49</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
