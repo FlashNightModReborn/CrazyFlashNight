@@ -56,18 +56,21 @@
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种391</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>50</Level>
+                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种392</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
 				</SubWave>
@@ -103,30 +106,59 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                        <x>600</x>
+                        <y>450</y>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种28</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <是否为敌人>null</是否为敌人>
+                        </Parameters>
+                        <x>800</x>
+                        <y>460</y>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种29</Type>
+                        <Type>兵种384</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <x>1200</x>
+                        <y>500</y>
                     </Enemy>
                     <Enemy id="3">
+                        <Type>兵种384</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>1600</x>
+                        <y>800</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种384</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
                         <Type>兵种391</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>50</Level>
+                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
-                    <Enemy id="4">
+                    <Enemy id="6">
                         <Type>兵种392</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
@@ -316,6 +348,20 @@
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种391</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种392</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
                 </EnemyGroup>
                 </SubWave>
         </Wave>
