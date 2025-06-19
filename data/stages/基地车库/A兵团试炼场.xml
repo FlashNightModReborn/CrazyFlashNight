@@ -165,6 +165,14 @@
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
+                    <Dialogue>
+                        <SubDialogue id="0">
+                            <Name>gazer</Name>
+                            <Title>火力侦察专家</Title>
+                            <Char>gazer</Char>
+                            <Text>别跑！</Text>
+                        </SubDialogue>
+                    </Dialogue> 
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -194,19 +202,19 @@
                             <Name>gazer</Name>
                             <Title>火力侦察专家</Title>
                             <Char>gazer</Char>
-                            <Text>该死，撤！</Text>
+                            <Text>该死，准备撤！</Text>
                         </SubDialogue>
                         <SubDialogue id="1">
                             <Name>$PC</Name>
                             <Title>$PC_TITLE</Title>
                             <Char>$PC_CHAR#严肃</Char>
-                            <Text>名不虚传。</Text>
+                            <Text>丧尸、盗贼、军阀，通缉犯···</Text>
                         </SubDialogue>
                         <SubDialogue id="2">
                             <Name>$PC</Name>
                             <Title>$PC_TITLE</Title>
                             <Char>$PC_CHAR#严肃</Char>
-                            <Text>试炼场果真不缺疯子。</Text>
+                            <Text>名不虚传，试炼场果真不缺疯子。但是这家伙就这么倒了？算了，不管他了。</Text>
                         </SubDialogue>
                     </Dialogue> 
             </SubWave>
