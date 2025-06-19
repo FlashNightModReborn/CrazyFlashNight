@@ -748,7 +748,7 @@
                     <Enemy id="0">
                         <Type>兵种363</Type>
                         <Interval>2000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>45</Level>
                         <Parameters>
                             <是否为敌人>null</是否为敌人>
@@ -757,7 +757,7 @@
                     <Enemy id="1">
                         <Type>兵种364</Type>
                         <Interval>1400</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>45</Level>
                         <Parameters>
                             <是否为敌人>null</是否为敌人>
@@ -793,13 +793,13 @@
                         <Name>$PC</Name>
                         <Title>$PC_TITLE</Title>
                         <Char>$PC_CHAR#严肃</Char>
-                        <Text>这是天网的精英？</Text>
+                        <Text>还有多久？</Text>
                     </SubDialogue>
                     <SubDialogue id="1">
                         <Name>surveyor</Name>
                         <Title>火力支援学说专家</Title>
                         <Char>surveyor</Char>
-                        <Text>是EXUSIAI指挥官···我们上吧！</Text>
+                        <Text>再坚持一会！</Text>
                     </SubDialogue>
                 </Dialogue>
             </SubWave>
@@ -811,7 +811,7 @@
                     <Enemy id="0">
                         <Type>兵种363</Type>
                         <Interval>1800</Interval>
-                        <Quantity>1</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                         <Parameters>
                             <是否为敌人>null</是否为敌人>
@@ -820,21 +820,12 @@
                     <Enemy id="1">
                         <Type>兵种364</Type>
                         <Interval>1800</Interval>
-                        <Quantity>1</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                         <Parameters>
                             <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种361</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>45</Level>
-                        <Parameters>
-                            称号:兵级作战节点
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
                     <Enemy id="3">
                         <Type>兵种372</Type>
                         <Interval>9000</Interval>
@@ -858,7 +849,6 @@
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
-                    </Enemy>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
