@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1744702977" lastUniqueIdentifier="45">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1750411013" lastUniqueIdentifier="62">
   <timeline>
-    <DOMTimeline name="敌人-旧型号机器人">
+    <DOMTimeline name="敌人-旧型号机器人" currentFrame="117">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -82,7 +82,7 @@
             <DOMFrame index="104" duration="8" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="112" duration="8" keyMode="9728">
+            <DOMFrame index="112" duration="8" name="登场" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
@@ -473,7 +473,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -520,11 +520,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人/静止动作" name="man" centerPoint3DX="-33.35" centerPoint3DY="-49.3">
+                <DOMSymbolInstance libraryItemName="旧型号机器人/静止动作" name="man" selected="true" centerPoint3DX="-33.35" centerPoint3DY="-49.3">
                   <matrix>
                     <Matrix tx="-87.4" ty="-124.7"/>
                   </matrix>
@@ -599,7 +599,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人/普通攻击动作" name="man" centerPoint3DX="-33.35" centerPoint3DY="-49.3">
+                <DOMSymbolInstance libraryItemName="旧型号机器人/普通攻击动作" name="man" selected="true" centerPoint3DX="-33.35" centerPoint3DY="-49.3">
                   <matrix>
                     <Matrix tx="-87.4" ty="-124.7"/>
                   </matrix>
@@ -774,7 +774,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" duration="16" keyMode="9728">
+            <DOMFrame index="104" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="旧型号机器人/死亡" name="man" centerPoint3DX="-33.35" centerPoint3DY="-49.3">
                   <matrix>
@@ -792,6 +792,18 @@ onClipEvent(load){
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人登场动画" selected="true" centerPoint3DX="-0.2" centerPoint3DY="-54.55">
+                  <matrix>
+                    <Matrix tx="-87.4" ty="-124.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87.2" y="70.1"/>
+                  </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
