@@ -213,18 +213,6 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1600</x>
-                        <y>500</y>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
                         <Type>兵种43</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
@@ -347,18 +335,6 @@
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
-                    <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>200</x>
-                        <y>500</y>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
-                    </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
                         <Interval>100</Interval>
@@ -546,19 +522,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
-                        <x>600</x>
-                        <y>500</y>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1000</x>
+                        <x>800</x>
                         <y>500</y>
                         <Parameters>
                             <登场动画>索降</登场动画>
