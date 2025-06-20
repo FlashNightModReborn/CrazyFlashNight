@@ -40,8 +40,13 @@
         // 处理完全逆序情况（就地反转数组，O(n/2)时间复杂度）
         if (isReversed) {
             var l:Number = 0, r:Number = length - 1;
-            // 使用异或交换算法避免临时变量（经测试在AS2中性能最优）
-            do { arr[l] = arr[r] + (arr[r] = arr[l]) - arr[r]; } while (++l < --r);
+            var temp:Object;  // 通用临时变量用于交换
+            // 使用标准三行交换替代数值交换
+            do { 
+                temp = arr[l]; 
+                arr[l] = arr[r]; 
+                arr[r] = temp; 
+            } while (++l < --r);
             return arr;
         }
 
@@ -68,11 +73,11 @@
         // 声明所有局部变量（AS2函数级作用域优化，避免重复声明提升性能）
         var size:Number,         // 当前处理区间的元素总数 (right - left + 1)
             iIns:Number,         // 插入排序外层循环索引
-            keyVal:Number,       // 插入排序当前提取的待插入值
+            keyVal:Object,       // 插入排序当前提取的待插入值（改为Object支持全类型）
             j:Number,            // 插入排序内层循环索引/通用临时索引
             orderedCount:Number, // 高有序度检测计数器（统计有序元素对数量）
             iOrd:Number,         // 有序度检测循环索引
-            key:Number,          // 高有序度插入排序的当前元素值
+            key:Object,          // 高有序度插入排序的当前元素值（改为Object）
             k:Number;            // 高有序度插入排序的内层索引
 
         var startHeap:Number,    // 堆排序起始位置（当前区间左边界）
@@ -105,7 +110,7 @@
             kIndex:Number,       // 插入排序当前处理的取样点索引
             sj:Number,           // 取样点插入排序内层索引
             pivotIndex:Number,   // 最终选定的基准值位置
-            pivotValue:Number;   // 基准值缓存（提升访问速度）
+            pivotValue:Object;   // 基准值缓存（改为Object支持全类型）
 
         var lessIndex:Number,    // 三路分区小于区的右边界（< pivot）
             greatIndex:Number,   // 三路分区大于区的左边界（> pivot）
@@ -114,6 +119,9 @@
             totalLen:Number,     // 当前区间总长度（用于坏分区检测）
             leftLen:Number,      // 左子区间长度（小于区）
             rightLen:Number;     // 右子区间长度（大于区）
+
+        // 通用交换临时变量
+        var swapTemp:Object;
         
         // 基于显式栈的迭代循环（替代递归）
         while (sp > 0) {
@@ -170,16 +178,20 @@
                         rch = lch + 1;  // 右子节点索引
                         if (rch <= endH && cmpPre(arr[rch], arr[largest]) > 0) largest = rch;
                         if (largest != hi) {
-                            // 交换元素并继续调整
-                            arr[hi] = arr[largest] + (arr[largest] = arr[hi]) - arr[largest];
+                            // 标准三行交换替代数值交换
+                            swapTemp = arr[hi];
+                            arr[hi] = arr[largest];
+                            arr[largest] = swapTemp;
                             hi = largest;
                         } else break;
                     }
                 }
                 // 堆排序主循环（逐个提取最大值）
                 for (jHeap = endH; jHeap > startHeap; jHeap--) {
-                    // 交换堆顶与末尾元素
-                    arr[startHeap] = arr[jHeap] + (arr[jHeap] = arr[startHeap]) - arr[jHeap];
+                    // 标准三行交换替代数值交换
+                    swapTemp = arr[startHeap];
+                    arr[startHeap] = arr[jHeap];
+                    arr[jHeap] = swapTemp;
                     boundary = jHeap - 1; root = startHeap;
                     // 重建堆
                     while (true) {
@@ -189,7 +201,10 @@
                         rightC = leftC + 1;
                         if (rightC <= boundary && cmpPre(arr[rightC], arr[largestH]) > 0) largestH = rightC;
                         if (largestH != root) {
-                            arr[root] = arr[largestH] + (arr[largestH] = arr[root]) - arr[largestH];
+                            // 标准三行交换替代数值交换
+                            swapTemp = arr[root];
+                            arr[root] = arr[largestH];
+                            arr[largestH] = swapTemp;
                             root = largestH;
                         } else break;
                     }
@@ -227,7 +242,10 @@
             indices[sj + 1] = kIndex;
             // 确定中位数并交换到左边界（准备分区）
             pivotIndex = indices[2];
-            arr[left] = arr[pivotIndex] + (arr[pivotIndex] = arr[left]) - arr[pivotIndex];
+            // 标准三行交换替代数值交换
+            swapTemp = arr[left];
+            arr[left] = arr[pivotIndex];
+            arr[pivotIndex] = swapTemp;
 
             //------------------------------------------------------
             // [E] 三路分区核心算法（处理重复元素关键）
@@ -240,19 +258,25 @@
             while (idxLoop <= greatIndex) {
                 cPart = cmpPre(arr[idxLoop], pivotValue);
                 if (cPart < 0) {  // 小于分区
-                    // 交换到less区并扩展区域
-                    arr[idxLoop] = arr[lessIndex] + (arr[lessIndex] = arr[idxLoop]) - arr[lessIndex];
+                    // 标准三行交换替代数值交换
+                    swapTemp = arr[idxLoop];
+                    arr[idxLoop] = arr[lessIndex];
+                    arr[lessIndex] = swapTemp;
                     lessIndex++; idxLoop++;
                 } else if (cPart > 0) {  // 大于分区
-                    // 交换到great区并扩展区域
-                    arr[idxLoop] = arr[greatIndex] + (arr[greatIndex] = arr[idxLoop]) - arr[greatIndex];
+                    // 标准三行交换替代数值交换
+                    swapTemp = arr[idxLoop];
+                    arr[idxLoop] = arr[greatIndex];
+                    arr[greatIndex] = swapTemp;
                     greatIndex--;
                 } else {  // 等于分区（直接前进）
                     idxLoop++;
                 }
             }
             // 将pivot移动到正确位置（less区与等于区交界处）
-            arr[left] = arr[lessIndex - 1] + (arr[lessIndex - 1] = arr[left]) - arr[lessIndex - 1];
+            swapTemp = arr[left];
+            arr[left] = arr[lessIndex - 1];
+            arr[lessIndex - 1] = swapTemp;
 
             //------------------------------------------------------
             // [F] 子区间入栈策略（优化栈空间使用）

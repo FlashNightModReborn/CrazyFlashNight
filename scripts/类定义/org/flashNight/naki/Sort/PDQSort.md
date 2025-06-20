@@ -648,35 +648,91 @@ org.flashNight.naki.Sort.PDQSortTest.runTests();
 
 ```output
 
-Starting PDQSort Tests...
+=================================================================
+Starting AS2-Optimized PDQSort Tests...
+=================================================================
+
+--- Basic Functionality Tests ---
 PASS: Empty Array Test
-PASS: Single Element Array Test
+PASS: Single Element Test
+PASS: Two Elements (Reverse) Test
+PASS: Two Elements (Sorted) Test
+PASS: Two Elements (Equal) Test
 PASS: Already Sorted Array Test
 PASS: Reverse Sorted Array Test
 PASS: Random Array Test
-PASS: Duplicate Elements Array Test
-PASS: All Same Elements Array Test
-PASS: Custom Compare Function Test
+PASS: Duplicate Elements Test
+PASS: All Same Elements Test
 
-Starting Performance Tests...
-Size: 1000, Distribution: random, Time: 19ms, Correct: true
-Size: 1000, Distribution: sorted, Time: 1ms, Correct: true
-Size: 1000, Distribution: reverse, Time: 1ms, Correct: true
-Size: 1000, Distribution: duplicates, Time: 4ms, Correct: true
-Size: 1000, Distribution: allSame, Time: 1ms, Correct: true
-Size: 10000, Distribution: random, Time: 273ms, Correct: true
-Size: 10000, Distribution: sorted, Time: 7ms, Correct: true
-Size: 10000, Distribution: reverse, Time: 9ms, Correct: true
-Size: 10000, Distribution: duplicates, Time: 41ms, Correct: true
-Size: 10000, Distribution: allSame, Time: 7ms, Correct: true
-Size: 100000, Distribution: random, Time: 3622ms, Correct: true
-Size: 100000, Distribution: sorted, Time: 70ms, Correct: true
-Size: 100000, Distribution: reverse, Time: 92ms, Correct: true
-Size: 100000, Distribution: duplicates, Time: 386ms, Correct: true
-Size: 100000, Distribution: allSame, Time: 67ms, Correct: true
-Performance Tests Completed.
+--- Boundary Case Tests ---
+PASS: Small Arrays Test - All sizes 3-35 sorted correctly
+PASS: Mixed Types Test - Mixed types should sort correctly
+PASS: Moderate Array Test (1000 elements) - Moderate array sorted correctly in 19ms
+PASS: Extreme Duplicates Test - All duplicate arrays handled correctly
 
-All PDQSort Tests Completed.
+--- Algorithm-Specific Tests ---
+PASS: Insertion Sort Threshold Test - Threshold behavior correct
+PASS: Three-Way Partitioning Test - Many duplicates handled correctly
+PASS: Ordered Detection Test - All ordered scenarios handled correctly
+PASS: Pivot Selection Test
+
+--- Data Type Tests ---
+PASS: String Array Test
+PASS: Object Array Test - Objects sorted by age correctly
+PASS: Mixed Data Types Test - Mixed types sorted correctly
+PASS: Custom Objects Test - Objects sorted by priority correctly
+
+--- Compare Function Tests ---
+PASS: Custom Compare Function Test - Case-insensitive sorting works
+PASS: Reverse Compare Function Test
+PASS: Complex Compare Function Test - Multi-level sorting works
+PASS: Null Compare Function Test
+
+--- Stability Tests ---
+PASS: Consistent Results Test - Multiple sorts produce identical results
+PASS: In-Place Sorting Test - Sorts in place correctly
+PASS: Idempotency Test - Sorting sorted array doesn't change it
+
+--- Light Stress Tests ---
+PASS: Medium Size Arrays Test - All distributions handled correctly
+PASS: Worst Case Scenarios Test - All worst cases handled correctly
+PASS: Repeated Sorting Test - 5 iterations completed successfully
+
+--- Performance Tests ---
+
+Testing size: 100
+  random: 1ms (correct: true)
+  sorted: 0ms (correct: true)
+  reverse: 0ms (correct: true)
+  duplicates: 0ms (correct: true)
+
+Testing size: 1000
+  random: 18ms (correct: true)
+  sorted: 1ms (correct: true)
+  reverse: 2ms (correct: true)
+  duplicates: 4ms (correct: true)
+
+Testing size: 3000
+  random: 71ms (correct: true)
+  sorted: 3ms (correct: true)
+  reverse: 4ms (correct: true)
+  duplicates: 12ms (correct: true)
+
+Testing size: 10000
+  random: 265ms (correct: true)
+  sorted: 10ms (correct: true)
+  reverse: 12ms (correct: true)
+  duplicates: 39ms (correct: true)
+
+=================================================================
+TEST SUMMARY
+=================================================================
+Total Tests: 32
+Passed: 32
+Failed: 0
+Success Rate: 100%
+🎉 ALL TESTS PASSED! 🎉
+=================================================================
 
 
 ```

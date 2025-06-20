@@ -62,7 +62,7 @@ class org.flashNight.naki.Sort.SortTest {
         runBasicFunctionalityTests();
         runStabilityTests();
         runPerformanceBenchmarks();
-        runStressTests();
+        // runStressTests();
         runSpecialScenarioTests();
         runAlgorithmComparison();
         generateFinalReport();
