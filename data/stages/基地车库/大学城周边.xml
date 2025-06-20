@@ -339,6 +339,9 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <x>1300</x>
                         <y>560</y>
                     </Enemy>
@@ -402,6 +405,9 @@
                         <Interval>1800</Interval>
                         <Quantity>3</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -427,7 +433,7 @@
                             <登场动画>空投</登场动画>
                         </Parameters>
                         <x>900</x>
-                        <y>600</y>
+                        <y>700</y>
                     </Enemy>
                     <Enemy>
                         <Type>兵种390</Type>
@@ -438,7 +444,7 @@
                             <登场动画>空投</登场动画>
                         </Parameters>
                         <x>1200</x>
-                        <y>500</y>
+                        <y>600</y>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -527,6 +533,17 @@
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1400</x>
+                        <y>650</y>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
             <SubWave id="1">
@@ -604,6 +621,17 @@
                         <Quantity>3</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>800</x>
+                        <y>670</y>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -690,6 +718,28 @@
                         <y>620</y>
                     </Enemy>
                     <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1200</x>
+                        <y>720</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>800</x>
+                        <y>650</y>
+                    </Enemy>
+                    <Enemy>
                         <Type>兵种44</Type>
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
@@ -722,6 +772,9 @@
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -752,6 +805,28 @@
                     <Duration>12</Duration>
                 </WaveInformation>
                 <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1500</x>
+                        <y>820</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1000</x>
+                        <y>700</y>
+                    </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
                         <Interval>100</Interval>
@@ -825,8 +900,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>2100</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
@@ -851,6 +926,28 @@
                     <Duration>15</Duration>
                 </WaveInformation>
                 <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1000</x>
+                        <y>700</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>400</x>
+                        <y>650</y>
+                    </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
                         <Interval>500</Interval>
@@ -924,8 +1021,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>2100</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
@@ -950,6 +1047,28 @@
                     <Duration>15</Duration>
                 </WaveInformation>
                 <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1500</x>
+                        <y>750</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1000</x>
+                        <y>800</y>
+                    </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
                         <Interval>1500</Interval>
@@ -1035,8 +1154,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>2100</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
@@ -1061,6 +1180,39 @@
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1400</x>
+                        <y>720</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>1000</x>
+                        <y>750</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <Parameters>
+                            <登场动画>空投</登场动画>
+                        </Parameters>
+                        <x>700</x>
+                        <y>590</y>
+                    </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
                         <Interval>500</Interval>
@@ -1146,8 +1298,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
-                        <Interval>2100</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
