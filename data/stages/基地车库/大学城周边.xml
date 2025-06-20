@@ -847,7 +847,7 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
-                        <x>900</x>
+                        <x>1000</x>
                         <y>500</y>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -859,18 +859,6 @@
                         <Interval>600</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
-                        <x>1000</x>
-                        <y>500</y>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>700</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
                         <x>1100</x>
                         <y>500</y>
                         <Parameters>
@@ -880,7 +868,7 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>800</Interval>
+                        <Interval>700</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1200</x>
