@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -213,32 +213,33 @@
                 <QuantityMax>3</QuantityMax>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#微笑</Char>
                 <Text>恩，找到物资了！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#大笑</Char>
                 <Text>接下来就是等支援的同伴们来回收物资了！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>啊！这个声音是......僵尸。好像数量还不少，我要小心了！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>......也不知道是同伴们先到，还是闻到味的盗贼们先到了。</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -378,14 +379,14 @@
                         <PrimaryWeapon>G36</PrimaryWeapon>
                         <SecondaryWeapon>M1911</SecondaryWeapon>
                         <SecondaryWeapon2>m9</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>女变装-基本脸型</FaceType>
                         <HairStyle>发型-女式-银色清爽直发</HairStyle>
                         <HeadEquipment>防毒面具1号</HeadEquipment>
                         <BodyArmor>新手衣服</BodyArmor>
                         <LegArmor>新手裤子</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>新手皮鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>女</Gender>
@@ -401,17 +402,17 @@
                         <IsHostile>false</IsHostile>
                         <Height>180</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon />
+                        <PrimaryWeapon/>
                         <SecondaryWeapon>Mossberg500</SecondaryWeapon>
                         <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑蓬头</HairStyle>
                         <HeadEquipment>红外夜视仪</HeadEquipment>
                         <BodyArmor>军绿防弹衣</BodyArmor>
                         <LegArmor>墨绿军用下装</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>墨绿军用鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>男</Gender>

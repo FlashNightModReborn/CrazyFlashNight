@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -28,28 +28,29 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>我们在这里解决敌人后分头出击！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>A兵团精英A</Name>
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>好，麻烦你突入进去，我们会堵住出口的。</Text>
                 <Type>兵种374</Type>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>A兵团精英B</Name>
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>最好尽快找到传闻中的方舟武士！</Text>
                 <Type>兵种375</Type>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -190,6 +191,16 @@
                 <Identifier>出生点-光束发射器</Identifier>
             </Point>
         </SpawnPoint>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>……消失了……！和在军阀基地遇到的一样！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -221,14 +232,6 @@
                         <Parameters>方向:左</Parameters>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>……消失了……！和在军阀基地遇到的一样！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -416,14 +419,15 @@
                 <Identifier>出生点-嵌入大机关门</Identifier>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>无处可逃了吧……让我看看，你究竟是什么东西！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

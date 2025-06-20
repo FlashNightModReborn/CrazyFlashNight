@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -51,14 +51,25 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>这是！？</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>满地都是人体碎片，我还真是把lee这家伙看扁了！这家伙实力这么强！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -81,14 +92,6 @@
                         <Parameters>称号:坛主</Parameters>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>满地都是人体碎片，我还真是把lee这家伙看扁了！这家伙实力这么强！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -143,14 +146,15 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/hthhltnb_4_BG.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>这完完全全是单方面的屠杀，说不定等我赶到，黑龙也被他解决了……</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -199,44 +203,67 @@
             <PlayerX>200</PlayerX>
             <PlayerY>390</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>怎么会这样？lee竟然……喂！你怎么样了！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>黑龙</Name>
                 <Title>黑龙堂冶魁</Title>
                 <Char>黑龙</Char>
                 <Text>先顾好你自己，小子！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>你就是黑龙，果然和情报上说的一样。</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>黑龙</Name>
                 <Title>黑龙堂冶魁</Title>
                 <Char>黑龙</Char>
                 <Text>这没用的克隆人，就是我兄长一直悬赏的人，待会儿我要让我兄长亲自处决这个叛徒，至于你，哼，准备好被我撕成两半吧！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>这可不一定，先打再说，谁知道你是黑龙还是黑虫！</Text>
-            </SubDialogue>
-            <SubDialogue id="5">
+            </Dialogue>
+            <Dialogue id="5">
                 <Name>黑龙</Name>
                 <Title>黑龙堂冶魁</Title>
                 <Char>黑龙</Char>
                 <Text>去死吧！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>黑龙</Name>
+                <Title>黑龙堂冶魁</Title>
+                <Char>黑龙</Char>
+                <Text>怎么回事，我的胸口……</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>黑龙</Name>
+                <Title>黑龙堂冶魁</Title>
+                <Char>黑龙</Char>
+                <Text>啊！（双膝跪地，吐出一大口鲜血）</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>他这是……不管了，先趁这个空挡把lee救下来再说！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -255,26 +282,6 @@
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>黑龙</Name>
-                        <Title>黑龙堂冶魁</Title>
-                        <Char>黑龙</Char>
-                        <Text>怎么回事，我的胸口……</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>黑龙</Name>
-                        <Title>黑龙堂冶魁</Title>
-                        <Char>黑龙</Char>
-                        <Text>啊！（双膝跪地，吐出一大口鲜血）</Text>
-                    </SubDialogue>
-                    <SubDialogue id="2">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR</Char>
-                        <Text>他这是……不管了，先趁这个空挡把lee救下来再说！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

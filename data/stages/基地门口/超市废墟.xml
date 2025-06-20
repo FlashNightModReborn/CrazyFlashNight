@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -120,20 +120,21 @@
                 </Parameters>
             </Instance>
         </Instances>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>让我看看还有没有没有被洗劫的箱子……里面也许有我需要的东西……</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>先解决掉这个家伙先！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -151,17 +152,17 @@
                         <IsHostile>true</IsHostile>
                         <Height>180</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon />
-                        <SecondaryWeapon />
-                        <SecondaryWeapon2 />
-                        <MeleeWeapon />
-                        <Grenade />
+                        <PrimaryWeapon/>
+                        <SecondaryWeapon/>
+                        <SecondaryWeapon2/>
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-络腮胡</HairStyle>
                         <HeadEquipment>男变装-圆框墨镜</HeadEquipment>
                         <BodyArmor>褐色背带背心</BodyArmor>
                         <LegArmor>盗贼牛仔裤带腿包</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>褐色简单皮鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>男</Gender>

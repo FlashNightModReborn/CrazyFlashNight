@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -31,20 +31,21 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>Boy</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>boy</Char>
                 <Text>我和主力部队会去攻击防线正面，你往前走到军阀工兵挖掘的战壕里，根据那边的指示进行下一步行动。我们无线电联系。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>了解！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -190,20 +191,37 @@
                 <NoCount>true</NoCount>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>这么走下去不是办法，敌人太多了，怎么办？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>Boy(无线电)</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>无头像</Char>
                 <Text>坚持一下，待会有人接应你。</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>Boy(无线电)</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Text>跟他们前往战壕，准备进入防御地带内部。我们这边伤亡不小，牵制时间有限。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>明白！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -243,20 +261,6 @@
                     <Duration>0</Duration>
                     <FinishRequirement>2</FinishRequirement>
                 </WaveInformation>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>Boy(无线电)</Name>
-                        <Title>BPK战队-队长</Title>
-                        <Char>无头像</Char>
-                        <Text>跟他们前往战壕，准备进入防御地带内部。我们这边伤亡不小，牵制时间有限。</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>明白！</Text>
-                    </SubDialogue>
-                </Dialogue>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种97</Type>
@@ -280,14 +284,31 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带战壕.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>黑铁死士</Name>
                 <Title>黑铁会派遣军</Title>
                 <Char>黑铁会盗贼</Char>
                 <Text>敌军果然试图伏击，击溃他们！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>Boy(无线电)</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Text>前面就是地下入口了，你乘应急电梯下去。我们不确定里面有什么，小心点。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>都到这了肯定不能退缩了！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -359,20 +380,6 @@
                         <y>430</y>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>  
-                    <SubDialogue id="0">
-                        <Name>Boy(无线电)</Name>
-                        <Title>BPK战队-队长</Title>
-                        <Char>无头像</Char>
-                        <Text>前面就是地下入口了，你乘应急电梯下去。我们不确定里面有什么，小心点。</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>都到这了肯定不能退缩了！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -389,26 +396,27 @@
                 <Identifier>出生点-防御地带内部入口</Identifier>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>我从电梯间出来了，然后去哪？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>Boy(无线电)</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>无头像</Char>
                 <Text>军阀那边要求通信，先听他们的。</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>Itinerant(无线电)</Name>
                 <Title>后勤部长</Title>
                 <Char>无头像</Char>
                 <Text>往右边走，遇见大门就进入，Surveyor很快就到。</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -498,6 +506,38 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带内部2.swf</Background>
         </BasicInformation>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这家伙是？！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>有强敌吗？还请尽快解决，我们正面部队已经有几支溃败了。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>友军终于到了。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>诺亚这些人真是疯癫，把各种人拿来改造···我们赶紧进去吧。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -529,20 +569,6 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>这家伙是？！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
-                <Name>Itinerant(无线电)</Name>
-                <Title>后勤部长</Title>
-                <Char>无头像</Char>
-                <Text>有强敌吗？还请尽快解决，我们正面部队已经有几支溃败了。</Text>
-            </SubDialogue>
-        </Dialogue>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -562,20 +588,6 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>友军终于到了。</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>surveyor</Name>
-                        <Title>火力支援学说专家</Title>
-                        <Char>surveyor</Char>
-                        <Text>诺亚这些人真是疯癫，把各种人拿来改造···我们赶紧进去吧。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="2">
                 <WaveInformation>
@@ -605,20 +617,21 @@
                 <Identifier>出生点-防御地带内部大门</Identifier>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>这里就是数据间吗？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>surveyor</Name>
                 <Title>火力支援学说专家</Title>
                 <Char>surveyor</Char>
                 <Text>看起来没错，我们直接往前走，就能激活电子战了。我们坚持足够的时间，就能引来天网彻底摧毁防御地带。做好准备，从诺亚和天网手中活下来可不简单。</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -646,14 +659,73 @@
             </Animation>
             <Background>flashswf/backgrounds/防御地带电子战.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>surveyor</Name>
                 <Title>火力支援学说专家</Title>
                 <Char>surveyor</Char>
                 <Text>开始作战！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>敌人越来越多了！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>诺亚那边的就快结束了，不过接下来才是重头戏。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>天网来了！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>还有多久？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>再坚持一会！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>3</Parameter>
+            <Dialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>作战成功，引来的天网部队歼灭了诺亚部队，主力部队已撤退，请你们尽快逃出。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>我们走。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -692,20 +764,6 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>敌人越来越多了！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>surveyor</Name>
-                        <Title>火力支援学说专家</Title>
-                        <Char>surveyor</Char>
-                        <Text>诺亚那边的就快结束了，不过接下来才是重头戏。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -731,14 +789,6 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>天网来了！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="2">
                 <WaveInformation>
@@ -788,20 +838,6 @@
                         <Level>45</Level>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>还有多久？</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>surveyor</Name>
-                        <Title>火力支援学说专家</Title>
-                        <Char>surveyor</Char>
-                        <Text>再坚持一会！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="3">
                 <WaveInformation>
@@ -851,20 +887,6 @@
                         <Level>45</Level>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>Itinerant(无线电)</Name>
-                        <Title>后勤部长</Title>
-                        <Char>无头像</Char>
-                        <Text>作战成功，引来的天网部队歼灭了诺亚部队，主力部队已撤退，请你们尽快逃出。</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>surveyor</Name>
-                        <Title>火力支援学说专家</Title>
-                        <Char>surveyor</Char>
-                        <Text>我们走。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

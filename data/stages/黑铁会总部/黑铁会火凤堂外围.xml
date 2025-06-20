@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -31,28 +31,29 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>A兵团突击兵梅利</Name>
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>开打了，你怎么才来？</Text>
                 <Type>兵种241</Type>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>A兵团突击兵汉斯</Name>
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>再来晚点儿，我们都要打完了！</Text>
                 <Type>兵种240</Type>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>这就来，兄弟们挺住！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -145,28 +146,29 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/gk16_3_BG.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>A兵团重装兵拉德</Name>
                 <Title>战斗狂人</Title>
                 <Char>主角模板</Char>
                 <Text>兄弟，我们拖着这些家伙，你尽管冲进去！</Text>
                 <Type>兵种244</Type>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>多谢你们了，我这就去！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>A兵团重装兵明王</Name>
                 <Title>战斗狂人</Title>
                 <Char>主角模板</Char>
                 <Text>别废话了，快点儿行动！</Text>
                 <Type>兵种245</Type>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

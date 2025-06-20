@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -31,20 +31,21 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>诺艾尔</Name>
                 <Title>女仆骑士（自称）</Title>
                 <Char>诺艾尔</Char>
                 <Text>应该就在前方。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>尾上世莉架</Name>
                 <Title>？？？</Title>
                 <Char>尾上世莉架</Char>
                 <Text>烦人的家伙来了。</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -80,21 +81,60 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/事故森林2.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>盗贼</Name>
                 <Title>盗贼</Title>
                 <Char>主角模板</Char>
                 <Text>嗯？你们是···</Text>
                 <Type>兵种27</Type>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>尾上世莉架</Name>
                 <Title>？？？</Title>
                 <Char>尾上世莉架</Char>
                 <Text>啧，干掉他们！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>诺艾尔</Name>
+                <Title>女仆骑士（自称）</Title>
+                <Char>诺艾尔</Char>
+                <Text>这些人···</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>不值一提，不过发现我们那就是另一回事了。还有，打起精神，新的敌人来了。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这是？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>文天说过的吧，这里不过是意识空间。不用管他们的外形，不过是妄想的结果而已。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>尾上世莉架</Name>
+                <Title>？？？</Title>
+                <Char>尾上世莉架</Char>
+                <Text>前面是不稳定区域，我们可能会走散，注意安全后汇合。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -161,20 +201,6 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-              <SubDialogue id="0">
-                <Name>诺艾尔</Name>
-                <Title>女仆骑士（自称）</Title>
-                <Char>诺艾尔</Char>
-                <Text>这些人···</Text>
-              </SubDialogue>
-              <SubDialogue id="1">
-                <Name>尾上世莉架</Name>
-                <Title>？？？</Title>
-                <Char>尾上世莉架</Char>
-                <Text>不值一提，不过发现我们那就是另一回事了。还有，打起精神，新的敌人来了。</Text>
-            </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -194,26 +220,6 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
-            <Dialogue>
-              <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>这是？</Text>
-              </SubDialogue>
-              <SubDialogue id="1">
-                <Name>尾上世莉架</Name>
-                <Title>？？？</Title>
-                <Char>尾上世莉架</Char>
-                <Text>文天说过的吧，这里不过是意识空间。不用管他们的外形，不过是妄想的结果而已。</Text>
-              </SubDialogue>
-                <SubDialogue id="2">
-                <Name>尾上世莉架</Name>
-                <Title>？？？</Title>
-                <Char>尾上世莉架</Char>
-                <Text>前面是不稳定区域，我们可能会走散，注意安全后汇合。</Text>
-              </SubDialogue>
-            </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -221,14 +227,35 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/avp1_2_BG.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>糟糕，突然就走散了。这些家伙···！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>啧，快点打完吧。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>我都学会那家伙的口癖了···得快点汇合。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -248,15 +275,7 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-              <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>啧，快点打完吧。</Text>
-              </SubDialogue>
-                </Dialogue>
-				</SubWave>
+            </SubWave>
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>0</Duration>
@@ -288,14 +307,6 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
-            <Dialogue>
-              <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>我都学会那家伙的口癖了···得快点汇合。</Text>
-              </SubDialogue>
-            </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -310,38 +321,39 @@
                 <Identifier>髅髅宫歌留多</Identifier>
             </Instance>
         </Instances>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>尾上世莉架</Name>
                 <Title>？？？</Title>
                 <Char>尾上世莉架</Char>
                 <Text>嘁，原来是这样。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>什么意思？</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>尾上世莉架</Name>
                 <Title>？？？</Title>
                 <Char>尾上世莉架</Char>
                 <Text>多余的回去后再解释吧。你这家伙，也给我跟上。</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>歌留多</Name>
                 <Title>？？？</Title>
                 <Char>歌留多</Char>
                 <Text>···</Text>
-            </SubDialogue>
-              <SubDialogue id="4">
+            </Dialogue>
+              <Dialogue id="4">
                 <Name>诺艾尔</Name>
                 <Title>女仆骑士（自称）</Title>
                 <Char>诺艾尔</Char>
                 <Text>诶，这就走了吗？</Text>
-              </SubDialogue>
-        </Dialogue>
+              </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -365,5 +377,5 @@
                 </EnemyGroup>
                 </SubWave>
         </Wave>
-        </SubStage>
+    </SubStage>
 </GameStage>

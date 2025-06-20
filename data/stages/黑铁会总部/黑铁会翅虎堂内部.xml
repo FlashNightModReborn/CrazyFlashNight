@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -166,26 +166,43 @@
             <PlayerX>100</PlayerX>
             <PlayerY>470</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>翅虎</Name>
                 <Title>翅虎堂司暗</Title>
                 <Char>翅虎</Char>
                 <Text>情报准确无误，你这小子果然有两把刷子，闯我外堂，我今天定要将你斩杀在这翅虎堂！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>别放屁了，有什么招都使出来，你的飞刀据说比子弹还要准？</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>翅虎</Name>
                 <Title>翅虎堂司暗</Title>
                 <Char>翅虎</Char>
                 <Text>小子，你把我…惹毛了！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>翅虎</Name>
+                <Title>翅虎堂司暗</Title>
+                <Char>翅虎</Char>
+                <Text>情况有变，兄弟们，撤！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>翅虎居然撤了？不能继续追了，先回去汇报情况吧！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -241,20 +258,6 @@
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>翅虎</Name>
-                        <Title>翅虎堂司暗</Title>
-                        <Char>翅虎</Char>
-                        <Text>情况有变，兄弟们，撤！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR</Char>
-                        <Text>翅虎居然撤了？不能继续追了，先回去汇报情况吧！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

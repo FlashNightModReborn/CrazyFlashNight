@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -403,6 +403,38 @@
                 <Identifier>出生点-大机关门</Identifier>
             </Point>
         </SpawnPoint>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>僵尸源源不断地从管道里输送过来，根本杀不完啊……</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>那是什么怪物？</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>管道里的僵尸无穷无尽，这样下去不是办法……得赶紧找到控制中枢！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>摇滚学姐</Name>
+                <Title> </Title>
+                <Char>摇滚学姐</Char>
+                <Text>我们来对付这些管道，干掉那几个大家伙之后你赶快前进吧！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -452,20 +484,6 @@
                         <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR</Char>
-                        <Text>僵尸源源不断地从管道里输送过来，根本杀不完啊……</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>那是什么怪物？</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -508,20 +526,6 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>管道里的僵尸无穷无尽，这样下去不是办法……得赶紧找到控制中枢！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>摇滚学姐</Name>
-                        <Title> </Title>
-                        <Char>摇滚学姐</Char>
-                        <Text>我们来对付这些管道，干掉那几个大家伙之后你赶快前进吧！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="2">
                 <WaveInformation>
@@ -648,20 +652,21 @@
                 <Identifier>出生点-侧向大机关门</Identifier>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>这应该就是中枢了！它在……不断生长吗？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>？？？</Name>
                 <Title>？？？</Title>
                 <Char>忍者BOSS</Char>
                 <Text>……</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

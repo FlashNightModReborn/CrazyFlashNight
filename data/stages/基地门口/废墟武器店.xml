@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
     </Rewards>
@@ -202,26 +202,27 @@
                 </Parameters>
             </Instance>
         </Instances>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>啊…………怎么有个家伙在这儿……是敌人吗？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>这家伙身上有枪，在基地没有见过这个家伙，应该是敌人没错！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>只要在他拔枪之前快速解决掉他就赢了！如果他拔枪，只要避免和他同一直线就能避开子弹！好，来吧！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -239,17 +240,17 @@
                         <IsHostile>true</IsHostile>
                         <Height>180</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon />
+                        <PrimaryWeapon/>
                         <SecondaryWeapon>PPK</SecondaryWeapon>
-                        <SecondaryWeapon2 />
-                        <MeleeWeapon />
-                        <Grenade />
+                        <SecondaryWeapon2/>
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-络腮胡</HairStyle>
                         <HeadEquipment>男变装-圆框墨镜</HeadEquipment>
                         <BodyArmor>褐色背带背心</BodyArmor>
                         <LegArmor>盗贼牛仔裤带腿包</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>褐色简单皮鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>男</Gender>

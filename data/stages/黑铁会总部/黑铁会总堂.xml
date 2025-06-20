@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -237,62 +237,91 @@
             <PlayerX>500</PlayerX>
             <PlayerY>400</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>黑铁</Name>
                 <Title>黑铁会教主</Title>
                 <Char>黑铁</Char>
                 <Text>数次打败孤座下三大堂主，只身闯孤总堂。自从孤统治黑铁会后，你是第一个，勇气可嘉。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>你的三大堂主确实很厉害，但我也的的确确来到你面前，今天，我代表A兵团，要彻底终结你在堕落城的统治！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>黑铁</Name>
                 <Title>黑铁会教主</Title>
                 <Char>黑铁</Char>
                 <Text>上一个对孤说这句话的人，只一剑被孤拦腰斩断，尸体挂在城门三天三夜示众。小子，你可知激怒孤的下场？</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>我不关心这些，也不想知道，我只知道，我的任务就是击败你！</Text>
-            </SubDialogue>
-            <SubDialogue id="4">
+            </Dialogue>
+            <Dialogue id="4">
                 <Name>黑铁</Name>
                 <Title>黑铁会教主</Title>
                 <Char>黑铁</Char>
                 <Text>（叹气）……孤夜观天象，以六爻推算，今日不可见血，否则黑铁会将有一大劫难。孤本无心杀你，但你杀孤兵士，伤孤堂主。今天孤就要逆天而行，以汝之血，祭黑铁会战死的教众！</Text>
-            </SubDialogue>
-            <SubDialogue id="5">
+            </Dialogue>
+            <Dialogue id="5">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>那得先看你这个梳着辫子的怪人能不能打得过我！</Text>
-            </SubDialogue>
-            <SubDialogue id="6">
+            </Dialogue>
+            <Dialogue id="6">
                 <Name>黑铁</Name>
                 <Title>黑铁会教主</Title>
                 <Char>黑铁</Char>
                 <Text>逞匹夫之勇，敢妄称帝尊。小子，你的勇气，孤很欣赏，很可惜，今天你不可能活着走出总堂的大门，就让孤手中利刃，歃尽你这毛头小子的鲜血！</Text>
-            </SubDialogue>
-            <SubDialogue id="7">
+            </Dialogue>
+            <Dialogue id="7">
                 <Name>黑铁</Name>
                 <Title>黑铁会教主</Title>
                 <Char>黑铁</Char>
                 <Text>苍穹浩茫茫，万劫太极长。小子，拔出你的剑！</Text>
-            </SubDialogue>
-            <SubDialogue id="8">
+            </Dialogue>
+            <Dialogue id="8">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>你的不败传说，就让老子来打破！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>黑铁</Name>
+                <Title>黑铁会教主</Title>
+                <Char>黑铁</Char>
+                <Text>是孤……？败了！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>哼，这黑铁剑，我就收下了！</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>黑铁</Name>
+                <Title>黑铁会教主</Title>
+                <Char>黑铁</Char>
+                <Text>小子，你的实力，孤认可了。在不久的将来，我们或许会并肩作战。拿着孤的剑离开吧，没有人再会阻止你的……</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>希望如此吧，“教主”大人。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -309,32 +338,6 @@
                         <Parameters>方向:左,登场动画:a0,死亡动画:a1,称号:黑铁会教主</Parameters>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>黑铁</Name>
-                        <Title>黑铁会教主</Title>
-                        <Char>黑铁</Char>
-                        <Text>是孤……？败了！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR</Char>
-                        <Text>哼，这黑铁剑，我就收下了！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="2">
-                        <Name>黑铁</Name>
-                        <Title>黑铁会教主</Title>
-                        <Char>黑铁</Char>
-                        <Text>小子，你的实力，孤认可了。在不久的将来，我们或许会并肩作战。拿着孤的剑离开吧，没有人再会阻止你的……</Text>
-                    </SubDialogue>
-                    <SubDialogue id="3">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR</Char>
-                        <Text>希望如此吧，“教主”大人。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -156,32 +156,55 @@
             <PlayerX>70</PlayerX>
             <PlayerY>420</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>火凤</Name>
                 <Title>火凤堂赤旌</Title>
                 <Char>火凤</Char>
                 <Text>翅虎这个家伙真是没用，竟然能被你这种无名鼠辈打败。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>好漂亮的女人啊……不对，哪来那么多废话，你们黑铁会就没有能打的！包括你们那个教主也一样！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>火凤</Name>
                 <Title>火凤堂赤旌</Title>
                 <Char>火凤</Char>
                 <Text>你……你敢污蔑教主！还没有人能当着我的面侮辱我最重要的人！看我不扒了你的皮！</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>她的流星锤……不好！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>火凤</Name>
+                <Title>火凤堂赤旌</Title>
+                <Char>火凤</Char>
+                <Text>你！别走，与我再战！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>黑铁游侠</Name>
+                <Title>火凤堂士兵</Title>
+                <Char>黑铁会盗贼#黑铁游侠</Char>
+                <Text>堂主，快撤，翅虎的情报没有错，再打下去要吃亏的！</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>这女人真是难缠，总算是把她解决了！先回去报告老大吧！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -232,26 +255,6 @@
                         <Parameters>称号:坛主</Parameters>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>火凤</Name>
-                        <Title>火凤堂赤旌</Title>
-                        <Char>火凤</Char>
-                        <Text>你！别走，与我再战！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>黑铁游侠</Name>
-                        <Title>火凤堂士兵</Title>
-                        <Char>黑铁会盗贼#黑铁游侠</Char>
-                        <Text>堂主，快撤，翅虎的情报没有错，再打下去要吃亏的！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="2">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR</Char>
-                        <Text>这女人真是难缠，总算是把她解决了！先回去报告老大吧！</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
