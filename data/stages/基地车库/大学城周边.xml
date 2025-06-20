@@ -96,6 +96,14 @@
                         <x>530</x>
                         <y>582</y>
                     </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <x>610</x>
+                        <y>620</y>
+                    </Enemy>
                 </EnemyGroup>    
         <Dialogue>
             <SubDialogue id="1">
@@ -619,6 +627,22 @@
                         <Level>50</Level>
                         <x>1216</x>
                         <y>638</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <x>1500</x>
+                        <y>600</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种390</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <x>1000</x>
+                        <y>620</y>
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
