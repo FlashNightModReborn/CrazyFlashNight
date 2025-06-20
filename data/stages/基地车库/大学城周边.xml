@@ -122,18 +122,6 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
-                        <x>800</x>
-                        <y>500</y>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
                         <x>1200</x>
                         <y>500</y>
                         <Parameters>
@@ -403,18 +391,6 @@
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
-                    <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>800</x>
-                        <y>500</y>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
-                    </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
                         <Interval>100</Interval>
