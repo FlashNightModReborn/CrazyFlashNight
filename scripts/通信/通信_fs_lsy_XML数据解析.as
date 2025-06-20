@@ -220,41 +220,6 @@ _root.解析敌人波次 = function(敌人配置:Array)
 };
 */
 
-_root.解析敌人属性 = function(敌人)
-{
-	// 如果Type属性存在，则直接返回已有敌人配置
-	if (_root.兵种库[敌人.Type]) return _root.兵种库[敌人.Type];
-	// 否则，组装敌人属性       
-	var 敌人对象:Object = {};
-	敌人对象.兵种名 = 敌人.spritename;
-	敌人对象.名字 = 敌人.Name;
-	敌人对象.等级 = 敌人.Level;
-	敌人对象.是否为敌人 = 敌人.IsHostile;
-	敌人对象.身高 = 敌人.Height;
-	敌人对象.NPC = 敌人.NPC;
-	敌人对象.长枪 = 敌人.PrimaryWeapon;
-	敌人对象.手枪 = 敌人.SecondaryWeapon;
-	敌人对象.手枪2 = 敌人.SecondaryWeapon2;
-	敌人对象.刀 = 敌人.MeleeWeapon;
-	敌人对象.手雷 = 敌人.Grenade;
-	敌人对象.脸型 = 敌人.FaceType;
-	敌人对象.发型 = 敌人.HairStyle;
-	敌人对象.头部装备 = 敌人.HeadEquipment;
-	敌人对象.上装装备 = 敌人.BodyArmor;
-	敌人对象.下装装备 = 敌人.LegArmor;
-	敌人对象.手部装备 = 敌人.HandGear;
-	敌人对象.脚部装备 = 敌人.FootGear;
-	敌人对象.颈部装备 = 敌人.NeckGear;
-	敌人对象.性别 = 敌人.Gender;
-	for (var 属性:String in 敌人对象) {
-		// 检查属性值是否为undefined或null，如果是则赋值为""
-		敌人对象[属性] = (敌人对象[属性] !== undefined && 敌人对象[属性] !== null) ? 敌人对象[属性] : "";
-	}/*if (敌人.Type !== undefined)
-	{
-	_root[敌人.Type] = 敌人对象;
-	}*/
-	return 敌人对象;// 返回组装好的敌人对象
-};
 
 /*
 _root.解析并设置实例配置 = function(关卡数据:Array){

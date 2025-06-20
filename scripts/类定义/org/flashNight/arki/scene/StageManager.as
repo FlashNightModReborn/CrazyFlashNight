@@ -3,13 +3,14 @@ import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
 /**
-StageManager 通过波次控制关卡流程完全覆盖原版无限过图的功能
+StageManager 管理关卡的基础行为。
 ——————————————————————————————————————————
 */
 class org.flashNight.arki.scene.StageManager {
     public static var instance:StageManager; // 单例引用
     private var sceneManager:SceneManager; // SceneManager单例
     private var waveSpawner:WaveSpawner; // WaveSpawner单例
+    private var stageEventHandler:StageEventHandler; // StageEventHandler单例
 
     public var gameworld:MovieClip; // 当前gameworld
     public var environment;
@@ -20,6 +21,7 @@ class org.flashNight.arki.scene.StageManager {
 
     public var spawnPoints:Array; // 出生点影片剪辑列表
 
+    public var isFinished = false;
     
     /**
      * 单例获取：返回全局唯一实例
@@ -38,6 +40,7 @@ class org.flashNight.arki.scene.StageManager {
     public function initialize(data):Void{
         sceneManager = SceneManager.instance;
         waveSpawner = WaveSpawner.instance;
+        stageEventHandler = StageEventHandler.instance;
 
         data = ObjectUtil.toArray(data);
         stageInfoList = new Array(data.length);
@@ -56,14 +59,20 @@ class org.flashNight.arki.scene.StageManager {
         var basicInfo = currentStageInfo.basicInfo;
         var instanceInfo = currentStageInfo.instanceInfo;
         var spawnPointInfo = currentStageInfo.spawnPointInfo;
-        var dialogues = currentStageInfo.dialogues;
+        // var dialogues = currentStageInfo.dialogues;
         
         gameworld = sceneManager.gameworld;
 
-        // 创建事件分发器
-        gameworld.dispatcher.subscribeOnce("StageFinished", function() {
-            this.显示箭头();
-        },gameworld.通关箭头);
+        isFinished = false;
+
+        stageEventHandler.init(gameworld);
+
+        // 附加箭头出现事件
+        if(currentStage < stageInfoList.length - 1){
+            gameworld.dispatcher.subscribeOnce("Clear", function() {
+                this.显示箭头();
+            }, gameworld.通关箭头);
+        }
 
         // 设置本张图结束后的过场背景
         if (basicInfo.LoadingImage) {
@@ -144,7 +153,7 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.出生地.是否从门加载角色();
         
         // 将上述属性设置为不可枚举
-        _global.ASSetPropFlags(gameworld, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin", "出生地"], 1, false);
+        _global.ASSetPropFlags(gameworld, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin", "通关箭头", "出生地"], 1, false);
 
         
         var unIterables = []; // 记录无需枚举的影片剪辑实例名
@@ -165,12 +174,21 @@ class org.flashNight.arki.scene.StageManager {
         // 放置出生点，初始化各个刷怪点的总个数和场上人数
         spawnPoints = new Array(spawnPointInfo.length);
         for (var i = 0; i < spawnPointInfo.length; i++) {
+            var spinfo = spawnPointInfo[i];
             unIterables.push(instName = "door" + i)
-            spawnPoints[i] = sceneManager.addInstance(spawnPointInfo[i], instName);
-            spawnPoints[i].僵尸型敌人总个数 = 0;
-            spawnPoints[i].僵尸型敌人场上实际人数 = 0;
-            spawnPoints[i].QuantityMax = spawnPointInfo[i].QuantityMax;
-            spawnPoints[i].NoCount = spawnPointInfo[i].NoCount;
+            var sp = spawnPoints[i] = sceneManager.addInstance(spinfo, instName);
+            sp.僵尸型敌人总个数 = 0;
+            sp.僵尸型敌人场上实际人数 = 0;
+            if(spinfo.Identifier){
+                sp.Identifier = spinfo.Identifier;
+                if(!isNaN(spinfo.Offset)) sp.Offset = spinfo.Offset;
+            }
+            sp.QuantityMax = spinfo.QuantityMax;
+            sp.NoCount = spinfo.NoCount ? true: false;
+            if(spinfo.BiasX > 0 && spinfo.BiasY > 0){
+                sp.BiasX = spinfo.BiasX;
+                sp.BiasY = spinfo.BiasY;
+            }
         }
         gameworld.地图.僵尸型敌人总个数 = 0;
         gameworld.地图.僵尸型敌人场上实际人数 = 0;
@@ -188,11 +206,11 @@ class org.flashNight.arki.scene.StageManager {
         }
 
         // 加载进图对话
-        var 本轮对话 = dialogues[0];
-        if (本轮对话.length > 0) {
-            _root.暂停 = true;
-            _root.SetDialogue(本轮对话);
-        }
+        // var 本轮对话 = dialogues[0];
+        // if (本轮对话.length > 0) {
+        //     _root.暂停 = true;
+        //     _root.SetDialogue(本轮对话);
+        // }
 
         //播放场景bgm
         if(basicInfo.BGM){
@@ -203,7 +221,7 @@ class org.flashNight.arki.scene.StageManager {
             }
         }
 
-        //调用回调函数
+        // 调用回调函数
         if(basicInfo.CallbackFunction.Name){
             if(basicInfo.CallbackFunction.Parameter){
                 var para = _root.配置数据为数组(basicInfo.CallbackFunction.Parameter);
@@ -213,20 +231,33 @@ class org.flashNight.arki.scene.StageManager {
             }
         }
         
-        //加载场景
+        // 加载场景
         _root.加载场景背景(basicInfo.Background);
         _root.加载后景(environment);
 
+        // 侦听关卡事件
+        if(currentStageInfo.eventInfo.length > 0){
+            for(var i=0; i<currentStageInfo.eventInfo.length; i++){
+                stageEventHandler.subscribeStageEvent(currentStageInfo.eventInfo[i]);
+            }
+        }
+
+        // 发布开始事件
+        gameworld.dispatcher.publish("Start");
+
         // 开始刷怪
-        waveSpawner.init(currentStageInfo);
+        if(currentStageInfo.waveInfo != null) waveSpawner.init(currentStageInfo);
     }
 
     public function finishStage():Void{
+        isFinished = true;
+
         gameworld.关卡结束 = true;
         _root.d_波次._visible = false;
         _root.d_剩余敌人数._visible = false;
+        gameworld.dispatcher.publish("Clear");
 
-        //加载结束动画
+        // 加载结束动画
         var animInfo = currentStageInfo.basicInfo.Animation;
         if (animInfo.Load == 0){
             _root.最上层加载外部动画(animInfo.Path);
@@ -241,7 +272,6 @@ class org.flashNight.arki.scene.StageManager {
             gameworld.允许通行 = true;
             var hero:MovieClip = TargetCacheManager.findHero();
             _root.效果("小过关提示动画", hero._x, hero._y,100);
-            gameworld.dispatcher.publish("StageFinished");
         }
     }
 
@@ -252,6 +282,7 @@ class org.flashNight.arki.scene.StageManager {
         spawnPoints = null;
 
         waveSpawner.close();
+        stageEventHandler.clear();
     }
 
     public function clear():Void{

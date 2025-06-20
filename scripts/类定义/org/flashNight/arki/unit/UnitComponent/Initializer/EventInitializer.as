@@ -21,6 +21,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         UpdateEventComponent.initialize(target);
         RespawnEventComponent.initialize(target);
 
+        // 发布特殊单位出生事件
+        if(target.publishStageEvent === true){
+            _root.gameworld.dispatcher.publish("UnitSpawn",target._name);
+        }
+
         if(target.兵种 != "主角-男") return; // 主角限定
 
         ReloadEventComponent.initialize(target);

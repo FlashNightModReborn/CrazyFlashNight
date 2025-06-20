@@ -3,8 +3,8 @@
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
-/**
-WaveSpawner 通过波次控制关卡流程完全覆盖原版无限过图的功能
+/*
+WaveSpawner 波次刷怪器，通过波次控制关卡流程，完全覆盖原版无限过图的功能。
 ——————————————————————————————————————————
 */
 class org.flashNight.arki.scene.WaveSpawner {
@@ -169,18 +169,19 @@ class org.flashNight.arki.scene.WaveSpawner {
             waveSpawnWheel.addTask(quantity, 兵种信息.Interval, 兵种信息.Attribute, i, currentWave);
         }
 
+        // 发布波次开始事件
         gameworld.dispatcher.publish("WaveStarted", currentWave);
     }
 
     public function tick():Void{
-        if(!isActive) return;
-        tickCount++;
-        waveSpawnWheel.minHeapTick();
-        if(tickCount % 3 == 0) {
-            waveSpawnWheel.slotTick();
-            if(tickCount % 30 == 0) {
-                waveSpawnWheel.longDelaySlotTick();
-                clockTick();
+        if(!this.isActive) return;
+        this.tickCount++;
+        this.waveSpawnWheel.minHeapTick();
+        if(this.tickCount % 3 == 0) {
+            this.waveSpawnWheel.slotTick();
+            if(this.tickCount % 30 == 0) {
+                this.waveSpawnWheel.longDelaySlotTick();
+                this.clockTick();
             }
         }
     }
@@ -193,12 +194,8 @@ class org.flashNight.arki.scene.WaveSpawner {
             var total_sec = waveTime - countDownTime;
             var min = Math.floor(total_sec / 60);
             var sec = total_sec % 60;
-            var min_str = "";
-            var sec_str = "";
-            if (min < 10) min_str += "0";
-            min_str += min;
-            if (sec < 10) sec_str += "0";
-            sec_str += sec;
+            var min_str = min < 10 ? min.toString() : "0" + min.toString();
+            var sec_str = sec < 10 ? sec.toString() : "0" + sec.toString();
             _root.d_倒计时显示.text = min_str + ":" + sec_str;
         }
         
@@ -206,25 +203,32 @@ class org.flashNight.arki.scene.WaveSpawner {
         _root.d_剩余敌人数.text = _root.获得翻译("剩余敌人数：") + emenyCount;
         
         if (emenyCount <= finishRequirement || (waveTime > 0 && total_sec <= 0)){
-            currentWave++;
-            if (currentWave < totalWave){
-                startWave();
-            }else{
-                isFinished = true;
-                stageManager.finishStage();
-            }
-            var 本轮对话 = stageInfo.dialogues[currentWave];
-            if (本轮对话.length > 0){
-                _root.暂停 = true;
-                _root.SetDialogue(本轮对话);
-            }
+            finishWave();
         }
+    }
+
+    public function finishWave():Void{
+        // 发布波次结束事件
+        gameworld.dispatcher.publish("WaveFinished", currentWave);
+        currentWave++;
+        if (currentWave < totalWave){
+            startWave();
+        }else{
+            isFinished = true;
+            stageManager.finishStage();
+        }
+        // var 本轮对话 = stageInfo.dialogues[currentWave];
+        // if (本轮对话.length > 0){
+        //     _root.暂停 = true;
+        //     _root.SetDialogue(本轮对话);
+        // }
     }
 
 
     public function spawn(attribute:Object, index:Number, waveIndex:Number, quantity:Number):Boolean{
         var 兵种信息 = waveInfo[waveIndex][index];
         var spawnIndex = 兵种信息.SpawnIndex;
+        var spawnPiontInstance = spawnIndex > -1 ? spawnPoints[spawnIndex] : gameworld.地图;
         var enemyPara = ObjectUtil.clone(attribute);
         enemyPara.等级 = isNaN(兵种信息.Level) ? 1: Number(兵种信息.Level);
         enemyPara.兵种名 = null;
@@ -233,38 +237,51 @@ class org.flashNight.arki.scene.WaveSpawner {
         if(spawnIndex === "front"){
             enemyPara.方向 = "左";
         }
+        if (spawnIndex > -1){
+            // 若敌方单位大等于场上最大容纳量则不刷怪
+            if(enemyPara.是否为敌人 && spawnPiontInstance.QuantityMax > 0 && spawnPiontInstance.僵尸型敌人场上实际人数 >= spawnPiontInstance.QuantityMax){
+                return false;
+            }
+        }
         // 加载额外参数
         if(兵种信息.Parameters){
             ObjectUtil.cloneParameters(enemyPara, 兵种信息.Parameters);
         }
 
-        // 若敌方单位大等于场上最大容纳量则不刷怪
-        if(spawnIndex > -1){
-            if(enemyPara.是否为敌人 && spawnPoints[spawnIndex].QuantityMax > 0 && spawnPoints[spawnIndex].僵尸型敌人场上实际人数 >= spawnPoints[spawnIndex].QuantityMax){
-                return false;
-            }
+        var id = attribute.兵种名;
+        var instanceName:String;
+        if(兵种信息.InstanceName){
+            instanceName = 兵种信息.InstanceName;
+            enemyPara.publishStageEvent = true;
+        }else{
+            instanceName = attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
         }
 
-        var instanceName:String = 兵种信息.InstanceName ? 兵种信息.InstanceName : attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
-        return attachEnemy(attribute.兵种名, instanceName, enemyPara, spawnIndex, 兵种信息.x, 兵种信息.y);
+        spawnEnemy(id,instanceName,enemyPara,spawnIndex,兵种信息.x,兵种信息.y);
+
+        if (enemyPara.是否为敌人 === true){
+            spawnPiontInstance.僵尸型敌人场上实际人数++;
+        }else{
+            spawnPiontInstance.僵尸型敌人总个数--;
+        }
+        return true;
     }
 
-    public function attachEnemy(id:String, instanceName:String, enemyPara:Object, spawnIndex, x:Number, y:Number):Boolean{
+    public function spawnEnemy(id:String, instanceName:String, para, spawnIndex, x:Number, y:Number):Void{
         // 优先使用兵种自带的坐标
         var spawnPiontInstance = spawnIndex > -1 ? spawnPoints[spawnIndex] : gameworld.地图;
         if (spawnIndex > -1){
-            var 出生点 = stageInfo.spawnPointInfo[spawnIndex];
             //优先使用兵种自带的坐标，若无自带坐标则使用出生点坐标并调用开门动画
             if(isNaN(x) || isNaN(y)){
-                x = 出生点.x;
-                y = 出生点.y;
-                if(出生点.Identifier){
-                    y += isNaN(出生点.Offset) ? 2 : 出生点.Offset; //生成位置从出生点向下平移2像素避免被出生点碰撞箱卡住，也可手动设置
+                x = spawnPiontInstance._x;
+                y = spawnPiontInstance._y;
+                if(spawnPiontInstance.Identifier){
+                    y += isNaN(spawnPiontInstance.Offset) ? 2 : spawnPiontInstance.Offset; //生成位置从出生点向下平移2像素避免被出生点碰撞箱卡住，也可手动设置
                     spawnPiontInstance.开门();
                 }
-                if(出生点.BiasX && 出生点.BiasY){
-                    x += random(2*出生点.BiasX+1) - 出生点.BiasX;
-                    y += random(2*出生点.BiasY+1) - 出生点.BiasY;
+                if(spawnPiontInstance.BiasX && spawnPiontInstance.BiasY){
+                    x += linearEngine.randomIntegerStrict(-spawnPiontInstance.BiasX, spawnPiontInstance.BiasX)
+                    y += linearEngine.randomIntegerStrict(-spawnPiontInstance.BiasY, spawnPiontInstance.BiasY)
                 }
             }
         }else if(isNaN(x) || isNaN(y)){
@@ -308,16 +325,11 @@ class org.flashNight.arki.scene.WaveSpawner {
                 y = pt.y;
             }
         }
-        enemyPara.产生源 = spawnPiontInstance._name;
-        enemyPara._x = x;
-        enemyPara._y = y;
-        _root.加载游戏世界人物(id, instanceName, gameworld.getNextHighestDepth(), enemyPara);
-        if (enemyPara.是否为敌人 === true){
-            spawnPiontInstance.僵尸型敌人场上实际人数++;
-        }else{
-            spawnPiontInstance.僵尸型敌人总个数--;
-        }
-        return true;
+        if(para.产生源 == null) para.产生源 = spawnPiontInstance._name;
+        para._x = x;
+        para._y = y;
+
+        _root.加载游戏世界人物(id, instanceName, gameworld.getNextHighestDepth(), para);
     }
 
 

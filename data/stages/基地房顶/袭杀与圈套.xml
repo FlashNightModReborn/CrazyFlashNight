@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -83,14 +83,39 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/gk19_2_BG.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>先解决掉这个怪物！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>牛仔手下的军阀来了！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>A兵团精英A</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>我们一起打他个伏击！</Text>
+                <Type>兵种280</Type>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>A兵团精英B</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>这里只是杂兵，解决掉之后尽快找到牛仔！</Text>
+                <Type>兵种281</Type>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -105,29 +130,7 @@
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>牛仔手下的军阀来了！</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>A兵团精英A</Name>
-                        <Title>战斗专家</Title>
-                        <Char>主角模板</Char>
-                        <Text>我们一起打他个伏击！</Text>
-                        <Type>兵种280</Type>
-                    </SubDialogue>
-                    <SubDialogue id="2">
-                        <Name>A兵团精英B</Name>
-                        <Title>战斗专家</Title>
-                        <Char>主角模板</Char>
-                        <Text>这里只是杂兵，解决掉之后尽快找到牛仔！</Text>
-                        <Type>兵种281</Type>
-                    </SubDialogue>
-                </Dialogue>
-            </SubWave>
+                </SubWave>
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>0</Duration>
@@ -190,14 +193,39 @@
                 <y>500</y>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>就在这，干掉他！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#微笑</Char>
+                <Text>赢了！辛苦你们了。</Text>
+            </Dialogue>
+        <Dialogue id="1">
+                <Name>A兵团精英A</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>应该是我们感谢你，没有你在闹市区救我们，我们也没有今天。</Text>
+                <Type>兵种280</Type>
+            </Dialogue>
+        <Dialogue id="2">
+                <Name>A兵团精英B</Name>
+                <Title>战斗专家</Title>
+                <Char>主角模板</Char>
+                <Text>敌人可能还有援兵，先走吧。</Text>
+                <Type>兵种281</Type>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -282,29 +310,7 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#微笑</Char>
-                        <Text>赢了！辛苦你们了。</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>A兵团精英A</Name>
-                        <Title>战斗专家</Title>
-                        <Char>主角模板</Char>
-                        <Text>应该是我们感谢你，没有你在闹市区救我们，我们也没有今天。</Text>
-                        <Type>兵种280</Type>
-                    </SubDialogue>
-                    <SubDialogue id="2">
-                        <Name>A兵团精英B</Name>
-                        <Title>战斗专家</Title>
-                        <Char>主角模板</Char>
-                        <Text>敌人可能还有援兵，先走吧。</Text>
-                        <Type>兵种281</Type>
-                    </SubDialogue>
-                </Dialogue>
-            </SubWave>
-        </Wave>
-    </SubStage>
+                </SubWave>
+            </Wave>
+        </SubStage>
 </GameStage>

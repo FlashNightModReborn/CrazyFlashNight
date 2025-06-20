@@ -40,6 +40,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
                     child.removeMovieClip();
                 }
             }
+            // 发布特殊死亡事件
+            if(target.publishStageEvent === true){
+                _root.gameworld.dispatcher.publish("UnitDeath", target._name);
+            }
         }
 
         // if(!target.已加经验值 && FactionManager.getFactionFromUnit(target) == FactionManager.FACTION_HOSTILE_NEUTRAL)

@@ -10,6 +10,9 @@ _root.开启生存模式 = function() {
 _root.生存模式关闭 = function(){
 	StageManager.instance.closeStage();
 }
+_root.解析敌人属性 = function(敌人){
+	return StageInfo.parseEnemyAttribute(敌人);
+};
 /*
 _root.开启生存模式 = function(模式) {
 	var sceneManager = SceneManager.getInstance();

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -70,26 +70,27 @@
                 <QuantityMax>1</QuantityMax>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>这个营地里没有武器的人应该就是摇滚女皇的人了吧！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>这群疯狗一样的军阀就这样对付手无寸铁的平民！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>不要放弃反抗！A兵团杀到！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -110,12 +111,12 @@
                         <NPC>false</NPC>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑蓬头</HairStyle>
-                        <HeadEquipment />
+                        <HeadEquipment/>
                         <BodyArmor>浅灰背心</BodyArmor>
                         <LegArmor>咖啡色多包短裤</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>白色板鞋</FootGear>
-                        <NeckGear />
+                        <NeckGear/>
                         <Gender>男</Gender>
                     </Enemy>
                     <Enemy id="1">
@@ -131,12 +132,12 @@
                         <NPC>false</NPC>
                         <FaceType>女变装-基本脸型</FaceType>
                         <HairStyle>发型-女式-丸子头</HairStyle>
-                        <HeadEquipment />
+                        <HeadEquipment/>
                         <BodyArmor>浅灰背心</BodyArmor>
                         <LegArmor>咖啡色多包短裤</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>棕色圆头皮鞋</FootGear>
-                        <NeckGear />
+                        <NeckGear/>
                         <Gender>女</Gender>
                     </Enemy>
                     <Enemy id="2">
@@ -152,12 +153,12 @@
                         <NPC>false</NPC>
                         <FaceType>女变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑妹妹头</HairStyle>
-                        <HeadEquipment />
+                        <HeadEquipment/>
                         <BodyArmor>米色高腰背心</BodyArmor>
                         <LegArmor>棕色带腿包短裤</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>棕色圆头皮鞋</FootGear>
-                        <NeckGear />
+                        <NeckGear/>
                         <Gender>女</Gender>
                     </Enemy>
                     <Enemy id="3">
@@ -173,12 +174,12 @@
                         <NPC>false</NPC>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑圆平头</HairStyle>
-                        <HeadEquipment />
+                        <HeadEquipment/>
                         <BodyArmor>廉价西服</BodyArmor>
                         <LegArmor>咖啡色多包短裤</LegArmor>
-                        <HandGear />
+                        <HandGear/>
                         <FootGear>白色板鞋</FootGear>
-                        <NeckGear />
+                        <NeckGear/>
                         <Gender>男</Gender>
                     </Enemy>
                     <Enemy id="4">

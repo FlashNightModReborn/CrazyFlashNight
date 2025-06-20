@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -53,20 +53,21 @@
             <PlayerX>792</PlayerX>
             <PlayerY>413</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>不行啊，停机坪已经被敌人占领了，只能从这边攻进去了！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>我要进入基地帮助其他人！其他人守在外边，对付涌进来的敌人！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -127,26 +128,27 @@
                 <QuantityMax>3</QuantityMax>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>Boy</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>Boy#愤怒</Char>
                 <Text>来得正好，帮我把这些家伙清了以后去找Andy！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>King</Name>
                 <Title>BPK战队-左前锋</Title>
                 <Char>King#愤怒</Char>
                 <Text>宰了吧，把他们都宰了！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>Pig</Name>
                 <Title>BPK战队-右前锋</Title>
                 <Char>Pig#愤怒</Char>
                 <Text>生气啊！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -168,10 +170,10 @@
                         <PrimaryWeapon>G36</PrimaryWeapon>
                         <SecondaryWeapon>UZI</SecondaryWeapon>
                         <SecondaryWeapon2>UZI</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>女变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>King头-NPC</HeadEquipment>
                         <BodyArmor>King上装-NPC</BodyArmor>
                         <LegArmor>King下装-NPC</LegArmor>
@@ -194,10 +196,10 @@
                         <PrimaryWeapon>AWP</PrimaryWeapon>
                         <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
                         <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>Boy头-NPC</HeadEquipment>
                         <BodyArmor>Boy上装-NPC</BodyArmor>
                         <LegArmor>Boy下装-NPC</LegArmor>
@@ -220,10 +222,10 @@
                         <PrimaryWeapon>M134</PrimaryWeapon>
                         <SecondaryWeapon>Mossberg500</SecondaryWeapon>
                         <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>Pig头-NPC</HeadEquipment>
                         <BodyArmor>Pig上装-NPC</BodyArmor>
                         <LegArmor>Pig下装-NPC</LegArmor>
@@ -286,26 +288,27 @@
                 <QuantityMax>3</QuantityMax>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>老大，我已经叫他们守住基地门口了！基地一层有BPK战队清理！你这里没问题吧？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>Andy Law</Name>
                 <Title>东区最强战士</Title>
                 <Char>Andy Law#愤怒</Char>
                 <Text>现在的当务之急是占领最高点，快去清空停机坪的敌人！那里是我们较弱的地方！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>好！我帮你清理几个敌兵就去！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -324,11 +327,11 @@
                         <IsHostile>false</IsHostile>
                         <Height>200</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon></PrimaryWeapon>
-                        <SecondaryWeapon></SecondaryWeapon>
-                        <SecondaryWeapon2></SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <PrimaryWeapon/>
+                        <SecondaryWeapon/>
+                        <SecondaryWeapon2/>
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-蓝色头巾</HairStyle>
                         <HeadEquipment>blue头-NPC</HeadEquipment>
@@ -353,10 +356,10 @@
                         <PrimaryWeapon>M4A1改</PrimaryWeapon>
                         <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
                         <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>Andy领子-NPC</HeadEquipment>
                         <BodyArmor>Andy上装-NPC</BodyArmor>
                         <LegArmor>Andy下装-NPC</LegArmor>
@@ -376,13 +379,13 @@
                         <IsHostile>false</IsHostile>
                         <Height>165</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon></PrimaryWeapon>
+                        <PrimaryWeapon/>
                         <SecondaryWeapon>Glock 18</SecondaryWeapon>
                         <SecondaryWeapon2>Glock 18</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>女变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>TheGirl头-NPC</HeadEquipment>
                         <BodyArmor>TheGirl上装-NPC</BodyArmor>
                         <LegArmor>TheGirl下装-NPC</LegArmor>
@@ -466,10 +469,10 @@
                         <PrimaryWeapon>G36</PrimaryWeapon>
                         <SecondaryWeapon>UZI</SecondaryWeapon>
                         <SecondaryWeapon2>UZI</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>女变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>King头-NPC</HeadEquipment>
                         <BodyArmor>King上装-NPC</BodyArmor>
                         <LegArmor>King下装-NPC</LegArmor>
@@ -492,10 +495,10 @@
                         <PrimaryWeapon>AWP</PrimaryWeapon>
                         <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
                         <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>Boy头-NPC</HeadEquipment>
                         <BodyArmor>Boy上装-NPC</BodyArmor>
                         <LegArmor>Boy下装-NPC</LegArmor>
@@ -518,10 +521,10 @@
                         <PrimaryWeapon>M134</PrimaryWeapon>
                         <SecondaryWeapon>Mossberg500</SecondaryWeapon>
                         <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
-                        <MeleeWeapon />
-                        <Grenade />
+                        <MeleeWeapon/>
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle></HairStyle>
+                        <HairStyle/>
                         <HeadEquipment>Pig头-NPC</HeadEquipment>
                         <BodyArmor>Pig上装-NPC</BodyArmor>
                         <LegArmor>Pig下装-NPC</LegArmor>

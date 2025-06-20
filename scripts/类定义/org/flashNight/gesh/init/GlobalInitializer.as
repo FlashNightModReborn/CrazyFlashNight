@@ -18,6 +18,7 @@ class org.flashNight.gesh.init.GlobalInitializer{
         StageManager.getInstance();
         WaveSpawner.getInstance();
         WaveSpawnWheel.getInstance();
+        StageEventHandler.getInstance();
 
         initialized = true;
     }

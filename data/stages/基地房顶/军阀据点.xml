@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -91,9 +91,9 @@
                         <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
                         <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
                         <MeleeWeapon>镜之虎彻</MeleeWeapon>
-                        <Grenade />
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle />
+                        <HairStyle/>
                         <HeadEquipment>Andy领子-NPC</HeadEquipment>
                         <BodyArmor>Andy上装-NPC</BodyArmor>
                         <LegArmor>Andy下装-NPC</LegArmor>
@@ -186,9 +186,9 @@
                         <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
                         <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
                         <MeleeWeapon>镜之虎彻</MeleeWeapon>
-                        <Grenade />
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle />
+                        <HairStyle/>
                         <HeadEquipment>Andy领子-NPC</HeadEquipment>
                         <BodyArmor>Andy上装-NPC</BodyArmor>
                         <LegArmor>Andy下装-NPC</LegArmor>
@@ -308,9 +308,9 @@
                         <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
                         <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
                         <MeleeWeapon>镜之虎彻</MeleeWeapon>
-                        <Grenade />
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle />
+                        <HairStyle/>
                         <HeadEquipment>Andy领子-NPC</HeadEquipment>
                         <BodyArmor>Andy上装-NPC</BodyArmor>
                         <LegArmor>Andy下装-NPC</LegArmor>
@@ -392,11 +392,6 @@
                 <Pause>1</Pause>
                 <Load>1</Load>
             </Animation>
-            <CallbackFunction>
-                <Name>军阀据点_4</Name>
-                <Parameter>军阀据点-将军</Parameter>
-                <Parameter>flashswf/movies/movie_gk_21_5.swf</Parameter>
-            </CallbackFunction>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
@@ -430,32 +425,44 @@
                 <NoCount>true</NoCount>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>将军，为你的所作所为付出代价吧！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>general</Name>
                 <Title>自由革命军司令</Title>
                 <Char>general</Char>
                 <Text>看来是我低估了你们的能力啊，A兵团！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>受死吧！</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>general</Name>
                 <Title>自由革命军司令</Title>
                 <Char>general</Char>
                 <Text>想要杀我还没那么容易！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>军阀据点-将军</Parameter>
+            <Animation>
+                <Path>flashswf/movies/movie_gk_21_5.swf</Path>
+                <Pause>1</Pause>
+            </Animation>
+            <BGM>
+                <Command>stop</Command>
+            </BGM>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -477,9 +484,9 @@
                         <SecondaryWeapon>Mp5 pdw</SecondaryWeapon>
                         <SecondaryWeapon2>Mp5 pdw</SecondaryWeapon2>
                         <MeleeWeapon>镜之虎彻</MeleeWeapon>
-                        <Grenade />
+                        <Grenade/>
                         <FaceType>男变装-基本脸型</FaceType>
-                        <HairStyle />
+                        <HairStyle/>
                         <HeadEquipment>Andy领子-NPC</HeadEquipment>
                         <BodyArmor>Andy上装-NPC</BodyArmor>
                         <LegArmor>Andy下装-NPC</LegArmor>

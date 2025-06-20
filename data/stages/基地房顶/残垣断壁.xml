@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="0">
@@ -243,32 +243,47 @@
                 <QuantityMax>1</QuantityMax>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#微笑</Char>
                 <Text>不用担心，我来救你了。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>......</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>啊，四处都有声音，我们中埋伏了！</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>......嗯（我早就想告诉你了！）</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>键盘</Parameter>
+            <Enemy>
+                <Type>兵种246</Type>
+                <Quantity>1</Quantity>
+                <Level>50</Level>
+                <SpawnIndex>left</SpawnIndex>
+                <Parameters>
+                    <是否为敌人>null</是否为敌人>
+                    <不掉装备>true</不掉装备>
+                </Parameters>
+            </Enemy>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -281,6 +296,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <InstanceName>键盘</InstanceName>
                         <x>409</x>
                         <y>450</y>
                     </Enemy>
@@ -373,26 +389,41 @@
                 <QuantityMax>1</QuantityMax>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>......你自己逃吧，不要管我。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>不要放弃啊，我就算是豁出命也要把你带出去的啊！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>......</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>键盘</Parameter>
+            <Enemy>
+                <Type>兵种246</Type>
+                <Quantity>1</Quantity>
+                <Level>50</Level>
+                <SpawnIndex>left</SpawnIndex>
+                <Parameters>
+                    <是否为敌人>null</是否为敌人>
+                    <不掉装备>true</不掉装备>
+                </Parameters>
+            </Enemy>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -405,6 +436,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <InstanceName>键盘</InstanceName>
                         <x>625</x>
                         <y>436</y>
                     </Enemy>
@@ -490,32 +522,47 @@
                 <QuantityMax>1</QuantityMax>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>再坚持一下就可以逃出去了！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>......谢谢。</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#</Char>
                 <Text>你刚才说什么？</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>......</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>键盘</Parameter>
+            <Enemy>
+                <Type>兵种246</Type>
+                <Quantity>1</Quantity>
+                <Level>50</Level>
+                <SpawnIndex>left</SpawnIndex>
+                <Parameters>
+                    <是否为敌人>null</是否为敌人>
+                    <不掉装备>true</不掉装备>
+                </Parameters>
+            </Enemy>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -528,6 +575,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <InstanceName>键盘</InstanceName>
                         <x>409</x>
                         <y>450</y>
                     </Enemy>

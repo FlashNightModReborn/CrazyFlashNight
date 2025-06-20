@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward id="4">
@@ -28,20 +28,21 @@
             <PlayerX>100</PlayerX>
             <PlayerY>600</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>（按照酒保的情报，从这里潜入进去找到牛仔并向他发起单挑，牛仔一定会答应。这样就能避免被军阀大部队围攻）</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>（门卫在打瞌睡……连僵尸都吵不醒他。解决掉僵尸后悄悄溜进去吧）</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -77,20 +78,21 @@
                 <y>305</y>
             </Point>
         </SpawnPoint>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>……果然是圈套。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>（那个门卫也是圈套的一部分吗……好在守备兵力并不多，速战速决避免被两面夹击！）</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -251,32 +253,33 @@
             <PlayerX>75</PlayerX>
             <PlayerY>400</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>牛仔</Name>
-                <Title />
+                <Title/>
                 <Char>牛仔</Char>
                 <Text>看来革命军的惯用伎俩困不住你。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>我是来找你决斗的。根据堕落城的规矩，打赢你就能拿到情报！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>牛仔</Name>
-                <Title />
+                <Title/>
                 <Char>牛仔</Char>
                 <Text>虽然没听说过这个规矩……你不嫌弃这里空间小吧？</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#微笑</Char>
                 <Text>当然。</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

@@ -1,4 +1,6 @@
-﻿import org.flashNight.gesh.object.ObjectUtil;
+﻿import org.flashNight.arki.scene.StageEvent;
+
+import org.flashNight.gesh.object.ObjectUtil;
 
 /**
 StageInfo.as
@@ -10,7 +12,8 @@ class org.flashNight.arki.scene.StageInfo {
     public var instanceInfo:Array; // 实例信息
     public var spawnPointInfo:Array; // 出生点信息
     public var waveInfo:Array; // 波次信息
-    public var dialogues:Array; // 对话
+    // public var dialogues:Array; // 对话
+    public var eventInfo:Array; // 关卡事件
 
     // ————————————————————————
     // 构造函数
@@ -19,11 +22,12 @@ class org.flashNight.arki.scene.StageInfo {
         basicInfo = parseBasicInfo(data);
         instanceInfo = parseInstanceInfo(data);
         spawnPointInfo = parseSpawnPointInfo(data);
-        dialogues = parseDialogues(data);
+        // dialogues = parseDialogues(data);
         waveInfo = parseWaveInfo(data);
+        eventInfo = parseEventInfo(data);
     }
 
-    private function parseBasicInfo(data):Object{
+    public static function parseBasicInfo(data):Object{
         var info = data.BasicInformation;
 		if(info.Environment.Default === true){
 			info.Environment = _root.天气系统.关卡环境设置.Default;
@@ -31,12 +35,12 @@ class org.flashNight.arki.scene.StageInfo {
         return info;
     }
 
-    private function parseInstanceInfo(data):Array{
+    public static function parseInstanceInfo(data):Array{
 		if(data.Instances == null) return null;
         return ObjectUtil.toArray(data.Instances.Instance);
     }
 
-    private function parseSpawnPointInfo(data):Array{
+    public static function parseSpawnPointInfo(data):Array{
 		if(data.SpawnPoint == null) return null;
 		
 		var info = ObjectUtil.toArray(data.SpawnPoint.Point);
@@ -47,7 +51,7 @@ class org.flashNight.arki.scene.StageInfo {
         return info;
     }
 
-    private function parseDialogues(data):Array{
+    public static function parseDialogues(data):Array{
 		var 对话条数 = 0;
 		var info = [];
 		var 对话列表 = ObjectUtil.toArray(data.Dialogue.SubDialogue);
@@ -66,7 +70,7 @@ class org.flashNight.arki.scene.StageInfo {
 		return 对话条数 > 0 ? info : null;
     }
 
-    private function parseSingleDialogue(dialogueData):Array{
+    public static function parseSingleDialogue(dialogueData):Array{
         var len = dialogueData.length;
         if(len <= 0) return null;
         var dialogue = new Array(len);
@@ -90,9 +94,10 @@ class org.flashNight.arki.scene.StageInfo {
 
 
 
-    private function parseWaveInfo(data):Array{
-        var resultInfo = [];
+    public static function parseWaveInfo(data):Array{
         var subWaveInfo = ObjectUtil.toArray(data.Wave.SubWave);
+        if(subWaveInfo == null) return null;
+        var resultInfo = [];
         for (var i:Number = 0; i < subWaveInfo.length; i++){
             var subwave = subWaveInfo[i];
             var w_info = subwave.WaveInformation;
@@ -105,7 +110,7 @@ class org.flashNight.arki.scene.StageInfo {
         return resultInfo;
     }
 
-    private function parseEnemyGroup(enemyGroupData):Array{
+    public static function parseEnemyGroup(enemyGroupData):Array{
         var info = [];
         for (var i:Number = 0; i < enemyGroupData.length; i++){
             var enemyInfo = enemyGroupData[i];
@@ -119,9 +124,9 @@ class org.flashNight.arki.scene.StageInfo {
         return info;
     }
 
-    private function parseEnemyAttribute(enemyInfo):Object{
+    public static function parseEnemyAttribute(enemyInfo):Object{
         // 如果Type属性存在，则直接返回已有敌人配置
-        if (_root.兵种库[enemyInfo.Type] != null) return _root.兵种库[enemyInfo.Type];
+        if (_root.兵种库[enemyInfo.Type] != null) return ObjectUtil.clone(_root.兵种库[enemyInfo.Type]);
         // 否则，组装敌人属性       
         var attr:Object = {
             兵种名: enemyInfo.spritename,
@@ -151,5 +156,16 @@ class org.flashNight.arki.scene.StageInfo {
         }
         return attr;// 返回组装好的敌人对象
     };
+
+
+
+    public function parseEventInfo(data):Array{
+        var eventData = ObjectUtil.toArray(data.Event);
+        var info = [];
+        for (var i:Number = 0; i < eventData.length; i++){
+            info.push(new StageEvent(eventData[i]));
+        }
+        return info;
+    }
 
 }

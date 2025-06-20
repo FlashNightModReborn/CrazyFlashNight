@@ -510,44 +510,55 @@ SubDialogue的数据结构与任务的json文件相同。必要参数包括：
     Char：头像的帧标签与头像自身时间轴的帧标签
     Text：对话内容
     -->
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>我是接受黑铁会的委托来清理你们这些叛变的盗贼组织的。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>Singer</Name>
                 <Title>摇滚女皇-主唱</Title>
                 <Char>Singer</Char>
                 <Text>我们才不是什么叛变组织，我们只是看不惯黑铁会和自由革命军狼狈为奸屠杀难民抢劫资源，所以脱离了黑铁会的管制！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>......嗯！</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>Guitar</Name>
                 <Title>摇滚女皇-吉他</Title>
                 <Char>Guitar</Char>
                 <Text>你们居然是非不分，今晚我一定扎小人诅咒死你。</Text>
-            </SubDialogue>
-            <SubDialogue id="4">
+            </Dialogue>
+            <Dialogue id="4">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>即使你这么说，我也要完成上面给我的任务！</Text>
-            </SubDialogue>
-            <SubDialogue id="5">
+            </Dialogue>
+            <Dialogue id="5">
                 <Name>Singer</Name>
                 <Title>摇滚女皇-主唱</Title>
                 <Char>Singer</Char>
                 <Text>看来你是说不听啦，让你感受一下我们的演唱会吧！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitSpawn</EventName>
+            <Parameter>King</Parameter>
+            <Dialogue id="0">
+                <Name>King</Name>
+                <Title>BPK战队-左前锋</Title>
+                <Char>king#愤怒</Char>
+                <Text>啥子哦，搞这么慢？</Text>
+            </Dialogue>
+        </Event>
         <!-- 
 Wave描述关卡波次信息。每个SubWave为一波
 SubWave的必要参数：
@@ -647,17 +658,9 @@ SubWave的必要参数：
                         <Interval>210000</Interval>
                         <Quantity>1</Quantity>
                         <Level>60</Level>
+                        <InstanceName>King</InstanceName>
                         <SpawnIndex>1</SpawnIndex>
                         <DifficultyMax>地狱</DifficultyMax>
-                        <!-- 以下对话现在没用，触发不了-->
-                        <Dialogue>
-                            <SubDialogue id="0">
-                                <Name>King</Name>
-                                <Title>BPK战队-左前锋</Title>
-                                <Char>king#愤怒</Char>
-                                <Text>啥子哦，搞这么慢？</Text>
-                            </SubDialogue>
-                        </Dialogue>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
