@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -93,6 +93,38 @@
                 <Identifier>出生点-钻头</Identifier>
             </Point>
         </SpawnPoint>               
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>别跑！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>该死，准备撤！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>丧尸、盗贼、军阀，通缉犯···</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>名不虚传，试炼场果真不缺疯子。但是这家伙就这么倒了？算了，不管他了。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -165,14 +197,6 @@
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
-                    <Dialogue>
-                        <SubDialogue id="0">
-                            <Name>gazer</Name>
-                            <Title>火力侦察专家</Title>
-                            <Char>gazer</Char>
-                            <Text>别跑！</Text>
-                        </SubDialogue>
-                    </Dialogue> 
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -197,26 +221,6 @@
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
-                    <Dialogue>
-                        <SubDialogue id="0">
-                            <Name>gazer</Name>
-                            <Title>火力侦察专家</Title>
-                            <Char>gazer</Char>
-                            <Text>该死，准备撤！</Text>
-                        </SubDialogue>
-                        <SubDialogue id="1">
-                            <Name>$PC</Name>
-                            <Title>$PC_TITLE</Title>
-                            <Char>$PC_CHAR#严肃</Char>
-                            <Text>丧尸、盗贼、军阀，通缉犯···</Text>
-                        </SubDialogue>
-                        <SubDialogue id="2">
-                            <Name>$PC</Name>
-                            <Title>$PC_TITLE</Title>
-                            <Char>$PC_CHAR#严肃</Char>
-                            <Text>名不虚传，试炼场果真不缺疯子。但是这家伙就这么倒了？算了，不管他了。</Text>
-                        </SubDialogue>
-                    </Dialogue> 
             </SubWave>
         </Wave>
     </SubStage>
@@ -577,20 +581,49 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>浮士德兄弟也在这里，有点麻烦？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>有声音，除了他们还有人来这了！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你为什么会在这里……为什么要帮我？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>牛仔</Name>
+                <Title/>
+                <Char>牛仔</Char>
+                <Text>你应该问：为什么他俩会在这里攻击你？</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>……</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>牛仔</Name>
+                <Title/>
+                <Char>牛仔</Char>
+                <Text>下次见。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -614,32 +647,6 @@
                         <y>420</y>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR</Char>
-                        <Text>你为什么会在这里……为什么要帮我？</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>牛仔</Name>
-                        <Title />
-                        <Char>牛仔</Char>
-                        <Text>你应该问：为什么他俩会在这里攻击你？</Text>
-                    </SubDialogue>
-                    <SubDialogue id="2">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>……</Text>
-                    </SubDialogue>
-                    <SubDialogue id="3">
-                        <Name>牛仔</Name>
-                        <Title />
-                        <Char>牛仔</Char>
-                        <Text>下次见。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -647,20 +654,37 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>这不对劲......Lee的伤势应该没这么轻才对。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>恢复力未免太惊人了。</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>呼……一天之内遇到了四个通缉犯，真是要命。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这里真的只是个资源宝藏吗？</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -675,20 +699,6 @@
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>呼……一天之内遇到了四个通缉犯，真是要命。</Text>
-                    </SubDialogue>
-                    <SubDialogue id="1">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>这里真的只是个资源宝藏吗？</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

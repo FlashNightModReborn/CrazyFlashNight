@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -58,14 +58,25 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>堕落城边缘防备这么松懈，居然还有丧尸混入···</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>不对劲，这群家伙不是丧尸···下水道里恐怕有不少秘密。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -125,14 +136,6 @@
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>不对劲，这群家伙不是丧尸···下水道里恐怕有不少秘密。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -158,14 +161,35 @@
                 </Parameters>
             </Instance>
         </Instances>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
                 <Text>这里好像有箱子，是之前的人遗留的吗？</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>妈的，居然有埋伏。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>怪不得学校那边一直不清理这里。再往下看看就回去汇报情况吧。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -194,14 +218,6 @@
                         <SpawnIndex>back</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>妈的，居然有埋伏。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -244,14 +260,6 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>怪不得学校那边一直不清理这里。再往下看看就回去汇报情况吧。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -259,6 +267,16 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/堕落城下水道过道2.swf</Background>
         </BasicInformation>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>丧尸··怪物··这里的污染程度远超想象。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -315,14 +333,6 @@
                         <Level>30</Level>
                     </Enemy>
                 </EnemyGroup>
-                <Dialogue>
-                    <SubDialogue id="0">
-                        <Name>$PC</Name>
-                        <Title>$PC_TITLE</Title>
-                        <Char>$PC_CHAR#严肃</Char>
-                        <Text>丧尸··怪物··这里的污染程度远超想象。</Text>
-                    </SubDialogue>
-                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

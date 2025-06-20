@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -38,14 +38,31 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>大学在和盗贼作战，是个削弱盗贼的好机会！</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="1">
+                <Name>精英掠夺少女</Name>
+                <Title/>
+                <Char/>
+                <Text>学校杂种们受死吧！</Text>
+            </Dialogue>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>切，摇滚的人也来凑热闹！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -104,21 +121,7 @@
                         <x>610</x>
                         <y>620</y>
                     </Enemy>
-                </EnemyGroup>    
-        <Dialogue>
-            <SubDialogue id="1">
-                <Name>精英掠夺少女</Name>
-                <Title></Title>
-                <Char></Char>
-                <Text>学校杂种们受死吧！</Text>
-            </SubDialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>切，摇滚的人也来凑热闹！</Text>
-            </SubDialogue>
-        </Dialogue>
+                </EnemyGroup>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -643,26 +646,37 @@
             <PlayerX>696</PlayerX>
             <PlayerY>648</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>精英掠夺少女</Name>
-                <Title></Title>
-                <Char></Char>
+                <Title/>
+                <Char/>
                 <Text>哈哈你中埋伏了，给我上！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>嘁-</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>Tomboy</Name>
                 <Title>荒漠猎手</Title>
                 <Char>Tomboy</Char>
                 <Text>这种货色，来几个杀几个···</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>4</Parameter>
+            <Dialogue id="0">
+                <Name>Tomboy</Name>
+                <Title>荒漠猎手</Title>
+                <Char>Tomboy</Char>
+                <Text>干得不错。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -1318,14 +1332,6 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-        <Dialogue>
-            <SubDialogue id="0">
-                <Name>Tomboy</Name>
-                <Title>荒漠猎手</Title>
-                <Char>Tomboy</Char>
-                <Text>干得不错。</Text>
-            </SubDialogue>
-        </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

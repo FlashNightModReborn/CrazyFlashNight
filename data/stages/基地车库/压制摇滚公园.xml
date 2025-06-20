@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <GameStage>
     <Rewards>
         <Reward>
@@ -51,6 +51,22 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>又在内斗？盗贼就是这德行。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>任务就是任务，既然来了，就把你们都收拾了。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -132,20 +148,6 @@
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
-                    <Dialogue>
-                        <SubDialogue id="0">
-                            <Name>$PC</Name>
-                            <Title>$PC_TITLE</Title>
-                            <Char>$PC_CHAR#严肃</Char>
-                            <Text>又在内斗？盗贼就是这德行。</Text>
-                        </SubDialogue>
-                        <SubDialogue id="1">
-                            <Name>$PC</Name>
-                            <Title>$PC_TITLE</Title>
-                            <Char>$PC_CHAR#严肃</Char>
-                            <Text>任务就是任务，既然来了，就把你们都收拾了。</Text>
-                        </SubDialogue>
-                    </Dialogue> 
             </SubWave>
         </Wave>
     </SubStage>
@@ -418,32 +420,33 @@
             <PlayerX>150</PlayerX>
             <PlayerY>480</PlayerY>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>你们尽早摆脱黑铁会吧，别替他们办事了！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
+            </Dialogue>
+            <Dialogue id="1">
                 <Name>Singer</Name>
                 <Title>摇滚女皇-主唱</Title>
                 <Char>Singer</Char>
                 <Text>闲话打完了再说！</Text>
-            </SubDialogue>
-            <SubDialogue id="2">
+            </Dialogue>
+            <Dialogue id="2">
                 <Name>Guitar</Name>
                 <Title>摇滚女皇-吉他</Title>
                 <Char>Guitar</Char>
                 <Text>怎么又碰上你这个瘟神！</Text>
-            </SubDialogue>
-            <SubDialogue id="3">
+            </Dialogue>
+            <Dialogue id="3">
                 <Name>Keyboard</Name>
                 <Title>摇滚女皇-键盘</Title>
                 <Char>Keyboard</Char>
                 <Text>···</Text>
-            </SubDialogue>
-        </Dialogue>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
