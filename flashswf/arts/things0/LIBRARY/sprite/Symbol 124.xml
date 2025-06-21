@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 124" itemID="6577b699-000009a8" lastModified="1749968786" lastUniqueIdentifier="356">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 124" itemID="6577b699-000009a8" lastModified="1750536735" lastUniqueIdentifier="356">
   <timeline>
-    <DOMTimeline name="Symbol 124" currentFrame="97" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 124" currentFrame="137" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B562FD" locked="true">
           <frames>
@@ -132,10 +132,19 @@ function 持续抓取(){
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="123" duration="3" keyMode="9728">
+            <DOMFrame index="123" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
-]]></script>
+反作用力速度 = -2;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="125" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+if(_parent.垂直速度 > -3){
+	_parent.垂直速度 = -3;
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -156,7 +165,7 @@ if (蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gameworld[_paren
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="129" duration="11" keyMode="9728">
+            <DOMFrame index="129" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gameworld[_parent.攻击目标].Z轴坐标) < Z轴抓取范围 && _root.gameworld[_parent.攻击目标].area.hitTest(this.抓取碰撞箱))
@@ -170,6 +179,13 @@ if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gamew
 		break;
 	}
 }]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="137" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+反作用力速度 = undefined;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -194,7 +210,7 @@ gotoAndPlay("跳跃状态");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#E89962" autoNamed="false">
+        <DOMLayer name="攻击点" color="#E89962" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -498,16 +514,21 @@ _parent.play();
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
+	子弹属性.暴击倍率 = 1;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
 		if(_parent.蓄力 >= 20){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
-					return 2;
-				};
+			子弹属性.暴击倍率 = 3 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.1;
+		}else{
+			子弹属性.暴击倍率 = 1.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 20;
 	
 	//非常用
@@ -560,7 +581,7 @@ _parent.play();
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -570,16 +591,21 @@ _parent.play();
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0.5;
+	子弹属性.暴击倍率 = 2;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
 		if(_parent.蓄力 >= 20){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
-					return 2;
-				};
+			子弹属性.暴击倍率 = 5 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.1;
+		}else{
+			子弹属性.暴击倍率 = 2.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				_root.gameworld[当前子弹.发射者名].攻击目标 = 当前子弹.hitTarget._name;
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 25;
 	
 	//非常用
@@ -632,7 +658,7 @@ _parent.play();
 	子弹属性.霰弹值 = 5;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -642,15 +668,20 @@ _parent.play();
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0.2;
+	子弹属性.暴击倍率 = 2;
 	if(_parent.蓄力){
 		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
 		if(_parent.蓄力 >= 25){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					return 2;
-				};
+			子弹属性.暴击倍率 = 6 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.05;
+		}else{
+			子弹属性.暴击倍率 = 2.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 20;
 	
 	//非常用
@@ -703,7 +734,7 @@ _parent.play();
 	子弹属性.霰弹值 = 6;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -713,15 +744,22 @@ _parent.play();
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 0.1;
+	子弹属性.暴击倍率 = 2.5;
 	if(_parent.蓄力){
-		子弹属性.霰弹值 += Math.floor(_parent.蓄力 / 10);
-		if(_parent.蓄力 >= 25){
-				子弹属性.暴击 = function(当前子弹)
-				{
-					return 3;
-				};
+		if(_parent.蓄力 >= 35){
+			子弹属性.暴击倍率 = 12 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.01;
+		}else if(_parent.蓄力 >= 25){
+			子弹属性.暴击倍率 = 8 + Math.floor(_parent.蓄力 / 10);
+			子弹属性.击倒率 = 0.05;
+		}else{
+			子弹属性.暴击倍率 = 3.5 + Math.floor(_parent.蓄力 / 10);
 		}
 	}
+	子弹属性.暴击 = function(当前子弹)
+		{
+				return 当前子弹.暴击倍率;
+		};
 	子弹属性.水平击退速度 = 32;
 	
 	//非常用
@@ -753,12 +791,12 @@ _parent.play();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="135" keyMode="9728">
+            <DOMFrame index="135" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="136" duration="5" keyMode="9728">
+            <DOMFrame index="137" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -778,6 +816,7 @@ _parent.play();
 		*/
 		if (!_parent._parent.飞行浮空 && _parent._parent.动作B)
 		{
+			_parent.反作用力速度 = undefined;
 			_parent._parent.状态改变("空手跳");
 		}
 		
@@ -889,7 +928,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#65BC72" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#65BC72" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -3150,7 +3189,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="109" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="12.6" centerPoint3DY="401.2">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" selected="true" centerPoint3DX="12.6" centerPoint3DY="401.2">
                   <matrix>
                     <Matrix tx="0.1" ty="388.7"/>
                   </matrix>
@@ -3160,6 +3199,9 @@ onClipEvent (enterFrame) {
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	_parent._parent.垂直速度 -= 0.5;
+	if (_parent._parent.火箭重拳 && _parent._parent.火箭重拳许可){
+		_parent._parent.垂直速度 -= 1;
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

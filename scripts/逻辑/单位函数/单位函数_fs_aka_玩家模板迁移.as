@@ -1699,6 +1699,9 @@ _root.主角函数.硬直 = function(目标, 时间){
 		{
 			if(this.状态 == "空手跳"  && this.被动技能.拳脚攻击 && this.被动技能.拳脚攻击.启用){
 				this.垂直速度 = -9;
+				if(!isNaN(this.man.反作用力速度)){
+					this.垂直速度 = this.man.反作用力速度;
+				}
 			}else if(this.状态 == "兵器跳"  && this.被动技能.刀剑攻击 && this.被动技能.刀剑攻击.启用){
 				this.垂直速度 = -9;
 			}

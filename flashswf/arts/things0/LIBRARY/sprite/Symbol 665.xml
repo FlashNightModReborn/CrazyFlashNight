@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 665" itemID="6577b699-00000b02" lastModified="1744523573" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="Symbol 665" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 665" currentFrame="74" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6" locked="true">
           <frames>
@@ -983,7 +983,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击判定" color="#A0BEB5" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击判定" color="#A0BEB5" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -6778,7 +6778,7 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!11388 4853S2[#E38.F4 #189A.BC -1432 3739!-1432 3739[-5367 1365 -5650 -4907!-5650 -4907[-4284 564 -1260 2079!-1260 2079[1184 2875 3302 884!3302 884|11388 4853"/>
+!11388 4853[#E38.F4 #189A.BC -1432 3739!-1432 3739[-5367 1365 -5650 -4907!-5650 -4907[-4284 564 -1260 2079!-1260 2079[1184 2875 3302 884!3302 884|11388 4853"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -7110,7 +7110,7 @@ onClipEvent(load){
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!5141 -11454S1[16792 7827 -1963 214!-1963 214|1021 6416!1021 6416[23125 6587 5141 -11454"/>
+!1021 6416S1[23125 6587 5141 -11454!5141 -11454[16792 7827 -1963 214!-1963 214|1021 6416"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -33146,11 +33146,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#AE876D" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#AE876D" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="181" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>
