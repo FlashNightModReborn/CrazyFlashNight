@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1750411013" lastUniqueIdentifier="62">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1750517511" lastUniqueIdentifier="63">
   <timeline>
-    <DOMTimeline name="敌人-旧型号机器人" currentFrame="117">
+    <DOMTimeline name="敌人-旧型号机器人">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -524,7 +524,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人/静止动作" name="man" selected="true" centerPoint3DX="-33.35" centerPoint3DY="-49.3">
+                <DOMSymbolInstance libraryItemName="旧型号机器人/静止动作" name="man" centerPoint3DX="-33.35" centerPoint3DY="-49.3">
                   <matrix>
                     <Matrix tx="-87.4" ty="-124.7"/>
                   </matrix>
@@ -797,12 +797,12 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="112" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人登场动画" selected="true" centerPoint3DX="-0.2" centerPoint3DY="-54.55">
+                <DOMSymbolInstance libraryItemName="旧型号机器人登场动画" selected="true" centerPoint3DX="2087.05" centerPoint3DY="-180.9">
                   <matrix>
-                    <Matrix tx="-87.4" ty="-124.7"/>
+                    <Matrix tx="-84.85" ty="-112.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="87.2" y="70.1"/>
+                    <Point x="2171.9" y="-67.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
