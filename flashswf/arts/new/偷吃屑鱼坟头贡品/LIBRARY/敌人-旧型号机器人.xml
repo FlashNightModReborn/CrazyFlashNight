@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1750518222" lastUniqueIdentifier="64">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1750518643" lastUniqueIdentifier="65">
   <timeline>
-    <DOMTimeline name="敌人-旧型号机器人" currentFrame="72">
+    <DOMTimeline name="敌人-旧型号机器人" currentFrame="57">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -797,12 +797,12 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="112" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="旧型号机器人登场动画" selected="true" centerPoint3DX="2076.75" centerPoint3DY="-180.05">
+                <DOMSymbolInstance libraryItemName="修改登场动画cs6用" selected="true" centerPoint3DX="2165.55" centerPoint3DY="-177.05">
                   <matrix>
-                    <Matrix tx="-95.15" ty="-112.05"/>
+                    <Matrix tx="-94" ty="-110.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2171.9" y="-67.95"/>
+                    <Point x="2259.55" y="-66.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -812,11 +812,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="影子" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="104" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="86.65" centerPoint3DY="86.65">
+                <DOMSymbolInstance libraryItemName="阴影" selected="true" centerPoint3DX="86.65" centerPoint3DY="86.65">
                   <matrix>
                     <Matrix a="0.511276245117188" d="0.2081298828125"/>
                   </matrix>

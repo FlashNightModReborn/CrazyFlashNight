@@ -213,6 +213,7 @@
           <Include href="备用元件TXT.xml" loadImmediate="false" itemID="6808f0e8-00000a46" lastModified="1745416424"/>
           <Include href="备用元件XVX.xml" loadImmediate="false" itemID="6808e3ab-0000070a" lastModified="1745413035"/>
           <Include href="闭锁机.xml" loadImmediate="false" itemID="68078643-00000d80" lastModified="1745323587"/>
+          <Include href="变形cs6用.xml" itemIcon="1" loadImmediate="false" itemID="6856c5a9-00000669" lastModified="1750517173"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="6653d15b-000001f0" lastModified="1716769115"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="6653d169-000001f2" lastModified="1716769129"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="6653d169-000001f4" lastModified="1716984843"/>
@@ -273,7 +274,7 @@
           <Include href="敌人-EXUSIAI突击型.xml" itemID="66588036-0000521c" lastModified="1744703008"/>
           <Include href="敌人-EXUSIAI支援型.xml" itemID="66587ded-00005037" lastModified="1744703000"/>
           <Include href="敌人-EXUSIAI指挥官.xml" itemID="66560b74-00000da6" lastModified="1745459393"/>
-          <Include href="敌人-旧型号机器人.xml" itemID="665c898d-00000de3" lastModified="1750518222"/>
+          <Include href="敌人-旧型号机器人.xml" itemID="665c898d-00000de3" lastModified="1750518643"/>
           <Include href="对DLS谐振式匕首.xml" itemIcon="1" loadImmediate="false" itemID="602e97ef-00000283" lastModified="1638336465"/>
           <Include href="对DLS谐振式匕首-刀柄.xml" itemIcon="1" loadImmediate="false" itemID="602e97f3-00000284" lastModified="1638336469"/>
           <Include href="对DLS谐振式匕首-刀片.xml" itemIcon="1" loadImmediate="false" itemID="602e97f6-00000285" lastModified="1638336473"/>
@@ -331,7 +332,6 @@
           <Include href="旧型号机器人/杂物/补间 3.xml" itemIcon="1" loadImmediate="false" itemID="665c7067-00000227" lastModified="1717344993"/>
           <Include href="旧型号机器人/杂物/补间 4.xml" itemIcon="1" loadImmediate="false" itemID="665c7067-00000229" lastModified="1717334119"/>
           <Include href="旧型号机器人/走路.xml" loadImmediate="false" itemID="665c25a3-00000482" lastModified="1717318915"/>
-          <Include href="旧型号机器人登场动画.xml" loadImmediate="false" itemID="685526f7-000008a5" lastModified="1750518379"/>
           <Include href="男变装-试作型原种共生上装上臂.xml" itemID="666b02f2-0000083a" lastModified="1718367411"/>
           <Include href="男变装-试作型原种共生上装身体.xml" itemID="666b0309-0000083b" lastModified="1718376667"/>
           <Include href="男变装-试作型原种共生上装右下臂.xml" itemID="666b02ea-00000839" lastModified="1718372530"/>
@@ -584,6 +584,7 @@
           <Include href="吴豫Itinerant/人物素材/重复项目文件夹/元件 4.xml" loadImmediate="false" itemID="668f4d91-00000a26" lastModified="1720667491"/>
           <Include href="吴豫Itinerant/人物素材/重复项目文件夹/元件 5.xml" loadImmediate="false" itemID="668f4d91-00000a27" lastModified="1720667496"/>
           <Include href="吴豫Itinerant/人物素材/重复项目文件夹/元件 6.xml" loadImmediate="false" itemID="668f4d70-00000980" lastModified="1720667504"/>
+          <Include href="修改登场动画cs6用.xml" loadImmediate="false" itemID="6856c620-0000066c" lastModified="1750519012"/>
           <Include href="阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
           <Include href="元件 1.xml" loadImmediate="false" itemID="6653d143-000001ea" lastModified="1716769091"/>
           <Include href="元件 2.xml" loadImmediate="false" itemID="66541b57-000006cc" lastModified="1716790445"/>
@@ -604,6 +605,7 @@
           <Include href="元件 17.xml" loadImmediate="false" itemID="665725cf-00003fff" lastModified="1716987343"/>
           <Include href="元件 18.xml" loadImmediate="false" itemID="665725d9-0000401b" lastModified="1716987353"/>
           <Include href="元件 19.xml" loadImmediate="false" itemID="66588b17-0000709d" lastModified="1717078817"/>
+          <Include href="运动绳索.xml" itemIcon="1" loadImmediate="false" itemID="6856c625-0000066d" lastModified="1750517285"/>
           <Include href="杂剑刃.xml" loadImmediate="false" itemID="6674418e-000002c8" lastModified="1718894990"/>
           <Include href="杂剑刃镰刀.xml" loadImmediate="false" itemID="6674458d-0000031e" lastModified="1719052903"/>
           <Include href="杂粒子A.xml" loadImmediate="false" itemID="66744178-000002c5" lastModified="1719055488"/>
@@ -636,18 +638,25 @@
           <Include href="重复项目文件夹/CANNONBALL.xml" loadImmediate="false" itemID="6807d87d-00002a1c" lastModified="1745346387"/>
           <Include href="重复项目文件夹/SPCORE.xml" loadImmediate="false" itemID="6856c6b3-0000059a" lastModified="1717314502"/>
           <Include href="重复项目文件夹/SPCORE 副本.xml" loadImmediate="false" itemID="6856c97a-00000617" lastModified="1717314502"/>
+          <Include href="重复项目文件夹/SPCORE 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008cc" lastModified="1717314502"/>
           <Include href="重复项目文件夹/SPF1.xml" loadImmediate="false" itemID="6856c6b3-00000593" lastModified="1717314642"/>
           <Include href="重复项目文件夹/SPF1 副本.xml" loadImmediate="false" itemID="6856c97a-00000616" lastModified="1717314642"/>
+          <Include href="重复项目文件夹/SPF1 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008cd" lastModified="1717314642"/>
           <Include href="重复项目文件夹/SPF2.xml" loadImmediate="false" itemID="6856c6b3-000005d3" lastModified="1717314647"/>
           <Include href="重复项目文件夹/SPF2 副本.xml" loadImmediate="false" itemID="6856c97a-00000618" lastModified="1717314647"/>
+          <Include href="重复项目文件夹/SPF2 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008c8" lastModified="1717314647"/>
           <Include href="重复项目文件夹/SPH1.xml" loadImmediate="false" itemID="6856c6b3-00000585" lastModified="1717314202"/>
           <Include href="重复项目文件夹/SPH1 副本.xml" loadImmediate="false" itemID="6856c97a-00000614" lastModified="1717314202"/>
+          <Include href="重复项目文件夹/SPH1 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008cf" lastModified="1717314202"/>
           <Include href="重复项目文件夹/SPL1.xml" loadImmediate="false" itemID="6856c6b3-000005f3" lastModified="1717313453"/>
           <Include href="重复项目文件夹/SPL1 副本.xml" loadImmediate="false" itemID="6856c97a-00000619" lastModified="1717313453"/>
+          <Include href="重复项目文件夹/SPL1 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008cb" lastModified="1717313453"/>
           <Include href="重复项目文件夹/SPL2.xml" loadImmediate="false" itemID="6856c6b3-000005fc" lastModified="1717313460"/>
           <Include href="重复项目文件夹/SPL2 副本.xml" loadImmediate="false" itemID="6856c97a-0000061a" lastModified="1717313460"/>
+          <Include href="重复项目文件夹/SPL2 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008ca" lastModified="1717313460"/>
           <Include href="重复项目文件夹/SPL3.xml" loadImmediate="false" itemID="6856c6b3-00000605" lastModified="1717313465"/>
           <Include href="重复项目文件夹/SPL3 副本.xml" loadImmediate="false" itemID="6856c97a-0000061b" lastModified="1717313465"/>
+          <Include href="重复项目文件夹/SPL3 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008c9" lastModified="1717313465"/>
           <Include href="重复项目文件夹/Thunder-181 carbine right.xml" itemIcon="1" loadImmediate="false" itemID="66588747-00006afb" lastModified="1710655896"/>
           <Include href="重复项目文件夹/爆炸-蘑菇云爆炸.xml" itemIcon="1" loadImmediate="false" itemID="66588747-0000691d" lastModified="1441354519"/>
           <Include href="重复项目文件夹/闭锁机.xml" loadImmediate="false" itemID="6807d87d-00002a1f" lastModified="1745323587"/>
@@ -657,6 +666,7 @@
           <Include href="重复项目文件夹/补间 3 副本.xml" itemIcon="1" loadImmediate="false" itemID="6807d87d-00002aa1" lastModified="1745340893"/>
           <Include href="重复项目文件夹/补间 3 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="6856c6b3-0000060a" lastModified="1750513155"/>
           <Include href="重复项目文件夹/补间 3 副本 3.xml" itemIcon="1" loadImmediate="false" itemID="6856c97a-00000615" lastModified="1750513155"/>
+          <Include href="重复项目文件夹/补间 3 副本 4.xml" itemIcon="1" loadImmediate="false" itemID="6856cb45-000008ce" lastModified="1750513155"/>
           <Include href="重复项目文件夹/补间 4.xml" itemIcon="1" loadImmediate="false" itemID="66588747-00006aec" lastModified="1716769129"/>
           <Include href="重复项目文件夹/补间 5.xml" itemIcon="1" loadImmediate="false" itemID="66588747-00006af8" lastModified="1716769129"/>
           <Include href="重复项目文件夹/补间 8.xml" itemIcon="1" loadImmediate="false" itemID="66588747-000068f6" lastModified="1716769129"/>
@@ -684,8 +694,10 @@
           <Include href="重复项目文件夹/静止动作.xml" loadImmediate="false" itemID="66588747-000068ae" lastModified="1717076351"/>
           <Include href="重复项目文件夹/绳索.xml" itemIcon="1" loadImmediate="false" itemID="6856c6b3-00000609" lastModified="1743417670"/>
           <Include href="重复项目文件夹/绳索 副本.xml" itemIcon="1" loadImmediate="false" itemID="6856c97a-0000061c" lastModified="1743417670"/>
+          <Include href="重复项目文件夹/绳索 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="6856cb45-000008d0" lastModified="1743417670"/>
           <Include href="重复项目文件夹/无人机.xml" loadImmediate="false" itemID="6856c6b3-0000057d" lastModified="1750411733"/>
           <Include href="重复项目文件夹/无人机 副本.xml" loadImmediate="false" itemID="6856c97a-00000613" lastModified="1750411733"/>
+          <Include href="重复项目文件夹/无人机 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008d1" lastModified="1750411733"/>
           <Include href="重复项目文件夹/阴影.xml" loadImmediate="false" itemID="66588747-00006b62" lastModified="1705744649"/>
           <Include href="重复项目文件夹/元件 1.xml" loadImmediate="false" itemID="6807d87d-00002a95" lastModified="1745342071"/>
           <Include href="重复项目文件夹/元件 6.xml" loadImmediate="false" itemID="66588747-00006a59" lastModified="1717077403"/>
@@ -1405,6 +1417,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1083737" publishTime="1750518958"/>
+          <PublishItem publishSize="1086382" publishTime="1750518413"/>
           <PublishItem publishSize="1086323" publishTime="1750518355"/>
           <PublishItem publishSize="1086137" publishTime="1750517524"/>
           <PublishItem publishSize="1080964" publishTime="1750416494"/>
@@ -1423,7 +1437,5 @@
           <PublishItem publishSize="1057063" publishTime="1745464777"/>
           <PublishItem publishSize="1057062" publishTime="1745464752"/>
           <PublishItem publishSize="1057069" publishTime="1745464598"/>
-          <PublishItem publishSize="1057051" publishTime="1745464182"/>
-          <PublishItem publishSize="1057132" publishTime="1745459427"/>
      </publishHistory>
 </DOMDocument>

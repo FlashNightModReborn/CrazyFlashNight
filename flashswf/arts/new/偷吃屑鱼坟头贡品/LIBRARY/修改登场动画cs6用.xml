@@ -1,0 +1,1680 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="修改登场动画cs6用" itemID="6856c620-0000066c" lastModified="1750519012" lastUniqueIdentifier="100">
+  <timeline>
+    <DOMTimeline name="修改登场动画cs6用" currentFrame="57" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;372&lt;/guideline&gt;&lt;guideline direction="v"&gt;-352&lt;/guideline&gt;&lt;guideline direction="h"&gt;137&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="labels" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="57" name="空投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(_parent.登场动画);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="2264.2" centerPoint3DY="-100.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="2263.2" ty="-143"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="2265.55" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="2214.6" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="2195.6" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="2202.85" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="2201.85" ty="-143"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="2204.25" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="2153.3" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="2198.25" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="2134.3" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="2138.15" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="2137.15" ty="-143"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="2139.6" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="2088.65" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="2133.6" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="2069.65" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="2070.15" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="2069.15" ty="-143"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="2071.6" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="2020.65" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="2065.6" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="2001.65" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1998.95" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="1997.95" ty="-143"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="2000.45" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1949.5" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1994.45" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1930.5" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1924.7" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="1923.7" ty="-143"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1926.25" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1875.3" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1920.25" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1856.3" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1847.45" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="1846.45" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1849.05" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1798.1" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1843.05" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1779.1" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1767.5" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="1766.5" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1769.1" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1718.15" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1763.1" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1699.15" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1684.95" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="1683.95" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1686.6" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1635.65" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1680.6" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1616.65" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1600" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="1599" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1601.7" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1550.75" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1595.7" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1531.75" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1512.85" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="1511.85" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1514.6" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1463.65" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1508.6" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1444.65" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1423.8" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="1422.8" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1425.6" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1374.65" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1419.6" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1355.65" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1332.9" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="1331.9" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1334.75" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1283.8" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1328.75" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1264.8" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1240.45" centerPoint3DY="-100.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="1239.45" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1242.35" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1191.4" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1236.35" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1172.4" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1146.6" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="1145.6" ty="-143.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1148.55" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1097.6" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1142.55" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="1078.6" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="1051.5" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="1050.5" ty="-143.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="1053.5" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="1002.55" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="1047.5" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="983.55" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="955.35" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="954.35" ty="-143.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="957.4" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="906.45" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="951.4" centerPoint3DY="-26.7" loop="single frame">
+                  <matrix>
+                    <Matrix tx="887.45" ty="-82.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="858.3" centerPoint3DY="-100.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690719604492188" d="0.283859252929688" tx="857.3" ty="-143.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="860.4" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.10516357421875" d="0.10516357421875" tx="809.5" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484" y="126.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="790.5" ty="-82.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="713.65" centerPoint3DY="-100.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="712.6" ty="-143.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="718.7" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="667.75" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="778.15" centerPoint3DY="-4.55" loop="single frame">
+                  <matrix>
+                    <Matrix tx="710.45" ty="-57.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="569.75" centerPoint3DY="-100.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.283843994140625" tx="568.7" ty="-143.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="577.7" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="526.75" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="694.65" centerPoint3DY="20.05" loop="single frame">
+                  <matrix>
+                    <Matrix tx="626.95" ty="-32.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="427.35" centerPoint3DY="-100.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="426.3" ty="-143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="438.25" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="387.3" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="611.1" centerPoint3DY="46.2" loop="single frame">
+                  <matrix>
+                    <Matrix tx="543.4" ty="-6.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="287.4" centerPoint3DY="-100.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="286.35" ty="-143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="301.1" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="250.15" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="528.6" centerPoint3DY="70.8" loop="single frame">
+                  <matrix>
+                    <Matrix tx="460.9" ty="17.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="150.4" centerPoint3DY="-100.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="149.35" ty="-143.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="166.95" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="116" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.55" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="456.1" centerPoint3DY="95.4" loop="single frame">
+                  <matrix>
+                    <Matrix tx="388.4" ty="42.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="17.35" centerPoint3DY="-100.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="16.3" ty="-143.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="36.6" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-14.3" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="364.15" centerPoint3DY="94.55" loop="single frame">
+                  <matrix>
+                    <Matrix tx="296.45" ty="41.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-111.35" centerPoint3DY="-100.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="-112.35" ty="-143.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-89.45" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-140.35" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="288.8" centerPoint3DY="93.9" loop="single frame">
+                  <matrix>
+                    <Matrix tx="221.1" ty="41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-235.1" centerPoint3DY="-100.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-236.05" ty="-143.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-210.65" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-261.55" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="228.5" centerPoint3DY="93.35" loop="single frame">
+                  <matrix>
+                    <Matrix tx="160.8" ty="40.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-353.4" centerPoint3DY="-100.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-354.35" ty="-143.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-326.5" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-377.4" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="181.55" centerPoint3DY="92.9" loop="single frame">
+                  <matrix>
+                    <Matrix tx="113.85" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-466" centerPoint3DY="-100.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-466.95" ty="-143.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-436.8" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-487.7" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="146.25" centerPoint3DY="92.6" loop="single frame">
+                  <matrix>
+                    <Matrix tx="78.55" ty="39.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-572.8" centerPoint3DY="-100.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-573.75" ty="-143.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-541.4" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-592.3" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="121" centerPoint3DY="92.35" loop="single frame">
+                  <matrix>
+                    <Matrix tx="53.3" ty="39.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-673.7" centerPoint3DY="-100.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-674.65" ty="-143.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-640.25" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-691.15" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="104.05" centerPoint3DY="92.2" loop="single frame">
+                  <matrix>
+                    <Matrix tx="36.35" ty="39.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-768.8" centerPoint3DY="-100.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-769.75" ty="-143.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-733.45" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-784.35" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="93.75" centerPoint3DY="92.1" loop="single frame">
+                  <matrix>
+                    <Matrix tx="26.05" ty="39.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-858.2" centerPoint3DY="-100.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-859.15" ty="-143.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-821" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-871.9" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="88.45" centerPoint3DY="92.05" loop="single frame">
+                  <matrix>
+                    <Matrix tx="20.75" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-942.1" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.283798217773438" tx="-943.05" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-903.15" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-954.05" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" centerPoint3DX="86.55" centerPoint3DY="92.05" loop="single frame">
+                  <matrix>
+                    <Matrix tx="18.85" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1020.7" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.283798217773438" tx="-1021.65" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-980.15" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1031.05" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1094.25" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.283798217773438" tx="-1095.2" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1052.25" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1103.15" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="1" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1163.1" centerPoint3DY="-101.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.283798217773438" tx="-1164.05" ty="-143.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1119.65" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1170.55" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="2" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1227.35" centerPoint3DY="-101.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.283798217773438" tx="-1228.3" ty="-143.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1182.6" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1233.5" ty="-154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.1" y="126.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="3" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1287.45" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="-1288.45" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1241.45" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.10516357421875" d="0.10516357421875" tx="-1292.35" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484" y="126.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="4" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1339.75" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.283798217773438" tx="-1340.7" ty="-143.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.83984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1297.05" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1347.9" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="483.6" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.83984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="5" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1388.55" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-1389.5" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1348.95" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1399.8" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="483.6" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="6" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1434.1" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690673828125" d="0.2838134765625" tx="-1435.05" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.55859375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1397.4" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1448.25" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="483.6" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.55859375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="7" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1476.55" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="-1477.55" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.4296875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1442.6" centerPoint3DY="-141.1">
+                  <matrix>
+                    <Matrix a="0.105133056640625" d="0.105133056640625" tx="-1493.5" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.15" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.4296875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="8" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1516.2" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="-1517.2" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.30859375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1484.75" centerPoint3DY="-141.1">
+                  <matrix>
+                    <Matrix a="0.105133056640625" d="0.105133056640625" tx="-1535.65" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.15" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.30859375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="9" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1553.2" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="-1554.2" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1524.1" centerPoint3DY="-141.1">
+                  <matrix>
+                    <Matrix a="0.105133056640625" d="0.105133056640625" tx="-1575" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.15" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="10" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1587.65" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690704345703125" d="0.2838134765625" tx="-1588.65" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1560.75" centerPoint3DY="-141.1">
+                  <matrix>
+                    <Matrix a="0.105133056640625" d="0.105133056640625" tx="-1611.65" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.15" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="11" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本 2" symbolType="graphic" centerPoint3DX="-1619.8" centerPoint3DY="-101" loop="loop">
+                  <matrix>
+                    <Matrix a="0.690719604492188" d="0.283843994140625" tx="-1620.8" ty="-143.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本 2" centerPoint3DX="-1594.95" centerPoint3DY="-141.05">
+                  <matrix>
+                    <Matrix a="0.105148315429688" d="0.105148315429688" tx="-1645.8" ty="-154.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="483.6" y="126.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="12" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="13" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="14" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="15" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="16" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="17" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="18" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="19" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="20" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="21" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="22" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="23" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="变形cs6用" symbolType="graphic" firstFrame="24" centerPoint3DX="85.35" centerPoint3DY="32.9" loop="loop">
+                  <matrix>
+                    <Matrix tx="18.55" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.95" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="20">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="2346.2" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="2259.55" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="1772.3" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="1685.65" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="946.5" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="859.85" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-60">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="537.8" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="451.15" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="231.2" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="144.55" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="169.7" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="83.05" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
