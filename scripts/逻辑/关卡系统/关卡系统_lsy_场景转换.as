@@ -118,6 +118,8 @@ _root.加载我方人物 = function(地点X, 地点Y){
 	// _root.添加其他玩家();
 	_root.加载佣兵(地点X,地点Y);
 	_root.加载宠物(地点X,地点Y);
+
+	EventBus.instance.publish("SceneReady");
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){

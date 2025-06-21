@@ -153,7 +153,6 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.出生地._x = basicInfo.PlayerX;
         gameworld.出生地._y = basicInfo.PlayerY;
         gameworld.出生地.是否从门加载角色 = _root.场景转换函数.是否从门加载角色;
-        gameworld.出生地.是否从门加载角色();
         
         // 将上述属性设置为不可枚举
         _global.ASSetPropFlags(gameworld, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin", "通关箭头", "出生地"], 1, false);
@@ -230,7 +229,6 @@ class org.flashNight.arki.scene.StageManager {
         // 加载场景
         _root.加载场景背景(basicInfo.Background);
         _root.加载后景(environment);
-        EventBus.instance.publish("SceneReady");
 
         // 侦听关卡事件
         if(currentStageInfo.eventInfo.length > 0){
@@ -238,6 +236,9 @@ class org.flashNight.arki.scene.StageManager {
                 stageEventHandler.subscribeStageEvent(currentStageInfo.eventInfo[i]);
             }
         }
+
+        // 加载玩家
+        gameworld.出生地.是否从门加载角色();
 
         // 发布开始事件
         gameworld.dispatcher.publish("Start");

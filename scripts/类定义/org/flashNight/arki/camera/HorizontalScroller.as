@@ -122,6 +122,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
         if (!scrollObj || scrollObj._x == undefined) {
             return;
         }
+
         
         // 调用预组装的更新函数
         updateFunction.call(this);
@@ -383,12 +384,14 @@ class org.flashNight.arki.camera.HorizontalScroller {
         
         // 缓存舞台尺寸
         this.stageWidth = Stage.width;
-        this.stageHeight = Stage.height - 64; // 顶部UI占64px
+        this.stageHeight = Stage.height - 64; // 底部UI占64px
         
         // 缓存帧计时器参数
         if (this.frameTimer && this.frameTimer.offsetTolerance !== undefined) {
             this.offsetTolerance = this.frameTimer.offsetTolerance;
         }
+
+        // _root.发布消息(bgWidth,bgHeight,enableParallax,enableCameraZoom,horizonHeight);
         
         // 根据配置组装最优的更新函数
         this.assembleUpdateFunction();
