@@ -1,0 +1,179 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="货架/货架A/货架A" itemID="685667fc-0000122a" linkageExportForAS="true" linkageIdentifier="货架A" lastModified="1750497817" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="货架A">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#626262"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.75">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!2184 1249|2160 1249!2160 1249|2160 1129!2160 1129|2421 1129!2421 1129|2421 1151"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2421 1151|2445 1151!2445 1151|2445 1271!2445 1271|2184 1271!2184 1271|2184 1249"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2184 1249|2184 1151!2184 1151|2421 1151"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1611 1151|1635 1151!1635 1151|1635 1271!1635 1271|1374 1271!1374 1271|1374 1249"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1374 1249|1350 1249!1350 1249|1350 1129!1350 1129|1611 1129!1611 1129|1611 1151"/>
+                    <Edge fillStyle1="1" edges="!552 1289|559 1294!559 1294|552 1294!552 1294|552 1289!535 1272|528 1272!528 1272|528 1267"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!528 1267|535 1272!927 1151|951 1151!951 1151|951 1271!951 1271|690 1271!690 1271|690 1249"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!690 1249|666 1249!666 1249|666 1129!666 1129|927 1129!927 1129|927 1151"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!690 1249|690 1151!690 1151|927 1151!1374 1249|1374 1151!1374 1151|1611 1151!1396 2285|1396 2187!1396 2187|1633 2187"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!1633 2187|1633 2165!1633 2165|1372 2165!1372 2165|1372 2285!1372 2285|1396 2285"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1633 2187|1657 2187!1657 2187|1657 2307!1657 2307|1396 2307!1396 2307|1396 2285"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!643 2285|619 2285!619 2285|619 2165!619 2165|880 2165!880 2165|880 2187"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!880 2187|904 2187!904 2187|904 2307!904 2307|643 2307!643 2307|643 2285!528 2357|535 2362"/>
+                    <Edge fillStyle1="1" edges="!535 2362|528 2362!528 2362|528 2357!552 2384|552 2379!552 2379|559 2384!559 2384|552 2384"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!643 2285|643 2187!643 2187|880 2187"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!2230 2285|2206 2285!2206 2285|2206 2165!2206 2165|2467 2165!2467 2165|2467 2187"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2467 2187|2491 2187!2491 2187|2491 2307!2491 2307|2230 2307!2230 2307|2230 2285"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2230 2285|2230 2187!2230 2187|2467 2187"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上层货架" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="货架/货架A/上层货架" centerPoint3DX="74.1" centerPoint3DY="27.55">
+                  <matrix>
+                    <Matrix tx="-0.7" ty="-13.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.8" y="41.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="中层货架" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="货架/货架A/中层货架" centerPoint3DX="74.1" centerPoint3DY="78.8">
+                  <matrix>
+                    <Matrix tx="-0.7" ty="37.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.8" y="41.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底层货架" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="货架/货架A/底层货架" centerPoint3DX="74.1" centerPoint3DY="130.8">
+                  <matrix>
+                    <Matrix tx="-0.7" ty="89.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.8" y="41.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#626262"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.75">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1540 1160|1942 834!1942 834[1990 749 2097 708!2097 708|2521 364!2521 364|2456 284!2456 284|1462 1096"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1462 1096|1540 1160"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1819 905[1815 924 1796 939!1796 939[1778 953 1758 954!1758 954[1737 958 1728 946!1728 946[1718 934 1725 913!1725 913[1730 895 1750 880!1750 880[1767 866 1786 864!1786 864[1805 863 1815 875!1815 875[1824 887 1819 905"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!2014 1550|1996 1535"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1996 1535|1540 1160"/>
+                    <Edge fillStyle0="1" edges="!2014 1535|1996 1535"/>
+                    <Edge fillStyle1="1" edges="!1887.5 1550|1869 1550"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1869 1550|1465 1221!1465 1221|1059 1550"/>
+                    <Edge fillStyle1="1" edges="!1059 1550|1040 1550"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1040 1550|476 2007!476 2007[411 2001 417 1935!417 1935|906.5 1535"/>
+                    <Edge fillStyle1="1" edges="!906.5 1535|925.5 1535"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!925.5 1535|1388 1157!1388 1157|166 160!166 160|223 79!223 79|700 471!700 471[774 576 874 613!874 613|944 671"/>
+                    <Edge fillStyle1="1" edges="!944 671|944 676!944 676|951 676"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!951 676|1462 1096"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1887.5 1550|2466 2022!2466 2022[2533 2018 2518 1949!2518 1949|2014 1535"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!983 731[1003 732 1024 749!1024 749[1044 766 1052 787!1052 787[1063 809 1053 819!1053 819[1045 832 1021 829!1021 829[1003 825 981 807!981 807[962 792 954 772!954 772[946 752 955 739!955 739[964 729 983 731"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!925.5 1535|907 1550!1388 1157|1465 1221"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 6" color="#808080" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="货架/货架A/背板" centerPoint3DX="62.35" centerPoint3DY="72.35">
+                  <matrix>
+                    <Matrix tx="-0.2" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.55" y="78.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="货架/货架A/背板" blendMode="multiply" centerPoint3DX="65.9" centerPoint3DY="73.7">
+                  <matrix>
+                    <Matrix tx="3.35" ty="-4.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.55" y="78.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
