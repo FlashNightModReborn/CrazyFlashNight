@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/单项任务-主线" itemID="67cc18e5-00000154" lastModified="1747644660" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/单项任务-主线" itemID="67cc18e5-00000154" lastModified="1750531941" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="单项任务-主线">
       <layers>
@@ -17,7 +17,7 @@ this.taskChain.htmlText = _parent.任务类型;]]></script>
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText name="taskChain" width="113" height="38.8" isSelectable="false" renderAsHTML="true">
+                <DOMDynamicText name="taskChain" selected="true" width="113" height="38.8" includeOutlines="true" isSelectable="false" renderAsHTML="true">
                   <matrix>
                     <Matrix tx="17" ty="10.05"/>
                   </matrix>
@@ -36,7 +36,7 @@ this.taskChain.htmlText = _parent.任务类型;]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="taskName" selected="true" width="112.3" height="44" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="taskName" selected="true" width="112.3" height="44" includeOutlines="true" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="18" ty="47.1"/>
                   </matrix>

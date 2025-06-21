@@ -1,0 +1,114 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、提交物品/组件/方向栏" itemID="67ccb897-000002a4" lastModified="1741474369" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="方向栏">
+      <layers>
+        <DOMLayer name="遮罩" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0361785888671875" c="-0.0253753662109375" d="0" tx="157.85" ty="45"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0"/>
+                        <GradientEntry color="#333333" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0211334228515625" c="-0.01409912109375" d="0" tx="154" ty="45"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0"/>
+                        <GradientEntry color="#333333" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2882 311|3501 901!3501 901|2882 1489!2882 1489|2882 1292!2882 1292|3274 901!3274 901|2882 508!2882 508|2882 311"/>
+                    <Edge fillStyle1="2" edges="!3165 901|2882 1183!2882 1183|2882 617!2882 617|3165 901"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光效" color="#9933CC" parentLayerIndex="0" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="8、提交物品/组件/方向栏-光效" centerPoint3DX="154.8" centerPoint3DY="44.75">
+                  <matrix>
+                    <Matrix a="0" b="-0.28076171875" c="1" d="0" tx="129.7" ty="75.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="220.65" y="25.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="方向" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0361785888671875" c="-0.0253753662109375" d="0" tx="157.85" ty="45"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0"/>
+                        <GradientEntry color="#333333" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0211334228515625" c="-0.01409912109375" d="0" tx="154" ty="45"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0"/>
+                        <GradientEntry color="#333333" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!3165 901|2882 1183!2882 1183|2882 617!2882 617|3165 901"/>
+                    <Edge fillStyle1="1" edges="!2882 311S2|3501 901!3501 901|2882 1489!2882 1489|2882 1292!2882 1292|3274 901!3274 901|2882 508!2882 508|2882 311"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底色" color="#00FFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMRectangleObject objectWidth="180" objectHeight="90" x="378.55" y="384.55" lockFlag="true" topLeftRadius="10" topRightRadius="10" bottomLeftRadius="10" bottomRightRadius="10">
+                  <matrix>
+                    <Matrix tx="-378.55" ty="-384.55"/>
+                  </matrix>
+                  <fill>
+                    <LinearGradient>
+                      <matrix>
+                        <Matrix a="0" b="0.0537109375" c="-0.048828125" d="0" tx="476.05" ty="430.15"/>
+                      </matrix>
+                      <GradientEntry color="#666666" ratio="0"/>
+                      <GradientEntry color="#191919" ratio="1"/>
+                    </LinearGradient>
+                  </fill>
+                </DOMRectangleObject>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

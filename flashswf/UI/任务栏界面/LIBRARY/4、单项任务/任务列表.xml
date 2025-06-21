@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务列表" itemID="67cc5739-0000079e" lastModified="1747638930" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务列表" itemID="67cc5739-0000079e" lastModified="1750531994" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="任务列表" currentFrame="34">
+    <DOMTimeline name="任务列表" currentFrame="19">
       <layers>
         <DOMLayer name="代码层" color="#FF0000" autoNamed="false">
           <frames>
@@ -15,11 +15,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="当前任务标志" color="#9933CC" autoNamed="false">
+        <DOMLayer name="当前任务标志" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/当前任务标志" name="当前任务标志" centerPoint3DX="7.85" centerPoint3DY="60">
+                <DOMSymbolInstance libraryItemName="4、单项任务/当前任务标志" name="当前任务标志" selected="true" centerPoint3DX="7.85" centerPoint3DY="60">
                   <matrix>
                     <Matrix tx="16.45"/>
                   </matrix>
@@ -31,7 +31,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="首个任务出现_主线_动效" color="#9933CC" autoNamed="false">
+        <DOMLayer name="首个任务出现_主线_动效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -47,7 +47,7 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标0" centerPoint3DX="7.85" centerPoint3DY="60">
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务图标" name="任务图标0" selected="true" centerPoint3DX="7.85" centerPoint3DY="60">
                   <matrix>
                     <Matrix tx="16.45"/>
                   </matrix>
@@ -59,7 +59,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="其它任务出现_主线_动效" color="#009999" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="其它任务出现_主线_动效" color="#009999" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="24" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>

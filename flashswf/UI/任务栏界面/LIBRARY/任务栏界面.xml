@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1747644309" lastUniqueIdentifier="25">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1750531926" lastUniqueIdentifier="26">
   <timeline>
-    <DOMTimeline name="任务栏界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;517&lt;/guideline&gt;&lt;guideline direction="v"&gt;276&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="任务栏界面" currentFrame="12" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;517&lt;/guideline&gt;&lt;guideline direction="v"&gt;276&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -330,7 +330,7 @@ gotoAndStop("我的任务");]]></script>
             </DOMFrame>
             <DOMFrame index="7" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/透明按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/透明按钮" symbolType="button">
                   <matrix>
                     <Matrix a="22.3999938964844" d="19.1999664306641" tx="300" ty="310"/>
                   </matrix>
@@ -363,11 +363,11 @@ on(releaseOutside){
           </frames>
         </DOMLayer>
         <DOMLayer name="我的任务" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="14" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="提交NPC" color="#FF800A" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="9、提交NPC/提交NPC-动效" name="提交NPC界面" selected="true" centerPoint3DX="803.7" centerPoint3DY="360.05">
+                <DOMSymbolInstance libraryItemName="9、提交NPC/提交NPC-动效" name="提交NPC界面" centerPoint3DX="803.7" centerPoint3DY="360.05">
                   <matrix>
                     <Matrix d="0.989547729492188" tx="745.5" ty="315.55"/>
                   </matrix>
@@ -413,7 +413,7 @@ on(releaseOutside){
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="8、持有物品/持有物品-动效" name="物品需求" centerPoint3DX="560.6" centerPoint3DY="359.6">
+                <DOMSymbolInstance libraryItemName="8、提交物品/提交物品-动效" name="物品需求" centerPoint3DX="560.6" centerPoint3DY="359.6">
                   <matrix>
                     <Matrix tx="495.9" ty="315.55"/>
                   </matrix>
@@ -484,11 +484,11 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="14" autoNamed="false">
+        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="14" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/任务列表" name="任务列表" centerPoint3DX="-62.3" centerPoint3DY="320.5">
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务列表" name="任务列表" selected="true" centerPoint3DX="-62.3" centerPoint3DY="320.5">
                   <matrix>
                     <Matrix tx="-0.4" ty="74.2"/>
                   </matrix>
@@ -521,7 +521,7 @@ on(releaseOutside){
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!11600 11000|400 11000!400 11000|400 1400!400 1400|11600 1400!11600 1400|11600 11000!12000 0|12000 11520"/>
+                    <Edge strokeStyle="1" edges="!12000 0|12000 11520!11600 11000|400 11000!400 11000|400 1400!400 1400|11600 1400!11600 1400|11600 11000"/>
                   </edges>
                 </DOMShape>
               </elements>

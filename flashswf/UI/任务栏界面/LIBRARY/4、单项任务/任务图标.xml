@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1747643832" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1750532323" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="任务图标" currentFrame="29">
+    <DOMTimeline name="任务图标" currentFrame="15">
       <layers>
         <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
@@ -60,26 +60,26 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="完成标志" color="#FF800A" autoNamed="false">
+        <DOMLayer name="完成标志" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="9、提交NPC/组件/转圈 &amp; 勾选/完成标志" name="完成标志" centerPoint3DX="226.15" centerPoint3DY="20.8">
+                <DOMSymbolInstance libraryItemName="4、单项任务/完成标志 大" name="完成标志" selected="true" centerPoint3DX="48.25" centerPoint3DY="47.6">
                   <matrix>
-                    <Matrix a="2" d="2" tx="208.35" ty="4.8"/>
+                    <Matrix a="5" d="5" tx="68" ty="49.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="7.4" y="7.4"/>
+                    <Point x="8.05" y="2.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="删除任务按钮" color="#FF800A" autoNamed="false">
+        <DOMLayer name="删除任务按钮" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -137,7 +137,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="横出方块" color="#9933CC" autoNamed="false">
+        <DOMLayer name="横出方块" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
@@ -150,14 +150,14 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="任务" color="#00FFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" selected="true" centerPoint3DX="105.75" centerPoint3DY="60">
+                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" centerPoint3DX="105.75" centerPoint3DY="60">
                   <matrix>
                     <Matrix tx="-14.25"/>
                   </matrix>
@@ -169,6 +169,42 @@ on (rollOut) {
                   </filters>
                   <color>
                     <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" centerPoint3DX="115.55" centerPoint3DY="60">
+                  <matrix>
+                    <Matrix tx="-4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" distance="15" quality="3" strength="0.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.51171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" selected="true" centerPoint3DX="118.25" centerPoint3DY="60">
+                  <matrix>
+                    <Matrix tx="-1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120" y="60"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="15" blurY="15" distance="15" quality="3" strength="0.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.65234375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>

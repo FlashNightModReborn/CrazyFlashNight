@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="8、持有物品/组件/翻页箭头-光效" centerPoint3DY="0.05">
+                <DOMSymbolInstance libraryItemName="8、提交物品/组件/翻页箭头-光效" centerPoint3DY="0.05">
                   <matrix>
                     <Matrix a="-0.2779541015625" d="-1" tx="30.7" ty="25.15"/>
                   </matrix>
@@ -44,8 +44,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="2" edges="!6 350S2|-126 215!-126 215|140 215!140 215|6 350"/>
                     <Edge fillStyle1="1" edges="!81.5 429S2|-69 429!-69 429|-270 215!-270 215|-178 215!-178 215|6 401!6 401|191 215!191 215|284 215!284 215|81.5 429"/>
+                    <Edge fillStyle1="2" edges="!6 350S2|-126 215!-126 215|140 215!140 215|6 350"/>
                   </edges>
                 </DOMShape>
               </elements>
