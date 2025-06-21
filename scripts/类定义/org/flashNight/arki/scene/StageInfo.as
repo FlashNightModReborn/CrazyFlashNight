@@ -12,7 +12,6 @@ class org.flashNight.arki.scene.StageInfo {
     public var instanceInfo:Array; // 实例信息
     public var spawnPointInfo:Array; // 出生点信息
     public var waveInfo:Array; // 波次信息
-    // public var dialogues:Array; // 对话
     public var eventInfo:Array; // 关卡事件
 
     // ————————————————————————
@@ -22,7 +21,6 @@ class org.flashNight.arki.scene.StageInfo {
         basicInfo = parseBasicInfo(data);
         instanceInfo = parseInstanceInfo(data);
         spawnPointInfo = parseSpawnPointInfo(data);
-        // dialogues = parseDialogues(data);
         waveInfo = parseWaveInfo(data);
         eventInfo = parseEventInfo(data);
     }

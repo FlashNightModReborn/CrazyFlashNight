@@ -98,11 +98,10 @@
                                 <Case casevalue="3">兵种13</Case>
                             </CaseSwitch>
                         </Type>
-                        <Interval>100</Interval>
+                        <Interval>3000</Interval>
                         <Quantity>1</Quantity>
                         <Level>10</Level>
-                        <x>900</x>
-                        <y>600</y>
+                        <SpawnIndex>left</SpawnIndex>
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>

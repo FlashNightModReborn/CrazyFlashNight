@@ -2578,6 +2578,8 @@
         <Height>760</Height>
         <MaxIllumination>5</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <DisableSky>true</DisableSky>
+        <Horizon>130</Horizon>
         <Skybox>
             <url>废城环线树林.swf</url>
             <SpeedRate>2</SpeedRate>
@@ -2606,7 +2608,8 @@
         <Height>760</Height>
         <MaxIllumination>5</MaxIllumination>
         <MinIllumination>0</MinIllumination>
-        <Horizon>-200</Horizon>
+        <DisableSky>true</DisableSky>
+        <Horizon>130</Horizon>
         <Collision>
             <Point>630,360</Point>
             <Point>1650,360</Point>
