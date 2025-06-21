@@ -2567,4 +2567,33 @@
             <Point>1280,340</Point>
         </Collision>
     </Environment>
+    <Environment>
+        <BackgroundURL>废城环线地图1.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>110</Xmin>
+        <Xmax>2000</Xmax>
+        <Ymin>360</Ymin>
+        <Ymax>750</Ymax>
+        <Width>2200</Width>
+        <Height>760</Height>
+        <MaxIllumination>5</MaxIllumination>
+        <MinIllumination>0</MinIllumination>
+        <Horizon>0</Horizon>
+        <Skybox>
+            <url>废城环线树林.swf</url>
+            <SpeedRate>2</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>废城远处树林.swf</url>
+            <SpeedRate>4</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>废城远处巨大多高楼.swf</url>
+            <SpeedRate>7</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>废城阴间天空.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
+    </Environment>
 </EnvironmentSettings>

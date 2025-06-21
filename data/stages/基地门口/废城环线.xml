@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>醋</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/废城环线地图1.swf</Background>
+            <PlayerX>153</PlayerX>
+            <PlayerY>560</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Moan</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1116</x>
+                <y>238</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>
