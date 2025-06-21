@@ -2,6 +2,8 @@
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
+import org.flashNight.neur.Event.EventBus;
+
 /**
 StageManager 管理关卡的基础行为。
 ——————————————————————————————————————————
@@ -60,7 +62,6 @@ class org.flashNight.arki.scene.StageManager {
         var basicInfo = currentStageInfo.basicInfo;
         var instanceInfo = currentStageInfo.instanceInfo;
         var spawnPointInfo = currentStageInfo.spawnPointInfo;
-        // var dialogues = currentStageInfo.dialogues;
         
         gameworld = sceneManager.gameworld;
 
@@ -207,13 +208,6 @@ class org.flashNight.arki.scene.StageManager {
             }
         }
 
-        // 加载进图对话
-        // var 本轮对话 = dialogues[0];
-        // if (本轮对话.length > 0) {
-        //     _root.暂停 = true;
-        //     _root.SetDialogue(本轮对话);
-        // }
-
         //播放场景bgm
         if(basicInfo.BGM){
             if(basicInfo.BGM.Command == "play"){
@@ -236,6 +230,7 @@ class org.flashNight.arki.scene.StageManager {
         // 加载场景
         _root.加载场景背景(basicInfo.Background);
         _root.加载后景(environment);
+        EventBus.instance.publish("SceneReady");
 
         // 侦听关卡事件
         if(currentStageInfo.eventInfo.length > 0){

@@ -56,18 +56,23 @@ class org.flashNight.arki.scene.StageEvent {
             _root.soundEffectManager.stopBGM();
         }
 
+        // 对话
+        executeDialogue();
         // 刷怪
         executeEnemy();
         
-        // 对话
-        if(dialogue.length > 0){
-            _root.暂停 = true;
-            _root.SetDialogue(StageInfo.parseSingleDialogue(dialogue));
-        }
         this.clear();
     }
 
+    private function executeDialogue(){
+       if(dialogue.length > 0){
+            _root.暂停 = true;
+            _root.SetDialogue(StageInfo.parseSingleDialogue(dialogue));
+        } 
+    }
+
     private function executeEnemy(){
+        if(this.enemy == null) return;
         var emenyinfoList:Array = StageInfo.parseEnemyGroup(this.enemy);
         for(var i=0; i< emenyinfoList.length; i++){
             var emenyinfo = emenyinfoList[i];
