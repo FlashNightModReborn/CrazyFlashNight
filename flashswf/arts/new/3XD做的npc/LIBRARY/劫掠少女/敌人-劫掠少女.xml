@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/敌人-劫掠少女" itemID="663e521c-000000c3" linkageExportForAS="true" linkageIdentifier="敌人-劫掠少女" lastModified="1745319069" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/敌人-劫掠少女" itemID="663e521c-000000c3" linkageExportForAS="true" linkageIdentifier="敌人-劫掠少女" lastModified="1750494476" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="敌人-劫掠少女" currentFrame="66">
+    <DOMTimeline name="敌人-劫掠少女" currentFrame="44">
       <layers>
         <DOMLayer name="Labels Layer" color="#A78A99" locked="true">
           <frames>
@@ -64,7 +64,10 @@
             <DOMFrame index="104" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="105" duration="15" keyMode="9728">
+            <DOMFrame index="105" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" name="登场" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
@@ -502,7 +505,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" duration="16" keyMode="9728">
+            <DOMFrame index="104" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件3/Symbol 456" selected="true" centerPoint3DX="284.05" centerPoint3DY="65.65">
                   <matrix>
@@ -520,6 +523,18 @@ onClipEvent(unload){
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/登场动作" name="man" selected="true" centerPoint3DX="102.75" centerPoint3DY="76.05">
+                  <matrix>
+                    <Matrix tx="7.8" ty="-64.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

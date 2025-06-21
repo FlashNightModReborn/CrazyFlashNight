@@ -191,43 +191,46 @@ this.onEnterFrame = function()
                   </strokes>
                   <edges>
                     <Edge fillStyle1="4" edges="!450 285|450 357"/>
-                    <Edge fillStyle0="2" fillStyle1="4" edges="!450 357|350 357"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!350 357|300 405"/>
-                    <Edge fillStyle0="2" edges="!300 405|450 405!450 405|450 357"/>
+                    <Edge fillStyle1="2" edges="!450 357|450 405!450 405|300 405"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!300 405|350 357"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!350 357|450 357"/>
                     <Edge strokeStyle="1" edges="!-450 280|-455 280!-455 280|-455 410!-455 410|455 410!455 410|455 280!455 280|450 280"/>
-                    <Edge fillStyle1="1" edges="!450 280|450 285"/>
-                    <Edge fillStyle0="2" fillStyle1="4" edges="!150 357|50 357"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!50 357|0 405"/>
-                    <Edge fillStyle0="2" edges="!0 405|100 405"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!100 405|150 357"/>
-                    <Edge fillStyle0="4" fillStyle1="3" edges="!150 357|200 357"/>
-                    <Edge fillStyle0="4" fillStyle1="2" edges="!200 357|300 357"/>
-                    <Edge fillStyle0="4" fillStyle1="3" edges="!300 357|350 357"/>
-                    <Edge fillStyle0="3" fillStyle1="4" edges="!50 357|0 357"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="!0 357|-50 405"/>
-                    <Edge fillStyle0="3" edges="!-50 405|0 405"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="!150 405|200 357"/>
-                    <Edge fillStyle1="3" edges="!150 405|100 405!300 405|250 405"/>
-                    <Edge fillStyle1="2" edges="!250 405|150 405"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="!300 357|250 405!-300 357|-350 405"/>
-                    <Edge fillStyle0="3" edges="!-350 405|-300 405"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="!-300 405|-250 357"/>
-                    <Edge fillStyle0="3" fillStyle1="4" edges="!-250 357|-300 357"/>
-                    <Edge fillStyle0="2" fillStyle1="4" edges="!-300 357|-400 357"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!-400 357|-450 405"/>
-                    <Edge fillStyle0="2" edges="!-450 405|-350 405"/>
-                    <Edge fillStyle1="2" edges="!-50 405|-150 405"/>
-                    <Edge fillStyle1="3" edges="!-150 405|-200 405"/>
-                    <Edge fillStyle1="2" edges="!-200 405|-300 405"/>
-                    <Edge fillStyle0="3" fillStyle1="4" edges="!-100 357|-150 357"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="!-150 357|-200 405!-150 405|-100 357"/>
-                    <Edge fillStyle0="2" fillStyle1="4" edges="!-150 357|-250 357"/>
-                    <Edge fillStyle1="4" edges="!-450 357|-450 285"/>
-                    <Edge fillStyle1="1" edges="!-450 285|-450 280"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!-450 280|450 280"/>
-                    <Edge fillStyle1="3" edges="!-450 405|-450 357"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!450 280|-450 280"/>
+                    <Edge fillStyle0="1" edges="!-450 280|-450 285"/>
+                    <Edge fillStyle0="4" edges="!-450 285|-450 357"/>
                     <Edge fillStyle0="4" fillStyle1="3" edges="!-450 357|-400 357"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!-400 357|-450 405"/>
+                    <Edge fillStyle1="3" edges="!-450 405|-450 357"/>
+                    <Edge fillStyle1="1" edges="!450 280|450 285"/>
+                    <Edge fillStyle1="3" edges="!150 405|100 405"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!100 405|150 357"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!150 357|50 357"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!50 357|0 357"/>
                     <Edge fillStyle0="2" fillStyle1="4" edges="!0 357|-100 357"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!-100 357|-150 405"/>
+                    <Edge fillStyle1="3" edges="!-150 405|-200 405"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!-200 405|-150 357"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!-150 357|-100 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!150 405|200 357"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!200 357|300 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!300 357|250 405"/>
+                    <Edge fillStyle1="2" edges="!250 405|150 405"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!50 357|0 405"/>
+                    <Edge fillStyle1="3" edges="!0 405|-50 405"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!-50 405|0 357"/>
+                    <Edge fillStyle0="2" edges="!0 405|100 405"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!150 357|200 357"/>
+                    <Edge fillStyle1="3" edges="!300 405|250 405"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!300 357|350 357"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!-300 357|-400 357"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!-250 357|-300 357"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-300 357|-350 405"/>
+                    <Edge fillStyle1="2" edges="!-350 405|-450 405"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-300 405|-250 357"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!-250 357|-150 357"/>
+                    <Edge fillStyle0="3" edges="!-350 405|-300 405"/>
+                    <Edge fillStyle0="2" edges="!-300 405|-200 405"/>
+                    <Edge fillStyle1="2" edges="!-50 405|-150 405"/>
                     <Edge fillStyle0="4" fillStyle1="1" edges="!450 285|-450 285"/>
                   </edges>
                 </DOMShape>

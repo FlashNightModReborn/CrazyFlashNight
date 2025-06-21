@@ -81,13 +81,16 @@
           <DOMFolderItem name="黑铁长枪兵/蛙型仿生僵尸/杂项素材" itemID="67b9d335-00000834" isExpanded="true"/>
           <DOMFolderItem name="黑铁长枪兵/未命名文件夹 1" itemID="66fd67ca-00000253" isExpanded="true"/>
           <DOMFolderItem name="黑铁长枪兵/长枪兵身体零件" itemID="67b9ceb7-00000619" isExpanded="true"/>
-          <DOMFolderItem name="劫掠少女" itemID="663e243b-0000084e"/>
+          <DOMFolderItem name="劫掠少女" itemID="663e243b-0000084e" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/sound" itemID="6640358f-000001fa" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件" itemID="663e2418-00000844" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件1" itemID="663dc43e-000002b8" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件2" itemID="663e2426-00000845" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女/基础部件/部件2 副本" itemID="68566cdf-00000fe9"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件2/头1" itemID="663dc41b-000002b1" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件3" itemID="663e2429-0000084a" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女套皮做的索降" itemID="68566cdd-00000e39"/>
+          <DOMFolderItem name="劫掠少女套皮做的索降/劫掠少女套皮素材" itemID="68566c84-00000ac8"/>
           <DOMFolderItem name="思考标签（与旧思考块）" itemID="67e51b4a-00000f3a" isExpanded="true"/>
           <DOMFolderItem name="特警僵尸" itemID="671db3dc-000001b7" isExpanded="true"/>
           <DOMFolderItem name="特警僵尸/代码层" itemID="671dc166-00000537" isExpanded="true"/>
@@ -112,6 +115,7 @@
           <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1/人物身体的部件" itemID="6709e6f0-00000181"/>
           <DOMFolderItem name="特警僵尸/做的动画/重复项目文件夹" itemID="671dbd38-000002ef"/>
           <DOMFolderItem name="未命名文件夹 1" itemID="663f2163-00000148" isExpanded="true"/>
+          <DOMFolderItem name="重复项目文件夹" itemID="68566cdf-00000e7a"/>
      </folders>
      <media>
           <DOMBitmapItem name="刀狙少女/基础元件/原版的套皮部件/bitmap42.png" itemID="6577faef-0000134c" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/原版的套皮部件/bitmap42.png" sourceLastImported="1702361839" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="刀狙少女/基础元件/原版的套皮部件/bitmap42.png" bitmapDataHRef="M 10 1715405845.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
@@ -157,9 +161,9 @@
           <Include href="补间 10.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bc9" lastModified="1731607084"/>
           <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bcb" lastModified="1731607084"/>
           <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bcd" lastModified="1731607084"/>
-          <Include href="刀狙少女/敌人-刀狙少女.xml" itemID="663ef7c5-0000081f" lastModified="1745319101"/>
+          <Include href="刀狙少女/敌人-刀狙少女.xml" itemID="663ef7c5-0000081f" lastModified="1750494492"/>
           <Include href="刀狙少女/动画合集/被击.xml" loadImmediate="false" itemID="65acdb47-0000114e" lastModified="1715357885"/>
-          <Include href="刀狙少女/动画合集/登场动作.xml" loadImmediate="false" itemID="67ea6b3f-000005d3" lastModified="1747387268"/>
+          <Include href="刀狙少女/动画合集/登场动作.xml" loadImmediate="false" itemID="67ea6b3f-000005d3" lastModified="1750494484"/>
           <Include href="刀狙少女/动画合集/攻击动作.xml" loadImmediate="false" itemID="65ab87a3-0000046a" lastModified="1725441157"/>
           <Include href="刀狙少女/动画合集/击飞.xml" loadImmediate="false" itemID="65acdc14-00001566" lastModified="1715405512"/>
           <Include href="刀狙少女/动画合集/静止动作.xml" loadImmediate="false" itemID="65abd103-00001475" lastModified="1715405471"/>
@@ -201,6 +205,7 @@
           <Include href="刀狙少女/基础元件/其余部件/元件 45.xml" loadImmediate="false" itemID="663dc79a-000002cb" lastModified="1715324826"/>
           <Include href="刀狙少女/基础元件/其余部件/元件 46.xml" loadImmediate="false" itemID="663dc85c-000002d5" lastModified="1715325020"/>
           <Include href="刀狙少女/基础元件/其余部件/元件 47.xml" loadImmediate="false" itemID="663dc87b-000002dc" lastModified="1715325051"/>
+          <Include href="刀狙少女/基础元件/其余部件/元件 371.xml" loadImmediate="false" itemID="685668b0-000009f8" lastModified="1750493360"/>
           <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 2.xml" loadImmediate="false" itemID="663f041d-000052b9" lastModified="1701508661"/>
           <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 19.xml" loadImmediate="false" itemID="663f0417-000026e3" lastModified="1701508661"/>
           <Include href="刀狙少女/基础元件/原版的套皮部件/Symbol 21.xml" loadImmediate="false" itemID="663f0417-000026e4" lastModified="1702361982"/>
@@ -625,7 +630,7 @@
           <Include href="黑铁长枪兵/长枪兵身体零件/左臂下.xml" loadImmediate="false" itemID="66fe14c6-00001955" lastModified="1727927494"/>
           <Include href="黑铁长枪兵/长枪兵身体零件/左大腿.xml" loadImmediate="false" itemID="66fe151f-000019cb" lastModified="1727927583"/>
           <Include href="黑铁长枪兵/长枪兵身体零件/左手.xml" loadImmediate="false" itemID="66fe14d8-0000195d" lastModified="1727927512"/>
-          <Include href="劫掠少女/敌人-劫掠少女.xml" itemID="663e521c-000000c3" lastModified="1745319069"/>
+          <Include href="劫掠少女/敌人-劫掠少女.xml" itemID="663e521c-000000c3" lastModified="1750494476"/>
           <Include href="劫掠少女/基础部件/部件1/头1.xml" loadImmediate="false" itemID="65ef46a5-0000155d" lastModified="1715233550"/>
           <Include href="劫掠少女/基础部件/部件1/元件 6.xml" loadImmediate="false" itemID="663b861f-0000021d" lastModified="1715231980"/>
           <Include href="劫掠少女/基础部件/部件1/元件 10.xml" loadImmediate="false" itemID="663b9074-00000307" lastModified="1715325479"/>
@@ -843,6 +848,51 @@
           <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 184.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c07" lastModified="1717613400"/>
           <Include href="未命名文件夹 1/元件 1.xml" loadImmediate="false" itemID="663f0413-00001167" lastModified="1715405844"/>
           <Include href="未命名文件夹 1/原来的参考.xml" itemID="663ef7ba-0000081e" lastModified="1715405903"/>
+          <Include href="重复项目文件夹/Symbol 2.xml" loadImmediate="false" itemID="68566cdf-00000fe8" lastModified="1701508661"/>
+          <Include href="重复项目文件夹/Symbol 39.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000ef2" lastModified="1699803847"/>
+          <Include href="重复项目文件夹/Symbol 44.xml" loadImmediate="false" itemID="68566cdf-00000eef" lastModified="1715406179"/>
+          <Include href="重复项目文件夹/Symbol 45.xml" loadImmediate="false" itemID="68566cdf-00000eee" lastModified="1712672663"/>
+          <Include href="重复项目文件夹/Symbol 369.xml" loadImmediate="false" itemID="68566cdf-00000fe0" lastModified="1715359090"/>
+          <Include href="重复项目文件夹/Symbol 370.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000fd2" lastModified="1715323542"/>
+          <Include href="重复项目文件夹/Symbol 372.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000fc4" lastModified="1715324215"/>
+          <Include href="重复项目文件夹/Symbol 373.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000fb3" lastModified="1715323553"/>
+          <Include href="重复项目文件夹/Symbol 374.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f86" lastModified="1701508661"/>
+          <Include href="重复项目文件夹/Symbol 375.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f9c" lastModified="1715323693"/>
+          <Include href="重复项目文件夹/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f8d" lastModified="1701508661"/>
+          <Include href="重复项目文件夹/Symbol 377.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f7e" lastModified="1715323102"/>
+          <Include href="重复项目文件夹/Symbol 378.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f6e" lastModified="1715323062"/>
+          <Include href="重复项目文件夹/Symbol 379.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f54" lastModified="1715322952"/>
+          <Include href="重复项目文件夹/Symbol 380.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f1d" lastModified="1715324250"/>
+          <Include href="重复项目文件夹/Symbol 381.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f15" lastModified="1715325042"/>
+          <Include href="重复项目文件夹/Symbol 384.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000f06" lastModified="1715325477"/>
+          <Include href="重复项目文件夹/Symbol 385.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000eb2" lastModified="1715324789"/>
+          <Include href="重复项目文件夹/Symbol 386.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000eeb" lastModified="1715325242"/>
+          <Include href="重复项目文件夹/Symbol 388.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000e91" lastModified="1715323775"/>
+          <Include href="重复项目文件夹/登场动作.xml" loadImmediate="false" itemID="68566cdf-00000e7b" lastModified="1750494061"/>
+          <Include href="重复项目文件夹/绳索.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000fe6" lastModified="1743417670"/>
+          <Include href="重复项目文件夹/头.xml" loadImmediate="false" itemID="68566cdf-00000ef0" lastModified="1715409303"/>
+          <Include href="重复项目文件夹/头1.xml" loadImmediate="false" itemID="68566cdf-00000ef1" lastModified="1715233550"/>
+          <Include href="重复项目文件夹/元件 1.xml" loadImmediate="false" itemID="68566cdf-00000fc5" lastModified="1715324207"/>
+          <Include href="重复项目文件夹/元件 2.xml" loadImmediate="false" itemID="68566cdf-00000eb3" lastModified="1715324781"/>
+          <Include href="重复项目文件夹/元件 6.xml" loadImmediate="false" itemID="68566cdf-00000f08" lastModified="1715231980"/>
+          <Include href="重复项目文件夹/元件 10.xml" loadImmediate="false" itemID="68566cdf-00000f07" lastModified="1715325479"/>
+          <Include href="重复项目文件夹/元件 11.xml" loadImmediate="false" itemID="68566cdf-00000eec" lastModified="1715255152"/>
+          <Include href="重复项目文件夹/元件 12.xml" loadImmediate="false" itemID="68566cdf-00000eed" lastModified="1715256577"/>
+          <Include href="重复项目文件夹/元件 13.xml" loadImmediate="false" itemID="68566cdf-00000fe1" lastModified="1715359156"/>
+          <Include href="重复项目文件夹/元件 15.xml" loadImmediate="false" itemID="68566cdf-00000fb5" lastModified="1715230931"/>
+          <Include href="重复项目文件夹/元件 15 副本.xml" loadImmediate="false" itemID="68566cdf-00000feb" lastModified="1715230931"/>
+          <Include href="重复项目文件夹/元件 19.xml" loadImmediate="false" itemID="68566cdf-00000f71" lastModified="1715231555"/>
+          <Include href="重复项目文件夹/元件 24.xml" loadImmediate="false" itemID="68566cdf-00000f70" lastModified="1715232605"/>
+          <Include href="重复项目文件夹/元件 30.xml" loadImmediate="false" itemID="68566cdf-00000ef3" lastModified="1750493126"/>
+          <Include href="重复项目文件夹/元件 38.xml" loadImmediate="false" itemID="68566cdf-00000fd3" lastModified="1715322804"/>
+          <Include href="重复项目文件夹/元件 39.xml" loadImmediate="false" itemID="68566cdf-00000fb4" lastModified="1715322889"/>
+          <Include href="重复项目文件夹/元件 39 副本.xml" loadImmediate="false" itemID="68566cdf-00000fea" lastModified="1715322889"/>
+          <Include href="重复项目文件夹/元件 40.xml" loadImmediate="false" itemID="68566cdf-00000e9c" lastModified="1715340722"/>
+          <Include href="重复项目文件夹/元件 41.xml" loadImmediate="false" itemID="68566cdf-00000f55" lastModified="1715324272"/>
+          <Include href="重复项目文件夹/元件 42.xml" loadImmediate="false" itemID="68566cdf-00000f9d" lastModified="1715322959"/>
+          <Include href="重复项目文件夹/元件 43.xml" loadImmediate="false" itemID="68566cdf-00000f6f" lastModified="1715324330"/>
+          <Include href="重复项目文件夹/元件 44.xml" loadImmediate="false" itemID="68566cdf-00000f7f" lastModified="1715323074"/>
+          <Include href="重复项目文件夹/元件 46.xml" loadImmediate="false" itemID="68566cdf-00000f16" lastModified="1715325020"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
