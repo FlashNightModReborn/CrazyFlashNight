@@ -1,0 +1,2099 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人登场动画" itemID="685526f7-000008a5" lastModified="1750518379" lastUniqueIdentifier="69">
+  <timeline>
+    <DOMTimeline name="旧型号机器人登场动画" currentFrame="72" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;372&lt;/guideline&gt;&lt;guideline direction="v"&gt;-352&lt;/guideline&gt;&lt;guideline direction="h"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="118" name="空投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="117" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(_parent.登场动画);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头部" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" duration="45" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="117.05" centerPoint3DY="22.75">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="160.4" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="无人机" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本" centerPoint3DX="2169.5" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105178833007813" d="0.105178833007813" tx="2118.55" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.4" y="127.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本" centerPoint3DX="598.7" centerPoint3DY="-140.6">
+                  <matrix>
+                    <Matrix a="0.105178833007813" d="0.105178833007813" tx="547.75" ty="-154"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.4" y="127.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本" centerPoint3DX="83.5" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105178833007813" d="0.105178833007813" tx="32.55" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.4" y="127.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/无人机 副本" centerPoint3DX="-1949.05" centerPoint3DY="-141">
+                  <matrix>
+                    <Matrix a="0.105178833007813" d="0.105178833007813" tx="-2000" ty="-154.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="484.4" y="127.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="补间_3" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="2151.1" centerPoint3DY="-50.3">
+                  <matrix>
+                    <Matrix a="0.865997314453125" b="-0.5" c="-0.5" d="-0.865982055664063" tx="2121.8" ty="-19.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="580.5" centerPoint3DY="-46">
+                  <matrix>
+                    <Matrix a="0.865997314453125" b="-0.5" c="-0.5" d="-0.865982055664063" tx="551.4" ty="-13.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.2" y="13.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="62.65" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="0.865997314453125" b="-0.5" c="-0.5" d="-0.865982055664063" tx="33.35" ty="104.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" selected="true" centerPoint3DX="55.3" centerPoint3DY="73.75">
+                  <matrix>
+                    <Matrix a="0.769485473632813" b="-0.63861083984375" c="-0.63861083984375" d="-0.76947021484375" tx="32" ty="111"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="14"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="62.65" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="0.865997314453125" b="-0.5" c="-0.5" d="-0.865982055664063" tx="33.35" ty="104.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="62.65" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="0.865997314453125" b="-0.5" c="-0.5" d="-0.865982055664063" tx="33.35" ty="104.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="78.65" centerPoint3DY="17.45">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="0.707061767578125" c="0.707046508789063" d="-0.70709228515625" tx="40.1" ty="-2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPH1 副本" centerPoint3DX="117.1" centerPoint3DY="24.05">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="160.45" ty="21.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="线缆" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/补间 3 副本 3" symbolType="graphic" centerPoint3DX="103.8" centerPoint3DY="65.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.50286865234375" c="-0.141265869140625" d="0.181686401367188" tx="103.8" ty="65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/补间 3 副本 3" selected="true" symbolType="graphic" centerPoint3DX="94.9" centerPoint3DY="60.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.495697021484375" b="0.0846405029296875" c="-0.108673095703125" d="0.202865600585938" tx="94.9" ty="60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/补间 3 副本 3" symbolType="graphic" centerPoint3DX="103.8" centerPoint3DY="65.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.50286865234375" c="-0.141265869140625" d="0.181686401367188" tx="103.8" ty="65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/补间 3 副本 3" symbolType="graphic" centerPoint3DX="103.8" centerPoint3DY="65.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.50286865234375" c="-0.141265869140625" d="0.181686401367188" tx="103.8" ty="65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/补间 3 副本 3" symbolType="graphic" centerPoint3DX="106.65" centerPoint3DY="57.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.50286865234375" c="-0.271194458007813" d="0.476776123046875" tx="106.65" ty="57.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="101" duration="3" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#6.AE, #5.C2" startPointB="#6.99, #5.B3" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#6.B5, #5.8C" anchorPointA="#7.05, #5.5D" controlPointB="#6.B4, #5.A1" anchorPointB="#6.CB, #5.8D"/>
+                    <MorphCurves controlPointA="#8.44, #4.D3" anchorPointA="#8.7F, #4.32" controlPointB="#7.2E, #5.3A" anchorPointB="#7.4B, #4.C6"/>
+                    <MorphCurves controlPointA="#8.E2, #3.55" anchorPointA="#7.9C, #3.D3" controlPointB="#7.6, #4.75" anchorPointB="#7.5, #4.13"/>
+                    <MorphCurves controlPointA="#7.99, #3.D5" anchorPointA="#7.96, #3.D7" controlPointB="#7.5, #4.11" anchorPointB="#7.5, #4.0F"/>
+                    <MorphCurves controlPointA="#7.7D, #3.E4" anchorPointA="#7.64, #3.F1" controlPointB="#7.5D, #4.15" anchorPointB="#7.69, #4.1A" isLine="true"/>
+                    <MorphCurves controlPointA="#7.49, #3.E6" anchorPointA="#7.62, #3.C2" controlPointB="#7.75, #4.1F" anchorPointB="#7.81, #4.24"/>
+                    <MorphCurves controlPointA="#7.6A, #3.BD" anchorPointA="#7.72, #3.B9" controlPointB="#7.85, #4.26" anchorPointB="#7.89, #4.28"/>
+                    <MorphCurves controlPointA="#8.0A, #3.69" anchorPointA="#8.94, #3.8A" controlPointB="#7.94, #4.75" anchorPointB="#7.8C, #4.B6"/>
+                    <MorphCurves controlPointA="#8.F2, #3.B5" anchorPointA="#8.9F, #4.56" controlPointB="#7.85, #4.EF" anchorPointB="#7.7, #5.1F"/>
+                    <MorphCurves controlPointA="#8.2E, #4.FB" anchorPointA="#7.2, #5.77" controlPointB="#7.44, #5.88" anchorPointB="#6.D4, #5.CA"/>
+                    <MorphCurves controlPointA="#7.15, #5.7B" anchorPointA="#7.0C, 5.5" controlPointB="#6.D3, #5.CB" anchorPointB="#6.D2, #5.CC"/>
+                    <MorphCurves controlPointA="#6.DF, #5.9A" anchorPointA="#6.DE, #5.C3" controlPointB="6.75, #5.C4" anchorPointB="#6.AD, #5.BC"/>
+                    <MorphCurves controlPointA="#6.C4, #5.C8" anchorPointA="#6.B, #5.C2" controlPointB="#6.A3, #5.B8" anchorPointB="#6.99, #5.B3"/>
+                    <MorphCurves controlPointA="#6.B, #5.C2" anchorPointA="#6.AE, #5.C2" controlPointB="#6.99, #5.B3" anchorPointB="#6.99, #5.B3" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0086517333984375" b="0.0113677978515625" c="-0.0186614990234375" d="0.015777587890625" tx="97.1" ty="57.6"/>
+                        </matrix>
+                        <GradientEntry color="#825712" ratio="0"/>
+                        <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                        <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                        <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                        <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                        <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                        <GradientEntry color="#54370B" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2196 906[2290 949 2207 1110!2207 1110[2094 1275 1824 1399!1824 1399[1759 1425 1758 1475!1758 1475[1731 1480 1710 1474!1710 1474[1717 1420 1797 1373!1797 1373[2116 1235 2175 1074!2175 1074[2274 853 1948 979!1948 979|1892 1009!1892 1009
+[1865 998 1890 962!1890 962[2051 871 2196 906"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.005584716796875" b="0.012847900390625" c="-0.04107666015625" d="-0.0178375244140625" tx="90.5" ty="63.05"/>
+                        </matrix>
+                        <GradientEntry color="#825712" ratio="0"/>
+                        <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                        <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                        <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                        <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                        <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                        <GradientEntry color="#54370B" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1929 1064[1969 1352 1746 1484!1746 1484|1689 1459!1689 1459[1915 1312 1872 1039!1872 1039|1929 1064"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.005584716796875" b="0.012847900390625" c="-0.04107666015625" d="-0.0178375244140625" tx="90.5" ty="63.05"/>
+                        </matrix>
+                        <GradientEntry color="#825712" ratio="0"/>
+                        <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                        <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                        <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                        <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                        <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                        <GradientEntry color="#54370B" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1755 1463|1689 1459!1689 1459[#6D9.03 1304 1753 1081!1753 1081|1815 1081!1815 1081|1755 1463"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.005584716796875" b="0.012847900390625" c="-0.04107666015625" d="-0.0178375244140625" tx="90.5" ty="63.05"/>
+                        </matrix>
+                        <GradientEntry color="#825712" ratio="0"/>
+                        <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                        <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                        <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                        <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                        <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                        <GradientEntry color="#54370B" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1706 1467[#557.BD #4EF.A7 1682 1122!1682 1122|1682 1157!1682 1157[#5BA.05 #4E2.4B 1756 1467!1756 1467|1706 1467"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.0096893310546875" b="0.0101165771484375" c="0.0139617919921875" d="0.0140533447265625" tx="80" ty="59.3"/>
+                        </matrix>
+                        <GradientEntry color="#825712" ratio="0"/>
+                        <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                        <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                        <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                        <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                        <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                        <GradientEntry color="#54370B" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1710 1474[1733 1478 1753 1473!1753 1473[1756 1424 1693 1383!1693 1383[1432 1259 1406 1116!1406 1116[1356 920 1626 1032!1626 1032|1671 1059!1671 1059[1697 1048 1679 1017!1679 1017[1552 936 1417 967!1417 967[1325 1005 1372 1148!1372 1148
+[1443 1295 1663 1406!1663 1406[1718 1429 1710 1474"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/补间 3 副本 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50286865234375" c="0.0067138671875" d="0.3812255859375" tx="75.5" ty="60.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/补间 3 副本 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="63.25" ty="39.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="框架" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF1 副本" centerPoint3DX="2174.45" centerPoint3DY="-17.05">
+                  <matrix>
+                    <Matrix tx="2151.9" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF1 副本" centerPoint3DX="604.1" centerPoint3DY="-11.05">
+                  <matrix>
+                    <Matrix tx="581.55" ty="-18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF1 副本" centerPoint3DX="85.95" centerPoint3DY="106.95">
+                  <matrix>
+                    <Matrix tx="63.4" ty="99.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF1 副本" selected="true" centerPoint3DX="84.1" centerPoint3DY="104.15">
+                  <matrix>
+                    <Matrix a="0.985733032226563" b="-0.168304443359375" c="0.168304443359375" d="0.985733032226563" tx="60.8" ty="101.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF1 副本" centerPoint3DX="85.95" centerPoint3DY="106.95">
+                  <matrix>
+                    <Matrix tx="63.4" ty="99.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF1 副本" centerPoint3DX="85.95" centerPoint3DY="106.95">
+                  <matrix>
+                    <Matrix tx="63.4" ty="99.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF1 副本" centerPoint3DX="85.9" centerPoint3DY="105.65">
+                  <matrix>
+                    <Matrix tx="63.35" ty="98.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="核心" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPCORE 副本" centerPoint3DX="2174.65" centerPoint3DY="-36">
+                  <matrix>
+                    <Matrix tx="2150.5" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPCORE 副本" centerPoint3DX="604.3" centerPoint3DY="-30">
+                  <matrix>
+                    <Matrix tx="580.15" ty="-45.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPCORE 副本" centerPoint3DX="86.15" centerPoint3DY="88">
+                  <matrix>
+                    <Matrix tx="62" ty="72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPCORE 副本" selected="true" centerPoint3DX="81.05" centerPoint3DY="85.2">
+                  <matrix>
+                    <Matrix a="0.985733032226563" b="-0.168304443359375" c="0.168304443359375" d="0.985733032226563" tx="54.75" ty="73.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.1" y="15.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPCORE 副本" centerPoint3DX="86.15" centerPoint3DY="88">
+                  <matrix>
+                    <Matrix tx="62" ty="72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPCORE 副本" centerPoint3DX="86.15" centerPoint3DY="88">
+                  <matrix>
+                    <Matrix tx="62" ty="72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPCORE 副本" centerPoint3DX="86.1" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix tx="61.95" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿1" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="2209.2" centerPoint3DY="-11.35">
+                  <matrix>
+                    <Matrix a="-0.64019775390625" b="-0.768203735351563" c="-0.768203735351563" d="0.64019775390625" tx="2235.85" ty="-5.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="638.85" centerPoint3DY="-5.35">
+                  <matrix>
+                    <Matrix a="-0.64019775390625" b="-0.768203735351563" c="-0.768203735351563" d="0.64019775390625" tx="665.5" ty="0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.7" centerPoint3DY="112.65">
+                  <matrix>
+                    <Matrix a="-0.64019775390625" b="-0.768203735351563" c="-0.768203735351563" d="0.64019775390625" tx="147.35" ty="118.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" selected="true" centerPoint3DX="119.6" centerPoint3DY="103.8">
+                  <matrix>
+                    <Matrix a="-0.760345458984375" b="-0.649505615234375" c="-0.649505615234375" d="0.760345458984375" tx="146.7" ty="105.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.7" centerPoint3DY="112.65">
+                  <matrix>
+                    <Matrix a="-0.64019775390625" b="-0.768203735351563" c="-0.768203735351563" d="0.64019775390625" tx="147.35" ty="118.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.7" centerPoint3DY="112.65">
+                  <matrix>
+                    <Matrix a="-0.64019775390625" b="-0.768203735351563" c="-0.768203735351563" d="0.64019775390625" tx="147.35" ty="118.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="122.05" centerPoint3DY="97.7">
+                  <matrix>
+                    <Matrix a="-0.984207153320313" b="-0.176956176757813" c="-0.176956176757813" d="0.984207153320313" tx="146.25" ty="85.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.95" centerPoint3DY="92.95">
+                  <matrix>
+                    <Matrix a="-1" tx="142.35" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.95" centerPoint3DY="92.95">
+                  <matrix>
+                    <Matrix a="-1" tx="142.35" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿2" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="2206.8" centerPoint3DY="-3.8">
+                  <matrix>
+                    <Matrix a="0.389923095703125" b="-0.92083740234375" c="-0.92083740234375" d="-0.389923095703125" tx="2220.25" ty="18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="636.45" centerPoint3DY="2.2">
+                  <matrix>
+                    <Matrix a="0.389923095703125" b="-0.92083740234375" c="-0.92083740234375" d="-0.389923095703125" tx="649.9" ty="24.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="118.3" centerPoint3DY="120.2">
+                  <matrix>
+                    <Matrix a="0.389923095703125" b="-0.92083740234375" c="-0.92083740234375" d="-0.389923095703125" tx="131.75" ty="142.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" selected="true" centerPoint3DX="118.3" centerPoint3DY="111.75">
+                  <matrix>
+                    <Matrix a="0.2293701171875" b="-0.97332763671875" c="-0.97332763671875" d="-0.2293701171875" tx="135.3" ty="131.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="118.3" centerPoint3DY="120.2">
+                  <matrix>
+                    <Matrix a="0.389923095703125" b="-0.92083740234375" c="-0.92083740234375" d="-0.389923095703125" tx="131.75" ty="142.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="118.3" centerPoint3DY="120.2">
+                  <matrix>
+                    <Matrix a="0.389923095703125" b="-0.92083740234375" c="-0.92083740234375" d="-0.389923095703125" tx="131.75" ty="142.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="123.85" centerPoint3DY="106.1">
+                  <matrix>
+                    <Matrix a="-0.229171752929688" b="-0.973373413085938" c="-0.973373413085938" d="0.229171752929688" tx="147.9" ty="115.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="149.55" centerPoint3DY="102.8">
+                  <matrix>
+                    <Matrix a="-1" tx="164.15" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="149.55" centerPoint3DY="102.8">
+                  <matrix>
+                    <Matrix a="-1" tx="164.15" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿3" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="2185.75" centerPoint3DY="1.55">
+                  <matrix>
+                    <Matrix a="-1" tx="2198.55" ty="-8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="615.4" centerPoint3DY="7.55">
+                  <matrix>
+                    <Matrix a="-1" tx="628.2" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="97.25" centerPoint3DY="125.55">
+                  <matrix>
+                    <Matrix a="-1" tx="110.05" ty="116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" selected="true" centerPoint3DX="98.6" centerPoint3DY="120.45">
+                  <matrix>
+                    <Matrix a="-0.985733032226563" b="0.168304443359375" c="0.168304443359375" d="0.985733032226563" tx="109.5" ty="109.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="97.25" centerPoint3DY="125.55">
+                  <matrix>
+                    <Matrix a="-1" tx="110.05" ty="116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="97.25" centerPoint3DY="125.55">
+                  <matrix>
+                    <Matrix a="-1" tx="110.05" ty="116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="108.45" centerPoint3DY="122.15">
+                  <matrix>
+                    <Matrix a="-1" tx="121.25" ty="112.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="157" centerPoint3DY="129.15">
+                  <matrix>
+                    <Matrix a="-1" tx="169.8" ty="119.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="157" centerPoint3DY="129.15">
+                  <matrix>
+                    <Matrix a="-1" tx="169.8" ty="119.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="2138.35" centerPoint3DY="-11.55">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.70709228515625" c="0.70709228515625" d="0.70709228515625" tx="2111.45" ty="-9.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="568" centerPoint3DY="-5.55">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.70709228515625" c="0.70709228515625" d="0.70709228515625" tx="541.1" ty="-3.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="49.85" centerPoint3DY="112.45">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.70709228515625" c="0.70709228515625" d="0.70709228515625" tx="22.95" ty="114.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" selected="true" centerPoint3DX="49.65" centerPoint3DY="115.6">
+                  <matrix>
+                    <Matrix a="0.5780029296875" b="-0.816009521484375" c="0.816009521484375" d="0.5780029296875" tx="23.35" ty="122.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.5" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="49.85" centerPoint3DY="112.45">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.70709228515625" c="0.70709228515625" d="0.70709228515625" tx="22.95" ty="114.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="49.85" centerPoint3DY="112.45">
+                  <matrix>
+                    <Matrix a="0.70709228515625" b="-0.70709228515625" c="0.70709228515625" d="0.70709228515625" tx="22.95" ty="114.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="51.25" centerPoint3DY="93.25">
+                  <matrix>
+                    <Matrix tx="29.85" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿2" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="2139.8" centerPoint3DY="-6.3">
+                  <matrix>
+                    <Matrix a="-0.3900146484375" b="-0.920806884765625" c="0.920806884765625" d="-0.3900146484375" tx="2127.05" ty="16.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="569.45" centerPoint3DY="-0.3">
+                  <matrix>
+                    <Matrix a="-0.3900146484375" b="-0.920806884765625" c="0.920806884765625" d="-0.3900146484375" tx="556.7" ty="22.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="51.3" centerPoint3DY="117.7">
+                  <matrix>
+                    <Matrix a="-0.3900146484375" b="-0.920806884765625" c="0.920806884765625" d="-0.3900146484375" tx="38.55" ty="140.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" selected="true" centerPoint3DX="52" centerPoint3DY="120.65">
+                  <matrix>
+                    <Matrix a="-0.539413452148438" b="-0.842025756835938" c="0.842025756835938" d="-0.539413452148438" tx="43.1" ty="145.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="51.3" centerPoint3DY="117.7">
+                  <matrix>
+                    <Matrix a="-0.3900146484375" b="-0.920806884765625" c="0.920806884765625" d="-0.3900146484375" tx="38.55" ty="140.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="51.3" centerPoint3DY="117.7">
+                  <matrix>
+                    <Matrix a="-0.3900146484375" b="-0.920806884765625" c="0.920806884765625" d="-0.3900146484375" tx="38.55" ty="140.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="45.65" centerPoint3DY="113.75">
+                  <matrix>
+                    <Matrix a="0.611297607421875" b="-0.789459228515625" c="0.789459228515625" d="0.611297607421875" tx="19.7" ty="113.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="22.65" centerPoint3DY="103.1">
+                  <matrix>
+                    <Matrix tx="8.05" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿3" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="2161.5" centerPoint3DY="1.55">
+                  <matrix>
+                    <Matrix a="-1" tx="2174.3" ty="-8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="591.15" centerPoint3DY="7.55">
+                  <matrix>
+                    <Matrix a="-1" tx="603.95" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="73" centerPoint3DY="125.55">
+                  <matrix>
+                    <Matrix a="-1" tx="85.8" ty="116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" selected="true" centerPoint3DX="74.65" centerPoint3DY="124.65">
+                  <matrix>
+                    <Matrix a="-0.985733032226563" b="0.168304443359375" c="0.168304443359375" d="0.985733032226563" tx="85.6" ty="113.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="73" centerPoint3DY="125.55">
+                  <matrix>
+                    <Matrix a="-1" tx="85.8" ty="116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="73" centerPoint3DY="125.55">
+                  <matrix>
+                    <Matrix a="-1" tx="85.8" ty="116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="55" centerPoint3DY="138.6">
+                  <matrix>
+                    <Matrix a="-1" tx="67.8" ty="129.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="15.2" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="28" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="框架2" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF2 副本" centerPoint3DX="2174.85" centerPoint3DY="-24.1">
+                  <matrix>
+                    <Matrix tx="2154.3" ty="-30.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF2 副本" centerPoint3DX="604.5" centerPoint3DY="-18.1">
+                  <matrix>
+                    <Matrix tx="583.95" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF2 副本" centerPoint3DX="86.35" centerPoint3DY="99.9">
+                  <matrix>
+                    <Matrix tx="65.8" ty="93.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF2 副本" selected="true" centerPoint3DX="83.4" centerPoint3DY="97.25">
+                  <matrix>
+                    <Matrix a="0.985733032226563" b="-0.168304443359375" c="0.168304443359375" d="0.985733032226563" tx="62.15" ty="94.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.5" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF2 副本" centerPoint3DX="86.35" centerPoint3DY="99.9">
+                  <matrix>
+                    <Matrix tx="65.8" ty="93.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF2 副本" centerPoint3DX="86.35" centerPoint3DY="99.9">
+                  <matrix>
+                    <Matrix tx="65.8" ty="93.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPF2 副本" centerPoint3DX="86.3" centerPoint3DY="98.6">
+                  <matrix>
+                    <Matrix tx="65.75" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿1" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="2209.3" centerPoint3DY="-18.85">
+                  <matrix>
+                    <Matrix a="-0.6221923828125" b="-0.78271484375" c="-0.78271484375" d="0.6221923828125" tx="2235.55" ty="-13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="638.95" centerPoint3DY="-12.85">
+                  <matrix>
+                    <Matrix a="-0.6221923828125" b="-0.78271484375" c="-0.78271484375" d="0.6221923828125" tx="665.2" ty="-7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.8" centerPoint3DY="105.15">
+                  <matrix>
+                    <Matrix a="-0.6221923828125" b="-0.78271484375" c="-0.78271484375" d="0.6221923828125" tx="147.05" ty="111"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" selected="true" centerPoint3DX="118.4" centerPoint3DY="96.25">
+                  <matrix>
+                    <Matrix a="-0.745040893554688" b="-0.666824340820313" c="-0.666824340820313" d="0.745040893554688" tx="145.15" ty="98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.8" centerPoint3DY="105.15">
+                  <matrix>
+                    <Matrix a="-0.6221923828125" b="-0.78271484375" c="-0.78271484375" d="0.6221923828125" tx="147.05" ty="111"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="120.8" centerPoint3DY="105.15">
+                  <matrix>
+                    <Matrix a="-0.6221923828125" b="-0.78271484375" c="-0.78271484375" d="0.6221923828125" tx="147.05" ty="111"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="122.25" centerPoint3DY="87.95">
+                  <matrix>
+                    <Matrix a="-0.992752075195313" b="-0.109420776367188" c="-0.109420776367188" d="0.992752075195313" tx="145.9" ty="72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="117.7" centerPoint3DY="82.35">
+                  <matrix>
+                    <Matrix a="-0.98895263671875" b="0.147491455078125" c="0.147491455078125" d="0.98895263671875" tx="135.7" ty="62.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿2" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="2204.8" centerPoint3DY="-11.35">
+                  <matrix>
+                    <Matrix a="0.399032592773438" b="-0.91680908203125" c="-0.91680908203125" d="-0.399032592773438" tx="2220" ty="10.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="634.45" centerPoint3DY="-5.35">
+                  <matrix>
+                    <Matrix a="0.399032592773438" b="-0.91680908203125" c="-0.91680908203125" d="-0.399032592773438" tx="649.65" ty="16.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="116.3" centerPoint3DY="112.65">
+                  <matrix>
+                    <Matrix a="0.399032592773438" b="-0.91680908203125" c="-0.91680908203125" d="-0.399032592773438" tx="131.5" ty="134.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" selected="true" centerPoint3DX="115.35" centerPoint3DY="104.85">
+                  <matrix>
+                    <Matrix a="0.239044189453125" b="-0.97088623046875" c="-0.97088623046875" d="-0.239044189453125" tx="133.7" ty="123.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="116.3" centerPoint3DY="112.65">
+                  <matrix>
+                    <Matrix a="0.399032592773438" b="-0.91680908203125" c="-0.91680908203125" d="-0.399032592773438" tx="131.5" ty="134.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="116.3" centerPoint3DY="112.65">
+                  <matrix>
+                    <Matrix a="0.399032592773438" b="-0.91680908203125" c="-0.91680908203125" d="-0.399032592773438" tx="131.5" ty="134.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="149.1" centerPoint3DY="85.6">
+                  <matrix>
+                    <Matrix a="-0.96270751953125" b="0.270172119140625" c="0.270172119140625" d="0.96270751953125" tx="156.8" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿3" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="2186.15" centerPoint3DY="-8.25">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="2199.9" ty="-17.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="615.8" centerPoint3DY="-2.25">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="629.55" ty="-11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="97.65" centerPoint3DY="115.75">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="111.4" ty="106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" selected="true" centerPoint3DX="97.05" centerPoint3DY="110.85">
+                  <matrix>
+                    <Matrix a="-0.985549926757813" b="0.168701171875" c="0.168701171875" d="0.985549926757813" tx="109.15" ty="99.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="97.65" centerPoint3DY="115.75">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="111.4" ty="106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="97.65" centerPoint3DY="115.75">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="111.4" ty="106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="160.65" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="174.4" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿1" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="2137.7" centerPoint3DY="-20.7">
+                  <matrix>
+                    <Matrix a="0.652664184570313" b="-0.757492065429688" c="0.75750732421875" d="0.652664184570313" tx="2112.7" ty="-14.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="567.35" centerPoint3DY="-14.7">
+                  <matrix>
+                    <Matrix a="0.652664184570313" b="-0.757492065429688" c="0.75750732421875" d="0.652664184570313" tx="542.35" ty="-8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="49.2" centerPoint3DY="103.3">
+                  <matrix>
+                    <Matrix a="0.652664184570313" b="-0.757492065429688" c="0.75750732421875" d="0.652664184570313" tx="24.2" ty="109.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" selected="true" centerPoint3DX="47.45" centerPoint3DY="106.75">
+                  <matrix>
+                    <Matrix a="0.515869140625" b="-0.856536865234375" c="0.856552124023438" d="0.515869140625" tx="23.8" ty="117.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="49.2" centerPoint3DY="103.3">
+                  <matrix>
+                    <Matrix a="0.652664184570313" b="-0.757492065429688" c="0.75750732421875" d="0.652664184570313" tx="24.2" ty="109.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="49.2" centerPoint3DY="103.3">
+                  <matrix>
+                    <Matrix a="0.652664184570313" b="-0.757492065429688" c="0.75750732421875" d="0.652664184570313" tx="24.2" ty="109.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="50.15" centerPoint3DY="92.1">
+                  <matrix>
+                    <Matrix a="0.9439697265625" b="-0.329681396484375" c="0.329696655273438" d="0.9439697265625" tx="25.45" ty="84.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="53.15" centerPoint3DY="80.7">
+                  <matrix>
+                    <Matrix a="0.994659423828125" b="0.0993499755859375" c="-0.0993499755859375" d="0.994659423828125" tx="34.1" ty="63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="55.25" centerPoint3DY="81.65">
+                  <matrix>
+                    <Matrix a="0.98895263671875" b="0.147491455078125" c="-0.147491455078125" d="0.98895263671875" tx="37.25" ty="61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL1 副本" centerPoint3DX="55.25" centerPoint3DY="81.65">
+                  <matrix>
+                    <Matrix a="0.98895263671875" b="0.147491455078125" c="-0.147491455078125" d="0.98895263671875" tx="37.25" ty="61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="2145.1" centerPoint3DY="-13">
+                  <matrix>
+                    <Matrix a="-0.489669799804688" b="-0.871795654296875" c="0.871795654296875" d="-0.489669799804688" tx="2132.85" ty="10.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="574.75" centerPoint3DY="-7">
+                  <matrix>
+                    <Matrix a="-0.489669799804688" b="-0.871795654296875" c="0.871795654296875" d="-0.489669799804688" tx="562.5" ty="16.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="56.6" centerPoint3DY="111">
+                  <matrix>
+                    <Matrix a="-0.489669799804688" b="-0.871795654296875" c="0.871795654296875" d="-0.489669799804688" tx="44.35" ty="134.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" selected="true" centerPoint3DX="55.95" centerPoint3DY="113.05">
+                  <matrix>
+                    <Matrix a="-0.629409790039063" b="-0.776947021484375" c="0.776947021484375" d="-0.629409790039063" tx="47.8" ty="138.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="56.6" centerPoint3DY="111">
+                  <matrix>
+                    <Matrix a="-0.489669799804688" b="-0.871795654296875" c="0.871795654296875" d="-0.489669799804688" tx="44.35" ty="134.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="56.6" centerPoint3DY="111">
+                  <matrix>
+                    <Matrix a="-0.489669799804688" b="-0.871795654296875" c="0.871795654296875" d="-0.489669799804688" tx="44.35" ty="134.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="52.65" centerPoint3DY="101.75">
+                  <matrix>
+                    <Matrix a="-0.0407257080078125" b="-0.999053955078125" c="0.999053955078125" d="-0.0407257080078125" tx="32.15" ty="117.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.1" y="22.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="23.85" centerPoint3DY="84.9">
+                  <matrix>
+                    <Matrix a="0.96270751953125" b="0.270172119140625" c="-0.270172119140625" d="0.96270751953125" tx="16.15" ty="59.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL2 副本" centerPoint3DX="23.85" centerPoint3DY="84.9">
+                  <matrix>
+                    <Matrix a="0.96270751953125" b="0.270172119140625" c="-0.270172119140625" d="0.96270751953125" tx="16.15" ty="59.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿3" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="2163.75" centerPoint3DY="-8.25">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="2177.5" ty="-17.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="593.4" centerPoint3DY="-2.25">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="607.15" ty="-11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="75.25" centerPoint3DY="115.75">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="89" ty="106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" selected="true" centerPoint3DX="75.1" centerPoint3DY="114.7">
+                  <matrix>
+                    <Matrix a="-0.985549926757813" b="0.168701171875" c="0.168701171875" d="0.985549926757813" tx="87.1" ty="102.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.55" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="75.25" centerPoint3DY="115.75">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="89" ty="106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="75.25" centerPoint3DY="115.75">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="89" ty="106.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="100" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="68.45" centerPoint3DY="113.85">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="82.2" ty="104.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="10.45" centerPoint3DY="106.9">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="24.2" ty="97.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/SPL3 副本" centerPoint3DX="10.45" centerPoint3DY="106.9">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="24.2" ty="97.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="绳索" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.69073486328125" d="0.283859252929688" tx="2168.4" ty="-142.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.69073486328125" d="0.283859252929688" tx="598.7" ty="-140.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="45" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.69073486328125" d="0.283859252929688" tx="78.95" ty="-143.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/绳索 副本" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.69073486328125" d="0.283859252929688" tx="-1954" ty="-143.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="影子" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="61" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="2255.2" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="2168.55" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="690.85" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="604.2" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" duration="46" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="172.45" centerPoint3DY="211.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125" tx="85.8" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
