@@ -23,18 +23,42 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
-        <SpawnPoint>
-            <Point id="0">
-                <x>1116</x>
-                <y>238</y>
-                <QuantityMax>1</QuantityMax>
-            </Point>
-        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
-                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/废城环线地图2.swf</Background>
+            <PlayerX>153</PlayerX>
+            <PlayerY>560</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/废城环线地图1.swf</Background>
+            <PlayerX>153</PlayerX>
+            <PlayerY>560</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                 </EnemyGroup>
