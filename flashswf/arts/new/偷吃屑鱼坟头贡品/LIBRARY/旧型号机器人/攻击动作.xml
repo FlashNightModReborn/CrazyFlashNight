@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人/攻击动作" itemID="665c89af-00000df4" lastModified="1717381417" lastUniqueIdentifier="183">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人/攻击动作" itemID="665c89af-00000df4" lastModified="1750518208" lastUniqueIdentifier="183">
   <timeline>
-    <DOMTimeline name="攻击动作" currentFrame="31">
+    <DOMTimeline name="攻击动作">
       <layers>
-        <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="招式名" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="39" keyMode="9728">
               <Actionscript>
@@ -121,7 +121,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -524,7 +524,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="追踪代码" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="追踪代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -617,7 +617,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="位移层" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="位移层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -642,7 +642,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="特效" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements/>
@@ -658,7 +658,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="备用" color="#4FFF4F" locked="true" autoNamed="false" animationType="motion object">
+        <DOMLayer name="备用" color="#4FFF4F" autoNamed="false" animationType="motion object">
           <frames>
             <DOMFrame index="0" duration="54" keyMode="9728">
               <elements/>
@@ -707,7 +707,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="备用" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="备用" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -849,7 +849,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头部" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="头部" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1105,7 +1105,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="线缆" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="线缆" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2885,7 +2885,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="框架1" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="框架1" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2970,7 +2970,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="核心" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="核心" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3055,7 +3055,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右前腿1" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="右前腿1" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3140,7 +3140,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右前腿2" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="右前腿2" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3225,7 +3225,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右前腿3" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="右前腿3" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3310,7 +3310,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左前腿1" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="左前腿1" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3395,7 +3395,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左前腿2" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="左前腿2" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3480,7 +3480,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左前腿3" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="左前腿3" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3565,7 +3565,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="框架2" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="框架2" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3650,7 +3650,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右后腿1" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="右后腿1" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3735,7 +3735,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右后腿2" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="右后腿2" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3820,7 +3820,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右后腿3" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="右后腿3" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3905,7 +3905,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左后腿1" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左后腿1" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3990,7 +3990,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左后腿2" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="左后腿2" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4075,7 +4075,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左后腿3" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="左后腿3" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
