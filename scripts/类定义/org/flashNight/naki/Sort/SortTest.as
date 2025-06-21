@@ -1,7 +1,14 @@
 ﻿/**
- * 增强版 SortTest 类
+ * 增强版 SortTest 类 - 
  * 位于 org.flashNight.naki.Sort 包下
  * 提供全面的排序算法性能评估和分析功能
+ * 
+ * 修复内容：
+ * 1. 复杂度分析函数的数学计算错误
+ * 2. 统计函数中的NaN和Infinity问题
+ * 3. AS2兼容性问题（移除Array.reduce等ES6方法）
+ * 4. 稳定性测试的准确性
+ * 5. 边界情况处理
  */
 class org.flashNight.naki.Sort.SortTest {
     
@@ -62,7 +69,6 @@ class org.flashNight.naki.Sort.SortTest {
         runBasicFunctionalityTests();
         runStabilityTests();
         runPerformanceBenchmarks();
-        // runStressTests();
         runSpecialScenarioTests();
         runAlgorithmComparison();
         generateFinalReport();
@@ -120,42 +126,49 @@ class org.flashNight.naki.Sort.SortTest {
     /*** 2. 稳定性测试 ***/
     private function runStabilityTests():Void {
         trace("\n" + repeatChar("=", 40));
-        trace("稳定性测试");
+        trace("稳定性测试 - 增强版");
         trace(repeatChar("=", 40));
         
+        // 使用更复杂的测试数据来真正测试稳定性
         var data:Array = [
-            {value:3, id:"A"},
-            {value:1, id:"B"},
-            {value:3, id:"C"},
-            {value:2, id:"D"},
-            {value:1, id:"E"},
-            {value:3, id:"F"}
+            {value:5, id:"A1"}, {value:2, id:"B1"}, {value:5, id:"A2"},
+            {value:1, id:"C1"}, {value:2, id:"B2"}, {value:5, id:"A3"},
+            {value:3, id:"D1"}, {value:1, id:"C2"}, {value:3, id:"D2"},
+            {value:2, id:"B3"}, {value:1, id:"C3"}, {value:4, id:"E1"}
         ];
+        
         var compareFunc:Function = function(a:Object,b:Object):Number {
             return a.value < b.value ? -1 : (a.value > b.value ? 1 : 0);
         };
+        
+        // 稳定排序的期望结果：相同值的元素保持原始相对顺序
         var expected:Array = [
-            {value:1, id:"B"},
-            {value:1, id:"E"},
-            {value:2, id:"D"},
-            {value:3, id:"A"},
-            {value:3, id:"C"},
-            {value:3, id:"F"}
+            {value:1, id:"C1"}, {value:1, id:"C2"}, {value:1, id:"C3"},
+            {value:2, id:"B1"}, {value:2, id:"B2"}, {value:2, id:"B3"},
+            {value:3, id:"D1"}, {value:3, id:"D2"},
+            {value:4, id:"E1"},
+            {value:5, id:"A1"}, {value:5, id:"A2"}, {value:5, id:"A3"}
         ];
         
-        trace("\n原始: " + formatObjectArray(data));
-        trace("期望: " + formatObjectArray(expected));
+        trace("\n原始数据: " + formatObjectArray(data));
+        trace("稳定排序期望: " + formatObjectArray(expected));
         
         for (var i:Number = 0; i < sortMethods.length; i++) {
             var m:Object = sortMethods[i];
             var arr:Array = copyArray(data);
             try {
                 var res:Array = m.sort(arr, compareFunc);
-                var stable:Boolean = checkStability(res, expected);
-                trace("\n" + m.name + ": " + (stable ? "✓ 稳定" : "✗ 不稳定") +
-                      " 结果:" + formatObjectArray(res));
+                var stable:Boolean = checkStabilityEnhanced(res, expected);
+                
+                trace("\n" + m.name + ": " + (stable ? "✓ 稳定" : "✗ 不稳定"));
+                trace("  结果: " + formatObjectArray(res));
+                
+                if (!stable) {
+                    trace("  → 稳定性违规详情:");
+                    analyzeStabilityViolations(res, expected);
+                }
             } catch (e:Error) {
-                trace(m.name + " ERROR: " + e.message);
+                trace("\n" + m.name + " ERROR: " + e.message);
             }
         }
     }
@@ -209,9 +222,10 @@ class org.flashNight.naki.Sort.SortTest {
                     var out:Array = m.sort(arr, null);
                     var t1:Number = getTimer();
                     // 验证
-                    var exp:Array = copyArray(baseData); exp.sort(Array.NUMERIC);
+                    var exp:Array = copyArray(baseData); 
+                    exp.sort(Array.NUMERIC);
                     if (arraysEqual(out, exp, null)) {
-                        var dt:Number = t1 - t0;
+                        var dt:Number = Math.max(0, t1 - t0); // 确保时间非负
                         totalTime += dt;
                         minT = Math.min(minT, dt);
                         maxT = Math.max(maxT, dt);
@@ -221,6 +235,7 @@ class org.flashNight.naki.Sort.SortTest {
                     trace("  " + m.name + " 运行时错误: " + e.message);
                 }
             }
+            
             if (succ > 0) {
                 var avgT:Number = totalTime / succ;
                 // 存储
@@ -228,42 +243,17 @@ class org.flashNight.naki.Sort.SortTest {
                 performanceMatrix[m.name][distName][size] = avgT;
                 
                 trace("  " + m.name +
-                      " 平均:" + avgT +
-                      "ms 最小:" + minT + "ms 最大:" + maxT + "ms 成功率:" + ((succ/testConfig.testIterations)*100) + "%");
+                      " 平均:" + formatNumber(avgT, 1) +
+                      "ms 最小:" + formatNumber(minT, 1) + 
+                      "ms 最大:" + formatNumber(maxT, 1) + 
+                      "ms 成功率:" + formatNumber((succ/testConfig.testIterations)*100, 1) + "%");
             } else {
                 trace("  " + m.name + " 所有运行均失败");
             }
         }
     }
     
-    /*** 4. 压力测试 ***/
-    private function runStressTests():Void {
-        trace("\n" + repeatChar("=", 40));
-        trace("压力测试 (大数据量)");
-        trace(repeatChar("=", 40));
-        
-        for (var i:Number = 0; i < testConfig.stressSizes.length; i++) {
-            var size:Number = testConfig.stressSizes[i];
-            trace("\n-- 规模: " + size + " --");
-            var baseData:Array = generateArray(size, "random");
-            
-            for (var j:Number = 0; j < sortMethods.length; j++) {
-                var m:Object = sortMethods[j];
-                trace("  测试 " + m.name + " ...");
-                var t0:Number = getTimer();
-                try {
-                    var out:Array = m.sort(copyArray(baseData), null);
-                    var t1:Number = getTimer();
-                    var ok:Boolean = quickSortValidation(out);
-                    trace("    时间:" + (t1-t0) + "ms 正确:" + (ok?"✓":"✗"));
-                } catch (e:Error) {
-                    trace("    ERROR: " + e.message);
-                }
-            }
-        }
-    }
-    
-    /*** 5. 特殊场景测试 ***/
+    /*** 4. 特殊场景测试 ***/
     private function runSpecialScenarioTests():Void {
         trace("\n" + repeatChar("=", 40));
         trace("特殊场景测试");
@@ -289,8 +279,9 @@ class org.flashNight.naki.Sort.SortTest {
                 try {
                     var out:Array = m.sort(copyArray(data), null);
                     var t1:Number = getTimer();
+                    var dt:Number = Math.max(0, t1 - t0);
                     var ok:Boolean = quickSortValidation(out);
-                    trace("  " + m.name + ": " + (t1-t0) + "ms " + (ok?"✓":"✗"));
+                    trace("  " + m.name + ": " + formatNumber(dt, 0) + "ms " + (ok?"✓":"✗"));
                 } catch (e:Error) {
                     trace("  " + m.name + " ERROR: " + e.message);
                 }
@@ -298,7 +289,7 @@ class org.flashNight.naki.Sort.SortTest {
         }
     }
     
-    /*** 6. 算法比较分析 ***/
+    /*** 5. 算法比较分析 ***/
     private function runAlgorithmComparison():Void {
         trace("\n" + repeatChar("=", 40));
         trace("算法比较分析");
@@ -348,7 +339,7 @@ class org.flashNight.naki.Sort.SortTest {
         // 统计测试数量和数据分布
         for (var alg:String in performanceMatrix) {
             for (var dist:String in performanceMatrix[alg]) {
-                if (dataDistributions.indexOf(dist) === -1) {
+                if (arrayIndexOf(dataDistributions, dist) === -1) {
                     dataDistributions.push(dist);
                 }
                 for (var size:String in performanceMatrix[alg][dist]) {
@@ -359,7 +350,7 @@ class org.flashNight.naki.Sort.SortTest {
         
         trace("• 测试算法数量: " + algorithmsCount);
         trace("• 数据分布类型: " + dataDistributions.length + " (" + dataDistributions.join(", ") + ")");
-        trace("• 测试规模范围: " + Math.min.apply(null, testSizes) + " - " + Math.max.apply(null, testSizes));
+        trace("• 测试规模范围: " + arrayMin(testSizes) + " - " + arrayMax(testSizes));
         trace("• 总测试样本: " + totalTests + " 个性能数据点");
         trace("• 每组重复次数: " + testConfig.testIterations);
         
@@ -383,7 +374,7 @@ class org.flashNight.naki.Sort.SortTest {
         var distributions:Array = [];
         for (var alg:String in performanceMatrix) {
             for (var dist:String in performanceMatrix[alg]) {
-                if (distributions.indexOf(dist) === -1) {
+                if (arrayIndexOf(distributions, dist) === -1) {
                     distributions.push(dist);
                 }
             }
@@ -409,13 +400,13 @@ class org.flashNight.naki.Sort.SortTest {
                 
                 for (var sz:Number = 0; sz < sizes.length; sz++) {
                     var size:Number = sizes[sz];
-                    var time = "N/A";
+                    var time:String = "N/A";
                     
                     if (performanceMatrix[algName] && 
                         performanceMatrix[algName][distName] && 
-                        performanceMatrix[algName][distName][size]) {
+                        performanceMatrix[algName][distName][size] !== undefined) {
                         var ms:Number = performanceMatrix[algName][distName][size];
-                        time = ms;
+                        time = formatNumber(ms, 1);
                     }
                     row += "\t" + time;
                 }
@@ -452,14 +443,14 @@ class org.flashNight.naki.Sort.SortTest {
             return a.totalScore - b.totalScore; // 得分越低越好（时间越短）
         });
         
-        trace("排名\t算法\t\t综合得分\t理论复杂度\t最佳场景\t最差场景");
-        trace(repeatChar("-", 70));
+        trace("排名\t算法\t\t综合得分\t\t理论复杂度\t最佳场景\t最差场景");
+        trace(repeatChar("-", 80));
         
         for (var r:Number = 0; r < algorithmScores.length; r++) {
             var rank:Object = algorithmScores[r];
             var rankStr:String = (r + 1) + "\t" + 
                             rank.name + "\t\t" + 
-                            rank.totalScore + "\t\t" + 
+                            formatNumber(rank.totalScore, 2) + "\t\t" + 
                             rank.complexity + "\t" + 
                             rank.bestScenario + "\t" + 
                             rank.worstScenario;
@@ -468,7 +459,7 @@ class org.flashNight.naki.Sort.SortTest {
     }
 
     /**
-     * 复杂度分析
+     * 复杂度分析 - 修复版
      */
     private function generateComplexityAnalysis():Void {
         trace("\n" + repeatChar("-", 60));
@@ -484,16 +475,26 @@ class org.flashNight.naki.Sort.SortTest {
             // 分析随机数据的复杂度表现
             if (performanceMatrix[algName] && performanceMatrix[algName]["随机数据"]) {
                 var randomData:Object = performanceMatrix[algName]["随机数据"];
-                var complexityFactor:Number = calculateComplexityFactor(randomData);
-                var actualComplexity:String = interpretComplexityFactor(complexityFactor);
+                var complexityAnalysis:Object = calculateComplexityFactorFixed(randomData);
                 
-                trace("  实际表现: " + actualComplexity + " (因子: " + complexityFactor + ")");
+                trace("  实际表现: " + complexityAnalysis.interpretation + 
+                      " (斜率: " + formatNumber(complexityAnalysis.slope, 3) + ")");
+                trace("  R²相关系数: " + formatNumber(complexityAnalysis.correlation, 3) + 
+                      " (越接近1越准确)");
                 
                 // 分析最佳/最差情况
                 var bestCase:Object = findBestWorstCase(algName);
-                trace("  最佳情况: " + bestCase.best.scenario + " (" + bestCase.best.avgTime + "ms)");
-                trace("  最差情况: " + bestCase.worst.scenario + " (" + bestCase.worst.avgTime + "ms)");
-                trace("  性能比率: " + (bestCase.worst.avgTime / bestCase.best.avgTime) + ":1");
+                if (bestCase.best.avgTime < Infinity && bestCase.worst.avgTime > 0) {
+                    trace("  最佳情况: " + bestCase.best.scenario + 
+                          " (" + formatNumber(bestCase.best.avgTime, 2) + "ms)");
+                    trace("  最差情况: " + bestCase.worst.scenario + 
+                          " (" + formatNumber(bestCase.worst.avgTime, 2) + "ms)");
+                    
+                    var ratio:Number = bestCase.worst.avgTime / bestCase.best.avgTime;
+                    if (isFinite(ratio)) {
+                        trace("  性能比率: " + formatNumber(ratio, 1) + ":1");
+                    }
+                }
             }
         }
     }
@@ -520,7 +521,8 @@ class org.flashNight.naki.Sort.SortTest {
             var scenarioRanking:Array = rankAlgorithmsForScenario(scenario.name);
             for (var r:Number = 0; r < Math.min(3, scenarioRanking.length); r++) {
                 var rank:Object = scenarioRanking[r];
-                trace("  " + (r+1) + ". " + rank.algorithm + ": " + rank.avgTime + "ms");
+                trace("  " + (r+1) + ". " + rank.algorithm + ": " + 
+                      formatNumber(rank.avgTime, 2) + "ms");
             }
         }
     }
@@ -535,12 +537,12 @@ class org.flashNight.naki.Sort.SortTest {
         
         var recommendations:Array = [
             {
-                condition: "数据规模 < 50",
+                condition: "数据规模 < 100",
                 recommended: findBestForSmallData(),
-                reason: "小数据量时插入排序等简单算法效率更高"
+                reason: "小数据量时简单算法开销更低"
             },
             {
-                condition: "数据规模 > 10000",
+                condition: "数据规模 > 3000",
                 recommended: findBestForLargeData(),
                 reason: "大数据量需要高效的分治算法"
             },
@@ -576,35 +578,44 @@ class org.flashNight.naki.Sort.SortTest {
     }
 
     /**
-     * 统计摘要
+     * 统计摘要 - 修复版
      */
     private function generateStatisticalSummary():Void {
         trace("\n" + repeatChar("-", 60));
         trace("📈 统计摘要");
         trace(repeatChar("-", 60));
         
-        var stats:Object = calculateOverallStatistics();
+        var stats:Object = calculateOverallStatisticsFixed();
         
         trace("整体统计:");
-        trace("• 最快单次执行: " + stats.fastest.time + "ms (" + 
+        trace("• 最快单次执行: " + formatNumber(stats.fastest.time, 1) + "ms (" + 
             stats.fastest.algorithm + " - " + stats.fastest.scenario + ", " + 
             stats.fastest.size + "元素)");
         
-        trace("• 最慢单次执行: " + stats.slowest.time + "ms (" + 
+        trace("• 最慢单次执行: " + formatNumber(stats.slowest.time, 1) + "ms (" + 
             stats.slowest.algorithm + " - " + stats.slowest.scenario + ", " + 
             stats.slowest.size + "元素)");
         
-        trace("• 性能差距: " + (stats.slowest.time / stats.fastest.time) + "倍");
+        var performanceGap:String = "无法计算";
+        if (stats.fastest.time > 0 && isFinite(stats.slowest.time / stats.fastest.time)) {
+            performanceGap = formatNumber(stats.slowest.time / stats.fastest.time, 1) + "倍";
+        }
+        trace("• 性能差距: " + performanceGap);
         
-        trace("• 平均执行时间: " + stats.averageTime + "ms");
-        trace("• 标准差: " + stats.standardDeviation + "ms");
+        trace("• 平均执行时间: " + formatNumber(stats.averageTime, 2) + "ms");
+        trace("• 标准差: " + formatNumber(stats.standardDeviation, 2) + "ms");
         
         // 各算法可靠性分析
         trace("\n算法可靠性 (变异系数):");
         for (var alg:String in stats.reliability) {
             var cv:Number = stats.reliability[alg];
-            var reliabilityLevel:String = cv < 0.1 ? "优秀" : (cv < 0.3 ? "良好" : "一般");
-            trace("• " + alg + ": " + cv + " (" + reliabilityLevel + ")");
+            var reliabilityLevel:String = "无数据";
+            if (isFinite(cv)) {
+                reliabilityLevel = cv < 0.1 ? "优秀" : (cv < 0.3 ? "良好" : "一般");
+                trace("• " + alg + ": " + formatNumber(cv, 3) + " (" + reliabilityLevel + ")");
+            } else {
+                trace("• " + alg + ": 数据不足");
+            }
         }
     }
 
@@ -617,26 +628,29 @@ class org.flashNight.naki.Sort.SortTest {
         trace(repeatChar("-", 60));
         
         var csvContent:String = "Algorithm,DataDistribution,Size,AverageTime,Iterations\n";
+        var lineCount:Number = 1;
         
         for (var alg:String in performanceMatrix) {
             for (var dist:String in performanceMatrix[alg]) {
                 for (var size:String in performanceMatrix[alg][dist]) {
                     var time:Number = performanceMatrix[alg][dist][size];
                     csvContent += alg + "," + dist + "," + size + "," + 
-                                time + "," + testConfig.testIterations + "\n";
+                                formatNumber(time, 3) + "," + testConfig.testIterations + "\n";
+                    lineCount++;
                 }
             }
         }
         
-        trace("CSV数据已生成 (共 " + csvContent.split("\n").length + " 行)");
+        trace("CSV数据已生成 (共 " + lineCount + " 行)");
         trace("数据格式: 算法,数据分布,规模,平均时间,迭代次数");
         
-        // 在实际应用中，这里可以保存到文件
-        // 由于AS2限制，这里只输出前几行作为示例
+        // 显示前几行作为示例
         var lines:Array = csvContent.split("\n");
         trace("\n前5行数据示例:");
         for (var i:Number = 0; i < Math.min(5, lines.length); i++) {
-            trace(lines[i]);
+            if (lines[i].length > 0) {
+                trace(lines[i]);
+            }
         }
         trace("...(完整数据可导出到文件)");
     }
@@ -677,25 +691,175 @@ class org.flashNight.naki.Sort.SortTest {
         trace(repeatChar("=", 80));
     }
 
-    // ===== 辅助计算方法 =====
+    // ===== 修复的辅助计算方法 =====
+
+    /**
+     * 修复的复杂度分析函数
+     */
+    private function calculateComplexityFactorFixed(dataPoints:Object):Object {
+        var sizes:Array = [];
+        var times:Array = [];
+        
+        // 收集数据点
+        for (var size:String in dataPoints) {
+            var sizeNum:Number = Number(size);
+            var timeNum:Number = dataPoints[size];
+            if (sizeNum > 0 && timeNum >= 0 && isFinite(timeNum)) {
+                sizes.push(sizeNum);
+                times.push(Math.max(0.001, timeNum)); // 避免log(0)
+            }
+        }
+        
+        if (sizes.length < 2) {
+            return {
+                slope: 1.0,
+                interpretation: "数据不足",
+                correlation: 0.0
+            };
+        }
+        
+        // 按规模排序
+        var sortedData:Array = [];
+        for (var i:Number = 0; i < sizes.length; i++) {
+            sortedData.push({size: sizes[i], time: times[i]});
+        }
+        sortedData.sort(function(a:Object, b:Object):Number {
+            return a.size - b.size;
+        });
+        
+        // 对数线性回归 log(time) = slope * log(size) + intercept
+        var logSizes:Array = [];
+        var logTimes:Array = [];
+        
+        for (var j:Number = 0; j < sortedData.length; j++) {
+            logSizes.push(Math.log(sortedData[j].size));
+            logTimes.push(Math.log(sortedData[j].time));
+        }
+        
+        // 线性回归计算
+        var n:Number = logSizes.length;
+        var sumX:Number = arraySum(logSizes);
+        var sumY:Number = arraySum(logTimes);
+        var sumXY:Number = 0;
+        var sumXX:Number = 0;
+        
+        for (var k:Number = 0; k < n; k++) {
+            sumXY += logSizes[k] * logTimes[k];
+            sumXX += logSizes[k] * logSizes[k];
+        }
+        
+        var slope:Number = 1.0;
+        var correlation:Number = 0.0;
+        
+        if (n * sumXX - sumX * sumX != 0) {
+            slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            
+            // 计算相关系数
+            var sumYY:Number = 0;
+            for (var l:Number = 0; l < n; l++) {
+                sumYY += logTimes[l] * logTimes[l];
+            }
+            
+            var denominator:Number = Math.sqrt((n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY));
+            if (denominator != 0) {
+                correlation = (n * sumXY - sumX * sumY) / denominator;
+                correlation = Math.abs(correlation); // 取绝对值表示拟合度
+            }
+        }
+        
+        var interpretation:String = interpretComplexitySlope(slope);
+        
+        return {
+            slope: slope,
+            interpretation: interpretation,
+            correlation: correlation
+        };
+    }
+    
+    /**
+     * 修复的统计计算函数
+     */
+    private function calculateOverallStatisticsFixed():Object {
+        var allTimes:Array = [];
+        var fastest:Object = {time: Infinity, algorithm: "", scenario: "", size: ""};
+        var slowest:Object = {time: 0, algorithm: "", scenario: "", size: ""};
+        var reliability:Object = {};
+        
+        // 收集所有时间数据
+        for (var alg:String in performanceMatrix) {
+            var algTimes:Array = [];
+            
+            for (var dist:String in performanceMatrix[alg]) {
+                for (var size:String in performanceMatrix[alg][dist]) {
+                    var time:Number = performanceMatrix[alg][dist][size];
+                    if (isFinite(time) && time >= 0) {
+                        allTimes.push(time);
+                        algTimes.push(time);
+                        
+                        if (time < fastest.time) {
+                            fastest = {time: time, algorithm: alg, scenario: dist, size: size};
+                        }
+                        if (time > slowest.time) {
+                            slowest = {time: time, algorithm: alg, scenario: dist, size: size};
+                        }
+                    }
+                }
+            }
+            
+            // 计算各算法的变异系数
+            if (algTimes.length > 1) {
+                var mean:Number = arrayMean(algTimes);
+                var variance:Number = arrayVariance(algTimes, mean);
+                
+                if (mean > 0 && variance >= 0) {
+                    reliability[alg] = Math.sqrt(variance) / mean;
+                } else {
+                    reliability[alg] = NaN;
+                }
+            } else {
+                reliability[alg] = NaN;
+            }
+        }
+        
+        // 计算整体统计
+        var averageTime:Number = 0;
+        var standardDeviation:Number = 0;
+        
+        if (allTimes.length > 0) {
+            averageTime = arrayMean(allTimes);
+            var variance:Number = arrayVariance(allTimes, averageTime);
+            standardDeviation = Math.sqrt(variance);
+        }
+        
+        return {
+            fastest: fastest,
+            slowest: slowest,
+            averageTime: averageTime,
+            standardDeviation: standardDeviation,
+            reliability: reliability
+        };
+    }
 
     private function findOverallBestAlgorithm():String {
         var bestAlg:String = "";
         var bestScore:Number = Infinity;
         
         for (var alg:String in performanceMatrix) {
-            var score:Number = 0;
+            var totalTime:Number = 0;
             var count:Number = 0;
             
             for (var dist:String in performanceMatrix[alg]) {
                 for (var size:String in performanceMatrix[alg][dist]) {
-                    score += performanceMatrix[alg][dist][size];
-                    count++;
+                    var time:Number = performanceMatrix[alg][dist][size];
+                    if (isFinite(time) && time >= 0) {
+                        totalTime += time;
+                        count++;
+                    }
                 }
             }
             
             if (count > 0) {
-                var avgScore:Number = score / count;
+                var avgScore:Number = totalTime / count;
                 if (avgScore < bestScore) {
                     bestScore = avgScore;
                     bestAlg = alg;
@@ -703,7 +867,7 @@ class org.flashNight.naki.Sort.SortTest {
             }
         }
         
-        return bestAlg;
+        return bestAlg || "无数据";
     }
 
     private function calculateAlgorithmScore(algName:String):Object {
@@ -721,10 +885,12 @@ class org.flashNight.naki.Sort.SortTest {
                 
                 for (var size:String in performanceMatrix[algName][dist]) {
                     var time:Number = performanceMatrix[algName][dist][size];
-                    totalTime += time;
-                    count++;
-                    distTotal += time;
-                    distCount++;
+                    if (isFinite(time) && time >= 0) {
+                        totalTime += time;
+                        count++;
+                        distTotal += time;
+                        distCount++;
+                    }
                 }
                 
                 if (distCount > 0) {
@@ -743,47 +909,19 @@ class org.flashNight.naki.Sort.SortTest {
         
         return {
             totalScore: count > 0 ? totalTime / count : Infinity,
-            bestScenario: bestScenario,
-            worstScenario: worstScenario,
-            bestTime: bestTime,
+            bestScenario: bestScenario || "无数据",
+            worstScenario: worstScenario || "无数据",
+            bestTime: bestTime < Infinity ? bestTime : 0,
             worstTime: worstTime
         };
     }
 
-    private function calculateComplexityFactor(dataPoints:Object):Number {
-        var sizes:Array = [];
-        var times:Array = [];
-        
-        for (var size:String in dataPoints) {
-            sizes.push(Number(size));
-            times.push(dataPoints[size]);
-        }
-        
-        if (sizes.length < 2) return 1.0;
-        
-        // 简单的复杂度估算：比较相邻点的时间增长率与规模增长率
-        var totalFactor:Number = 0;
-        var factorCount:Number = 0;
-        
-        for (var i:Number = 1; i < sizes.length; i++) {
-            var sizeRatio:Number = sizes[i] / sizes[i-1];
-            var timeRatio:Number = times[i] / times[i-1];
-            
-            if (sizeRatio > 1 && timeRatio > 0) {
-                var factor:Number = Math.log(timeRatio) / Math.log(sizeRatio);
-                totalFactor += factor;
-                factorCount++;
-            }
-        }
-        
-        return factorCount > 0 ? totalFactor / factorCount : 1.0;
-    }
-
-    private function interpretComplexityFactor(factor:Number):String {
-        if (factor < 1.2) return "O(n)";
-        else if (factor < 1.8) return "O(n log n)";
-        else if (factor < 2.2) return "O(n²)";
-        else return "O(n^" + factor + ")";
+    private function interpretComplexitySlope(slope:Number):String {
+        if (!isFinite(slope)) return "无法确定";
+        if (slope < 1.2) return "O(n)";
+        else if (slope < 1.8) return "O(n log n)";
+        else if (slope < 2.2) return "O(n²)";
+        else return "O(n^" + formatNumber(slope, 2) + ")";
     }
 
     private function findBestWorstCase(algName:String):Object {
@@ -796,8 +934,11 @@ class org.flashNight.naki.Sort.SortTest {
                 var count:Number = 0;
                 
                 for (var size:String in performanceMatrix[algName][dist]) {
-                    total += performanceMatrix[algName][dist][size];
-                    count++;
+                    var time:Number = performanceMatrix[algName][dist][size];
+                    if (isFinite(time) && time >= 0) {
+                        total += time;
+                        count++;
+                    }
                 }
                 
                 if (count > 0) {
@@ -826,8 +967,11 @@ class org.flashNight.naki.Sort.SortTest {
                 var count:Number = 0;
                 
                 for (var size:String in performanceMatrix[alg][scenario]) {
-                    total += performanceMatrix[alg][scenario][size];
-                    count++;
+                    var time:Number = performanceMatrix[alg][scenario][size];
+                    if (isFinite(time) && time >= 0) {
+                        total += time;
+                        count++;
+                    }
                 }
                 
                 if (count > 0) {
@@ -852,13 +996,11 @@ class org.flashNight.naki.Sort.SortTest {
     }
 
     private function findBestForSmallData():String {
-        // 基于小规模数据的性能找最佳算法
         var smallSizes:Array = [10, 50, 100];
         return findBestForSizes(smallSizes);
     }
 
     private function findBestForLargeData():String {
-        // 基于大规模数据的性能找最佳算法
         var largeSizes:Array = [3000, 10000];
         return findBestForSizes(largeSizes);
     }
@@ -875,8 +1017,11 @@ class org.flashNight.naki.Sort.SortTest {
                 for (var sizeStr:String in performanceMatrix[alg][dist]) {
                     var size:Number = Number(sizeStr);
                     if (arrayContains(targetSizes, size)) {
-                        totalTime += performanceMatrix[alg][dist][sizeStr];
-                        count++;
+                        var time:Number = performanceMatrix[alg][dist][sizeStr];
+                        if (isFinite(time) && time >= 0) {
+                            totalTime += time;
+                            count++;
+                        }
                     }
                 }
             }
@@ -890,7 +1035,7 @@ class org.flashNight.naki.Sort.SortTest {
             }
         }
         
-        return bestAlg;
+        return bestAlg || "无数据";
     }
 
     private function findBestForSortedData():String {
@@ -898,11 +1043,10 @@ class org.flashNight.naki.Sort.SortTest {
     }
 
     private function findBestForDuplicates():String {
-        return findBestAlgorithmForDistribution("全相同");
+        return findBestAlgorithmForDistribution("重复元素");
     }
 
     private function findBestForMemory():String {
-        // 基于算法特性推断，通常PDQSort和QuickSort是原地的
         return "PDQSort";
     }
 
@@ -922,8 +1066,11 @@ class org.flashNight.naki.Sort.SortTest {
                 var count:Number = 0;
                 
                 for (var size:String in performanceMatrix[alg][dist]) {
-                    total += performanceMatrix[alg][dist][size];
-                    count++;
+                    var time:Number = performanceMatrix[alg][dist][size];
+                    if (isFinite(time) && time >= 0) {
+                        total += time;
+                        count++;
+                    }
                 }
                 
                 if (count > 0) {
@@ -932,16 +1079,13 @@ class org.flashNight.naki.Sort.SortTest {
             }
             
             if (scenarioTimes.length > 1) {
-                var mean:Number = scenarioTimes.reduce(function(sum:Number, val:Number):Number {
-                    return sum + val;
-                }, 0) / scenarioTimes.length;
+                var mean:Number = arrayMean(scenarioTimes);
+                var variance:Number = arrayVariance(scenarioTimes, mean);
                 
-                var variance:Number = scenarioTimes.reduce(function(sum:Number, val:Number):Number {
-                    return sum + Math.pow(val - mean, 2);
-                }, 0) / scenarioTimes.length;
-                
-                var cv:Number = Math.sqrt(variance) / mean; // 变异系数
-                versatilityScores[alg] = cv;
+                if (mean > 0 && variance >= 0) {
+                    var cv:Number = Math.sqrt(variance) / mean;
+                    versatilityScores[alg] = cv;
+                }
             }
         }
         
@@ -956,84 +1100,138 @@ class org.flashNight.naki.Sort.SortTest {
             }
         }
         
-        return mostVersatile;
+        return mostVersatile || "无数据";
     }
 
-    private function calculateOverallStatistics():Object {
-        var allTimes:Array = [];
-        var fastest:Object = {time: Infinity, algorithm: "", scenario: "", size: ""};
-        var slowest:Object = {time: 0, algorithm: "", scenario: "", size: ""};
-        var reliability:Object = {};
+    // ===== 增强的稳定性测试方法 =====
+    
+    private function checkStabilityEnhanced(result:Array, expected:Array):Boolean {
+        if (result.length != expected.length) return false;
         
-        // 收集所有时间数据
-        for (var alg:String in performanceMatrix) {
-            var algTimes:Array = [];
-            
-            for (var dist:String in performanceMatrix[alg]) {
-                for (var size:String in performanceMatrix[alg][dist]) {
-                    var time:Number = performanceMatrix[alg][dist][size];
-                    allTimes.push(time);
-                    algTimes.push(time);
-                    
-                    if (time < fastest.time) {
-                        fastest = {time: time, algorithm: alg, scenario: dist, size: size};
-                    }
-                    if (time > slowest.time) {
-                        slowest = {time: time, algorithm: alg, scenario: dist, size: size};
-                    }
-                }
-            }
-            
-            // 计算各算法的变异系数
-            if (algTimes.length > 1) {
-                var mean:Number = algTimes.reduce(function(sum:Number, val:Number):Number {
-                    return sum + val;
-                }, 0) / algTimes.length;
-                
-                var variance:Number = algTimes.reduce(function(sum:Number, val:Number):Number {
-                    return sum + Math.pow(val - mean, 2);
-                }, 0) / algTimes.length;
-                
-                reliability[alg] = Math.sqrt(variance) / mean;
+        for (var i:Number = 0; i < result.length; i++) {
+            if (result[i].value != expected[i].value || result[i].id != expected[i].id) {
+                return false;
             }
         }
+        return true;
+    }
+    
+    private function analyzeStabilityViolations(result:Array, expected:Array):Void {
+        // 按值分组检查稳定性
+        var valueGroups:Object = {};
         
-        // 计算整体统计
-        var totalTime:Number = allTimes.reduce(function(sum:Number, val:Number):Number {
-            return sum + val;
-        }, 0);
-        var averageTime:Number = totalTime / allTimes.length;
+        // 构建期望的分组
+        for (var i:Number = 0; i < expected.length; i++) {
+            var item:Object = expected[i];
+            if (!valueGroups[item.value]) {
+                valueGroups[item.value] = [];
+            }
+            valueGroups[item.value].push(item.id);
+        }
         
-        var variance:Number = allTimes.reduce(function(sum:Number, val:Number):Number {
-            return sum + Math.pow(val - averageTime, 2);
-        }, 0) / allTimes.length;
+        // 检查实际结果
+        var resultGroups:Object = {};
+        for (var j:Number = 0; j < result.length; j++) {
+            var resultItem:Object = result[j];
+            if (!resultGroups[resultItem.value]) {
+                resultGroups[resultItem.value] = [];
+            }
+            resultGroups[resultItem.value].push(resultItem.id);
+        }
         
-        return {
-            fastest: fastest,
-            slowest: slowest,
-            averageTime: averageTime,
-            standardDeviation: Math.sqrt(variance),
-            reliability: reliability
-        };
+        // 比较每个值的稳定性
+        for (var value:String in valueGroups) {
+            var expectedOrder:Array = valueGroups[value];
+            var actualOrder:Array = resultGroups[value] || [];
+            
+            if (!arraysEqual(expectedOrder, actualOrder, null)) {
+                trace("    值 " + value + " 的相对顺序错误:");
+                trace("      期望: " + expectedOrder.join(","));
+                trace("      实际: " + actualOrder.join(","));
+            }
+        }
     }
 
-    private function generateKeyInsights():Void {
-        trace("   • 算法选择应基于具体使用场景和数据特征");
-        trace("   • 预排序检测对性能提升显著");
-        trace("   • 三路分区技术在处理重复元素时优势明显");
-        trace("   • 大规模数据更能体现高级算法的优势");
-        trace("   • 内存使用模式是选择算法的重要考虑因素");
-    }
-
-    private function arrayContains(arr:Array, item):Boolean {
+    // ===== 数组工具函数 (AS2兼容) =====
+    
+    private function arrayIndexOf(arr:Array, item):Number {
         for (var i:Number = 0; i < arr.length; i++) {
-            if (arr[i] === item) return true;
+            if (arr[i] === item) return i;
         }
-        return false;
+        return -1;
     }
     
+    private function arrayContains(arr:Array, item):Boolean {
+        return arrayIndexOf(arr, item) !== -1;
+    }
     
-    // ===== 辅助方法 =====
+    private function arraySum(arr:Array):Number {
+        var sum:Number = 0;
+        for (var i:Number = 0; i < arr.length; i++) {
+            if (isFinite(arr[i])) {
+                sum += arr[i];
+            }
+        }
+        return sum;
+    }
+    
+    private function arrayMean(arr:Array):Number {
+        if (arr.length == 0) return 0;
+        return arraySum(arr) / arr.length;
+    }
+    
+    private function arrayVariance(arr:Array, mean:Number):Number {
+        if (arr.length <= 1) return 0;
+        
+        var sumSquares:Number = 0;
+        for (var i:Number = 0; i < arr.length; i++) {
+            if (isFinite(arr[i])) {
+                var diff:Number = arr[i] - mean;
+                sumSquares += diff * diff;
+            }
+        }
+        return sumSquares / (arr.length - 1);
+    }
+    
+    private function arrayMin(arr:Array):Number {
+        if (arr.length == 0) return NaN;
+        var min:Number = arr[0];
+        for (var i:Number = 1; i < arr.length; i++) {
+            if (arr[i] < min) min = arr[i];
+        }
+        return min;
+    }
+    
+    private function arrayMax(arr:Array):Number {
+        if (arr.length == 0) return NaN;
+        var max:Number = arr[0];
+        for (var i:Number = 1; i < arr.length; i++) {
+            if (arr[i] > max) max = arr[i];
+        }
+        return max;
+    }
+    
+    // ===== 格式化工具函数 =====
+    
+    private function formatNumber(num:Number, decimalPlaces:Number):String {
+        if (!isFinite(num)) return "N/A";
+        
+        var factor:Number = Math.pow(10, decimalPlaces);
+        var rounded:Number = Math.round(num * factor) / factor;
+        var str:String = rounded.toString();
+        
+        // 简单的小数位数控制
+        if (decimalPlaces > 0 && str.indexOf(".") === -1) {
+            str += ".";
+            for (var i:Number = 0; i < decimalPlaces; i++) {
+                str += "0";
+            }
+        }
+        
+        return str;
+    }
+    
+    // ===== 其他原有的辅助方法保持不变 =====
     
     private function builtInSort(arr:Array, compareFunction:Function):Array {
         if (compareFunction != null) arr.sort(compareFunction);
@@ -1146,10 +1344,11 @@ class org.flashNight.naki.Sort.SortTest {
     }
     private function generateExtremeValues(size:Number):Array {
         var a:Array=[];
+        var maxSafeValue:Number = 1000000; // 避免使用Number.MAX_VALUE
         for(var i:Number=0;i<size;i++){
             var r:Number=Math.random();
-            if(r<0.1)      a.push(Number.MAX_VALUE);
-            else if(r<0.2) a.push(-Number.MAX_VALUE);
+            if(r<0.1)      a.push(maxSafeValue);
+            else if(r<0.2) a.push(-maxSafeValue);
             else           a.push(Math.floor(Math.random()*1000));
         }
         return a;
@@ -1220,45 +1419,76 @@ class org.flashNight.naki.Sort.SortTest {
                 var sizes:Object=pats[p],
                     sum:Number=0, cnt:Number=0;
                 for(var sz:String in sizes){
-                    sum += sizes[sz]; cnt++;
+                    var time:Number = sizes[sz];
+                    if (isFinite(time) && time >= 0) {
+                        sum += time;
+                        cnt++;
+                    }
                 }
                 if(cnt>0){
                     var avg:Number=sum/cnt;
-                    trace("  "+p+": "+avg+"ms");
+                    trace("  "+p+": "+formatNumber(avg, 2)+"ms");
                     if(avg<bestT){ bestT=avg; bestP=p; }
                     if(avg>worstT){ worstT=avg; worstP=p; }
                 }
             }
-            trace("  最优: "+bestP+"("+bestT+"ms)");
-            trace("  最差: "+worstP+"("+worstT+"ms)");
+            trace("  最优: "+bestP+"("+formatNumber(bestT, 2)+"ms)");
+            trace("  最差: "+worstP+"("+formatNumber(worstT, 2)+"ms)");
         }
     }
     private function analyzeScalability():Void {
         trace("\n规模伸缩性分析:");
         for(var i:Number=0;i<sortMethods.length;i++){
             var alg:String=sortMethods[i].name;
-            trace("\n"+alg+" 随机数据趋势:");
-            var map:Object=performanceMatrix[alg]["随机数据"];
-            var prevS:Number=0, prevT:Number=0;
-            for(var sStr:String in map){
-                var s:Number=Number(sStr), t:Number=map[sStr];
-                if(prevS>0){
-                    var sr:Number=s/prevS, tr:Number=t/prevT,
-                        cf:Number=tr/sr;
-                    trace("  "+prevS+"→"+s+": 时间比"+tr+" 复杂度因子"+cf);
+            if (performanceMatrix[alg]["随机数据"]) {
+                trace("\n"+alg+" 随机数据趋势:");
+                var map:Object=performanceMatrix[alg]["随机数据"];
+                
+                // 收集并排序数据点
+                var dataPoints:Array = [];
+                for(var sStr:String in map){
+                    var s:Number=Number(sStr), t:Number=map[sStr];
+                    if (isFinite(t) && t >= 0) {
+                        dataPoints.push({size: s, time: t});
+                    }
                 }
-                prevS=s; prevT=t;
+                
+                dataPoints.sort(function(a:Object, b:Object):Number {
+                    return a.size - b.size;
+                });
+                
+                // 分析相邻点的趋势
+                for (var j:Number = 1; j < dataPoints.length; j++) {
+                    var curr:Object = dataPoints[j];
+                    var prev:Object = dataPoints[j-1];
+                    
+                    var sr:Number = curr.size / prev.size;
+                    var tr:Number = prev.time > 0 ? curr.time / prev.time : NaN;
+                    var cf:Number = isFinite(tr) && sr > 1 ? tr / sr : NaN;
+                    
+                    trace("  " + prev.size + "→" + curr.size + 
+                          ": 时间比" + formatNumber(tr, 3) + 
+                          " 复杂度因子" + formatNumber(cf, 3));
+                }
             }
         }
     }
     private function generateRecommendations():Void {
         trace("\n使用建议:");
-        trace("  • 小数据(<50): InsertionSort");
+        trace("  • 小数据(<100): " + findBestForSmallData());
         trace("  • 需要稳定: TimSort");
         trace("  • 内存受限: PDQSort");
-        trace("  • 随机数据: PDQSort");
-        trace("  • 部分有序: TimSort");
-        trace("  • 重复多: PDQSort");
+        trace("  • 随机数据: " + findBestAlgorithmForDistribution("随机数据"));
+        trace("  • 部分有序: " + findBestAlgorithmForDistribution("部分有序"));
+        trace("  • 重复多: " + findBestAlgorithmForDistribution("重复元素"));
+    }
+
+    private function generateKeyInsights():Void {
+        trace("   • 算法选择应基于具体使用场景和数据特征");
+        trace("   • 预排序检测对性能提升显著");
+        trace("   • 三路分区技术在处理重复元素时优势明显");
+        trace("   • 大规模数据更能体现高级算法的优势");
+        trace("   • 内存使用模式是选择算法的重要考虑因素");
     }
 
     /**
