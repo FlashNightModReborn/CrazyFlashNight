@@ -74,6 +74,9 @@
                         <Interval>1200</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -591,6 +594,9 @@
                         <Interval>1500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -798,17 +804,6 @@
                         <Parameters>
                             <登场动画>空投</登场动画>
                         </Parameters>
-                        <x>1500</x>
-                        <y>820</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种390</Type>
-                        <Interval>200</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <Parameters>
-                            <登场动画>空投</登场动画>
-                        </Parameters>
                         <x>1000</x>
                         <y>700</y>
                     </Enemy>
@@ -853,6 +848,9 @@
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -881,6 +879,9 @@
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -971,9 +972,12 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -999,8 +1003,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
@@ -1104,9 +1108,12 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -1132,9 +1139,12 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -1237,9 +1247,12 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1500</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
@@ -1265,9 +1278,12 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1500</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy>
