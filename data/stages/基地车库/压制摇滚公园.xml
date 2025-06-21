@@ -87,8 +87,8 @@
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
-                            <是否为敌人>null</是否为敌人>
                             <汽车炸弹数量>1</汽车炸弹数量>
                         </Parameters>
                     </Enemy>
@@ -98,9 +98,7 @@
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种260</Type>
@@ -213,9 +211,7 @@
                         <Level>40</Level>
                         <x>800</x>
                         <y>550</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
@@ -224,9 +220,7 @@
                         <Level>40</Level>
                         <x>1200</x>
                         <y>610</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
@@ -235,9 +229,7 @@
                         <Level>40</Level>
                         <x>500</x>
                         <y>630</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种49</Type>
@@ -246,9 +238,7 @@
                         <Level>40</Level>
                         <x>900</x>
                         <y>520</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
@@ -256,9 +246,7 @@
                         <Quantity>3</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
@@ -266,9 +254,7 @@
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
@@ -276,9 +262,7 @@
                         <Quantity>3</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种49</Type>
@@ -286,9 +270,7 @@
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

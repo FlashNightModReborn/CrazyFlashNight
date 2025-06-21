@@ -137,27 +137,21 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>                        
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种56</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>                        
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>                    
                     <Enemy>
                         <Type>兵种57</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>                        
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

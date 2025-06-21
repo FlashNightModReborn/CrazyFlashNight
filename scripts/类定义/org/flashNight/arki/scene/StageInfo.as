@@ -126,7 +126,11 @@ class org.flashNight.arki.scene.StageInfo {
 
     public static function parseEnemyAttribute(enemyInfo):Object{
         // 如果Type属性存在，则直接返回已有敌人配置
-        if (_root.兵种库[enemyInfo.Type] != null) return ObjectUtil.clone(_root.兵种库[enemyInfo.Type]);
+        if (_root.兵种库[enemyInfo.Type] != null){
+            var attr = ObjectUtil.clone(_root.兵种库[enemyInfo.Type]);
+            if(enemyInfo.IsHostile != null) attr.是否为敌人 = enemyInfo.IsHostile;
+            return attr;
+        } 
         // 否则，组装敌人属性       
         var attr:Object = {
             兵种名: enemyInfo.spritename,

@@ -56,17 +56,26 @@ class org.flashNight.arki.scene.StageEventHandler {
     private function handleEvent(eventName:String, args:FunctionArguments):Void{
         var eventList = eventDict[eventName];
         var event:StageEvent;
-        for(var i = eventList.length - 1; i > -1; i--){
+        var i:Number;
+        var j:Number;
+        var checkParameter:Boolean;
+        for(i = eventList.length - 1; i > -1; i--){
             event = eventList[i];
             // 检查所有参数是否对应
+            checkParameter = true;
             if(event.parameters.length > 0){
-                for(var j = 0; j < event.parameters.length; j++){
-                    if(event.parameters[j] != args[j]) continue;
+                for(j = 0; j < event.parameters.length; j++){
+                    if(event.parameters[j] != args[j]) {
+                        checkParameter = false;
+                        break;
+                    }
                 }
             }
-            // 检测通过，执行并销毁事件
-            event.execute();
-            eventList.splice(i,1);
+            if(checkParameter){
+                // 检测通过，执行并销毁事件
+                event.execute();
+                eventList.splice(i,1);
+            }
         }
     }
 

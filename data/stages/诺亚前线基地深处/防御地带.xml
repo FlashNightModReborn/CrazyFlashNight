@@ -800,18 +800,14 @@
                         <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种364</Type>
                         <Interval>1400</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种372</Type>
@@ -849,18 +845,14 @@
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>45</Level>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种364</Type>
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>45</Level>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种372</Type>

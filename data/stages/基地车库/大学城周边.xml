@@ -135,9 +135,9 @@
                         <Level>25</Level>
                         <x>1000</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -147,9 +147,9 @@
                         <Level>25</Level>
                         <x>1400</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -201,26 +201,26 @@
                 <EnemyGroup>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>800</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1200</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -229,9 +229,7 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种46</Type>
@@ -239,9 +237,7 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种353</Type>
@@ -249,9 +245,7 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种43</Type>
@@ -260,9 +254,7 @@
                         <Level>25</Level>
                         <x>800</x>
                         <y>600</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种46</Type>
@@ -271,9 +263,7 @@
                         <Level>25</Level>
                         <x>900</x>
                         <y>540</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种353</Type>
@@ -282,9 +272,7 @@
                         <Level>25</Level>
                         <x>1500</x>
                         <y>620</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种43</Type>
@@ -292,9 +280,7 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种46</Type>
@@ -302,9 +288,7 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种353</Type>
@@ -312,9 +296,7 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
@@ -381,26 +363,26 @@
                 <EnemyGroup>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1000</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1400</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -467,38 +449,38 @@
                 <EnemyGroup>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>900</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1000</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1100</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -556,38 +538,38 @@
                 <EnemyGroup>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>200</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>800</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1400</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -685,31 +667,31 @@
                 <EnemyGroup>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>900</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
-                        <Interval>100</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <x>1200</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种387</Type>
-                        <Interval>100</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
                         <x>1216</x>
@@ -848,9 +830,9 @@
                         <Level>25</Level>
                         <x>300</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -860,9 +842,9 @@
                         <Level>25</Level>
                         <x>1000</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -872,9 +854,9 @@
                         <Level>25</Level>
                         <x>1700</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -969,9 +951,9 @@
                         <Level>25</Level>
                         <x>1000</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -981,9 +963,9 @@
                         <Level>25</Level>
                         <x>1100</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -993,9 +975,9 @@
                         <Level>25</Level>
                         <x>1200</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1090,9 +1072,9 @@
                         <Level>25</Level>
                         <x>200</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1102,9 +1084,9 @@
                         <Level>25</Level>
                         <x>700</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1114,9 +1096,9 @@
                         <Level>25</Level>
                         <x>1200</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1126,9 +1108,9 @@
                         <Level>25</Level>
                         <x>1700</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1234,9 +1216,9 @@
                         <Level>25</Level>
                         <x>900</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1246,9 +1228,9 @@
                         <Level>25</Level>
                         <x>1000</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1258,9 +1240,9 @@
                         <Level>25</Level>
                         <x>1100</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -1270,9 +1252,9 @@
                         <Level>25</Level>
                         <x>1200</x>
                         <y>500</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy>

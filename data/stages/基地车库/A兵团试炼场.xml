@@ -159,9 +159,7 @@
                         <Level>30</Level>
                         <x>1200</x>
                         <y>500</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种45</Type>
@@ -170,9 +168,7 @@
                         <Level>30</Level>
                         <x>1500</x>
                         <y>600</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种48</Type>
@@ -181,9 +177,7 @@
                         <Level>30</Level>
                         <x>800</x>
                         <y>620</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种49</Type>
@@ -192,9 +186,7 @@
                         <Level>30</Level>
                         <x>1000</x>
                         <y>550</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -216,9 +208,7 @@
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -256,9 +246,7 @@
                         <Level>30</Level>
                         <x>1000</x>
                         <y>550</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种43</Type>
@@ -267,9 +255,7 @@
                         <Level>30</Level>
                         <x>900</x>
                         <y>600</y>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种353</Type>
@@ -277,9 +263,7 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种354</Type>
@@ -287,9 +271,7 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -364,9 +346,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                         <x>600</x>
                         <y>550</y>
                     </Enemy>
@@ -375,9 +355,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                         <x>1200</x>
                         <y>600</y>
                     </Enemy>
@@ -444,6 +422,7 @@
                         <Level>30</Level>
                         <x>1750</x>
                         <y>550</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <掉落物>
                                 <名字>战术黑刀</名字>
@@ -452,7 +431,6 @@
                                 <最大数量>1</最大数量>
                             </掉落物>
                             <称号>坛主</称号>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
@@ -462,9 +440,9 @@
                         <Level>30</Level>
                         <x>1350</x>
                         <y>600</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <称号>散人</称号>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
@@ -474,9 +452,9 @@
                         <Level>30</Level>
                         <x>1550</x>
                         <y>520</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <称号>散人</称号>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy id="3">
@@ -486,9 +464,9 @@
                         <Level>30</Level>
                         <x>1450</x>
                         <y>630</y>
+                        <IsHostile>null</IsHostile>
                         <Parameters>
                             <称号>散人</称号>
-                            <是否为敌人>null</是否为敌人>
                         </Parameters>
                     </Enemy>
                     <Enemy id="4">
@@ -497,9 +475,7 @@
                         <Quantity>5</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>                    
                     <Enemy id="5">
                         <Type>兵种65</Type>
@@ -507,9 +483,7 @@
                         <Quantity>2</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种64</Type>
@@ -517,9 +491,7 @@
                         <Quantity>5</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>left</SpawnIndex>
-                        <Parameters>
-                            <是否为敌人>null</是否为敌人>
-                        </Parameters>
+                        <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
