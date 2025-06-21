@@ -1,18 +1,21 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/圣爆/圣爆" itemID="653e082a-0000191e" linkageExportForAS="true" linkageIdentifier="圣爆" lastModified="1709995499" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/圣爆/圣爆" itemID="653e082a-0000191e" linkageExportForAS="true" linkageIdentifier="圣爆" lastModified="1750530437" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="圣爆">
+    <DOMTimeline name="圣爆" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="30" keyMode="9728" soundName="2.音效文件夹/爆炸/爆炸 较明亮 02.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="29" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较明亮 02.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -26,7 +29,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="1.35" centerPoint3DY="-22.75">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="1.35" centerPoint3DY="-22.75">
                   <matrix>
                     <Matrix a="3.60137939453125" d="2.52915954589844" tx="-70.7" ty="-96.85"/>
                   </matrix>
@@ -36,12 +39,12 @@ this._rotation = 0;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" keyMode="9728">
+            <DOMFrame index="3" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="4" keyMode="9728">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="1.35" centerPoint3DY="-22.75">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="1.35" centerPoint3DY="-22.75">
                   <matrix>
                     <Matrix a="3.60137939453125" d="4.30905151367188" tx="-70.7" ty="-168.05"/>
                   </matrix>
@@ -51,12 +54,12 @@ this._rotation = 0;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="7" keyMode="9728">
+            <DOMFrame index="6" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="1.35" centerPoint3DY="-22.75">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="1.35" centerPoint3DY="-22.75">
                   <matrix>
                     <Matrix a="3.26089477539063" d="6.3935546875" tx="-57.9" ty="-251.45"/>
                   </matrix>
@@ -69,24 +72,12 @@ this._rotation = 0;]]></script>
             <DOMFrame index="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="1.35" centerPoint3DY="-22.75">
-                  <matrix>
-                    <Matrix a="2.92437744140625" d="6.23733520507813" tx="-58.65" ty="-245.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="40"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="15" keyMode="9728">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="1.35" centerPoint3DY="-22.75">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="1.35" centerPoint3DY="-22.75">
                   <matrix>
                     <Matrix a="2.58146667480469" d="6.33970642089844" tx="-44.75" ty="-249.3"/>
                   </matrix>
@@ -107,11 +98,11 @@ this._rotation = 0;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#A9F106" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#A9F106" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/圣爆/未命名文件夹 1/Symbol 10" selected="true" centerPoint3DX="152.3" centerPoint3DY="-40.8">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/圣爆/未命名文件夹 1/Symbol 10" centerPoint3DX="152.3" centerPoint3DY="-40.8">
                   <matrix>
                     <Matrix a="-1.25067138671875" d="1.25067138671875" tx="87.05" ty="-72.4"/>
                   </matrix>
@@ -127,7 +118,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/圣爆/未命名文件夹 1/Symbol 12" selected="true" centerPoint3DX="185.3" centerPoint3DY="-75.85">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/圣爆/未命名文件夹 1/Symbol 12" centerPoint3DX="185.3" centerPoint3DY="-75.85">
                   <matrix>
                     <Matrix a="-1.25067138671875" d="1.25067138671875" tx="106.45" ty="-130.25"/>
                   </matrix>

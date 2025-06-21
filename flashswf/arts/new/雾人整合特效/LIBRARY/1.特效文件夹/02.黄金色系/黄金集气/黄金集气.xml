@@ -1,10 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/黄金集气/黄金集气" itemID="6554c895-00002fee" linkageExportForAS="true" linkageIdentifier="黄金集气" lastModified="1701610937">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/黄金集气/黄金集气" itemID="6554c895-00002fee" linkageExportForAS="true" linkageIdentifier="黄金集气" lastModified="1750530662" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="黄金集气">
+    <DOMTimeline name="黄金集气" currentFrame="5">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="7" keyMode="9728">
+            <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
 {
@@ -12,6 +12,21 @@
 }
 this._rotation = 0;]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="80.5" centerPoint3DY="-98.25">
+                  <matrix>
+                    <Matrix a="5.72494506835938" b="1.52587890625e-005" d="4.92485046386719" tx="-33.2" ty="-195.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
@@ -22,11 +37,11 @@ this._rotation = 0;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#BDAF9B" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#BDAF9B">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 103" selected="true" centerPoint3DX="267.45" centerPoint3DY="-74.3">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 103" centerPoint3DX="267.45" centerPoint3DY="-74.3">
                   <matrix>
                     <Matrix a="-1" tx="171.95" ty="-137.55"/>
                   </matrix>
@@ -41,7 +56,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 105" selected="true" centerPoint3DX="337.65" centerPoint3DY="-116.3">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 105" centerPoint3DX="337.65" centerPoint3DY="-116.3">
                   <matrix>
                     <Matrix a="-1" tx="214.45" ty="-205.8"/>
                   </matrix>
@@ -56,7 +71,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 107" selected="true" centerPoint3DX="341.55" centerPoint3DY="-89.95">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 107" centerPoint3DX="341.55" centerPoint3DY="-89.95">
                   <matrix>
                     <Matrix a="-1" tx="212.95" ty="-197.05"/>
                   </matrix>
@@ -71,7 +86,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 109" selected="true" centerPoint3DX="471.5" centerPoint3DY="-113.75">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 109" centerPoint3DX="471.5" centerPoint3DY="-113.75">
                   <matrix>
                     <Matrix a="-1" tx="281.75" ty="-287.9"/>
                   </matrix>
@@ -90,7 +105,7 @@ this._rotation = 0;]]></script>
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 103" selected="true" centerPoint3DX="267.45" centerPoint3DY="-74.3">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 103" centerPoint3DX="267.45" centerPoint3DY="-74.3">
                   <matrix>
                     <Matrix a="-1" tx="171.95" ty="-137.55"/>
                   </matrix>
@@ -105,7 +120,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 105" selected="true" centerPoint3DX="337.65" centerPoint3DY="-116.3">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 105" centerPoint3DX="337.65" centerPoint3DY="-116.3">
                   <matrix>
                     <Matrix a="-1" tx="214.45" ty="-205.8"/>
                   </matrix>
@@ -120,7 +135,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 107" selected="true" centerPoint3DX="341.55" centerPoint3DY="-89.95">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 107" centerPoint3DX="341.55" centerPoint3DY="-89.95">
                   <matrix>
                     <Matrix a="-1" tx="212.95" ty="-197.05"/>
                   </matrix>
@@ -135,7 +150,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 109" selected="true" centerPoint3DX="471.5" centerPoint3DY="-113.75">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/黄金集气/Symbol 109" centerPoint3DX="471.5" centerPoint3DY="-113.75">
                   <matrix>
                     <Matrix a="-1" tx="281.75" ty="-287.9"/>
                   </matrix>

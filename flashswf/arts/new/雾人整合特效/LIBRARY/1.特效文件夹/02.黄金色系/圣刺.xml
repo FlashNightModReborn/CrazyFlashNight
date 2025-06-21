@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/圣刺" itemID="656c77d3-000007e3" linkageExportForAS="true" linkageIdentifier="圣刺" lastModified="1740144468" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/圣刺" itemID="656c77d3-000007e3" linkageExportForAS="true" linkageIdentifier="圣刺" lastModified="1750530619" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="圣刺" currentFrame="2">
       <layers>
-        <DOMLayer name="代码" color="#666FF0" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#666FF0" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -27,7 +27,7 @@ this._y -= 100;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="判定框" color="#83C998" autoNamed="false">
+        <DOMLayer name="判定框" color="#83C998" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -44,9 +44,12 @@ this._y -= 100;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="2" keyMode="9728">
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="199.4" centerPoint3DY="7.95">
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="199.4" centerPoint3DY="7.95">
                   <matrix>
                     <Matrix a="5.012451171875" b="1.52587890625e-005" d="2.21722412109375" tx="100.25" ty="-35.7"/>
                   </matrix>
@@ -56,19 +59,7 @@ this._y -= 100;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="199.4" centerPoint3DY="7.95">
-                  <matrix>
-                    <Matrix a="5.012451171875" b="1.52587890625e-005" d="2.21722412109375" tx="100.25" ty="-35.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="6" duration="4" keyMode="9728">
+            <DOMFrame index="5" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
