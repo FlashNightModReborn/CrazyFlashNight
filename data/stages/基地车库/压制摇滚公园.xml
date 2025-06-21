@@ -351,23 +351,23 @@
         <SpawnPoint>
             <Point id="0">
                 <x>500</x>
-                <y>400</y>
-                <QuantityMax>2</QuantityMax>
-                <BiasX>100</BiasX>
+                <y>370</y>
+                <QuantityMax>1</QuantityMax>
+                <BiasX>150</BiasX>
                 <BiasY>40</BiasY>
             </Point>
             <Point id="1">
-                <x>750</x>
-                <y>450</y>
+                <x>700</x>
+                <y>430</y>
                 <QuantityMax>1</QuantityMax>
-                <BiasX>100</BiasX>
+                <BiasX>150</BiasX>
                 <BiasY>30</BiasY>
             </Point>
             <Point id="2">
-                <x>950</x>
-                <y>430</y>
+                <x>900</x>
+                <y>400</y>
                 <QuantityMax>1</QuantityMax>
-                <BiasX>100</BiasX>
+                <BiasX>150</BiasX>
                 <BiasY>40</BiasY>
             </Point>
         </SpawnPoint>
@@ -378,22 +378,30 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种259</Type>
-                        <Interval>2000</Interval>
+                        <Type>兵种354</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>700</x>
+                        <y>550</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种354</Type>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
-                        <SpawnIndex>1</SpawnIndex>
+                        <SpawnIndex>0</SpawnIndex>
                         <Parameters>
                             <方向>左</方向>
                             <登场动画>索降</登场动画>
                         </Parameters>
                     </Enemy>
-                     <Enemy>
-                        <Type>兵种354</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>4</Quantity>
+                    <Enemy>
+                        <Type>兵种259</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>40</Level>
-                        <SpawnIndex>0</SpawnIndex>
+                        <SpawnIndex>1</SpawnIndex>
                         <Parameters>
                             <方向>左</方向>
                             <登场动画>索降</登场动画>

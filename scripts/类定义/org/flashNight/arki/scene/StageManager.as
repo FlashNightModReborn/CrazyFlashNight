@@ -22,6 +22,7 @@ class org.flashNight.arki.scene.StageManager {
     public var spawnPoints:Array; // 出生点影片剪辑列表
 
     public var isFinished = false;
+    public var isFailed = false;
     
     /**
      * 单例获取：返回全局唯一实例
@@ -64,6 +65,7 @@ class org.flashNight.arki.scene.StageManager {
         gameworld = sceneManager.gameworld;
 
         isFinished = false;
+        isFailed = false;
 
         stageEventHandler.init(gameworld);
 
@@ -250,6 +252,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function finishStage():Void{
+        if(isFailed) return;
         isFinished = true;
 
         gameworld.关卡结束 = true;
@@ -273,6 +276,17 @@ class org.flashNight.arki.scene.StageManager {
             var hero:MovieClip = TargetCacheManager.findHero();
             _root.效果("小过关提示动画", hero._x, hero._y,100);
         }
+    }
+
+    public function failStage():Void{
+        if(isFinished) return;
+        isFailed = true;
+
+        gameworld.允许通行 = false;
+        gameworld.关卡结束 = false;
+        _root.d_波次._visible = false;
+        _root.d_剩余敌人数._visible = false;
+        gameworld.dispatcher.publish("StageFailed");
     }
 
     public function closeStage():Void{

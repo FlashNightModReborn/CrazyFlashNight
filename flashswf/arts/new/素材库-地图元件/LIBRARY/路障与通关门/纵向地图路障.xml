@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="路障与通关门/纵向地图路障" itemID="674da209-000002ab" linkageExportForAS="true" linkageIdentifier="纵向地图路障" lastModified="1749967673">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="路障与通关门/纵向地图路障" itemID="674da209-000002ab" linkageExportForAS="true" linkageIdentifier="纵向地图路障" lastModified="1750478756">
   <timeline>
     <DOMTimeline name="纵向地图路障">
       <layers>
@@ -17,7 +17,7 @@
             <DOMFrame index="0" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-_root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
+_root.gameworld.dispatcher.subscribeOnce("Clear", function() {
     this.gotoAndStop("允许通行");
 }, this);]]></script>
               </Actionscript>

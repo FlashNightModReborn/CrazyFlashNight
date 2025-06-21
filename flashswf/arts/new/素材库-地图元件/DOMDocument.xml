@@ -136,8 +136,8 @@
           <Include href="路障与通关门/防御地带内部大门右.xml" loadImmediate="false" itemID="678f644a-00000a14" lastModified="1737450570"/>
           <Include href="路障与通关门/防御地带内部大门左.xml" loadImmediate="false" itemID="678f6443-00000a10" lastModified="1737450563"/>
           <Include href="路障与通关门/关卡出口-防御地带内部大门.xml" itemID="6826e09a-000002b5" lastModified="1749967663"/>
-          <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1749967682"/>
-          <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1749967673"/>
+          <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1750478749"/>
+          <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1750478756"/>
           <Include href="汽车炸弹/zsgdrxtjyuh.xml" itemIcon="1" loadImmediate="false" itemID="4b4a8548-00000123" lastModified="1750188039"/>
           <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1750186169"/>
           <Include href="汽车炸弹/变形动画/部件1.xml" itemIcon="1" loadImmediate="false" itemID="683be9a4-00000a62" lastModified="1748756900"/>
@@ -317,7 +317,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="素材库-地图元件" centerPoint3DX="132.95" centerPoint3DY="16.65">
+                                        <DOMSymbolInstance libraryItemName="素材库-地图元件" selected="true" centerPoint3DX="132.95" centerPoint3DY="16.65">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>

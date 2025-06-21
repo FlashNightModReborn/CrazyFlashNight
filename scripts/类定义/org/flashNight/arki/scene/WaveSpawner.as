@@ -257,7 +257,7 @@ class org.flashNight.arki.scene.WaveSpawner {
             instanceName = attribute.名字 + "_" + waveIndex + "_" + index + "_" + quantity;
         }
 
-        spawnEnemy(id,instanceName,enemyPara,spawnIndex,兵种信息.x,兵种信息.y);
+        spawnEnemy(id, instanceName, enemyPara, spawnIndex, 兵种信息.x, 兵种信息.y);
 
         if (enemyPara.是否为敌人 === true){
             spawnPiontInstance.僵尸型敌人场上实际人数++;
@@ -267,7 +267,7 @@ class org.flashNight.arki.scene.WaveSpawner {
         return true;
     }
 
-    public function spawnEnemy(id:String, instanceName:String, para, spawnIndex, x:Number, y:Number):Void{
+    public function spawnEnemy(id:String, instanceName:String, initObject, spawnIndex, x:Number, y:Number):Void{
         // 优先使用兵种自带的坐标
         var spawnPiontInstance = spawnIndex > -1 ? spawnPoints[spawnIndex] : gameworld.地图;
         if (spawnIndex > -1){
@@ -280,8 +280,8 @@ class org.flashNight.arki.scene.WaveSpawner {
                     spawnPiontInstance.开门();
                 }
                 if(spawnPiontInstance.BiasX && spawnPiontInstance.BiasY){
-                    x += linearEngine.randomIntegerStrict(-spawnPiontInstance.BiasX, spawnPiontInstance.BiasX)
-                    y += linearEngine.randomIntegerStrict(-spawnPiontInstance.BiasY, spawnPiontInstance.BiasY)
+                    x += linearEngine.randomIntegerStrict(-spawnPiontInstance.BiasX, spawnPiontInstance.BiasX);
+                    y += linearEngine.randomIntegerStrict(-spawnPiontInstance.BiasY, spawnPiontInstance.BiasY);
                 }
             }
         }else if(isNaN(x) || isNaN(y)){
@@ -325,11 +325,11 @@ class org.flashNight.arki.scene.WaveSpawner {
                 y = pt.y;
             }
         }
-        if(para.产生源 == null) para.产生源 = spawnPiontInstance._name;
-        para._x = x;
-        para._y = y;
+        if(initObject.产生源 == null) initObject.产生源 = spawnPiontInstance._name;
+        initObject._x = x;
+        initObject._y = y;
 
-        _root.加载游戏世界人物(id, instanceName, gameworld.getNextHighestDepth(), para);
+        _root.加载游戏世界人物(id, instanceName, gameworld.getNextHighestDepth(), initObject);
     }
 
 
