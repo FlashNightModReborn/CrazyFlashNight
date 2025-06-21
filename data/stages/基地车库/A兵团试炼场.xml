@@ -107,22 +107,26 @@
             <EventName>WaveFinished</EventName>
             <Parameter>1</Parameter>
             <Dialogue id="0">
-                <Name>gazer</Name>
-                <Title>火力侦察专家</Title>
-                <Char>gazer</Char>
-                <Text>该死，准备撤！</Text>
-            </Dialogue>
-            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>丧尸、盗贼、军阀，通缉犯···</Text>
             </Dialogue>
-            <Dialogue id="2">
+            <Dialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>名不虚传，试炼场果真不缺疯子。但是这家伙就这么倒了？算了，不管他了。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>gazer</Parameter>
+            <Dialogue id="0">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>该死，准备撤！</Text>
             </Dialogue>
         </Event>
         <Wave>
@@ -208,6 +212,7 @@
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <InstanceName>gazer</InstanceName>
                         <IsHostile>null</IsHostile>
                     </Enemy>
                 </EnemyGroup>
