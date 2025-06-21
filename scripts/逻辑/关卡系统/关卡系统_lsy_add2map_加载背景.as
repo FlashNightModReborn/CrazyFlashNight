@@ -210,7 +210,6 @@ _root.配置场景环境信息 = function(){
 	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, false);
 
 	//完成并贴背景图
-	EventBus.instance.publish("SceneReady");
 	游戏世界.背景.已更新环境配置 = true;
 	_root.贴背景图();
 }
