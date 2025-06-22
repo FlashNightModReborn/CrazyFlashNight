@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="7、关卡需求/关卡需求" itemID="67cc9d32-0000016b" lastModified="1750532081" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="7、关卡需求/关卡需求" itemID="67cc9d32-0000016b" lastModified="1750532543" lastUniqueIdentifier="6">
   <timeline>
     <DOMTimeline name="关卡需求">
       <layers>
@@ -40,11 +40,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关卡难度" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="关卡难度" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="关卡难度标志" name="关卡难度标志" centerPoint3DX="157.15" centerPoint3DY="72.35">
+                <DOMSymbolInstance libraryItemName="关卡难度标志" name="关卡难度标志" selected="true" centerPoint3DX="157.15" centerPoint3DY="72.35">
                   <matrix>
                     <Matrix a="0.9693603515625" b="-0.245529174804688" c="0.245529174804688" d="0.9693603515625" tx="134.05" ty="64.45"/>
                   </matrix>
@@ -113,11 +113,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="完成标志" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="完成标志" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="7、关卡需求/组件/完成标志 大" name="完成标志" selected="true" centerPoint3DX="65.55" centerPoint3DY="59.35">
+                <DOMSymbolInstance libraryItemName="7、关卡需求/组件/完成标志 大" name="完成标志" centerPoint3DX="65.55" centerPoint3DY="59.35">
                   <matrix>
                     <Matrix a="5.08888244628906" d="5.08888244628906" tx="36.25" ty="28.5"/>
                   </matrix>
