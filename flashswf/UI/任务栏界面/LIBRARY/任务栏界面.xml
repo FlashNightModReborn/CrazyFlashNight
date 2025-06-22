@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="任务栏界面" itemID="67c9bf8f-00000766" linkageExportForAS="true" linkageIdentifier="任务栏界面" lastModified="1750531926" lastUniqueIdentifier="26">
   <timeline>
-    <DOMTimeline name="任务栏界面" currentFrame="12" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;517&lt;/guideline&gt;&lt;guideline direction="v"&gt;276&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="任务栏界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;517&lt;/guideline&gt;&lt;guideline direction="v"&gt;276&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -409,11 +409,11 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="持有物品" color="#FF800A" parentLayerIndex="14" autoNamed="false">
+        <DOMLayer name="持有物品" color="#FF800A" parentLayerIndex="14" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="8、提交物品/提交物品-动效" name="物品需求" centerPoint3DX="560.6" centerPoint3DY="359.6">
+                <DOMSymbolInstance libraryItemName="8、提交物品/提交物品-动效" name="物品需求" selected="true" centerPoint3DX="560.6" centerPoint3DY="359.6">
                   <matrix>
                     <Matrix tx="495.9" ty="315.55"/>
                   </matrix>
@@ -484,11 +484,11 @@ on(releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="14" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="任务图标" color="#FF800A" parentLayerIndex="14" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/任务列表" name="任务列表" selected="true" centerPoint3DX="-62.3" centerPoint3DY="320.5">
+                <DOMSymbolInstance libraryItemName="4、单项任务/任务列表" name="任务列表" centerPoint3DX="-62.3" centerPoint3DY="320.5">
                   <matrix>
                     <Matrix tx="-0.4" ty="74.2"/>
                   </matrix>

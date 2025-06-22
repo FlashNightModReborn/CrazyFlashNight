@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="8、提交物品/提交物品-动效" itemID="6856f7d7-0000055d" lastModified="1750530007" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="提交物品-动效">
+    <DOMTimeline name="提交物品-动效" currentFrame="34">
       <layers>
         <DOMLayer name="代码" color="#9933CC" autoNamed="false">
           <frames>
@@ -19,7 +19,7 @@
           <frames>
             <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="8、提交物品/提交物品" name="物品需求图标" selected="true">
+                <DOMSymbolInstance libraryItemName="8、提交物品/提交物品" name="物品需求图标">
                   <matrix>
                     <Matrix d="0.989547729492188" tx="-18"/>
                   </matrix>
