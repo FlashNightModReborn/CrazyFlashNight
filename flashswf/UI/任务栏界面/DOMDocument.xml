@@ -7,7 +7,7 @@
           <DOMFolderItem name="2、事件日志/组件" itemID="67cc10bf-00000304" isExpanded="true"/>
           <DOMFolderItem name="3、关闭按钮" itemID="67ce99a7-0000044d"/>
           <DOMFolderItem name="3、关闭按钮/组件" itemID="67cc24e9-0000043a"/>
-          <DOMFolderItem name="4、单项任务" itemID="67ce9f3d-00000468" isExpanded="true"/>
+          <DOMFolderItem name="4、单项任务" itemID="67ce9f3d-00000468"/>
           <DOMFolderItem name="5、头像素材" itemID="67cc24a5-00000429" isExpanded="true"/>
           <DOMFolderItem name="6、任务信息" itemID="67ce9dfa-00000457"/>
           <DOMFolderItem name="7、关卡需求" itemID="67d95d8b-000004f8" isExpanded="true"/>
@@ -22,14 +22,14 @@
           <DOMFolderItem name="10、任务奖励/组件" itemID="67cd6188-00000721" isExpanded="true"/>
           <DOMFolderItem name="button" itemID="659760e3-00000e95" isExpanded="true"/>
           <DOMFolderItem name="button/组件" itemID="67d93115-00000408"/>
-          <DOMFolderItem name="shape" itemID="67c9a29e-0000049f"/>
+          <DOMFolderItem name="shape" itemID="67c9a29e-0000049f" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="67c9bd50-000006fd" isExpanded="true"/>
           <DOMFolderItem name="翻页箭头" itemID="682aeab1-000026a0" isExpanded="true"/>
           <DOMFolderItem name="任务树相关" itemID="67d2a25c-0000026b" isExpanded="true"/>
      </folders>
      <fonts>
-          <DOMFontItem name="字体 2" itemID="682aea54-0000269c" font="SourceHanSerifSC-Heavy" size="0" id="2" sourceLastImported="1747642964" embedRanges="9999"/>
           <DOMFontItem name="字体 1" itemID="682aef5b-000026a2" font="SourceHanSerifCN-Heavy" size="0" id="3" sourceLastImported="1747644251" embedRanges="9999"/>
+          <DOMFontItem name="字体 2" itemID="682aea54-0000269c" font="SourceHanSerifSC-Heavy" size="0" id="2" sourceLastImported="1747642964" embedRanges="9999"/>
      </fonts>
      <media>
           <DOMBitmapItem name="0、背景底图/背景转位图" itemID="67cea416-000004b3" sourceExternalFilepath="../任务栏界面/LIBRARY/0、背景底图/背景转位图.png" sourceLastImported="1741595663" externalFileCRC32="4019582285" externalFileSize="293145" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="0、背景底图/背景转位图.png" bitmapDataHRef="M 3 1741595649.dat" frameRight="20480" frameBottom="11520"/>
@@ -54,7 +54,7 @@
           <Include href="3、关闭按钮/组件/关闭按钮-动画.xml" loadImmediate="false" itemID="67cc2529-0000043d" lastModified="1741433180"/>
           <Include href="3、关闭按钮/组件/关闭按钮-图形.xml" itemIcon="1" loadImmediate="false" itemID="67cc23ee-0000041a" lastModified="1741432840"/>
           <Include href="4、单项任务/斑驳纹理.xml" loadImmediate="false" itemID="67cc61db-00000843" lastModified="1741447924"/>
-          <Include href="4、单项任务/单项任务-主线.xml" loadImmediate="false" itemID="67cc18e5-00000154" lastModified="1750531941"/>
+          <Include href="4、单项任务/单项任务-主线.xml" loadImmediate="false" itemID="67cc18e5-00000154" lastModified="1750564430"/>
           <Include href="4、单项任务/当前任务标志.xml" loadImmediate="false" itemID="67d9594c-000002f7" lastModified="1742298162"/>
           <Include href="4、单项任务/横出方块.xml" loadImmediate="false" itemID="67d95c46-00000450" lastModified="1742298198"/>
           <Include href="4、单项任务/任务列表.xml" loadImmediate="false" itemID="67cc5739-0000079e" lastModified="1750531994"/>
@@ -65,7 +65,7 @@
           <Include href="6、任务信息/任务详情-动效.xml" loadImmediate="false" itemID="67cc2e78-0000048a" lastModified="1747036194"/>
           <Include href="6、任务信息/任务信息.xml" loadImmediate="false" itemID="67cc492d-0000053a" lastModified="1747643498"/>
           <Include href="6、任务信息/主线详情.xml" loadImmediate="false" itemID="67cc3c1a-00000513" lastModified="1741596066"/>
-          <Include href="7、关卡需求/关卡需求.xml" loadImmediate="false" itemID="67cc9d32-0000016b" lastModified="1750532543"/>
+          <Include href="7、关卡需求/关卡需求.xml" loadImmediate="false" itemID="67cc9d32-0000016b" lastModified="1750566011"/>
           <Include href="7、关卡需求/关卡需求-动效.xml" loadImmediate="false" itemID="67ccb70e-00000273" lastModified="1750528660"/>
           <Include href="7、关卡需求/组件/光效.xml" loadImmediate="false" itemID="67ccbcfa-000002ca" lastModified="1741474208"/>
           <Include href="7、关卡需求/组件/警戒线-逆流动画.xml" loadImmediate="false" itemID="67cca8ef-000001be" lastModified="1741465889"/>
@@ -122,7 +122,7 @@
           <Include href="sprite/完成标志mc.xml" loadImmediate="false" itemID="67cbe7a8-00000202" lastModified="1741416360"/>
           <Include href="叠色.xml" loadImmediate="false" itemID="67d3c51c-00003a99" lastModified="1741931804"/>
           <Include href="翻页箭头/翻页箭头.xml" itemIcon="0" loadImmediate="false" itemID="682ad455-00002290" lastModified="1747642557"/>
-          <Include href="关卡难度标志.xml" loadImmediate="false" itemID="67d96234-000006cc" lastModified="1742300174"/>
+          <Include href="关卡难度标志.xml" loadImmediate="false" itemID="67d96234-000006cc" lastModified="1750566490"/>
           <Include href="任务对话按钮.xml" loadImmediate="false" itemID="67d30a2e-0000026c" lastModified="1741884062"/>
           <Include href="任务栏界面.xml" itemID="67c9bf8f-00000766" lastModified="1750531926"/>
           <Include href="任务树相关/任务节点图标.xml" loadImmediate="false" itemID="67d2a378-00000290" lastModified="1742025330"/>
@@ -463,6 +463,22 @@
                          <GradientEntry color="#191919" ratio="0"/>
                          <GradientEntry color="#333333" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#00CCFF" alpha="0" ratio="0"/>
+                         <GradientEntry color="#00CCFF" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#00FF00" alpha="0" ratio="0"/>
+                         <GradientEntry color="#00FF00" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FF9900" alpha="0" ratio="0"/>
+                         <GradientEntry color="#FF9900" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FF0000" alpha="0" ratio="0"/>
+                         <GradientEntry color="#FF0000" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -471,6 +487,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="24549282" publishTime="1750566446"/>
+          <PublishItem publishSize="24548925" publishTime="1750566270"/>
+          <PublishItem publishSize="24548905" publishTime="1750566165"/>
           <PublishItem publishSize="24547968" publishTime="1750532333"/>
           <PublishItem publishSize="24548578" publishTime="1750532274"/>
           <PublishItem publishSize="24547968" publishTime="1750532151"/>
@@ -488,8 +507,5 @@
           <PublishItem publishSize="24547189" publishTime="1750530427"/>
           <PublishItem publishSize="24547184" publishTime="1750530360"/>
           <PublishItem publishSize="24547248" publishTime="1750530149"/>
-          <PublishItem publishSize="24547236" publishTime="1750530089"/>
-          <PublishItem publishSize="24547248" publishTime="1750530068"/>
-          <PublishItem publishSize="24547234" publishTime="1750530029"/>
      </publishHistory>
 </DOMDocument>
