@@ -1,50 +1,83 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-钻头/出生点-钻头" itemID="65c25869-00002480" linkageExportForAS="true" linkageIdentifier="出生点-钻头" lastModified="1721238201" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-钻头/出生点-钻头" itemID="65c25869-00002480" linkageExportForAS="true" linkageIdentifier="出生点-钻头" lastModified="1750588552" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="出生点-钻头" currentFrame="2">
+    <DOMTimeline name="出生点-钻头">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" name="关闭" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="9" name="正常" labelType="name" keyMode="9728">
+            <DOMFrame index="2" duration="33" name="运作" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="9" name="开门" labelType="name" keyMode="9728">
+            <DOMFrame index="35" duration="9" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="11" name="开门" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#83C998" current="true" isSelected="true">
+        <DOMLayer name="as" color="#83C998" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[初始化出生点 = _root.初始化出生点;
+                <script><![CDATA[function 开门()
+{
+	gotoAndPlay("运作");
+	this.开门 = null;
+}
+初始化出生点 = _root.初始化出生点;
 初始化出生点();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="8" keyMode="9728">
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(-this._y);
+Z轴坐标 = this._y;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="32" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="9728">
+            <DOMFrame index="34" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay("正常");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="8" keyMode="9728">
+            <DOMFrame index="35" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 开门(){
+	gotoAndPlay("开门");
+	this.开门 = null;
+}
+this.swapDepths(this._y);
+Z轴坐标 = this._y;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("正常");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
+            <DOMFrame index="52" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay("正常");]]></script>
               </Actionscript>
@@ -54,7 +87,13 @@ Z轴坐标 = this._y;]]></script>
         </DOMLayer>
         <DOMLayer name="area" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="19" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-15">
                   <matrix>
@@ -70,7 +109,13 @@ Z轴坐标 = this._y;]]></script>
         </DOMLayer>
         <DOMLayer name="Layer 2" color="#BB6D6E" layerType="mask">
           <frames>
-            <DOMFrame index="0" duration="19" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -86,7 +131,13 @@ Z轴坐标 = this._y;]]></script>
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#F76FB9" parentLayerIndex="3">
           <frames>
-            <DOMFrame index="0" duration="10" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -98,7 +149,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="9728">
+            <DOMFrame index="44" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -110,7 +161,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" keyMode="9728">
+            <DOMFrame index="45" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -122,7 +173,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" keyMode="9728">
+            <DOMFrame index="46" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -134,7 +185,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="47" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -146,7 +197,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -158,7 +209,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="15" keyMode="9728">
+            <DOMFrame index="49" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -170,7 +221,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" keyMode="9728">
+            <DOMFrame index="50" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -182,7 +233,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
+            <DOMFrame index="51" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -194,7 +245,7 @@ Z轴坐标 = this._y;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
+            <DOMFrame index="52" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 13" symbolType="graphic" loop="loop">
                   <matrix>
@@ -210,7 +261,22 @@ Z轴坐标 = this._y;]]></script>
         </DOMLayer>
         <DOMLayer name="Layer 4" color="#A947D3">
           <frames>
-            <DOMFrame index="0" duration="19" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="钻头出现动画/动画" centerPoint3DX="8.5" centerPoint3DY="-15.55">
+                  <matrix>
+                    <Matrix tx="-128.85" ty="-262.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="153.15" y="242.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 12" centerPoint3DX="6" centerPoint3DY="-95.55">
                   <matrix>
@@ -229,7 +295,13 @@ Z轴坐标 = this._y;]]></script>
         </DOMLayer>
         <DOMLayer name="Layer 5" color="#09BDC1">
           <frames>
-            <DOMFrame index="0" duration="19" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="20" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="出生点-钻头/Symbol 10" symbolType="graphic" loop="loop">
                   <matrix>

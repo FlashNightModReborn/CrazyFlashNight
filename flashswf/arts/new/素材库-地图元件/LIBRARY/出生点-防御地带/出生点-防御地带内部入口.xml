@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="出生点-防御地带内部入口">
       <layers>
-        <DOMLayer name="label" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="label" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="as" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="50" keyMode="9728">
               <Actionscript>
@@ -87,10 +87,10 @@ gotoAndPlay("关门");]]></script>
                   </strokes>
                   <edges>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!56363 -11685|56556 -11685!56556 -11685|56556 -1729"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!56556 -1729|56884 -1729!56884 -1729|56884 -11741!56884 -11741|56612 -12004!56612 -12004|45665 -12004!45665 -12004|45393 -11741!45393 -11741|45393 -1729!45393 -1729|45721 -1729"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!45721 -1729|45721 -11685!45721 -11685|45913 -11685"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!45913 -11685|56363 -11685"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!56556 -1729|56363 -1927!56363 -1927|56363 -11685"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!56363 -11685|45913 -11685"/>
-                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!45913 -11685|45721 -11685!45721 -11685|45721 -1729"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!45721 -1729|45393 -1729!45393 -1729|45393 -11741!45393 -11741|45665 -12004!45665 -12004|56612 -12004!56612 -12004|56884 -11741!56884 -11741|56884 -1729!56884 -1729|56556 -1729"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="!45913 -11685|45913 -1927!45913 -1927|45721 -1729"/>
                   </edges>
                 </DOMShape>
