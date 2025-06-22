@@ -115,6 +115,20 @@ _root.通过数组绘制地图碰撞箱 = function(arr:Array) {
     collisionLayer._visible = false;
 }
 
+_root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip) {
+    // var 游戏世界地图 = _root.gameworld.地图;
+	var collisionLayer = _root.collisionLayer;
+	var rect = this.area.getRect(gameworld);
+	collisionLayer.beginFill(0x000000);
+	collisionLayer.moveTo(rect.xMin, rect.yMin);
+	collisionLayer.lineTo(rect.xMax, rect.yMin);
+	collisionLayer.lineTo(rect.xMax, rect.yMax);
+	collisionLayer.lineTo(rect.xMin, rect.yMax);
+	collisionLayer.lineTo(rect.xMin, rect.yMin);;
+	collisionLayer.endFill();
+    collisionLayer._visible = false;
+}
+
 _root.贴背景图 = function(){
 	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
 	var 游戏世界 = _root.gameworld;

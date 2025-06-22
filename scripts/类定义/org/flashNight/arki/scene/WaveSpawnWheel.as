@@ -86,11 +86,12 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
      *
      * @param wrapper 包含 {param: Object, delay: Number, slotIndex: Number} 的包装对象。
      */
-    private function _addToSlot(wrapper:Object):Void {
+    private function _addToSlot(wrapper:Object, delay:Number):Void {
+        if(delay <= 0) delay = wrapper.interval;
         // 规范化延迟，确保 slotIndex 非负且小于 wheelSize
         // (currentPointer + ((delay % wheelSize) + wheelSize) % wheelSize) % wheelSize
         // 这里的 ((delay % wheelSize) + wheelSize) % wheelSize 是为了确保结果为正数，即使 delay 是负数
-        var slotIndex:Number = (this.currentPointer + ((wrapper.delay % this.wheelSize) + this.wheelSize) % this.wheelSize) % this.wheelSize;
+        var slotIndex:Number = (this.currentPointer + ((delay % this.wheelSize) + this.wheelSize) % this.wheelSize) % this.wheelSize;
 
         // 获取槽位，如果槽位未初始化则创建新的数组
         if (this.slots[slotIndex] == null) {
@@ -106,9 +107,10 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
      *
      * @param wrapper 包装对象。
      */
-    private function _addToLongDelaySlot(wrapper:Object):Void {
+    private function _addToLongDelaySlot(wrapper:Object, delay:Number):Void {
+        if(delay <= 0) delay = wrapper.interval;
         // 将包装后的参数添加长时间任务列表中
-        wrapper.delayCount = wrapper.delay;
+        wrapper.delayCount = (delay / 10) | 0;
         this.longDelaySlot.push(wrapper);
     }
 
@@ -126,7 +128,7 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
      *
      * @param delay 延迟的时间步数。
      */
-    public function addTask(quantity:Number, interval:Number, attribute, index:Number, waveIndex:Number):Void {
+    public function addTask(quantity:Number, interval:Number, delay:Number, attribute, index:Number, waveIndex:Number):Void {
         // 创建一个包装对象，包含原始参数和用于重新调度的延迟信息
         var wrapper:Object = {
             quantity:quantity,
@@ -136,17 +138,20 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
         };
 
         interval = interval / 100;
-        if(interval <= 1){
+        var delay = delay / 100 + interval;
+        if(delay <= 1){
             // 如果 interval 小等于100（0.1秒），则加入最小堆
             this._addToMinHeap(wrapper);
-        }else if(interval < this.wheelSize){
+        }else if(delay < this.wheelSize){
             // 如果 interval 小于6000（6秒），则加入任务槽
-            wrapper.delay = interval | 0;
-            this._addToSlot(wrapper);
+            wrapper.interval = interval | 0;
+            delay = delay | 0;
+            this._addToSlot(wrapper, delay);
         }else{
             // 如果 interval 大于6000（6秒），则加入长时间任务槽
-            wrapper.delay = (interval / 10) | 0;
-            this._addToLongDelaySlot(wrapper);
+            wrapper.interval = interval | 0;
+            delay = delay | 0;
+            this._addToLongDelaySlot(wrapper, delay);
         }
     }
 
@@ -237,7 +242,12 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
             if(wrapper.delayCount <= 0){
                 if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
                 if(wrapper.quantity > 0){
-                    wrapper.delayCount = wrapper.delay;
+                    if(wrapper.interval >= this.wheelSize){
+                        wrapper.delayCount = wrapper.interval;
+                    }else{
+                        longDelaySlot.splice(i,1);
+                        this._addToSlot(wrapper);
+                    }
                 }else{
                     longDelaySlot.splice(i,1);
                 }

@@ -114,6 +114,7 @@ class org.flashNight.arki.scene.StageInfo {
             var enemyInfo = enemyGroupData[i];
             enemyInfo.Attribute = parseEnemyAttribute(enemyInfo);
             enemyInfo.Interval = isNaN(enemyInfo.Interval) ? 100 : enemyInfo.Interval;
+            enemyInfo.Delay = isNaN(enemyInfo.Delay) ? 0 : enemyInfo.Delay;
             enemyInfo.Quantity = isNaN(enemyInfo.Quantity) ? 1 : Number(enemyInfo.Quantity);
             enemyInfo.Level = isNaN(enemyInfo.Level) ? 1 : Number(enemyInfo.Level);
             enemyInfo.SpawnIndex = (enemyInfo.SpawnIndex || enemyInfo.SpawnIndex == 0) ? enemyInfo.SpawnIndex : -1;

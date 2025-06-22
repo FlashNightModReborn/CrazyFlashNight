@@ -62,12 +62,14 @@
                 <y>400</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>6</QuantityMax>
+                <Hide>true</Hide>
             </Point>
             <Point id="1">
                 <x>1600</x>
                 <y>450</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>6</QuantityMax>
+                <Hide>true</Hide>
                 <Parameters>
                     <方向>左</方向>
                 </Parameters>
@@ -77,6 +79,7 @@
                 <y>620</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>6</QuantityMax>
+                <Hide>true</Hide>
             </Point>
             <Point id="3">
                 <x>400</x>
@@ -126,34 +129,34 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种13</Type>
-                        <Interval>50</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种1</Type>
-                        <Interval>200</Interval>
+                        <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种2</Type>
-                        <Interval>200</Interval>
+                        <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种3</Type>
-                        <Interval>200</Interval>
+                        <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种4</Type>
-                        <Interval>200</Interval>
+                        <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
@@ -166,29 +169,29 @@
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种6</Type>
-                        <Interval>200</Interval>
+                        <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种8</Type>
-                        <Interval>200</Interval>
+                        <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="8">
                         <Type>兵种400</Type>
-                        <Interval>400</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>25</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="9">
                         <Type>兵种401</Type>
-                        <Interval>400</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>25</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>

@@ -148,6 +148,9 @@ class org.flashNight.arki.scene.WaveSpawner {
         }
         _root.d_倒计时显示._visible = waveTime > 0;
 
+        // 记录本轮要生成的出生点
+        var hideSpawnPoints = {};
+        // 遍历刷怪列表
         for (var i = 1; i < subWaveInfo.length; i++){
             var 兵种信息 = subWaveInfo[i];
             //根据难度决定是否刷怪
@@ -160,13 +163,21 @@ class org.flashNight.arki.scene.WaveSpawner {
             //计算总敌人数
             var quantity = 兵种信息.Quantity;
             var spawnIndex = 兵种信息.SpawnIndex;
-            if(!isNaN(spawnIndex) && spawnIndex > -1){
-                spawnPoints[spawnIndex].僵尸型敌人总个数 += quantity;
+            if(spawnIndex > -1){
+                var spawnPoint = spawnPoints[spawnIndex];
+                spawnPoint.僵尸型敌人总个数 += quantity;
+                // 若该出生点隐藏则令其生成，并自动为该波次敌人附加延迟
+                if(spawnPoint.Hide){
+                    spawnPoint.Hide = false;
+                    spawnPoint.gotoAndPlay("生成");
+                    hideSpawnPoints[spawnIndex] = spawnPoint.Delay > 0 ? spawnPoint.Delay : 1000;
+                }
+                if(hideSpawnPoints[spawnIndex] > 0 && 兵种信息.Delay < hideSpawnPoints[spawnIndex]) 兵种信息.Delay = hideSpawnPoints[spawnIndex];
             }else{
                 gameworld.地图.僵尸型敌人总个数 += quantity;
             }
             //将刷怪托管到专用时间轮
-            waveSpawnWheel.addTask(quantity, 兵种信息.Interval, 兵种信息.Attribute, i, currentWave);
+            waveSpawnWheel.addTask(quantity, 兵种信息.Interval, 兵种信息.Delay, 兵种信息.Attribute, i, currentWave);
         }
 
         // 发布波次开始事件
@@ -194,8 +205,8 @@ class org.flashNight.arki.scene.WaveSpawner {
             var total_sec = waveTime - countDownTime;
             var min = Math.floor(total_sec / 60);
             var sec = total_sec % 60;
-            var min_str = min < 10 ? min.toString() : "0" + min.toString();
-            var sec_str = sec < 10 ? sec.toString() : "0" + sec.toString();
+            var min_str = min < 10 ? "0" + min.toString() : min.toString();
+            var sec_str = sec < 10 ? "0" + sec.toString() : sec.toString();
             _root.d_倒计时显示.text = min_str + ":" + sec_str;
         }
         

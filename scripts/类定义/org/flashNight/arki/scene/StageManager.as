@@ -186,7 +186,8 @@ class org.flashNight.arki.scene.StageManager {
                 if(!isNaN(spinfo.Offset)) sp.Offset = spinfo.Offset;
             }
             sp.QuantityMax = spinfo.QuantityMax;
-            sp.NoCount = spinfo.NoCount ? true: false;
+            sp.NoCount = spinfo.NoCount === true ? true : false;
+            sp.Hide = spinfo.Hide === true ? true : false;
             if(spinfo.BiasX > 0 && spinfo.BiasY > 0){
                 sp.BiasX = spinfo.BiasX;
                 sp.BiasY = spinfo.BiasY;

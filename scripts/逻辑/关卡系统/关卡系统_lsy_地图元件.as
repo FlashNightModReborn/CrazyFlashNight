@@ -34,21 +34,16 @@ _root.初始化出生点 = function(){
 			gotoAndPlay("开门");
 		}
 	}
-	if(this.area){
-		var rect = this.area.getRect(gameworld);
-		var 地图 = gameworld.地图;
-
-        // 设置 `地图` 为不可枚举
-        _global.ASSetPropFlags(gameworld, ["地图"], 1, false);
-		
-		地图.beginFill(0x000000);
-		地图.moveTo(rect.xMin, rect.yMin);
-		地图.lineTo(rect.xMax, rect.yMin);
-		地图.lineTo(rect.xMax, rect.yMax);
-		地图.lineTo(rect.xMin, rect.yMax);
-		地图.lineTo(rect.xMin, rect.yMin);;
-		地图.endFill();
-	}
+    if(this.Hide){
+        this.生成完毕 = function(){
+            this.gotoAndStop("正常");
+            _root.通过影片剪辑外框绘制地图碰撞箱(this.area);
+            this.生成完毕 = null;
+        }
+        this.gotoAndStop("隐藏");
+    }else{
+        _root.通过影片剪辑外框绘制地图碰撞箱(this.area);
+    }
 }
 
 _root.地图元件 = new Object();
