@@ -1,50 +1,443 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/存档显示块" itemID="68521747-000225fa" lastModified="1750298410" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/存档显示块" itemID="68521747-000225fa" lastModified="1750586879" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="存档显示块" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;62&lt;/guideline&gt;&lt;guideline direction="h"&gt;33&lt;/guideline&gt;&lt;guideline direction="h"&gt;4&lt;/guideline&gt;&lt;guideline direction="h"&gt;58&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;65&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 影片剪辑内第一帧代码 - 合并版本
-
+                <script><![CDATA[// 影片剪辑内第一帧代码 - 使用JSON序列化的版本
 // ==================== 初始化部分 ====================
-var slotName:String = this._name; // 获取实例名
-var slotIndex:Number = Number(slotName.substr(3)); // 截取"存档位"后的数字
-
+var slotName:String = this._name; 
+var slotIndex:Number = Number(slotName.substr(3)); 
 if (slotIndex == 0) {
     currentSavePath = _root.baseSavePath;
 } else {
     currentSavePath = _root.baseSavePath + slotIndex;
 }
 
-// 初始化状态标志
-this.isHover = false;      // 鼠标悬停状态
-this.isSelected = false;   // 选中状态
-
-// 设置按钮模式
+this.isHover = false;      
+this.isSelected = false;   
 this.useHandCursor = true;
 
-// ==================== 事件处理函数 ====================
-// 鼠标悬停进入
+// ==================== JSON序列化功能 ====================
+// JSON 序列化函数
+function JSONStringify(arg) {
+    var result = "";
+    var temp = undefined;
+    var len = undefined;
+    var i = undefined;
+    
+    switch(typeof arg) {
+        case "object":
+            if (arg) {
+                if (arg instanceof Array) {
+                    // 处理数组
+                    i = 0;
+                    while (i < arg.length) {
+                        temp = JSONStringify(arg[i]);
+                        if (result) {
+                            result += ",";
+                        }
+                        result += temp;
+                        i++;
+                    }
+                    return "[" + result + "]";
+                }
+                if (typeof arg.toString != "undefined") {
+                    // 处理对象
+                    for (i in arg) {
+                        temp = arg[i];
+                        if (typeof temp != "undefined" && typeof temp != "function") {
+                            temp = JSONStringify(temp);
+                            if (result) {
+                                result += ",";
+                            }
+                            result += JSONStringify(i) + ":" + temp;
+                        }
+                    }
+                    return "{" + result + "}";
+                }
+            }
+            return "null";
+        case "number":
+            return !isFinite(arg) ? "null" : String(arg);
+        case "string":
+            len = arg.length;
+            result = "\"";
+            i = 0;
+            while (i < len) {
+                var ch = arg.charAt(i);
+                if (ch >= " ") {
+                    if (ch == "\\" || ch == "\"") {
+                        result += "\\";
+                    }
+                    result += ch;
+                } else {
+                    switch(ch) {
+                        case "\b":
+                            result += "\\b";
+                            break;
+                        case "\f":
+                            result += "\\f";
+                            break;
+                        case "\n":
+                            result += "\\n";
+                            break;
+                        case "\r":
+                            result += "\\r";
+                            break;
+                        case "\t":
+                            result += "\\t";
+                            break;
+                        default:
+                            var code = ch.charCodeAt();
+                            result += "\\u00" + Math.floor(code / 16).toString(16) + (code % 16).toString(16);
+                    }
+                }
+                i++;
+            }
+            return result + "\"";
+        case "boolean":
+            return String(arg);
+        default:
+            return "null";
+    }
+}
+
+// JSON 解析器状态变量
+var parseText = "";
+var parseChar = "";
+var parseAt = 0;
+
+// JSON 解析辅助函数
+function parseNext() {
+    parseChar = parseText.charAt(parseAt);
+    parseAt++;
+    return parseChar;
+}
+
+function parseWhite() {
+    while (parseChar) {
+        if (parseChar <= " ") {
+            parseNext();
+        } else if (parseChar != "/") {
+            break;
+        } else {
+            switch(parseNext()) {
+                case "/":
+                    while (parseNext() && parseChar != "\n" && parseChar != "\r") {
+                    }
+                    break;
+                case "*":
+                    parseNext();
+                    while (true) {
+                        if (parseChar) {
+                            if (parseChar == "*") {
+                                if (parseNext() == "/") {
+                                    break;
+                                }
+                            } else {
+                                parseNext();
+                            }
+                        } else {
+                            throw {name:"JSONError", message:"Unterminated comment"};
+                        }
+                    }
+                    parseNext();
+                    continue;
+                default:
+                    throw {name:"JSONError", message:"Syntax error"};
+            }
+        }
+    }
+}
+
+function parseString() {
+    var result = "";
+    var hex = undefined;
+    var i = undefined;
+    var uffff = undefined;
+    
+    if (parseChar == "\"") {
+        while (parseNext()) {
+            if (parseChar == "\"") {
+                parseNext();
+                return result;
+            }
+            if (parseChar == "\\") {
+                switch(parseNext()) {
+                    case "b":
+                        result += "\b";
+                        break;
+                    case "f":
+                        result += "\f";
+                        break;
+                    case "n":
+                        result += "\n";
+                        break;
+                    case "r":
+                        result += "\r";
+                        break;
+                    case "t":
+                        result += "\t";
+                        break;
+                    case "u":
+                        uffff = 0;
+                        i = 0;
+                        while (i < 4) {
+                            hex = parseInt(parseNext(), 16);
+                            if (!isFinite(hex)) {
+                                break;
+                            }
+                            uffff = uffff * 16 + hex;
+                            i++;
+                        }
+                        result += String.fromCharCode(uffff);
+                        break;
+                    default:
+                        result += parseChar;
+                }
+            } else {
+                result += parseChar;
+            }
+        }
+    }
+    throw {name:"JSONError", message:"Bad string"};
+}
+
+function parseArray() {
+    var array = [];
+    
+    if (parseChar == "[") {
+        parseNext();
+        parseWhite();
+        if (parseChar == "]") {
+            parseNext();
+            return array;
+        }
+        while (parseChar) {
+            array.push(parseValue());
+            parseWhite();
+            if (parseChar == "]") {
+                parseNext();
+                return array;
+            }
+            if (parseChar != ",") {
+                break;
+            }
+            parseNext();
+            parseWhite();
+        }
+    }
+    throw {name:"JSONError", message:"Bad array"};
+}
+
+function parseObject() {
+    var key = undefined;
+    var object = {};
+    
+    if (parseChar == "{") {
+        parseNext();
+        parseWhite();
+        if (parseChar == "}") {
+            parseNext();
+            return object;
+        }
+        while (parseChar) {
+            key = parseString();
+            parseWhite();
+            if (parseChar != ":") {
+                break;
+            }
+            parseNext();
+            object[key] = parseValue();
+            parseWhite();
+            if (parseChar == "}") {
+                parseNext();
+                return object;
+            }
+            if (parseChar != ",") {
+                break;
+            }
+            parseNext();
+            parseWhite();
+        }
+    }
+    throw {name:"JSONError", message:"Bad object"};
+}
+
+function parseNumber() {
+    var number = "";
+    var result = undefined;
+    
+    if (parseChar == "-") {
+        number = "-";
+        parseNext();
+    }
+    while (parseChar >= "0" && parseChar <= "9") {
+        number += parseChar;
+        parseNext();
+    }
+    if (parseChar == ".") {
+        number += ".";
+        parseNext();
+        while (parseChar >= "0" && parseChar <= "9") {
+            number += parseChar;
+            parseNext();
+        }
+    }
+    if (parseChar == "e" || parseChar == "E") {
+        number += parseChar;
+        parseNext();
+        if (parseChar == "-" || parseChar == "+") {
+            number += parseChar;
+            parseNext();
+        }
+        while (parseChar >= "0" && parseChar <= "9") {
+            number += parseChar;
+            parseNext();
+        }
+    }
+    result = Number(number);
+    if (!isFinite(result)) {
+        throw {name:"JSONError", message:"Bad number"};
+    }
+    return result;
+}
+
+function parseWord() {
+    switch(parseChar) {
+        case "t":
+            if (parseNext() == "r" && parseNext() == "u" && parseNext() == "e") {
+                parseNext();
+                return true;
+            }
+            break;
+        case "f":
+            if (parseNext() == "a" && parseNext() == "l" && parseNext() == "s" && parseNext() == "e") {
+                parseNext();
+                return false;
+            }
+            break;
+        case "n":
+            if (parseNext() == "u" && parseNext() == "l" && parseNext() == "l") {
+                parseNext();
+                return null;
+            }
+            break;
+    }
+    throw {name:"JSONError", message:"Syntax error"};
+}
+
+function parseValue() {
+    parseWhite();
+    switch(parseChar) {
+        case "{":
+            return parseObject();
+        case "[":
+            return parseArray();
+        case "\"":
+            return parseString();
+        case "-":
+            return parseNumber();
+        default:
+            return (parseChar >= "0" && parseChar <= "9") ? parseNumber() : parseWord();
+    }
+}
+
+function JSONParse(text) {
+    parseText = text;
+    parseAt = 0;
+    parseChar = " ";
+    return parseValue();
+}
+
+// ==================== 存档序列化功能函数 ====================
+// 序列化存档数据为字符串
+function serializeSaveData(saveData) {
+    if (!saveData) return null;
+    
+    try {
+        // 创建包含版本信息和数据的对象
+        var wrapperObject = {
+            version: "CRAZYFLASHER7_SAVE_V1",
+            timestamp: new Date().getTime(),
+            gameData: saveData
+        };
+        
+        return JSONStringify(wrapperObject);
+    } catch (e) {
+        trace("序列化失败: " + e.toString());
+        return null;
+    }
+}
+
+// 反序列化字符串为存档数据
+this.deserializeSaveData = function(serializedStr) {
+    trace("开始反序列化，输入长度: " + (serializedStr ? serializedStr.length : "null"));
+    
+    if (!serializedStr || serializedStr.length < 10) {
+        trace("输入数据为空或过短");
+        return null;
+    }
+    
+    try {
+        var wrapperObject = JSONParse(serializedStr);
+        
+        if (!wrapperObject || wrapperObject.version != "CRAZYFLASHER7_SAVE_V1") {
+            trace("存档格式版本不匹配");
+            trace("解析结果: " + (wrapperObject ? "有对象，版本:" + wrapperObject.version : "null"));
+            return null;
+        }
+        
+        trace("反序列化成功");
+        return wrapperObject.gameData;
+    } catch (e) {
+        var errorMsg = "未知错误";
+        if (e && e.message) {
+            errorMsg = e.message;
+        } else if (typeof e == "string") {
+            errorMsg = e;
+        }
+        trace("json反序列化失败: " + errorMsg);
+        trace("输入数据: " + serializedStr);
+        return null;
+    }
+}
+
+// 导出当前存档
+function exportCurrentSave() {
+    var mysave = SharedObject.getLocal(currentSavePath);
+    if (mysave.data && mysave.data["test"]) {
+        var serialized = serializeSaveData(mysave.data["test"]);
+        _root.exportedSaveString = serialized; // 挂载到root变量
+        trace("存档已导出到 _root.exportedSaveString");
+        return serialized;
+    } else {
+        _root.exportedSaveString = "";
+        trace("当前存档位没有数据");
+        return null;
+    }
+}
+
+
+// ==================== 原有事件处理函数 ====================
 this.onRollOver = function() {
     this.isHover = true;
-    // 可以在这里添加音效
-    // _root.playSound("hover_sound");
 };
 
-// 鼠标悬停离开
 this.onRollOut = function() {
     this.isHover = false;
 };
 
-// 鼠标点击
+// 修改后的点击事件 - 添加序列化功能
 this.onPress = function() {
     // 更新全局存档路径
     _root.savePath = this.currentSavePath;
     
     // 取消其他存档位的选中状态
-    for (var i = 0; i < 10; i++) { // 当前最多有10个存档位
+    for (var i = 0; i < 10; i++) {
         var otherSlot = _root["存档位" + i];
         if (otherSlot && otherSlot != this) {
             otherSlot.isSelected = false;
@@ -53,68 +446,54 @@ this.onPress = function() {
     
     // 设置当前存档位为选中状态
     this.isSelected = true;
-    // 可以触发存档数据更新
-    _root.savePath = this.currentSavePath;
+    
+    // 自动导出当前选中的存档
+    this.exportCurrentSave();
     
     trace("已选择存档路径: " + this.currentSavePath);
 };
 
-// ==================== 每帧更新函数 ====================
+// ==================== 原有每帧更新函数 ====================
 this.onEnterFrame = function() {
-    // 更新焦点显示状态
     this.focus._visible = this.isHover || (this.currentSavePath === _root.savePath); 
     this.name = this._name + " :";
     
-    // 检查存档路径是否发生变化，如果变化则重新加载存档数据
     if (this.currentSavePath != this.savePath) {
         this.savePath = this.currentSavePath;
         trace("savePath: " + this.savePath);
         
         存盘名 = "test";
-        
-        // 获取存档数据
         var mysave = SharedObject.getLocal(this.savePath);
         
-        // 检查是否有存档数据
         if (mysave.data && mysave.data[存盘名]) {
             var saveData = mysave.data[存盘名];
             
-            // 从数据结构中提取信息
-            // 根据 mydata数据组包 函数：mydata[0] = 主角储存数据
-            // 主角储存数据 = [角色名,性别,金钱,等级,经验值,身高,技能点数,玩家称号,身价,虚拟币,键值设定,difficultyMode,佣兵是否出战信息,easterEgg, 天气系统]
             if (saveData[0]) {
-                var 角色名 = saveData[0][0]; // 角色名
-                var 等级 = saveData[0][3];   // 等级
-                var 金钱 = saveData[0][2];   // 金钱（可选显示）
+                var 角色名 = saveData[0][0];
+                var 等级 = saveData[0][3];
+                var 金钱 = saveData[0][2];
             }
             
-            // mydata[3] = 任务储存数据 (主线任务进度) 
             var 主线进度 = saveData[3];
             
-            // 更新显示文本
             if (角色名 != undefined) {
-                // 显示角色信息：角色名 + 等级
                 this.角色信息文本 = "<font color='#00ff00'>lv." + 等级 + "</font> " + 
                                 "<font color='#ffd700'>" + 角色名 + "</font>";
             }
             
             if (主线进度 != undefined) {
-                // 显示主线进度
                 var 难度 = saveData[0][11];
                 var 难度文本 = ["平衡模式（困难）", "逆天模式（简单）", "挑战模式（自限）"];
-                                
                 this.主线进度文本 = 主线进度 + "   " + 难度文本[难度];
             }
             
             var lastSaved:String = saveData.lastSaved || null;
             this.lastSaved = lastSaved;
             
-            // 调试输出 
             trace("角色名: " + 角色名);
             trace("等级: " + 等级);
             trace("主线进度: " + 主线进度);
         } else {
-            // 没有存档数据时的处理
             this.角色信息文本 = "暂无存档";
             this.主线进度文本 = null;
             this.lastSaved = null;
@@ -134,7 +513,7 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -189,7 +568,7 @@ this.onEnterFrame = function() {
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>123</characters>
+                      <characters>???</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
                       </textAttrs>
