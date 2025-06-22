@@ -52,6 +52,11 @@
             <Background>flashswf/backgrounds/gk20_1_BG.swf</Background>
             <PlayerX>792</PlayerX>
             <PlayerY>413</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>The Flame Gets Higher</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Event>
             <EventName>Start</EventName>
