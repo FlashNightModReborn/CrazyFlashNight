@@ -2878,6 +2878,12 @@
       <mp>50</mp>
       <defence>80</defence>
     </equipped>
+    <skill>
+      <skillname>狼跳</skillname>
+      <description>手持该武器时可以使用狼跳。</description>
+      <cd>8000</cd>
+      <mp>35</mp>
+    </skill>
   </item>
   <item>
     <id>637</id>
@@ -2901,6 +2907,12 @@
       <mp>150</mp>
       <defence>20</defence>
     </equipped>
+    <skill>
+      <skillname>回旋斩击</skillname>
+      <description>手持该武器时可以使用回旋斩击。</description>
+      <cd>7000</cd>
+      <mp>40</mp>
+    </skill>
   </item>
   <item>
     <id>5500</id>
