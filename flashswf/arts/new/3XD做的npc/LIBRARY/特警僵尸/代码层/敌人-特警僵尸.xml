@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/敌人-特警僵尸" itemID="671dbe5f-00000783" linkageExportForAS="true" linkageIdentifier="敌人-特警僵尸" lastModified="1743068796" lastUniqueIdentifier="46">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特警僵尸/代码层/敌人-特警僵尸" itemID="671dbe5f-00000783" linkageExportForAS="true" linkageIdentifier="敌人-特警僵尸" lastModified="1750678705" lastUniqueIdentifier="46">
   <timeline>
-    <DOMTimeline name="敌人-特警僵尸" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-24&lt;/guideline&gt;&lt;guideline direction="h"&gt;7&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-特警僵尸" currentFrame="80" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-24&lt;/guideline&gt;&lt;guideline direction="h"&gt;7&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -765,7 +765,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="影子" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>

@@ -20,7 +20,7 @@
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人" itemID="656c028d-000003db" isExpanded="true"/>
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤" itemID="656c026d-000003d8" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸" itemID="671dc7cd-00000974"/>
-          <DOMFolderItem name="防爆服僵尸/代码层" itemID="671dc7e0-0000097b" isExpanded="true"/>
+          <DOMFolderItem name="防爆服僵尸/代码层" itemID="671dc7e0-0000097b"/>
           <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板" itemID="671dc806-00000aea" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/area框" itemID="671dc806-00000aeb" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/死亡消失元件" itemID="671dc806-00000aec" isExpanded="true"/>
@@ -81,7 +81,7 @@
           <DOMFolderItem name="黑铁长枪兵/蛙型仿生僵尸/杂项素材" itemID="67b9d335-00000834" isExpanded="true"/>
           <DOMFolderItem name="黑铁长枪兵/未命名文件夹 1" itemID="66fd67ca-00000253" isExpanded="true"/>
           <DOMFolderItem name="黑铁长枪兵/长枪兵身体零件" itemID="67b9ceb7-00000619" isExpanded="true"/>
-          <DOMFolderItem name="劫掠少女" itemID="663e243b-0000084e" isExpanded="true"/>
+          <DOMFolderItem name="劫掠少女" itemID="663e243b-0000084e"/>
           <DOMFolderItem name="劫掠少女/sound" itemID="6640358f-000001fa" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件" itemID="663e2418-00000844" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件1" itemID="663dc43e-000002b8" isExpanded="true"/>
@@ -161,11 +161,11 @@
           <Include href="补间 10.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bc9" lastModified="1731607084"/>
           <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bcb" lastModified="1731607084"/>
           <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="67363a2c-00000bcd" lastModified="1731607084"/>
-          <Include href="刀狙少女/敌人-刀狙少女.xml" itemID="663ef7c5-0000081f" lastModified="1750494492"/>
+          <Include href="刀狙少女/敌人-刀狙少女.xml" itemID="663ef7c5-0000081f" lastModified="1750678627"/>
           <Include href="刀狙少女/动画合集/被击.xml" loadImmediate="false" itemID="65acdb47-0000114e" lastModified="1715357885"/>
           <Include href="刀狙少女/动画合集/登场动作.xml" loadImmediate="false" itemID="67ea6b3f-000005d3" lastModified="1750494484"/>
           <Include href="刀狙少女/动画合集/攻击动作.xml" loadImmediate="false" itemID="65ab87a3-0000046a" lastModified="1725441157"/>
-          <Include href="刀狙少女/动画合集/击飞.xml" loadImmediate="false" itemID="65acdc14-00001566" lastModified="1715405512"/>
+          <Include href="刀狙少女/动画合集/击飞.xml" loadImmediate="false" itemID="65acdc14-00001566" lastModified="1750678598"/>
           <Include href="刀狙少女/动画合集/静止动作.xml" loadImmediate="false" itemID="65abd103-00001475" lastModified="1715405471"/>
           <Include href="刀狙少女/动画合集/跑步动作.xml" loadImmediate="false" itemID="65accf5d-00000b8a" lastModified="1715444427"/>
           <Include href="刀狙少女/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="65abc3b8-000012d7" lastModified="1722588600"/>
@@ -284,15 +284,15 @@
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1705929879"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="662fbc4c-0000294f" lastModified="1714404428"/>
           <Include href="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
           <Include href="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤/Symbol 23.xml" loadImmediate="false" itemID="65689e04-0000008f" lastModified="1701582054"/>
-          <Include href="防爆服僵尸/代码层/敌人-防爆服僵尸.xml" itemID="671dc7f1-0000097d" lastModified="1743068318"/>
+          <Include href="防爆服僵尸/代码层/敌人-防爆服僵尸.xml" itemID="671dc7f1-0000097d" lastModified="1750678710"/>
           <Include href="防爆服僵尸/代码层/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="671dc806-00000b70" lastModified="1705929059"/>
           <Include href="防爆服僵尸/代码层/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b1a" lastModified="1700337299"/>
           <Include href="防爆服僵尸/代码层/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="671dc806-00000b67" lastModified="1705929037"/>
@@ -630,7 +630,7 @@
           <Include href="黑铁长枪兵/长枪兵身体零件/左臂下.xml" loadImmediate="false" itemID="66fe14c6-00001955" lastModified="1727927494"/>
           <Include href="黑铁长枪兵/长枪兵身体零件/左大腿.xml" loadImmediate="false" itemID="66fe151f-000019cb" lastModified="1727927583"/>
           <Include href="黑铁长枪兵/长枪兵身体零件/左手.xml" loadImmediate="false" itemID="66fe14d8-0000195d" lastModified="1727927512"/>
-          <Include href="劫掠少女/敌人-劫掠少女.xml" itemID="663e521c-000000c3" lastModified="1750494476"/>
+          <Include href="劫掠少女/敌人-劫掠少女.xml" itemID="663e521c-000000c3" lastModified="1750678692"/>
           <Include href="劫掠少女/基础部件/部件1/头1.xml" loadImmediate="false" itemID="65ef46a5-0000155d" lastModified="1715233550"/>
           <Include href="劫掠少女/基础部件/部件1/元件 6.xml" loadImmediate="false" itemID="663b861f-0000021d" lastModified="1715231980"/>
           <Include href="劫掠少女/基础部件/部件1/元件 10.xml" loadImmediate="false" itemID="663b9074-00000307" lastModified="1715325479"/>
@@ -730,7 +730,7 @@
           <Include href="绳索.xml" itemIcon="1" loadImmediate="false" itemID="67ea7145-00000696" lastModified="1743417670"/>
           <Include href="思考标签（与旧思考块）/拾取思考块（弃用）.xml" loadImmediate="false" itemID="67e51b53-00000f3c" lastModified="1743067987"/>
           <Include href="思考标签（与旧思考块）/思考标签.xml" loadImmediate="false" itemID="67e50bd8-00000c0a" lastModified="1743064061"/>
-          <Include href="特警僵尸/代码层/敌人-特警僵尸.xml" itemID="671dbe5f-00000783" lastModified="1743068796"/>
+          <Include href="特警僵尸/代码层/敌人-特警僵尸.xml" itemID="671dbe5f-00000783" lastModified="1750678705"/>
           <Include href="特警僵尸/代码层/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="671dc7ff-00000a61" lastModified="1705929059"/>
           <Include href="特警僵尸/代码层/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="671dc7ff-00000a3c" lastModified="1700337299"/>
           <Include href="特警僵尸/代码层/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="671dc7ff-00000a58" lastModified="1705929037"/>

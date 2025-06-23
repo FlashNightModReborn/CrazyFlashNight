@@ -308,7 +308,7 @@
           <Include href="敌人-EXUSIAI突击型.xml" itemID="66588036-0000521c" lastModified="1744703008"/>
           <Include href="敌人-EXUSIAI支援型.xml" itemID="66587ded-00005037" lastModified="1744703000"/>
           <Include href="敌人-EXUSIAI指挥官.xml" itemID="66560b74-00000da6" lastModified="1745459393"/>
-          <Include href="敌人-旧型号机器人.xml" itemID="665c898d-00000de3" lastModified="1750518643"/>
+          <Include href="敌人-旧型号机器人.xml" itemID="665c898d-00000de3" lastModified="1750678363"/>
           <Include href="对DLS谐振式匕首.xml" itemIcon="1" loadImmediate="false" itemID="602e97ef-00000283" lastModified="1638336465"/>
           <Include href="对DLS谐振式匕首-刀柄.xml" itemIcon="1" loadImmediate="false" itemID="602e97f3-00000284" lastModified="1638336469"/>
           <Include href="对DLS谐振式匕首-刀片.xml" itemIcon="1" loadImmediate="false" itemID="602e97f6-00000285" lastModified="1638336473"/>
@@ -320,8 +320,8 @@
           <Include href="怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
           <Include href="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="666c5d45-00000626" lastModified="1701582054"/>
           <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
+          <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1716387345"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
@@ -854,12 +854,13 @@
           <Include href="重复项目文件夹1/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="66588745-00005c91" lastModified="1705929009"/>
           <Include href="重复项目文件夹1/怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="665872ad-000037c1" lastModified="1717072557"/>
           <Include href="重复项目文件夹1/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="66588746-00006748" lastModified="1701884437"/>
-          <Include href="重复项目文件夹1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="66588745-00005c92" lastModified="1705929134"/>
           <Include href="重复项目文件夹1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="66588745-00005c93" lastModified="1705928955"/>
+          <Include href="重复项目文件夹1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="66588745-00005c92" lastModified="1705929134"/>
           <Include href="重复项目文件夹1/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="66588746-00006463" lastModified="1716387345"/>
           <Include href="重复项目文件夹1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="66588746-00006465" lastModified="1701884437"/>
           <Include href="重复项目文件夹1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="66588746-00006464" lastModified="1701884437"/>
           <Include href="重复项目文件夹1/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="66588745-00005c85" lastModified="1714404428"/>
+          <Include href="重复项目文件夹1/行走ai载体.xml" loadImmediate="false" itemID="665870e1-0000155f" lastModified="1705928955"/>
           <Include href="重复项目文件夹1/击飞.xml" loadImmediate="false" itemID="665870e1-00001d17" lastModified="1717071920"/>
           <Include href="重复项目文件夹1/近战子弹定位用.xml" loadImmediate="false" itemID="665870e1-00001b3b" lastModified="1716387345"/>
           <Include href="重复项目文件夹1/静止动作.xml" loadImmediate="false" itemID="665870e1-00001e38" lastModified="1717070893"/>
@@ -871,7 +872,6 @@
           <Include href="重复项目文件夹1/死亡.xml" loadImmediate="false" itemID="665870e1-00001e84" lastModified="1717078012"/>
           <Include href="重复项目文件夹1/索敌框载体.xml" loadImmediate="false" itemID="665870e1-0000155d" lastModified="1705929009"/>
           <Include href="重复项目文件夹1/新版血条位置示意.xml" loadImmediate="false" itemID="665870e1-00001551" lastModified="1714404428"/>
-          <Include href="重复项目文件夹1/行走ai载体.xml" loadImmediate="false" itemID="665870e1-0000155f" lastModified="1705928955"/>
           <Include href="重复项目文件夹1/阴影.xml" loadImmediate="false" itemID="665870e2-00002034" lastModified="1705744649"/>
           <Include href="重复项目文件夹1/元件 1.xml" loadImmediate="false" itemID="66588747-00006b5e" lastModified="1717076105"/>
           <Include href="重复项目文件夹1/元件 6.xml" loadImmediate="false" itemID="665870e1-00001f76" lastModified="1717072034"/>
@@ -947,6 +947,7 @@
           <Include href="重复项目文件夹2/补间 54.xml" itemIcon="1" loadImmediate="false" itemID="66587d89-00004874" lastModified="1717073573"/>
           <Include href="重复项目文件夹2/补间 55.xml" itemIcon="1" loadImmediate="false" itemID="66587d89-00004876" lastModified="1717073578"/>
           <Include href="重复项目文件夹2/攻击动作.xml" loadImmediate="false" itemID="66587d89-00004520" lastModified="1739326036"/>
+          <Include href="重复项目文件夹2/行走ai载体.xml" loadImmediate="false" itemID="66587d88-000042f8" lastModified="1705928955"/>
           <Include href="重复项目文件夹2/击飞.xml" loadImmediate="false" itemID="66587d89-00004d10" lastModified="1717075076"/>
           <Include href="重复项目文件夹2/近战子弹定位用.xml" loadImmediate="false" itemID="66587d89-00004b3f" lastModified="1716387345"/>
           <Include href="重复项目文件夹2/静止动作.xml" loadImmediate="false" itemID="66587d8a-00004e31" lastModified="1717073060"/>
@@ -957,7 +958,6 @@
           <Include href="重复项目文件夹2/死亡.xml" loadImmediate="false" itemID="66587d8a-00004e7a" lastModified="1717078012"/>
           <Include href="重复项目文件夹2/索敌框载体.xml" loadImmediate="false" itemID="66587d88-000042f6" lastModified="1705929009"/>
           <Include href="重复项目文件夹2/新版血条位置示意.xml" loadImmediate="false" itemID="66587d88-000042ea" lastModified="1714404428"/>
-          <Include href="重复项目文件夹2/行走ai载体.xml" loadImmediate="false" itemID="66587d88-000042f8" lastModified="1705928955"/>
           <Include href="重复项目文件夹2/阴影.xml" loadImmediate="false" itemID="66587d8a-00005034" lastModified="1705744649"/>
           <Include href="重复项目文件夹2/元件 6.xml" loadImmediate="false" itemID="66587d8a-00004f74" lastModified="1717075151"/>
           <Include href="重复项目文件夹2/走路动作.xml" loadImmediate="false" itemID="66587d89-00004342" lastModified="1717073242"/>

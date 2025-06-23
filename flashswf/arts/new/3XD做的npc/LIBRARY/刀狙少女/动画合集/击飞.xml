@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/动画合集/击飞" itemID="65acdc14-00001566" lastModified="1715405512">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/动画合集/击飞" itemID="65acdc14-00001566" lastModified="1750678598">
   <timeline>
-    <DOMTimeline name="击飞" currentFrame="5" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;114&lt;/guideline&gt;&lt;guideline direction="h"&gt;99&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="击飞" currentFrame="102" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;114&lt;/guideline&gt;&lt;guideline direction="h"&gt;99&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#2E97BC">
           <frames>
@@ -48,7 +48,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#14EEAE" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#14EEAE" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -551,7 +551,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_29" color="#C58C69">
+        <DOMLayer name="Layer_29" color="#C58C69" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements>
@@ -562,25 +562,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer_2" color="#AEF3D4">
-          <frames>
-            <DOMFrame index="0" duration="119" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/原版的套皮部件/Symbol 2" centerPoint3DX="59.15" centerPoint3DY="41.05">
-                  <matrix>
-                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-27.5" ty="-45.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
