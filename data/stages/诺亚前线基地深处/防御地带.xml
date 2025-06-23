@@ -729,7 +729,7 @@
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
-                    <Duration>0</Duration>
+                    <Duration>10</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -767,7 +767,7 @@
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
-                    <Duration>0</Duration>
+                    <Duration>14</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -792,7 +792,7 @@
             </SubWave>
             <SubWave id="2">
                 <WaveInformation>
-                    <Duration>0</Duration>
+                    <Duration>30</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -811,13 +811,13 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种372</Type>
-                        <Interval>9000</Interval>
+                        <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种373</Type>
-                        <Interval>6000</Interval>
+                        <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
                     </Enemy>
@@ -856,13 +856,13 @@
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种372</Type>
-                        <Interval>9000</Interval>
+                        <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种373</Type>
-                        <Interval>6000</Interval>
+                        <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
                     </Enemy>
