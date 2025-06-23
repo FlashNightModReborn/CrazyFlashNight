@@ -22,6 +22,7 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
             TargetCacheUpdater.removeUnit(target);
             // 卸载ai组件
             target.unitAI.destroy();
+            target.死亡检测();
 
             target._deInitialized = true;
         } 
