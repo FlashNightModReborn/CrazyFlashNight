@@ -510,6 +510,18 @@
                 <Identifier>出生点-管道</Identifier>
                 <QuantityMax>1</QuantityMax>
             </Point>
+            <Point id="2">
+                <x>1200</x>
+                <y>400</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>800</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
         </SpawnPoint>
         <Wave>
             <SubWave id="0">
@@ -572,6 +584,20 @@
                         <Quantity>4</Quantity>
                         <Level>44</Level>
                     </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
@@ -585,6 +611,18 @@
                 <x>1500</x>
                 <y>580</y>
                 <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>600</x>
+                <y>400</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>600</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
                 <QuantityMax>2</QuantityMax>
             </Point>
         </SpawnPoint>
@@ -643,6 +681,20 @@
                         <Interval>600</Interval>
                         <Quantity>1</Quantity>
                         <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种372</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种373</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
