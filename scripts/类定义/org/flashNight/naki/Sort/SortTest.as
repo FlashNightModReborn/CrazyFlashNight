@@ -133,15 +133,15 @@ class org.flashNight.naki.Sort.SortTest {
             {
                 // 确保规模 > 32，以触发 PDQSort 的分区逻辑
                 name: "大规模 Pivot 陷阱模式",
-                data: this.generateStabilityData("pivotTrap", 50) 
+                data: this.generateStabilityData("pivotTrap", 64) 
             },
             {
                 name: "大规模交错相等元素",
-                data: this.generateStabilityData("interleaved", 50)
+                data: this.generateStabilityData("interleaved", 64)
             },
             {
                 name: "大规模逆序中的相等元素",
-                data: this.generateStabilityData("reversedEquals", 50)
+                data: this.generateStabilityData("reversedEquals", 64)
             }
         ];
 
