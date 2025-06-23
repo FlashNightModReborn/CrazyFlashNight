@@ -29,12 +29,14 @@
                 <y>520</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
             </Point>
             <Point id="1">
                 <x>800</x>
                 <y>650</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
                 <Parameters>
                     <方向>左</方向>
                 </Parameters>
@@ -44,18 +46,21 @@
                 <y>720</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
             </Point>
             <Point id="3">
                 <x>1800</x>
                 <y>690</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
             </Point>
             <Point id="4">
                 <x>400</x>
                 <y>580</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
                 <Parameters>
                     <方向>左</方向>
                 </Parameters>
@@ -306,7 +311,9 @@
             <Point id="0">
                 <x>1030</x>
                 <y>770</y>
+                <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>4</QuantityMax>
+                <Hide>true</Hide>
             </Point>
         </SpawnPoint>
         <Event>
@@ -557,12 +564,14 @@
                 <y>700</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
             </Point>
             <Point id="2">
                 <x>800</x>
                 <y>650</y>
                 <Identifier>出生点-钻头</Identifier>
                 <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
                 <Parameters>
                     <方向>左</方向>
                 </Parameters>
