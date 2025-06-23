@@ -123,34 +123,102 @@ class org.flashNight.naki.Sort.SortTest {
         trace("总结: " + passCount + "/" + sortMethods.length + " 算法通过");
     }
     
-    /*** 2. 稳定性测试 ***/
+    /*** 2. 稳定性测试 - 增强版 V3 (大规模对抗性测试) ***/
     private function runStabilityTests():Void {
         trace("\n" + repeatChar("=", 40));
-        trace("稳定性测试 - 增强版");
+        trace("稳定性测试 - 增强版 V3 (大规模对抗性测试)");
         trace(repeatChar("=", 40));
         
-        // 使用更复杂的测试数据来真正测试稳定性
-        var data:Array = [
-            {value:5, id:"A1"}, {value:2, id:"B1"}, {value:5, id:"A2"},
-            {value:1, id:"C1"}, {value:2, id:"B2"}, {value:5, id:"A3"},
-            {value:3, id:"D1"}, {value:1, id:"C2"}, {value:3, id:"D2"},
-            {value:2, id:"B3"}, {value:1, id:"C3"}, {value:4, id:"E1"}
+        var stabilityTestCases:Array = [
+            {
+                // 确保规模 > 32，以触发 PDQSort 的分区逻辑
+                name: "大规模 Pivot 陷阱模式",
+                data: this.generateStabilityData("pivotTrap", 50) 
+            },
+            {
+                name: "大规模交错相等元素",
+                data: this.generateStabilityData("interleaved", 50)
+            },
+            {
+                name: "大规模逆序中的相等元素",
+                data: this.generateStabilityData("reversedEquals", 50)
+            }
         ];
-        
-        var compareFunc:Function = function(a:Object,b:Object):Number {
+
+        // 遍历所有测试用例
+        for (var c:Number = 0; c < stabilityTestCases.length; c++) {
+            var testCase:Object = stabilityTestCases[c];
+            trace("\n--- 测试用例: " + testCase.name + " ---");
+            this.executeSingleStabilityTest(testCase.data);
+        }
+    }
+
+    
+    /**
+     * 新增：用于生成大规模稳定性测试数据的辅助函数
+     * @param type  "pivotTrap", "interleaved", "reversedEquals"
+     * @param size  生成的数组大小
+     * @return      构造好的测试数据数组
+     */
+    private function generateStabilityData(type:String, size:Number):Array {
+        var data:Array = [];
+        var idCounters:Object = {};
+
+        function getId(value:Number):String {
+            if (!idCounters[value]) {
+                idCounters[value] = 0;
+            }
+            idCounters[value]++;
+            return String.fromCharCode(64 + value) + idCounters[value]; // e.g., A1, B1, A2
+        }
+
+        switch (type) {
+            case "pivotTrap":
+                // 构造一个中间有很多不同值，两端有相等值的数据
+                var val:Number = 5;
+                data.push({value: val, id: getId(val)});
+                for (var i:Number = 0; i < size - 2; i++) {
+                    data.push({value: i % (val-1) + 1, id: getId(i % (val-1) + 1)});
+                }
+                data.push({value: val, id: getId(val)});
+                break;
+
+            case "interleaved":
+                // 交错生成两种值
+                for (var i:Number = 0; i < size; i++) {
+                    var v:Number = (i % 2 == 0) ? 5 : 1;
+                    data.push({value: v, id: getId(v)});
+                }
+                break;
+
+            case "reversedEquals":
+                // 逆序排列，其中包含重复值
+                var currentVal:Number = size / 2;
+                for (var i:Number = 0; i < size; i++) {
+                    data.push({value: Math.floor(currentVal), id: getId(Math.floor(currentVal))});
+                    if (i % 3 != 0) { // 每隔几个元素才递减
+                        currentVal -= 0.5;
+                    }
+                }
+                break;
+        }
+
+        return data;
+    }
+    
+    /**
+     * 执行单个稳定性测试的核心逻辑
+     * @param data 原始测试数据
+     */
+    private function executeSingleStabilityTest(data:Array):Void {
+        var compareFunc:Function = function(a:Object, b:Object):Number {
             return a.value < b.value ? -1 : (a.value > b.value ? 1 : 0);
         };
         
-        // 稳定排序的期望结果：相同值的元素保持原始相对顺序
-        var expected:Array = [
-            {value:1, id:"C1"}, {value:1, id:"C2"}, {value:1, id:"C3"},
-            {value:2, id:"B1"}, {value:2, id:"B2"}, {value:2, id:"B3"},
-            {value:3, id:"D1"}, {value:3, id:"D2"},
-            {value:4, id:"E1"},
-            {value:5, id:"A1"}, {value:5, id:"A2"}, {value:5, id:"A3"}
-        ];
+        // 动态生成期望的稳定排序结果
+        var expected:Array = this.generateStableExpectedResult(data, compareFunc);
         
-        trace("\n原始数据: " + formatObjectArray(data));
+        trace("原始数据: " + formatObjectArray(data));
         trace("稳定排序期望: " + formatObjectArray(expected));
         
         for (var i:Number = 0; i < sortMethods.length; i++) {
@@ -161,9 +229,10 @@ class org.flashNight.naki.Sort.SortTest {
                 var stable:Boolean = checkStabilityEnhanced(res, expected);
                 
                 trace("\n" + m.name + ": " + (stable ? "✓ 稳定" : "✗ 不稳定"));
-                trace("  结果: " + formatObjectArray(res));
                 
+                // 只有在不稳定时才打印详细结果，保持报告整洁
                 if (!stable) {
+                    trace("  结果: " + formatObjectArray(res));
                     trace("  → 稳定性违规详情:");
                     analyzeStabilityViolations(res, expected);
                 }
@@ -171,6 +240,34 @@ class org.flashNight.naki.Sort.SortTest {
                 trace("\n" + m.name + " ERROR: " + e.message);
             }
         }
+    }
+
+    /**
+     * 动态生成稳定排序的期望结果
+     * @param originalData  原始数据数组
+     * @param compareFunc   比较函数
+     * @return              一个稳定排序后的数组
+     */
+    private function generateStableExpectedResult(originalData:Array, compareFunc:Function):Array {
+        var tempArr:Array = copyArray(originalData);
+        
+        // 使用一个已知的稳定排序算法（如插入排序）来生成基准
+        // 这里我们自己实现一个简化的稳定排序（类似冒泡）来避免依赖
+        // 也可以直接依赖 InsertionSort.sort，但为了解耦，这里独立实现
+        
+        var n:Number = tempArr.length;
+        for (var i:Number = 0; i < n; i++) {
+            for (var j:Number = 0; j < n - 1 - i; j++) {
+                if (compareFunc(tempArr[j], tempArr[j + 1]) > 0) {
+                    // 只在严格大于时交换，保证稳定性
+                    var temp:Object = tempArr[j];
+                    tempArr[j] = tempArr[j + 1];
+                    tempArr[j + 1] = temp;
+                }
+            }
+        }
+        
+        return tempArr;
     }
     
     /*** 3. 性能基准测试 ***/
