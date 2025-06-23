@@ -139,7 +139,7 @@ class org.flashNight.arki.scene.WaveSpawner {
             _root.最上层发布文字提示(_root.获得翻译("战斗开始！剩余波数：") + (totalWave - (currentWave + 1)) + "！");
         }
 
-        finishRequirement = Number(subWaveInfo[0].FinishRequirement) > 0 ? Number(subWaveInfo[0].FinishRequirement) : 0;
+        finishRequirement = isNaN(subWaveInfo[0].FinishRequirement) ? 0 : subWaveInfo[0].FinishRequirement;
         countDownTime = 0;
         if(currentWave < currentWave - 1 || Number(subWaveInfo[0].Duration) > 0){
             waveTime = Number(subWaveInfo[0].Duration);
@@ -226,7 +226,7 @@ class org.flashNight.arki.scene.WaveSpawner {
             startWave();
         }else{
             isFinished = true;
-            stageManager.finishStage();
+            stageManager.clearStage();
         }
         // var 本轮对话 = stageInfo.dialogues[currentWave];
         // if (本轮对话.length > 0){

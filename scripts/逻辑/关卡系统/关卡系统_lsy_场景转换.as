@@ -234,10 +234,17 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 //场景转换相关
 _root.关卡结束 = function(){
 	_root.关卡结束界面.关卡结束();
-	_root.帧计时器.移除任务(_root.生存模式OBJ.波次时钟);
 	_root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
 	_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
-	_root.gameworld.dispatcher.publish("StageCleared");
+	_root.gameworld.dispatcher.publish("StageFinished");
+}
+
+_root.获取关卡状态 = function():String{
+	var stageManager = StageManager.instance;
+	if(!stageManager.isActive) return null;
+	if(stageManager.isFinished) return "Finished";
+	if(stageManager.isFailed) return "Failed";
+	return "Active";
 }
 
 _root.返回基地 = function(){

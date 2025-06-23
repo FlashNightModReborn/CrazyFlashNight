@@ -11,7 +11,7 @@ StageManager 管理关卡的基础行为。
 class org.flashNight.arki.scene.StageManager {
     public static var instance:StageManager; // 单例引用
     private var sceneManager:SceneManager; // SceneManager单例
-    private var waveSpawner:WaveSpawner; // WaveSpawner单例
+    public var spawner:WaveSpawner; // 当前使用的刷怪器单例引用
     private var stageEventHandler:StageEventHandler; // StageEventHandler单例
 
     public var gameworld:MovieClip; // 当前gameworld
@@ -23,8 +23,10 @@ class org.flashNight.arki.scene.StageManager {
 
     public var spawnPoints:Array; // 出生点影片剪辑列表
 
+    public var isActive = false;
+    public var isCleared = false;
     public var isFinished = false;
-    public var isFailed = false;
+    public var isFailed = false; // 关卡是否失败
     
     /**
      * 单例获取：返回全局唯一实例
@@ -42,7 +44,7 @@ class org.flashNight.arki.scene.StageManager {
     
     public function initialize(data):Void{
         sceneManager = SceneManager.instance;
-        waveSpawner = WaveSpawner.instance;
+        spawner = WaveSpawner.instance;
         stageEventHandler = StageEventHandler.instance;
 
         data = ObjectUtil.toArray(data);
@@ -51,10 +53,14 @@ class org.flashNight.arki.scene.StageManager {
             stageInfoList[i] = new StageInfo(data[i]);
         }
         currentStage = -1;
+        isActive = true;
+        isFinished = false;
+        isFailed = false;
     }
     
     public function initStage():Void{
         _root.当前为战斗地图 = true;
+        isCleared = false;
         currentStage++;
 
         currentStageInfo = stageInfoList[currentStage];
@@ -64,9 +70,6 @@ class org.flashNight.arki.scene.StageManager {
         var spawnPointInfo = currentStageInfo.spawnPointInfo;
         
         gameworld = sceneManager.gameworld;
-
-        isFinished = false;
-        isFailed = false;
 
         stageEventHandler.init(gameworld);
 
@@ -245,12 +248,12 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.dispatcher.publish("Start");
 
         // 开始刷怪
-        if(currentStageInfo.waveInfo != null) waveSpawner.init(currentStageInfo);
+        if(currentStageInfo.waveInfo != null) spawner.init(currentStageInfo);
     }
 
-    public function finishStage():Void{
-        if(isFailed) return;
-        isFinished = true;
+    public function clearStage():Void{
+        if(isFinished || isFailed) return;
+        isCleared = true;
 
         gameworld.关卡结束 = true;
         _root.d_波次._visible = false;
@@ -265,9 +268,7 @@ class org.flashNight.arki.scene.StageManager {
         }
 
         if (currentStage >= stageInfoList.length - 1){
-            _root.关卡结束();
-            //设置返回地图帧值
-            if(currentStageInfo.basicInfo.EndFrame) _root.关卡地图帧值 = currentStageInfo.basicInfo.EndFrame;
+            finishStage();
         }else{
             gameworld.允许通行 = true;
             var hero:MovieClip = TargetCacheManager.findHero();
@@ -275,15 +276,27 @@ class org.flashNight.arki.scene.StageManager {
         }
     }
 
+    public function finishStage():Void{
+        if(isFinished || isFailed) return;
+        isFinished = true;
+        _root.关卡结束();
+        //设置返回地图帧值
+        if(currentStageInfo.basicInfo.EndFrame) _root.关卡地图帧值 = currentStageInfo.basicInfo.EndFrame;
+    }
+
     public function failStage():Void{
-        if(isFinished) return;
+        if(isFinished || isFailed) return;
         isFailed = true;
 
         gameworld.允许通行 = false;
         gameworld.关卡结束 = false;
+        _root.关卡结束界面.关卡失败();
+        
         _root.d_波次._visible = false;
         _root.d_剩余敌人数._visible = false;
         gameworld.dispatcher.publish("StageFailed");
+
+        gameworld.通关箭头._visible = false;
     }
 
     public function closeStage():Void{
@@ -292,11 +305,13 @@ class org.flashNight.arki.scene.StageManager {
         currentStageInfo = null;
         spawnPoints = null;
 
-        waveSpawner.close();
+        spawner.close();
         stageEventHandler.clear();
+        isCleared = false;
     }
 
     public function clear():Void{
+        isActive = false;
         stageInfoList = null;
         currentStage = -1;
     }

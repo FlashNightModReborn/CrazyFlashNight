@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1861" itemID="6597607e-00000a2d" lastModified="1745730394" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1861" itemID="6597607e-00000a2d" lastModified="1750695773" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="Symbol 1861" currentFrame="11">
+    <DOMTimeline name="Symbol 1861" currentFrame="8">
       <layers>
         <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
@@ -10,7 +10,10 @@
             <DOMFrame index="1" duration="7" name="关卡结束" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="7" name="询问复活" labelType="name" keyMode="9728">
+            <DOMFrame index="8" duration="7" name="关卡失败" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" name="询问复活" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -26,6 +29,22 @@ function 关卡结束(){
 	this.关卡是否结束 = true;
 	gotoAndStop("关卡结束");
 }
+function 关卡失败(){
+	this._visible = true;
+	this.关卡是否结束 = false;
+	gotoAndStop("关卡失败");
+}
+
+function 刷新状态(){
+	var 关卡状态 = _root.获取关卡状态();
+	if(关卡状态 === "Finished"){
+		关卡结束();
+	}else if(关卡状态 === "Failed"){
+		关卡失败();
+	}else{
+		this._visible = false;
+	}
+}
 
 function 询问复活(){
 	this._visible = true;
@@ -40,11 +59,7 @@ function 使用复活币()
 	控制对象.动画完毕();
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
-	if(this.关卡是否结束){
-		gotoAndStop("关卡结束");
-	}else{
-		this._visible = false;
-	}
+	刷新状态();
 	_root.效果("药剂动画",控制对象._x,控制对象._y,100);
 }
 
@@ -66,14 +81,20 @@ this._visible = false;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
-          <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
+            <DOMFrame index="15" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="7" keyMode="9728">
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2039" centerPoint3DX="57.5" centerPoint3DY="61.5">
                   <matrix>
@@ -120,7 +141,7 @@ on (rollOut) {
         </DOMLayer>
         <DOMLayer name="Layer 2" color="#83AF5F">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="104.25" centerPoint3DY="26">
                   <matrix>
@@ -142,7 +163,7 @@ on (rollOut) {
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#1F6AFA">
           <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 1652" centerPoint3DX="103.8" centerPoint3DY="61.5">
                   <matrix>
@@ -174,7 +195,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="7" keyMode="9728">
+            <DOMFrame index="15" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 1652" centerPoint3DX="149.3" centerPoint3DY="61.5">
                   <matrix>
@@ -210,7 +231,7 @@ on (rollOut) {
         </DOMLayer>
         <DOMLayer name="Layer 4" color="#80C450">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 294" symbolType="graphic" loop="loop">
                   <matrix>
@@ -224,7 +245,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B776E7">
+        <DOMLayer name="Layer 5" color="#B776E7" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -251,6 +272,23 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="8" duration="7" keyMode="9728">
               <elements>
+                <DOMDynamicText name="failText" fontRenderingMode="device" width="162.8" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="26.3" ty="4.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>关卡失败！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="7" keyMode="9728">
+              <elements>
                 <DOMStaticText fontRenderingMode="device" width="162.8" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="26.3" ty="4.55"/>
@@ -276,7 +314,7 @@ on (rollOut) {
         </DOMLayer>
         <DOMLayer name="Layer 6" color="#CA934B">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="104.3" centerPoint3DY="45">
                   <transformationPoint>
