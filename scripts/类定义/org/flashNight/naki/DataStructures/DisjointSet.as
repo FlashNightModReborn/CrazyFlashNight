@@ -184,8 +184,9 @@ class org.flashNight.naki.DataStructures.DisjointSet {
         // 阶段2：路径压缩
         // 将查找路径上的所有节点直接连接到根节点
         var current:Number = x;
+        var next:Number;
         while (parent[current] != root) {
-            var next:Number = parent[current];  // 保存下一个节点
+            next = parent[current];             // 保存下一个节点
             parent[current] = root;             // 直接连接到根节点
             current = next;                     // 移动到下一个节点
         }
@@ -266,12 +267,8 @@ class org.flashNight.naki.DataStructures.DisjointSet {
      * 
      * 当前实现说明：
      * - 使用公共的 find 方法，会进行参数验证
-     * - 可以优化为使用 _findUnchecked，因为参数已经验证过
+     * - 优化为使用 _findUnchecked，因为参数已经验证过
      * 
-     * 性能优化建议：
-     * 可以将 return 语句改为：
-     * return _findUnchecked(x) == _findUnchecked(y);
-     * 这样可以避免 find 方法中的重复验证
      * 
      * 摊销时间复杂度：O(α(n))
      * 
@@ -298,12 +295,9 @@ class org.flashNight.naki.DataStructures.DisjointSet {
         validate(y);
         
         // 检查两个元素是否有相同的根节点
-        return find(x) == find(y);
-        
-        // 性能优化版本（注释中的建议）：
-        // return _findUnchecked(x) == _findUnchecked(y);
         // 由于 x 和 y 已经在上面验证过，可以直接使用未验证版本
         // 这样可以避免 find 方法中的重复验证，提升性能
+        return _findUnchecked(x) == _findUnchecked(y);
     }
     
     /**
