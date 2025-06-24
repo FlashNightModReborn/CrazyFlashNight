@@ -1,0 +1,1450 @@
+org.flashNight.naki.DataStructures.DisjointSetTest.runAll();
+
+
+================================================================================
+🚀 DisjointSet 完整测试套件启动
+================================================================================
+
+📋 执行基础功能测试...
+✅ 正常构造函数创建对象 PASS (object is not null)
+✅ 初始状态元素0根为自己 PASS (expected=0, actual=0)
+✅ 初始状态元素1根为自己 PASS (expected=1, actual=1)
+✅ 初始状态元素2根为自己 PASS (expected=2, actual=2)
+✅ 初始状态元素3根为自己 PASS (expected=3, actual=3)
+✅ 初始状态元素4根为自己 PASS (expected=4, actual=4)
+✅ 大型构造函数创建对象 PASS (object is not null)
+✅ 大型构造函数首元素根 PASS (expected=0, actual=0)
+✅ 大型构造函数末元素根 PASS (expected=999, actual=999)
+✅ 单元素构造函数 PASS (object is not null)
+✅ 单元素根为自己 PASS (expected=0, actual=0)
+✅ 零大小构造函数 PASS (object is not null)
+✅ 初始find(0) PASS (expected=0, actual=0)
+✅ 初始find(1) PASS (expected=1, actual=1)
+✅ 初始find(2) PASS (expected=2, actual=2)
+✅ 初始find(3) PASS (expected=3, actual=3)
+✅ 初始find(4) PASS (expected=4, actual=4)
+✅ 初始find(5) PASS (expected=5, actual=5)
+✅ 初始find(6) PASS (expected=6, actual=6)
+✅ 初始find(7) PASS (expected=7, actual=7)
+✅ 初始find(8) PASS (expected=8, actual=8)
+✅ 初始find(9) PASS (expected=9, actual=9)
+✅ 合并后find结果一致 PASS
+✅ 路径压缩后查找速度 PASS
+✅ union(0,1)后连通 PASS (same root: 0)
+✅ union(2,3)后连通 PASS (same root: 2)
+✅ 不同组仍分离 PASS (different roots: 0 vs 2)
+✅ 传递性合并0-2 PASS (same root: 0)
+✅ 传递性合并0-3 PASS (same root: 0)
+✅ 传递性合并1-3 PASS (same root: 0)
+✅ 重复合并不改变根 PASS (expected=0, actual=0)
+✅ 自合并不改变根 PASS (expected=4, actual=4)
+✅ 初始状态0-1不连通 PASS
+✅ 初始状态0-2不连通 PASS
+✅ 初始状态0-3不连通 PASS
+✅ 初始状态0-4不连通 PASS
+✅ 初始状态0-5不连通 PASS
+✅ 初始状态1-2不连通 PASS
+✅ 初始状态1-3不连通 PASS
+✅ 初始状态1-4不连通 PASS
+✅ 初始状态1-5不连通 PASS
+✅ 初始状态2-3不连通 PASS
+✅ 初始状态2-4不连通 PASS
+✅ 初始状态2-5不连通 PASS
+✅ 初始状态3-4不连通 PASS
+✅ 初始状态3-5不连通 PASS
+✅ 初始状态4-5不连通 PASS
+✅ connected(0,1) PASS
+✅ connected(2,3) PASS
+✅ connected(4,5) PASS
+✅ 不connected(0,2) PASS
+✅ 不connected(1,3) PASS
+✅ 不connected(0,4) PASS
+✅ 连接后connected(0,3) PASS
+✅ 连接后connected(1,2) PASS
+✅ 自连通0 PASS
+✅ 自连通1 PASS
+✅ 自连通2 PASS
+✅ 自连通3 PASS
+✅ 自连通4 PASS
+✅ 自连通5 PASS
+
+🔍 执行算法正确性测试...
+✅ find与connected等价性[0,0] PASS
+✅ find与connected等价性[0,1] PASS
+✅ find与connected等价性[0,2] PASS
+✅ find与connected等价性[0,3] PASS
+✅ find与connected等价性[0,4] PASS
+✅ find与connected等价性[0,5] PASS
+✅ find与connected等价性[0,6] PASS
+✅ find与connected等价性[0,7] PASS
+✅ find与connected等价性[0,8] PASS
+✅ find与connected等价性[0,9] PASS
+✅ find与connected等价性[1,0] PASS
+✅ find与connected等价性[1,1] PASS
+✅ find与connected等价性[1,2] PASS
+✅ find与connected等价性[1,3] PASS
+✅ find与connected等价性[1,4] PASS
+✅ find与connected等价性[1,5] PASS
+✅ find与connected等价性[1,6] PASS
+✅ find与connected等价性[1,7] PASS
+✅ find与connected等价性[1,8] PASS
+✅ find与connected等价性[1,9] PASS
+✅ find与connected等价性[2,0] PASS
+✅ find与connected等价性[2,1] PASS
+✅ find与connected等价性[2,2] PASS
+✅ find与connected等价性[2,3] PASS
+✅ find与connected等价性[2,4] PASS
+✅ find与connected等价性[2,5] PASS
+✅ find与connected等价性[2,6] PASS
+✅ find与connected等价性[2,7] PASS
+✅ find与connected等价性[2,8] PASS
+✅ find与connected等价性[2,9] PASS
+✅ find与connected等价性[3,0] PASS
+✅ find与connected等价性[3,1] PASS
+✅ find与connected等价性[3,2] PASS
+✅ find与connected等价性[3,3] PASS
+✅ find与connected等价性[3,4] PASS
+✅ find与connected等价性[3,5] PASS
+✅ find与connected等价性[3,6] PASS
+✅ find与connected等价性[3,7] PASS
+✅ find与connected等价性[3,8] PASS
+✅ find与connected等价性[3,9] PASS
+✅ find与connected等价性[4,0] PASS
+✅ find与connected等价性[4,1] PASS
+✅ find与connected等价性[4,2] PASS
+✅ find与connected等价性[4,3] PASS
+✅ find与connected等价性[4,4] PASS
+✅ find与connected等价性[4,5] PASS
+✅ find与connected等价性[4,6] PASS
+✅ find与connected等价性[4,7] PASS
+✅ find与connected等价性[4,8] PASS
+✅ find与connected等价性[4,9] PASS
+✅ find与connected等价性[5,0] PASS
+✅ find与connected等价性[5,1] PASS
+✅ find与connected等价性[5,2] PASS
+✅ find与connected等价性[5,3] PASS
+✅ find与connected等价性[5,4] PASS
+✅ find与connected等价性[5,5] PASS
+✅ find与connected等价性[5,6] PASS
+✅ find与connected等价性[5,7] PASS
+✅ find与connected等价性[5,8] PASS
+✅ find与connected等价性[5,9] PASS
+✅ find与connected等价性[6,0] PASS
+✅ find与connected等价性[6,1] PASS
+✅ find与connected等价性[6,2] PASS
+✅ find与connected等价性[6,3] PASS
+✅ find与connected等价性[6,4] PASS
+✅ find与connected等价性[6,5] PASS
+✅ find与connected等价性[6,6] PASS
+✅ find与connected等价性[6,7] PASS
+✅ find与connected等价性[6,8] PASS
+✅ find与connected等价性[6,9] PASS
+✅ find与connected等价性[7,0] PASS
+✅ find与connected等价性[7,1] PASS
+✅ find与connected等价性[7,2] PASS
+✅ find与connected等价性[7,3] PASS
+✅ find与connected等价性[7,4] PASS
+✅ find与connected等价性[7,5] PASS
+✅ find与connected等价性[7,6] PASS
+✅ find与connected等价性[7,7] PASS
+✅ find与connected等价性[7,8] PASS
+✅ find与connected等价性[7,9] PASS
+✅ find与connected等价性[8,0] PASS
+✅ find与connected等价性[8,1] PASS
+✅ find与connected等价性[8,2] PASS
+✅ find与connected等价性[8,3] PASS
+✅ find与connected等价性[8,4] PASS
+✅ find与connected等价性[8,5] PASS
+✅ find与connected等价性[8,6] PASS
+✅ find与connected等价性[8,7] PASS
+✅ find与connected等价性[8,8] PASS
+✅ find与connected等价性[8,9] PASS
+✅ find与connected等价性[9,0] PASS
+✅ find与connected等价性[9,1] PASS
+✅ find与connected等价性[9,2] PASS
+✅ find与connected等价性[9,3] PASS
+✅ find与connected等价性[9,4] PASS
+✅ find与connected等价性[9,5] PASS
+✅ find与connected等价性[9,6] PASS
+✅ find与connected等价性[9,7] PASS
+✅ find与connected等价性[9,8] PASS
+✅ find与connected等价性[9,9] PASS
+✅ 传递性0-2 PASS
+✅ 传递性0-3 PASS
+✅ 传递性0-4 PASS
+✅ 传递性1-3 PASS
+✅ 传递性1-4 PASS
+✅ 传递性2-4 PASS
+✅ 传递性边界0-5 PASS
+✅ 传递性边界4-5 PASS
+✅ 反射性元素0 PASS
+✅ 反射性find元素0 PASS (expected=0, actual=0)
+✅ 反射性元素1 PASS
+✅ 反射性find元素1 PASS (expected=1, actual=1)
+✅ 反射性元素2 PASS
+✅ 反射性find元素2 PASS (expected=2, actual=2)
+✅ 反射性元素3 PASS
+✅ 反射性find元素3 PASS (expected=3, actual=3)
+✅ 反射性元素4 PASS
+✅ 反射性find元素4 PASS (expected=4, actual=4)
+✅ 反射性元素5 PASS
+✅ 反射性find元素5 PASS (expected=5, actual=5)
+✅ 反射性元素6 PASS
+✅ 反射性find元素6 PASS (expected=6, actual=6)
+✅ 反射性元素7 PASS
+✅ 反射性find元素7 PASS (expected=7, actual=7)
+✅ union后反射性元素0 PASS
+✅ union后反射性元素1 PASS
+✅ union后反射性元素2 PASS
+✅ union后反射性元素3 PASS
+✅ union后反射性元素4 PASS
+✅ union后反射性元素5 PASS
+✅ union后反射性元素6 PASS
+✅ union后反射性元素7 PASS
+✅ 对称性[0,0] PASS
+✅ 对称性[0,1] PASS
+✅ 对称性[0,2] PASS
+✅ 对称性[0,3] PASS
+✅ 对称性[0,4] PASS
+✅ 对称性[0,5] PASS
+✅ 对称性[0,6] PASS
+✅ 对称性[0,7] PASS
+✅ 对称性[0,8] PASS
+✅ 对称性[0,9] PASS
+✅ 对称性[1,0] PASS
+✅ 对称性[1,1] PASS
+✅ 对称性[1,2] PASS
+✅ 对称性[1,3] PASS
+✅ 对称性[1,4] PASS
+✅ 对称性[1,5] PASS
+✅ 对称性[1,6] PASS
+✅ 对称性[1,7] PASS
+✅ 对称性[1,8] PASS
+✅ 对称性[1,9] PASS
+✅ 对称性[2,0] PASS
+✅ 对称性[2,1] PASS
+✅ 对称性[2,2] PASS
+✅ 对称性[2,3] PASS
+✅ 对称性[2,4] PASS
+✅ 对称性[2,5] PASS
+✅ 对称性[2,6] PASS
+✅ 对称性[2,7] PASS
+✅ 对称性[2,8] PASS
+✅ 对称性[2,9] PASS
+✅ 对称性[3,0] PASS
+✅ 对称性[3,1] PASS
+✅ 对称性[3,2] PASS
+✅ 对称性[3,3] PASS
+✅ 对称性[3,4] PASS
+✅ 对称性[3,5] PASS
+✅ 对称性[3,6] PASS
+✅ 对称性[3,7] PASS
+✅ 对称性[3,8] PASS
+✅ 对称性[3,9] PASS
+✅ 对称性[4,0] PASS
+✅ 对称性[4,1] PASS
+✅ 对称性[4,2] PASS
+✅ 对称性[4,3] PASS
+✅ 对称性[4,4] PASS
+✅ 对称性[4,5] PASS
+✅ 对称性[4,6] PASS
+✅ 对称性[4,7] PASS
+✅ 对称性[4,8] PASS
+✅ 对称性[4,9] PASS
+✅ 对称性[5,0] PASS
+✅ 对称性[5,1] PASS
+✅ 对称性[5,2] PASS
+✅ 对称性[5,3] PASS
+✅ 对称性[5,4] PASS
+✅ 对称性[5,5] PASS
+✅ 对称性[5,6] PASS
+✅ 对称性[5,7] PASS
+✅ 对称性[5,8] PASS
+✅ 对称性[5,9] PASS
+✅ 对称性[6,0] PASS
+✅ 对称性[6,1] PASS
+✅ 对称性[6,2] PASS
+✅ 对称性[6,3] PASS
+✅ 对称性[6,4] PASS
+✅ 对称性[6,5] PASS
+✅ 对称性[6,6] PASS
+✅ 对称性[6,7] PASS
+✅ 对称性[6,8] PASS
+✅ 对称性[6,9] PASS
+✅ 对称性[7,0] PASS
+✅ 对称性[7,1] PASS
+✅ 对称性[7,2] PASS
+✅ 对称性[7,3] PASS
+✅ 对称性[7,4] PASS
+✅ 对称性[7,5] PASS
+✅ 对称性[7,6] PASS
+✅ 对称性[7,7] PASS
+✅ 对称性[7,8] PASS
+✅ 对称性[7,9] PASS
+✅ 对称性[8,0] PASS
+✅ 对称性[8,1] PASS
+✅ 对称性[8,2] PASS
+✅ 对称性[8,3] PASS
+✅ 对称性[8,4] PASS
+✅ 对称性[8,5] PASS
+✅ 对称性[8,6] PASS
+✅ 对称性[8,7] PASS
+✅ 对称性[8,8] PASS
+✅ 对称性[8,9] PASS
+✅ 对称性[9,0] PASS
+✅ 对称性[9,1] PASS
+✅ 对称性[9,2] PASS
+✅ 对称性[9,3] PASS
+✅ 对称性[9,4] PASS
+✅ 对称性[9,5] PASS
+✅ 对称性[9,6] PASS
+✅ 对称性[9,7] PASS
+✅ 对称性[9,8] PASS
+✅ 对称性[9,9] PASS
+✅ 分量1内连通[0,1] PASS
+✅ 分量1内连通[0,2] PASS
+✅ 分量1内连通[0,3] PASS
+✅ 分量1内连通[0,4] PASS
+✅ 分量1内连通[1,2] PASS
+✅ 分量1内连通[1,3] PASS
+✅ 分量1内连通[1,4] PASS
+✅ 分量1内连通[2,3] PASS
+✅ 分量1内连通[2,4] PASS
+✅ 分量1内连通[3,4] PASS
+✅ 分量2内连通[5,6] PASS
+✅ 分量2内连通[5,7] PASS
+✅ 分量2内连通[6,7] PASS
+✅ 分量3内连通[8,9] PASS
+✅ 分量3内连通[8,10] PASS
+✅ 分量3内连通[8,11] PASS
+✅ 分量3内连通[8,12] PASS
+✅ 分量3内连通[9,10] PASS
+✅ 分量3内连通[9,11] PASS
+✅ 分量3内连通[9,12] PASS
+✅ 分量3内连通[10,11] PASS
+✅ 分量3内连通[10,12] PASS
+✅ 分量3内连通[11,12] PASS
+✅ 分量1-2间不连通[0,5] PASS
+✅ 分量1-2间不连通[0,6] PASS
+✅ 分量1-2间不连通[0,7] PASS
+✅ 分量1-2间不连通[1,5] PASS
+✅ 分量1-2间不连通[1,6] PASS
+✅ 分量1-2间不连通[1,7] PASS
+✅ 分量1-2间不连通[2,5] PASS
+✅ 分量1-2间不连通[2,6] PASS
+✅ 分量1-2间不连通[2,7] PASS
+✅ 分量1-2间不连通[3,5] PASS
+✅ 分量1-2间不连通[3,6] PASS
+✅ 分量1-2间不连通[3,7] PASS
+✅ 分量1-2间不连通[4,5] PASS
+✅ 分量1-2间不连通[4,6] PASS
+✅ 分量1-2间不连通[4,7] PASS
+✅ 分量1-3间不连通[0,8] PASS
+✅ 分量1-3间不连通[0,9] PASS
+✅ 分量1-3间不连通[0,10] PASS
+✅ 分量1-3间不连通[0,11] PASS
+✅ 分量1-3间不连通[0,12] PASS
+✅ 分量1-3间不连通[1,8] PASS
+✅ 分量1-3间不连通[1,9] PASS
+✅ 分量1-3间不连通[1,10] PASS
+✅ 分量1-3间不连通[1,11] PASS
+✅ 分量1-3间不连通[1,12] PASS
+✅ 分量1-3间不连通[2,8] PASS
+✅ 分量1-3间不连通[2,9] PASS
+✅ 分量1-3间不连通[2,10] PASS
+✅ 分量1-3间不连通[2,11] PASS
+✅ 分量1-3间不连通[2,12] PASS
+✅ 分量1-3间不连通[3,8] PASS
+✅ 分量1-3间不连通[3,9] PASS
+✅ 分量1-3间不连通[3,10] PASS
+✅ 分量1-3间不连通[3,11] PASS
+✅ 分量1-3间不连通[3,12] PASS
+✅ 分量1-3间不连通[4,8] PASS
+✅ 分量1-3间不连通[4,9] PASS
+✅ 分量1-3间不连通[4,10] PASS
+✅ 分量1-3间不连通[4,11] PASS
+✅ 分量1-3间不连通[4,12] PASS
+✅ 分量2-3间不连通[5,8] PASS
+✅ 分量2-3间不连通[5,9] PASS
+✅ 分量2-3间不连通[5,10] PASS
+✅ 分量2-3间不连通[5,11] PASS
+✅ 分量2-3间不连通[5,12] PASS
+✅ 分量2-3间不连通[6,8] PASS
+✅ 分量2-3间不连通[6,9] PASS
+✅ 分量2-3间不连通[6,10] PASS
+✅ 分量2-3间不连通[6,11] PASS
+✅ 分量2-3间不连通[6,12] PASS
+✅ 分量2-3间不连通[7,8] PASS
+✅ 分量2-3间不连通[7,9] PASS
+✅ 分量2-3间不连通[7,10] PASS
+✅ 分量2-3间不连通[7,11] PASS
+✅ 分量2-3间不连通[7,12] PASS
+✅ 合并后分量1+2内连通[0,1] PASS
+✅ 合并后分量1+2内连通[0,2] PASS
+✅ 合并后分量1+2内连通[0,3] PASS
+✅ 合并后分量1+2内连通[0,4] PASS
+✅ 合并后分量1+2内连通[0,5] PASS
+✅ 合并后分量1+2内连通[0,6] PASS
+✅ 合并后分量1+2内连通[0,7] PASS
+✅ 合并后分量1+2内连通[1,2] PASS
+✅ 合并后分量1+2内连通[1,3] PASS
+✅ 合并后分量1+2内连通[1,4] PASS
+✅ 合并后分量1+2内连通[1,5] PASS
+✅ 合并后分量1+2内连通[1,6] PASS
+✅ 合并后分量1+2内连通[1,7] PASS
+✅ 合并后分量1+2内连通[2,3] PASS
+✅ 合并后分量1+2内连通[2,4] PASS
+✅ 合并后分量1+2内连通[2,5] PASS
+✅ 合并后分量1+2内连通[2,6] PASS
+✅ 合并后分量1+2内连通[2,7] PASS
+✅ 合并后分量1+2内连通[3,4] PASS
+✅ 合并后分量1+2内连通[3,5] PASS
+✅ 合并后分量1+2内连通[3,6] PASS
+✅ 合并后分量1+2内连通[3,7] PASS
+✅ 合并后分量1+2内连通[4,5] PASS
+✅ 合并后分量1+2内连通[4,6] PASS
+✅ 合并后分量1+2内连通[4,7] PASS
+✅ 合并后分量1+2内连通[5,6] PASS
+✅ 合并后分量1+2内连通[5,7] PASS
+✅ 合并后分量1+2内连通[6,7] PASS
+✅ 新连通15-8 PASS
+
+🗜️ 执行路径压缩测试...
+✅ 路径压缩后根相同 PASS (expected=0, actual=0)
+✅ 路径压缩后查找快速 PASS
+✅ 深链压缩后根相同 PASS (expected=0, actual=0)
+✅ 中间节点压缩 PASS (expected=0, actual=0)
+✅ 深链压缩后快速查找 PASS
+✅ 多重压缩根1 PASS (expected=0, actual=0)
+✅ 多重压缩根2 PASS (expected=0, actual=0)
+✅ 多重压缩根3 PASS (expected=0, actual=0)
+📈 压缩性能[size=100]: 未压缩=0ms, 压缩后=0ms
+✅ 压缩后性能合理[100] PASS
+📈 压缩性能[size=500]: 未压缩=0.02ms, 压缩后=0ms
+  性能提升: Infinity倍
+✅ 压缩后性能提升[500] PASS
+📈 压缩性能[size=1000]: 未压缩=0ms, 压缩后=0ms
+✅ 压缩后性能合理[1000] PASS
+
+⚖️ 执行按秩合并测试...
+✅ 按秩合并后根1 PASS (expected=0, actual=0)
+✅ 按秩合并后根2 PASS (expected=0, actual=0)
+✅ 按秩合并后根3 PASS (expected=0, actual=0)
+✅ 按秩合并后根4 PASS (expected=0, actual=0)
+✅ 按秩合并后根5 PASS (expected=0, actual=0)
+✅ 按秩合并正确性 PASS
+✅ 平衡树节点1 PASS (expected=0, actual=0)
+✅ 平衡树节点2 PASS (expected=0, actual=0)
+✅ 平衡树节点3 PASS (expected=0, actual=0)
+✅ 平衡树节点4 PASS (expected=0, actual=0)
+✅ 平衡树节点5 PASS (expected=0, actual=0)
+✅ 平衡树节点6 PASS (expected=0, actual=0)
+✅ 平衡树节点7 PASS (expected=0, actual=0)
+✅ 平衡树节点8 PASS (expected=0, actual=0)
+✅ 平衡树节点9 PASS (expected=0, actual=0)
+✅ 平衡树节点10 PASS (expected=0, actual=0)
+✅ 平衡树节点11 PASS (expected=0, actual=0)
+✅ 平衡树节点12 PASS (expected=0, actual=0)
+✅ 平衡树节点13 PASS (expected=0, actual=0)
+✅ 平衡树节点14 PASS (expected=0, actual=0)
+✅ 平衡树节点15 PASS (expected=0, actual=0)
+✅ 平衡树查找性能 PASS
+✅ 平衡树平均查找时间 PASS
+📊 平衡vs链式: 平衡=0.002ms, 链式=0.003ms
+✅ 按秩合并性能优势 PASS
+
+🔍 执行边界条件测试...
+✅ 空并查集创建 PASS (object is not null)
+✅ 空并查集find正确抛异常
+✅ 单元素find PASS (expected=0, actual=0)
+✅ 单元素connected自己 PASS
+✅ 自合并后find PASS (expected=0, actual=0)
+✅ 自合并后connected PASS
+✅ 超范围find正确处理
+✅ 负数find正确处理
+✅ 超范围union正确处理
+✅ 负数connected正确处理
+✅ 最小索引find PASS (expected=0, actual=0)
+✅ 最大索引find PASS (expected=99, actual=99)
+✅ 极值连接 PASS
+✅ 边界传递性 PASS
+
+⚡ 执行性能基准测试...
+📊 find性能: 1000次调用耗时 2ms
+✅ find性能达标 PASS
+📊 union性能: 1000次调用耗时 9ms
+✅ union性能达标 PASS
+📊 connected性能: 1000次调用耗时 10ms
+✅ connected性能达标 PASS
+📈 时间复杂度分析:
+  Size 100: 0.006ms/operation
+✅ 时间复杂度[100] PASS
+  Size 500: 0.006ms/operation
+✅ 时间复杂度[500] PASS
+  Size 1000: 0.006ms/operation
+✅ 时间复杂度[1000] PASS
+  Size 5000: 0.006ms/operation
+✅ 时间复杂度[5000] PASS
+
+💾 执行数据结构完整性测试...
+✅ 操作0后结构完整 PASS
+✅ 操作1后结构完整 PASS
+✅ 操作2后结构完整 PASS
+✅ 操作3后结构完整 PASS
+✅ 操作4后结构完整 PASS
+✅ 操作5后结构完整 PASS
+✅ 操作6后结构完整 PASS
+✅ 操作7后结构完整 PASS
+✅ 操作8后结构完整 PASS
+✅ 操作9后结构完整 PASS
+✅ 不变量-反射性0 PASS
+✅ 不变量-反射性1 PASS
+✅ 不变量-反射性2 PASS
+✅ 不变量-反射性3 PASS
+✅ 不变量-反射性4 PASS
+✅ 不变量-反射性5 PASS
+✅ 不变量-反射性6 PASS
+✅ 不变量-反射性7 PASS
+✅ 不变量-反射性8 PASS
+✅ 不变量-反射性9 PASS
+✅ 不变量-反射性10 PASS
+✅ 不变量-反射性11 PASS
+✅ 不变量-反射性12 PASS
+✅ 不变量-反射性13 PASS
+✅ 不变量-反射性14 PASS
+✅ union后反射性0 PASS
+✅ union后反射性1 PASS
+✅ union后反射性2 PASS
+✅ union后反射性3 PASS
+✅ union后反射性4 PASS
+✅ union后反射性5 PASS
+✅ union后反射性6 PASS
+✅ union后反射性7 PASS
+✅ union后反射性8 PASS
+✅ union后反射性9 PASS
+✅ union后反射性10 PASS
+✅ union后反射性11 PASS
+✅ union后反射性12 PASS
+✅ union后反射性13 PASS
+✅ union后反射性14 PASS
+✅ 对称性[0,0] PASS
+✅ 对称性[0,1] PASS
+✅ 对称性[0,2] PASS
+✅ 对称性[0,3] PASS
+✅ 对称性[0,4] PASS
+✅ 对称性[0,5] PASS
+✅ 对称性[0,6] PASS
+✅ 对称性[0,7] PASS
+✅ 对称性[0,8] PASS
+✅ 对称性[0,9] PASS
+✅ 对称性[0,10] PASS
+✅ 对称性[0,11] PASS
+✅ 对称性[0,12] PASS
+✅ 对称性[0,13] PASS
+✅ 对称性[0,14] PASS
+✅ 对称性[1,0] PASS
+✅ 对称性[1,1] PASS
+✅ 对称性[1,2] PASS
+✅ 对称性[1,3] PASS
+✅ 对称性[1,4] PASS
+✅ 对称性[1,5] PASS
+✅ 对称性[1,6] PASS
+✅ 对称性[1,7] PASS
+✅ 对称性[1,8] PASS
+✅ 对称性[1,9] PASS
+✅ 对称性[1,10] PASS
+✅ 对称性[1,11] PASS
+✅ 对称性[1,12] PASS
+✅ 对称性[1,13] PASS
+✅ 对称性[1,14] PASS
+✅ 对称性[2,0] PASS
+✅ 对称性[2,1] PASS
+✅ 对称性[2,2] PASS
+✅ 对称性[2,3] PASS
+✅ 对称性[2,4] PASS
+✅ 对称性[2,5] PASS
+✅ 对称性[2,6] PASS
+✅ 对称性[2,7] PASS
+✅ 对称性[2,8] PASS
+✅ 对称性[2,9] PASS
+✅ 对称性[2,10] PASS
+✅ 对称性[2,11] PASS
+✅ 对称性[2,12] PASS
+✅ 对称性[2,13] PASS
+✅ 对称性[2,14] PASS
+✅ 对称性[3,0] PASS
+✅ 对称性[3,1] PASS
+✅ 对称性[3,2] PASS
+✅ 对称性[3,3] PASS
+✅ 对称性[3,4] PASS
+✅ 对称性[3,5] PASS
+✅ 对称性[3,6] PASS
+✅ 对称性[3,7] PASS
+✅ 对称性[3,8] PASS
+✅ 对称性[3,9] PASS
+✅ 对称性[3,10] PASS
+✅ 对称性[3,11] PASS
+✅ 对称性[3,12] PASS
+✅ 对称性[3,13] PASS
+✅ 对称性[3,14] PASS
+✅ 对称性[4,0] PASS
+✅ 对称性[4,1] PASS
+✅ 对称性[4,2] PASS
+✅ 对称性[4,3] PASS
+✅ 对称性[4,4] PASS
+✅ 对称性[4,5] PASS
+✅ 对称性[4,6] PASS
+✅ 对称性[4,7] PASS
+✅ 对称性[4,8] PASS
+✅ 对称性[4,9] PASS
+✅ 对称性[4,10] PASS
+✅ 对称性[4,11] PASS
+✅ 对称性[4,12] PASS
+✅ 对称性[4,13] PASS
+✅ 对称性[4,14] PASS
+✅ 对称性[5,0] PASS
+✅ 对称性[5,1] PASS
+✅ 对称性[5,2] PASS
+✅ 对称性[5,3] PASS
+✅ 对称性[5,4] PASS
+✅ 对称性[5,5] PASS
+✅ 对称性[5,6] PASS
+✅ 对称性[5,7] PASS
+✅ 对称性[5,8] PASS
+✅ 对称性[5,9] PASS
+✅ 对称性[5,10] PASS
+✅ 对称性[5,11] PASS
+✅ 对称性[5,12] PASS
+✅ 对称性[5,13] PASS
+✅ 对称性[5,14] PASS
+✅ 对称性[6,0] PASS
+✅ 对称性[6,1] PASS
+✅ 对称性[6,2] PASS
+✅ 对称性[6,3] PASS
+✅ 对称性[6,4] PASS
+✅ 对称性[6,5] PASS
+✅ 对称性[6,6] PASS
+✅ 对称性[6,7] PASS
+✅ 对称性[6,8] PASS
+✅ 对称性[6,9] PASS
+✅ 对称性[6,10] PASS
+✅ 对称性[6,11] PASS
+✅ 对称性[6,12] PASS
+✅ 对称性[6,13] PASS
+✅ 对称性[6,14] PASS
+✅ 对称性[7,0] PASS
+✅ 对称性[7,1] PASS
+✅ 对称性[7,2] PASS
+✅ 对称性[7,3] PASS
+✅ 对称性[7,4] PASS
+✅ 对称性[7,5] PASS
+✅ 对称性[7,6] PASS
+✅ 对称性[7,7] PASS
+✅ 对称性[7,8] PASS
+✅ 对称性[7,9] PASS
+✅ 对称性[7,10] PASS
+✅ 对称性[7,11] PASS
+✅ 对称性[7,12] PASS
+✅ 对称性[7,13] PASS
+✅ 对称性[7,14] PASS
+✅ 对称性[8,0] PASS
+✅ 对称性[8,1] PASS
+✅ 对称性[8,2] PASS
+✅ 对称性[8,3] PASS
+✅ 对称性[8,4] PASS
+✅ 对称性[8,5] PASS
+✅ 对称性[8,6] PASS
+✅ 对称性[8,7] PASS
+✅ 对称性[8,8] PASS
+✅ 对称性[8,9] PASS
+✅ 对称性[8,10] PASS
+✅ 对称性[8,11] PASS
+✅ 对称性[8,12] PASS
+✅ 对称性[8,13] PASS
+✅ 对称性[8,14] PASS
+✅ 对称性[9,0] PASS
+✅ 对称性[9,1] PASS
+✅ 对称性[9,2] PASS
+✅ 对称性[9,3] PASS
+✅ 对称性[9,4] PASS
+✅ 对称性[9,5] PASS
+✅ 对称性[9,6] PASS
+✅ 对称性[9,7] PASS
+✅ 对称性[9,8] PASS
+✅ 对称性[9,9] PASS
+✅ 对称性[9,10] PASS
+✅ 对称性[9,11] PASS
+✅ 对称性[9,12] PASS
+✅ 对称性[9,13] PASS
+✅ 对称性[9,14] PASS
+✅ 对称性[10,0] PASS
+✅ 对称性[10,1] PASS
+✅ 对称性[10,2] PASS
+✅ 对称性[10,3] PASS
+✅ 对称性[10,4] PASS
+✅ 对称性[10,5] PASS
+✅ 对称性[10,6] PASS
+✅ 对称性[10,7] PASS
+✅ 对称性[10,8] PASS
+✅ 对称性[10,9] PASS
+✅ 对称性[10,10] PASS
+✅ 对称性[10,11] PASS
+✅ 对称性[10,12] PASS
+✅ 对称性[10,13] PASS
+✅ 对称性[10,14] PASS
+✅ 对称性[11,0] PASS
+✅ 对称性[11,1] PASS
+✅ 对称性[11,2] PASS
+✅ 对称性[11,3] PASS
+✅ 对称性[11,4] PASS
+✅ 对称性[11,5] PASS
+✅ 对称性[11,6] PASS
+✅ 对称性[11,7] PASS
+✅ 对称性[11,8] PASS
+✅ 对称性[11,9] PASS
+✅ 对称性[11,10] PASS
+✅ 对称性[11,11] PASS
+✅ 对称性[11,12] PASS
+✅ 对称性[11,13] PASS
+✅ 对称性[11,14] PASS
+✅ 对称性[12,0] PASS
+✅ 对称性[12,1] PASS
+✅ 对称性[12,2] PASS
+✅ 对称性[12,3] PASS
+✅ 对称性[12,4] PASS
+✅ 对称性[12,5] PASS
+✅ 对称性[12,6] PASS
+✅ 对称性[12,7] PASS
+✅ 对称性[12,8] PASS
+✅ 对称性[12,9] PASS
+✅ 对称性[12,10] PASS
+✅ 对称性[12,11] PASS
+✅ 对称性[12,12] PASS
+✅ 对称性[12,13] PASS
+✅ 对称性[12,14] PASS
+✅ 对称性[13,0] PASS
+✅ 对称性[13,1] PASS
+✅ 对称性[13,2] PASS
+✅ 对称性[13,3] PASS
+✅ 对称性[13,4] PASS
+✅ 对称性[13,5] PASS
+✅ 对称性[13,6] PASS
+✅ 对称性[13,7] PASS
+✅ 对称性[13,8] PASS
+✅ 对称性[13,9] PASS
+✅ 对称性[13,10] PASS
+✅ 对称性[13,11] PASS
+✅ 对称性[13,12] PASS
+✅ 对称性[13,13] PASS
+✅ 对称性[13,14] PASS
+✅ 对称性[14,0] PASS
+✅ 对称性[14,1] PASS
+✅ 对称性[14,2] PASS
+✅ 对称性[14,3] PASS
+✅ 对称性[14,4] PASS
+✅ 对称性[14,5] PASS
+✅ 对称性[14,6] PASS
+✅ 对称性[14,7] PASS
+✅ 对称性[14,8] PASS
+✅ 对称性[14,9] PASS
+✅ 对称性[14,10] PASS
+✅ 对称性[14,11] PASS
+✅ 对称性[14,12] PASS
+✅ 对称性[14,13] PASS
+✅ 对称性[14,14] PASS
+✅ 传递性0-1-2 PASS
+✅ 传递性0-3-4 PASS
+✅ 传递性1-3 PASS
+✅ union后连通[3,11] PASS
+✅ union后连通[24,0] PASS
+✅ union后连通[15,1] PASS
+✅ union后连通[17,10] PASS
+✅ union后连通[2,24] PASS
+✅ union后连通[15,22] PASS
+✅ union后连通[23,9] PASS
+✅ union后连通[8,20] PASS
+✅ union后连通[18,13] PASS
+✅ union后连通[4,14] PASS
+✅ union后连通[22,1] PASS
+✅ union不变性[22,0] PASS
+✅ union不变性[22,1] PASS
+✅ union不变性[22,2] PASS
+✅ union不变性[22,3] PASS
+✅ union不变性[22,4] PASS
+✅ union后连通[3,2] PASS
+✅ union后连通[21,23] PASS
+✅ union后连通[4,7] PASS
+✅ union后连通[24,3] PASS
+✅ union不变性[24,0] PASS
+✅ union不变性[24,1] PASS
+✅ union不变性[24,2] PASS
+✅ union不变性[24,3] PASS
+✅ union不变性[24,4] PASS
+✅ union后连通[18,3] PASS
+✅ union后连通[20,20] PASS
+✅ union不变性[20,0] PASS
+✅ union不变性[20,1] PASS
+✅ union不变性[20,2] PASS
+✅ union不变性[20,3] PASS
+✅ union不变性[20,4] PASS
+✅ union后连通[0,6] PASS
+✅ union后连通[3,20] PASS
+✅ union后连通[22,6] PASS
+✅ union后连通[8,21] PASS
+✅ union后连通[10,20] PASS
+✅ union后连通[7,9] PASS
+✅ union后连通[5,18] PASS
+✅ union后连通[14,9] PASS
+✅ union不变性[14,0] PASS
+✅ union不变性[14,1] PASS
+✅ union不变性[14,2] PASS
+✅ union不变性[14,3] PASS
+✅ union不变性[14,4] PASS
+✅ union后连通[11,7] PASS
+✅ union不变性[11,0] PASS
+✅ union不变性[11,1] PASS
+✅ union不变性[11,2] PASS
+✅ union不变性[11,3] PASS
+✅ union不变性[11,4] PASS
+✅ union后连通[2,19] PASS
+✅ union后连通[22,2] PASS
+✅ union不变性[22,0] PASS
+✅ union不变性[22,1] PASS
+✅ union不变性[22,2] PASS
+✅ union不变性[22,3] PASS
+✅ union不变性[22,4] PASS
+✅ union后连通[11,11] PASS
+✅ union不变性[11,0] PASS
+✅ union不变性[11,1] PASS
+✅ union不变性[11,2] PASS
+✅ union不变性[11,3] PASS
+✅ union不变性[11,4] PASS
+✅ union后连通[7,17] PASS
+✅ union不变性[7,0] PASS
+✅ union不变性[7,1] PASS
+✅ union不变性[7,2] PASS
+✅ union不变性[7,3] PASS
+✅ union不变性[7,4] PASS
+✅ union后连通[4,9] PASS
+✅ union不变性[4,0] PASS
+✅ union不变性[4,1] PASS
+✅ union不变性[4,2] PASS
+✅ union不变性[4,3] PASS
+✅ union不变性[4,4] PASS
+✅ union后连通[17,22] PASS
+✅ union不变性[17,0] PASS
+✅ union不变性[17,1] PASS
+✅ union不变性[17,2] PASS
+✅ union不变性[17,3] PASS
+✅ union不变性[17,4] PASS
+✅ union后连通[17,20] PASS
+✅ union不变性[17,0] PASS
+✅ union不变性[17,1] PASS
+✅ union不变性[17,2] PASS
+✅ union不变性[17,3] PASS
+✅ union不变性[17,4] PASS
+✅ union后连通[22,0] PASS
+✅ union不变性[22,0] PASS
+✅ union不变性[22,1] PASS
+✅ union不变性[22,2] PASS
+✅ union不变性[22,3] PASS
+✅ union不变性[22,4] PASS
+✅ union后连通[17,9] PASS
+✅ union不变性[17,0] PASS
+✅ union不变性[17,1] PASS
+✅ union不变性[17,2] PASS
+✅ union不变性[17,3] PASS
+✅ union不变性[17,4] PASS
+✅ union后连通[18,23] PASS
+✅ union不变性[18,0] PASS
+✅ union不变性[18,1] PASS
+✅ union不变性[18,2] PASS
+✅ union不变性[18,3] PASS
+✅ union不变性[18,4] PASS
+✅ union后连通[6,6] PASS
+✅ union不变性[6,0] PASS
+✅ union不变性[6,1] PASS
+✅ union不变性[6,2] PASS
+✅ union不变性[6,3] PASS
+✅ union不变性[6,4] PASS
+✅ union后连通[23,16] PASS
+✅ union后连通[15,21] PASS
+✅ union不变性[15,0] PASS
+✅ union不变性[15,1] PASS
+✅ union不变性[15,2] PASS
+✅ union不变性[15,3] PASS
+✅ union不变性[15,4] PASS
+✅ union后连通[19,13] PASS
+✅ union不变性[19,0] PASS
+✅ union不变性[19,1] PASS
+✅ union不变性[19,2] PASS
+✅ union不变性[19,3] PASS
+✅ union不变性[19,4] PASS
+✅ union后连通[5,16] PASS
+✅ union不变性[5,0] PASS
+✅ union不变性[5,1] PASS
+✅ union不变性[5,2] PASS
+✅ union不变性[5,3] PASS
+✅ union不变性[5,4] PASS
+✅ union后连通[18,23] PASS
+✅ union不变性[18,0] PASS
+✅ union不变性[18,1] PASS
+✅ union不变性[18,2] PASS
+✅ union不变性[18,3] PASS
+✅ union不变性[18,4] PASS
+✅ union后连通[7,12] PASS
+✅ union后连通[15,7] PASS
+✅ union不变性[15,0] PASS
+✅ union不变性[15,1] PASS
+✅ union不变性[15,2] PASS
+✅ union不变性[15,3] PASS
+✅ union不变性[15,4] PASS
+✅ union后连通[1,10] PASS
+✅ union不变性[1,0] PASS
+✅ union不变性[1,1] PASS
+✅ union不变性[1,2] PASS
+✅ union不变性[1,3] PASS
+✅ union不变性[1,4] PASS
+✅ union后连通[20,13] PASS
+✅ union不变性[20,0] PASS
+✅ union不变性[20,1] PASS
+✅ union不变性[20,2] PASS
+✅ union不变性[20,3] PASS
+✅ union不变性[20,4] PASS
+✅ union后连通[0,11] PASS
+✅ union不变性[0,0] PASS
+✅ union不变性[0,1] PASS
+✅ union不变性[0,2] PASS
+✅ union不变性[0,3] PASS
+✅ union不变性[0,4] PASS
+✅ union后连通[24,1] PASS
+✅ union不变性[24,0] PASS
+✅ union不变性[24,1] PASS
+✅ union不变性[24,2] PASS
+✅ union不变性[24,3] PASS
+✅ union不变性[24,4] PASS
+✅ union后连通[9,4] PASS
+✅ union不变性[9,0] PASS
+✅ union不变性[9,1] PASS
+✅ union不变性[9,2] PASS
+✅ union不变性[9,3] PASS
+✅ union不变性[9,4] PASS
+✅ union后连通[16,16] PASS
+✅ union不变性[16,0] PASS
+✅ union不变性[16,1] PASS
+✅ union不变性[16,2] PASS
+✅ union不变性[16,3] PASS
+✅ union不变性[16,4] PASS
+✅ union后连通[18,21] PASS
+✅ union不变性[18,0] PASS
+✅ union不变性[18,1] PASS
+✅ union不变性[18,2] PASS
+✅ union不变性[18,3] PASS
+✅ union不变性[18,4] PASS
+✅ union后连通[20,4] PASS
+✅ union不变性[20,0] PASS
+✅ union不变性[20,1] PASS
+✅ union不变性[20,2] PASS
+✅ union不变性[20,3] PASS
+✅ union不变性[20,4] PASS
+✅ union后连通[8,22] PASS
+✅ union不变性[8,0] PASS
+✅ union不变性[8,1] PASS
+✅ union不变性[8,2] PASS
+✅ union不变性[8,3] PASS
+✅ union不变性[8,4] PASS
+✅ union后连通[5,14] PASS
+✅ union不变性[5,0] PASS
+✅ union不变性[5,1] PASS
+✅ union不变性[5,2] PASS
+✅ union不变性[5,3] PASS
+✅ union不变性[5,4] PASS
+✅ union后连通[16,17] PASS
+✅ union不变性[16,0] PASS
+✅ union不变性[16,1] PASS
+✅ union不变性[16,2] PASS
+✅ union不变性[16,3] PASS
+✅ union不变性[16,4] PASS
+✅ union后连通[7,0] PASS
+✅ union不变性[7,0] PASS
+✅ union不变性[7,1] PASS
+✅ union不变性[7,2] PASS
+✅ union不变性[7,3] PASS
+✅ union不变性[7,4] PASS
+✅ union后连通[21,23] PASS
+✅ union不变性[21,0] PASS
+✅ union不变性[21,1] PASS
+✅ union不变性[21,2] PASS
+✅ union不变性[21,3] PASS
+✅ union不变性[21,4] PASS
+✅ union后连通[2,10] PASS
+✅ union不变性[2,0] PASS
+✅ union不变性[2,1] PASS
+✅ union不变性[2,2] PASS
+✅ union不变性[2,3] PASS
+✅ union不变性[2,4] PASS
+✅ union后连通[1,21] PASS
+✅ union不变性[1,0] PASS
+✅ union不变性[1,1] PASS
+✅ union不变性[1,2] PASS
+✅ union不变性[1,3] PASS
+✅ union不变性[1,4] PASS
+✅ union后连通[24,20] PASS
+✅ union不变性[24,0] PASS
+✅ union不变性[24,1] PASS
+✅ union不变性[24,2] PASS
+✅ union不变性[24,3] PASS
+✅ union不变性[24,4] PASS
+✅ union后连通[19,12] PASS
+✅ union不变性[19,0] PASS
+✅ union不变性[19,1] PASS
+✅ union不变性[19,2] PASS
+✅ union不变性[19,3] PASS
+✅ union不变性[19,4] PASS
+✅ union后连通[12,18] PASS
+✅ union不变性[12,0] PASS
+✅ union不变性[12,1] PASS
+✅ union不变性[12,2] PASS
+✅ union不变性[12,3] PASS
+✅ union不变性[12,4] PASS
+✅ union后连通[10,17] PASS
+✅ union不变性[10,0] PASS
+✅ union不变性[10,1] PASS
+✅ union不变性[10,2] PASS
+✅ union不变性[10,3] PASS
+✅ union不变性[10,4] PASS
+✅ union后连通[0,12] PASS
+✅ union不变性[0,0] PASS
+✅ union不变性[0,1] PASS
+✅ union不变性[0,2] PASS
+✅ union不变性[0,3] PASS
+✅ union不变性[0,4] PASS
+✅ union后连通[20,15] PASS
+✅ union不变性[20,0] PASS
+✅ union不变性[20,1] PASS
+✅ union不变性[20,2] PASS
+✅ union不变性[20,3] PASS
+✅ union不变性[20,4] PASS
+✅ union后连通[20,2] PASS
+✅ union不变性[20,0] PASS
+✅ union不变性[20,1] PASS
+✅ union不变性[20,2] PASS
+✅ union不变性[20,3] PASS
+✅ union不变性[20,4] PASS
+✅ union后连通[7,1] PASS
+✅ union不变性[7,0] PASS
+✅ union不变性[7,1] PASS
+✅ union不变性[7,2] PASS
+✅ union不变性[7,3] PASS
+✅ union不变性[7,4] PASS
+✅ union后连通[13,8] PASS
+✅ union不变性[13,0] PASS
+✅ union不变性[13,1] PASS
+✅ union不变性[13,2] PASS
+✅ union不变性[13,3] PASS
+✅ union不变性[13,4] PASS
+✅ union后连通[24,18] PASS
+✅ union不变性[24,0] PASS
+✅ union不变性[24,1] PASS
+✅ union不变性[24,2] PASS
+✅ union不变性[24,3] PASS
+✅ union不变性[24,4] PASS
+✅ union后连通[5,20] PASS
+✅ union不变性[5,0] PASS
+✅ union不变性[5,1] PASS
+✅ union不变性[5,2] PASS
+✅ union不变性[5,3] PASS
+✅ union不变性[5,4] PASS
+✅ union后连通[10,22] PASS
+✅ union不变性[10,0] PASS
+✅ union不变性[10,1] PASS
+✅ union不变性[10,2] PASS
+✅ union不变性[10,3] PASS
+✅ union不变性[10,4] PASS
+✅ union后连通[14,15] PASS
+✅ union不变性[14,0] PASS
+✅ union不变性[14,1] PASS
+✅ union不变性[14,2] PASS
+✅ union不变性[14,3] PASS
+✅ union不变性[14,4] PASS
+✅ union后连通[11,6] PASS
+✅ union不变性[11,0] PASS
+✅ union不变性[11,1] PASS
+✅ union不变性[11,2] PASS
+✅ union不变性[11,3] PASS
+✅ union不变性[11,4] PASS
+✅ union后连通[9,10] PASS
+✅ union不变性[9,0] PASS
+✅ union不变性[9,1] PASS
+✅ union不变性[9,2] PASS
+✅ union不变性[9,3] PASS
+✅ union不变性[9,4] PASS
+✅ union后连通[10,15] PASS
+✅ union不变性[10,0] PASS
+✅ union不变性[10,1] PASS
+✅ union不变性[10,2] PASS
+✅ union不变性[10,3] PASS
+✅ union不变性[10,4] PASS
+✅ union后连通[13,12] PASS
+✅ union不变性[13,0] PASS
+✅ union不变性[13,1] PASS
+✅ union不变性[13,2] PASS
+✅ union不变性[13,3] PASS
+✅ union不变性[13,4] PASS
+✅ union后连通[24,17] PASS
+✅ union不变性[24,0] PASS
+✅ union不变性[24,1] PASS
+✅ union不变性[24,2] PASS
+✅ union不变性[24,3] PASS
+✅ union不变性[24,4] PASS
+✅ union后连通[21,3] PASS
+✅ union不变性[21,0] PASS
+✅ union不变性[21,1] PASS
+✅ union不变性[21,2] PASS
+✅ union不变性[21,3] PASS
+✅ union不变性[21,4] PASS
+✅ union后连通[3,22] PASS
+✅ union不变性[3,0] PASS
+✅ union不变性[3,1] PASS
+✅ union不变性[3,2] PASS
+✅ union不变性[3,3] PASS
+✅ union不变性[3,4] PASS
+✅ union后连通[6,16] PASS
+✅ union不变性[6,0] PASS
+✅ union不变性[6,1] PASS
+✅ union不变性[6,2] PASS
+✅ union不变性[6,3] PASS
+✅ union不变性[6,4] PASS
+✅ union后连通[21,4] PASS
+✅ union不变性[21,0] PASS
+✅ union不变性[21,1] PASS
+✅ union不变性[21,2] PASS
+✅ union不变性[21,3] PASS
+✅ union不变性[21,4] PASS
+✅ union后连通[21,1] PASS
+✅ union不变性[21,0] PASS
+✅ union不变性[21,1] PASS
+✅ union不变性[21,2] PASS
+✅ union不变性[21,3] PASS
+✅ union不变性[21,4] PASS
+✅ union后连通[15,15] PASS
+✅ union不变性[15,0] PASS
+✅ union不变性[15,1] PASS
+✅ union不变性[15,2] PASS
+✅ union不变性[15,3] PASS
+✅ union不变性[15,4] PASS
+✅ union后连通[9,1] PASS
+✅ union不变性[9,0] PASS
+✅ union不变性[9,1] PASS
+✅ union不变性[9,2] PASS
+✅ union不变性[9,3] PASS
+✅ union不变性[9,4] PASS
+✅ union后连通[19,5] PASS
+✅ union不变性[19,0] PASS
+✅ union不变性[19,1] PASS
+✅ union不变性[19,2] PASS
+✅ union不变性[19,3] PASS
+✅ union不变性[19,4] PASS
+✅ union后连通[22,14] PASS
+✅ union不变性[22,0] PASS
+✅ union不变性[22,1] PASS
+✅ union不变性[22,2] PASS
+✅ union不变性[22,3] PASS
+✅ union不变性[22,4] PASS
+✅ union后连通[5,21] PASS
+✅ union不变性[5,0] PASS
+✅ union不变性[5,1] PASS
+✅ union不变性[5,2] PASS
+✅ union不变性[5,3] PASS
+✅ union不变性[5,4] PASS
+✅ union后连通[5,21] PASS
+✅ union不变性[5,0] PASS
+✅ union不变性[5,1] PASS
+✅ union不变性[5,2] PASS
+✅ union不变性[5,3] PASS
+✅ union不变性[5,4] PASS
+✅ union后连通[6,5] PASS
+✅ union不变性[6,0] PASS
+✅ union不变性[6,1] PASS
+✅ union不变性[6,2] PASS
+✅ union不变性[6,3] PASS
+✅ union不变性[6,4] PASS
+✅ union后连通[8,10] PASS
+✅ union不变性[8,0] PASS
+✅ union不变性[8,1] PASS
+✅ union不变性[8,2] PASS
+✅ union不变性[8,3] PASS
+✅ union不变性[8,4] PASS
+✅ union后连通[14,11] PASS
+✅ union不变性[14,0] PASS
+✅ union不变性[14,1] PASS
+✅ union不变性[14,2] PASS
+✅ union不变性[14,3] PASS
+✅ union不变性[14,4] PASS
+✅ union后连通[13,4] PASS
+✅ union不变性[13,0] PASS
+✅ union不变性[13,1] PASS
+✅ union不变性[13,2] PASS
+✅ union不变性[13,3] PASS
+✅ union不变性[13,4] PASS
+✅ union后连通[21,17] PASS
+✅ union不变性[21,0] PASS
+✅ union不变性[21,1] PASS
+✅ union不变性[21,2] PASS
+✅ union不变性[21,3] PASS
+✅ union不变性[21,4] PASS
+✅ union后连通[16,23] PASS
+✅ union不变性[16,0] PASS
+✅ union不变性[16,1] PASS
+✅ union不变性[16,2] PASS
+✅ union不变性[16,3] PASS
+✅ union不变性[16,4] PASS
+✅ union后连通[24,21] PASS
+✅ union不变性[24,0] PASS
+✅ union不变性[24,1] PASS
+✅ union不变性[24,2] PASS
+✅ union不变性[24,3] PASS
+✅ union不变性[24,4] PASS
+✅ union后连通[5,22] PASS
+✅ union不变性[5,0] PASS
+✅ union不变性[5,1] PASS
+✅ union不变性[5,2] PASS
+✅ union不变性[5,3] PASS
+✅ union不变性[5,4] PASS
+✅ union后连通[16,14] PASS
+✅ union不变性[16,0] PASS
+✅ union不变性[16,1] PASS
+✅ union不变性[16,2] PASS
+✅ union不变性[16,3] PASS
+✅ union不变性[16,4] PASS
+✅ union后连通[17,2] PASS
+✅ union不变性[17,0] PASS
+✅ union不变性[17,1] PASS
+✅ union不变性[17,2] PASS
+✅ union不变性[17,3] PASS
+✅ union不变性[17,4] PASS
+✅ union后连通[17,13] PASS
+✅ union不变性[17,0] PASS
+✅ union不变性[17,1] PASS
+✅ union不变性[17,2] PASS
+✅ union不变性[17,3] PASS
+✅ union不变性[17,4] PASS
+✅ union后连通[13,13] PASS
+✅ union不变性[13,0] PASS
+✅ union不变性[13,1] PASS
+✅ union不变性[13,2] PASS
+✅ union不变性[13,3] PASS
+✅ union不变性[13,4] PASS
+✅ 最终结构完整 PASS
+
+💪 执行压力测试...
+💾 大数据集测试: 10000个元素，10000次操作，耗时 63ms
+✅ 大数据集处理时间 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+✅ 大数据集自连通 PASS
+⚡ 快速操作测试: 5000次混合操作耗时 43ms
+✅ 快速操作性能 PASS
+✅ 快速操作平均时间 PASS
+🧠 内存使用测试: 50次创建/销毁耗时 117ms
+✅ 内存使用合理 PASS
+🔥 最坏情况测试:
+  链构建: 7ms
+  首次压缩: 0ms
+  未压缩平均: 7.076ms
+  压缩后平均: 0.002ms
+✅ 最坏情况处理 PASS
+  性能提升: 3538倍
+✅ 路径压缩效果 PASS
+
+🎯 执行业务场景测试...
+✅ 网络段1连通 PASS
+✅ 网络段2连通 PASS
+✅ 网络段3连通 PASS
+✅ 网络段4连通 PASS
+✅ 网络段1-2不连通 PASS
+✅ 网络段2-3不连通 PASS
+✅ 跨段连接后连通 PASS
+📡 网络连通分量数: 8
+✅ 网络分量合理 PASS
+✅ 学校传递朋友 PASS
+✅ 工作传递朋友 PASS
+✅ 跨圈传递朋友 PASS
+👥 最大社交圈大小: 13
+✅ 社交网络效应 PASS
+🖼️ 图像分割区域数: 34
+✅ 分割区域合理 PASS
+✅ 像素连通查询0 PASS
+✅ 像素连通查询1 PASS
+✅ 像素连通查询2 PASS
+✅ 像素连通查询3 PASS
+✅ 像素连通查询4 PASS
+✅ 像素连通查询5 PASS
+✅ 像素连通查询6 PASS
+✅ 像素连通查询7 PASS
+✅ 像素连通查询8 PASS
+✅ 像素连通查询9 PASS
+✅ 像素连通查询10 PASS
+✅ 像素连通查询11 PASS
+✅ 像素连通查询12 PASS
+✅ 像素连通查询13 PASS
+✅ 像素连通查询14 PASS
+✅ 像素连通查询15 PASS
+✅ 像素连通查询16 PASS
+✅ 像素连通查询17 PASS
+✅ 像素连通查询18 PASS
+✅ 像素连通查询19 PASS
+✅ 分割区域数在合理范围 PASS
+✅ 迷宫全连通 PASS
+🌀 迷宫生成: 63条通道，49面墙
+✅ 迷宫复杂度 PASS
+
+🧮 执行算法优化验证...
+🗜️ 路径压缩优化:
+  未压缩平均: 3.565ms
+  压缩后平均: 0ms
+  提升效果: 压缩减少了查找时间
+✅ 路径压缩效果显著 PASS
+⚖️ 按秩合并优化: 平衡树查找平均 0.003ms
+✅ 按秩合并性能 PASS
+🔧 组合优化效果:
+  平均union时间: 0.0065ms
+  平均find时间: 0.003ms
+✅ 组合优化union PASS
+✅ 组合优化find PASS
+📈 摊销复杂度分析:
+  Size 100: 0.00666666666666667ms/operation
+  Size 500: 0.00666666666666667ms/operation
+  Size 1000: 0.00633333333333333ms/operation
+  Size 2000: 0.00616666666666667ms/operation
+✅ 摊销复杂度[100] PASS
+✅ 摊销复杂度[500] PASS
+✅ 摊销复杂度[1000] PASS
+✅ 摊销复杂度[2000] PASS
+📊 复杂度增长比: 0.925
+✅ 摊销复杂度增长 PASS
+
+================================================================================
+📊 测试结果汇总
+================================================================================
+总测试数: 1356
+通过: 1356 ✅
+失败: 0 ❌
+成功率: 100%
+总耗时: 5279ms
+
+⚡ 性能基准报告:
+  find: 0.002ms/次 (1000次测试)
+  union: 0.009ms/次 (1000次测试)
+  connected: 0.01ms/次 (1000次测试)
+
+🎯 DisjointSet算法特性验证:
+  ✓ 路径压缩优化: 查找性能显著提升
+  ✓ 按秩合并优化: 树结构保持平衡
+  ✓ 摊销时间复杂度: 接近O(α(n))
+  ✓ 并查集等价关系: 反射性、对称性、传递性
+  ✓ 业务场景适用: 网络连通、社交网络、图像分割、迷宫生成
+
+🎉 所有测试通过！DisjointSet 实现质量优秀！
+🔬 算法正确性: 100%
+⚡ 性能优化: 优秀
+🛡️ 边界处理: 完善
+💪 压力测试: 通过
+================================================================================
