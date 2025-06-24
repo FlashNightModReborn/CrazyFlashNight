@@ -52,6 +52,51 @@
         return uid;
     }
 
+    /**
+     * 强制更新或分配一个新的 UID 给指定对象。
+     * 此方法会无条件地为对象分配一个新的 UID，即使它已经有一个。
+     * 如果对象之前存在于 uidMap 中，旧的映射关系将被移除。
+     * 
+     * 警告：这是一个高风险操作。调用此方法会使该对象在任何已存在的
+     * Dictionary 实例中“失联”。因为字典内部是使用旧的 UID 存储值的，
+     * 更新 UID 后，使用该对象作为键将无法再找到旧的值。
+     * 如果需要更新，建议的流程是：
+     * 1. 从所有相关字典中移除该对象。
+     * 2. 调用 forceUpdateUID。
+     * 3. 将该对象重新添加到字典中。
+     *
+     * @param key 需要强制更新 UID 的对象（不能是字符串）。
+     * @return 返回分配给该对象的新的唯一标识符 (UID)。如果 key 为 null 或 undefined，则返回 undefined。
+     */
+    public static function forceUpdateUID(key:Object):Number {
+        // 仅处理对象和函数，忽略字符串、null 或 undefined
+        if (key == null || typeof key == "string") {
+            return undefined;
+        }
+
+        var oldUID:Number = key.__dictUID;
+        
+        // 如果存在旧的 UID，从静态 uidMap 中删除旧的映射
+        // 这是为了保持 uidMap 的清洁，防止内存泄漏
+        if (oldUID !== undefined && uidMap != null) {
+            delete uidMap[oldUID];
+        }
+
+        // 分配一个新的 UID
+        var newUID:Number = --uidCounter;
+        key.__dictUID = newUID;
+
+        // 在静态 uidMap 中创建新的映射
+        // (保持与 getUID 和 setItem 的行为一致，即在 uidMap 中注册)
+        if (uidMap != null) {
+            uidMap[newUID] = key;
+        }
+        
+        // _global.ASSetPropFlags(key, ["__dictUID"], 1, false); // 保持属性不可枚举
+
+        return newUID;
+    }
+
 
     /**
      * 添加或更新键值对
