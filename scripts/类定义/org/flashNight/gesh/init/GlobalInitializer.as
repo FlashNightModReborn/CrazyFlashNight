@@ -1,4 +1,7 @@
-﻿import org.flashNight.arki.scene.*;
+﻿import org.flashNight.arki.camera.*;
+import org.flashNight.arki.scene.*;
+
+import org.flashNight.neur.Server.ServerManager;
 
 /**
  * 外置大脑全局初始器
@@ -13,6 +16,12 @@ class org.flashNight.gesh.init.GlobalInitializer{
 
     public static function initialize():Void{
         if(initialized) return;
+        // 初始化ServerManager，Eventbus在这个过程中也会初始化
+        ServerManager.getInstance();
+
+        // arki.camera
+        HorizontalScroller.getInstance();
+
         // arki.scene
         SceneManager.getInstance();
         StageManager.getInstance();

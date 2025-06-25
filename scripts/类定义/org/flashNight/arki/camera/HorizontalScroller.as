@@ -100,14 +100,14 @@ class org.flashNight.arki.camera.HorizontalScroller {
      * 主更新接口 - 保持与原 _root.横版卷屏 的兼容性
      */
     public static function update():Void {
-        getInstance().performUpdate();
+        instance.performUpdate();
     }
     
     /**
      * 场景切换回调 - 重新初始化并组装最优的更新函数
      */
     public static function onSceneChanged():Void {
-        getInstance().initializeForNewScene();
+        instance.initializeForNewScene();
     }
 
     //================================================================================

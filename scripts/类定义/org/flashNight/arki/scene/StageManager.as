@@ -234,7 +234,7 @@ class org.flashNight.arki.scene.StageManager {
         _root.加载场景背景(basicInfo.Background);
         _root.加载后景(environment);
 
-        // 侦听关卡事件
+        // 注册关卡事件
         if(currentStageInfo.eventInfo.length > 0){
             for(var i=0; i<currentStageInfo.eventInfo.length; i++){
                 stageEventHandler.subscribeStageEvent(currentStageInfo.eventInfo[i]);
