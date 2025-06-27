@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/烟气喷射循环单位/烟气喷射循环 32一循环" itemID="5d206d96-00000d37" symbolType="graphic" lastModified="1723639452">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/烟气喷射循环单位/烟气喷射循环 32一循环" itemID="5d206d96-00000d37" symbolType="graphic" lastModified="1751003501">
   <timeline>
-    <DOMTimeline name="烟气喷射循环 32一循环" currentFrame="31">
+    <DOMTimeline name="烟气喷射循环 32一循环" currentFrame="22">
       <layers>
         <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
           <frames>
@@ -2018,7 +2018,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements>
@@ -2030,7 +2030,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/烟气喷射循环单位/特效-闪光特效 特殊3" symbolType="graphic" loop="single frame">
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/烟气喷射循环单位/特效-闪光特效 特殊3" selected="true" symbolType="graphic" loop="single frame">
                   <matrix>
                     <Matrix a="6.76641845703125" b="0.0046539306640625" d="3.73094177246094" tx="-15.65" ty="-3.05"/>
                   </matrix>

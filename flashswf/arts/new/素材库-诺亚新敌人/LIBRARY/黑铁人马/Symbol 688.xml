@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁人马/Symbol 688" itemID="6613f3cf-00000f2f" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会改造人" lastModified="1746456378" lastUniqueIdentifier="30">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁人马/Symbol 688" itemID="6613f3cf-00000f2f" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会改造人" lastModified="1751003554" lastUniqueIdentifier="30">
   <timeline>
-    <DOMTimeline name="Symbol 688" currentFrame="8">
+    <DOMTimeline name="Symbol 688" currentFrame="10">
       <layers>
-        <DOMLayer name="Labels_Layer" color="#AFA4AB" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="Labels_Layer" color="#AFA4AB" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -51,7 +51,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#E816D5" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#E816D5" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -157,7 +157,7 @@ x轴保持距离 = 100;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#BDF8E3" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#BDF8E3">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -179,7 +179,7 @@ x轴保持距离 = 100;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F42DD7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 4" color="#F42DD7">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -224,7 +224,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#EF9205" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#EF9205">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>
@@ -285,7 +285,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="索敌层" color="#92F7CD" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="索敌层" color="#92F7CD" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -451,7 +451,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B72CF6" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="逻辑ai层" color="#B72CF6" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -473,7 +473,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="行走ai层" color="#F4F3A0" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="行走ai层" color="#F4F3A0" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -504,7 +504,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#DF24F2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 9" color="#DF24F2">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -514,7 +514,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
@@ -539,7 +539,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#B5AD74" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 10" color="#B5AD74" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -765,7 +765,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 687" centerPoint3DX="176.75" centerPoint3DY="127.45">
+                <DOMSymbolInstance libraryItemName="黑铁人马/Symbol 687" selected="true" centerPoint3DX="176.75" centerPoint3DY="127.45">
                   <matrix>
                     <Matrix a="0.969970703125" d="0.969970703125" tx="10.35" ty="-68.5"/>
                   </matrix>
@@ -789,7 +789,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#B4A4D3" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 11" color="#B4A4D3">
           <frames>
             <DOMFrame index="0" duration="104" keyMode="9728">
               <elements>

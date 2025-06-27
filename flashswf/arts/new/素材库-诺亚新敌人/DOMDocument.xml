@@ -86,7 +86,7 @@
           <DOMFolderItem name="怪物通用模板/血条与名称" itemID="6613e946-00000616" isExpanded="true"/>
           <DOMFolderItem name="黑铁精英敌人" itemID="6613ec71-00000d24"/>
           <DOMFolderItem name="黑铁精英敌人/重锤" itemID="6613ec71-00000d25" isExpanded="true"/>
-          <DOMFolderItem name="黑铁人马" itemID="6613c3cb-0000045a"/>
+          <DOMFolderItem name="黑铁人马" itemID="6613c3cb-0000045a" isExpanded="true"/>
           <DOMFolderItem name="黑铁人马/1.冷兵器" itemID="660e7967-0000190a"/>
           <DOMFolderItem name="黑铁人马/1.冷兵器/长柄" itemID="660e7967-0000190b"/>
           <DOMFolderItem name="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪" itemID="660e7967-0000190c"/>
@@ -100,7 +100,7 @@
           <DOMFolderItem name="黑铁人马/特效/1.特效文件夹 副本/02.黄金色系/吉他震地" itemID="6613aad6-00002432" isExpanded="true"/>
           <DOMFolderItem name="黑铁人马/音效" itemID="6613c3e9-0000045e"/>
           <DOMFolderItem name="诺亚" itemID="6551e7c0-00001580"/>
-          <DOMFolderItem name="诺亚克隆兽" itemID="669fb653-00000855"/>
+          <DOMFolderItem name="诺亚克隆兽" itemID="669fb653-00000855" isExpanded="true"/>
           <DOMFolderItem name="诺亚克隆兽/部件" itemID="661d2ba5-00000c63"/>
           <DOMFolderItem name="诺亚克隆兽/动画合集" itemID="65ad2501-00002acd"/>
           <DOMFolderItem name="其他" itemID="673974ab-0000305a"/>
@@ -262,12 +262,12 @@
           <Include href="兵工厂特殊单位/雕像特效/遮罩1.xml" itemIcon="1" loadImmediate="false" itemID="66ba295f-00000b2b" lastModified="1723476327"/>
           <Include href="兵工厂特殊单位/雕像特效/遮罩2.xml" itemIcon="1" loadImmediate="false" itemID="66ba2bdd-00000b69" lastModified="1723477125"/>
           <Include href="兵工厂特殊单位/雕像正常.xml" loadImmediate="false" itemID="66ba3f01-00000c45" lastModified="1723483727"/>
-          <Include href="兵工厂特殊单位/火焰特效.xml" loadImmediate="false" itemID="66bca76a-00001298" lastModified="1723639701"/>
+          <Include href="兵工厂特殊单位/火焰特效.xml" loadImmediate="false" itemID="66bca76a-00001298" lastModified="1751003541"/>
           <Include href="兵工厂特殊单位/特殊敌人-兵工厂中枢.xml" itemID="66b8b287-00000914" lastModified="1749524817"/>
           <Include href="兵工厂特殊单位/特殊敌人-雕像.xml" itemID="66b8b58a-00000930" lastModified="1747837960"/>
           <Include href="兵工厂特殊单位/烟气喷射循环单位/特效-闪光特效 特殊2 副本.xml" itemIcon="1" loadImmediate="false" itemID="56ee3c6c-00000677" lastModified="1458990191"/>
           <Include href="兵工厂特殊单位/烟气喷射循环单位/特效-闪光特效 特殊3.xml" itemIcon="1" loadImmediate="false" itemID="56f66c99-0000035a" lastModified="1723639465"/>
-          <Include href="兵工厂特殊单位/烟气喷射循环单位/烟气喷射循环 32一循环.xml" itemIcon="1" loadImmediate="false" itemID="5d206d96-00000d37" lastModified="1723639452"/>
+          <Include href="兵工厂特殊单位/烟气喷射循环单位/烟气喷射循环 32一循环.xml" itemIcon="1" loadImmediate="false" itemID="5d206d96-00000d37" lastModified="1751003501"/>
           <Include href="兵工厂特殊单位/中枢结束.xml" loadImmediate="false" itemID="66ba5570-0000135a" lastModified="1749524853"/>
           <Include href="兵工厂特殊单位/中枢结束素材.xml" itemIcon="1" loadImmediate="false" itemID="66ba55a7-00001361" lastModified="1723487732"/>
           <Include href="兵工厂特殊单位/中枢素材.xml" itemIcon="1" loadImmediate="false" itemID="66ba559e-0000135b" lastModified="1723487646"/>
@@ -522,8 +522,6 @@
           <Include href="地狱三头/蛙型仿生僵尸/杂项素材/Symbol 299.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000318" lastModified="1702098593"/>
           <Include href="地狱三头/蛙型仿生僵尸/杂项素材/Symbol 300.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000319" lastModified="1702098593"/>
           <Include href="地狱三头/蛙型仿生僵尸/杂项素材/Symbol 304.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000031d" lastModified="1702098593"/>
-          <Include href="地狱三头/蛙型仿生僵尸/杂项素材/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000321" lastModified="1702098593"/>
-          <Include href="地狱三头/蛙型仿生僵尸/杂项素材/Symbol 311.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000324" lastModified="1702098593"/>
           <Include href="地狱三头/蛙型仿生僵尸/杂项素材/Symbol 1072.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-0000114b" lastModified="1705841016"/>
           <Include href="地狱三头/蛙型仿生僵尸/杂项素材/刀光1.xml" loadImmediate="false" itemID="65abae4a-000008c3" lastModified="1705750090"/>
           <Include href="地狱三头/未命名文件夹 1/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000035e" lastModified="1731736451"/>
@@ -833,7 +831,9 @@
           <Include href="黑铁人马/Symbol 301.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000031a" lastModified="1702098593"/>
           <Include href="黑铁人马/Symbol 303.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000031c" lastModified="1702098593"/>
           <Include href="黑铁人马/Symbol 305.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000031e" lastModified="1702098593"/>
+          <Include href="黑铁人马/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000321" lastModified="1702098593"/>
           <Include href="黑铁人马/Symbol 309.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000322" lastModified="1702098593"/>
+          <Include href="黑铁人马/Symbol 311.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000324" lastModified="1702098593"/>
           <Include href="黑铁人马/Symbol 312.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000325" lastModified="1702098593"/>
           <Include href="黑铁人马/Symbol 314.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000327" lastModified="1702098593"/>
           <Include href="黑铁人马/Symbol 315.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000328" lastModified="1702098593"/>
@@ -865,8 +865,8 @@
           <Include href="黑铁人马/Symbol 682.xml" loadImmediate="false" itemID="6577efbc-00000472" lastModified="1712591117"/>
           <Include href="黑铁人马/Symbol 683.xml" loadImmediate="false" itemID="6577efbc-00000473" lastModified="1712591179"/>
           <Include href="黑铁人马/Symbol 686.xml" loadImmediate="false" itemID="6577efbc-00000474" lastModified="1712548433"/>
-          <Include href="黑铁人马/Symbol 687.xml" loadImmediate="false" itemID="6577efbc-00000475" lastModified="1721814918"/>
-          <Include href="黑铁人马/Symbol 688.xml" itemID="6613f3cf-00000f2f" lastModified="1746456378"/>
+          <Include href="黑铁人马/Symbol 687.xml" loadImmediate="false" itemID="6577efbc-00000475" lastModified="1751017746"/>
+          <Include href="黑铁人马/Symbol 688.xml" itemID="6613f3cf-00000f2f" lastModified="1751003554"/>
           <Include href="黑铁人马/Symbol 780.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001585" lastModified="1701508661"/>
           <Include href="黑铁人马/Symbol 781.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001586" lastModified="1701508661"/>
           <Include href="黑铁人马/Symbol 782.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001587" lastModified="1701508661"/>
