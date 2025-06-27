@@ -65,15 +65,6 @@
                           <SolidColor color="#2A2A2A"/>
                         </FillStyle>
                         <FillStyle index="9">
-                          <LinearGradient>
-                            <matrix>
-                              <Matrix a="3.0517578125e-005" b="0.0001220703125" c="-0.0053558349609375" d="0.001190185546875" tx="-0.9" ty="-0.05"/>
-                            </matrix>
-                            <GradientEntry color="#3C3C3C" ratio="0.0196078431372549"/>
-                            <GradientEntry color="#232323" ratio="0.768627450980392"/>
-                          </LinearGradient>
-                        </FillStyle>
-                        <FillStyle index="10">
                           <RadialGradient>
                             <matrix>
                               <Matrix a="0.001678466796875" d="0.001678466796875" tx="-5.5" ty="0.9"/>
@@ -82,6 +73,15 @@
                             <GradientEntry ratio="0.407843137254902"/>
                             <GradientEntry color="#2B2B2B" ratio="0.474509803921569"/>
                           </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="10">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="3.0517578125e-005" b="0.0001220703125" c="-0.0053558349609375" d="0.001190185546875" tx="-0.9" ty="-0.05"/>
+                            </matrix>
+                            <GradientEntry color="#3C3C3C" ratio="0.0196078431372549"/>
+                            <GradientEntry color="#232323" ratio="0.768627450980392"/>
+                          </LinearGradient>
                         </FillStyle>
                         <FillStyle index="11">
                           <RadialGradient>
@@ -167,24 +167,24 @@
 !54 0|34 8!34 8|23 6!23 6|-95 39"/>
                         <Edge fillStyle0="3" fillStyle1="7" strokeStyle="5" edges="
 !-60 -1|-32 -30!-32 -30|50 -30"/>
-                        <Edge fillStyle0="9" fillStyle1="3" strokeStyle="1" edges="
-!-99 32|-96 32"/>
-                        <Edge fillStyle0="9" fillStyle1="4" strokeStyle="4" edges="
-!-96 32|-97 30"/>
-                        <Edge fillStyle0="9" fillStyle1="10" strokeStyle="1" edges="
-!-97 30[-98 31 -99 32"/>
-                        <Edge fillStyle0="4" fillStyle1="10" edges="
-!-107 1[-106 1 -105 2!-105 2[-101 2 -97 6!-97 6[-92 11 -92 18!-92 18[-92 25 -97 30"/>
                         <Edge fillStyle0="7" fillStyle1="3" strokeStyle="4" edges="
 !-96 32|-95 39"/>
-                        <Edge fillStyle0="3" fillStyle1="10" strokeStyle="1" edges="
+                        <Edge fillStyle0="4" fillStyle1="9" edges="
+!-107 1[-106 1 -105 2!-105 2[-101 2 -97 6!-97 6[-92 11 -92 18!-92 18[-92 25 -97 30"/>
+                        <Edge fillStyle0="4" fillStyle1="10" strokeStyle="4" edges="
+!-97 30|-96 32"/>
+                        <Edge fillStyle0="4" fillStyle1="7" strokeStyle="6" edges="
+!-96 32|52 -9"/>
+                        <Edge fillStyle0="10" fillStyle1="3" strokeStyle="1" edges="
+!-99 32|-96 32"/>
+                        <Edge fillStyle0="10" fillStyle1="9" strokeStyle="1" edges="
+!-97 30[-98 31 -99 32"/>
+                        <Edge fillStyle0="3" fillStyle1="9" strokeStyle="1" edges="
 !-99 32[-103 35 -109 35!-109 35[-116 35 -121 30!-121 30[-126 25 -126 18!-126 18[-126 11 -121 6!-121 6[-116 1 -109 1!-109 1[-108 1 -107 1"/>
                         <Edge fillStyle0="3" fillStyle1="4" strokeStyle="5" edges="
 !-107 1|-60 -1"/>
-                        <Edge fillStyle0="10" fillStyle1="11" edges="
+                        <Edge fillStyle0="9" fillStyle1="11" edges="
 !-104 10[-101 13 -101 17!-101 17[-101 21 -104 23!-104 23[-106 26 -110 26!-110 26[-114 26 -117 23!-117 23[-119 21 -119 17!-119 17[-119 13 -117 10!-117 10[-114 8 -110 8!-110 8[-106 8 -104 10"/>
-                        <Edge fillStyle0="4" fillStyle1="7" strokeStyle="6" edges="
-!-96 32|52 -9"/>
                         <Edge fillStyle0="4" fillStyle1="7" strokeStyle="1" edges="
 !53 -20|-60 -1"/>
                       </edges>
